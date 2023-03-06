@@ -63,7 +63,7 @@ jobs:
           starting-project: kiegroup/${{ matrix.repository }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
         env: 
-          BUILD_MVN_OPTS: ${{ matrix.env_BUILD_MVN_OPTS }}
+          BUILD_MVN_OPTS: ${{ matrix.env_BUILD_MVN_OPTS }} -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
           KOGITO_EXAMPLES_SUBFOLDER_POM: ${{ matrix.env_KOGITO_EXAMPLES_SUBFOLDER_POM }}
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
