@@ -13,7 +13,7 @@ echo "Update project with Quarkus version ${quarkus_version}"
 
 set -x
 
-sed -i "s|{QUARKUS_VERSION}|${quarkus_version}|g" "${quarkus_file}"
+sed -i.bak "s|{QUARKUS_VERSION}|${quarkus_version}|g" "${quarkus_file}"
 
 if [ "${ci}" = "true" ]; then
     # In CI we need the main branch snapshot artifacts deployed locally
@@ -38,3 +38,8 @@ ${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:4.41.1:run \
 
 # Update dependencies with Quarkus 3 bom
 ${mvn_cmd} versions:compare-dependencies -pl :drools-build-parent -DremotePom=io.quarkus:quarkus-bom:${quarkus_version} -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false
+
+# Restore origin quarkus file
+echo "Restoring ${quarkus_file}"
+
+mv ${quarkus_file}.bak ${quarkus_file}
