@@ -15,11 +15,9 @@
 
 package org.drools.reliability;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -27,6 +25,7 @@ import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ObjectStore;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
@@ -65,10 +64,12 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
             kbase.addStatefulSession(session);
         }
 
-        session.setWorkingMemoryActionListener(entry -> onWorkingMemoryAction(session, entry));
+        if (sessionConfig.getPersistedSessionOption().getStrategy() == PersistedSessionOption.Strategy.STORES_ONLY) {
+            session.setWorkingMemoryActionListener(entry -> onWorkingMemoryAction(session, entry));
 
-        // re-propagate objects from the cache to the new session
-        populateSessionFromCache(session, sessionConfig);
+            // re-propagate objects from the cache to the new session
+            populateSessionFromCache(session);
+        }
         return session;
     }
 
@@ -80,25 +81,20 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         }
     }
 
-    private void populateSessionFromCache(InternalWorkingMemory session, SessionConfiguration sessionConfig) {
-        if (sessionConfig.getPersistedSessionOption().getStrategy() == PersistedSessionOption.Strategy.STORES_ONLY) {
-            session.getEntryPoints().forEach( ep -> populateEntryPointFromCache(session, ep));
-        }
+    private void populateSessionFromCache(InternalWorkingMemory session) {
+        session.getEntryPoints().forEach( ep -> populateEntryPointFromCache(session, ep));
     }
 
     private void populateEntryPointFromCache(InternalWorkingMemory session, EntryPoint ep) {
-        Map<Boolean, List<InternalFactHandle>> map = ep.getFactHandles().stream()
-                .map(InternalFactHandle.class::cast)
-                .collect(Collectors.groupingBy(InternalFactHandle::hasMatches));
-
-        ((WorkingMemoryEntryPoint) ep).getObjectStore().clear();
+        ObjectStore objectStore = ((WorkingMemoryEntryPoint) ep).getObjectStore();
+        Map<Boolean, List<Object>> map = ((SimpleReliableObjectStore) objectStore).takeObjectsGroupedByPropagation();
 
         // fact handles with a match have been already propagated in the original session, so they shouldn't fire
-        map.getOrDefault(true, Collections.emptyList()).forEach(fh -> session.insert( fh.getObject() ) );
+        map.get(true).forEach(ep::insert);
         session.fireAllRules(match -> false);
 
         // fact handles without any match have never been propagated in the original session, so they should fire
-        map.getOrDefault(false, Collections.emptyList()).forEach( fh -> session.insert( fh.getObject() ) );
+        map.get(false).forEach(ep::insert);
     }
 
     public AgendaFactory getAgendaFactory(SessionConfiguration sessionConfig) {

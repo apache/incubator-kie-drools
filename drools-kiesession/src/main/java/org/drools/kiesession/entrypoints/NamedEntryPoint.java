@@ -76,7 +76,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
     /** The arguments used when adding/removing a property change listener. */
     protected final Object[] addRemovePropertyChangeListenerArgs = new Object[]{this};
 
-    protected ObjectStore objectStore;
+    private ObjectStore objectStore;
 
     protected transient RuleBase ruleBase;
 
@@ -113,12 +113,12 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
         this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(conf.getAssertBehaviour());
 
-        initObjectStore(entryPoint, conf, reteEvaluator);
+        this.objectStore = createObjectStore(entryPoint, conf, reteEvaluator);
     }
 
-    protected void initObjectStore(EntryPointId entryPoint, RuleBaseConfiguration conf, ReteEvaluator reteEvaluator) {
+    protected ObjectStore createObjectStore(EntryPointId entryPoint, RuleBaseConfiguration conf, ReteEvaluator reteEvaluator) {
         boolean useClassAwareStore = isEqualityBehaviour || conf.getOption(KieBaseMutabilityOption.KEY).isMutabilityEnabled();
-        this.objectStore = useClassAwareStore ?
+        return useClassAwareStore ?
                 new ClassAwareObjectStore( isEqualityBehaviour, this.lock ) :
                 new IdentityObjectStore();
     }
