@@ -1,12 +1,10 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
-import java.util.function.Consumer;
 
-@FunctionalInterface
 interface FieldCloner {
 
-    static Object getFieldValue(Object bean, Field field) {
+    static Object getGenericFieldValue(Object bean, Field field) {
         try {
             return field.get(bean);
         } catch (IllegalAccessException e) {
@@ -19,7 +17,7 @@ interface FieldCloner {
                 + ") which cannot be read to create a planning clone.", rootCause);
     }
 
-    static void setFieldValue(Object bean, Field field, Object value) {
+    static void setGenericFieldValue(Object bean, Field field, Object value) {
         try {
             field.set(bean, value);
         } catch (IllegalAccessException e) {
@@ -36,21 +34,11 @@ interface FieldCloner {
      * Reads field value from original and store it in clone.
      *
      * @param deepCloningUtils never null
-     * @param field never null
-     * @param instanceClass never null
      * @param original never null
      * @param clone never null
-     * @param deferredValueConsumer null if {@link #mayDeferClone()} is false
+     * @return null if the cloner performed the clone
      * @throws RuntimeException if reflective field read or write fails
      */
-    <C> void clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass, C original, C clone,
-            Consumer<Object> deferredValueConsumer);
-
-    /**
-     * @return true if the cloner can decide to not clone the value
-     */
-    default boolean mayDeferClone() {
-        return false;
-    }
+    <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone);
 
 }

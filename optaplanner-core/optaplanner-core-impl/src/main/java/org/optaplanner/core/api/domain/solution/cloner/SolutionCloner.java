@@ -10,7 +10,8 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
  * <p>
  * Planning cloning is hard: avoid doing it yourself.
  * <p>
- * An implementing class must be thread-safe after initialization.
+ * An implementing class must be thread-safe after initialization
+ * on account of partitioned search using the same cloner on multiple part threads.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
