@@ -79,7 +79,7 @@
     <version.org.infinispan.protostream>4.5.1.Final</version.org.infinispan.protostream>
     <!-- consider migrating to 3.x JDK 9: https://jakarta.ee/specifications/restful-ws/ -->
     <version.jakarta.ws.rs>2.1.6</version.jakarta.ws.rs>
-    <version.org.jboss.resteasy>4.7.7.Final</version.org.jboss.resteasy>
+    <version.org.jboss.resteasy>4.7.8.Final</version.org.jboss.resteasy>
     <version.org.keycloak>20.0.2</version.org.keycloak>
     <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
     <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
