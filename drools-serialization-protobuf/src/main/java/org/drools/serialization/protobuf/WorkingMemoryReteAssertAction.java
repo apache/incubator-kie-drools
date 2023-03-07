@@ -60,7 +60,7 @@ public class WorkingMemoryReteAssertAction
         }
     }
 
-    public void execute(ReteEvaluator reteEvaluator) {
+    public void internalExecute(ReteEvaluator reteEvaluator) {
         PropagationContextFactory pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
 
         final PropagationContext context = pctxFactory.createPropagationContext(reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,

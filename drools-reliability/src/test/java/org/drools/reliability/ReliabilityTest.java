@@ -15,6 +15,9 @@
 
 package org.drools.reliability;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -35,11 +38,12 @@ class ReliabilityTest {
 
     private static final String BASIC_RULE =
             "import " + Person.class.getCanonicalName() + ";" +
+            "global java.util.List results;" +
             "rule X when\n" +
             "  $s: String()\n" +
             "  $p: Person( getName().startsWith($s) )\n" +
             "then\n" +
-            "  System.out.println( $p.getAge() );\n" +
+            "  results.add( $p.getAge() );\n" +
             "end";
 
     @AfterEach
@@ -57,6 +61,8 @@ class ReliabilityTest {
         // 1st round
         {
             KieSession firstSession = getKieSession(BASIC_RULE, PersistedSessionOption.newSession());
+            List<Integer> results = new ArrayList<>();
+            firstSession.setGlobal("results", results);
 
             id = firstSession.getIdentifier();
 
@@ -71,12 +77,15 @@ class ReliabilityTest {
         // 2nd round
         {
             KieSession secondSession = getKieSession(BASIC_RULE, PersistedSessionOption.fromSession(id));
+            List<Integer> results = new ArrayList<>();
+            secondSession.setGlobal("results", results);
 
             try {
                 secondSession.insert(new Person("Edson", 35));
                 secondSession.insert(new Person("Mario", 40));
 
                 assertThat(secondSession.fireAllRules()).isEqualTo(2);
+                assertThat(results).containsExactlyInAnyOrder(37, 40);
             } finally {
                 secondSession.dispose();
             }
@@ -92,21 +101,76 @@ class ReliabilityTest {
 
     @Test
     void noFailover() {
-        KieSession firstSession = getKieSession(BASIC_RULE, PersistedSessionOption.newSession());
+        long id;
 
-        try{
+        // 1st round
+        {
+            KieSession firstSession = getKieSession(BASIC_RULE, PersistedSessionOption.newSession());
+            List<Integer> results = new ArrayList<>();
+            firstSession.setGlobal("results", results);
+
+            id = firstSession.getIdentifier();
+
             firstSession.insert("M");
             firstSession.insert(new Person("Mark", 37));
-            firstSession.insert(new Person("Helen", 54));
+        }
+
+        // 2nd round
+        {
+            KieSession secondSession = getKieSession(BASIC_RULE, PersistedSessionOption.fromSession(id));
+            List<Integer> results = new ArrayList<>();
+            secondSession.setGlobal("results", results);
+
+            try {
+                secondSession.insert(new Person("Toshiya", 35));
+                secondSession.insert(new Person("Mario", 40));
+
+                assertThat(secondSession.fireAllRules()).isEqualTo(2);
+                assertThat(results).containsExactlyInAnyOrder(37, 40);
+            } finally {
+                secondSession.dispose();
+            }
+        }
+    }
+
+    @Test
+    void failoverWithStoresOnlyStrategy() {
+        long id;
+
+        // 1st round
+        {
+            KieSession firstSession = getKieSession(BASIC_RULE, PersistedSessionOption.newSession(PersistedSessionOption.Strategy.STORES_ONLY));
+            List<Integer> results = new ArrayList<>();
+            firstSession.setGlobal("results", results);
+
+            id = firstSession.getIdentifier();
+
+            firstSession.insert("M");
+            firstSession.insert(new Person("Matteo", 41));
 
             assertThat(firstSession.fireAllRules()).isEqualTo(1);
+            assertThat(results).containsExactlyInAnyOrder(41);
 
-            firstSession.insert(new Person("Nicole", 27));
+            firstSession.insert(new Person("Mark", 47));
+        }
 
-            assertThat(firstSession.fireAllRules()).isZero();
+        failover();
 
-        } finally {
-            firstSession.dispose();
+        // 2nd round
+        {
+            KieSession secondSession = getKieSession(BASIC_RULE, PersistedSessionOption.fromSession(id, PersistedSessionOption.Strategy.STORES_ONLY));
+            List<Integer> results = new ArrayList<>();
+            secondSession.setGlobal("results", results);
+
+            try {
+                secondSession.insert(new Person("Toshiya", 45));
+                secondSession.insert(new Person("Mario", 49));
+
+                assertThat(secondSession.fireAllRules()).isEqualTo(2);
+                assertThat(results).containsExactlyInAnyOrder(47, 49);
+            } finally {
+                secondSession.dispose();
+            }
         }
     }
 

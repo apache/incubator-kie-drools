@@ -180,7 +180,7 @@ public class ProtobufInputMarshaller {
         session.reset( _session.getRuleData().getLastId(),
                        _session.getRuleData().getLastRecency(),
                        1 );
-        InternalAgenda agenda = (InternalAgenda) session.getAgenda();
+        InternalAgenda agenda = session.getAgenda();
 
         readAgenda( context,
                     _session.getRuleData(),
@@ -196,7 +196,7 @@ public class ProtobufInputMarshaller {
         FactHandleFactory handleFactory = context.getKnowledgeBase().newFactHandleFactory( _session.getRuleData().getLastId(),
                                                                                  _session.getRuleData().getLastRecency() );
 
-        InternalAgenda agenda = RuntimeComponentFactory.get().getAgendaFactory().createAgenda( context.getKnowledgeBase(), false );
+        InternalAgenda agenda = RuntimeComponentFactory.get().getAgendaFactory(config).createAgenda( context.getKnowledgeBase(), false );
 
         StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) PhreakWorkingMemoryFactory.getInstance()
                 .createWorkingMemory( id, context.getKnowledgeBase(), handleFactory,

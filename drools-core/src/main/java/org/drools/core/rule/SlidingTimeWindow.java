@@ -387,7 +387,7 @@ public class SlidingTimeWindow
         }
 
         @Override
-        public void execute(ReteEvaluator reteEvaluator) {
+        public void internalExecute(ReteEvaluator reteEvaluator) {
             this.behavior.expireFacts( context, null, reteEvaluator );
         }
     }

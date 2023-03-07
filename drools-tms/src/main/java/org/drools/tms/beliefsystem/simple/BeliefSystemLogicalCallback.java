@@ -78,7 +78,7 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
         this.fullyRetract = fullyRetract;
     }
 
-    public void execute(ReteEvaluator reteEvaluator) {
+    public void internalExecute(ReteEvaluator reteEvaluator) {
         NamedEntryPoint nep = (NamedEntryPoint) handle.getEntryPoint(reteEvaluator) ;
 
         BeliefSet bs = ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).getBeliefSet();

@@ -33,8 +33,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.ObjectType;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -42,20 +42,18 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.accessor.AcceptsReadAccessor;
-import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.rule.accessor.FieldValue;
 import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.base.ObjectType;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.TupleValueExtractor;
+import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.MemoryUtil;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.mvel.ConditionAnalyzer.CombinedCondition;
@@ -83,9 +81,9 @@ import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
-import static org.drools.util.ClassUtils.getter2property;
 import static org.drools.core.util.Drools.isJmxAvailable;
 import static org.drools.core.util.MessageUtils.defaultToEmptyString;
+import static org.drools.util.ClassUtils.getter2property;
 import static org.drools.util.StringUtils.codeAwareIndexOf;
 import static org.drools.util.StringUtils.equalsIgnoreSpaces;
 import static org.drools.util.StringUtils.extractFirstIdentifier;
@@ -650,7 +648,13 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         super.readExternal(in);
         packageNames = (Set<String>) in.readObject();
         expression = (String) in.readObject();
-        ((DroolsObjectInputStream) in).readExtractor(this::setReadAccessor);
+
+        if (in instanceof DroolsObjectInputStream) {
+            ((DroolsObjectInputStream) in).readExtractor(this::setReadAccessor);
+        } else {
+            extractor = (ReadAccessor) in.readObject();
+        }
+
         indexingDeclaration = (Declaration) in.readObject();
         declarations = (Declaration[]) in.readObject();
         constraintType = (IndexUtil.ConstraintType) in.readObject();

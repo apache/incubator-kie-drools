@@ -52,7 +52,8 @@ public class ClassObjectTypeConf
     private static final long          serialVersionUID = 510l;
 
     private Class<?> cls;
-    private transient RuleBase ruleBase;
+
+    private Rete rete;
     private ObjectTypeNode[] objectTypeNodes;
 
     private ObjectType objectType;
@@ -75,7 +76,6 @@ public class ClassObjectTypeConf
                                final Class< ? > clazz,
                                final RuleBase ruleBase) {
         this.cls = (InternalMatch.class.isAssignableFrom(clazz) ) ? ClassObjectType.Match_ObjectType.getClassType() : clazz;
-        this.ruleBase = ruleBase;
         this.entryPoint = entryPoint;
 
         this.typeDecl = ruleBase.getTypeDeclaration( clazz );
@@ -98,13 +98,12 @@ public class ClassObjectTypeConf
         }
 
         this.objectType = ruleBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz, isEvent ), false );
-
-        this.concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
+        this.rete = ruleBase.getRete();
+        this.concreteObjectTypeNode = this.rete.getObjectTypeNodes( entryPoint ).get( objectType );
     }
 
-    public void readExternal(ObjectInput stream) throws IOException,
-                                                ClassNotFoundException {
-        ruleBase = (RuleBase) stream.readObject();
+    public void readExternal(ObjectInput stream) throws IOException, ClassNotFoundException {
+        rete = (Rete) stream.readObject();
         cls = (Class<?>) stream.readObject();
         objectTypeNodes = (ObjectTypeNode[]) stream.readObject();
         objectType = (ObjectType) stream.readObject();
@@ -116,7 +115,7 @@ public class ClassObjectTypeConf
     }
 
     public void writeExternal(ObjectOutput stream) throws IOException {
-        stream.writeObject( ruleBase );
+        stream.writeObject( rete );
         stream.writeObject( cls );
         stream.writeObject( objectTypeNodes );
         stream.writeObject( objectType );
@@ -157,7 +156,7 @@ public class ClassObjectTypeConf
 
     public ObjectTypeNode getConcreteObjectTypeNode() {
         if (concreteObjectTypeNode == null) {
-            concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
+            concreteObjectTypeNode = rete.getObjectTypeNodes( entryPoint ).get( objectType );
         }
         return concreteObjectTypeNode;
     }
@@ -194,7 +193,7 @@ public class ClassObjectTypeConf
     private ObjectTypeNode[] getMatchingObjectTypes(final Class<?> clazz) {
         final List<ObjectTypeNode> cache = new ArrayList<>();
 
-        for ( ObjectTypeNode node : ruleBase.getRete().getObjectTypeNodes( this.entryPoint ).values() ) {
+        for ( ObjectTypeNode node : rete.getObjectTypeNodes( this.entryPoint ).values() ) {
             if ( clazz == DroolsQuery.class ) {
                 // for query objects only add direct matches
                 if ( ((ClassObjectType)node.getObjectType()).getClassType() == clazz ) {

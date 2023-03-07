@@ -16,6 +16,8 @@
 
 package org.drools.core.common;
 
+import java.io.Serializable;
+
 import org.drools.core.reteoo.TerminalNode;
 import org.kie.api.definition.rule.Rule;
 
@@ -23,7 +25,7 @@ import org.kie.api.definition.rule.Rule;
  * Interface used to expose generic information on Rete nodes outside of he package. It is used
  * for exposing information events.
  */
-public interface NetworkNode {
+public interface NetworkNode extends Serializable {
 
     /**
      * Returns the unique id that represents the node in the Rete network

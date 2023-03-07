@@ -137,7 +137,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
         }
 
         @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
             propagator.propagateAssertObject( factHandle, context, reteEvaluator );
         }
 
@@ -160,7 +160,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
         }
 
         @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
             sink.getObjectSinkPropagator().propagateAssertObject( factHandle, context, reteEvaluator );
         }
 

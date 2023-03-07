@@ -40,7 +40,6 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.time.Trigger;
 import org.junit.Test;
-import org.kie.api.runtime.conf.ClockTypeOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

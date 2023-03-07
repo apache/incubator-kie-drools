@@ -78,7 +78,7 @@ public class ReactiveObjectUtil {
         }
 
         @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
             if ( leftTuple.resetModificationState( object ) == ModificationType.NONE ) {
                 return;
             }

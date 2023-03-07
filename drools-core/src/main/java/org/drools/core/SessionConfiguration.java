@@ -202,6 +202,10 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
         return this.keepReference;
     }
 
+    public boolean hasPersistedSessionOption() {
+        return this.persistedSessionOption != null;
+    }
+
     public PersistedSessionOption getPersistedSessionOption() {
         return this.persistedSessionOption;
     }

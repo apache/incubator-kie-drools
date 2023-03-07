@@ -49,7 +49,9 @@ public enum CacheManager implements AutoCloseable {
         global.serialization()
                 .marshaller(new JavaSerializationMarshaller())
                 .allowList()
-                .addRegexps("org.drools."); // TODO: need to be configurable
+                .addRegexps("org.kie.*") // TODO: need to be configurable
+                .addRegexps("org.drools.*") // TODO: need to be configurable
+                .addRegexps("java.*"); // TODO: why is this necessary?
         global.transport().defaultTransport();
 
         // Initialize the default Cache Manager.

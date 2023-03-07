@@ -379,7 +379,7 @@ public class PhreakTimerNode {
         }
 
         @Override
-        public void execute(final ReteEvaluator reteEvaluator) {
+        public void internalExecute(final ReteEvaluator reteEvaluator) {
             execute( reteEvaluator, false );
         }
 

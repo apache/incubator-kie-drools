@@ -135,7 +135,7 @@ public class PropagationListTest {
         }
 
         @Override
-        public void execute(final ReteEvaluator reteEvaluator) {
+        public void internalExecute(final ReteEvaluator reteEvaluator) {
             checker.check(this);
         }
 
