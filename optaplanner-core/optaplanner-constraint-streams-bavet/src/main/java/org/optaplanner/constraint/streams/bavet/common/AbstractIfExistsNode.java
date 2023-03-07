@@ -158,6 +158,34 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         } // Else do not even propagate an update
     }
 
+    protected TupleList<FilteringTracker<LeftTuple_>> updateRightTrackerList(UniTuple<Right_> rightTuple) {
+        TupleList<FilteringTracker<LeftTuple_>> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
+        rightTrackerList.forEach(filteringTacker -> {
+            decrementCounterRight(filteringTacker.counter);
+            filteringTacker.remove();
+        });
+        return rightTrackerList;
+    }
+
+    protected void updateCounterFromLeft(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple, ExistsCounter<LeftTuple_> counter,
+            TupleList<FilteringTracker<LeftTuple_>> leftTrackerList) {
+        if (testFiltering(leftTuple, rightTuple)) {
+            counter.countRight++;
+            TupleList<FilteringTracker<LeftTuple_>> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
+            new FilteringTracker<>(counter, leftTrackerList, rightTrackerList);
+        }
+    }
+
+    protected void updateCounterFromRight(UniTuple<Right_> rightTuple, ExistsCounter<LeftTuple_> counter,
+            TupleList<FilteringTracker<LeftTuple_>> rightTrackerList) {
+        if (testFiltering(counter.leftTuple, rightTuple)) {
+            incrementCounterRight(counter);
+            TupleList<FilteringTracker<LeftTuple_>> leftTrackerList =
+                    counter.leftTuple.getStore(inputStoreIndexLeftTrackerList);
+            new FilteringTracker<>(counter, leftTrackerList, rightTrackerList);
+        }
+    }
+
     private void doInsertCounter(ExistsCounter<LeftTuple_> counter) {
         switch (counter.state) {
             case DYING:
@@ -176,7 +204,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
-    private final void doRetractCounter(ExistsCounter<LeftTuple_> counter) {
+    private void doRetractCounter(ExistsCounter<LeftTuple_> counter) {
         switch (counter.state) {
             case CREATING:
                 // Kill it before it propagates
@@ -225,13 +253,13 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         dirtyCounterQueue.clear();
     }
 
-    protected class FilteringTracker {
-        protected final ExistsCounter<LeftTuple_> counter;
-        protected final TupleListEntry<FilteringTracker> leftTrackerEntry;
-        protected final TupleListEntry<FilteringTracker> rightTrackerEntry;
+    protected static final class FilteringTracker<LeftTuple_ extends Tuple> {
+        final ExistsCounter<LeftTuple_> counter;
+        private final TupleListEntry<FilteringTracker<LeftTuple_>> leftTrackerEntry;
+        private final TupleListEntry<FilteringTracker<LeftTuple_>> rightTrackerEntry;
 
-        protected FilteringTracker(ExistsCounter<LeftTuple_> counter,
-                TupleList<FilteringTracker> leftTrackerList, TupleList<FilteringTracker> rightTrackerList) {
+        FilteringTracker(ExistsCounter<LeftTuple_> counter, TupleList<FilteringTracker<LeftTuple_>> leftTrackerList,
+                TupleList<FilteringTracker<LeftTuple_>> rightTrackerList) {
             this.counter = counter;
             leftTrackerEntry = leftTrackerList.add(this);
             rightTrackerEntry = rightTrackerList.add(this);
