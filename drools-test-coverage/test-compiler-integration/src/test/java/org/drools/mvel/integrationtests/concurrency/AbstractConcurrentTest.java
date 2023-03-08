@@ -30,7 +30,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -39,6 +38,8 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractConcurrentTest {
 
@@ -127,7 +128,7 @@ public abstract class AbstractConcurrentTest {
             }
         }
 
-        Assertions.assertThat(successCounter).isEqualTo(threadCount);
+        assertThat(successCounter).isEqualTo(threadCount);
     }
 
     private ExecutorService createExecutorService(final int threadCount) {

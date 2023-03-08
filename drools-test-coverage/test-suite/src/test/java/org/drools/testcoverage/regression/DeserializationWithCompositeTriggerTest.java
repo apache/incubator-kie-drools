@@ -18,7 +18,6 @@ package org.drools.testcoverage.regression;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.StockTick;
 import org.drools.mvel.integrationtests.SerializationHelper;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -38,6 +37,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Verifies that serialization and de-serialization of a composite trigger succeeds (BZ 1142914).
@@ -107,6 +108,6 @@ public class DeserializationWithCompositeTriggerTest {
         this.ksession.insert(new StockTick(2, "AAA", 1.0, 0));
 
         this.ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
-        Assertions.assertThat(this.ksession).isNotNull();
+        assertThat(this.ksession).isNotNull();
     }
 }

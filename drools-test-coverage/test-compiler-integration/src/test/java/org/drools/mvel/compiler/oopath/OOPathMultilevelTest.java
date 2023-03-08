@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Man;
 import org.drools.mvel.compiler.oopath.model.Toy;
@@ -33,6 +32,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class OOPathMultilevelTest {
@@ -82,7 +83,7 @@ public class OOPathMultilevelTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball", "doll");
+        assertThat(list).containsExactlyInAnyOrder("car", "ball", "doll");
     }
 
     @Test
@@ -116,7 +117,7 @@ public class OOPathMultilevelTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+        assertThat(list).containsExactlyInAnyOrder("car", "ball");
     }
 
     @Test
@@ -176,6 +177,6 @@ public class OOPathMultilevelTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+        assertThat(list).containsExactlyInAnyOrder("car", "ball");
     }
 }

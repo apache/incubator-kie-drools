@@ -26,7 +26,6 @@ import java.util.Arrays;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -40,9 +39,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AnnotationsTest extends BaseVariantTest {
 
@@ -58,31 +55,31 @@ public class AnnotationsTest extends BaseVariantTest {
     public void testNSWE() throws Exception {
         final DMNRuntime runtime = createRuntime("NSEW.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_FBA17BF4-BC04-4C16-9305-40E8B4B2FECB", "NSEW");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).withFailMessage(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("direction", "East");
 
         final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is("You decided to go East."));
+        assertThat(dmnModel.hasErrors()).withFailMessage(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult()).isEqualTo("You decided to go East.");
 
         if (strongly) {
             Class<?> inputSetClass = getStronglyClassByName(dmnModel, "InputSet");
             Field directionAsField = inputSetClass.getDeclaredField("direction");
             org.eclipse.microprofile.openapi.annotations.media.Schema ann = directionAsField.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
-            Assertions.assertThat(ann).isNotNull();
-            Assertions.assertThat(ann.enumeration()).isNotNull().contains("North", "South", "East", "West");
+            assertThat(ann).isNotNull();
+            assertThat(ann.enumeration()).isNotNull().contains("North", "South", "East", "West");
 
             Field definedKeySet = inputSetClass.getDeclaredField("definedKeySet");
             org.eclipse.microprofile.openapi.annotations.media.Schema ann2 = definedKeySet.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
-            Assertions.assertThat(ann2).isNotNull();
-            Assertions.assertThat(ann2.hidden()).isTrue();
+            assertThat(ann2).isNotNull();
+            assertThat(ann2.hidden()).isTrue();
             io.swagger.v3.oas.annotations.media.Schema ann3 = definedKeySet.getDeclaredAnnotation(io.swagger.v3.oas.annotations.media.Schema.class);
-            Assertions.assertThat(ann3).isNotNull();
-            Assertions.assertThat(ann3.hidden()).isTrue();
+            assertThat(ann3).isNotNull();
+            assertThat(ann3.hidden()).isTrue();
         }
     }
 
@@ -90,8 +87,8 @@ public class AnnotationsTest extends BaseVariantTest {
     public void testOneOfEachType() throws Exception {
         final DMNRuntime runtime = createRuntime("OneOfEachType.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_4f5608e9-4d74-4c22-a47e-ab657257fc9c", "OneOfEachType");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).withFailMessage(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         // this is already tested for execution/evaluation semantic in its proper test unit, here we check Annotations presence.
 
@@ -108,18 +105,18 @@ public class AnnotationsTest extends BaseVariantTest {
     private void checkAnnOneOfEachType(Class<?> inputSetClass, String fieldName, String name, Class<?> implementation) throws Exception {
         Field directionAsField = inputSetClass.getDeclaredField(fieldName);
         org.eclipse.microprofile.openapi.annotations.media.Schema annMP = directionAsField.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
-        Assertions.assertThat(annMP).isNotNull();
-        Assertions.assertThat(annMP.name()).isEqualTo(name);
-        Assertions.assertThat(annMP.implementation()).isEqualTo(implementation);
+        assertThat(annMP).isNotNull();
+        assertThat(annMP.name()).isEqualTo(name);
+        assertThat(annMP.implementation()).isEqualTo(implementation);
         if (implementation == Period.class) {
-            Assertions.assertThat(annMP.example()).isEqualTo("P1Y2M");
+            assertThat(annMP.example()).isEqualTo("P1Y2M");
         }
         io.swagger.v3.oas.annotations.media.Schema annIOSwagger = directionAsField.getDeclaredAnnotation(io.swagger.v3.oas.annotations.media.Schema.class);
-        Assertions.assertThat(annIOSwagger).isNotNull();
-        Assertions.assertThat(annIOSwagger.name()).isEqualTo(name);
-        Assertions.assertThat(annIOSwagger.implementation()).isEqualTo(implementation);
+        assertThat(annIOSwagger).isNotNull();
+        assertThat(annIOSwagger.name()).isEqualTo(name);
+        assertThat(annIOSwagger.implementation()).isEqualTo(implementation);
         if (implementation == Period.class) {
-            Assertions.assertThat(annIOSwagger.example()).isEqualTo("P1Y2M");
+            assertThat(annIOSwagger.example()).isEqualTo("P1Y2M");
         }
     }
 
@@ -127,8 +124,8 @@ public class AnnotationsTest extends BaseVariantTest {
     public void testNextDays() throws Exception {
         final DMNRuntime runtime = createRuntime("nextDays.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_8A1F9719-02AA-4517-97D4-5C4F5D22FE82", "nextDays");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).withFailMessage(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         DMNContext context = DMNFactory.newContext();
         if (!isTypeSafe()) {
@@ -147,18 +144,18 @@ public class AnnotationsTest extends BaseVariantTest {
 
         final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is(Arrays.asList(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 22))));
+        assertThat(dmnModel.hasErrors()).withFailMessage(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult()).asList().contains(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 22));
 
         if (strongly) {
             Class<?> inputSetClass = getStronglyClassByName(dmnModel, "InputSet");
             Field directionAsField = inputSetClass.getDeclaredField("few_32dates");
             org.eclipse.microprofile.openapi.annotations.media.Schema annMP = directionAsField.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
-            Assertions.assertThat(annMP).isNotNull();
-            Assertions.assertThat(annMP.type()).isEqualTo(org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY);
+            assertThat(annMP).isNotNull();
+            assertThat(annMP.type()).isEqualTo(org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY);
             io.swagger.v3.oas.annotations.media.Schema annIOSwagger = directionAsField.getDeclaredAnnotation(io.swagger.v3.oas.annotations.media.Schema.class);
-            Assertions.assertThat(annIOSwagger).isNotNull();
-            Assertions.assertThat(annIOSwagger.type()).isEqualTo("array");
+            assertThat(annIOSwagger).isNotNull();
+            assertThat(annIOSwagger.type()).isEqualTo("array");
         }
     }
 }

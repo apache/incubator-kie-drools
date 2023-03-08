@@ -19,7 +19,6 @@ package org.drools.scenariosimulation.backend.expression;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,7 +43,7 @@ public class BaseExpressionOperatorTest {
         Arrays.stream(values())
                 .filter(e -> !EQUALS.equals(e))
                 .forEach(operator -> {
-                    Assertions.assertThatThrownBy(
+                    assertThatThrownBy(
                             () -> operator.evaluateLiteralExpression(String.class.getCanonicalName(), " Test ", classLoader))
                             .isInstanceOf(IllegalStateException.class)
                             .hasMessageEndingWith(" operator cannot be used in a GIVEN clause");

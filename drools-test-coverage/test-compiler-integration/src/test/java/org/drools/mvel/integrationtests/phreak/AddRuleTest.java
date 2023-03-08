@@ -49,11 +49,11 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.rule.Match;
 
 import static java.util.Arrays.asList;
-import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class AddRuleTest {

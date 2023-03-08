@@ -16,10 +16,16 @@
 
 package org.drools.testcoverage.regression;
 
-import org.assertj.core.api.Assertions;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.testcoverage.common.KieSessionTest;
 import org.drools.testcoverage.common.model.TestEvent;
-import org.drools.testcoverage.common.util.*;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.kie.api.command.Command;
@@ -30,10 +36,7 @@ import org.mockito.exceptions.verification.WantedButNotInvoked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.testcoverage.common.util.KieUtil.getCommands;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -81,7 +84,7 @@ public class StarImportTest extends KieSessionTest {
         try {
             verify(ael, times(1)).afterMatchFired(any(AfterMatchFiredEvent.class));
         } catch (WantedButNotInvoked e) {
-            Assertions.fail("The rule does not fire. For more information see BZ 973264", e);
+            fail("The rule does not fire. For more information see BZ 973264", e);
         }
     }
 

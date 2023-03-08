@@ -18,7 +18,6 @@ package org.drools.mvel.compiler.oopath;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Man;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -29,6 +28,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class OOPathAccumulateTest {
@@ -103,9 +104,9 @@ public class OOPathAccumulateTest {
 
         final Number result = (Number) ksession.getGlobal("globalVar");
         if (result instanceof Double) {
-            Assertions.assertThat(expectedResult.doubleValue()).isEqualTo(result.doubleValue());
+            assertThat(expectedResult.doubleValue()).isEqualTo(result.doubleValue());
         } else {
-            Assertions.assertThat(expectedResult.longValue()).isEqualTo(result.longValue());
+            assertThat(expectedResult.longValue()).isEqualTo(result.longValue());
         }
     }
 
@@ -131,6 +132,6 @@ public class OOPathAccumulateTest {
         ksession.fireAllRules();
 
         final Collection<Integer> result = (Collection<Integer>) ksession.getGlobal("globalVar");
-        Assertions.assertThat(result).containsExactlyInAnyOrder(expectedResults);
+        assertThat(result).containsExactlyInAnyOrder(expectedResults);
     }
 }

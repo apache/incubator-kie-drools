@@ -18,10 +18,8 @@ package org.drools.mvel.compiler.compiler.xml.rules;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
-import org.drools.mvel.DrlDumper;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.ExistsDescr;
@@ -40,8 +38,10 @@ import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.StringUtils;
 import org.drools.mvel.CommonTestMethodBase;
+import org.drools.mvel.DrlDumper;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -214,7 +214,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         String expectedWithoutHeader = removeLicenseHeader( expected );
         String actual = new DrlDumper().dump( packageDescr );
         
-        Assertions.assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
+        assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test
@@ -342,7 +342,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         System.out.println(expectedWithoutHeader);
         String actual = new DrlDumper().dump( packageDescr );
         
-        Assertions.assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
+        assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test
@@ -438,7 +438,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         String expectedWithoutHeader = removeLicenseHeader( expected );
         String actual = new DrlDumper().dump( packageDescr );
 
-        Assertions.assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
+        assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test
