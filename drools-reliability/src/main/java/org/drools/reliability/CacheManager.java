@@ -15,6 +15,8 @@
 
 package org.drools.reliability;
 
+import java.util.Set;
+
 import org.drools.core.common.ReteEvaluator;
 import org.infinispan.Cache;
 import org.infinispan.commons.api.CacheContainerAdmin;
@@ -102,17 +104,18 @@ public enum CacheManager implements AutoCloseable {
         initCacheManager();
     }
 
+    // test purpose to inject fake cacheManager
+    void setCacheManager(DefaultCacheManager cacheManager) {
+        if (this.cacheManager != null) {
+            this.cacheManager.stop();
+        }
+        this.cacheManager = cacheManager;
+    }
+
     public void removeCache(String cacheName){
         if (cacheManager.cacheExists(cacheName)) {
             cacheManager.removeCache(cacheName);
         }
-    }
-
-    public void removeCachesBySessionId(String sessionId) {
-        cacheManager.getCacheNames()
-                .stream()
-                .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX + sessionId + DELIMITER))
-                .forEach(this::removeCache);
     }
 
     public void removeAllSessionCaches() {
@@ -120,5 +123,9 @@ public enum CacheManager implements AutoCloseable {
                 .stream()
                 .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX))
                 .forEach(this::removeCache);
+    }
+
+    public Set<String> getCacheNames() {
+        return cacheManager.getCacheNames();
     }
 }
