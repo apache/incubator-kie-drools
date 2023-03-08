@@ -16,21 +16,24 @@
 package org.drools.reliability;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
+import org.kie.api.runtime.conf.PersistedSessionOption;
 
 public class ReliableNamedEntryPoint extends NamedEntryPoint {
 
-    public ReliableNamedEntryPoint(EntryPointId entryPoint,
-                           EntryPointNode entryPointNode,
-                           ReteEvaluator reteEvaluator) {
+    public ReliableNamedEntryPoint(EntryPointId entryPoint, EntryPointNode entryPointNode, ReteEvaluator reteEvaluator) {
         super(entryPoint, entryPointNode, reteEvaluator);
     }
 
     @Override
-    protected void initObjectStore(EntryPointId entryPoint, RuleBaseConfiguration conf, ReteEvaluator reteEvaluator) {
-        this.objectStore = new ReliableObjectStore(CacheManager.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "ep" + getEntryPointId()));
+    protected ObjectStore createObjectStore(EntryPointId entryPoint, RuleBaseConfiguration conf, ReteEvaluator reteEvaluator) {
+        boolean storesOnlyStrategy = reteEvaluator.getSessionConfiguration().getPersistedSessionOption().getStrategy() == PersistedSessionOption.Strategy.STORES_ONLY;
+        return storesOnlyStrategy ?
+                new SimpleReliableObjectStore(CacheManager.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "ep" + getEntryPointId())) :
+                new FullReliableObjectStore(CacheManager.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "ep" + getEntryPointId()));
     }
 }

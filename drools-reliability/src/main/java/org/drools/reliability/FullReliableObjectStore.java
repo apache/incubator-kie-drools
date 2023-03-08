@@ -19,9 +19,9 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.MapObjectStore;
 import org.infinispan.Cache;
 
-public class ReliableObjectStore extends MapObjectStore {
+public class FullReliableObjectStore extends MapObjectStore {
 
-    public ReliableObjectStore(Cache<Object, InternalFactHandle> fhCache) {
+    public FullReliableObjectStore(Cache<Object, InternalFactHandle> fhCache) {
         super(fhCache);
     }
 }
