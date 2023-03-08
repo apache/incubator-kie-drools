@@ -9,6 +9,7 @@ import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolutionUpdatePolicy;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.DefaultScoreExplanation;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
@@ -46,7 +47,22 @@ public final class DefaultSolutionManager<Solution_, Score_ extends Score<Score_
 
     @Override
     public ScoreExplanation<Solution_, Score_> explain(Solution_ solution, SolutionUpdatePolicy solutionUpdatePolicy) {
-        return callScoreDirector(solution, solutionUpdatePolicy, DefaultScoreExplanation::new, true);
+        Score_ currentScore = (Score_) scoreDirectorFactory.getSolutionDescriptor().getScore(solution);
+        ScoreExplanation<Solution_, Score_> explanation =
+                callScoreDirector(solution, solutionUpdatePolicy, DefaultScoreExplanation::new, true);
+        if (!solutionUpdatePolicy.isScoreUpdateEnabled() && currentScore != null) {
+            // Score update is not enabled and score is not null; this means the score is supposed to be valid.
+            // Yet it is different from a freshly calculated score, suggesting previous score corruption.
+            Score_ freshScore = explanation.getScore();
+            if (!freshScore.equals(currentScore)) {
+                throw new IllegalStateException("Current score (" + currentScore + ") and freshly calculated score ("
+                        + freshScore + ") for solution (" + solution + ") do not match.\n"
+                        + "Maybe run " + EnvironmentMode.FULL_ASSERT + " to check for score corruptions.\n"
+                        + "Otherwise enable " + SolutionUpdatePolicy.class.getSimpleName()
+                        + "." + SolutionUpdatePolicy.UPDATE_ALL + " to update the stale score.");
+            }
+        }
+        return explanation;
     }
 
     private <Result_> Result_ callScoreDirector(Solution_ solution,
