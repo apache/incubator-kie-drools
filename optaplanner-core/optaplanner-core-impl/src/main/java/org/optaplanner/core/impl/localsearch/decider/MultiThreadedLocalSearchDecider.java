@@ -200,6 +200,8 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
                     logIndentation, foragingMoveIndex, foragingMove);
         } else {
             moveScope.setScore(result.getScore());
+            // Every doable move result represents a single score calculation on a move thread.
+            moveScope.getScoreDirector().incrementCalculationCount();
             boolean accepted = acceptor.isAccepted(moveScope);
             moveScope.setAccepted(accepted);
             logger.trace("{}        Move index ({}), score ({}), accepted ({}), move ({}).",

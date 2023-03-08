@@ -164,6 +164,8 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
 
     void resetCalculationCount();
 
+    void incrementCalculationCount();
+
     /**
      * @return never null
      */

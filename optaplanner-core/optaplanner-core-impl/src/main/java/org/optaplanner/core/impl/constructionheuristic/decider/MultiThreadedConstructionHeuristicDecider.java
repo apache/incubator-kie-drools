@@ -199,6 +199,8 @@ public class MultiThreadedConstructionHeuristicDecider<Solution_> extends Constr
             throw new IllegalStateException("Impossible situation: Construction Heuristics move is not doable.");
         }
         moveScope.setScore(result.getScore());
+        // Every doable move result represents a single score calculation on a move thread.
+        moveScope.getScoreDirector().incrementCalculationCount();
         logger.trace("{}        Move index ({}), score ({}), move ({}).",
                 logIndentation,
                 foragingMoveIndex, moveScope.getScore(), foragingMove);

@@ -130,6 +130,11 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
+    public void incrementCalculationCount() {
+        this.calculationCount++;
+    }
+
+    @Override
     public SupplyManager getSupplyManager() {
         return variableListenerSupport;
     }
