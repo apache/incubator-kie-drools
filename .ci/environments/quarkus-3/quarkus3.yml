@@ -103,10 +103,6 @@ recipeList:
       artifactId: javax.activation-api
 
   - org.openrewrite.maven.ChangePropertyValue:
-      key: version.com.github.javaparser
-      newValue: 3.25.0
-
-  - org.openrewrite.maven.ChangePropertyValue:
       key: version.jakarta.activation
       newValue: 2.0.1
 
