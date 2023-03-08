@@ -54,12 +54,6 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-core-impl</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-constraint-drl</artifactId>
         <version>${version.org.optaplanner}</version>
       </dependency>
@@ -74,12 +68,6 @@
         <artifactId>optaplanner-constraint-drl</artifactId>
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-constraint-drl</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
@@ -100,12 +88,6 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-constraint-streams-common</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-constraint-streams-bavet</artifactId>
         <version>${version.org.optaplanner}</version>
       </dependency>
@@ -120,12 +102,6 @@
         <artifactId>optaplanner-constraint-streams-bavet</artifactId>
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-constraint-streams-bavet</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
@@ -146,12 +122,6 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-constraint-streams-drools</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-persistence-common</artifactId>
         <version>${version.org.optaplanner}</version>
       </dependency>
@@ -166,12 +136,6 @@
         <artifactId>optaplanner-persistence-common</artifactId>
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-persistence-common</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
@@ -192,12 +156,6 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-persistence-xstream</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-persistence-jaxb</artifactId>
         <version>${version.org.optaplanner}</version>
       </dependency>
@@ -212,12 +170,6 @@
         <artifactId>optaplanner-persistence-jaxb</artifactId>
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-persistence-jaxb</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
@@ -238,12 +190,6 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-persistence-jackson</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-persistence-jsonb</artifactId>
         <version>${version.org.optaplanner}</version>
       </dependency>
@@ -258,12 +204,6 @@
         <artifactId>optaplanner-persistence-jsonb</artifactId>
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-persistence-jsonb</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
@@ -284,12 +224,6 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-persistence-jpa</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-benchmark</artifactId>
         <version>${version.org.optaplanner}</version>
       </dependency>
@@ -307,12 +241,6 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-benchmark</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-test</artifactId>
         <version>${version.org.optaplanner}</version>
       </dependency>
@@ -327,12 +255,6 @@
         <artifactId>optaplanner-test</artifactId>
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-test</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
@@ -587,12 +509,6 @@
         <artifactId>optaplanner-operator</artifactId>
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-operator</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <classifier>javadoc</classifier>
       </dependency>
     </dependencies>
   </dependencyManagement>
