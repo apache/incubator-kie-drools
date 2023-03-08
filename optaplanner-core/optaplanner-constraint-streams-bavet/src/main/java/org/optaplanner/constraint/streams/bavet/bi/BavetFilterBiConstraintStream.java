@@ -8,7 +8,6 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetAbstractBiConstraintStream<Solution_, A, B> {
 
@@ -42,7 +41,7 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
     }
 
     @Override
-    public ConstraintStream getTupleSource() {
+    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
         return parent.getTupleSource();
     }
 

@@ -10,6 +10,7 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
@@ -18,7 +19,7 @@ class NodeSharingTest {
     @Test
     void nodeSharingForEach() {
         BavetConstraintFactory<TestdataSolution> constraintFactory =
-                new BavetConstraintFactory<>(TestdataSolution.buildSolutionDescriptor());
+                new BavetConstraintFactory<>(TestdataSolution.buildSolutionDescriptor(), EnvironmentMode.REPRODUCIBLE);
         UniConstraintStream<TestdataEntity> stream1 = constraintFactory.forEach(TestdataEntity.class);
         UniConstraintStream<TestdataEntity> stream2 = constraintFactory.forEach(TestdataEntity.class);
         assertThat(stream1).isSameAs(stream2);
@@ -32,7 +33,7 @@ class NodeSharingTest {
     @Test
     void nodeSharingForEachUniquePair() {
         BavetConstraintFactory<TestdataSolution> constraintFactory =
-                new BavetConstraintFactory<>(TestdataSolution.buildSolutionDescriptor());
+                new BavetConstraintFactory<>(TestdataSolution.buildSolutionDescriptor(), EnvironmentMode.REPRODUCIBLE);
         BiConstraintStream<TestdataEntity, TestdataEntity> stream1 =
                 constraintFactory.forEachUniquePair(TestdataEntity.class);
         BiConstraintStream<TestdataEntity, TestdataEntity> stream2 =
@@ -48,7 +49,7 @@ class NodeSharingTest {
     @Test
     void nodeSharingForEachUniquePairAndOneMore() {
         BavetConstraintFactory<TestdataSolution> constraintFactory =
-                new BavetConstraintFactory<>(TestdataSolution.buildSolutionDescriptor());
+                new BavetConstraintFactory<>(TestdataSolution.buildSolutionDescriptor(), EnvironmentMode.REPRODUCIBLE);
         TriConstraintStream<TestdataEntity, TestdataEntity, TestdataEntity> stream1 =
                 constraintFactory.forEachUniquePair(TestdataEntity.class)
                         .join(TestdataEntity.class);

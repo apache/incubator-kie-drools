@@ -5,6 +5,7 @@ import org.optaplanner.constraint.streams.bavet.bi.BiTupleImpl;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group0Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, ResultContainerA_, ResultContainerB_>
@@ -15,8 +16,9 @@ final class Group0Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, Result
     public Group0Mapping2CollectorQuadNode(int groupStoreIndex, int undoStoreIndex,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerA_, A> collectorA,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerB_, B> collectorB,
-            TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, undoStoreIndex, null, mergeCollectors(collectorA, collectorB), nextNodesTupleLifecycle);
+            TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize, EnvironmentMode environmentMode) {
+        super(groupStoreIndex, undoStoreIndex, null, mergeCollectors(collectorA, collectorB), nextNodesTupleLifecycle,
+                environmentMode);
         this.outputStoreSize = outputStoreSize;
     }
 

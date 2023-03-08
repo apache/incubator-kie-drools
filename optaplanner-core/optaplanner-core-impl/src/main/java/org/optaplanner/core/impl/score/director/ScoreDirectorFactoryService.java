@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 /**
@@ -42,10 +43,12 @@ public interface ScoreDirectorFactoryService<Solution_, Score_ extends Score<Sco
      * @param classLoader
      * @param solutionDescriptor never null, solution descriptor provided by the solver
      * @param config never null, configuration to use for instantiating the factory
+     * @param environmentMode never null
      * @return null when this type is not configured
      * @throws IllegalStateException if the configuration has an issue
      */
     Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
-            SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config);
+            SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config,
+            EnvironmentMode environmentMode);
 
 }

@@ -45,13 +45,13 @@ final class BavetUniGroupBridgeUniConstraintStream<Solution_, A, NewA>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        ConstraintStream parentTupleSource = parent.getTupleSource();
         List<? extends ConstraintStream> groupStreamChildList = groupStream.getChildStreamList();
-        nodeConstructor.build(buildHelper, parentTupleSource, groupStream, groupStreamChildList, this, childStreamList);
+        nodeConstructor.build(buildHelper, parent.getTupleSource(), groupStream, groupStreamChildList, this, childStreamList,
+                constraintFactory.getEnvironmentMode());
     }
 
     @Override
-    public ConstraintStream getTupleSource() {
+    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
         return parent.getTupleSource();
     }
 

@@ -31,7 +31,7 @@ public enum EnvironmentMode {
      * <p>
      * This mode is horribly slow.
      */
-    FULL_ASSERT,
+    FULL_ASSERT(true),
     /**
      * This mode turns on several assertions (but not all of them)
      * to fail-fast on a bug in a {@link Move} implementation, a constraint, the engine itself or something else
@@ -43,7 +43,7 @@ public enum EnvironmentMode {
      * <p>
      * This mode is horribly slow.
      */
-    NON_INTRUSIVE_FULL_ASSERT,
+    NON_INTRUSIVE_FULL_ASSERT(true),
     /**
      * This mode turns on several assertions (but not all of them)
      * to fail-fast on a bug in a {@link Move} implementation, a constraint rule, the engine itself or something else
@@ -56,7 +56,7 @@ public enum EnvironmentMode {
      * <p>
      * This mode is slow.
      */
-    FAST_ASSERT,
+    FAST_ASSERT(true),
     /**
      * The reproducible mode is the default mode because it is recommended during development.
      * In this mode, 2 runs on the same computer will execute the same code in the same order.
@@ -70,7 +70,7 @@ public enum EnvironmentMode {
      * In practice, this mode uses the default random seed,
      * and it also disables certain concurrency optimizations (such as work stealing).
      */
-    REPRODUCIBLE,
+    REPRODUCIBLE(false),
     /**
      * The non reproducible mode is equally fast or slightly faster than {@link #REPRODUCIBLE}.
      * <p>
@@ -81,62 +81,34 @@ public enum EnvironmentMode {
      * <p>
      * In multithreaded scenarios, this mode allows the use of work stealing and other non deterministic speed tricks.
      */
-    NON_REPRODUCIBLE;
+    NON_REPRODUCIBLE(false);
+
+    private final boolean asserted;
+
+    EnvironmentMode(boolean asserted) {
+        this.asserted = asserted;
+    }
 
     public boolean isAsserted() {
-        switch (this) {
-            case FULL_ASSERT:
-            case NON_INTRUSIVE_FULL_ASSERT:
-            case FAST_ASSERT:
-                return true;
-            case REPRODUCIBLE:
-            case NON_REPRODUCIBLE:
-                return false;
-            default:
-                throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
-        }
+        return asserted;
     }
 
     public boolean isNonIntrusiveFullAsserted() {
-        switch (this) {
-            case FULL_ASSERT:
-            case NON_INTRUSIVE_FULL_ASSERT:
-                return true;
-            case FAST_ASSERT:
-            case REPRODUCIBLE:
-            case NON_REPRODUCIBLE:
-                return false;
-            default:
-                throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
+        if (!isAsserted()) {
+            return false;
         }
+        return this != FAST_ASSERT;
     }
 
     public boolean isIntrusiveFastAsserted() {
-        switch (this) {
-            case FULL_ASSERT:
-            case FAST_ASSERT:
-                return true;
-            case NON_INTRUSIVE_FULL_ASSERT:
-            case REPRODUCIBLE:
-            case NON_REPRODUCIBLE:
-                return false;
-            default:
-                throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
+        if (!isAsserted()) {
+            return false;
         }
+        return this != NON_INTRUSIVE_FULL_ASSERT;
     }
 
     public boolean isReproducible() {
-        switch (this) {
-            case FULL_ASSERT:
-            case NON_INTRUSIVE_FULL_ASSERT:
-            case FAST_ASSERT:
-            case REPRODUCIBLE:
-                return true;
-            case NON_REPRODUCIBLE:
-                return false;
-            default:
-                throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
-        }
+        return this != NON_REPRODUCIBLE;
     }
 
 }

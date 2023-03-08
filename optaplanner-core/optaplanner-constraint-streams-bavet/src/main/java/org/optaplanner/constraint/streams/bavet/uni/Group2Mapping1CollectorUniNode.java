@@ -8,6 +8,7 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.constraint.streams.bavet.tri.TriTupleImpl;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group2Mapping1CollectorUniNode<OldA, A, B, C, ResultContainer_>
@@ -17,9 +18,9 @@ final class Group2Mapping1CollectorUniNode<OldA, A, B, C, ResultContainer_>
 
     public Group2Mapping1CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
             int groupStoreIndex, int undoStoreIndex, UniConstraintCollector<OldA, ResultContainer_, C> collector,
-            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, undoStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple),
-                collector, nextNodesTupleLifecycle);
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize, EnvironmentMode environmentMode) {
+        super(groupStoreIndex, undoStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple), collector,
+                nextNodesTupleLifecycle, environmentMode);
         this.outputStoreSize = outputStoreSize;
     }
 

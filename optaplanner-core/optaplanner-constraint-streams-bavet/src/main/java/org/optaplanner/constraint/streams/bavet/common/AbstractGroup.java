@@ -2,18 +2,18 @@ package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.Objects;
 
-abstract class AbstractGroup<OutTuple_ extends Tuple, GroupKey_, ResultContainer_> {
+abstract class AbstractGroup<OutTuple_ extends Tuple, ResultContainer_> {
 
-    public final GroupKey_ groupKey;
+    public final Object groupKey;
     public final OutTuple_ outTuple;
     public int parentCount = 1;
 
-    public AbstractGroup(GroupKey_ groupKey, OutTuple_ outTuple) {
+    public AbstractGroup(Object groupKey, OutTuple_ outTuple) {
         this.groupKey = groupKey;
         this.outTuple = outTuple;
     }
 
-    public final GroupKey_ getGroupKey() {
+    public final Object getGroupKey() {
         return groupKey;
     }
 

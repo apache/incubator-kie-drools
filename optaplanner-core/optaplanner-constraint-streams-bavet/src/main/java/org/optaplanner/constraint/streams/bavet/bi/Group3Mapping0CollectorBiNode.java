@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.constraint.streams.bavet.tri.TriTupleImpl;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.util.Triple;
 
 final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
@@ -14,9 +15,9 @@ final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
 
     public Group3Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA, BiFunction<OldA, OldB, B> groupKeyMappingB,
             BiFunction<OldA, OldB, C> groupKeyMappingC, int groupStoreIndex,
-            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize, EnvironmentMode environmentMode) {
         super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, tuple),
-                nextNodesTupleLifecycle);
+                nextNodesTupleLifecycle, environmentMode);
         this.outputStoreSize = outputStoreSize;
     }
 

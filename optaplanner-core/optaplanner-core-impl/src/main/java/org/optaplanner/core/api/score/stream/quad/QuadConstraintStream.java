@@ -506,7 +506,8 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Neither tuple of the new stream {@link Objects#equals(Object, Object)} any other.
      *
      * @param groupKeyMapping never null, mapping function to convert each element in the stream to a different element
-     * @param <GroupKey_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
+     * @param <GroupKey_> the type of a fact in the destination {@link UniConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
      * @return never null
      */
     <GroupKey_> UniConstraintStream<GroupKey_> groupBy(QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping);
@@ -521,7 +522,8 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * @param groupKeyMapping never null, function to convert the fact in the original tuple to a different fact
      * @param collector never null, the collector to perform the grouping operation with
      *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
-     * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
+     * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
      * @return never null
@@ -543,7 +545,8 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param collectorC never null, the collector to perform the second grouping operation with
      *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
-     * @param <GroupKey_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKey_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
      * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <ResultB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
      * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
@@ -571,7 +574,8 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param collectorD never null, the collector to perform the third grouping operation with
      *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
-     * @param <GroupKey_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKey_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
      * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <ResultB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
@@ -596,8 +600,10 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      *
      * @param groupKeyAMapping never null, function to convert the facts in the original tuple to a new fact
      * @param groupKeyBMapping never null, function to convert the facts in the original tuple to another new fact
-     * @param <GroupKeyA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
-     * @param <GroupKeyB_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
      * @return never null
      */
     <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
@@ -615,8 +621,10 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collector never null, the collector to perform the grouping operation with
      *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
-     * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
-     * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
      * @return never null
@@ -641,8 +649,10 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param collectorD never null, the collector to perform the second grouping operation with
      *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
-     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
-     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
      * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <ResultC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
@@ -669,9 +679,12 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param groupKeyCMapping never null, function to convert the original tuple into a third fact
-     * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
-     * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
-     * @param <GroupKeyC_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
+     * @param <GroupKeyC_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
      * @return never null
      */
     <GroupKeyA_, GroupKeyB_, GroupKeyC_> TriConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_> groupBy(
@@ -690,9 +703,12 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * @param groupKeyCMapping never null, function to convert the original tuple into a third fact
      * @param collectorD never null, the collector to perform the grouping operation with
      *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
-     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
-     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
-     * @param <GroupKeyC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
+     * @param <GroupKeyC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
      * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
      * @return never null
@@ -720,10 +736,14 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param groupKeyCMapping never null, function to convert the original tuple into a third fact
      * @param groupKeyDMapping never null, function to convert the original tuple into a fourth fact
-     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
-     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
-     * @param <GroupKeyC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
-     * @param <GroupKeyD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
+     * @param <GroupKeyC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
+     * @param <GroupKeyD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple;
+     *        must honor {@link Object#hashCode() the general contract of hashCode}.
      * @return never null
      */
     <GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>

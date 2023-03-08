@@ -13,7 +13,6 @@ import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstr
 import org.optaplanner.constraint.streams.common.penta.DefaultPentaJoiner;
 import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 final class BavetIfExistsQuadConstraintStream<Solution_, A, B, C, D, E>
         extends BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> {
@@ -55,7 +54,7 @@ final class BavetIfExistsQuadConstraintStream<Solution_, A, B, C, D, E>
     }
 
     @Override
-    public ConstraintStream getTupleSource() {
+    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
         return parentABCD.getTupleSource();
     }
 

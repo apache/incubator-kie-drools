@@ -39,7 +39,8 @@ class ScoreDirectorFactoryFactoryTest {
                 .withConstraintStreamImplType(ConstraintStreamImplType.BAVET);
         AbstractConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
                 (AbstractConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) new BavetConstraintStreamScoreDirectorFactoryService<TestdataSolution, SimpleScore>()
-                        .buildScoreDirectorFactory(null, TestdataSolution.buildSolutionDescriptor(), config)
+                        .buildScoreDirectorFactory(null, TestdataSolution.buildSolutionDescriptor(), config,
+                                EnvironmentMode.REPRODUCIBLE)
                         .get();
         assertThat(scoreDirectorFactory).isInstanceOf(BavetConstraintStreamScoreDirectorFactory.class);
     }

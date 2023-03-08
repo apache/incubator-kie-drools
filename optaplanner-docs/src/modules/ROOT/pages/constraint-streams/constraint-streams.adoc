@@ -468,6 +468,16 @@ provide various aggregation functions. The following figure illustrates a simple
 
 image::constraint-streams/constraintStreamGroupBy.png[align="center"]
 
+[NOTE]
+====
+Objects used as group key must obey the https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()[general contract of `hashCode`].
+Most importantly, "whenever it is invoked on the same object more than once during an execution of a Java application, the `hashCode` method must consistently return the same integer."
+
+For this reason, it is not recommended to use mutable objects (especially mutable collections) as group keys.
+If planning entities are used as group keys, their hashCode must not be computed off of planning variables.
+Failure to follow this recommendation may result in runtime exceptions being thrown.
+====
+
 For example, the following code snippet first groups all processes by the computer they run on, sums up all the power
 required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector, and finally penalizes
 every computer whose processes consume more power than is available.
@@ -497,6 +507,7 @@ In the previous example, `filter()` and all subsequent operations no longer have
 
 There are several collectors available out of the box. You can also provide your own collectors by implementing the
 `org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` and `Quad...` counterparts.
+
 
 [[collectorsOutOfTheBox]]
 ==== Out-of-the-box collectors

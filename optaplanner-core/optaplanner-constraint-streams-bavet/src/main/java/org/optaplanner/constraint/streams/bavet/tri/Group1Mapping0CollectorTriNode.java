@@ -4,6 +4,7 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 
 final class Group1Mapping0CollectorTriNode<OldA, OldB, OldC, A>
         extends AbstractGroupTriNode<OldA, OldB, OldC, UniTuple<A>, UniTupleImpl<A>, A, Void, Void> {
@@ -11,8 +12,8 @@ final class Group1Mapping0CollectorTriNode<OldA, OldB, OldC, A>
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMapping, int groupStoreIndex,
-            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), nextNodesTupleLifecycle);
+            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize, EnvironmentMode environmentMode) {
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), nextNodesTupleLifecycle, environmentMode);
         this.outputStoreSize = outputStoreSize;
     }
 

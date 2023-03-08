@@ -7,6 +7,7 @@ import org.optaplanner.constraint.streams.bavet.bi.BiTupleImpl;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 
 final class Group1Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, ResultContainer_>
         extends AbstractGroupTriNode<OldA, OldB, OldC, BiTuple<A, B>, BiTupleImpl<A, B>, A, ResultContainer_, B> {
@@ -15,9 +16,9 @@ final class Group1Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, ResultContain
 
     public Group1Mapping1CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMapping, int groupStoreIndex,
             int undoStoreIndex, TriConstraintCollector<OldA, OldB, OldC, ResultContainer_, B> collector,
-            TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
+            TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize, EnvironmentMode environmentMode) {
         super(groupStoreIndex, undoStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), collector,
-                nextNodesTupleLifecycle);
+                nextNodesTupleLifecycle, environmentMode);
         this.outputStoreSize = outputStoreSize;
     }
 

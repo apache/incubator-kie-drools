@@ -5,6 +5,7 @@ import static org.optaplanner.constraint.streams.bavet.quad.Group3Mapping0Collec
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.util.Triple;
 
 final class Group3Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, ResultContainer_>
@@ -17,10 +18,11 @@ final class Group3Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, 
             QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB, QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC,
             int groupStoreIndex, int undoStoreIndex,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, D> collector,
-            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
+            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize,
+            EnvironmentMode environmentMode) {
         super(groupStoreIndex, undoStoreIndex,
                 tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, tuple), collector,
-                nextNodesTupleLifecycle);
+                nextNodesTupleLifecycle, environmentMode);
         this.outputStoreSize = outputStoreSize;
     }
 

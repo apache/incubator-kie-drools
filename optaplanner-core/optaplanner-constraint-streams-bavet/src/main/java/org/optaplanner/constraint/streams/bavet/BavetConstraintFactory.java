@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.bavet;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
@@ -10,6 +11,7 @@ import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStr
 import org.optaplanner.constraint.streams.common.InnerConstraintFactory;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
@@ -17,13 +19,15 @@ public final class BavetConstraintFactory<Solution_>
         extends InnerConstraintFactory<Solution_, BavetConstraint<Solution_>> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
+    private final EnvironmentMode environmentMode;
     private final String defaultConstraintPackage;
 
     private final Map<BavetAbstractConstraintStream<Solution_>, BavetAbstractConstraintStream<Solution_>> sharingStreamMap =
             new HashMap<>(256);
 
-    public BavetConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
+    public BavetConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor, EnvironmentMode environmentMode) {
         this.solutionDescriptor = solutionDescriptor;
+        this.environmentMode = Objects.requireNonNull(environmentMode);
         ConstraintConfigurationDescriptor<Solution_> configurationDescriptor = solutionDescriptor
                 .getConstraintConfigurationDescriptor();
         if (configurationDescriptor == null) {
@@ -84,6 +88,10 @@ public final class BavetConstraintFactory<Solution_>
     @Override
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
+    }
+
+    public EnvironmentMode getEnvironmentMode() {
+        return environmentMode;
     }
 
     @Override

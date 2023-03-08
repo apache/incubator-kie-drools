@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
@@ -21,7 +22,8 @@ public final class EasyScoreDirectorFactoryService<Solution_, Score_ extends Sco
 
     @Override
     public Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
-            SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config) {
+            SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config,
+            EnvironmentMode environmentMode) {
         if (config.getEasyScoreCalculatorClass() != null) {
             if (!EasyScoreCalculator.class.isAssignableFrom(config.getEasyScoreCalculatorClass())) {
                 throw new IllegalArgumentException(

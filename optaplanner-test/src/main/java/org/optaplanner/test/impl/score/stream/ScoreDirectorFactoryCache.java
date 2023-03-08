@@ -17,6 +17,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
 import org.optaplanner.core.impl.score.director.ScoreDirectorType;
@@ -75,15 +76,15 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
      */
     public AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory(
             BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction,
-            ConstraintProvider_ constraintProvider) {
+            ConstraintProvider_ constraintProvider, EnvironmentMode environmentMode) {
         var scoreDirectorFactoryService = getScoreDirectorFactoryService();
         var constraint = constraintFunction.apply(constraintProvider,
-                scoreDirectorFactoryService.buildConstraintFactory(solutionDescriptor));
+                scoreDirectorFactoryService.buildConstraintFactory(solutionDescriptor, environmentMode));
         var constraintId = constraint.getConstraintId();
         return getScoreDirectorFactory(constraintId,
                 constraintFactory -> new Constraint[] {
                         constraint
-                });
+                }, environmentMode);
     }
 
     /**
@@ -95,9 +96,9 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
      * @return never null
      */
     public AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory(String key,
-            ConstraintProvider constraintProvider) {
+            ConstraintProvider constraintProvider, EnvironmentMode environmentMode) {
         return scoreDirectorFactoryMap.computeIfAbsent(key,
-                k -> createScoreDirectorFactory(getScoreDirectorFactoryService(), constraintProvider));
+                k -> createScoreDirectorFactory(getScoreDirectorFactoryService(), constraintProvider, environmentMode));
     }
 
     private boolean determineDroolsAlphaNetworkCompilationEnabled(
@@ -113,9 +114,9 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
 
     private AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> createScoreDirectorFactory(
             AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> scoreDirectorFactoryService,
-            ConstraintProvider constraintProvider) {
+            ConstraintProvider constraintProvider, EnvironmentMode environmentMode) {
         return scoreDirectorFactoryService.buildScoreDirectorFactory(solutionDescriptor, constraintProvider,
-                determineDroolsAlphaNetworkCompilationEnabled(scoreDirectorFactoryService));
+                environmentMode, determineDroolsAlphaNetworkCompilationEnabled(scoreDirectorFactoryService));
     }
 
 }

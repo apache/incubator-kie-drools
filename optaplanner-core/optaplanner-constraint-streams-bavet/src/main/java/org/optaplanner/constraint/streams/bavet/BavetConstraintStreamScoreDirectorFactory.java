@@ -8,6 +8,7 @@ import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
@@ -17,9 +18,9 @@ public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ e
     private final List<BavetConstraint<Solution_>> constraintList;
 
     public BavetConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            ConstraintProvider constraintProvider) {
+            ConstraintProvider constraintProvider, EnvironmentMode environmentMode) {
         super(solutionDescriptor);
-        BavetConstraintFactory<Solution_> constraintFactory = new BavetConstraintFactory<>(solutionDescriptor);
+        BavetConstraintFactory<Solution_> constraintFactory = new BavetConstraintFactory<>(solutionDescriptor, environmentMode);
         constraintList = constraintFactory.buildConstraints(constraintProvider);
         constraintSessionFactory = new BavetConstraintSessionFactory<>(solutionDescriptor, constraintList);
     }

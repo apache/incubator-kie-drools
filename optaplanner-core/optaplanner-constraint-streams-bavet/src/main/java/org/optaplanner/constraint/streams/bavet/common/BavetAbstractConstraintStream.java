@@ -12,7 +12,6 @@ import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
@@ -56,7 +55,9 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
 
     public abstract void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet);
 
-    public abstract ConstraintStream getTupleSource();
+    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
+        return this;
+    }
 
     public abstract <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper);
 

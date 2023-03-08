@@ -8,7 +8,6 @@ import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintSt
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetFilterQuadConstraintStream<Solution_, A, B, C, D>
         extends BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> {
@@ -43,7 +42,7 @@ public final class BavetFilterQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    public ConstraintStream getTupleSource() {
+    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
         return parent.getTupleSource();
     }
 

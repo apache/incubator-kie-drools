@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 
 final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
         extends AbstractGroupBiNode<OldA, OldB, UniTuple<A>, UniTupleImpl<A>, A, Void, Void> {
@@ -12,8 +13,8 @@ final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
-            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), nextNodesTupleLifecycle);
+            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize, EnvironmentMode environmentMode) {
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), nextNodesTupleLifecycle, environmentMode);
         this.outputStoreSize = outputStoreSize;
     }
 

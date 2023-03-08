@@ -8,7 +8,6 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractFlattenLastNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetFlattenLastBridgeBiConstraintStream<Solution_, A, B, NewB>
         extends BavetAbstractBiConstraintStream<Solution_, A, B> {
@@ -45,7 +44,7 @@ public final class BavetFlattenLastBridgeBiConstraintStream<Solution_, A, B, New
     }
 
     @Override
-    public ConstraintStream getTupleSource() {
+    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
         return parent.getTupleSource();
     }
 

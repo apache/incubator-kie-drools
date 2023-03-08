@@ -17,7 +17,6 @@ import org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.constraint.streams.common.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetScoringUniConstraintStream<Solution_, A>
         extends BavetAbstractUniConstraintStream<Solution_, A>
@@ -90,7 +89,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
     }
 
     @Override
-    public ConstraintStream getTupleSource() {
+    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
         return parent.getTupleSource();
     }
 

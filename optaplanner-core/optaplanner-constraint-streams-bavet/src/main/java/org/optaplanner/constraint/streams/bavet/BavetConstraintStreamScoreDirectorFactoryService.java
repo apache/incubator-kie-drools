@@ -11,6 +11,7 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
@@ -31,7 +32,8 @@ public final class BavetConstraintStreamScoreDirectorFactoryService<Solution_, S
 
     @Override
     public Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
-            SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config) {
+            SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config,
+            EnvironmentMode environmentMode) {
         ConstraintStreamImplType constraintStreamImplType_ = config.getConstraintStreamImplType();
         if (constraintStreamImplType_ == DROOLS) {
             return null;
@@ -47,7 +49,7 @@ public final class BavetConstraintStreamScoreDirectorFactoryService<Solution_, S
                         "constraintProviderClass", config.getConstraintProviderClass());
                 ConfigUtils.applyCustomProperties(constraintProvider, "constraintProviderClass",
                         config.getConstraintProviderCustomProperties(), "constraintProviderCustomProperties");
-                return buildScoreDirectorFactory(solutionDescriptor, constraintProvider, false);
+                return buildScoreDirectorFactory(solutionDescriptor, constraintProvider, environmentMode, false);
             };
         } else {
             if (config.getConstraintProviderCustomProperties() != null) {
@@ -67,16 +69,17 @@ public final class BavetConstraintStreamScoreDirectorFactoryService<Solution_, S
     @Override
     public AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(
             SolutionDescriptor<Solution_> solutionDescriptor, ConstraintProvider constraintProvider,
-            boolean droolsAlphaNetworkCompilationEnabled) {
+            EnvironmentMode environmentMode, boolean droolsAlphaNetworkCompilationEnabled) {
         if (droolsAlphaNetworkCompilationEnabled) {
             throw new IllegalStateException("With Constraint Streams " + ConstraintStreamImplType.BAVET +
                     ", there can be no droolsAlphaNetworkCompilationEnabled (" + droolsAlphaNetworkCompilationEnabled + ").");
         }
-        return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
+        return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider, environmentMode);
     }
 
     @Override
-    public ConstraintFactory buildConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
-        return new BavetConstraintFactory<>(solutionDescriptor);
+    public ConstraintFactory buildConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            EnvironmentMode environmentMode) {
+        return new BavetConstraintFactory<>(solutionDescriptor, environmentMode);
     }
 }

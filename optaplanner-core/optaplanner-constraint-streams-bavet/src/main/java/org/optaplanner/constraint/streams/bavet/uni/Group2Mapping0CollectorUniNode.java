@@ -5,6 +5,7 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.bi.BiTupleImpl;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group2Mapping0CollectorUniNode<OldA, A, B>
@@ -13,8 +14,10 @@ final class Group2Mapping0CollectorUniNode<OldA, A, B>
     private final int outputStoreSize;
 
     public Group2Mapping0CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
-            int groupStoreIndex, TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple), nextNodesTupleLifecycle);
+            int groupStoreIndex, TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize,
+            EnvironmentMode environmentMode) {
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple), nextNodesTupleLifecycle,
+                environmentMode);
         this.outputStoreSize = outputStoreSize;
     }
 

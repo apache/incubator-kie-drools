@@ -37,7 +37,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
     public InnerScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(ClassLoader classLoader,
             EnvironmentMode environmentMode, SolutionDescriptor<Solution_> solutionDescriptor) {
         AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
-                decideMultipleScoreDirectorFactories(classLoader, solutionDescriptor);
+                decideMultipleScoreDirectorFactories(classLoader, solutionDescriptor, environmentMode);
         if (config.getAssertionScoreDirectorFactory() != null) {
             if (config.getAssertionScoreDirectorFactory().getAssertionScoreDirectorFactory() != null) {
                 throw new IllegalArgumentException("A assertionScoreDirectorFactory ("
@@ -65,7 +65,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
     }
 
     protected AbstractScoreDirectorFactory<Solution_, Score_> decideMultipleScoreDirectorFactories(
-            ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor) {
+            ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor, EnvironmentMode environmentMode) {
         // Load all known Score Director Factories via SPI.
         ServiceLoader<ScoreDirectorFactoryService> scoreDirectorFactoryServiceLoader =
                 ServiceLoader.load(ScoreDirectorFactoryService.class);
@@ -74,7 +74,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         boolean isBavet = false;
         for (ScoreDirectorFactoryService<Solution_, Score_> service : scoreDirectorFactoryServiceLoader) {
             Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> factory =
-                    service.buildScoreDirectorFactory(classLoader, solutionDescriptor, config);
+                    service.buildScoreDirectorFactory(classLoader, solutionDescriptor, config, environmentMode);
             if (service.getSupportedScoreDirectorType() == CONSTRAINT_STREAMS) {
                 /*
                  * CS-D will be available if on the classpath and user did not request BAVET.

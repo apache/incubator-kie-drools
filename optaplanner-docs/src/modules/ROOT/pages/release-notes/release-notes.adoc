@@ -9,4 +9,4 @@ We even provide a https://www.optaplanner.org/download/upgradeRecipe/upgradeReci
 
 For release notes on OptaPlanner 7.x and older, please visit https://www.optaplanner.org/download/releaseNotes/[Release Notes on optaplanner.org].
 
-include::release-notes/release-notes-8.adoc[]
+include::release-notes-8.adoc[]

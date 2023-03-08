@@ -7,6 +7,7 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 
 abstract class AbstractGroupTriNode<OldA, OldB, OldC, OutTuple_ extends Tuple, MutableOutTuple_ extends OutTuple_, GroupKey_, ResultContainer_, Result_>
         extends
@@ -17,17 +18,17 @@ abstract class AbstractGroupTriNode<OldA, OldB, OldC, OutTuple_ extends Tuple, M
     protected AbstractGroupTriNode(int groupStoreIndex, int undoStoreIndex,
             Function<TriTuple<OldA, OldB, OldC>, GroupKey_> groupKeyFunction,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainer_, Result_> collector,
-            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, EnvironmentMode environmentMode) {
         super(groupStoreIndex, undoStoreIndex, groupKeyFunction,
                 collector == null ? null : collector.supplier(),
                 collector == null ? null : collector.finisher(),
-                nextNodesTupleLifecycle);
+                nextNodesTupleLifecycle, environmentMode);
         accumulator = collector == null ? null : collector.accumulator();
     }
 
     protected AbstractGroupTriNode(int groupStoreIndex, Function<TriTuple<OldA, OldB, OldC>, GroupKey_> groupKeyFunction,
-            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
-        super(groupStoreIndex, groupKeyFunction, nextNodesTupleLifecycle);
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, EnvironmentMode environmentMode) {
+        super(groupStoreIndex, groupKeyFunction, nextNodesTupleLifecycle, environmentMode);
         accumulator = null;
     }
 

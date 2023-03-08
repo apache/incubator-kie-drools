@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -18,7 +19,7 @@ class DrlScoreDirectorFactoryServiceTest {
         Supplier<AbstractScoreDirectorFactory<TestdataSolution, SimpleScore>> supplier =
                 new DrlScoreDirectorFactoryService<TestdataSolution, SimpleScore>()
                         .buildScoreDirectorFactory(getClass().getClassLoader(),
-                                TestdataSolution.buildSolutionDescriptor(), config);
+                                TestdataSolution.buildSolutionDescriptor(), config, EnvironmentMode.REPRODUCIBLE);
         if (supplier == null) {
             return null;
         }

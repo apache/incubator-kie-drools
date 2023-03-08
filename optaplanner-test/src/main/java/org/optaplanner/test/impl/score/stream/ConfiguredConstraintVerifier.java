@@ -11,6 +11,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 /**
@@ -67,14 +68,16 @@ final class ConfiguredConstraintVerifier<ConstraintProvider_ extends ConstraintP
             BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
         requireNonNull(constraintFunction);
         AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
-                scoreDirectorFactoryContainerThreadLocal.get().getScoreDirectorFactory(constraintFunction, constraintProvider);
+                scoreDirectorFactoryContainerThreadLocal.get().getScoreDirectorFactory(constraintFunction, constraintProvider,
+                        EnvironmentMode.FULL_ASSERT);
         return new DefaultSingleConstraintVerification<>(scoreDirectorFactory);
     }
 
     public DefaultMultiConstraintVerification<Solution_, Score_> verifyThat() {
         AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
                 scoreDirectorFactoryContainerThreadLocal.get()
-                        .getScoreDirectorFactory(defaultScoreDirectorFactoryMapKey, constraintProvider);
+                        .getScoreDirectorFactory(defaultScoreDirectorFactoryMapKey, constraintProvider,
+                                EnvironmentMode.FULL_ASSERT);
         return new DefaultMultiConstraintVerification<>(scoreDirectorFactory, constraintProvider);
     }
 

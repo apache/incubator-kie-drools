@@ -12,6 +12,7 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
@@ -27,7 +28,8 @@ public final class DroolsConstraintStreamScoreDirectorFactoryService<Solution_, 
 
     @Override
     public Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
-            SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config) {
+            SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config,
+            EnvironmentMode environmentMode) {
         ConstraintStreamImplType constraintStreamImplType_ =
                 Objects.requireNonNullElse(config.getConstraintStreamImplType(), ConstraintStreamImplType.DROOLS);
         if (constraintStreamImplType_ == BAVET) {
@@ -51,7 +53,8 @@ public final class DroolsConstraintStreamScoreDirectorFactoryService<Solution_, 
                             (KieBaseDescriptor<Solution_>) config.getGizmoKieBaseSupplier(),
                             isDroolsAlphaNetworkEnabled);
                 }
-                return buildScoreDirectorFactory(solutionDescriptor, constraintProvider, isDroolsAlphaNetworkEnabled);
+                return buildScoreDirectorFactory(solutionDescriptor, constraintProvider, environmentMode,
+                        isDroolsAlphaNetworkEnabled);
             };
         } else {
             if (config.getConstraintProviderCustomProperties() != null) {
@@ -70,14 +73,15 @@ public final class DroolsConstraintStreamScoreDirectorFactoryService<Solution_, 
 
     @Override
     public AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(
-            SolutionDescriptor<Solution_> solutionDescriptor,
-            ConstraintProvider constraintProvider, boolean droolsAlphaNetworkCompilationEnabled) {
+            SolutionDescriptor<Solution_> solutionDescriptor, ConstraintProvider constraintProvider,
+            EnvironmentMode environmentMode, boolean droolsAlphaNetworkCompilationEnabled) {
         return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
                 droolsAlphaNetworkCompilationEnabled);
     }
 
     @Override
-    public ConstraintFactory buildConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
+    public ConstraintFactory buildConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            EnvironmentMode environmentMode) {
         return new DroolsConstraintFactory<>(solutionDescriptor);
     }
 

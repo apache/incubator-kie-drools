@@ -17,7 +17,6 @@ import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraint
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         extends BavetAbstractTriConstraintStream<Solution_, A, B, C>
@@ -54,11 +53,6 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         leftParent.collectActiveConstraintStreams(constraintStreamSet);
         rightParent.collectActiveConstraintStreams(constraintStreamSet);
         constraintStreamSet.add(this);
-    }
-
-    @Override
-    public ConstraintStream getTupleSource() {
-        return this;
     }
 
     @Override

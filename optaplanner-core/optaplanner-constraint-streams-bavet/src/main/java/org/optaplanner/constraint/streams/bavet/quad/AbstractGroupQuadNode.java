@@ -7,6 +7,7 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 
 abstract class AbstractGroupQuadNode<OldA, OldB, OldC, OldD, OutTuple_ extends Tuple, MutableOutTuple_ extends OutTuple_, GroupKey_, ResultContainer_, Result_>
         extends
@@ -17,18 +18,18 @@ abstract class AbstractGroupQuadNode<OldA, OldB, OldC, OldD, OutTuple_ extends T
     protected AbstractGroupQuadNode(int groupStoreIndex, int undoStoreIndex,
             Function<QuadTuple<OldA, OldB, OldC, OldD>, GroupKey_> groupKeyFunction,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, Result_> collector,
-            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, EnvironmentMode environmentMode) {
         super(groupStoreIndex, undoStoreIndex, groupKeyFunction,
                 collector == null ? null : collector.supplier(),
                 collector == null ? null : collector.finisher(),
-                nextNodesTupleLifecycle);
+                nextNodesTupleLifecycle, environmentMode);
         accumulator = collector == null ? null : collector.accumulator();
     }
 
     protected AbstractGroupQuadNode(int groupStoreIndex,
             Function<QuadTuple<OldA, OldB, OldC, OldD>, GroupKey_> groupKeyFunction,
-            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
-        super(groupStoreIndex, groupKeyFunction, nextNodesTupleLifecycle);
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, EnvironmentMode environmentMode) {
+        super(groupStoreIndex, groupKeyFunction, nextNodesTupleLifecycle, environmentMode);
         accumulator = null;
     }
 

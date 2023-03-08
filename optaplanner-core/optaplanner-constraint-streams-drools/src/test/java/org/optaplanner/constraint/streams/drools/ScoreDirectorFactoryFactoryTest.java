@@ -9,6 +9,7 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
@@ -22,7 +23,8 @@ class ScoreDirectorFactoryFactoryTest {
                 .withDroolsAlphaNetworkCompilationEnabled(true);
         InnerScoreDirectorFactory<TestdataSolution, SimpleScore> uncastScoreDirectorFactory =
                 new DroolsConstraintStreamScoreDirectorFactoryService<TestdataSolution, SimpleScore>()
-                        .buildScoreDirectorFactory(null, TestdataSolution.buildSolutionDescriptor(), config)
+                        .buildScoreDirectorFactory(null, TestdataSolution.buildSolutionDescriptor(), config,
+                                EnvironmentMode.REPRODUCIBLE)
                         .get();
         assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
         DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
@@ -38,7 +40,8 @@ class ScoreDirectorFactoryFactoryTest {
                 .withDroolsAlphaNetworkCompilationEnabled(false);
         InnerScoreDirectorFactory<TestdataSolution, SimpleScore> uncastScoreDirectorFactory =
                 new DroolsConstraintStreamScoreDirectorFactoryService<TestdataSolution, SimpleScore>()
-                        .buildScoreDirectorFactory(null, TestdataSolution.buildSolutionDescriptor(), config)
+                        .buildScoreDirectorFactory(null, TestdataSolution.buildSolutionDescriptor(), config,
+                                EnvironmentMode.REPRODUCIBLE)
                         .get();
         assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
         DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =

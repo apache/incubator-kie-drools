@@ -8,7 +8,6 @@ import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetForEachUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 
@@ -35,11 +34,6 @@ public final class BavetForEachUniConstraintStream<Solution_, A> extends BavetAb
     @Override
     public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
         constraintStreamSet.add(this);
-    }
-
-    @Override
-    public ConstraintStream getTupleSource() {
-        return this;
     }
 
     @Override

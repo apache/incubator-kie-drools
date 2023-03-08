@@ -4,6 +4,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
 
@@ -14,8 +15,9 @@ public abstract class AbstractConstraintStreamScoreDirectorFactoryService<Soluti
 
     public abstract AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(
             SolutionDescriptor<Solution_> solutionDescriptor, ConstraintProvider constraintProvider,
-            boolean droolsAlphaNetworkCompilationEnabled);
+            EnvironmentMode environmentMode, boolean droolsAlphaNetworkCompilationEnabled);
 
-    public abstract ConstraintFactory buildConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor);
+    public abstract ConstraintFactory buildConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            EnvironmentMode environmentMode);
 
 }
