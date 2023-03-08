@@ -21,10 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -445,7 +445,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
 
             ksession.fireAllRules();
 
-            Assertions.assertThat(list).containsExactly(holder1); // If we do String comparison, cheese10 is also contained
+            assertThat(list).containsExactly(holder1); // If we do String comparison, cheese10 is also contained
         } finally {
             ksession.dispose();
         }
@@ -487,7 +487,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
 
             ksession.fireAllRules();
 
-            Assertions.assertThat(list).containsExactly(holder1); // If we do String comparison, cheese10 is also contained
+            assertThat(list).containsExactly(holder1); // If we do String comparison, cheese10 is also contained
         } finally {
             ksession.dispose();
         }

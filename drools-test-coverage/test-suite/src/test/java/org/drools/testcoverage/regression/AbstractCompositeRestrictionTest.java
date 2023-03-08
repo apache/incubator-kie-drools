@@ -19,7 +19,6 @@ package org.drools.testcoverage.regression;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -29,6 +28,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Bugfix test for bz#724655 'NPE in AbstractCompositionRestriction when using
@@ -58,6 +59,6 @@ public class AbstractCompositeRestrictionTest {
 
         final String[] lines = msgs.get(0).getText().split("\n");
         final String unable = "Unable to Analyse Expression valueType == Field.INT || valueType == Field.DOUBLE:";
-        Assertions.assertThat(lines[0]).isEqualTo(unable);
+        assertThat(lines[0]).isEqualTo(unable);
     }
 }

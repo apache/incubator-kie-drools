@@ -18,15 +18,15 @@ package org.drools.modelcompiler.builder.generator.drlxparse;
 import java.util.Map;
 
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import org.assertj.core.api.Assertions;
 import org.drools.core.util.MethodUtils;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CoercedExpressionTest {
 
@@ -218,7 +218,7 @@ public class CoercedExpressionTest {
     public void testStringToBooleanRandomStringError() {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".getBooleanValue", Boolean.class);
         final TypedExpression right = expr("\"randomString\"", String.class);
-        Assertions.assertThatThrownBy(() -> new CoercedExpression(left, right, false).coerce())
+        assertThatThrownBy(() -> new CoercedExpression(left, right, false).coerce())
                 .isInstanceOf(CoercedExpression.CoercedExpressionException.class);
     }
 
@@ -226,7 +226,7 @@ public class CoercedExpressionTest {
     public void testIntegerToBooleanError() {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".getBooleanValue", Boolean.class);
         final TypedExpression right = expr("1", Integer.class);
-        Assertions.assertThatThrownBy(() -> new CoercedExpression(left, right, false).coerce())
+        assertThatThrownBy(() -> new CoercedExpression(left, right, false).coerce())
                 .isInstanceOf(CoercedExpression.CoercedExpressionException.class);
     }
 

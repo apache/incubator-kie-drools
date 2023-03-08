@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Percentage;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,6 +31,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
@@ -111,48 +111,48 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
 
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-        Assertions.assertThat((double) pmml4Result.getResultVariables().get(TARGET_FIELD)).isCloseTo(expectedResult,
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+        assertThat((double) pmml4Result.getResultVariables().get(TARGET_FIELD)).isCloseTo(expectedResult,
                                                                                                      TOLERANCE_PERCENTAGE);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NUMBER_OF_CLAIMS)).isNotNull();
-        Assertions.assertThat((double) pmml4Result.getResultVariables().get(OUT_NUMBER_OF_CLAIMS)).isCloseTo(expectedResult, TOLERANCE_PERCENTAGE);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_CAR_LOCATION_REFERRED)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_CAR_LOCATION_REFERRED)).isEqualTo(car_location);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_SALARY)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_SALARY)).isEqualTo(salary);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_AGE)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_AGE)).isEqualTo(age);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_SALARY)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_SALARY)).isEqualTo(salary);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CAR_LOCATION)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CAR_LOCATION)).isEqualTo(car_location);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CAR_LOCATION_REFERRAL)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CAR_LOCATION_REFERRAL)).isEqualTo(car_location);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isEqualTo(CONSTANT);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_FIELDREF)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_FIELDREF)).isEqualTo(DOUBLE_CONSTANT);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_CONSTANT)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_CONSTANT)).isEqualTo(FUN_SALARY_CONSTANT);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_APPLY)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_APPLY)).isEqualTo(FUN_SALARY_CONSTANT);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_APPLY_FUN_SALARY_FIELDREF)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_APPLY_FUN_SALARY_FIELDREF)).isEqualTo(STRING_CONSTANT);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_NUMBER_OF_CLAIMS)).isNotNull();
+        assertThat((double) pmml4Result.getResultVariables().get(OUT_NUMBER_OF_CLAIMS)).isCloseTo(expectedResult, TOLERANCE_PERCENTAGE);
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_CAR_LOCATION_REFERRED)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_CAR_LOCATION_REFERRED)).isEqualTo(car_location);
+        assertThat(pmml4Result.getResultVariables().get(OUT_SALARY)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_SALARY)).isEqualTo(salary);
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_AGE)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_AGE)).isEqualTo(age);
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_SALARY)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_SALARY)).isEqualTo(salary);
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_CAR_LOCATION)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_CAR_LOCATION)).isEqualTo(car_location);
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_CAR_LOCATION_REFERRAL)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_CAR_LOCATION_REFERRAL)).isEqualTo(car_location);
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isEqualTo(CONSTANT);
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_FIELDREF)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_FIELDREF)).isEqualTo(DOUBLE_CONSTANT);
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_CONSTANT)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_CONSTANT)).isEqualTo(FUN_SALARY_CONSTANT);
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_APPLY)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_APPLY)).isEqualTo(FUN_SALARY_CONSTANT);
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_APPLY_FUN_SALARY_FIELDREF)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_APPLY_FUN_SALARY_FIELDREF)).isEqualTo(STRING_CONSTANT);
+        assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isNotNull();
         if (car_location.equals("carpark")) {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(1.0);
+            assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(1.0);
         } else {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(0.0);
+            assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(0.0);
         }
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
         if (age > 4.2 && age < 30.5) {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
+            assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
         } else if (age >= 114 && age < 250) {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
+            assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
         } else {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
+            assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
         }
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
         String expected;
         switch (car_location) {
             case "carpark":
@@ -164,9 +164,9 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
             default:
                 throw new Exception("Unexpected car_location " + car_location);
         }
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
+        assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
+        assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
     }
 
     @Test(expected = KiePMMLException.class)

@@ -19,7 +19,6 @@ package org.drools.testcoverage.functional;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.listener.OrderListener;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -33,6 +32,8 @@ import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 
@@ -55,10 +56,10 @@ public class DeclarativeAgendaTest {
         final FactHandle fireRules = ksession.insert("fireRules");
         final FactHandle fireBlockerRule = ksession.insert("fireBlockerRule");
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(2);
+        assertThat(listener.size()).isEqualTo(2);
         final String[] expected = { "blocker", "sales2" };
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
+            assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
 
         // second run - add blocker rule
@@ -66,7 +67,7 @@ public class DeclarativeAgendaTest {
         listener = new OrderListener();
         ksession.addEventListener(listener);
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(0);
+        assertThat(listener.size()).isEqualTo(0);
 
         // third run
         ksession.removeEventListener(listener);
@@ -74,10 +75,10 @@ public class DeclarativeAgendaTest {
         ksession.addEventListener(listener);
         ksession.delete(fireBlockerRule);
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(1);
+        assertThat(listener.size()).isEqualTo(1);
         final String[] expected3 = { "sales1" };
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected3[i]);
+            assertThat(listener.get(i)).isEqualTo(expected3[i]);
         }
 
         // fourth run
@@ -85,7 +86,7 @@ public class DeclarativeAgendaTest {
         listener = new OrderListener();
         ksession.addEventListener(listener);
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(0);
+        assertThat(listener.size()).isEqualTo(0);
 
         // fifth run
         ksession.removeEventListener(listener);
@@ -93,10 +94,10 @@ public class DeclarativeAgendaTest {
         ksession.addEventListener(listener);
         ksession.update(fireRules, "fireRules");
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(2);
+        assertThat(listener.size()).isEqualTo(2);
         final String[] expected5 = { "sales1", "sales2" };
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected5[i]);
+            assertThat(listener.get(i)).isEqualTo(expected5[i]);
         }
 
         ksession.dispose();
@@ -117,10 +118,10 @@ public class DeclarativeAgendaTest {
         ksession.insert("fireRules");
         final FactHandle fireBlockerRule = ksession.insert("fireBlockerRule");
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(6);
+        assertThat(listener.size()).isEqualTo(6);
         final String[] expected = { "startAgenda", "catering1", "sales1", "salesBlocker", "catering2", "salesBlocker" };
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
+            assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
 
         // second run
@@ -130,11 +131,11 @@ public class DeclarativeAgendaTest {
         ksession.addEventListener(listener);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.size()).isEqualTo(1); // BZ 1038076
+        assertThat(listener.size()).isEqualTo(1); // BZ 1038076
 
         final String[] expected2 = { "sales2" };
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected2[i]);
+            assertThat(listener.get(i)).isEqualTo(expected2[i]);
         }
 
         ksession.dispose();
@@ -152,17 +153,17 @@ public class DeclarativeAgendaTest {
         // first run
         final FactHandle go1 = ksession.insert("go1");
         ksession.fireAllRules();
-        Assertions.assertThat(list.size()).isEqualTo(3);
+        assertThat(list.size()).isEqualTo(3);
 
         // second run
         list.clear();
         ksession.delete(go1);
         ksession.fireAllRules();
-        Assertions.assertThat(list).isEmpty();
+        assertThat(list).isEmpty();
         ksession.insert("go1");
         ksession.insert("go2");
         ksession.fireAllRules();
-        Assertions.assertThat(list.size()).isEqualTo(2);
+        assertThat(list.size()).isEqualTo(2);
 
         ksession.dispose();
     }
@@ -180,20 +181,20 @@ public class DeclarativeAgendaTest {
         ksession.insert("fireRules");
         ksession.insert("fireBlockerRule");
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(2);
+        assertThat(listener.size()).isEqualTo(2);
         final String[] expected = { "salesBlocker", "salesBlocker" };
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
+            assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
 
         // second run
         ksession.insert("fireUnblockerRule");
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(8);
+        assertThat(listener.size()).isEqualTo(8);
         final String[] expected2 = { "salesBlocker", "salesBlocker", "salesUnblocker", "sales1", "salesBlocker",
                 "salesUnblocker", "sales2", "salesBlocker" };
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected2[i]);
+            assertThat(listener.get(i)).isEqualTo(expected2[i]);
         }
 
         ksession.dispose();
@@ -212,10 +213,10 @@ public class DeclarativeAgendaTest {
         ksession.insert("fireRules");
         ksession.insert("fireCancelRule");
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(2);
+        assertThat(listener.size()).isEqualTo(2);
         final String[] expected = { "salesCancel", "sales2" };
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
+            assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
 
         ksession.dispose();
@@ -240,10 +241,10 @@ public class DeclarativeAgendaTest {
         final FactHandle fireCancelRule = ksession.insert("fireCancelRule");
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.size()).isEqualTo(2);
+        assertThat(listener.size()).isEqualTo(2);
         final String[] expected = { "salesCancel", "sales2" };
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
+            assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
 
         // second run
@@ -255,10 +256,10 @@ public class DeclarativeAgendaTest {
         ksession.update(fireRules, "fireRules");
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.size()).isEqualTo(2);
+        assertThat(listener.size()).isEqualTo(2);
         final String[] expected2 = { "salesCancel", "sales2" };
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected2[i]);
+            assertThat(listener.get(i)).isEqualTo(expected2[i]);
         }
 
         ksession.dispose();

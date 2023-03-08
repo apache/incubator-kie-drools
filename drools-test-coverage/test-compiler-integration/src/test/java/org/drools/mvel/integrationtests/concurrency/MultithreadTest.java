@@ -30,7 +30,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.mvel.compiler.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -54,6 +53,9 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * This is a test case for multi-thred issues
@@ -168,8 +170,8 @@ public class MultithreadTest {
                     e.printStackTrace();
                 }
 
-                Assertions.assertThat(errors).isEmpty();
-                Assertions.assertThat(success).isTrue();
+                assertThat(errors).isEmpty();
+                assertThat(success).isTrue();
 
                 ksession.dispose();
             }
@@ -304,7 +306,7 @@ public class MultithreadTest {
         }
 
         if (t.getError() != null) {
-            Assertions.fail(t.getError().getMessage());
+            fail(t.getError().getMessage());
         }
     }
 
@@ -390,7 +392,7 @@ public class MultithreadTest {
         t.join();
 
         if (t.getError() != null) {
-            Assertions.fail(t.getError().getMessage());
+            fail(t.getError().getMessage());
         }
 
         System.out.println("Final size " + ksession.getObjects().size());
@@ -471,7 +473,7 @@ public class MultithreadTest {
                 }
             }
 
-            Assertions.assertThat(success).isTrue();
+            assertThat(success).isTrue();
             ksession.dispose();
         } finally {
             executor.shutdownNow();
@@ -598,7 +600,7 @@ public class MultithreadTest {
             LOG.info("after: while.");
         } catch (final java.util.concurrent.RejectedExecutionException e) {
             e.printStackTrace();
-            Assertions.fail("java.util.concurrent.RejectedExecutionException should not happen");
+            fail("java.util.concurrent.RejectedExecutionException should not happen");
         }
         LOG.info("last line of test.");
     }
@@ -675,7 +677,7 @@ public class MultithreadTest {
             }
         }
 
-        Assertions.assertThat(list).hasSize(0);
+        assertThat(list).hasSize(0);
     }
 
     public static class SessionRunner implements Runnable {

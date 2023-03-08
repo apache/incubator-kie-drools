@@ -18,11 +18,12 @@ package org.kie.dmn.validation.dtanalysis.model;
 
 import java.math.BigDecimal;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 public class NullBoundImplTest {
 
@@ -33,12 +34,12 @@ public class NullBoundImplTest {
      */
     @Test
     public void test() {
-        Assertions.assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.compareTo(new Bound<>(BigDecimal.ONE, Range.RangeBoundary.CLOSED, null)));
-        Assertions.assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.getValue());
-        Assertions.assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.getBoundaryType());
-        Assertions.assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.getParent());
-        Assertions.assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.isLowerBound());
-        Assertions.assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.isUpperBound());
+        assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.compareTo(new Bound<>(BigDecimal.ONE, Range.RangeBoundary.CLOSED, null)));
+        assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.getValue());
+        assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.getBoundaryType());
+        assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.getParent());
+        assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.isLowerBound());
+        assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.isUpperBound());
     }
 
     @Test

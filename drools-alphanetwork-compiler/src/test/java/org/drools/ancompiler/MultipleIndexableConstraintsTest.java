@@ -18,9 +18,10 @@ package org.drools.ancompiler;
 
 import java.util.ArrayList;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultipleIndexableConstraintsTest extends BaseModelTest {
 
@@ -54,7 +55,7 @@ public class MultipleIndexableConstraintsTest extends BaseModelTest {
 
         try {
             ksession.fireAllRules();
-            Assertions.assertThat(results).contains(a, b, c);
+            assertThat(results).contains(a, b, c);
         } finally {
             ksession.dispose();
         }

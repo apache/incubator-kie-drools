@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +28,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class RegressionNormalizationSoftmaxTest extends AbstractPMMLTest {
@@ -71,9 +72,9 @@ public class RegressionNormalizationSoftmaxTest extends AbstractPMMLTest {
         inputData.put("y", y);
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
-        Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
+        assertThat(pmml4Result).isNotNull();
+        assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
+        assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
                 .isEqualTo(normalizedRegressionFunction(x, y/*, normalizationMethod*/));
     }
 }

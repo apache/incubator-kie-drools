@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Percentage;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,6 +13,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class IrisDataTreeTest extends AbstractPMMLTest {
@@ -77,14 +78,14 @@ public class IrisDataTreeTest extends AbstractPMMLTest {
         inputData.put("Petal.Width", petalWidth);
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_SETOSA)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
+        assertThat(pmml4Result.getResultVariables().get(PROBABILITY_SETOSA)).isNotNull();
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_SETOSA)).isEqualTo(probabilitySetosa);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_VERSICOLOR)).isNotNull();
-        Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VERSICOLOR)).isCloseTo(probabilityVersicolor, TOLERANCE_PERCENTAGE);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_VIRGINICA)).isNotNull();
-        Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VIRGINICA)).isCloseTo(probabilityVirginica, TOLERANCE_PERCENTAGE);
+        assertThat(pmml4Result.getResultVariables().get(PROBABILITY_SETOSA)).isEqualTo(probabilitySetosa);
+        assertThat(pmml4Result.getResultVariables().get(PROBABILITY_VERSICOLOR)).isNotNull();
+        assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VERSICOLOR)).isCloseTo(probabilityVersicolor, TOLERANCE_PERCENTAGE);
+        assertThat(pmml4Result.getResultVariables().get(PROBABILITY_VIRGINICA)).isNotNull();
+        assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VIRGINICA)).isCloseTo(probabilityVirginica, TOLERANCE_PERCENTAGE);
     }
 }

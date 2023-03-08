@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.MysteriousMan;
 import org.drools.modelcompiler.domain.Person;
@@ -28,6 +27,7 @@ import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class NullSafeDereferencingTest extends BaseModelTest {
@@ -270,7 +270,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         ksession.insert(new Person("George", 21, new Address("George")));
         ksession.fireAllRules();
 
-        Assertions.assertThat(result).containsExactlyInAnyOrder("John", "George");
+        assertThat(result).containsExactlyInAnyOrder("John", "George");
     }
 
     @Test
@@ -293,7 +293,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         ksession.insert(new Person("George", 21, new Address("Tokyo")));
         ksession.fireAllRules();
 
-        Assertions.assertThat(result).containsExactlyInAnyOrder("London", "Tokyo");
+        assertThat(result).containsExactlyInAnyOrder("London", "Tokyo");
     }
 
     @Test
@@ -316,7 +316,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         ksession.insert(new Person("George", 21, new Address(null)));
         ksession.fireAllRules();
 
-        Assertions.assertThat(result).containsExactlyInAnyOrder(6);
+        assertThat(result).containsExactlyInAnyOrder(6);
     }
 
     @Test
@@ -339,7 +339,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         ksession.insert(new Person("George", 21, new Address("Tokyo")));
         ksession.fireAllRules();
 
-        Assertions.assertThat(result).containsExactlyInAnyOrder(true, false);
+        assertThat(result).containsExactlyInAnyOrder(true, false);
     }
 
     @Test
@@ -396,7 +396,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Assertions.assertThat(result).containsExactlyInAnyOrder("Bob", "Paul");
+        assertThat(result).containsExactlyInAnyOrder("Bob", "Paul");
     }
 
     @Test
@@ -429,6 +429,6 @@ public class NullSafeDereferencingTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Assertions.assertThat(result).containsExactlyInAnyOrder("Paul");
+        assertThat(result).containsExactlyInAnyOrder("Paul");
     }
 }

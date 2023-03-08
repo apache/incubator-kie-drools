@@ -18,7 +18,6 @@ package org.drools.testcoverage.regression;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -30,6 +29,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests problems with large numbers to String conversion. See DROOLS-167.
@@ -63,6 +64,6 @@ public class InaccurateComparisonTest {
         KieSession ksession = kieBase.newKieSession();
 
         ksession.insert(new Message("90201304122000000000000015"));
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

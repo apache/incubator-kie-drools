@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +28,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
@@ -106,26 +107,26 @@ public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
 
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(irisClass);
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(irisClass);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMCONTINUOUS_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMCONTINUOUS_FIELD)).isEqualTo(outNormcontinuousField);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_NORMCONTINUOUS_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_NORMCONTINUOUS_FIELD)).isEqualTo(outNormcontinuousField);
+        assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isNotNull();
         if (irisClass.equals("1")) {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(1.0);
+            assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(1.0);
         } else {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(0.0);
+            assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(0.0);
         }
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
         if (sepalLength > 4.7 && sepalLength < 5.2) {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
+            assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
         } else if (sepalLength >= 5.6 && sepalLength < 5.9) {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
+            assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
         } else {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
+            assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
         }
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
         String expected;
         switch (irisClass) {
             case "1":
@@ -147,15 +148,15 @@ public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
             default:
                 throw new Exception("Unexpected irisClass " + irisClass);
         }
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
+        assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_NAME_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_NAME_FIELD)).isEqualTo(predictedDisplayValue);
+        assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_NAME_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_NAME_FIELD)).isEqualTo(predictedDisplayValue);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_INDEX_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_INDEX_FIELD)).isEqualTo(predictedEntityId);
+        assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_INDEX_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_INDEX_FIELD)).isEqualTo(predictedEntityId);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_AFFINITY_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_AFFINITY_FIELD)).isEqualTo(predictedAffinity);
+        assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_AFFINITY_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(PREDICTED_CLUSTER_AFFINITY_FIELD)).isEqualTo(predictedAffinity);
     }
 }

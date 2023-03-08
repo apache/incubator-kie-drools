@@ -17,16 +17,18 @@ package org.drools.mvel.compiler.oopath;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.assertj.core.api.Assertions;
+
+import org.drools.core.common.InternalFactHandle;
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Man;
 import org.drools.mvel.compiler.oopath.model.Toy;
 import org.drools.mvel.compiler.oopath.model.Woman;
-import org.drools.core.common.InternalFactHandle;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OOPathBenchmarkTest {
 
@@ -168,7 +170,7 @@ public class OOPathBenchmarkTest {
         ksession.fireAllRules();
         result[1] = System.nanoTime() - start;
 
-        Assertions.assertThat(n).isEqualTo(list.size());
+        assertThat(n).isEqualTo(list.size());
         ksession.dispose();
 
         return result;
@@ -201,7 +203,7 @@ public class OOPathBenchmarkTest {
         ksession.fireAllRules();
         result[1] = System.nanoTime() - start;
 
-        Assertions.assertThat(n * 3).isEqualTo(list.size());
+        assertThat(n * 3).isEqualTo(list.size());
         ksession.dispose();
 
         return result;
@@ -231,7 +233,7 @@ public class OOPathBenchmarkTest {
         ksession.fireAllRules();
         result[1] = System.nanoTime() - start;
 
-        Assertions.assertThat(n).isEqualTo(list.size());
+        assertThat(n).isEqualTo(list.size());
         ksession.dispose();
 
         return result;

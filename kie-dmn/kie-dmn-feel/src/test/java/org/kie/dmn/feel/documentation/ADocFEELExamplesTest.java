@@ -31,14 +31,14 @@ import org.asciidoctor.ast.DescriptionListEntry;
 import org.asciidoctor.ast.Document;
 import org.asciidoctor.ast.ListItem;
 import org.asciidoctor.ast.StructuralNode;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ADocFEELExamplesTest {
 
@@ -86,7 +86,7 @@ public class ADocFEELExamplesTest {
                         for (String line : lines) {
                             LOG.info("checking DOC {}", line);
                             Object FEELResult = feel.evaluate(line);
-                            Assert.assertThat(line, FEELResult, Matchers.is(true));
+                            assertThat(FEELResult).withFailMessage(line).isEqualTo(true);
                         }
                     } else {
                         LOG.trace("This block is not FEEL true predicate snippets: {}", b);

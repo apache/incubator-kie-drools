@@ -21,12 +21,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.kie.api.runtime.KieSession;
 import org.kie.test.testcategory.TurtleTestCategory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests adding and removing rules with advanced operators.
@@ -634,19 +635,19 @@ public class AddRemoveRulesAdvOperatorsTest {
             kieSession.setGlobal("globalInt", new AtomicInteger(0));
             TestUtil.insertFacts(kieSession, mapFact, 1, "1");
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
             resultsList.clear();
             TestUtil.addRules(kieSession, rule2);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.addRules(kieSession, rule3);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE3_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE3_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }
@@ -705,19 +706,19 @@ public class AddRemoveRulesAdvOperatorsTest {
             kieSession.setGlobal("globalInt", new AtomicInteger(0));
             TestUtil.insertFacts(kieSession, mapFact, 1, "1");
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
             resultsList.clear();
             TestUtil.addRules(kieSession, rule2);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.addRules(kieSession, rule3);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE3_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE3_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }

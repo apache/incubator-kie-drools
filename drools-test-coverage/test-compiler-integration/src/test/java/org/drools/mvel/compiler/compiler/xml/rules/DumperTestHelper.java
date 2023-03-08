@@ -19,16 +19,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
-import org.drools.mvel.DrlDumper;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.mvel.DrlDumper;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Helper Class for both xml and drl Dump Tests
@@ -51,7 +51,7 @@ public class DumperTestHelper {
         System.out.println(buffer);
         System.out.println(result);
 
-        Assertions.assertThat(buffer).isEqualToIgnoringWhitespace(result);
+        assertThat(buffer).isEqualToIgnoringWhitespace(result);
         assertNotNull( result );
     }
 
@@ -65,7 +65,7 @@ public class DumperTestHelper {
         String result2 = dumper.dump( pkgDerivated );
         System.out.println( result1 );
 
-        Assertions.assertThat(result1).isEqualToIgnoringWhitespace(result2);
+        assertThat(result1).isEqualToIgnoringWhitespace(result2);
     }
 
     public static String dump(String filename) throws Exception {
