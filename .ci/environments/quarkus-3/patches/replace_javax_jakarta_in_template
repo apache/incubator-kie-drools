@@ -1,0 +1,30 @@
+Subject: [PATCH] [fix_pmml_test] Add patch to change javax -> jakarta in template
+---
+Index: drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java b/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java
+--- a/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java	(revision 1ab119fc25590caf49c7c476c346bf117fb56646)
++++ b/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java	(date 1678362274098)
+@@ -12,7 +12,7 @@
+ import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
+ import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
+
+-@javax.enterprise.context.ApplicationScoped
++@jakarta.enterprise.context.ApplicationScoped
+ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
+
+     private static final RuleBase ruleBase = KieBaseBuilder.createKieBaseFromModel( new RULE_UNIT_MODEL(), $KieBaseOptions$ );
+@@ -27,8 +27,8 @@
+         this((RuleUnits) null);
+     }
+
+-    @javax.inject.Inject
+-    public CLASS_NAME(javax.enterprise.inject.Instance<RuleUnits> ruleUnits) {
++    @jakarta.inject.Inject
++    public CLASS_NAME(jakarta.enterprise.inject.Instance<RuleUnits> ruleUnits) {
+         this(ruleUnits == null || ruleUnits.isUnsatisfied() ? AbstractRuleUnits.DummyRuleUnits.INSTANCE : ruleUnits.get());
+     }
+
