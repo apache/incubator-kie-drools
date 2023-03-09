@@ -46,6 +46,7 @@ class ReliabilityTest {
             "then\n" +
             "  results.add( $p.getAge() );\n" +
             "end";
+	private long savedSessionId;
 
     static Stream<PersistedSessionOption.Strategy> strategyProvider() {
         return Stream.of(PersistedSessionOption.Strategy.STORES_ONLY, PersistedSessionOption.Strategy.FULL);
@@ -64,8 +65,6 @@ class ReliabilityTest {
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
     void insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.Strategy strategy) {
-
-        long savedSessionId;
 
         // 1st round
         {
@@ -123,7 +122,6 @@ class ReliabilityTest {
     @MethodSource("strategyProvider")
     void noFailover(PersistedSessionOption.Strategy strategy) {
 
-        long savedSessionId;
 
         // 1st round
         {
@@ -154,7 +152,6 @@ class ReliabilityTest {
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
     void insertFireInsertFailoverInsertFire_shouldMatchFactInsertedBeforeFailover(PersistedSessionOption.Strategy strategy) {
-        long savedSessionId;
 
         // 1st round
         {
@@ -192,7 +189,6 @@ class ReliabilityTest {
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
     void insertFireFailoverInsertFire_shouldNotRepeatFiredMatch(PersistedSessionOption.Strategy strategy) {
-        long savedSessionId;
         // 1st round
         {
             KieSession firstSession = getFirstKieSession(BASIC_RULE, strategy);
@@ -238,7 +234,6 @@ class ReliabilityTest {
                         "  update($p); \n" + // updated Person will not match
                        "end";
 
-        long savedSessionId;
         // 1st round
         {
             KieSession firstSession = getFirstKieSession(drl, strategy);
