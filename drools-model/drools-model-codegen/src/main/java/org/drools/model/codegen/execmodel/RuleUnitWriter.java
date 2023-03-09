@@ -43,6 +43,7 @@ import org.drools.codegen.common.context.JavaDroolsModelBuildContext;
 import org.drools.model.codegen.project.template.TemplatedGenerator;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.KieBaseOption;
+import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
@@ -122,6 +123,9 @@ public class RuleUnitWriter {
 
         parsedClass.findFirst(NameExpr.class, e -> e.getNameAsString().equals("$KieBaseOptions$"))
         .ifPresent(e -> e.replace(kieBaseOptionsExpression(ruleUnitDescr)));
+
+        parsedClass.findFirst(NameExpr.class, e -> e.getNameAsString().equals("$SessionsPoolSize$"))
+        .ifPresent(e -> e.replace(sessionsPoolSizeExpression(ruleUnitDescr)));
 
         return getPrettyPrinter().print(cu);
     }
@@ -223,6 +227,8 @@ public class RuleUnitWriter {
             if (kieBaseOption instanceof EventProcessingOption) {
                 optionExpressionList.addLast(eventProcessingOptionExpression((EventProcessingOption) kieBaseOption));
             }
+            // Don't convey SessionsPoolOption to KieBase because RuleUnit doesn't use KieSessionsPool. Instead, use sessionsPoolSizeExpression()
+
             // Add any KieBaseOptions if available
         }
 
@@ -236,6 +242,12 @@ public class RuleUnitWriter {
         sb.append(EventProcessingOption.class.getCanonicalName());
         sb.append(".");
         sb.append(eventProcessingOption.getMode().toUpperCase());
+        return parseExpression(sb.toString());
+    }
+
+    private Expression sessionsPoolSizeExpression(RuleUnitDescription description) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(description.getSessionsPoolSize());
         return parseExpression(sb.toString());
     }
 }

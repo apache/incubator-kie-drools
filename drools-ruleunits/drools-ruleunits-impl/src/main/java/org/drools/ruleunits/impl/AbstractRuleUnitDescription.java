@@ -96,11 +96,18 @@ public abstract class AbstractRuleUnitDescription implements RuleUnitDescription
     }
 
     @Override
+    public int getSessionsPoolSize() {
+        return config.getDefaultedSessionPool().orElse(-1);
+    }
+
+    @Override
     public Collection<KieBaseOption> getKieBaseOptions() {
         List<KieBaseOption> kieBaseOptions = new ArrayList<>();
 
         EventProcessingOption eventProcessingOption = (config.getDefaultedEventProcessingType() == EventProcessingType.CLOUD) ? EventProcessingOption.CLOUD : EventProcessingOption.STREAM;
         kieBaseOptions.add(eventProcessingOption);
+
+        // Don't convey SessionsPoolOption to KieBase because RuleUnit doesn't use KieSessionsPool. Instead, use getSessionsPoolSize()
 
         // Add any KieBaseOptions if available
 

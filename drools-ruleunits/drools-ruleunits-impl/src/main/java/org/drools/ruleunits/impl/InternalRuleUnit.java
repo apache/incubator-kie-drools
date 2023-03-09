@@ -17,4 +17,12 @@ public interface InternalRuleUnit<T extends RuleUnitData> extends RuleUnit<T> {
     RuleUnitInstance<T> createInstance(T data, String name, RuleConfig ruleConfig);
 
     void setEvaluatorConfigurator(Function<ReteEvaluator, ReteEvaluator> evaluatorConfigurator);
+
+    default int getSessionsPoolSize() {
+        return -1;
+    }
+
+    default void createSessionsPool(int size, T data) {
+        // do nothing
+    }
 }

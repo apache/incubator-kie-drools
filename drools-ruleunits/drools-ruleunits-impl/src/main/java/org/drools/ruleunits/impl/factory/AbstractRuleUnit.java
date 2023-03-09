@@ -18,6 +18,7 @@ package org.drools.ruleunits.impl.factory;
 import java.util.function.Function;
 
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.util.ScalablePool;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnitProvider;
@@ -31,6 +32,8 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements Intern
     protected final RuleUnits ruleUnits;
 
     protected Function<ReteEvaluator, ReteEvaluator> evaluatorConfigurator = Function.identity();
+
+    private ScalablePool<RuleUnitInstance<T>> pool = null;
 
     public AbstractRuleUnit(Class<T> ruleUnitDataClass) {
         this(ruleUnitDataClass, AbstractRuleUnits.DummyRuleUnits.INSTANCE);
@@ -79,5 +82,10 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements Intern
     @Override
     public void setEvaluatorConfigurator(Function<ReteEvaluator, ReteEvaluator> evaluatorConfigurator) {
         this.evaluatorConfigurator = evaluatorConfigurator;
+    }
+
+    @Override
+    public void createSessionsPool(int size, T data) {
+        pool = new ScalablePool<>(size, () -> createInstance(data), s -> s.close(), s -> s.close());
     }
 }

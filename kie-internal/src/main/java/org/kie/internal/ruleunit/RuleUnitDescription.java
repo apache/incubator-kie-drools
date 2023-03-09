@@ -58,4 +58,8 @@ public interface RuleUnitDescription {
     ClockTypeOption getClockType();
 
     Collection<KieBaseOption> getKieBaseOptions();
+
+    default int getSessionsPoolSize() {
+        return -1;
+    }
 }

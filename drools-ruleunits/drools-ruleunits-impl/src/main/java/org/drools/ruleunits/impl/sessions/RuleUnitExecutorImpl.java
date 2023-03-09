@@ -71,6 +71,7 @@ import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.consequence.StatefulKnowledgeSessionForRHS;
+import org.drools.kiesession.entrypoints.NamedEntryPointsManager;
 import org.drools.ruleunits.api.RuleUnits;
 import org.drools.ruleunits.impl.facthandles.RuleUnitDefaultFactHandle;
 import org.kie.api.KieBase;
@@ -276,6 +277,29 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     @Override
     public FactHandle insert(Object object) {
         return getDefaultEntryPoint().insert(object);
+    }
+
+    @Override
+    public void reset() {
+//        if (nodeMemories != null) {
+//            nodeMemories.resetAllMemories( this );
+//        }
+//
+//        this.agenda.reset();
+
+        this.globalResolver.clear();
+        this.ruleRuntimeEventSupport.clear();
+        this.ruleEventListenerSupport.clear();
+        this.activationsManager.getAgendaEventSupport().clear();
+
+        this.handleFactory.clear( 0, 0 );
+        this.propagationIdCounter.set(0);
+
+        ((NamedEntryPointsManager)this.entryPointsManager).reset();
+
+        if (this.timerService != null) {
+            this.timerService.reset();
+        }
     }
 
     @Override

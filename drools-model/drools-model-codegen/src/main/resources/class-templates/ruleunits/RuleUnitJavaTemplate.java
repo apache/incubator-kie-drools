@@ -37,4 +37,9 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
         ReteEvaluator reteEvaluator = evaluatorConfigurator.apply(new RuleUnitExecutorImpl(ruleBase, sessionConfiguration));
         return new RULE_UNIT_INSTANCE_CLASS(this, data, reteEvaluator, ruleConfig);
     }
+
+    @Override
+    public int getSessionsPoolSize() {
+        return $SessionsPoolSize$;
+    }
 }

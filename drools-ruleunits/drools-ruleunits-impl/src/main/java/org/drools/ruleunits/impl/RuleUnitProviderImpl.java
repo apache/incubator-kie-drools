@@ -87,9 +87,19 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
         Map<String, RuleUnit> map = new HashMap<>();
         ServiceLoader<RuleUnit> loader = ServiceLoader.load(RuleUnit.class, classLoader);
         for (RuleUnit impl : loader) {
-            map.put( getRuleUnitName( ((InternalRuleUnit) impl).getRuleUnitDataClass() ), impl);
+            InternalRuleUnit internalRuleUnit = (InternalRuleUnit)impl;
+            map.put( getRuleUnitName( internalRuleUnit.getRuleUnitDataClass() ), impl);
+            initSessionsPool(internalRuleUnit);
         }
         return map;
+    }
+
+    private void initSessionsPool(InternalRuleUnit internalRuleUnit) {
+        int sessionsPoolSize = internalRuleUnit.getSessionsPoolSize();
+        if (sessionsPoolSize > 0) {
+            LOGGER.warn("Here I want to create sessionsPool, but RuleUnitInstance requires ruleUnitData!");
+            //internalRuleUnit.createSessionsPool(sessionsPoolSize); // requires ruleUnitData. Cannot create instances beforehand???
+        }
     }
 
     protected String getRuleUnitName(RuleUnitData ruleUnitData) {

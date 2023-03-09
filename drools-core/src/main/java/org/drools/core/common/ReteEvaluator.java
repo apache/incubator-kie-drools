@@ -130,6 +130,8 @@ public interface ReteEvaluator {
 
     QueryResults getQueryResults(String queryName, Object... arguments);
 
+    void reset();
+
     void dispose();
 
     int fireAllRules();
