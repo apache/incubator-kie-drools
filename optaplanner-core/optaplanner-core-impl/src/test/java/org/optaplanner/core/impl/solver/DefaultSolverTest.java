@@ -691,10 +691,8 @@ class DefaultSolverTest {
         TestdataSolution solution = TestdataSolution.generateSolution(valueCount, valueCount);
 
         AtomicReference<TestdataSolution> bestSolution = new AtomicReference<>();
-        CountDownLatch solverStarted = new CountDownLatch(1);
         CountDownLatch solutionWithProblemChangeReceived = new CountDownLatch(1);
         solver.addEventListener(bestSolutionChangedEvent -> {
-            solverStarted.countDown();
             if (bestSolutionChangedEvent.isEveryProblemChangeProcessed()) {
                 TestdataSolution newBestSolution = bestSolutionChangedEvent.getNewBestSolution();
                 if (newBestSolution.getValueList().size() == valueCount + 1) {
@@ -709,7 +707,6 @@ class DefaultSolverTest {
             solver.solve(solution);
         });
 
-        solverStarted.await(); // Make sure we submit a ProblemChange only after the Solver started solving.
         solver.addProblemChange((workingSolution, problemChangeDirector) -> {
             problemChangeDirector.addProblemFact(new TestdataValue("added value"), solution.getValueList()::add);
         });

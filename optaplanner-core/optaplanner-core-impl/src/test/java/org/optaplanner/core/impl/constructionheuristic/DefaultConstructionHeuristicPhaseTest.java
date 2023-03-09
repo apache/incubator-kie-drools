@@ -48,6 +48,25 @@ class DefaultConstructionHeuristicPhaseTest {
     }
 
     @Test
+    void solveWithInitializedSolution() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        solverConfig.setPhaseConfigList(Collections.singletonList(new ConstructionHeuristicPhaseConfig()));
+
+        TestdataSolution inputProblem = new TestdataSolution("s1");
+        TestdataValue v1 = new TestdataValue("v1");
+        TestdataValue v2 = new TestdataValue("v2");
+        TestdataValue v3 = new TestdataValue("v3");
+        inputProblem.setValueList(Arrays.asList(v1, v2, v3));
+        inputProblem.setEntityList(Arrays.asList(
+                new TestdataEntity("e1", v1),
+                new TestdataEntity("e2", v2),
+                new TestdataEntity("e3", v3)));
+
+        TestdataSolution solution = PlannerTestUtils.solve(solverConfig, inputProblem);
+        assertThat(inputProblem).isSameAs(solution);
+    }
+
+    @Test
     void solveWithPinnedEntities() {
         SolverConfig solverConfig =
                 PlannerTestUtils.buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
