@@ -101,7 +101,7 @@
     <version.jakarta.json-api>1.1.6</version.jakarta.json-api>
     <version.org.jpmml.model>1.5.1</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
     <version.org.junit>5.9.2</version.org.junit>
-    <version.org.mvel>2.4.14.Final</version.org.mvel>
+    <version.org.mvel>2.4.15.Final</version.org.mvel>
     <version.org.powermock>2.0.7</version.org.powermock>
     <version.org.slf4j>1.7.30</version.org.slf4j>
     <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
