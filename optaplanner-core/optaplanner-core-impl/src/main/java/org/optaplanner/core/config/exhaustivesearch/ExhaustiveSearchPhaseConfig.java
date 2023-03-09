@@ -115,6 +115,40 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
         this.moveSelectorConfig = moveSelectorConfig;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public ExhaustiveSearchPhaseConfig withExhaustiveSearchType(ExhaustiveSearchType exhaustiveSearchType) {
+        this.setExhaustiveSearchType(exhaustiveSearchType);
+        return this;
+    }
+
+    public ExhaustiveSearchPhaseConfig withNodeExplorationType(NodeExplorationType nodeExplorationType) {
+        this.setNodeExplorationType(nodeExplorationType);
+        return this;
+    }
+
+    public ExhaustiveSearchPhaseConfig withEntitySorterManner(EntitySorterManner entitySorterManner) {
+        this.setEntitySorterManner(entitySorterManner);
+        return this;
+    }
+
+    public ExhaustiveSearchPhaseConfig withValueSorterManner(ValueSorterManner valueSorterManner) {
+        this.setValueSorterManner(valueSorterManner);
+        return this;
+    }
+
+    public ExhaustiveSearchPhaseConfig withEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+        this.setEntitySelectorConfig(entitySelectorConfig);
+        return this;
+    }
+
+    public ExhaustiveSearchPhaseConfig withMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
+        this.setMoveSelectorConfig(moveSelectorConfig);
+        return this;
+    }
+
     @Override
     public ExhaustiveSearchPhaseConfig inherit(ExhaustiveSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);

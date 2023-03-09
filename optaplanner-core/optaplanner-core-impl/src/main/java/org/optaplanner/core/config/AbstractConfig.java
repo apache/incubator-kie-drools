@@ -50,5 +50,4 @@ public abstract class AbstractConfig<Config_ extends AbstractConfig<Config_>> {
     public String toString() {
         return getClass().getSimpleName() + "()";
     }
-
 }

@@ -47,6 +47,25 @@ public abstract class AbstractPillarMoveSelectorConfig<Config_ extends AbstractP
         this.pillarSelectorConfig = pillarSelectorConfig;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public Config_ withSubPillarType(SubPillarType subPillarType) {
+        this.setSubPillarType(subPillarType);
+        return (Config_) this;
+    }
+
+    public Config_ withSubPillarSequenceComparatorClass(Class<? extends Comparator> subPillarSequenceComparatorClass) {
+        this.setSubPillarSequenceComparatorClass(subPillarSequenceComparatorClass);
+        return (Config_) this;
+    }
+
+    public Config_ withPillarSelectorConfig(PillarSelectorConfig pillarSelectorConfig) {
+        this.setPillarSelectorConfig(pillarSelectorConfig);
+        return (Config_) this;
+    }
+
     @Override
     public Config_ inherit(Config_ inheritedConfig) {
         super.inherit(inheritedConfig);

@@ -41,6 +41,25 @@ public class PillarSwapMoveSelectorConfig extends AbstractPillarMoveSelectorConf
         this.variableNameIncludeList = variableNameIncludeList;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public PillarSwapMoveSelectorConfig withSecondaryPillarSelectorConfig(PillarSelectorConfig pillarSelectorConfig) {
+        this.setSecondaryPillarSelectorConfig(pillarSelectorConfig);
+        return this;
+    }
+
+    public PillarSwapMoveSelectorConfig withVariableNameIncludeList(List<String> variableNameIncludeList) {
+        this.setVariableNameIncludeList(variableNameIncludeList);
+        return this;
+    }
+
+    public PillarSwapMoveSelectorConfig withVariableNameIncludes(String... variableNameIncludes) {
+        this.setVariableNameIncludeList(List.of(variableNameIncludes));
+        return this;
+    }
+
     @Override
     public PillarSwapMoveSelectorConfig inherit(PillarSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);

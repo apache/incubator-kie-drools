@@ -626,4 +626,90 @@ public class PlannerBenchmarkConfig {
     public void setSolverBenchmarkConfigList(List<SolverBenchmarkConfig> solverBenchmarkConfigList) {
         this.solverBenchmarkConfigList = solverBenchmarkConfigList;
     }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public PlannerBenchmarkConfig withClassLoader(ClassLoader classLoader) {
+        this.setClassLoader(classLoader);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withName(String name) {
+        this.setName(name);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withBenchmarkDirectory(File benchmarkDirectory) {
+        this.setBenchmarkDirectory(benchmarkDirectory);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withThreadFactoryClass(Class<? extends ThreadFactory> threadFactoryClass) {
+        this.setThreadFactoryClass(threadFactoryClass);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withParallelBenchmarkCount(String parallelBenchmarkCount) {
+        this.setParallelBenchmarkCount(parallelBenchmarkCount);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withWarmUpMillisecondsSpentLimit(Long warmUpMillisecondsSpentLimit) {
+        this.setWarmUpMillisecondsSpentLimit(warmUpMillisecondsSpentLimit);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withWarmUpSecondsSpentLimit(Long warmUpSecondsSpentLimit) {
+        this.setWarmUpSecondsSpentLimit(warmUpSecondsSpentLimit);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withWarmUpMinutesSpentLimit(Long warmUpMinutesSpentLimit) {
+        this.setWarmUpMinutesSpentLimit(warmUpMinutesSpentLimit);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withWarmUpHoursSpentLimit(Long warmUpHoursSpentLimit) {
+        this.setWarmUpHoursSpentLimit(warmUpHoursSpentLimit);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withWarmUpDaysSpentLimit(Long warmUpDaysSpentLimit) {
+        this.setWarmUpDaysSpentLimit(warmUpDaysSpentLimit);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withBenchmarkReportConfig(BenchmarkReportConfig benchmarkReportConfig) {
+        this.setBenchmarkReportConfig(benchmarkReportConfig);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withInheritedSolverBenchmarkConfig(SolverBenchmarkConfig inheritedSolverBenchmarkConfig) {
+        this.setInheritedSolverBenchmarkConfig(inheritedSolverBenchmarkConfig);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withSolverBenchmarkBluePrintConfigList(
+            List<SolverBenchmarkBluePrintConfig> solverBenchmarkBluePrintConfigList) {
+        this.setSolverBenchmarkBluePrintConfigList(solverBenchmarkBluePrintConfigList);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withSolverBenchmarkBluePrintConfigs(
+            SolverBenchmarkBluePrintConfig... solverBenchmarkBluePrintConfigs) {
+        this.setSolverBenchmarkBluePrintConfigList(List.of(solverBenchmarkBluePrintConfigs));
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withSolverBenchmarkConfigList(List<SolverBenchmarkConfig> solverBenchmarkConfigList) {
+        this.setSolverBenchmarkConfigList(solverBenchmarkConfigList);
+        return this;
+    }
+
+    public PlannerBenchmarkConfig withSolverBenchmarkConfigs(SolverBenchmarkConfig... solverBenchmarkConfigs) {
+        this.setSolverBenchmarkConfigList(List.of(solverBenchmarkConfigs));
+        return this;
+    }
 }

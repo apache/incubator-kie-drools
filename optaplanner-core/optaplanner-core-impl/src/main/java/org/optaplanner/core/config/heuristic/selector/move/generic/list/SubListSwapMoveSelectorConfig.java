@@ -47,6 +47,25 @@ public class SubListSwapMoveSelectorConfig extends MoveSelectorConfig<SubListSwa
         this.selectReversingMoveToo = selectReversingMoveToo;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public SubListSwapMoveSelectorConfig withMinimumSubListSize(Integer minimumSubListSize) {
+        this.setMinimumSubListSize(minimumSubListSize);
+        return this;
+    }
+
+    public SubListSwapMoveSelectorConfig withMaximumSubListSize(Integer maximumSubListSize) {
+        this.setMaximumSubListSize(maximumSubListSize);
+        return this;
+    }
+
+    public SubListSwapMoveSelectorConfig withSelectReversingMoveToo(Boolean selectReversingMoveToo) {
+        this.setSelectReversingMoveToo(selectReversingMoveToo);
+        return this;
+    }
+
     @Override
     public SubListSwapMoveSelectorConfig inherit(SubListSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);

@@ -41,6 +41,20 @@ public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryCon
     }
 
     // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public MoveListFactoryConfig withMoveListFactoryClass(Class<? extends MoveListFactory> moveListFactoryClass) {
+        this.setMoveListFactoryClass(moveListFactoryClass);
+        return this;
+    }
+
+    public MoveListFactoryConfig withMoveListFactoryCustomProperties(Map<String, String> moveListFactoryCustomProperties) {
+        this.setMoveListFactoryCustomProperties(moveListFactoryCustomProperties);
+        return this;
+    }
+
+    // ************************************************************************
     // Builder methods
     // ************************************************************************
 

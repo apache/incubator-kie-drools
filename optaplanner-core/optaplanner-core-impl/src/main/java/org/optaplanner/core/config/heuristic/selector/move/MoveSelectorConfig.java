@@ -170,56 +170,56 @@ public abstract class MoveSelectorConfig<Config_ extends MoveSelectorConfig<Conf
     // With methods
     // ************************************************************************
 
-    public MoveSelectorConfig<Config_> withCacheType(SelectionCacheType cacheType) {
+    public Config_ withCacheType(SelectionCacheType cacheType) {
         this.cacheType = cacheType;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSelectionOrder(SelectionOrder selectionOrder) {
+    public Config_ withSelectionOrder(SelectionOrder selectionOrder) {
         this.selectionOrder = selectionOrder;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withFilterClass(Class<? extends SelectionFilter> filterClass) {
+    public Config_ withFilterClass(Class<? extends SelectionFilter> filterClass) {
         this.filterClass = filterClass;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSorterComparatorClass(Class<? extends Comparator> sorterComparatorClass) {
+    public Config_ withSorterComparatorClass(Class<? extends Comparator> sorterComparatorClass) {
         this.sorterComparatorClass = sorterComparatorClass;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSorterWeightFactoryClass(
+    public Config_ withSorterWeightFactoryClass(
             Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass) {
         this.sorterWeightFactoryClass = sorterWeightFactoryClass;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSorterOrder(SelectionSorterOrder sorterOrder) {
+    public Config_ withSorterOrder(SelectionSorterOrder sorterOrder) {
         this.sorterOrder = sorterOrder;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSorterClass(Class<? extends SelectionSorter> sorterClass) {
+    public Config_ withSorterClass(Class<? extends SelectionSorter> sorterClass) {
         this.sorterClass = sorterClass;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withProbabilityWeightFactoryClass(
+    public Config_ withProbabilityWeightFactoryClass(
             Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
         this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSelectedCountLimit(Long selectedCountLimit) {
+    public Config_ withSelectedCountLimit(Long selectedCountLimit) {
         this.selectedCountLimit = selectedCountLimit;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withFixedProbabilityWeight(Double fixedProbabilityWeight) {
+    public Config_ withFixedProbabilityWeight(Double fixedProbabilityWeight) {
         this.fixedProbabilityWeight = fixedProbabilityWeight;
-        return this;
+        return (Config_) this;
     }
 
     /**

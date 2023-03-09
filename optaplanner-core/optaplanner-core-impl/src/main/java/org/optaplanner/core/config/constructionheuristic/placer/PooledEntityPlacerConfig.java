@@ -53,6 +53,15 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
         this.moveSelectorConfig = moveSelectorConfig;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public PooledEntityPlacerConfig withMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
+        this.setMoveSelectorConfig(moveSelectorConfig);
+        return this;
+    }
+
     @Override
     public PooledEntityPlacerConfig inherit(PooledEntityPlacerConfig inheritedConfig) {
         setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(getMoveSelectorConfig(),

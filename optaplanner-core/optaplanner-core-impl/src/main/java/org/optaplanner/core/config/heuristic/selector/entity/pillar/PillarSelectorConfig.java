@@ -46,6 +46,25 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
         this.maximumSubPillarSize = maximumSubPillarSize;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public PillarSelectorConfig withEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+        this.setEntitySelectorConfig(entitySelectorConfig);
+        return this;
+    }
+
+    public PillarSelectorConfig withMinimumSubPillarSize(Integer minimumSubPillarSize) {
+        this.setMinimumSubPillarSize(minimumSubPillarSize);
+        return this;
+    }
+
+    public PillarSelectorConfig withMaximumSubPillarSize(Integer maximumSubPillarSize) {
+        this.setMaximumSubPillarSize(maximumSubPillarSize);
+        return this;
+    }
+
     @Override
     public PillarSelectorConfig inherit(PillarSelectorConfig inheritedConfig) {
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());

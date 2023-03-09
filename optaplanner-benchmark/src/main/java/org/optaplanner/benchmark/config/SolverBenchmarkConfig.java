@@ -63,6 +63,30 @@ public class SolverBenchmarkConfig extends AbstractConfig<SolverBenchmarkConfig>
         this.subSingleCount = subSingleCount;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public SolverBenchmarkConfig withName(String name) {
+        this.setName(name);
+        return this;
+    }
+
+    public SolverBenchmarkConfig withSolverConfig(SolverConfig solverConfig) {
+        this.setSolverConfig(solverConfig);
+        return this;
+    }
+
+    public SolverBenchmarkConfig withProblemBenchmarksConfig(ProblemBenchmarksConfig problemBenchmarksConfig) {
+        this.setProblemBenchmarksConfig(problemBenchmarksConfig);
+        return this;
+    }
+
+    public SolverBenchmarkConfig withSubSingleCount(Integer subSingleCount) {
+        this.setSubSingleCount(subSingleCount);
+        return this;
+    }
+
     @Override
     public SolverBenchmarkConfig inherit(SolverBenchmarkConfig inheritedConfig) {
         solverConfig = ConfigUtils.inheritConfig(solverConfig, inheritedConfig.getSolverConfig());

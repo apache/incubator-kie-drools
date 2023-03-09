@@ -51,6 +51,20 @@ public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorC
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public KOptMoveSelectorConfig withEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+        this.setEntitySelectorConfig(entitySelectorConfig);
+        return this;
+    }
+
+    public KOptMoveSelectorConfig withValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+        this.setValueSelectorConfig(valueSelectorConfig);
+        return this;
+    }
+
     @Override
     public KOptMoveSelectorConfig inherit(KOptMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);

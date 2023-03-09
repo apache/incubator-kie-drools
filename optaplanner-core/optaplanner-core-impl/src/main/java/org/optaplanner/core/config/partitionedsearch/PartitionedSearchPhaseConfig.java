@@ -110,6 +110,37 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         this.phaseConfigList = phaseConfigList;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public PartitionedSearchPhaseConfig withSolutionPartitionerClass(
+            Class<? extends SolutionPartitioner<?>> solutionPartitionerClass) {
+        this.setSolutionPartitionerClass(solutionPartitionerClass);
+        return this;
+    }
+
+    public PartitionedSearchPhaseConfig withSolutionPartitionerCustomProperties(
+            Map<String, String> solutionPartitionerCustomProperties) {
+        this.setSolutionPartitionerCustomProperties(solutionPartitionerCustomProperties);
+        return this;
+    }
+
+    public PartitionedSearchPhaseConfig withRunnablePartThreadLimit(String runnablePartThreadLimit) {
+        this.setRunnablePartThreadLimit(runnablePartThreadLimit);
+        return this;
+    }
+
+    public PartitionedSearchPhaseConfig withPhaseConfigList(List<PhaseConfig> phaseConfigList) {
+        this.setPhaseConfigList(phaseConfigList);
+        return this;
+    }
+
+    public PartitionedSearchPhaseConfig withPhaseConfigs(PhaseConfig... phaseConfigs) {
+        this.setPhaseConfigList(List.of(phaseConfigs));
+        return this;
+    }
+
     @Override
     public PartitionedSearchPhaseConfig inherit(PartitionedSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);

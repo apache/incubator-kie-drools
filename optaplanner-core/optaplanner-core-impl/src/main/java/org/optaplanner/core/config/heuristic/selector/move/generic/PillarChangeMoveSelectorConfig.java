@@ -26,6 +26,15 @@ public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorCo
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public PillarChangeMoveSelectorConfig withValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+        this.setValueSelectorConfig(valueSelectorConfig);
+        return this;
+    }
+
     @Override
     public PillarChangeMoveSelectorConfig inherit(PillarChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);

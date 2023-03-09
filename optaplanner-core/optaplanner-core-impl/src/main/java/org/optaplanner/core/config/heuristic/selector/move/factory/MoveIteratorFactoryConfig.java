@@ -40,6 +40,22 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFa
         this.moveIteratorFactoryCustomProperties = moveIteratorFactoryCustomProperties;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public MoveIteratorFactoryConfig
+            withMoveIteratorFactoryClass(Class<? extends MoveIteratorFactory> moveIteratorFactoryClass) {
+        this.setMoveIteratorFactoryClass(moveIteratorFactoryClass);
+        return this;
+    }
+
+    public MoveIteratorFactoryConfig
+            withMoveIteratorFactoryCustomProperties(Map<String, String> moveIteratorFactoryCustomProperties) {
+        this.setMoveIteratorFactoryCustomProperties(moveIteratorFactoryCustomProperties);
+        return this;
+    }
+
     @Override
     public MoveIteratorFactoryConfig inherit(MoveIteratorFactoryConfig inheritedConfig) {
         super.inherit(inheritedConfig);

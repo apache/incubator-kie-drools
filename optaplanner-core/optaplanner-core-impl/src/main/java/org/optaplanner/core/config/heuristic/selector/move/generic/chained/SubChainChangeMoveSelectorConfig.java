@@ -60,6 +60,30 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChai
         this.selectReversingMoveToo = selectReversingMoveToo;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public SubChainChangeMoveSelectorConfig withEntityClass(Class<?> entityClass) {
+        this.setEntityClass(entityClass);
+        return this;
+    }
+
+    public SubChainChangeMoveSelectorConfig withSubChainSelectorConfig(SubChainSelectorConfig subChainSelectorConfig) {
+        this.setSubChainSelectorConfig(subChainSelectorConfig);
+        return this;
+    }
+
+    public SubChainChangeMoveSelectorConfig withValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+        this.setValueSelectorConfig(valueSelectorConfig);
+        return this;
+    }
+
+    public SubChainChangeMoveSelectorConfig withSelectReversingMoveToo(Boolean selectReversingMoveToo) {
+        this.setSelectReversingMoveToo(selectReversingMoveToo);
+        return this;
+    }
+
     @Override
     public SubChainChangeMoveSelectorConfig inherit(SubChainChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);

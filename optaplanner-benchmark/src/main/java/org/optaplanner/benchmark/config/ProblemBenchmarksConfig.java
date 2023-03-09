@@ -93,6 +93,55 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     }
 
     // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public ProblemBenchmarksConfig withSolutionFileIOClass(Class<? extends SolutionFileIO<?>> solutionFileIOClass) {
+        this.setSolutionFileIOClass(solutionFileIOClass);
+        return this;
+    }
+
+    public ProblemBenchmarksConfig withWriteOutputSolutionEnabled(Boolean writeOutputSolutionEnabled) {
+        this.setWriteOutputSolutionEnabled(writeOutputSolutionEnabled);
+        return this;
+    }
+
+    public ProblemBenchmarksConfig withInputSolutionFileList(List<File> inputSolutionFileList) {
+        this.setInputSolutionFileList(inputSolutionFileList);
+        return this;
+    }
+
+    public ProblemBenchmarksConfig withInputSolutionFiles(File... inputSolutionFiles) {
+        this.setInputSolutionFileList(List.of(inputSolutionFiles));
+        return this;
+    }
+
+    public ProblemBenchmarksConfig withProblemStatisticsEnabled(Boolean problemStatisticEnabled) {
+        this.setProblemStatisticEnabled(problemStatisticEnabled);
+        return this;
+    }
+
+    public ProblemBenchmarksConfig withProblemStatisticTypeList(List<ProblemStatisticType> problemStatisticTypeList) {
+        this.setProblemStatisticTypeList(problemStatisticTypeList);
+        return this;
+    }
+
+    public ProblemBenchmarksConfig withProblemStatisticTypes(ProblemStatisticType... problemStatisticTypes) {
+        this.setProblemStatisticTypeList(List.of(problemStatisticTypes));
+        return this;
+    }
+
+    public ProblemBenchmarksConfig withSingleStatisticTypeList(List<SingleStatisticType> singleStatisticTypeList) {
+        this.setSingleStatisticTypeList(singleStatisticTypeList);
+        return this;
+    }
+
+    public ProblemBenchmarksConfig withSingleStatisticTypes(SingleStatisticType... singleStatisticTypes) {
+        this.setSingleStatisticTypeList(List.of(singleStatisticTypes));
+        return this;
+    }
+
+    // ************************************************************************
     // Complex methods
     // ************************************************************************
 

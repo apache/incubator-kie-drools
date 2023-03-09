@@ -49,6 +49,25 @@ public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfi
         this.maximumSubChainSize = maximumSubChainSize;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public SubChainSelectorConfig withValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+        this.setValueSelectorConfig(valueSelectorConfig);
+        return this;
+    }
+
+    public SubChainSelectorConfig withMinimumSubChainSize(Integer minimumSubChainSize) {
+        this.setMinimumSubChainSize(minimumSubChainSize);
+        return this;
+    }
+
+    public SubChainSelectorConfig withMaximumSubChainSize(Integer maximumSubChainSize) {
+        this.setMaximumSubChainSize(maximumSubChainSize);
+        return this;
+    }
+
     @Override
     public SubChainSelectorConfig inherit(SubChainSelectorConfig inheritedConfig) {
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());

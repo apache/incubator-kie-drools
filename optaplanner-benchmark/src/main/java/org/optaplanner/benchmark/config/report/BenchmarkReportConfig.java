@@ -73,6 +73,32 @@ public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig>
         return getLocale() == null ? Locale.getDefault() : getLocale();
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public BenchmarkReportConfig withLocale(Locale locale) {
+        this.setLocale(locale);
+        return this;
+    }
+
+    public BenchmarkReportConfig withSolverRankingType(SolverRankingType solverRankingType) {
+        this.setSolverRankingType(solverRankingType);
+        return this;
+    }
+
+    public BenchmarkReportConfig withSolverRankingComparatorClass(
+            Class<? extends Comparator<SolverBenchmarkResult>> solverRankingComparatorClass) {
+        this.setSolverRankingComparatorClass(solverRankingComparatorClass);
+        return this;
+    }
+
+    public BenchmarkReportConfig withSolverRankingWeightFactoryClass(
+            Class<? extends SolverRankingWeightFactory> solverRankingWeightFactoryClass) {
+        this.setSolverRankingWeightFactoryClass(solverRankingWeightFactoryClass);
+        return this;
+    }
+
     @Override
     public BenchmarkReportConfig inherit(BenchmarkReportConfig inheritedConfig) {
         locale = ConfigUtils.inheritOverwritableProperty(locale, inheritedConfig.getLocale());
