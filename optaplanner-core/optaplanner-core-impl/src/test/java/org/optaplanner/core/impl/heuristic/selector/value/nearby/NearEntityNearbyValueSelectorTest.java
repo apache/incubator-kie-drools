@@ -1,18 +1,17 @@
 package org.optaplanner.core.impl.heuristic.selector.value.nearby;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockEntityIndependentValueSelector;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockEntitySelector;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.phaseStarted;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.stepStarted;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfValueSelectorForEntity;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.support.VariableListenerSupport;
-import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
@@ -28,6 +27,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
 class NearEntityNearbyValueSelectorTest {
 
@@ -41,8 +41,8 @@ class NearEntityNearbyValueSelectorTest {
         final TestdataValue australia = new TestdataValue("Australia");
         final TestdataValue brazil = new TestdataValue("Brazil");
 
-        GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
-        EntityIndependentValueSelector childValueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
+        GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+        EntityIndependentValueSelector<TestdataSolution> childValueSelector = mockEntityIndependentValueSelector(
                 variableDescriptor,
                 morocco, spain, australia, brazil);
         NearbyDistanceMeter<TestdataEntity, TestdataValue> meter = (origin, destination) -> {
@@ -86,59 +86,46 @@ class NearEntityNearbyValueSelectorTest {
                 throw new IllegalStateException("The origin (" + origin + ") is not implemented.");
             }
         };
-        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(), africa,
+        EntitySelector<TestdataSolution> entitySelector = mockEntitySelector(variableDescriptor.getEntityDescriptor(), africa,
                 europe, oceania);
-        ManualEntityMimicRecorder entityMimicRecorder = new ManualEntityMimicRecorder(entitySelector);
-        NearEntityNearbyValueSelector valueSelector = new NearEntityNearbyValueSelector(
-                childValueSelector, new MimicReplayingEntitySelector(entityMimicRecorder), meter, null, false);
+        ManualEntityMimicRecorder<TestdataSolution> entityMimicRecorder = new ManualEntityMimicRecorder<>(entitySelector);
+        NearEntityNearbyValueSelector<TestdataSolution> valueSelector = new NearEntityNearbyValueSelector<>(
+                childValueSelector, new MimicReplayingEntitySelector<>(entityMimicRecorder), meter, null, false);
 
-        SolverScope<TestdataSolution> solverScope = mockSolverScope();
-        valueSelector.solvingStarted(solverScope);
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
+        SolverScope<TestdataSolution> solverScope = solvingStarted(valueSelector, scoreDirector);
 
         // The movingEntity can be the same (ChangeMove) or different (SwapMove) as the nearby source
         TestdataEntity movingEntity = europe;
 
-        AbstractPhaseScope<TestdataSolution> phaseScopeA = mockPhaseScope(solverScope);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        valueSelector.phaseStarted(phaseScopeA);
+        AbstractPhaseScope<TestdataSolution> phaseScopeA = phaseStarted(valueSelector, solverScope);
 
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        valueSelector.stepStarted(stepScopeA1);
+        AbstractStepScope<TestdataSolution> stepScopeA1 = stepStarted(valueSelector, phaseScopeA);
         entityMimicRecorder.setRecordedEntity(europe);
         assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Spain", "Morocco", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeA1);
 
-        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
-        valueSelector.stepStarted(stepScopeA2);
+        AbstractStepScope<TestdataSolution> stepScopeA2 = stepStarted(valueSelector, phaseScopeA);
         entityMimicRecorder.setRecordedEntity(africa);
         assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Morocco", "Spain", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeA2);
 
         valueSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope<TestdataSolution> phaseScopeB = mockPhaseScope(solverScope);
-        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-        valueSelector.phaseStarted(phaseScopeB);
+        AbstractPhaseScope<TestdataSolution> phaseScopeB = phaseStarted(valueSelector, solverScope);
 
-        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
-        valueSelector.stepStarted(stepScopeB1);
+        AbstractStepScope<TestdataSolution> stepScopeB1 = stepStarted(valueSelector, phaseScopeB);
         entityMimicRecorder.setRecordedEntity(africa);
         assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Morocco", "Spain", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeB1);
 
-        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
-        valueSelector.stepStarted(stepScopeB2);
+        AbstractStepScope<TestdataSolution> stepScopeB2 = stepStarted(valueSelector, phaseScopeB);
         entityMimicRecorder.setRecordedEntity(oceania);
         assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Australia", "Brazil", "Morocco", "Spain");
         valueSelector.stepEnded(stepScopeB2);
 
-        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
-        valueSelector.stepStarted(stepScopeB3);
+        AbstractStepScope<TestdataSolution> stepScopeB3 = stepStarted(valueSelector, phaseScopeB);
         entityMimicRecorder.setRecordedEntity(europe);
         assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Spain", "Morocco", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeB3);
@@ -150,26 +137,6 @@ class NearEntityNearbyValueSelectorTest {
         verifyPhaseLifecycle(childValueSelector, 1, 2, 5);
     }
 
-    private SolverScope<TestdataSolution> mockSolverScope() {
-        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
-        doReturn(solutionDescriptor).when(scoreDirector).getSolutionDescriptor();
-        doReturn(VariableListenerSupport.create(scoreDirector)).when(scoreDirector).getSupplyManager();
-
-        SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
-        doReturn(scoreDirector).when(solverScope).getScoreDirector();
-        return solverScope;
-    }
-
-    private AbstractPhaseScope<TestdataSolution> mockPhaseScope(SolverScope<TestdataSolution> solverScope) {
-        return spy(new AbstractPhaseScope<>(solverScope) {
-            @Override
-            public AbstractStepScope<TestdataSolution> getLastCompletedStepScope() {
-                throw new UnsupportedOperationException();
-            }
-        });
-    }
-
     @Test
     void originalSelectionChained() {
         final TestdataChainedEntity morocco = new TestdataChainedEntity("Morocco");
@@ -177,8 +144,9 @@ class NearEntityNearbyValueSelectorTest {
         final TestdataChainedEntity australia = new TestdataChainedEntity("Australia");
         final TestdataChainedAnchor brazil = new TestdataChainedAnchor("Brazil");
 
-        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        EntityIndependentValueSelector childValueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
+        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor =
+                TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        EntityIndependentValueSelector<TestdataChainedSolution> childValueSelector = mockEntityIndependentValueSelector(
                 variableDescriptor,
                 morocco, spain, australia, brazil);
         NearbyDistanceMeter<TestdataChainedEntity, TestdataChainedObject> meter = (origin, destination) -> {
@@ -222,59 +190,47 @@ class NearEntityNearbyValueSelectorTest {
                 throw new IllegalStateException("The origin (" + origin + ") is not implemented.");
             }
         };
-        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(), morocco,
-                spain, australia);
-        ManualEntityMimicRecorder entityMimicRecorder = new ManualEntityMimicRecorder(entitySelector);
-        NearEntityNearbyValueSelector valueSelector = new NearEntityNearbyValueSelector(
-                childValueSelector, new MimicReplayingEntitySelector(entityMimicRecorder), meter, null, false);
+        EntitySelector<TestdataChainedSolution> entitySelector = mockEntitySelector(variableDescriptor.getEntityDescriptor(),
+                morocco, spain, australia);
+        ManualEntityMimicRecorder<TestdataChainedSolution> entityMimicRecorder =
+                new ManualEntityMimicRecorder<>(entitySelector);
+        NearEntityNearbyValueSelector<TestdataChainedSolution> valueSelector = new NearEntityNearbyValueSelector<>(
+                childValueSelector, new MimicReplayingEntitySelector<>(entityMimicRecorder), meter, null, false);
 
-        SolverScope<TestdataSolution> solverScope = mockSolverScope();
-        valueSelector.solvingStarted(solverScope);
+        InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataChainedSolution.buildSolutionDescriptor());
+        SolverScope<TestdataChainedSolution> solverScope = solvingStarted(valueSelector, scoreDirector);
 
         // The movingEntity can be the same (ChangeMove) or different (SwapMove) as the nearby source
         TestdataChainedEntity movingEntity = spain;
 
-        AbstractPhaseScope<TestdataSolution> phaseScopeA = mockPhaseScope(solverScope);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        valueSelector.phaseStarted(phaseScopeA);
+        AbstractPhaseScope<TestdataChainedSolution> phaseScopeA = phaseStarted(valueSelector, solverScope);
 
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        valueSelector.stepStarted(stepScopeA1);
+        AbstractStepScope<TestdataChainedSolution> stepScopeA1 = stepStarted(valueSelector, phaseScopeA);
         entityMimicRecorder.setRecordedEntity(spain);
         assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Morocco", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeA1);
 
-        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
-        valueSelector.stepStarted(stepScopeA2);
+        AbstractStepScope<TestdataChainedSolution> stepScopeA2 = stepStarted(valueSelector, phaseScopeA);
         entityMimicRecorder.setRecordedEntity(morocco);
         assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Spain", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeA2);
 
         valueSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope<TestdataSolution> phaseScopeB = mockPhaseScope(solverScope);
-        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-        valueSelector.phaseStarted(phaseScopeB);
+        AbstractPhaseScope<TestdataChainedSolution> phaseScopeB = phaseStarted(valueSelector, solverScope);
 
-        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
-        valueSelector.stepStarted(stepScopeB1);
+        AbstractStepScope<TestdataChainedSolution> stepScopeB1 = stepStarted(valueSelector, phaseScopeB);
         entityMimicRecorder.setRecordedEntity(morocco);
         assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Spain", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeB1);
 
-        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
-        valueSelector.stepStarted(stepScopeB2);
+        AbstractStepScope<TestdataChainedSolution> stepScopeB2 = stepStarted(valueSelector, phaseScopeB);
         entityMimicRecorder.setRecordedEntity(australia);
         assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Brazil", "Morocco", "Spain");
         valueSelector.stepEnded(stepScopeB2);
 
-        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
-        valueSelector.stepStarted(stepScopeB3);
+        AbstractStepScope<TestdataChainedSolution> stepScopeB3 = stepStarted(valueSelector, phaseScopeB);
         entityMimicRecorder.setRecordedEntity(spain);
         assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Morocco", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeB3);
