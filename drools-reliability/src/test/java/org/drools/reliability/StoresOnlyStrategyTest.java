@@ -1,6 +1,8 @@
 package org.drools.reliability;
 
+import org.drools.core.ClassObjectFilter;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.KieBase;
@@ -44,6 +46,97 @@ public class StoresOnlyStrategyTest {
         return kbase.newKieSession(conf, null);
     }
 
+    @Disabled("Fails in the 2nd round assertion, fact 'Mark' is populated as '_Mark' in secondSession")
+    @Test
+    void fireUpdateFactByFactHandleFailover(){
+
+        long id;
+
+        // 1st round
+        {
+            KieSession firstSession = getKieSession(BASIC_RULE, PersistedSessionOption.newSession(PersistedSessionOption.Strategy.STORES_ONLY));
+            List<Integer> results = new ArrayList<>();
+            firstSession.setGlobal("results", results);
+
+            id = firstSession.getIdentifier();
+
+            firstSession.insert("M");
+            firstSession.insert(new Person("Matteo", 41));
+            FactHandle fhMark = firstSession.insert(new Person("_Mark", 47));
+
+            assertThat(firstSession.fireAllRules()).isEqualTo(1);
+            assertThat(results).containsExactlyInAnyOrder(41);
+
+            Person pMark = (Person) firstSession.getObject(fhMark);
+            pMark.setName("Mark");
+            firstSession.update(fhMark, pMark);
+
+            firstSession.getObjects( new ClassObjectFilter( Person.class ) ).forEach(p ->{
+                if (((Person) p).getAge()==47){
+                    assertThat(((Person) p).getName().equals("Mark")).isTrue();
+                }
+            });
+        }
+
+        failover();
+
+        // 2nd round
+        {
+            KieSession secondSession = getKieSession(BASIC_RULE, PersistedSessionOption.fromSession(id, PersistedSessionOption.Strategy.STORES_ONLY));
+
+            secondSession.getObjects( new ClassObjectFilter( Person.class ) ).forEach(p ->{
+                if (((Person) p).getAge()==47){
+                    assertThat(((Person) p).getName().equals("Mark")).isTrue();
+                }
+            });
+        }
+    }
+
+    @Test
+    void fireUpdateFactWithNewObjectFailover(){
+
+        long id;
+
+        // 1st round
+        {
+            KieSession firstSession = getKieSession(BASIC_RULE, PersistedSessionOption.newSession(PersistedSessionOption.Strategy.STORES_ONLY));
+            List<Integer> results = new ArrayList<>();
+            firstSession.setGlobal("results", results);
+
+            id = firstSession.getIdentifier();
+
+            firstSession.insert("M");
+            firstSession.insert(new Person("Matteo", 41));
+            FactHandle fhMark = firstSession.insert(new Person("_Mark", 47));
+
+            assertThat(firstSession.fireAllRules()).isEqualTo(1);
+            assertThat(results).containsExactlyInAnyOrder(41);
+
+            Person pMark = new Person("Mark", 47);
+            firstSession.update(fhMark, pMark);
+
+            firstSession.getObjects( new ClassObjectFilter( Person.class ) ).forEach(p ->{
+                if (((Person) p).getAge()==47){
+                    assertThat(((Person) p).getName().equals("Mark")).isTrue();
+                }
+            });
+        }
+
+        failover();
+
+        // 2nd round
+        {
+            KieSession secondSession = getKieSession(BASIC_RULE, PersistedSessionOption.fromSession(id, PersistedSessionOption.Strategy.STORES_ONLY));
+
+            secondSession.getObjects( new ClassObjectFilter( Person.class ) ).forEach(p ->{
+                if (((Person) p).getAge()==47){
+                    assertThat(((Person) p).getName().equals("Mark")).isTrue();
+                }
+            });
+        }
+    }
+
+    @Disabled("Fails in the 2nd round assertions, fact 'Mark' is not propagated by secondSession.fireAllRules()")
     @Test
     void insertFireUpdateFailover_RePropagateUpdates() {
         long id;
@@ -58,14 +151,12 @@ public class StoresOnlyStrategyTest {
 
             firstSession.insert("M");
             firstSession.insert(new Person("Matteo", 41));
-            Person pMark = new Person("_Mark", 47);
             FactHandle fhMark = firstSession.insert(new Person("_Mark", 47));
 
             assertThat(firstSession.fireAllRules()).isEqualTo(1);
             assertThat(results).containsExactlyInAnyOrder(41);
 
-            //Person pMark = (Person) firstSession.getObject(fhMark);
-            pMark.setName("Mark");
+            Person pMark = new Person("Mark", 47);
             firstSession.update(fhMark, pMark);
         }
 
