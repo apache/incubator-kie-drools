@@ -59,11 +59,12 @@ public class StoresOnlyStrategyTest {
             firstSession.insert("M");
             firstSession.insert(new Person("Matteo", 41));
             Person pMark = new Person("_Mark", 47);
-            FactHandle fhMark = firstSession.insert(pMark);
+            FactHandle fhMark = firstSession.insert(new Person("_Mark", 47));
 
             assertThat(firstSession.fireAllRules()).isEqualTo(1);
             assertThat(results).containsExactlyInAnyOrder(41);
 
+            //Person pMark = (Person) firstSession.getObject(fhMark);
             pMark.setName("Mark");
             firstSession.update(fhMark, pMark);
         }
