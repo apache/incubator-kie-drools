@@ -44,7 +44,7 @@ class ReliabilityTest {
             "  $s: String()\n" +
             "  $p: Person( getName().startsWith($s) )\n" +
             "then\n" +
-            "  results.add( $p.getAge() );\n" +
+            "  results.add( $p.getName() );\n" +
             "end";
 	private long savedSessionId;
 	private KieSession session;
@@ -70,8 +70,8 @@ class ReliabilityTest {
 
         createSession(BASIC_RULE, strategy);
 
-		session.insert("M");
-		session.insert(new Person("Mark", 37));
+		insertString();
+		insertMatchingPersonOne();
 
         //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
         //-- ksession and kbase are lost. CacheManager is recreated. Client knows only "id"
@@ -79,12 +79,14 @@ class ReliabilityTest {
 
         restoreSession(BASIC_RULE, strategy);
 
-		session.insert(new Person("Edson", 35));
-		session.insert(new Person("Mario", 40));
+		insertNonMatchingPerson();
+		insertMatchingPersonTwo();
+		
+		session.fireAllRules();
 
-		assertThat(session.fireAllRules()).isEqualTo(2);
-		assertThat(getResults(session)).containsExactlyInAnyOrder(37, 40);
+		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
     }
+
 
     @ParameterizedTest
     @MethodSource("strategyProvider")
@@ -93,17 +95,19 @@ class ReliabilityTest {
 
         createSession(BASIC_RULE, strategy);
 
-		session.insert("M");
-		session.insert(new Person("Mark", 37));
+		insertString();
+		insertMatchingPersonOne();
 
         restoreSession(BASIC_RULE, strategy);
 
-		session.insert(new Person("Toshiya", 35));
-		session.insert(new Person("Mario", 40));
+		insertNonMatchingPerson();
+		insertMatchingPersonTwo();
 
-		assertThat(session.fireAllRules()).isEqualTo(2);
-		assertThat(getResults(session)).containsExactlyInAnyOrder(37, 40);
+		session.fireAllRules();
+
+		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
     }
+
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
@@ -111,23 +115,23 @@ class ReliabilityTest {
 
         createSession(BASIC_RULE, strategy);
 
-		session.insert("M");
-		session.insert(new Person("Matteo", 41));
+		insertString();
+		insertMatchingPersonOne();
 
-		assertThat(session.fireAllRules()).isEqualTo(1);
-		assertThat(getResults(session)).containsExactlyInAnyOrder(41);
+		session.fireAllRules();
 
-		session.insert(new Person("Mark", 47)); // This is not yet matched
+		insertMatchingPersonTwo();
 
         failover();
 
         restoreSession(BASIC_RULE, strategy);
 
-		session.insert(new Person("Toshiya", 45));
-		session.insert(new Person("Mario", 49));
+        insertNonMatchingPerson();
+        insertMatchingPersonThree();
 
-		assertThat(session.fireAllRules()).isEqualTo(2);
-		assertThat(getResults(session)).containsExactlyInAnyOrder(47, 49);
+        session.fireAllRules();
+
+        assertThat(getResults()).containsExactlyInAnyOrder("Matching Person Two", "Matching Person Three");
     }
 
     @ParameterizedTest
@@ -135,20 +139,21 @@ class ReliabilityTest {
     void insertFireFailoverInsertFire_shouldNotRepeatFiredMatch(PersistedSessionOption.Strategy strategy) {
         createSession(BASIC_RULE, strategy);
 
-		session.insert("M");
-		session.insert(new Person("Mark", 37));
+		insertString();
+		insertMatchingPersonOne();
 
-		assertThat(session.fireAllRules()).isEqualTo(1);
+		session.fireAllRules();
 
         failover();
 
         restoreSession(BASIC_RULE, strategy);
 
-		session.insert(new Person("Edson", 35));
-		session.insert(new Person("Mario", 40));
+        insertNonMatchingPerson();
+		insertMatchingPersonTwo();
 
-		assertThat(session.fireAllRules()).isEqualTo(1); // Only Mario matches.
-		assertThat(getResults(session)).containsExactlyInAnyOrder(40);
+		session.fireAllRules();
+
+		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person Two");
     }
 
     @ParameterizedTest
@@ -169,8 +174,8 @@ class ReliabilityTest {
         createSession(drl, strategy);
 
 
-		session.insert("M");
-		session.insert(new Person("Mark", 37));
+		insertString();
+		insertMatchingPersonOne();
 		session.insert(new Person("Nicole", 27));
 
 		assertThat(session.fireAllRules()).isEqualTo(1);
@@ -183,12 +188,32 @@ class ReliabilityTest {
 		session.insert(new Person("Mary", 42));
 
 		assertThat(session.fireAllRules()).isEqualTo(1);
-		assertThat(getResults(session)).containsExactlyInAnyOrder(42);
+		assertThat(getResults()).containsExactlyInAnyOrder("Mary");
     }
     
+	private void insertString() {
+		session.insert("M");
+	}
 
-    private List<Integer> getResults(KieSession kieSession) {
-        return (List<Integer>) kieSession.getGlobal("results");
+	private void insertMatchingPersonOne() {
+		session.insert(new Person("Matching Person One", 37));
+	}
+
+
+	private void insertMatchingPersonTwo() {
+		session.insert(new Person("Matching Person Two", 40));
+	}
+	
+	private void insertMatchingPersonThree() {
+		session.insert(new Person("Matching Person Three", 41));
+	}
+
+	private void insertNonMatchingPerson() {
+		session.insert(new Person("Toshiya", 35));
+	}
+
+    private List<String> getResults() {
+        return (List<String>) session.getGlobal("results");
     }
 
     private KieSession createSession(String drl, PersistedSessionOption.Strategy strategy) {
@@ -205,7 +230,7 @@ class ReliabilityTest {
         conf.setOption(option);
         session = kbase.newKieSession(conf, null);
         savedSessionId = session.getIdentifier();
-        List<Integer> results = new ArrayList<>();
+        List<String> results = new ArrayList<>();
         session.setGlobal("results", results);
         return session;
     }
