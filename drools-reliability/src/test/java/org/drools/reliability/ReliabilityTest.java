@@ -68,28 +68,22 @@ class ReliabilityTest {
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
     void insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.Strategy strategy) {
 
-        // 1st round
-        {
-            createSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, strategy);
 
-            session.insert("M");
-            session.insert(new Person("Mark", 37));
-        }
+		session.insert("M");
+		session.insert(new Person("Mark", 37));
 
         //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
         //-- ksession and kbase are lost. CacheManager is recreated. Client knows only "id"
         failover();
 
-        // 2nd round
-        {
-            restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, strategy);
 
-            session.insert(new Person("Edson", 35));
-			session.insert(new Person("Mario", 40));
+		session.insert(new Person("Edson", 35));
+		session.insert(new Person("Mario", 40));
 
-			assertThat(session.fireAllRules()).isEqualTo(2);
-			assertThat(getResults(session)).containsExactlyInAnyOrder(37, 40);
-        }
+		assertThat(session.fireAllRules()).isEqualTo(2);
+		assertThat(getResults(session)).containsExactlyInAnyOrder(37, 40);
     }
 
     @ParameterizedTest
@@ -97,82 +91,64 @@ class ReliabilityTest {
     void noFailover(PersistedSessionOption.Strategy strategy) {
 
 
-        // 1st round
-        {
-            createSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, strategy);
 
-            session.insert("M");
-            session.insert(new Person("Mark", 37));
-        }
+		session.insert("M");
+		session.insert(new Person("Mark", 37));
 
-        // 2nd round
-        {
-            restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, strategy);
 
-            session.insert(new Person("Toshiya", 35));
-			session.insert(new Person("Mario", 40));
+		session.insert(new Person("Toshiya", 35));
+		session.insert(new Person("Mario", 40));
 
-			assertThat(session.fireAllRules()).isEqualTo(2);
-			assertThat(getResults(session)).containsExactlyInAnyOrder(37, 40);
-        }
+		assertThat(session.fireAllRules()).isEqualTo(2);
+		assertThat(getResults(session)).containsExactlyInAnyOrder(37, 40);
     }
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
     void insertFireInsertFailoverInsertFire_shouldMatchFactInsertedBeforeFailover(PersistedSessionOption.Strategy strategy) {
 
-        // 1st round
-        {
-            createSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, strategy);
 
-            session.insert("M");
-            session.insert(new Person("Matteo", 41));
+		session.insert("M");
+		session.insert(new Person("Matteo", 41));
 
-            assertThat(session.fireAllRules()).isEqualTo(1);
-            assertThat(getResults(session)).containsExactlyInAnyOrder(41);
+		assertThat(session.fireAllRules()).isEqualTo(1);
+		assertThat(getResults(session)).containsExactlyInAnyOrder(41);
 
-            session.insert(new Person("Mark", 47)); // This is not yet matched
-        }
+		session.insert(new Person("Mark", 47)); // This is not yet matched
 
         failover();
 
-        // 2nd round
-        {
-            restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, strategy);
 
-            session.insert(new Person("Toshiya", 45));
-			session.insert(new Person("Mario", 49));
+		session.insert(new Person("Toshiya", 45));
+		session.insert(new Person("Mario", 49));
 
-			assertThat(session.fireAllRules()).isEqualTo(2);
-			assertThat(getResults(session)).containsExactlyInAnyOrder(47, 49);
-        }
+		assertThat(session.fireAllRules()).isEqualTo(2);
+		assertThat(getResults(session)).containsExactlyInAnyOrder(47, 49);
     }
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
     void insertFireFailoverInsertFire_shouldNotRepeatFiredMatch(PersistedSessionOption.Strategy strategy) {
-        // 1st round
-        {
-            createSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, strategy);
 
-            session.insert("M");
-            session.insert(new Person("Mark", 37));
+		session.insert("M");
+		session.insert(new Person("Mark", 37));
 
-            assertThat(session.fireAllRules()).isEqualTo(1);
-        }
+		assertThat(session.fireAllRules()).isEqualTo(1);
 
         failover();
 
-        // 2nd round
-        {
-            restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, strategy);
 
-            session.insert(new Person("Edson", 35));
-			session.insert(new Person("Mario", 40));
+		session.insert(new Person("Edson", 35));
+		session.insert(new Person("Mario", 40));
 
-			assertThat(session.fireAllRules()).isEqualTo(1); // Only Mario matches.
-			assertThat(getResults(session)).containsExactlyInAnyOrder(40);
-        }
+		assertThat(session.fireAllRules()).isEqualTo(1); // Only Mario matches.
+		assertThat(getResults(session)).containsExactlyInAnyOrder(40);
     }
 
     @ParameterizedTest
@@ -190,31 +166,24 @@ class ReliabilityTest {
                         "  update($p); \n" + // updated Person will not match
                        "end";
 
-        // 1st round
-        {
-            createSession(drl, strategy);
+        createSession(drl, strategy);
 
-            savedSessionId = session.getIdentifier();
 
-            session.insert("M");
-            session.insert(new Person("Mark", 37));
-            session.insert(new Person("Nicole", 27));
+		session.insert("M");
+		session.insert(new Person("Mark", 37));
+		session.insert(new Person("Nicole", 27));
 
-            assertThat(session.fireAllRules()).isEqualTo(1);
-        }
+		assertThat(session.fireAllRules()).isEqualTo(1);
 
         failover();
 
-        // 2nd round
-        {
-            restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, strategy);
 
-            session.insert(new Person("John", 22));
-			session.insert(new Person("Mary", 42));
+		session.insert(new Person("John", 22));
+		session.insert(new Person("Mary", 42));
 
-			assertThat(session.fireAllRules()).isEqualTo(1);
-			assertThat(getResults(session)).containsExactlyInAnyOrder(42);
-        }
+		assertThat(session.fireAllRules()).isEqualTo(1);
+		assertThat(getResults(session)).containsExactlyInAnyOrder(42);
     }
     
 
