@@ -47,6 +47,8 @@ class ReliabilityTest {
             "  results.add( $p.getAge() );\n" +
             "end";
 	private long savedSessionId;
+	private KieSession firstSession;
+	private KieSession secondSession;
 
     static Stream<PersistedSessionOption.Strategy> strategyProvider() {
         return Stream.of(PersistedSessionOption.Strategy.STORES_ONLY, PersistedSessionOption.Strategy.FULL);
@@ -60,6 +62,7 @@ class ReliabilityTest {
     public void tearDown() {
         // We can remove this when we implement ReliableSession.dispose() to call CacheManager.removeCachesBySessionId(id)
         CacheManager.INSTANCE.removeAllSessionCaches();
+
     }
 
     @ParameterizedTest
@@ -68,7 +71,7 @@ class ReliabilityTest {
 
         // 1st round
         {
-            KieSession firstSession = getFirstKieSession(BASIC_RULE, strategy);
+            firstSession = getFirstKieSession(BASIC_RULE, strategy);
 
             savedSessionId = firstSession.getIdentifier();
 
@@ -82,17 +85,13 @@ class ReliabilityTest {
 
         // 2nd round
         {
-            KieSession secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
+            secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
 
-            try {
-                secondSession.insert(new Person("Edson", 35));
-                secondSession.insert(new Person("Mario", 40));
+            secondSession.insert(new Person("Edson", 35));
+			secondSession.insert(new Person("Mario", 40));
 
-                assertThat(secondSession.fireAllRules()).isEqualTo(2);
-                assertThat(getResults(secondSession)).containsExactlyInAnyOrder(37, 40);
-            } finally {
-                secondSession.dispose();
-            }
+			assertThat(secondSession.fireAllRules()).isEqualTo(2);
+			assertThat(getResults(secondSession)).containsExactlyInAnyOrder(37, 40);
         }
     }
 
@@ -125,7 +124,7 @@ class ReliabilityTest {
 
         // 1st round
         {
-            KieSession firstSession = getFirstKieSession(BASIC_RULE, strategy);
+            firstSession = getFirstKieSession(BASIC_RULE, strategy);
 
             savedSessionId = firstSession.getIdentifier();
 
@@ -135,17 +134,13 @@ class ReliabilityTest {
 
         // 2nd round
         {
-            KieSession secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
+            secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
 
-            try {
-                secondSession.insert(new Person("Toshiya", 35));
-                secondSession.insert(new Person("Mario", 40));
+            secondSession.insert(new Person("Toshiya", 35));
+			secondSession.insert(new Person("Mario", 40));
 
-                assertThat(secondSession.fireAllRules()).isEqualTo(2);
-                assertThat(getResults(secondSession)).containsExactlyInAnyOrder(37, 40);
-            } finally {
-                secondSession.dispose();
-            }
+			assertThat(secondSession.fireAllRules()).isEqualTo(2);
+			assertThat(getResults(secondSession)).containsExactlyInAnyOrder(37, 40);
         }
     }
 
@@ -155,7 +150,7 @@ class ReliabilityTest {
 
         // 1st round
         {
-            KieSession firstSession = getFirstKieSession(BASIC_RULE, strategy);
+            firstSession = getFirstKieSession(BASIC_RULE, strategy);
 
             savedSessionId = firstSession.getIdentifier();
 
@@ -172,17 +167,13 @@ class ReliabilityTest {
 
         // 2nd round
         {
-            KieSession secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
+            secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
 
-            try {
-                secondSession.insert(new Person("Toshiya", 45));
-                secondSession.insert(new Person("Mario", 49));
+            secondSession.insert(new Person("Toshiya", 45));
+			secondSession.insert(new Person("Mario", 49));
 
-                assertThat(secondSession.fireAllRules()).isEqualTo(2);
-                assertThat(getResults(secondSession)).containsExactlyInAnyOrder(47, 49);
-            } finally {
-                secondSession.dispose();
-            }
+			assertThat(secondSession.fireAllRules()).isEqualTo(2);
+			assertThat(getResults(secondSession)).containsExactlyInAnyOrder(47, 49);
         }
     }
 
@@ -191,7 +182,7 @@ class ReliabilityTest {
     void insertFireFailoverInsertFire_shouldNotRepeatFiredMatch(PersistedSessionOption.Strategy strategy) {
         // 1st round
         {
-            KieSession firstSession = getFirstKieSession(BASIC_RULE, strategy);
+            firstSession = getFirstKieSession(BASIC_RULE, strategy);
 
             savedSessionId = firstSession.getIdentifier();
 
@@ -205,17 +196,13 @@ class ReliabilityTest {
 
         // 2nd round
         {
-            KieSession secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
+            secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
 
-            try {
-                secondSession.insert(new Person("Edson", 35));
-                secondSession.insert(new Person("Mario", 40));
+            secondSession.insert(new Person("Edson", 35));
+			secondSession.insert(new Person("Mario", 40));
 
-                assertThat(secondSession.fireAllRules()).isEqualTo(1); // Only Mario matches.
-                assertThat(getResults(secondSession)).containsExactlyInAnyOrder(40);
-            } finally {
-                secondSession.dispose();
-            }
+			assertThat(secondSession.fireAllRules()).isEqualTo(1); // Only Mario matches.
+			assertThat(getResults(secondSession)).containsExactlyInAnyOrder(40);
         }
     }
 
@@ -236,7 +223,7 @@ class ReliabilityTest {
 
         // 1st round
         {
-            KieSession firstSession = getFirstKieSession(drl, strategy);
+            firstSession = getFirstKieSession(drl, strategy);
 
             savedSessionId = firstSession.getIdentifier();
 
@@ -251,17 +238,13 @@ class ReliabilityTest {
 
         // 2nd round
         {
-            KieSession secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
+            secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
 
-            try {
-                secondSession.insert(new Person("John", 22));
-                secondSession.insert(new Person("Mary", 42));
+            secondSession.insert(new Person("John", 22));
+			secondSession.insert(new Person("Mary", 42));
 
-                assertThat(secondSession.fireAllRules()).isEqualTo(1);
-                assertThat(getResults(secondSession)).containsExactlyInAnyOrder(42);
-            } finally {
-                secondSession.dispose();
-            }
+			assertThat(secondSession.fireAllRules()).isEqualTo(1);
+			assertThat(getResults(secondSession)).containsExactlyInAnyOrder(42);
         }
     }
 }
