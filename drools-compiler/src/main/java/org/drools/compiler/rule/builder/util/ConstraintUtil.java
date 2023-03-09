@@ -12,7 +12,7 @@ public class ConstraintUtil {
 
     public static final String DROOLS_NORMALIZE_CONSTRAINT = "drools.normalize.constraint";
 
-    private static final boolean ENABLE_NORMALIZE = Boolean.parseBoolean(System.getProperty(DROOLS_NORMALIZE_CONSTRAINT, "true"));
+    static boolean ENABLE_NORMALIZE = Boolean.parseBoolean(System.getProperty(DROOLS_NORMALIZE_CONSTRAINT, "true"));
 
     private ConstraintUtil() {}
 
