@@ -24,7 +24,7 @@ environments:
     - quarkus
   quarkus-3:
     env_vars:
-      QUARKUS_VERSION: '3.0.0.Alpha3'
+      QUARKUS_VERSION: '3.0.0.Alpha5'
       ADDITIONAL_TIMEOUT: 720
       BUILD_MVN_OPTS: -Denforcer.skip
     ids:
