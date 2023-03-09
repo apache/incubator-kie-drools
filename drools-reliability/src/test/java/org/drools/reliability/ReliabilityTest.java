@@ -70,7 +70,7 @@ class ReliabilityTest {
 
         // 1st round
         {
-            session = getFirstKieSession(BASIC_RULE, strategy);
+            createSession(BASIC_RULE, strategy);
 
             session.insert("M");
             session.insert(new Person("Mark", 37));
@@ -82,7 +82,7 @@ class ReliabilityTest {
 
         // 2nd round
         {
-            session = getSubsequentKieSession(BASIC_RULE, strategy);
+            restoreSession(BASIC_RULE, strategy);
 
             session.insert(new Person("Edson", 35));
 			session.insert(new Person("Mario", 40));
@@ -99,7 +99,7 @@ class ReliabilityTest {
 
         // 1st round
         {
-            session = getFirstKieSession(BASIC_RULE, strategy);
+            createSession(BASIC_RULE, strategy);
 
             session.insert("M");
             session.insert(new Person("Mark", 37));
@@ -107,7 +107,7 @@ class ReliabilityTest {
 
         // 2nd round
         {
-            session = getSubsequentKieSession(BASIC_RULE, strategy);
+            restoreSession(BASIC_RULE, strategy);
 
             session.insert(new Person("Toshiya", 35));
 			session.insert(new Person("Mario", 40));
@@ -123,7 +123,7 @@ class ReliabilityTest {
 
         // 1st round
         {
-            session = getFirstKieSession(BASIC_RULE, strategy);
+            createSession(BASIC_RULE, strategy);
 
             session.insert("M");
             session.insert(new Person("Matteo", 41));
@@ -138,7 +138,7 @@ class ReliabilityTest {
 
         // 2nd round
         {
-            session = getSubsequentKieSession(BASIC_RULE, strategy);
+            restoreSession(BASIC_RULE, strategy);
 
             session.insert(new Person("Toshiya", 45));
 			session.insert(new Person("Mario", 49));
@@ -153,7 +153,7 @@ class ReliabilityTest {
     void insertFireFailoverInsertFire_shouldNotRepeatFiredMatch(PersistedSessionOption.Strategy strategy) {
         // 1st round
         {
-            session = getFirstKieSession(BASIC_RULE, strategy);
+            createSession(BASIC_RULE, strategy);
 
             session.insert("M");
             session.insert(new Person("Mark", 37));
@@ -165,7 +165,7 @@ class ReliabilityTest {
 
         // 2nd round
         {
-            session = getSubsequentKieSession(BASIC_RULE, strategy);
+            restoreSession(BASIC_RULE, strategy);
 
             session.insert(new Person("Edson", 35));
 			session.insert(new Person("Mario", 40));
@@ -192,7 +192,7 @@ class ReliabilityTest {
 
         // 1st round
         {
-            session = getFirstKieSession(drl, strategy);
+            createSession(drl, strategy);
 
             savedSessionId = session.getIdentifier();
 
@@ -207,7 +207,7 @@ class ReliabilityTest {
 
         // 2nd round
         {
-            session = getSubsequentKieSession(BASIC_RULE, strategy);
+            restoreSession(BASIC_RULE, strategy);
 
             session.insert(new Person("John", 22));
 			session.insert(new Person("Mary", 42));
@@ -222,11 +222,11 @@ class ReliabilityTest {
         return (List<Integer>) kieSession.getGlobal("results");
     }
 
-    private KieSession getFirstKieSession(String drl, PersistedSessionOption.Strategy strategy) {
+    private KieSession createSession(String drl, PersistedSessionOption.Strategy strategy) {
         return getKieSession(drl, PersistedSessionOption.newSession(strategy));
     }
 
-    private KieSession getSubsequentKieSession(String drl, PersistedSessionOption.Strategy strategy) {
+    private KieSession restoreSession(String drl, PersistedSessionOption.Strategy strategy) {
         return getKieSession(drl, PersistedSessionOption.fromSession(savedSessionId, strategy));
     }
 
@@ -234,11 +234,11 @@ class ReliabilityTest {
         KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         conf.setOption(option);
-        KieSession kieSession = kbase.newKieSession(conf, null);
-        savedSessionId = kieSession.getIdentifier();
+        session = kbase.newKieSession(conf, null);
+        savedSessionId = session.getIdentifier();
         List<Integer> results = new ArrayList<>();
-        kieSession.setGlobal("results", results);
-        return kieSession;
+        session.setGlobal("results", results);
+        return session;
     }
 
 }
