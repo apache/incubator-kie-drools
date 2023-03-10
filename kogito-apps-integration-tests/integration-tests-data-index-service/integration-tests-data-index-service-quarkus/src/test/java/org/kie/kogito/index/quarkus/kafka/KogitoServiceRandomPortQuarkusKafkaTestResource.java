@@ -25,7 +25,7 @@ import static org.kie.kogito.index.resources.KogitoServiceRandomPortTestResource
 
 public class KogitoServiceRandomPortQuarkusKafkaTestResource extends ConditionalQuarkusTestResource {
 
-    public static final String QUARKUS_SERVICE_HTTP_PORT = "quarkus.http.test-port";
+    public static final String QUARKUS_SERVICE_HTTP_PORT = "quarkus.http.port";
 
     public KogitoServiceRandomPortQuarkusKafkaTestResource() {
         super(new KogitoServiceRandomPortTestResource());
@@ -49,6 +49,7 @@ public class KogitoServiceRandomPortQuarkusKafkaTestResource extends Conditional
         properties.put("mp.messaging.outgoing.kogito-processinstances-events.connector", "smallrye-kafka");
         properties.put("mp.messaging.outgoing.kogito-usertaskinstances-events.connector", "smallrye-kafka");
         properties.put("mp.messaging.outgoing.kogito-variables-events.connector", "smallrye-kafka");
+
         return properties;
     }
 }

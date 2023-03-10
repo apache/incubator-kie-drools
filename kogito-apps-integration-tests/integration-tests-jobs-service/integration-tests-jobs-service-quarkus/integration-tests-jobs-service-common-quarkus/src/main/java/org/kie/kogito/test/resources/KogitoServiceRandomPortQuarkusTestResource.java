@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class KogitoServiceRandomPortQuarkusTestResource extends ConditionalQuarkusTestResource<KogitoServiceRandomPortTestResource> {
 
-    public static final String QUARKUS_SERVICE_HTTP_PORT = "quarkus.http.test-port";
+    public static final String QUARKUS_SERVICE_HTTP_PORT = "quarkus.http.port";
 
     public KogitoServiceRandomPortQuarkusTestResource() {
         super(new KogitoServiceRandomPortTestResource());

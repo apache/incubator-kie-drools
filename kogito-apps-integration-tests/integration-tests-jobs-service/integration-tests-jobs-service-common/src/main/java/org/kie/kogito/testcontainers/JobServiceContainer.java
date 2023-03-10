@@ -29,6 +29,7 @@ public class JobServiceContainer extends KogitoGenericContainer<JobServiceContai
         waitingFor(Wait.forHttp("/q/health/live").forStatusCode(200));
         addEnv("QUARKUS_HTTP_PORT", Integer.toString(PORT));
         addEnv("QUARKUS_LOG_CATEGORY__ORG_KIE_KOGITO_JOBS_SERVICE__LEVEL", "DEBUG");
+        withAccessToHost(true);
     }
 
     @Override

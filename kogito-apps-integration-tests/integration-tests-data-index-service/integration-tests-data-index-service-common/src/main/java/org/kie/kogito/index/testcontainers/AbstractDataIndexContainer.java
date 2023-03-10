@@ -36,6 +36,7 @@ public abstract class AbstractDataIndexContainer extends KogitoGenericContainer<
         addExposedPort(PORT);
         waitingFor(Wait.forListeningPort());
         addEnv("KOGITO_PROTOBUF_FOLDER", "/home/kogito/data/protobufs/");
+        withAccessToHost(true);
     }
 
     public void setKafkaURL(String kafkaURL) {
