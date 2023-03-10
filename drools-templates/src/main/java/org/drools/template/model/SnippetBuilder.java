@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.drools.util.StringUtils.splitArgumentsList;
+import static org.drools.util.StringUtils.splitConstraints;
 
 /**
  * This utility class exists to convert rule script snippets to actual code. The
@@ -138,7 +138,7 @@ public class SnippetBuilder {
     }
 
     private String[] split( String input ) {
-        List<String> splitList = splitArgumentsList(input, false);
+        List<String> splitList = splitConstraints(input, false);
         return splitList.toArray(new String[splitList.size()]);
     }
 

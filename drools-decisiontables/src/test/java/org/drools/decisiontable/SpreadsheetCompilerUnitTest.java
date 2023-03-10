@@ -855,4 +855,12 @@ public class SpreadsheetCompilerUnitTest {
             System.clearProperty( "drools.excelParser.minInflateRatio" );
         }
     }
+
+    @Test
+    public void testForAll() {
+        // DROOLS-7350
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        String drl = converter.compile("/data/Hal1.drl.xls", InputType.XLS);
+        assertThat(drl.contains("m : Message(number >5 && number <=10)")).isTrue();
+    }
 }

@@ -990,7 +990,11 @@ public class StringUtils {
     }
 
     public static List<String> splitStatements(CharSequence string) {
-        return codeAwareSplitOnChar(string, true, ';', '\n');
+        return codeAwareSplitOnChar(string, true, true, ';', '\n');
+    }
+
+    public static List<String> splitModifyBlock(CharSequence string) {
+        return codeAwareSplitOnChar(string, true, true, ';', ',', '\n');
     }
 
     public static List<String> splitArgumentsList(CharSequence string) {
@@ -998,10 +1002,14 @@ public class StringUtils {
     }
 
     public static List<String> splitArgumentsList(CharSequence string, boolean trimArgs) {
-        return codeAwareSplitOnChar(string, trimArgs, ',');
+        return codeAwareSplitOnChar(string, true, trimArgs, ',');
     }
 
-    public static List<String> codeAwareSplitOnChar(CharSequence string, boolean trimArgs, char... chs) {
+    public static List<String> splitConstraints(CharSequence string, boolean trimArgs) {
+        return codeAwareSplitOnChar(string, false, trimArgs, ',');
+    }
+
+    private static List<String> codeAwareSplitOnChar(CharSequence string, boolean useAngularParenthesis, boolean trimArgs, char... chs) {
         List<String> args = new ArrayList<>();
         int lastStart = 0;
         int nestedParam = 0;
@@ -1019,14 +1027,18 @@ public class StringUtils {
                     case '(':
                     case '[':
                     case '{':
-                    case '<':
                         if (!isSingleQuoted && !isDoubleQuoted) nestedParam++;
+                        break;
+                    case '<':
+                        if (useAngularParenthesis && !isSingleQuoted && !isDoubleQuoted) nestedParam++;
                         break;
                     case ')':
                     case ']':
                     case '}':
-                    case '>':
                         if (!isSingleQuoted && !isDoubleQuoted) nestedParam--;
+                        break;
+                    case '>':
+                        if (useAngularParenthesis && !isSingleQuoted && !isDoubleQuoted) nestedParam--;
                         break;
                     case '"':
                         if (!isSingleQuoted && (i == 0 || string.charAt(i-1) != '\\')) {

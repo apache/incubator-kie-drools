@@ -25,7 +25,6 @@ import java.util.function.Function;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -35,6 +34,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.DeclarationScopeResolver;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MVELConsequence;
@@ -44,11 +44,11 @@ import org.mvel2.MacroProcessor;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
-import static org.drools.util.StringUtils.codeAwareSplitOnChar;
+import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 import static org.drools.util.StringUtils.findEndOfBlockIndex;
 import static org.drools.util.StringUtils.findEndOfMethodArgsIndex;
+import static org.drools.util.StringUtils.splitModifyBlock;
 import static org.drools.util.StringUtils.splitStatements;
-import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 
 public class MVELConsequenceBuilder
     implements
@@ -229,7 +229,7 @@ public class MVELConsequenceBuilder
         String modifyBlock = text.substring( modifyBlockStart+1, modifyBlockEnd ).trim();
 
         StringBuilder sb = new StringBuilder();
-        for (String statement : codeAwareSplitOnChar(modifyBlock, true, ';', ',', '\n')) {
+        for (String statement : splitModifyBlock(modifyBlock)) {
             sb.append( modified ).append( "." ).append( statement.trim() ).append( ";\n" );
         }
         sb.append( "drools.update(" ).append( modified ).append( ");\n" );
