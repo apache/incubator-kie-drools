@@ -40,22 +40,22 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.11.0</version.commons-io>
     <version.common-text>1.10.0</version.common-text>
-    <version.com.fasterxml.jackson>2.14.1</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.14.1</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.14.1</version.com.fasterxml.jackson.annotations>
+    <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.14.2</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.14.2</version.com.fasterxml.jackson.annotations>
     <version.com.lowagie.itext>2.1.7</version.com.lowagie.itext>
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
     <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
-    <version.com.google.protobuf>3.21.9</version.com.google.protobuf>
+    <version.com.google.protobuf>3.22.0</version.com.google.protobuf>
     <version.com.h2database>2.1.214</version.com.h2database>
     <version.com.networknt.json-schema-validator>1.0.43</version.com.networknt.json-schema-validator>
     <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
-    <version.info.picocli>4.7.0</version.info.picocli>
+    <version.info.picocli>4.7.1</version.info.picocli>
     <version.io.micrometer>1.10.2</version.io.micrometer>
-    <version.io.quarkus>2.16.0.Final</version.io.quarkus>
+    <version.io.quarkus>2.16.4.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
@@ -100,7 +100,7 @@
     <version.jakarta.json.bind-api>1.0.2</version.jakarta.json.bind-api>
     <version.jakarta.json-api>1.1.6</version.jakarta.json-api>
     <version.org.jpmml.model>1.5.1</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
-    <version.org.junit>5.9.1</version.org.junit>
+    <version.org.junit>5.9.2</version.org.junit>
     <version.org.mvel>2.4.15.Final</version.org.mvel>
     <version.org.powermock>2.0.7</version.org.powermock>
     <version.org.slf4j>1.7.30</version.org.slf4j>
@@ -178,7 +178,7 @@
 
     <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
 
-    <version.org.postgresql>42.5.1</version.org.postgresql>
+    <version.org.postgresql>42.5.4</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.io.smallrye.jandex>3.0.5</version.io.smallrye.jandex>
