@@ -83,6 +83,8 @@ pipeline {
 
                         maven.mvnVersionsSet(getMavenCommand(), getSnapshotVersion(), true)
                         maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie', getDroolsSnapshotVersion())
+                        maven.mvnSetVersionProperty(getMavenCommand(getWorkflowCommonDeploymentRelativePath()), "data-index-ephemeral.image", "${getCurrentNightlyImage()}" )
+                        maven.mvnSetVersionProperty(getMavenCommand(getIntegrationTestHotReloadRelativePath()), "data-index-ephemeral.image.test", "use-default-image" )
 
                         commitAndCreatePR()
                     }
@@ -262,11 +264,14 @@ void commitAndCreatePR() {
     setPipelinePrLink(githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID()))
 }
 
-MavenCommand getMavenCommand() {
+MavenCommand getMavenCommand(String directory = '') {
     mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                     .withSettingsXmlId("${env.MAVEN_SETTINGS_CONFIG_FILE_ID}")
     if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
         mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
+    }
+    if (directory) {
+        mvnCmd.inDirectory(directory)
     }
     return mvnCmd
 }
@@ -277,4 +282,16 @@ void runMavenDeploy() {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
     mvnCmd.skipTests(true).run('clean deploy')
+}
+
+String getWorkflowCommonDeploymentRelativePath() {
+    return "quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment"
+}
+
+String getIntegrationTestHotReloadRelativePath() {
+    return "quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes-integration-test-hot-reload"
+}
+
+String getCurrentNightlyImage() {
+    return maven.mvnGetVersionProperty(getMavenCommand(getIntegrationTestHotReloadRelativePath()), "data-index-ephemeral.image.test")
 }

@@ -22,8 +22,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.apache.maven.artifact.versioning.ArtifactVersion;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.kie.kogito.quarkus.workflow.deployment.config.KogitoDevServicesBuildTimeConfig;
@@ -54,7 +52,6 @@ import io.quarkus.devservices.common.ContainerAddress;
 import io.quarkus.devservices.common.ContainerLocator;
 import io.quarkus.runtime.LaunchMode;
 
-import static org.kie.kogito.quarkus.workflow.deployment.devservices.DataIndexInMemoryContainer.LATEST;
 import static org.kie.kogito.quarkus.workflow.devservices.DataIndexEventPublisher.KOGITO_DATA_INDEX;
 
 public abstract class AbstractDevServicesProcessor {
@@ -232,7 +229,6 @@ public abstract class AbstractDevServicesProcessor {
 
     private static final class DataIndexDevServiceConfig {
 
-        private static final String PLACEHOLDER = "{placeholder}";
         private final boolean devServicesEnabled;
         private final DockerImageName imageName;
         private final Integer fixedExposedPort;
@@ -244,38 +240,12 @@ public abstract class AbstractDevServicesProcessor {
             //TODO Revert to ConfigureUtil.getDefaultImageNameFor
             this.imageName = config.imageName.map(DockerImageName::parse).orElseGet(() -> {
                 String defaultImageName = ConfigureUtil.getDefaultImageNameFor("data-index");
-                DockerImageName dockerImageName = DockerImageName.parse(defaultImageName);
-                if (PLACEHOLDER.equals(dockerImageName.getVersionPart())) {
-                    dockerImageName = DockerImageName.parse(dockerImageName.getUnversionedPart() + ":" + getDataIndexImageVersion());
-                }
-                return dockerImageName;
+                return DockerImageName.parse(defaultImageName);
             });
             this.imageName.assertValid();
             this.fixedExposedPort = config.port.orElse(0);
             this.shared = config.shared;
             this.serviceName = config.serviceName;
-        }
-
-        private String getDataIndexImageVersion() {
-            Package aPackage = AbstractDevServicesProcessor.class.getPackage();
-            String version = null;
-            if (aPackage != null) {
-                version = aPackage.getImplementationVersion();
-                if (version == null) {
-                    version = aPackage.getSpecificationVersion();
-                }
-            }
-
-            if (version == null) {
-                return LATEST;
-            }
-
-            ArtifactVersion av = new DefaultArtifactVersion(version);
-            if ("SNAPSHOT".equals(av.getQualifier())) {
-                return LATEST;
-            } else {
-                return av.getMajorVersion() + "." + av.getMinorVersion();
-            }
         }
 
         @Override

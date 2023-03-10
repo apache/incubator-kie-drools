@@ -13,7 +13,7 @@
   <name>Kogito :: Quarkus Workflow Extension Common :: Deployment</name>
 
   <properties>
-    <data-index-ephemeral.image>quay.io/kiegroup/kogito-data-index-ephemeral:{placeholder}</data-index-ephemeral.image>
+    <data-index-ephemeral.image>quay.io/kiegroup/kogito-data-index-ephemeral-nightly:latest</data-index-ephemeral.image>
   </properties>
 
   <dependencies>

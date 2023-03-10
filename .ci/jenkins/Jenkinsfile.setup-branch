@@ -62,6 +62,8 @@ pipeline {
                 script {
                     maven.mvnVersionsSet(getMavenCommand(getRepoName()).withProperty('full'), getKogitoVersion(), true)
                     maven.mvnSetVersionProperty(getMavenCommand(getRepoName()), 'version.org.kie', getDroolsVersion())
+                    def path = "${getRepoName()}/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment/pom.xml"
+                    sh "sed -i -r 's|<(data-index-ephemeral\\.image)>(.*):.*|<\\1>\\2:${getMajorMinorKogitoVersion()}</\\1>|' $path"
                 }
             }
         }
@@ -168,4 +170,9 @@ void runMavenDeploy(String directory) {
     }
 
     mvnCmd.skipTests(true).run('clean deploy')
+}
+
+String getMajorMinorKogitoVersion() {
+    def parsed = getKogitoVersion().split('\\.')
+    return parsed[0] + '.' + parsed[1]
 }

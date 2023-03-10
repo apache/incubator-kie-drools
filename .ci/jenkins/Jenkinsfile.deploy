@@ -95,6 +95,8 @@ pipeline {
                 script {
                     maven.mvnVersionsSet(getMavenCommand(), getProjectVersion(), !isRelease())
                     maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie', getDroolsVersion())
+                    maven.mvnSetVersionProperty(getMavenCommand(getIntegrationTestHotReloadPath()), "data-index-ephemeral.image.test", "${getCurrentNightlyImage()}" )
+                    maven.mvnSetVersionProperty(getMavenCommand(getWorkflowCommonDeploymentPath()), "data-index-ephemeral.image", "${getNextProdImage()}" )
                 }
             }
         }
@@ -319,4 +321,23 @@ MavenStagingHelper getStagingHelper() {
 
 String getLocalDeploymentFolder() {
     return "${env.MAVEN_DEPLOY_LOCAL_DIR}/${getRepoName()}"
+}
+
+String getWorkflowCommonDeploymentPath() {
+    return "${getRepoName()}/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment"
+}
+
+String getIntegrationTestHotReloadPath() {
+    return "${getRepoName()}/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes-integration-test-hot-reload"
+}
+
+String getCurrentNightlyImage() {
+    return maven.mvnGetVersionProperty(getMavenCommand(getWorkflowCommonDeploymentPath()), "data-index-ephemeral.image")
+}
+
+String getNextProdImage() {
+    def currentNightlyImage = getCurrentNightlyImage()
+    def nightlyIndex = currentNightlyImage.indexOf('-nightly')
+    def nextProdImageName = currentNightlyImage.substring(0, nightlyIndex) +  currentNightlyImage.substring(nightlyIndex + '-nightly'.length())
+    return nextProdImageName
 }
