@@ -20,10 +20,19 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class BeforeAllMethodExtension implements BeforeAllCallback {
 
+    // note: cache directory is shared, so we must not run junit 5 with multi-thread (e.g. ExecutionMode.CONCURRENT)
+    // nor surefire-plugin with fork > 1
+    // So this flag doesn't have to be AtomicBoolean
+    private static boolean initialized = false;
+
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         // This method will be called before the first test method of all test classes
         // So it makes sure to clean up even if we terminate a process while debugging
+        if (initialized) {
+            return;
+        }
+        initialized = true;
         ReliabilityTestUtils.cleanUpCacheFiles();
     }
 }
