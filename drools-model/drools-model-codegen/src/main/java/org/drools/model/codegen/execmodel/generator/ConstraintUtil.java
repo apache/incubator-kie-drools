@@ -31,7 +31,7 @@ public class ConstraintUtil {
     public static final String LESS_THAN_PREFIX = "lessThan";
     public static final String LESS_OR_EQUAL_PREFIX = "lessOrEqual";
 
-    private static final boolean ENABLE_NORMALIZE = Boolean.parseBoolean(System.getProperty(org.drools.compiler.rule.builder.util.ConstraintUtil.DROOLS_NORMALIZE_CONSTRAINT, "true"));
+    static boolean ENABLE_NORMALIZE = Boolean.parseBoolean(System.getProperty(org.drools.compiler.rule.builder.util.ConstraintUtil.DROOLS_NORMALIZE_CONSTRAINT, "true"));
 
     private ConstraintUtil() {}
 
