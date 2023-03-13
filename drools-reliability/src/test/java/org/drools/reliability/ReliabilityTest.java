@@ -44,8 +44,10 @@ class ReliabilityTest {
             "  $s: String()\n" +
             "  $p: Person( getName().startsWith($s) )\n" +
             "then\n" +
-            "  results.add( $p.getAge() );\n" +
+            "  results.add( $p.getName() );\n" +
             "end";
+	private long savedSessionId;
+	private KieSession session;
 
     static Stream<PersistedSessionOption.Strategy> strategyProvider() {
         return Stream.of(PersistedSessionOption.Strategy.STORES_ONLY, PersistedSessionOption.Strategy.FULL);
@@ -59,168 +61,99 @@ class ReliabilityTest {
     public void tearDown() {
         // We can remove this when we implement ReliableSession.dispose() to call CacheManager.removeCachesBySessionId(id)
         CacheManager.INSTANCE.removeAllSessionCaches();
+
     }
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
     void insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.Strategy strategy) {
 
-        long savedSessionId;
+        createSession(BASIC_RULE, strategy);
 
-        // 1st round
-        {
-            KieSession firstSession = getFirstKieSession(BASIC_RULE, strategy);
-
-            savedSessionId = firstSession.getIdentifier();
-
-            firstSession.insert("M");
-            firstSession.insert(new Person("Mark", 37));
-        }
+		insertString();
+		insertMatchingPersonOne();
 
         //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
         //-- ksession and kbase are lost. CacheManager is recreated. Client knows only "id"
         failover();
 
-        // 2nd round
-        {
-            KieSession secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
+        restoreSession(BASIC_RULE, strategy);
 
-            try {
-                secondSession.insert(new Person("Edson", 35));
-                secondSession.insert(new Person("Mario", 40));
+		insertNonMatchingPerson();
+		insertMatchingPersonTwo();
+		
+		session.fireAllRules();
 
-                assertThat(secondSession.fireAllRules()).isEqualTo(2);
-                assertThat(getResults(secondSession)).containsExactlyInAnyOrder(37, 40);
-            } finally {
-                secondSession.dispose();
-            }
-        }
+		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
     }
 
-    private List<Integer> getResults(KieSession kieSession) {
-        return (List<Integer>) kieSession.getGlobal("results");
-    }
-
-    private KieSession getFirstKieSession(String drl, PersistedSessionOption.Strategy strategy) {
-        return getKieSession(drl, PersistedSessionOption.newSession(strategy));
-    }
-
-    private KieSession getSubsequentKieSession(String drl, long savedSessionId, PersistedSessionOption.Strategy strategy) {
-        return getKieSession(drl, PersistedSessionOption.fromSession(savedSessionId, strategy));
-    }
-
-    private KieSession getKieSession(String drl, PersistedSessionOption option) {
-        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
-        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
-        conf.setOption(option);
-        KieSession kieSession = kbase.newKieSession(conf, null);
-        List<Integer> results = new ArrayList<>();
-        kieSession.setGlobal("results", results);
-        return kieSession;
-    }
 
     @ParameterizedTest
     @MethodSource("strategyProvider")
     void noFailover(PersistedSessionOption.Strategy strategy) {
 
-        long savedSessionId;
 
-        // 1st round
-        {
-            KieSession firstSession = getFirstKieSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, strategy);
 
-            savedSessionId = firstSession.getIdentifier();
+		insertString();
+		insertMatchingPersonOne();
 
-            firstSession.insert("M");
-            firstSession.insert(new Person("Mark", 37));
-        }
+        restoreSession(BASIC_RULE, strategy);
 
-        // 2nd round
-        {
-            KieSession secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
+		insertNonMatchingPerson();
+		insertMatchingPersonTwo();
 
-            try {
-                secondSession.insert(new Person("Toshiya", 35));
-                secondSession.insert(new Person("Mario", 40));
+		session.fireAllRules();
 
-                assertThat(secondSession.fireAllRules()).isEqualTo(2);
-                assertThat(getResults(secondSession)).containsExactlyInAnyOrder(37, 40);
-            } finally {
-                secondSession.dispose();
-            }
-        }
+		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
     }
+
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
     void insertFireInsertFailoverInsertFire_shouldMatchFactInsertedBeforeFailover(PersistedSessionOption.Strategy strategy) {
-        long savedSessionId;
 
-        // 1st round
-        {
-            KieSession firstSession = getFirstKieSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, strategy);
 
-            savedSessionId = firstSession.getIdentifier();
+		insertString();
+		insertMatchingPersonOne();
 
-            firstSession.insert("M");
-            firstSession.insert(new Person("Matteo", 41));
+		session.fireAllRules();
 
-            assertThat(firstSession.fireAllRules()).isEqualTo(1);
-            assertThat(getResults(firstSession)).containsExactlyInAnyOrder(41);
-
-            firstSession.insert(new Person("Mark", 47)); // This is not yet matched
-        }
+		insertMatchingPersonTwo();
 
         failover();
 
-        // 2nd round
-        {
-            KieSession secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
+        restoreSession(BASIC_RULE, strategy);
 
-            try {
-                secondSession.insert(new Person("Toshiya", 45));
-                secondSession.insert(new Person("Mario", 49));
+        insertNonMatchingPerson();
+        insertMatchingPersonThree();
 
-                assertThat(secondSession.fireAllRules()).isEqualTo(2);
-                assertThat(getResults(secondSession)).containsExactlyInAnyOrder(47, 49);
-            } finally {
-                secondSession.dispose();
-            }
-        }
+        session.fireAllRules();
+
+        assertThat(getResults()).containsExactlyInAnyOrder("Matching Person Two", "Matching Person Three");
     }
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
     void insertFireFailoverInsertFire_shouldNotRepeatFiredMatch(PersistedSessionOption.Strategy strategy) {
-        long savedSessionId;
-        // 1st round
-        {
-            KieSession firstSession = getFirstKieSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, strategy);
 
-            savedSessionId = firstSession.getIdentifier();
+		insertString();
+		insertMatchingPersonOne();
 
-            firstSession.insert("M");
-            firstSession.insert(new Person("Mark", 37));
-
-            assertThat(firstSession.fireAllRules()).isEqualTo(1);
-        }
+		session.fireAllRules();
 
         failover();
 
-        // 2nd round
-        {
-            KieSession secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
+        restoreSession(BASIC_RULE, strategy);
 
-            try {
-                secondSession.insert(new Person("Edson", 35));
-                secondSession.insert(new Person("Mario", 40));
+        insertNonMatchingPerson();
+		insertMatchingPersonTwo();
 
-                assertThat(secondSession.fireAllRules()).isEqualTo(1); // Only Mario matches.
-                assertThat(getResults(secondSession)).containsExactlyInAnyOrder(40);
-            } finally {
-                secondSession.dispose();
-            }
-        }
+		session.fireAllRules();
+
+		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person Two");
     }
 
     @ParameterizedTest
@@ -238,35 +171,68 @@ class ReliabilityTest {
                         "  update($p); \n" + // updated Person will not match
                        "end";
 
-        long savedSessionId;
-        // 1st round
-        {
-            KieSession firstSession = getFirstKieSession(drl, strategy);
+        createSession(drl, strategy);
 
-            savedSessionId = firstSession.getIdentifier();
 
-            firstSession.insert("M");
-            firstSession.insert(new Person("Mark", 37));
-            firstSession.insert(new Person("Nicole", 27));
+		insertString();
+		insertMatchingPersonOne();
+		session.insert(new Person("Nicole", 27));
 
-            assertThat(firstSession.fireAllRules()).isEqualTo(1);
-        }
+		assertThat(session.fireAllRules()).isEqualTo(1);
 
         failover();
 
-        // 2nd round
-        {
-            KieSession secondSession = getSubsequentKieSession(BASIC_RULE, savedSessionId, strategy);
+        restoreSession(BASIC_RULE, strategy);
 
-            try {
-                secondSession.insert(new Person("John", 22));
-                secondSession.insert(new Person("Mary", 42));
+		session.insert(new Person("John", 22));
+		session.insert(new Person("Mary", 42));
 
-                assertThat(secondSession.fireAllRules()).isEqualTo(1);
-                assertThat(getResults(secondSession)).containsExactlyInAnyOrder(42);
-            } finally {
-                secondSession.dispose();
-            }
-        }
+		assertThat(session.fireAllRules()).isEqualTo(1);
+		assertThat(getResults()).containsExactlyInAnyOrder("Mary");
     }
+    
+	private void insertString() {
+		session.insert("M");
+	}
+
+	private void insertMatchingPersonOne() {
+		session.insert(new Person("Matching Person One", 37));
+	}
+
+
+	private void insertMatchingPersonTwo() {
+		session.insert(new Person("Matching Person Two", 40));
+	}
+	
+	private void insertMatchingPersonThree() {
+		session.insert(new Person("Matching Person Three", 41));
+	}
+
+	private void insertNonMatchingPerson() {
+		session.insert(new Person("Toshiya", 35));
+	}
+
+    private List<String> getResults() {
+        return (List<String>) session.getGlobal("results");
+    }
+
+    private KieSession createSession(String drl, PersistedSessionOption.Strategy strategy) {
+        return getKieSession(drl, PersistedSessionOption.newSession(strategy));
+    }
+
+    private KieSession restoreSession(String drl, PersistedSessionOption.Strategy strategy) {
+        return getKieSession(drl, PersistedSessionOption.fromSession(savedSessionId, strategy));
+    }
+
+    private KieSession getKieSession(String drl, PersistedSessionOption option) {
+        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption(option);
+        session = kbase.newKieSession(conf, null);
+        savedSessionId = session.getIdentifier();
+        List<String> results = new ArrayList<>();
+        session.setGlobal("results", results);
+        return session;
+    }
+
 }
