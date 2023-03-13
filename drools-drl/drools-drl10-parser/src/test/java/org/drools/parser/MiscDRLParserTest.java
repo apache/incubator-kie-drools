@@ -1224,7 +1224,6 @@ class MiscDRLParserTest {
         assertThat(fld.getExpression()).isEqualTo("likes == $type");
     }
 
-    @Disabled("Priority : High | Failed to parse and/or with parentheses in LHS")
     @Test
     public void parse_OrNesting() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
