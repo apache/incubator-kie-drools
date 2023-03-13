@@ -27,12 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.jbpm.process.core.Process;
+import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
@@ -169,27 +169,26 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     private Class<?> getTargetInfo(KogitoWorkItem workItem) {
         String varName = ((WorkItemNode) ((WorkItemNodeInstance) workItem.getNodeInstance()).getNode()).getIoSpecification().getOutputMappingBySources().get(RESULT);
         if (varName != null) {
-            return getType(workItem.getProcessInstance(), varName);
+            return getType(workItem, varName);
         }
-        logger.info("no out mapping for {}", RESULT);
+        logger.warn("no out mapping for {}", RESULT);
         return null;
     }
 
-    private Class<?> getType(KogitoProcessInstance pi, String varName) {
-        VariableScope variableScope = (VariableScope) ((Process) pi.getProcess()).getDefaultContext(
-                VariableScope.VARIABLE_SCOPE);
-        Variable variable = variableScope.findVariable(varName);
-        if (variable != null) {
-            return variable.getType().getObjectClass();
-        } else {
-            logger.info("Cannot find definition for variable {}", varName);
-            return null;
+    private Class<?> getType(KogitoWorkItem workItem, String varName) {
+        VariableScope variableScope = (VariableScope) ((ContextResolver) ((NodeInstance) workItem.getNodeInstance()).getNode()).resolveContext(VariableScope.VARIABLE_SCOPE, varName);
+        if (variableScope != null) {
+            Variable variable = variableScope.findVariable(varName);
+            if (variable != null) {
+                return variable.getType().getObjectClass();
+            }
         }
+        logger.info("Cannot find definition for variable {}", varName);
+        return null;
     }
 
     @Override
     public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         // rest item handler does not support abort
     }
-
 }

@@ -143,6 +143,8 @@ public class RestWorkItemHandlerTest {
         when(node.getIoSpecification()).thenReturn(ioSpecification);
         workItem.setNodeInstance(nodeInstance);
         when(nodeInstance.getNode()).thenReturn(node);
+        when(node.resolveContext(VariableScope.VARIABLE_SCOPE, DEFAULT_WORKFLOW_VAR)).thenReturn(variableScope);
+
         Map<String, String> outputMapping = Collections.singletonMap(RestWorkItemHandler.RESULT, DEFAULT_WORKFLOW_VAR);
         when(ioSpecification.getOutputMappingBySources()).thenReturn(outputMapping);
 
