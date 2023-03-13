@@ -67,6 +67,7 @@ recipeList:
   - org.openrewrite.java.migrate.JavaxXmlSoapToJakartaXmlSoap
   - org.openrewrite.java.migrate.JavaxXmlWsMigrationToJakartaXmlWs
   - org.openrewrite.java.migrate.JavaxPeristenceXmlToJakartaPersistenceXml
+  - org.kie.drools.FixChangedPackages
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.java.migrate.JavaxActivationMigrationToJakartaActivation
@@ -1031,3 +1032,18 @@ recipeList:
       elementName: persistence
       newValue: https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd
       fileMatcher: "**/persistence.xml"
+
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.kie.drools.FixChangedPackages
+displayName: Change classes to reflect package renaming.
+recipeList:
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector
+      newFullyQualifiedTypeName: io.smallrye.reactive.messaging.memory.InMemoryConnector
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: io.smallrye.reactive.messaging.providers.connectors.InMemorySink
+      newFullyQualifiedTypeName: io.smallrye.reactive.messaging.memory.InMemorySink
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: io.smallrye.reactive.messaging.providers.connectors.InMemorySource
+      newFullyQualifiedTypeName: io.smallrye.reactive.messaging.memory.InMemorySource
