@@ -575,4 +575,35 @@ public class BigDecimalTest extends BaseModelTest {
 
         assertThat(fires).isEqualTo(1);
     }
+
+    @Test
+    public void bigDecimalArithmeticWithMethodCall() {
+        // DROOLS-7364
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + Customer.class.getCanonicalName() + ";\n" +
+                     "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule \"Rule 1a\"\n" +
+                     "    when\n" +
+                     // Note: To access the scope EnclosedExpr (rate * new BigDecimal(\"1000\")), the uncommented constraint requires deeper execution path (ExpressionTyper -> FlattenScope.flattenScope)
+                     //       Probably we need to examine the whole MethodCallExpr to fix the BinaryExpr at the early stage
+                     //       ConstraintParser.parseBinaryExpr only fixes a bare BinaryExpr for BigDecimal arithmetic
+                     "        Customer( $ans : String.format(\"%,d\", (rate * new BigDecimal(\"1000\")).longValue()) )\n" +
+//                     "        Customer( $ans : (rate * new BigDecimal(\"1000\")).longValue() )\n" +
+                     "    then\n" +
+                     "        result.add($ans);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Customer customer = new Customer();
+        customer.setRate(new BigDecimal("2"));
+        ksession.insert(customer);
+        ksession.fireAllRules();
+
+        assertThat(result).contains("2,000");
+    }
 }
