@@ -52,7 +52,7 @@ pipeline {
                         pipelineHelper.retry(
                         {
                             def SETTINGS_XML_ID = '5d9884a1-178a-4d67-a3ac-9735d2df2cef'
-                            def projectCollection = ['drools', 'optaplanner', 'optaplanner-quickstarts', 'optaweb-vehicle-routing', 'jboss-integration/rhbop-optaplanner']
+                            def projectCollection = ['drools', 'optaplanner', 'optaplanner-quickstarts', 'jboss-integration/rhbop-optaplanner']
                             def projectVariableMap = ['kiegroup_optaplanner': 'optaplannerVersion', 'kiegroup_drools': 'droolsProductVersion']
                             def additionalVariables = [
                                 'productVersion': env.PRODUCT_VERSION,

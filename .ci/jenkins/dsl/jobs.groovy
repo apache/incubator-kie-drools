@@ -177,9 +177,6 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     SONARCLOUD_ANALYSIS_MVN_OPTS: '-Dsonar.projectKey=org.optaplanner:optaplanner',
                 ]
             ], [
-                id: 'optaweb-vehicle-routing',
-                repository: 'optaweb-vehicle-routing'
-            ], [
                 id: 'optaplanner-quickstarts',
                 repository: 'optaplanner-quickstarts',
                 env : [
@@ -189,9 +186,6 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
             ]
         ]
     ]
-    if (EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'native')) {
-        jobConfig.jobs.retainAll { !it.id.startsWith('optaweb') }
-    }
     return jobConfig
 }
 

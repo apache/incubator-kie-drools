@@ -6,10 +6,6 @@ dependencies:
     dependencies:
       - project: kiegroup/drools
 
-  - project: kiegroup/optaweb-vehicle-routing
-    dependencies:
-      - project: kiegroup/optaplanner
-
   - project: kiegroup/optaplanner-quickstarts
     dependencies:
       - project: kiegroup/optaplanner

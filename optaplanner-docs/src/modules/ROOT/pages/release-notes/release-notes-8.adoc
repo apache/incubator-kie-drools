@@ -1,6 +1,15 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+[[releaseNotes-8.36.0.Final]]
+=== OptaPlanner 8.36.0.Final
+
+==== OptaWeb Vehicle Routing demo application abandoned
+
+The codebase for OptaWeb Vehicle Routing demo application has been frozen and will no longer receive any updates.
+
+We encourage users to check out the https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/use-cases/vehicle-routing[OptaPlanner Vehicle Routing Quickstart] for a simple and straight-forward way of integrating OptaPlanner in your application.
+
 [[releaseNotes-8.35.0.Final]]
 === OptaPlanner 8.35.0.Final
 

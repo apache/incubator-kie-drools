@@ -62,28 +62,9 @@ pipeline {
             }
         }
 
-        stage('Init Optaweb Vehicle Routing') {
-            when {
-                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
-                expression { return isStream8() }
-            }
-            steps {
-                script {
-                    def buildParams = getDefaultBuildParams()
-                    addOptaPlannerVersionParam(buildParams)
-                    buildJob('optaweb-vehicle-routing', buildParams)
-                }
-            }
-            post {
-                failure {
-                    addFailedStage('optaweb-vehicle-routing')
-                }
-            }
-        }
-
         stage('Init Optaplanner Quickstarts') {
             when {
-                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                // TODO: switch to the 9 stream after quickstarts will have been migrated.
                 expression { return isStream8() }
             }
             steps {

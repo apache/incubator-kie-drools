@@ -9,7 +9,6 @@ deployProperties = [:]
 
 optaplannerRepository = 'optaplanner'
 quickstartsRepository = 'optaplanner-quickstarts'
-vehicleRoutingRepository = 'optaweb-vehicle-routing'
 
 imageUtils = null
 
@@ -87,10 +86,9 @@ pipeline {
             steps {
                 script {
                     checkoutRepo(optaplannerRepository)
-                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    // TODO: switch to the 9 stream after quickstarts will have been migrated.
                     if (isStream8()) {
                         checkoutQuickstarts()
-                        checkoutRepo(vehicleRoutingRepository)
                     }
                 }
             }
@@ -103,9 +101,8 @@ pipeline {
             steps {
                 script {
                     prepareForPR(optaplannerRepository)
-                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    // TODO: switch to the 9 stream after quickstarts will have been migrated.
                     if (isStream8()) {
-                        prepareForPR(vehicleRoutingRepository)
                         prepareForPR(quickstartsRepository)
                     }
                 }
@@ -126,10 +123,8 @@ pipeline {
 
                     mavenCleanInstallOptaPlannerParents()
 
-                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    // TODO: switch to the 9 stream after quickstarts will have been migrated.
                     if (isStream8()) {
-                        maven.mvnVersionsUpdateParentAndChildModules(getOptawebVehicleRoutingMavenCommand(), getProjectVersion(), !isRelease())
-
                         updateQuickstartsVersions()
                     }
                 }
@@ -161,7 +156,7 @@ pipeline {
 
         stage('Build Quickstarts') {
             when {
-                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                // TODO: switch to the 9 stream after quickstarts will have been migrated.
                 expression { return isStream8() }
             }
             steps {
@@ -182,27 +177,6 @@ pipeline {
             }
         }
 
-        stage('Build Vehicle Routing') {
-            when {
-                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
-                expression { return isStream8() }
-            }
-            steps {
-                script {
-                    buildOptaweb(getOptawebVehicleRoutingMavenCommand())
-                }
-            }
-            post {
-                always {
-                    script {
-                        archiveJUnitTestResults()
-                        archiveCypressArtifacts()
-                        util.archiveConsoleLog()
-                    }
-                }
-            }
-        }
-
         stage('Deploy to repository') {
             when {
                 expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
@@ -210,10 +184,9 @@ pipeline {
             steps {
                 script {
                     runMavenDeploy(getOptaplannerMavenCommand())
-                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    // TODO: switch to the 9 stream after quickstarts will have been migrated.
                     if (isStream8()) {
                         runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
-                        runMavenDeploy(getOptawebVehicleRoutingMavenCommand())
                     }
                 }
             }
@@ -225,10 +198,6 @@ pipeline {
             steps {
                 script {
                     runMavenDeploy(getOptaplannerMavenCommand(), optaplannerRepository)
-                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
-                    if (isStream8()) {
-                        runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
-                    }
                 }
             }
         }
@@ -240,10 +209,6 @@ pipeline {
                 script {
                     // Deploy to specific repository with credentials
                     maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
-                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
-                    if (isStream8()) {
-                        maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(vehicleRoutingRepository), getMavenRepoZipUrl())
-                    }
                 }
             }
         }
@@ -258,10 +223,6 @@ pipeline {
                 script {
                     // Stage release artifacts
                     runMavenStage(getOptaplannerMavenCommand(), optaplannerRepository)
-                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
-                    if (isStream8()) {
-                        runMavenStage(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
-                    }
                 }
             }
         }
@@ -273,9 +234,8 @@ pipeline {
             steps {
                 script {
                     commitAndCreatePR(optaplannerRepository, getBuildBranch())
-                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    // TODO: switch to the 9 stream after quickstarts will have been migrated.
                     if (isStream8()) {
-                        commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository, getBuildBranch())
                         commitAndCreatePR(quickstartsRepository, getQuickStartsBranch())
                     }
                 }
@@ -287,11 +247,6 @@ pipeline {
                         setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.ref", getBotBranch())
                         setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${optaplannerRepository}")
                         setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.ref", getBuildBranch())
-
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${vehicleRoutingRepository}")
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.ref", getBotBranch())
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${vehicleRoutingRepository}")
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.ref", getBuildBranch())
                     }
                 }
             }
@@ -339,20 +294,6 @@ void sendErrorNotification() {
         mailer.sendMarkdownTestSummaryNotification("CI failures", [env.OPTAPLANNER_CI_EMAIL_TO], additionalInfo)
     } else {
         echo 'No notification sent per configuration'
-    }
-}
-
-void buildOptaweb(MavenCommand optawebCommand) {
-    MavenCommand buildCommand = optawebCommand
-    if (!skipIntegrationTests()) {
-        buildCommand = buildCommand.withProfiles(getIntegrationTestProfiles())
-    }
-    buildCommand.withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
-}
-
-void archiveCypressArtifacts() {
-    if (!skipIntegrationTests()) {
-        archiveArtifacts(artifacts: '**/cypress/screenshots/**,**/cypress/videos/**', fingerprint: false, allowEmptyArchive: true)
     }
 }
 
@@ -473,10 +414,6 @@ MavenCommand getOptaplannerMavenCommand() {
 
 MavenCommand getOptaplannerQuickstartsMavenCommand() {
     return getMavenDefaultCommand().inDirectory(quickstartsRepository).withProperty('full')
-}
-
-MavenCommand getOptawebVehicleRoutingMavenCommand() {
-    return getMavenDefaultCommand().inDirectory(vehicleRoutingRepository)
 }
 
 /**

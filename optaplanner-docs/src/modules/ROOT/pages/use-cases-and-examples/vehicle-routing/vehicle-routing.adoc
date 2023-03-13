@@ -177,7 +177,7 @@ There are several technologies available to precalculate road costs, such as htt
 
 image::use-cases-and-examples/vehicle-routing/integrationWithRealMaps.png[align="center"]
 
-There are also several technologies to render it, such as http://leafletjs.com[Leaflet] and https://developers.google.com/maps/[Google Maps for developers]. The https://github.com/kiegroup/optaweb-vehicle-routing[OptaWeb Vehicle Routing project] has an example which demonstrates such rendering:
+There are also several technologies to render it, such as http://leafletjs.com[Leaflet] and https://developers.google.com/maps/[Google Maps for developers]:
 
 image::use-cases-and-examples/vehicle-routing/vehicleRoutingLeafletAndGoogleMaps.png[align="center"]
 

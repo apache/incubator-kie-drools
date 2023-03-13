@@ -19,11 +19,6 @@ and the https://www.optaplanner.org/xsd/benchmark/[Benchmark] available on the o
 No build artifacts are required; as a result of the release, the `development` branch must be rebased onto
 the `stable` branch and must point to the released final version of OptaPlanner.
 
-=== OptaWeb Vehicle Routing
-
-* https://www.optaplanner.org/download/download.html[Distribution Zip] available via a link on the optaplanner-website
-* https://www.optaplanner.org/learn/documentation.html[Documentation] available via a link on the optaplanner-website
-
 === OptaPlanner Website
 The website contains https://github.com/kiegroup/optaplanner-website/blob/main/_config/pom.yml[links]
 to the Distribution Zip files and documentation (see above). To update the documentation, and the Distribution Zip,
@@ -31,7 +26,7 @@ upload them to the `filemgmt.jboss.org` and then, open a PR changing the links.
 
 For the OptaPlanner project, there is a https://github.com/kiegroup/optaplanner/blob/main/build/release/upload_distribution.sh[script]
 uploading the documentation and the Distribution Zip. The release pipeline calls the script and updates also
-the links on the website. For Optaweb Vehicle Routing, the upload has to be done manually at this moment.
+the links on the website.
 
 == Versioning
 
@@ -83,7 +78,7 @@ https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/
 The OptaPlanner release pipeline can now be triggered using the branch created in step 2.
 Run https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/release/job/optaplanner-release[optaplanner-release].
 The OptaPlanner release pipeline runs the https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/release/job/optaplanner-deploy[optaplanner-deploy] job
-which updates the project versions of OptaPlanner, Quickstarts and OptaWeb Vehicle Routing, builds these projects and deploys their artifacts to Nexus.
+which updates the project versions of OptaPlanner and Quickstarts, builds these projects and deploys their artifacts to Nexus.
 After this deployment step it promotes the projects. In this promote step PRs to upgrade the projects will be raised and merged as well as the tag created and pushed.
 
 === 5. OptaPlanner post release steps

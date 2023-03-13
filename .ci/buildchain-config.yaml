@@ -35,14 +35,7 @@ build:
         mvn clean install -Dfull ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS }}
       upstream: |
         mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM }}
-  
-  - project: kiegroup/optaweb-vehicle-routing
-    build-command: 
-      current: |
-        mvn clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.OPTAWEB_VEHICLE_ROUTING_BUILD_MVN_OPTS }}
-      upstream: |
-        mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.OPTAWEB_VEHICLE_ROUTING_BUILD_MVN_OPTS_UPSTREAM }}
-  
+
   - project: kiegroup/optaplanner-quickstarts
     build-command: 
       before:

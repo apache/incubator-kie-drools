@@ -7,7 +7,6 @@ deployProperties = [:]
 pipelineProperties = [:]
 
 String optaplannerRepository = 'optaplanner'
-String vehicleRoutingRepository = 'optaweb-vehicle-routing'
 String quickstartsRepository = 'optaplanner-quickstarts'
 
 imageUtils = null
@@ -80,25 +79,9 @@ pipeline {
             }
         }
 
-        stage('Merge Optaweb Vehicle Routing deploy PR and tag') {
-            when {
-                // TODO: switch to the 9 stream after optaweb will have been migrated.
-                expression { return isRelease() && isStream8() }
-            }
-            steps {
-                script {
-                    dir(vehicleRoutingRepository) {
-                        checkoutRepo(vehicleRoutingRepository)
-                        mergeAndPush(getDeployPrLink(vehicleRoutingRepository))
-                        tagLatest()
-                    }
-                }
-            }
-        }
-
         stage('Merge OptaPlanner Quickstarts PR and tag') {
             when {
-                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                // TODO: switch to the 9 stream after quickstarts will have been migrated.
                 expression { return isRelease() && isStream8() }
             }
             steps {
@@ -114,7 +97,7 @@ pipeline {
 
         stage('Upload OptaPlanner documentation') {
             when {
-                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                // TODO: switch to the 9 stream after quickstarts will have been migrated.
                 expression { return isRelease() && isStream8() }
             }
             steps {
@@ -125,22 +108,6 @@ pipeline {
                             .withProperty('full')
                             .run('clean install')
                     uploadDistribution(optaplannerRepository)
-                }
-            }
-        }
-
-        stage('Upload Vehicle Routing documentation and distribution') {
-            when {
-                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
-                expression { return isRelease() && isStream8() }
-            }
-            steps {
-                script {
-                    getMavenCommand()
-                            .inDirectory(vehicleRoutingRepository)
-                            .skipTests(true)
-                            .run('clean install')
-                    uploadDistribution(vehicleRoutingRepository)
                 }
             }
         }
@@ -171,33 +138,9 @@ pipeline {
             }
         }
 
-        stage('Set Optaweb Vehicle Routing next snapshot version') {
-            when {
-                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
-                expression { return isRelease() && isStream8()  }
-            }
-            steps {
-                script {
-                    String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
-                    dir("$vehicleRoutingRepository-bot") {
-                        prepareForPR(vehicleRoutingRepository)
-                        maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
-
-                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
-                        setPipelinePrLink(vehicleRoutingRepository, prLink)
-                    }
-                    dir(vehicleRoutingRepository) {
-                        sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush(getPipelinePrLink(vehicleRoutingRepository))
-                        runMavenDeploy(getMavenCommand())
-                    }
-                }
-            }
-        }
-
         stage('Set Quickstarts next snapshot version') {
             when {
-                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                // TODO: switch to the 9 stream after quickstarts will have been migrated.
                 expression { return isRelease() && isStream8() }
             }
             steps {
