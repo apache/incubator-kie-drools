@@ -479,19 +479,6 @@
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
       </dependency>
-      <!-- distribution -->
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-docs</artifactId>
-        <type>zip</type>
-        <version>${version.org.optaplanner}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-distribution-internal</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <type>zip</type>
-      </dependency>
       <!-- OptaPlanner operator -->
       <dependency>
         <groupId>org.optaplanner</groupId>
