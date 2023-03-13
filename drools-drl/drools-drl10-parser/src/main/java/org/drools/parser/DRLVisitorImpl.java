@@ -301,6 +301,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public BaseDescr visitLhsAnd(DRLParser.LhsAndContext ctx) {
+        if (ctx.lhsAnd() != null) {
+            return visitLhsAnd(ctx.lhsAnd());
+        }
         if (!ctx.DRL_AND().isEmpty()) {
             AndDescr andDescr = new AndDescr();
             List<BaseDescr> descrList = visitDescrChildren(ctx);
