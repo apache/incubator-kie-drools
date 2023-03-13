@@ -39,7 +39,7 @@ ruledef : DRL_RULE name=stringId (EXTENDS stringId)? drlAnnotation* attributes? 
 lhs : DRL_WHEN lhsExpression? ;
 lhsExpression : lhsOr+ ;
 lhsOr : LPAREN DRL_OR lhsAnd+ RPAREN | lhsAnd (DRL_OR lhsAnd)* ;
-lhsAnd : LPAREN DRL_AND lhsUnary+ RPAREN | lhsUnary (DRL_AND lhsUnary)* ;
+lhsAnd : LPAREN lhsAnd RPAREN | LPAREN DRL_AND lhsUnary+ RPAREN | lhsUnary (DRL_AND lhsUnary)* ;
 
 /*
 lhsUnary : ( lhsExists namedConsequence?
