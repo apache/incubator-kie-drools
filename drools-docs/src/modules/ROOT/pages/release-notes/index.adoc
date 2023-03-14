@@ -36,6 +36,10 @@ Maven `3.8.6` is now the minimum Maven version required to build Drools from sou
 
 `drools-mvel` is now deprecated in favor of the executable model. It also means `drools-engine` is recommended instead of deprecated `drools-engine-classic` that contains `drools-mvel`. You can still use MVEL syntax in your rules, so it doesn't affect how to write rules.
 
+=== Spreadsheet decision tables file extensions
+
+To ensure only files containing Drools decision tables are actually processed for rules compilation, file extension must end in either `.drl.xls`, `.drl.xlsx`, or `.drl.csv`. For example: `rules.drl.xls` is a valid extension and will be included for rule compilation when found in a KJAR based project.
+
 === Security Manager deprecation
 
 The {PRODUCT} features related to the JDK Security Manager will not be further developed, as starting with JDK17, the Java Platform has deprecated the Security Manager for removal.

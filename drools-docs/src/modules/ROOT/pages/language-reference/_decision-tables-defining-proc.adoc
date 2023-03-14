@@ -3,6 +3,8 @@
 
 Spreadsheet decision tables (XLS or XLSX) require two key areas that define rule data: a `RuleSet` area and a `RuleTable` area. The `RuleSet` area of the spreadsheet defines elements that you want to apply globally to all rules in the same package (not only the spreadsheet), such as a rule set name or universal rule attributes. The `RuleTable` area defines the actual rules (rows) and the conditions, actions, and other rule attributes (columns) that constitute that rule table within the specified rule set. A spreadsheet of decision tables can contain multiple `RuleTable` areas, but only one `RuleSet` area.
 
+TIP: Starting with Drools v8, file extension must end in either `.drl.xls`, `.drl.xlsx`, or `.drl.csv` as mentioned in the Release Notes.
+
 IMPORTANT: You should typically write only one spreadsheet of decision tables, containing all necessary `RuleTable` definitions, per rule package. You can write separate decision table spreadsheets for separate packages, but writing multiple spreadsheets in the same package can cause compilation errors from conflicting `RuleSet` or `RuleTable` attributes and is therefore not recommended.
 
 Refer to the following sample spreadsheet as you define your decision table:
