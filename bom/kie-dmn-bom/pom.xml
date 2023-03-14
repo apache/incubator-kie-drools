@@ -21,9 +21,9 @@
   <url>https://www.drools.org</url>
 
   <scm>
-    <connection>scm:git:https://github.com/kiegroup/kie-dmn.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/kie-dmn.git</developerConnection>
-    <url>https://github.com/kiegroup/kie-dmn</url>
+    <connection>scm:git:https://github.com/kiegroup/drools.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/drools.git</developerConnection>
+    <url>https://github.com/kiegroup/drools</url>
   </scm>
   <issueManagement>
     <system>jira</system>
