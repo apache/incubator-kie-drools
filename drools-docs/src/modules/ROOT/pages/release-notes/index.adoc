@@ -38,7 +38,7 @@ Maven `3.8.6` is now the minimum Maven version required to build Drools from sou
 
 === Spreadsheet decision tables file extensions
 
-To ensure only files containing Drools decision tables are actually processed for rules compilation, file extension must end in either `.drl.xls`, `.drl.xlsx`, or `.drl.csv`. For example: `rules.drl.xls` is a valid extension and will be included for rule compilation when found in a KJAR based project.
+All the files with `.xls`, `.xlsx` and `.csv` extensions were considered and parsed as decision tables. In general, this was a too strong assumption, breaking projects containing random excel files that are not decision tables and generating artificial compile-time errors. To prevent such problems the filename extension policy has been changed, considering and processing files as decision tables only if their extension is prepended with `.drl`. In other words, **only** files with `.drl.xls`, `.drl.xlsx`, and `.drl.csv` extensions will now be compiled as decision tables. For example: `rules.drl.xls` is a valid extension and will be included for rule compilation when found in a KJAR based project.
 
 === Security Manager deprecation
 
