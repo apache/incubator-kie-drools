@@ -31,6 +31,7 @@ import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtil
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.ACCESS_TOKEN;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.API_KEY;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.API_KEY_PREFIX;
+import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.APP_PROPERTIES_FUNCTIONS_BASE;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.PASSWORD_PROP;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.USER_PROP;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.runtimeRestApi;
@@ -38,6 +39,7 @@ import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.r
 public class RestTypeHandler extends WorkItemTypeHandler {
 
     private static final String METHOD_SEPARATOR = ":";
+    private static final String PORT = "port";
 
     @Override
     protected <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> fillWorkItemHandler(Workflow workflow,
@@ -60,7 +62,8 @@ public class RestTypeHandler extends WorkItemTypeHandler {
                 .workParameter(RestWorkItemHandler.USER, runtimeRestApi(functionDef, USER_PROP, context.getContext()))
                 .workParameter(RestWorkItemHandler.PASSWORD, runtimeRestApi(functionDef, PASSWORD_PROP, context.getContext()))
                 .workParameter(RestWorkItemHandler.HOST, runtimeRestApi(functionDef, "host", context.getContext()))
-                .workParameter(RestWorkItemHandler.PORT, runtimeRestApi(functionDef, "port", context.getContext(), Integer.class, 8080))
+                .workParameter(RestWorkItemHandler.PORT, runtimeRestApi(functionDef, PORT, context.getContext(), Integer.class,
+                        context.getContext().getApplicationProperty(APP_PROPERTIES_FUNCTIONS_BASE + PORT).map(Integer::parseInt).orElse(RestWorkItemHandler.DEFAULT_PORT)))
                 .workParameter(RestWorkItemHandler.BODY_BUILDER, new ParamsRestBodyBuilderSupplier())
                 .workParameter(BearerTokenAuthDecorator.BEARER_TOKEN, runtimeRestApi(functionDef, ACCESS_TOKEN, context.getContext()))
                 .workParameter(ApiKeyAuthDecorator.KEY_PREFIX, runtimeRestApi(functionDef, API_KEY_PREFIX, context.getContext()))
@@ -71,5 +74,4 @@ public class RestTypeHandler extends WorkItemTypeHandler {
     public String type() {
         return "rest";
     }
-
 }

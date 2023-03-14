@@ -81,6 +81,8 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     public static final String PATH_PARAM_RESOLVER = "PathParamResolver";
     public static final String AUTH_METHOD = "AuthMethod";
 
+    public static final int DEFAULT_PORT = 80;
+
     private static final Logger logger = LoggerFactory.getLogger(RestWorkItemHandler.class);
     private static final RestWorkItemHandlerResult DEFAULT_RESULT_HANDLER = new DefaultRestWorkItemHandlerResult();
     private static final RestWorkItemHandlerBodyBuilder DEFAULT_BODY_BUILDER = new DefaultWorkItemHandlerBodyBuilder();
@@ -115,7 +117,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         }
         HttpMethod method = getParam(parameters, METHOD, HttpMethod.class, HttpMethod.GET);
         String hostProp = getParam(parameters, HOST, String.class, "localhost");
-        int portProp = getParam(parameters, PORT, Integer.class, 80);
+        int portProp = getParam(parameters, PORT, Integer.class, DEFAULT_PORT);
         RestWorkItemHandlerResult resultHandler = getClassParam(parameters, RESULT_HANDLER, RestWorkItemHandlerResult.class, DEFAULT_RESULT_HANDLER, resultHandlers);
         RestWorkItemHandlerBodyBuilder bodyBuilder = getClassParam(parameters, BODY_BUILDER, RestWorkItemHandlerBodyBuilder.class, DEFAULT_BODY_BUILDER, bodyBuilders);
         ParamsDecorator paramsDecorator = getClassParam(parameters, PARAMS_DECORATOR, ParamsDecorator.class, DEFAULT_PARAMS_DECORATOR, paramsDecorators);
@@ -147,7 +149,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         }
         if (port == -1) {
             port = portProp;
-            logger.info("Port not specified, using default {}", portProp);
+            logger.debug("Port not specified, using default {}", portProp);
         }
         if (isEmpty(path)) {
             path = endPoint;
