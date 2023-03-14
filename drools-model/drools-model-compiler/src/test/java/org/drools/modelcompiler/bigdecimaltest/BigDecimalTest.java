@@ -577,7 +577,7 @@ public class BigDecimalTest extends BaseModelTest {
     }
 
     @Test
-    public void bigDecimalArithmeticWithMethodCall() {
+    public void bigDecimalArithmeticInMethodCallScope() {
         // DROOLS-7364
         String str =
                 "package org.drools.modelcompiler.bigdecimals\n" +
@@ -586,11 +586,34 @@ public class BigDecimalTest extends BaseModelTest {
                      "global java.util.List result;\n" +
                      "rule \"Rule 1a\"\n" +
                      "    when\n" +
-                     // Note: To access the scope EnclosedExpr (rate * new BigDecimal(\"1000\")), the uncommented constraint requires deeper execution path (ExpressionTyper -> FlattenScope.flattenScope)
-                     //       Probably we need to examine the whole MethodCallExpr to fix the BinaryExpr at the early stage
-                     //       ConstraintParser.parseBinaryExpr only fixes a bare BinaryExpr for BigDecimal arithmetic
+                     "        Customer( $ans : (rate * new BigDecimal(\"1000\")).longValue() )\n" +
+                     "    then\n" +
+                     "        result.add($ans);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Long> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Customer customer = new Customer();
+        customer.setRate(new BigDecimal("2"));
+        ksession.insert(customer);
+        ksession.fireAllRules();
+
+        assertThat(result).contains(2000L);
+    }
+
+    @Test
+    public void bigDecimalArithmeticInMethodCallScopeInMethodCallArgument() {
+        // DROOLS-7364
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + Customer.class.getCanonicalName() + ";\n" +
+                     "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule \"Rule 1a\"\n" +
+                     "    when\n" +
                      "        Customer( $ans : String.format(\"%,d\", (rate * new BigDecimal(\"1000\")).longValue()) )\n" +
-//                     "        Customer( $ans : (rate * new BigDecimal(\"1000\")).longValue() )\n" +
                      "    then\n" +
                      "        result.add($ans);\n" +
                      "end";
@@ -605,5 +628,67 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertThat(result).contains("2,000");
+    }
+
+    @Test
+    public void nonBigDecimalArithmeticInMethodCallScopeInMethodCallArgument() {
+        // DROOLS-7364
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + Customer.class.getCanonicalName() + ";\n" +
+                     "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule \"Rule 1a\"\n" +
+                     "    when\n" +
+                     "        Customer( $ans : String.format(\"%,d\", (longValue * Long.valueOf(1000L)).longValue()) )\n" +
+                     "    then\n" +
+                     "        result.add($ans);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Customer customer = new Customer();
+        customer.setLongValue(2L);
+        ksession.insert(customer);
+        ksession.fireAllRules();
+
+        assertThat(result).contains("2,000");
+    }
+
+    @Test
+    public void bigDecimalArithmeticInMethodCallArgumentWithoutEnclosedExpr() {
+        // DROOLS-7364
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + Customer.class.getCanonicalName() + ";\n" +
+                     "import " + Util.class.getCanonicalName() + ";\n" +
+                     "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule \"Rule 1a\"\n" +
+                     "    when\n" +
+                     "        Customer( $ans : Util.getString(\"%,d\", rate * new BigDecimal(\"1000\")) )\n" +
+                     "    then\n" +
+                     "        result.add($ans);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Customer customer = new Customer();
+        customer.setRate(new BigDecimal("2"));
+        ksession.insert(customer);
+        ksession.fireAllRules();
+
+        assertThat(result).contains("2,000");
+    }
+
+    public static class Util {
+
+        public static String getString(String format, BigDecimal bd) {
+            return String.format("%,d", bd.longValue());
+        }
     }
 }
