@@ -8,6 +8,7 @@ include::../_artifacts/document-attributes.adoc[]
 include::_traditional-to-ruleunit.adoc[leveloffset=+1]
 include::_nonexec-model-to-exec-model.adoc[leveloffset=+1]
 include::_missing_features_components.adoc[leveloffset=+1]
+include::_other_notes.adoc[leveloffset=+1]
 
 // migrated to Antora:
 include::migration-v7-to-kogito/_con-migration-to-kogito-overview.adoc[leveloffset=+1]
