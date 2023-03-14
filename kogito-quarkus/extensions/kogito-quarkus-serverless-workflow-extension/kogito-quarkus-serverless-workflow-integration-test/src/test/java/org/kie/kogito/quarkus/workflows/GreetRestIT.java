@@ -53,6 +53,17 @@ class GreetRestIT {
                 .body("type", is(KogitoWorkflowProcess.SW_TYPE));
     }
 
+    @Test
+    void testVersion() {
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .get("/greetdetails")
+                .then()
+                .statusCode(200)
+                .body("version", is("1.0"));
+    }
+
     private void assertIt(String flowName, String unknownMessage) {
         given()
                 .contentType(ContentType.JSON)

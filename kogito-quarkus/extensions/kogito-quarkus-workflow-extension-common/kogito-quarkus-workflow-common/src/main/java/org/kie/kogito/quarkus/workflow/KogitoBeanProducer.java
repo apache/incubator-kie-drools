@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.quarkus.workflow;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
 import org.kie.kogito.config.ConfigBean;
@@ -26,6 +27,7 @@ import org.kie.kogito.process.version.ProjectVersionProcessVersionResolver;
 import io.quarkus.arc.DefaultBean;
 import io.quarkus.arc.properties.IfBuildProperty;
 
+@ApplicationScoped
 public class KogitoBeanProducer {
 
     @DefaultBean

@@ -41,6 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @QuarkusIntegrationTest
 class BasicRestIT {
 
+    private static final String VERSION = System.getProperty("kogito.version");
+
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
@@ -333,5 +335,16 @@ class BasicRestIT {
                 .then()
                 .statusCode(200)
                 .body("type", is(KogitoWorkflowProcess.BPMN_TYPE));
+    }
+
+    @Test
+    void testVersion() {
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .get("/approvalsdetails")
+                .then()
+                .statusCode(200)
+                .body("version", is(VERSION));
     }
 }

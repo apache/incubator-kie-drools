@@ -39,7 +39,7 @@ public class GreetResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getWorkflowType() {
-        return Response.ok().entity(Map.of("type", process.type())).build();
+        return Response.ok().entity(Map.of("type", process.type(), "version", process.version())).build();
     }
 
 }
