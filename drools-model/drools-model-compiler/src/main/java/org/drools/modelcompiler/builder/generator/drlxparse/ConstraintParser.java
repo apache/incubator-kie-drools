@@ -116,6 +116,7 @@ import static org.drools.mvel.parser.utils.AstUtils.isLogicalOperator;
  */
 public class ConstraintParser {
 
+    private static final List<Operator> ARITHMETIC_OPERATORS = asList(PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER);
     private final RuleContext context;
     private final PackageModel packageModel;
     private final boolean skipVariableValidation;
@@ -623,7 +624,7 @@ public class ConstraintParser {
 
         Expression combo;
 
-        boolean arithmeticExpr = asList(PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER).contains(operator);
+        boolean arithmeticExpr = ARITHMETIC_OPERATORS.contains(operator);
         boolean isBetaConstraint = right.getExpression() != null && hasDeclarationFromOtherPattern( expressionTyperContext );
         boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaConstraint;
 
@@ -914,7 +915,7 @@ public class ConstraintParser {
         List<BinaryExpr> binaryExprList = methodCallExpr.findAll(BinaryExpr.class);
         for (BinaryExpr binaryExpr : binaryExprList) {
             Operator operator = binaryExpr.getOperator();
-            boolean arithmeticExpr = asList(PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER).contains(operator);
+            boolean arithmeticExpr = ARITHMETIC_OPERATORS.contains(operator);
             if (arithmeticExpr) {
                 final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
                 final ExpressionTyper expressionTyper = new ExpressionTyper(context, patternType, bindingId, isPositional, expressionTyperContext);
