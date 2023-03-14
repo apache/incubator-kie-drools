@@ -19,6 +19,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.drools.util.StringUtils;
+import org.eclipse.microprofile.reactive.messaging.OnOverflow;
+import org.eclipse.microprofile.reactive.messaging.OnOverflow.Strategy;
 import org.kie.kogito.addon.quarkus.messaging.common.ChannelFormat;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
@@ -30,7 +32,11 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.SuperExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
@@ -72,6 +78,15 @@ public abstract class EventGenerator implements ClassGenerator {
         clazz.findAll(StringLiteralExpr.class)
                 .forEach(str -> str.setString(str.asString().replace("$Trigger$", channelInfo.getChannelName())));
         clazz.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, channelInfo.getClassName()));
+        channelInfo.getOnOverflow().ifPresent(this::onOverflowAnnotation);
+    }
+
+    private void onOverflowAnnotation(OnOverflowInfo info) {
+        clazz.getFieldByName("emitter").ifPresent(f -> {
+            NormalAnnotationExpr annotation =
+                    f.addAndGetAnnotation(OnOverflow.class).addPair("value", new FieldAccessExpr(new NameExpr(new SimpleName(Strategy.class.getCanonicalName())), info.getStrategy().name()));
+            info.getBufferSize().ifPresent(bufferSize -> annotation.addPair("bufferSize", new LongLiteralExpr(bufferSize)));
+        });
     }
 
     protected FieldDeclaration generateMarshallerField(String fieldName, String setMethodName, Class<?> fieldClass) {

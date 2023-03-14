@@ -28,14 +28,16 @@ public class ChannelInfo {
     private final boolean isDefault;
 
     private final Optional<String> marshaller;
+    private final Optional<OnOverflowInfo> onOverflow;
 
-    public ChannelInfo(String channelName, Collection<String> triggers, String className, boolean isInput, boolean isDefault, Optional<String> marshaller) {
+    protected ChannelInfo(String channelName, Collection<String> triggers, String className, boolean isInput, boolean isDefault, Optional<String> marshaller, Optional<OnOverflowInfo> onOverflow) {
         this.className = className;
         this.channelName = channelName;
         this.isInput = isInput;
         this.isDefault = isDefault;
         this.triggers = triggers;
         this.marshaller = marshaller;
+        this.onOverflow = onOverflow;
     }
 
     public Collection<String> getTriggers() {
@@ -82,6 +84,10 @@ public class ChannelInfo {
 
     public Optional<String> getMarshaller() {
         return marshaller;
+    }
+
+    public Optional<OnOverflowInfo> getOnOverflow() {
+        return onOverflow;
     }
 
     @Override
