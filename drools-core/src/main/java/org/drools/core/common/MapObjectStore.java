@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toList;
 
 public abstract class MapObjectStore implements Externalizable, ObjectStore {
 
-    private Map<Object, InternalFactHandle> fhMap;
+    protected Map<Object, InternalFactHandle> fhMap;
 
     protected MapObjectStore(Map<Object, InternalFactHandle> fhMap) {
         this.fhMap = fhMap;

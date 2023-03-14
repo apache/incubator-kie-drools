@@ -29,6 +29,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.PersistedSessionOption;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,7 +62,7 @@ class ReliabilityTest {
     public void tearDown() {
         // We can remove this when we implement ReliableSession.dispose() to call CacheManager.removeCachesBySessionId(id)
         CacheManager.INSTANCE.removeAllSessionCaches();
-
+        failover();
     }
 
     @ParameterizedTest
@@ -81,7 +82,7 @@ class ReliabilityTest {
 
 		insertNonMatchingPerson();
 		insertMatchingPersonTwo();
-		
+
 		session.fireAllRules();
 
 		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
@@ -161,18 +162,17 @@ class ReliabilityTest {
     void updateInRHS_insertFireFailoverInsertFire_shouldNotMatchUpdatedFact(PersistedSessionOption.Strategy strategy) {
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "global java.util.List results;" +
-                        "rule X when\n" +
-                        "  $s: String()\n" +
-                        "  $p: Person( getName().startsWith($s) )\n" +
-                        "then\n" +
-                        "  results.add( $p.getAge() );\n" +
-                        "  $p.setName(\"-\");\n" +
-                        "  update($p); \n" + // updated Person will not match
-                       "end";
+                "global java.util.List results;" +
+                "rule X when\n" +
+                "  $s: String()\n" +
+                "  $p: Person( getName().startsWith($s) )\n" +
+                "then\n" +
+                "  results.add( $p.getName() );\n" +
+                "  $p.setName(\"-\");\n" +
+                "  update($p); \n" + // updated Person will not match
+               "end";
 
         createSession(drl, strategy);
-
 
 		insertString();
 		insertMatchingPersonOne();
@@ -182,7 +182,7 @@ class ReliabilityTest {
 
         failover();
 
-        restoreSession(BASIC_RULE, strategy);
+        restoreSession(drl, strategy);
 
 		session.insert(new Person("John", 22));
 		session.insert(new Person("Mary", 42));
@@ -190,15 +190,79 @@ class ReliabilityTest {
 		assertThat(session.fireAllRules()).isEqualTo(1);
 		assertThat(getResults()).containsExactlyInAnyOrder("Mary");
     }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void updateBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.Strategy strategy) {
+
+        createSession(BASIC_RULE, strategy);
+
+        insertString();
+        Person p1 = new Person("Mario", 49);
+        FactHandle fh1 = session.insert(p1);
+        Person p2 = new Person("Toshiya", 45);
+        FactHandle fh2 = session.insert(p2);
+
+        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(getResults()).containsExactlyInAnyOrder("Mario");
+
+        p1.setName("SuperMario");
+        session.update(fh1, p1);
+        p2.setName("MegaToshiya");
+        session.update(fh2, p2);
+
+        failover();
+        restoreSession(BASIC_RULE, strategy);
+
+        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(getResults()).containsExactlyInAnyOrder("MegaToshiya");
+
+        failover();
+        restoreSession(BASIC_RULE, strategy);
+
+        assertThat(session.fireAllRules()).isEqualTo(0);
+        assertThat(getResults()).isEmpty();
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void deleteBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.Strategy strategy) {
+
+        createSession(BASIC_RULE, strategy);
+
+        FactHandle fhString = insertString();
+        insertMatchingPersonOne();
+        insertNonMatchingPerson();
+
+        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One");
+
+        session.delete(fhString);
+
+        failover();
+        restoreSession(BASIC_RULE, strategy);
+
+        insertMatchingPersonTwo();
+
+        assertThat(session.fireAllRules()).isEqualTo(0);
+        assertThat(getResults()).isEmpty();
+
+        session.insert("T");
+
+        failover();
+        restoreSession(BASIC_RULE, strategy);
+
+        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(getResults()).containsExactlyInAnyOrder("Toshiya");
+    }
     
-	private void insertString() {
-		session.insert("M");
+	private FactHandle insertString() {
+		return session.insert("M");
 	}
 
 	private void insertMatchingPersonOne() {
 		session.insert(new Person("Matching Person One", 37));
 	}
-
 
 	private void insertMatchingPersonTwo() {
 		session.insert(new Person("Matching Person Two", 40));
