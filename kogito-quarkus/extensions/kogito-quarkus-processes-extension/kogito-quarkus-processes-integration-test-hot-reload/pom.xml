@@ -125,7 +125,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                        <data-index-ephemeral.image>${data-index-ephemeral.image}</data-index-ephemeral.image>
+                        <data-index-ephemeral.image.test>${data-index-ephemeral.image.test}</data-index-ephemeral.image.test>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

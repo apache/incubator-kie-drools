@@ -40,8 +40,8 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 public class KogitoDevServiceTest {
 
     private static final Duration TIMEOUT = Duration.ofMinutes(1);
-    private static final String DATA_INDEX_EPHEMERAL_IMAGE_PROPERTY = "data-index-ephemeral.image.test";
-    private static final String DATA_INDEX_EPHEMERAL_IMAGE_DEFAULT_VALUE = "use-default-image";
+    private static final String DATA_INDEX_EPHEMERAL_IMAGE_TEST_PROPERTY = "data-index-ephemeral.image.test";
+    private static final String DATA_INDEX_EPHEMERAL_IMAGE_TEST_DEFAULT_VALUE = "use-default-image";
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -111,8 +111,11 @@ public class KogitoDevServiceTest {
     }
 
     private static String getKogitoDevServicesImageName() {
-        String imageName = System.getProperty(DATA_INDEX_EPHEMERAL_IMAGE_PROPERTY);
-        if (imageName == null || imageName.isEmpty() || DATA_INDEX_EPHEMERAL_IMAGE_DEFAULT_VALUE.equals(imageName)) {
+        String imageName = System.getProperty(DATA_INDEX_EPHEMERAL_IMAGE_TEST_PROPERTY);
+        if (imageName == null) {
+            throw new IllegalStateException("Property " + DATA_INDEX_EPHEMERAL_IMAGE_TEST_PROPERTY + " was not passed to tests!");
+        }
+        if (imageName.isEmpty() || DATA_INDEX_EPHEMERAL_IMAGE_TEST_DEFAULT_VALUE.equals(imageName)) {
             return "";
         }
         return "quarkus.kogito.devservices.image-name=" + imageName;
