@@ -22,8 +22,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Date;
+import java.util.PriorityQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -52,13 +52,13 @@ public class PseudoClockScheduler
     
     private Logger logger = LoggerFactory.getLogger( PseudoClockScheduler.class ); 
 
-    private AtomicLong                      timer;
-    private PriorityBlockingQueue<DefaultTimerJobInstance>   queue;
+    private AtomicLong timer;
+    private PriorityQueue<DefaultTimerJobInstance> queue;
     private transient InternalWorkingMemory session;
 
-    private TimerJobFactoryManager          jobFactoryManager = DefaultTimerJobFactoryManager.instance;
+    private TimerJobFactoryManager jobFactoryManager = DefaultTimerJobFactoryManager.instance;
 
-    private AtomicLong                      idCounter         = new AtomicLong();
+    private AtomicLong idCounter = new AtomicLong();
 
     public PseudoClockScheduler() {
         this( null );
@@ -66,7 +66,7 @@ public class PseudoClockScheduler
 
     public PseudoClockScheduler(InternalWorkingMemory session) {
         this.timer = new AtomicLong(0);
-        this.queue = new PriorityBlockingQueue<>();
+        this.queue = new PriorityQueue<>();
         this.session = session;
     }
 
@@ -74,7 +74,7 @@ public class PseudoClockScheduler
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         timer = new AtomicLong( in.readLong() );
-        PriorityBlockingQueue<DefaultTimerJobInstance> tmp = (PriorityBlockingQueue<DefaultTimerJobInstance>) in.readObject();
+        PriorityQueue<DefaultTimerJobInstance> tmp = (PriorityQueue<DefaultTimerJobInstance>) in.readObject();
         if ( tmp != null ) {
             queue = tmp;
         }
@@ -115,21 +115,15 @@ public class PseudoClockScheduler
                                  Trigger trigger) {
 
         Date date = trigger.hasNextFireTime();
-
-        if ( date != null ) {
-            DefaultJobHandle jobHandle = new DefaultJobHandle( idCounter.getAndIncrement() );
-            TimerJobInstance jobInstance = jobFactoryManager.createTimerJobInstance( job,
-                                                                                   ctx,
-                                                                                   trigger,
-                                                                                   jobHandle,
-                                                                                   this );
-            jobHandle.setTimerJobInstance( jobInstance );
-            internalSchedule( jobInstance );
-
-            return jobHandle;
+        if ( date == null ){
+            return null;
         }
 
-        return null;
+        DefaultJobHandle jobHandle = new DefaultJobHandle( idCounter.getAndIncrement() );
+        TimerJobInstance jobInstance = jobFactoryManager.createTimerJobInstance( job, ctx, trigger, jobHandle, this );
+        jobHandle.setTimerJobInstance( jobInstance );
+        internalSchedule( jobInstance );
+        return jobHandle;
     }
 
     public void internalSchedule(TimerJobInstance timerJobInstance) {
@@ -146,7 +140,7 @@ public class PseudoClockScheduler
     public synchronized boolean removeJob(JobHandle jobHandle) {
         jobHandle.setCancel(true);
         jobFactoryManager.removeTimerJobInstance(((DefaultJobHandle) jobHandle).getTimerJobInstance());
-        return this.queue.remove(((DefaultJobHandle) jobHandle).getTimerJobInstance());
+        return this.queue.remove((DefaultTimerJobInstance) ((DefaultJobHandle) jobHandle).getTimerJobInstance());
     }
 
     /**
@@ -194,21 +188,19 @@ public class PseudoClockScheduler
         long fireTime;
         while (item != null && item.getTrigger().hasNextFireTime() != null && (fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime) {
             // remove the head
-            queue.remove(item);
-            if ( item.getJobHandle().isCancel() ) {
-                // do not call it, do not reschedule it
-                item = queue.peek();
-                continue;
+            queue.poll();
+
+            if ( !item.getJobHandle().isCancel() ) {
+                try {
+                    // set the clock back to the trigger's fire time
+                    this.timer.getAndSet(fireTime);
+                    // execute the call
+                    ((Callable<Void>) item).call();
+                } catch (Exception e) {
+                    logger.error("Exception running callbacks: ", e);
+                }
             }
 
-            try {
-                // set the clock back to the trigger's fire time
-                this.timer.getAndSet( fireTime );
-                // execute the call
-                ((Callable<Void>) item).call();
-            } catch ( Exception e ) {
-                logger.error( "Exception running callbacks: ", e );
-            }
             // get next head
             item = queue.peek();
         }
