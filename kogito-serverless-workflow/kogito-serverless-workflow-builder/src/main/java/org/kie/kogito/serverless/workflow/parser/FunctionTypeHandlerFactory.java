@@ -50,7 +50,7 @@ public class FunctionTypeHandlerFactory {
         return Optional.ofNullable(map.get(key));
     }
 
-    private static String getTypeFromOperation(FunctionDefinition functionDef) {
+    public static String getTypeFromOperation(FunctionDefinition functionDef) {
         return trimString(functionDef, FunctionTypeHandlerFactory::trimStart);
     }
 

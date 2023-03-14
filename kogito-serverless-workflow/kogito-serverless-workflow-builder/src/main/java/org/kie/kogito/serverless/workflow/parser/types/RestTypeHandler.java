@@ -38,6 +38,7 @@ import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.r
 
 public class RestTypeHandler extends WorkItemTypeHandler {
 
+    public static final String REST_TYPE = "rest";
     private static final String METHOD_SEPARATOR = ":";
     private static final String PORT = "port";
 
@@ -72,6 +73,6 @@ public class RestTypeHandler extends WorkItemTypeHandler {
 
     @Override
     public String type() {
-        return "rest";
+        return REST_TYPE;
     }
 }
