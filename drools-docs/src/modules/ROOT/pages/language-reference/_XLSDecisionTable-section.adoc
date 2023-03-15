@@ -200,6 +200,9 @@ It may be more convenient to use Import, Variables, Functions and Queries repeat
 == Creating and integrating spreadsheet decision tables
 
 The API to use spreadsheet decision tables is in the `drools-decisiontables` module.
+
+TIP: When including `drools-decisiontables` in your project, you might encounter the following error: `ERROR StatusLogger Log4j2 could not find a logging implementation`; this happens because the underlying library to process spreadsheet files Apache POI uses the Log4j API (link:https://poi.apache.org/components/logging.html#POI+5.1.0+and+above:~:text=Apache%20POI%20only%20depends%20on%20log4j%2Dapi[reference]). To avoid that error, you must include either the link:https://logging.apache.org/log4j/log4j-2.2/log4j-to-slf4j/index.html[SLF4J adapter] or the link:https://logging.apache.org/log4j/log4j-2.2/log4j-slf4j-impl/index.html[Log4j 2 SLF4J Binding], depending on whether your project is using Log4j as a logging backend.
+
 There is only one class to look at: ``SpreadsheetCompiler``.
 This class will take spreadsheets in various formats, and generate rules in DRL (which you can then use in the normal way). The `SpreadsheetCompiler` can just be used to generate partial rule files if it is wished and assemble them into a complete rule package after the fact (this allows the separation of technical and non-technical aspects of the rules if needed).
 
