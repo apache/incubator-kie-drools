@@ -154,7 +154,6 @@
         <module>bom</module>
         <module>build-parent</module>
         <module>kie-api</module>
-        <module>kie-internal</module>
         <module>kie-util</module>
         <module>kie-memory-compiler</module>
         <module>drools-ruleunits</module>
@@ -289,7 +288,6 @@
         <module>kie-dmn</module>
         <module>kie-drl</module>
         <module>kie-pmml-trusty</module>
-        <module>kie-internal</module>
         <module>kie-test-util</module>
         <module>drools-drl-quarkus-extension</module>
       </modules>
