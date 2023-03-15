@@ -38,19 +38,22 @@ public class ReliableSessionInitializer {
             PersistedSessionOption.Strategy.FULL, new FullReliableSessionInitializer());
 
     static InternalWorkingMemory initReliableSession(SessionConfiguration sessionConfig, InternalWorkingMemory session) {
-        return initializersMap.get(sessionConfig.getPersistedSessionOption().getStrategy()).init(session);
+        PersistedSessionOption persistedSessionOption = sessionConfig.getPersistedSessionOption();
+        return initializersMap.get(persistedSessionOption.getStrategy()).init(session, persistedSessionOption);
     }
 
     interface SessionInitializer {
-        InternalWorkingMemory init(InternalWorkingMemory session);
+        InternalWorkingMemory init(InternalWorkingMemory session, PersistedSessionOption persistedSessionOption);
     }
 
     private static class StoresOnlySessionInitializer implements SessionInitializer {
 
         @Override
-        public InternalWorkingMemory init(InternalWorkingMemory session) {
-            // re-propagate objects from the cache to the new session
-            populateSessionFromCache(session);
+        public InternalWorkingMemory init(InternalWorkingMemory session, PersistedSessionOption persistedSessionOption) {
+            if (!persistedSessionOption.isNewSession()) {
+                // re-propagate objects from the cache to the new session
+                populateSessionFromCache(session);
+            }
 
             session.setWorkingMemoryActionListener(entry -> onWorkingMemoryAction(session, entry));
             session.getRuleRuntimeEventSupport().addEventListener(new SimpleStoreRuntimeEventListener(session));
@@ -101,7 +104,7 @@ public class ReliableSessionInitializer {
     private static class FullReliableSessionInitializer implements SessionInitializer {
 
         @Override
-        public InternalWorkingMemory init(InternalWorkingMemory session) {
+        public InternalWorkingMemory init(InternalWorkingMemory session, PersistedSessionOption persistedSessionOption) {
             return session;
         }
     }
