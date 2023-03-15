@@ -107,6 +107,32 @@ public class SyntheticRuleUnitsTest {
         unitInstance.close();
     }
 
+    @Test
+    public void syntheticRuleUnitDefinitionReuse() {
+        // DROOLS-7363
+        SyntheticRuleUnit unit = createSyntheticRuleUnit();
+        RuleUnitInstance<SyntheticRuleUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
+
+        unit.getDataStore("strings", String.class).add("Hello World");
+
+        assertThat(unitInstance.fire()).isEqualTo(2);
+        assertThat(unit.getGlobal("results", List.class)).containsExactlyInAnyOrder("it worked!", "it also worked with HELLO WORLD");
+
+        SyntheticRuleUnit unit2 = createSyntheticRuleUnit();
+        RuleUnitInstance<SyntheticRuleUnit> unitInstance2 = RuleUnitProvider.get().createRuleUnitInstance(unit2);
+
+        unit2.getDataStore("strings", String.class).add("Hello World");
+        unitInstance2.fire();
+        unit2.getGlobal("results", List.class).clear();
+
+        unit2.getDataStore("ints", Integer.class).add(11);
+        assertThat(unitInstance2.fire()).isEqualTo(1);
+        assertThat(unit2.getGlobal("results", List.class)).containsExactly("String 'Hello World' is 11 characters long");
+
+        unitInstance.close();
+        unitInstance2.close();
+    }
+
     private SyntheticRuleUnit createSyntheticRuleUnit() {
         DataStore<String> strings = DataSource.createStore();
         DataStore<Integer> ints = DataSource.createStore();
