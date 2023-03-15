@@ -15,15 +15,17 @@ public class PrivateNoArgsConstructorSolution {
     List<PrivateNoArgsConstructorEntity> planningEntityList;
 
     @PlanningScore
-    public final SimpleScore score;
+    public SimpleScore score;
+
+    public final int someField;
 
     private PrivateNoArgsConstructorSolution() {
-        score = null;
+        this.someField = 1;
     }
 
     public PrivateNoArgsConstructorSolution(List<PrivateNoArgsConstructorEntity> planningEntityList) {
         this.planningEntityList = planningEntityList;
-        score = null;
+        this.someField = 2;
     }
 
     @ValueRangeProvider(id = "valueRange")

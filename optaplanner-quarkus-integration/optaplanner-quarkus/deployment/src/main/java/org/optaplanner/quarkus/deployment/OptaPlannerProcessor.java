@@ -631,9 +631,9 @@ class OptaPlannerProcessor {
                         ClassInfo classInfo = fieldInfo.declaringClass();
 
                         try {
-                            generatedMemberAccessorsClassNameSet
-                                    .add(entityEnhancer.generateFieldAccessor(annotatedMember, classOutput, classInfo,
-                                            fieldInfo, transformers));
+                            generatedMemberAccessorsClassNameSet.add(
+                                    entityEnhancer.generateFieldAccessor(annotatedMember, classOutput, fieldInfo,
+                                            transformers));
                         } catch (ClassNotFoundException | NoSuchFieldException e) {
                             throw new IllegalStateException("Fail to generate member accessor for field (" +
                                     fieldInfo.name() + ") of the class( " +

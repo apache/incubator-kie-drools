@@ -118,7 +118,7 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
                     String name = field.getName();
 
                     if (Modifier.isPublic(field.getModifiers())) {
-                        member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
+                        member = new GizmoMemberDescriptor(name, memberDescriptor, declaringClass);
                     } else {
                         Method getter = ReflectionHelper.getGetterMethod(currentClass, field.getName());
                         Method setter = ReflectionHelper.getSetterMethod(currentClass, field.getName());

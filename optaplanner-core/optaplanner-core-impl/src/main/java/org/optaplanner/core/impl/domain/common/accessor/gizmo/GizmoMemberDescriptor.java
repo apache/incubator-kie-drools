@@ -16,48 +16,33 @@ import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
 
 /**
- * Describe and provide simplified/unified access for a Member
+ * Describe and provide simplified/unified access for {@link Member}.
  */
-public class GizmoMemberDescriptor {
+public final class GizmoMemberDescriptor {
 
     /**
-     * The name of a member. For a field, it the field name.
-     * For a method, if it is a getter, the method name without "get"/"is"
-     * and the first letter lowercase; otherwise, the method name.
+     * The name of a member.
+     * For a field, it is the field name.
+     * For a method,
+     * if it is a getter, the method name without "get"/"is" and the first letter lowercase;
+     * otherwise, the method name.
      */
-    String name;
+    private final String name;
+
+    private final GizmoMemberHandler memberHandler;
 
     /**
-     * If the member is a field, the FieldDescriptor of the member accessor
-     * If the member is a method, the MethodDescriptor of the member accessor
-     */
-    Object memberDescriptor;
-
-    /**
-     * If the member is a field, the FieldDescriptor of the member
-     * If the member is a method, the MethodDescriptor of the member
-     *
      * Should only be used for metadata (i.e. Generic Type and Annotated Element).
      */
-    Object metadataDescriptor;
+    private final GizmoMemberHandler metadataHandler;
 
     /**
-     * The class that declared this member
+     * The MethodDescriptor of the corresponding setter. Empty if not present.
      */
-    Class<?> declaringClass;
-
-    /**
-     * The MethodDescriptor of the corresponding setter. Is empty if not present.
-     */
-    Optional<MethodDescriptor> setter;
-
-    /**
-     * If final checks should be ignored due to Quarkus transformations
-     */
-    boolean ignoreFinalChecks = false;
+    private final MethodDescriptor setter;
 
     public GizmoMemberDescriptor(Member member) {
-        declaringClass = member.getDeclaringClass();
+        Class<?> declaringClass = member.getDeclaringClass();
         if (!Modifier.isPublic(member.getModifiers())) {
             throw new IllegalStateException("Member (" + member.getName() + ") of class (" +
                     member.getDeclaringClass().getName() + ") is not public and domainAccessType is GIZMO.\n" +
@@ -65,41 +50,52 @@ public class GizmoMemberDescriptor {
                     "Maybe use domainAccessType REFLECTION instead of GIZMO.");
         }
         if (member instanceof Field) {
-            memberDescriptor = FieldDescriptor.of((Field) member);
-            name = member.getName();
-            setter = lookupSetter(memberDescriptor, declaringClass, name);
+            FieldDescriptor fieldDescriptor = FieldDescriptor.of((Field) member);
+            this.name = member.getName();
+            this.memberHandler = GizmoMemberHandler.of(declaringClass, name, fieldDescriptor, false);
+            this.setter = null;
         } else if (member instanceof Method) {
-            memberDescriptor = MethodDescriptor.ofMethod((Method) member);
-            if (ReflectionHelper.isGetterMethod((Method) member)) {
-                name = ReflectionHelper.getGetterPropertyName(member);
-            } else {
-                name = member.getName();
-            }
-            setter = lookupSetter(memberDescriptor, declaringClass, name);
+            MethodDescriptor methodDescriptor = MethodDescriptor.ofMethod((Method) member);
+            this.name = ReflectionHelper.isGetterMethod((Method) member) ? ReflectionHelper.getGetterPropertyName(member)
+                    : member.getName();
+            this.memberHandler = GizmoMemberHandler.of(declaringClass, methodDescriptor);
+            this.setter = lookupSetter(methodDescriptor, declaringClass, name).orElse(null);
         } else {
             throw new IllegalArgumentException(member + " is not a Method or a Field.");
         }
-
-        metadataDescriptor = memberDescriptor;
+        this.metadataHandler = this.memberHandler;
     }
 
-    // For Quarkus
-    // (Cannot move to Quarkus module; get runtime
-    //  exception since objects created here use classes
-    //  from another ClassLoader).
-    public GizmoMemberDescriptor(String name, Object memberDescriptor, Object metadataDescriptor, Class<?> declaringClass) {
-        this(name, memberDescriptor, metadataDescriptor, declaringClass,
-                lookupSetter(memberDescriptor, declaringClass, name).orElse(null));
-        ignoreFinalChecks = true;
+    public GizmoMemberDescriptor(String name, FieldDescriptor fieldDescriptor, Class<?> declaringClass) {
+        this.name = name;
+        this.memberHandler = GizmoMemberHandler.of(declaringClass, name, fieldDescriptor, true);
+        this.metadataHandler = this.memberHandler;
+        this.setter = null;
     }
 
-    public GizmoMemberDescriptor(String name, Object memberDescriptor, Object metadataDescriptor, Class<?> declaringClass,
+    public GizmoMemberDescriptor(String name, MethodDescriptor memberDescriptor, MethodDescriptor metadataDescriptor,
+            Class<?> declaringClass, MethodDescriptor setterDescriptor) {
+        this.name = name;
+        this.memberHandler = GizmoMemberHandler.of(declaringClass, memberDescriptor);
+        this.metadataHandler = memberDescriptor == metadataDescriptor ? this.memberHandler
+                : GizmoMemberHandler.of(declaringClass, metadataDescriptor);
+        this.setter = setterDescriptor;
+    }
+
+    public GizmoMemberDescriptor(String name, MethodDescriptor memberDescriptor, Class<?> declaringClass,
             MethodDescriptor setterDescriptor) {
         this.name = name;
-        this.memberDescriptor = memberDescriptor;
-        this.metadataDescriptor = metadataDescriptor;
-        this.declaringClass = declaringClass;
-        setter = Optional.ofNullable(setterDescriptor);
+        this.memberHandler = GizmoMemberHandler.of(declaringClass, memberDescriptor);
+        this.metadataHandler = this.memberHandler;
+        this.setter = setterDescriptor;
+    }
+
+    public GizmoMemberDescriptor(String name, MethodDescriptor memberDescriptor, FieldDescriptor metadataDescriptor,
+            Class<?> declaringClass, MethodDescriptor setterDescriptor) {
+        this.name = name;
+        this.memberHandler = GizmoMemberHandler.of(declaringClass, memberDescriptor);
+        this.metadataHandler = GizmoMemberHandler.of(declaringClass, name, metadataDescriptor, true);
+        this.setter = setterDescriptor;
     }
 
     /**
@@ -110,9 +106,7 @@ public class GizmoMemberDescriptor {
      * @return this
      */
     public GizmoMemberDescriptor whenIsField(Consumer<FieldDescriptor> fieldDescriptorConsumer) {
-        if (memberDescriptor instanceof FieldDescriptor) {
-            fieldDescriptorConsumer.accept((FieldDescriptor) memberDescriptor);
-        }
+        memberHandler.whenIsField(fieldDescriptorConsumer);
         return this;
     }
 
@@ -124,23 +118,12 @@ public class GizmoMemberDescriptor {
      * @return this
      */
     public GizmoMemberDescriptor whenIsMethod(Consumer<MethodDescriptor> methodDescriptorConsumer) {
-        if (memberDescriptor instanceof MethodDescriptor) {
-            methodDescriptorConsumer.accept((MethodDescriptor) memberDescriptor);
-        }
+        memberHandler.whenIsMethod(methodDescriptorConsumer);
         return this;
     }
 
     public ResultHandle readMemberValue(BytecodeCreator bytecodeCreator, ResultHandle thisObj) {
-        if (memberDescriptor instanceof FieldDescriptor) {
-            FieldDescriptor fd = (FieldDescriptor) memberDescriptor;
-            return bytecodeCreator.readInstanceField(fd, thisObj);
-        } else if (memberDescriptor instanceof MethodDescriptor) {
-            MethodDescriptor md = (MethodDescriptor) memberDescriptor;
-            return invokeMemberMethod(bytecodeCreator, md, thisObj);
-        } else {
-            throw new IllegalStateException(
-                    "memberDescriptor (" + memberDescriptor + ") is neither a field descriptor or a method descriptor.");
-        }
+        return memberHandler.readMemberValue(bytecodeCreator, thisObj);
     }
 
     /**
@@ -154,33 +137,7 @@ public class GizmoMemberDescriptor {
      * @return True if it was able to write the member value, false otherwise
      */
     public boolean writeMemberValue(BytecodeCreator bytecodeCreator, ResultHandle thisObj, ResultHandle newValue) {
-        if (memberDescriptor instanceof FieldDescriptor) {
-            FieldDescriptor fd = (FieldDescriptor) memberDescriptor;
-            try {
-                Field field = declaringClass.getField(name);
-                if (!ignoreFinalChecks && Modifier.isFinal(field.getModifiers())) {
-                    throw new IllegalStateException(
-                            "Field (" + name + ") of class (" + declaringClass + ") is final and cannot be modified.");
-                } else {
-                    bytecodeCreator.writeInstanceField(fd, thisObj, newValue);
-                }
-            } catch (NoSuchFieldException e) {
-                throw new IllegalStateException("Field (" + name + ") of class (" + declaringClass + ") does not exist.", e);
-            }
-            return true;
-        } else if (memberDescriptor instanceof MethodDescriptor) {
-            MethodDescriptor md = (MethodDescriptor) memberDescriptor;
-            Optional<MethodDescriptor> maybeSetter = getSetter();
-            if (!maybeSetter.isPresent()) {
-                return false;
-            } else {
-                invokeMemberMethod(bytecodeCreator, maybeSetter.get(), thisObj, newValue);
-                return true;
-            }
-        } else {
-            throw new IllegalStateException(
-                    "memberDescriptor (" + memberDescriptor + ") is neither a field descriptor or a method descriptor.");
-        }
+        return memberHandler.writeMemberValue(setter, bytecodeCreator, thisObj, newValue);
     }
 
     /**
@@ -191,9 +148,7 @@ public class GizmoMemberDescriptor {
      * @return this
      */
     public GizmoMemberDescriptor whenMetadataIsOnField(Consumer<FieldDescriptor> fieldDescriptorConsumer) {
-        if (metadataDescriptor instanceof FieldDescriptor) {
-            fieldDescriptorConsumer.accept((FieldDescriptor) metadataDescriptor);
-        }
+        metadataHandler.whenIsField(fieldDescriptorConsumer);
         return this;
     }
 
@@ -205,9 +160,7 @@ public class GizmoMemberDescriptor {
      * @return this
      */
     public GizmoMemberDescriptor whenMetadataIsOnMethod(Consumer<MethodDescriptor> methodDescriptorConsumer) {
-        if (metadataDescriptor instanceof MethodDescriptor) {
-            methodDescriptorConsumer.accept((MethodDescriptor) metadataDescriptor);
-        }
+        metadataHandler.whenIsMethod(methodDescriptorConsumer);
         return this;
     }
 
@@ -218,44 +171,14 @@ public class GizmoMemberDescriptor {
      * @return Returns the declaring class name of the member in descriptor format
      */
     public String getDeclaringClassName() {
-        if (memberDescriptor instanceof FieldDescriptor) {
-            return ((FieldDescriptor) memberDescriptor).getDeclaringClass();
-        } else if (memberDescriptor instanceof MethodDescriptor) {
-            return ((MethodDescriptor) memberDescriptor).getDeclaringClass();
-        } else {
-            throw new IllegalStateException("memberDescriptor not a fieldDescriptor or a methodDescriptor");
-        }
-    }
-
-    /**
-     * Returns true iff the getter is from an interface.
-     *
-     * @return true iff the getter is from an interface
-     */
-    public boolean isInterfaceMethod() {
-        if (memberDescriptor instanceof MethodDescriptor) {
-            return declaringClass.isInterface();
-        } else {
-            return false;
-        }
-    }
-
-    public ResultHandle invokeMemberMethod(BytecodeCreator creator, MethodDescriptor method, ResultHandle bean,
-            ResultHandle... parameters) {
-        if (isInterfaceMethod()) {
-            return creator.invokeInterfaceMethod(method, bean, parameters);
-        } else {
-            return creator.invokeVirtualMethod(method, bean, parameters);
-        }
+        return memberHandler.getDeclaringClassName();
     }
 
     public Optional<MethodDescriptor> getSetter() {
-        return setter;
+        return Optional.ofNullable(setter);
     }
 
-    private static Optional<MethodDescriptor> lookupSetter(Object memberDescriptor,
-            Class<?> declaringClass,
-            String name) {
+    private static Optional<MethodDescriptor> lookupSetter(Object memberDescriptor, Class<?> declaringClass, String name) {
         if (memberDescriptor instanceof MethodDescriptor) {
             return Optional.ofNullable(ReflectionHelper.getSetterMethod(declaringClass, name))
                     .map(MethodDescriptor::ofMethod);
@@ -273,41 +196,16 @@ public class GizmoMemberDescriptor {
      * The name does not include generic information.
      */
     public String getTypeName() {
-        String typeName;
-        if (metadataDescriptor instanceof FieldDescriptor) {
-            typeName = ((FieldDescriptor) metadataDescriptor).getType();
-        } else {
-            // Must be a method descriptor if it not a field descriptor
-            typeName = ((MethodDescriptor) metadataDescriptor).getReturnType();
-        }
+        String typeName = metadataHandler.getTypeName();
         return org.objectweb.asm.Type.getType(typeName).getClassName();
     }
 
     public Type getType() {
-        if (metadataDescriptor instanceof FieldDescriptor) {
-            FieldDescriptor fieldDescriptor = (FieldDescriptor) metadataDescriptor;
-            try {
-                return declaringClass.getDeclaredField(fieldDescriptor.getName()).getGenericType();
-            } catch (NoSuchFieldException e) {
-                throw new IllegalStateException(
-                        "Cannot find field (" + fieldDescriptor.getName() + ") on class (" + declaringClass + ").",
-                        e);
-            }
-        } else {
-            // Must be a method descriptor if it not a field descriptor
-            MethodDescriptor methodDescriptor = (MethodDescriptor) metadataDescriptor;
-            try {
-                return declaringClass.getDeclaredMethod(methodDescriptor.getName()).getGenericReturnType();
-            } catch (NoSuchMethodException e) {
-                throw new IllegalStateException(
-                        "Cannot find method (" + methodDescriptor.getName() + ") on class (" + declaringClass + ").",
-                        e);
-            }
-        }
+        return metadataHandler.getType();
     }
 
     @Override
     public String toString() {
-        return memberDescriptor.toString();
+        return memberHandler.toString();
     }
 }

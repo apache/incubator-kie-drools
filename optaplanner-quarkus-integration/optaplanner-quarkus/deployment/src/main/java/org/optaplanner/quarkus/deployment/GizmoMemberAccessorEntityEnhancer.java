@@ -93,53 +93,21 @@ final class GizmoMemberAccessorEntityEnhancer {
      *
      * @param annotationInstance The annotations on the field
      * @param classOutput Where to output the bytecode
-     * @param classInfo The declaring class for the field
      * @param fieldInfo The field to generate the MemberAccessor for
      * @param transformers BuildProducer of BytecodeTransformers
      */
-    public String generateFieldAccessor(AnnotationInstance annotationInstance, ClassOutput classOutput,
-            ClassInfo classInfo, FieldInfo fieldInfo, BuildProducer<BytecodeTransformerBuildItem> transformers)
-            throws ClassNotFoundException, NoSuchFieldException {
+    public String generateFieldAccessor(AnnotationInstance annotationInstance, ClassOutput classOutput, FieldInfo fieldInfo,
+            BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException, NoSuchFieldException {
         Class<?> declaringClass = Class.forName(fieldInfo.declaringClass().name().toString(), false,
                 Thread.currentThread().getContextClassLoader());
         Field fieldMember = declaringClass.getDeclaredField(fieldInfo.name());
-        String generatedClassName = GizmoMemberAccessorFactory.getGeneratedClassName(fieldMember);
-        GizmoMemberDescriptor member;
-
-        FieldDescriptor memberDescriptor = FieldDescriptor.of(fieldInfo);
-        String name = fieldInfo.name();
-
-        if (Modifier.isFinal(fieldMember.getModifiers())) {
-            makeFieldNonFinal(fieldMember, transformers);
-        }
-
-        if (Modifier.isPublic(fieldInfo.flags())) {
-            member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
-        } else {
-            addVirtualFieldGetter(classInfo, fieldInfo, transformers);
-            String methodName = getVirtualGetterName(true, fieldInfo.name());
-            MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
-                    methodName,
-                    fieldInfo.type().name().toString());
-            MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
-                    getVirtualSetterName(true, fieldInfo.name()),
-                    "void",
-                    fieldInfo.type().name().toString());
-            member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass, setterDescriptor);
-        }
+        GizmoMemberDescriptor member = createMemberDescriptorForField(fieldMember, transformers);
         GizmoMemberInfo memberInfo = new GizmoMemberInfo(member,
                 (Class<? extends Annotation>) Class.forName(annotationInstance.name().toString(), false,
                         Thread.currentThread().getContextClassLoader()));
+        String generatedClassName = GizmoMemberAccessorFactory.getGeneratedClassName(fieldMember);
         GizmoMemberAccessorImplementor.defineAccessorFor(generatedClassName, classOutput, memberInfo);
         return generatedClassName;
-    }
-
-    private void addVirtualFieldGetter(ClassInfo classInfo, FieldInfo fieldInfo,
-            BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException, NoSuchFieldException {
-        Class<?> clazz = Class.forName(classInfo.name().toString(), false,
-                Thread.currentThread().getContextClassLoader());
-        Field field = clazz.getDeclaredField(fieldInfo.name());
-        addVirtualFieldGetter(clazz, field, transformers);
     }
 
     private void addVirtualFieldGetter(Class<?> classInfo, Field fieldInfo,
@@ -206,8 +174,7 @@ final class GizmoMemberAccessorEntityEnhancer {
         MethodDescriptor memberDescriptor = MethodDescriptor.of(methodInfo);
 
         if (Modifier.isPublic(methodInfo.flags())) {
-            member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass,
-                    setterDescriptor.orElse(null));
+            member = new GizmoMemberDescriptor(name, memberDescriptor, declaringClass, setterDescriptor.orElse(null));
         } else {
             setterDescriptor = addVirtualMethodGetter(classInfo, methodInfo, name, setterDescriptor, transformers);
             String methodName = getVirtualGetterName(false, name);
@@ -352,34 +319,10 @@ final class GizmoMemberAccessorEntityEnhancer {
         Class<?> currentClass = entityClass;
         while (currentClass != null) {
             for (Field field : currentClass.getDeclaredFields()) {
-                if (!Modifier.isStatic(field.getModifiers())) {
-                    GizmoMemberDescriptor member;
-                    Class<?> declaringClass = field.getDeclaringClass();
-                    FieldDescriptor memberDescriptor = FieldDescriptor.of(field);
-                    String name = field.getName();
-
-                    if (Modifier.isFinal(field.getModifiers())) {
-                        makeFieldNonFinal(field, transformers);
-                    }
-
-                    // Not being recorded, so can use Type and annotated element directly
-                    if (Modifier.isPublic(field.getModifiers())) {
-                        member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
-                    } else {
-                        addVirtualFieldGetter(declaringClass, field, transformers);
-                        String methodName = getVirtualGetterName(true, field.getName());
-                        MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
-                                methodName,
-                                field.getType());
-                        MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
-                                getVirtualSetterName(true, field.getName()),
-                                "void",
-                                field.getType());
-                        member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass,
-                                setterDescriptor);
-                    }
-                    solutionFieldToMemberDescriptor.put(field, member);
+                if (Modifier.isStatic(field.getModifiers())) {
+                    continue;
                 }
+                solutionFieldToMemberDescriptor.put(field, createMemberDescriptorForField(field, transformers));
             }
             currentClass = currentClass.getSuperclass();
         }
@@ -387,6 +330,31 @@ final class GizmoMemberAccessorEntityEnhancer {
                 new GizmoSolutionOrEntityDescriptor(solutionDescriptor, entityClass, solutionFieldToMemberDescriptor);
         memoizedMap.put(entityClass, out);
         return out;
+    }
+
+    private GizmoMemberDescriptor createMemberDescriptorForField(Field field,
+            BuildProducer<BytecodeTransformerBuildItem> transformers) {
+        if (Modifier.isFinal(field.getModifiers())) {
+            makeFieldNonFinal(field, transformers);
+        }
+
+        Class<?> declaringClass = field.getDeclaringClass();
+        FieldDescriptor memberDescriptor = FieldDescriptor.of(field);
+        String name = field.getName();
+
+        // Not being recorded, so can use Type and annotated element directly
+        if (Modifier.isPublic(field.getModifiers())) {
+            return new GizmoMemberDescriptor(name, memberDescriptor, declaringClass);
+        } else {
+            addVirtualFieldGetter(declaringClass, field, transformers);
+            String getterName = getVirtualGetterName(true, name);
+            MethodDescriptor getterDescriptor =
+                    MethodDescriptor.ofMethod(declaringClass.getName(), getterName, field.getType());
+            String setterName = getVirtualSetterName(true, name);
+            MethodDescriptor setterDescriptor =
+                    MethodDescriptor.ofMethod(declaringClass.getName(), setterName, "void", field.getType());
+            return new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass, setterDescriptor);
+        }
     }
 
     public static Map<String, RuntimeValue<MemberAccessor>> getGeneratedGizmoMemberAccessorMap(RecorderContext recorderContext,

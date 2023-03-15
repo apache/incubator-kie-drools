@@ -39,6 +39,7 @@ class OptaPlannerProcessorPrivateConstructorTest {
                         new PrivateNoArgsConstructorEntity("3")));
         PrivateNoArgsConstructorSolution solution = solverManager.solve(1L, problem).getFinalBestSolution();
         Assertions.assertEquals(solution.score.score(), 0);
+        Assertions.assertEquals(solution.someField, 2);
     }
 
 }
