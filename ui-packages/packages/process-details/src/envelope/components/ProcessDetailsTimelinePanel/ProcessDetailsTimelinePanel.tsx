@@ -372,19 +372,23 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   const renderTimerIcon = (id: string): JSX.Element => {
-    return jobs.map((job, idx) => {
-      if (id === job.nodeInstanceId) {
-        return (
-          <Tooltip content={'Node has job'} key={idx}>
-            <OutlinedClockIcon
-              className="pf-u-ml-sm"
-              color="var(--pf-global--icon--Color--dark)"
-              onClick={() => handleJobDetails(job)}
-            />
-          </Tooltip>
-        );
-      }
-    })[0];
+    return jobs.length > 0 ? (
+      jobs.map((job, idx) => {
+        if (id === job.nodeInstanceId) {
+          return (
+            <Tooltip content={'Node has job'} key={idx}>
+              <OutlinedClockIcon
+                className="pf-u-ml-sm"
+                color="var(--pf-global--icon--Color--dark)"
+                onClick={() => handleJobDetails(job)}
+              />
+            </Tooltip>
+          );
+        }
+      })[0]
+    ) : (
+      <></>
+    );
   };
 
   const detailsAction: JSX.Element[] = [
