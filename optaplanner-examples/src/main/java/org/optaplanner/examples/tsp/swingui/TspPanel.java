@@ -140,29 +140,29 @@ public class TspPanel extends SolutionPanel<TspSolution> {
     }
 
     public void changePreviousStandstill(Visit visit, Standstill toStandstill) {
-        doProblemChange((workingSolution, problemChangeDirector) -> {
-            Visit workingVisit = problemChangeDirector.lookUpWorkingObjectOrFail(visit);
-            Standstill workingToStandstill = problemChangeDirector.lookUpWorkingObjectOrFail(toStandstill);
-            Visit oldNextVisit = findNextVisit(workingSolution, workingVisit);
-            Visit newNextVisit = findNextVisit(workingSolution, workingToStandstill);
-            Standstill oldPreviousStandstill = workingVisit.getPreviousStandstill();
+        doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.lookUpWorkingObject(visit)
+                .ifPresentOrElse(workingVisit -> {
+                    Standstill workingToStandstill = problemChangeDirector.lookUpWorkingObjectOrFail(toStandstill);
+                    Visit oldNextVisit = findNextVisit(workingSolution, workingVisit);
+                    Visit newNextVisit = findNextVisit(workingSolution, workingToStandstill);
+                    Standstill oldPreviousStandstill = workingVisit.getPreviousStandstill();
 
-            // Close the old chain
-            if (oldNextVisit != null) {
-                problemChangeDirector.changeVariable(
-                        oldNextVisit, "previousStandstill", v -> v.setPreviousStandstill(oldPreviousStandstill));
-            }
+                    // Close the old chain
+                    if (oldNextVisit != null) {
+                        problemChangeDirector.changeVariable(
+                                oldNextVisit, "previousStandstill", v -> v.setPreviousStandstill(oldPreviousStandstill));
+                    }
 
-            // Change the entity
-            problemChangeDirector.changeVariable(
-                    workingVisit, "previousStandstill", v -> v.setPreviousStandstill(workingToStandstill));
+                    // Change the entity
+                    problemChangeDirector.changeVariable(
+                            workingVisit, "previousStandstill", v -> v.setPreviousStandstill(workingToStandstill));
 
-            // Reroute the new chain
-            if (newNextVisit != null) {
-                problemChangeDirector.changeVariable(
-                        newNextVisit, "previousStandstill", v -> v.setPreviousStandstill(workingVisit));
-            }
-        });
+                    // Reroute the new chain
+                    if (newNextVisit != null) {
+                        problemChangeDirector.changeVariable(
+                                newNextVisit, "previousStandstill", v -> v.setPreviousStandstill(workingVisit));
+                    }
+                }, () -> logger.info("Skipping problem change due to visit ({}) deleted.", visit)));
     }
 
 }

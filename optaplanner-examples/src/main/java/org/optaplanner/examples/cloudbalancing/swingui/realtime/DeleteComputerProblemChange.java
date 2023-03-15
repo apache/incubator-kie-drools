@@ -18,23 +18,24 @@ public class DeleteComputerProblemChange implements ProblemChange<CloudBalance> 
 
     @Override
     public void doChange(CloudBalance cloudBalance, ProblemChangeDirector problemChangeDirector) {
-        CloudComputer workingComputer = problemChangeDirector.lookUpWorkingObjectOrFail(computer);
-        if (workingComputer == null) {
-            throw new IllegalStateException("A computer " + computer + " does not exist. Maybe it has been already deleted.");
-        }
-        // First remove the problem fact from all planning entities that use it
-        for (CloudProcess process : cloudBalance.getProcessList()) {
-            if (process.getComputer() == workingComputer) {
-                problemChangeDirector.changeVariable(process, "computer",
-                        workingProcess -> workingProcess.setComputer(null));
-            }
-        }
-        // A SolutionCloner does not clone problem fact lists (such as computerList)
-        // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-        ArrayList<CloudComputer> computerList = new ArrayList<>(cloudBalance.getComputerList());
-        cloudBalance.setComputerList(computerList);
-        // Remove the problem fact itself
-        problemChangeDirector.removeProblemFact(workingComputer, computerList::remove);
+        problemChangeDirector.lookUpWorkingObject(computer)
+                .ifPresentOrElse(workingComputer -> {
+                    // First remove the problem fact from all planning entities that use it
+                    for (CloudProcess process : cloudBalance.getProcessList()) {
+                        if (process.getComputer() == workingComputer) {
+                            problemChangeDirector.changeVariable(process, "computer",
+                                    workingProcess -> workingProcess.setComputer(null));
+                        }
+                    }
+                    // A SolutionCloner does not clone problem fact lists (such as computerList)
+                    // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
+                    ArrayList<CloudComputer> computerList = new ArrayList<>(cloudBalance.getComputerList());
+                    cloudBalance.setComputerList(computerList);
+                    // Remove the problem fact itself
+                    problemChangeDirector.removeProblemFact(workingComputer, computerList::remove);
+                }, () -> {
+                    // The computer has already been deleted (the UI asked to changed the same computer twice).
+                });
     }
 
 }

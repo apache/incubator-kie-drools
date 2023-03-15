@@ -210,26 +210,22 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
 
     public void deleteEmployee(final Employee employee) {
         logger.info("Scheduling delete of employee ({}).", employee);
-        doProblemChange((nurseRoster, problemChangeDirector) -> {
-            Employee workingEmployee = problemChangeDirector.lookUpWorkingObjectOrFail(employee);
-            if (workingEmployee == null) {
-                // The employee has already been deleted (the UI asked to changed the same employee twice), so do nothing
-                return;
-            }
-            // First remove the problem fact from all planning entities that use it
-            for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
-                if (shiftAssignment.getEmployee() == workingEmployee) {
-                    problemChangeDirector.changeVariable(shiftAssignment, "employee",
-                            workingShiftAssignment -> workingShiftAssignment.setEmployee(null));
-                }
-            }
-            // A SolutionCloner does not clone problem fact lists (such as employeeList)
-            // Shallow clone the employeeList so only workingSolution is affected, not bestSolution or guiSolution
-            ArrayList<Employee> employeeList = new ArrayList<>(nurseRoster.getEmployeeList());
-            nurseRoster.setEmployeeList(employeeList);
-            // Remove it the problem fact itself
-            problemChangeDirector.removeProblemFact(workingEmployee, employeeList::remove);
-        });
+        doProblemChange((nurseRoster, problemChangeDirector) -> problemChangeDirector.lookUpWorkingObject(employee)
+                .ifPresentOrElse(workingEmployee -> {
+                    // First remove the problem fact from all planning entities that use it
+                    for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
+                        if (shiftAssignment.getEmployee() == workingEmployee) {
+                            problemChangeDirector.changeVariable(shiftAssignment, "employee",
+                                    workingShiftAssignment -> workingShiftAssignment.setEmployee(null));
+                        }
+                    }
+                    // A SolutionCloner does not clone problem fact lists (such as employeeList)
+                    // Shallow clone the employeeList so only workingSolution is affected, not bestSolution or guiSolution
+                    ArrayList<Employee> employeeList = new ArrayList<>(nurseRoster.getEmployeeList());
+                    nurseRoster.setEmployeeList(employeeList);
+                    // Remove it the problem fact itself
+                    problemChangeDirector.removeProblemFact(workingEmployee, employeeList::remove);
+                }, () -> logger.info("Skipping problem change due to employee ({}) already deleted.", employee)));
     }
 
     public void moveShiftAssignmentToEmployee(ShiftAssignment shiftAssignment, Employee toEmployee) {
