@@ -48,10 +48,6 @@ abstract class Repository {
         }
     }
 
-    abstract boolean tableExists();
-
-    abstract void createTable();
-
     abstract void insertInternal(String processId, String processVersion, UUID id, byte[] payload);
 
     abstract void updateInternal(String processId, String processVersion, UUID id, byte[] payload);

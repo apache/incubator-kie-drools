@@ -16,13 +16,11 @@
 package org.kie.kogito.persistence.jdbc;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -36,8 +34,6 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.kogito.persistence.jdbc.DatabaseType.getDataBaseType;
-
 public class GenericRepository extends Repository {
 
     private static final String PAYLOAD = "payload";
@@ -49,42 +45,6 @@ public class GenericRepository extends Repository {
 
     public GenericRepository(DataSource dataSource) {
         this.dataSource = dataSource;
-    }
-
-    @Override
-    boolean tableExists() {
-        try (Connection connection = dataSource.getConnection()) {
-            DatabaseType databaseType = getDataBaseType(connection);
-            final DatabaseMetaData metaData = connection.getMetaData();
-            final String[] types = { "TABLE" };
-            ResultSet tables = metaData.getTables(null, null, databaseType.getTableNamePattern(), types);
-            while (tables.next()) {
-                LOGGER.debug("Found process_instance table");
-                return true;
-            }
-            return false;
-        } catch (SQLException e) {
-            var msg = "Failed to read table metadata";
-            throw new RuntimeException(msg);
-        }
-    }
-
-    @Override
-    void createTable() {
-        try (Connection connection = dataSource.getConnection()) {
-            DatabaseType databaseType = getDataBaseType(connection);
-            final List<String> statements = FileLoader.getQueryFromFile(databaseType.getDbIdentifier(), "create_tables");
-            for (String s : statements) {
-                try (PreparedStatement prepareStatement = connection.prepareStatement(s.trim())) {
-                    prepareStatement.execute();
-                }
-            }
-            LOGGER.info("DDL successfully done for ProcessInstance");
-        } catch (SQLException e) {
-            var msg = "Error creating process_instances table, the database should be configured properly before starting the application";
-            LOGGER.error(msg, e);
-            throw new RuntimeException(msg);
-        }
     }
 
     @Override

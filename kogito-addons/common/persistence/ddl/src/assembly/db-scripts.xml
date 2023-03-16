@@ -14,22 +14,26 @@
         <include>*.sql</include>
       </includes>
     </fileSet>
-  </fileSets>
-  <files>
-    <file>
-      <source>${path.to.persistence.modules}/jdbc/src/main/resources/sql/create_tables_PostgreSQL.sql</source>
+    <fileSet>
+      <directory>${path.to.persistence.modules}/jdbc/src/main/resources/db/postgresql</directory>
       <outputDirectory>postgresql</outputDirectory>
-      <destName>runtime_create_jdbc.sql</destName>
-    </file>
-    <file>
-      <source>${path.to.persistence.modules}/jdbc/src/main/resources/sql/create_tables_Oracle.sql</source>
+      <includes>
+        <include>*.sql</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${path.to.persistence.modules}/jdbc/src/main/resources/db/oracle</directory>
       <outputDirectory>oracle</outputDirectory>
-      <destName>runtime_create.sql</destName>
-    </file>
-    <file>
-      <source>${path.to.persistence.modules}/jdbc/src/main/resources/sql/create_tables_ansi.sql</source>
-      <outputDirectory>jdbc</outputDirectory>
-      <destName>runtime_create.sql</destName>
-    </file>
-  </files>
+      <includes>
+        <include>*.sql</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${path.to.persistence.modules}/jdbc/src/main/resources/db/ansi</directory>
+      <outputDirectory>ansi</outputDirectory>
+      <includes>
+        <include>*.sql</include>
+      </includes>
+    </fileSet>
+  </fileSets>
 </assembly>
