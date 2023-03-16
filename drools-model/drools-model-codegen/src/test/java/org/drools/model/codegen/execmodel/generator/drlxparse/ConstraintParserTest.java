@@ -112,4 +112,11 @@ public class ConstraintParserTest {
 
         assertThat(result.getExpr().toString()).isEqualTo("new java.math.BigInteger(\"10\")");
     }
+
+    @Test
+    public void bigDecimalArithmeticInMathodCallScope() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "(money * new java.math.BigDecimal(\"1000\")).longValue()");
+
+        assertThat(result.getExpr().toString()).isEqualTo("_this.getMoney().multiply(new java.math.BigDecimal(\"1000\"), java.math.MathContext.DECIMAL128).longValue()");
+    }
 }

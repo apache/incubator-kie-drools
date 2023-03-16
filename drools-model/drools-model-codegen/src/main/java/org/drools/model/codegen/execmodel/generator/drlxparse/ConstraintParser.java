@@ -26,9 +26,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
@@ -115,6 +117,7 @@ import static org.drools.mvel.parser.utils.AstUtils.isLogicalOperator;
  */
 public class ConstraintParser {
 
+    private static final List<Operator> ARITHMETIC_OPERATORS = asList(PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER);
     private final RuleContext context;
     private final PackageModel packageModel;
     private final boolean skipVariableValidation;
@@ -236,6 +239,13 @@ public class ConstraintParser {
 
         if (drlxExpr instanceof MethodCallExpr && (( MethodCallExpr ) drlxExpr).getScope().isEmpty() && (( MethodCallExpr ) drlxExpr).getNameAsString().equals("eval")) {
             drlxExpr = (( MethodCallExpr ) drlxExpr).getArgument( 0 );
+        }
+
+        if (drlxExpr instanceof MethodCallExpr) {
+            Optional<DrlxParseFail> optFail = convertBigDecimalArithmetic((MethodCallExpr) drlxExpr, patternType, bindingId, isPositional);
+            if (optFail.isPresent()) {
+                return optFail.get();
+            }
         }
 
         if ( drlxExpr instanceof BinaryExpr ) {
@@ -619,7 +629,7 @@ public class ConstraintParser {
 
         Expression combo;
 
-        boolean arithmeticExpr = asList(PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER).contains(operator);
+        boolean arithmeticExpr = ARITHMETIC_OPERATORS.contains(operator);
         boolean isBetaConstraint = right.getExpression() != null && hasDeclarationFromOtherPattern( expressionTyperContext );
         boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaConstraint;
 
@@ -936,5 +946,37 @@ public class ConstraintParser {
             }
         }
         return res;
+    }
+
+    private Optional<DrlxParseFail> convertBigDecimalArithmetic(MethodCallExpr methodCallExpr, Class<?> patternType, String bindingId, boolean isPositional) {
+        List<BinaryExpr> binaryExprList = methodCallExpr.findAll(BinaryExpr.class);
+        for (BinaryExpr binaryExpr : binaryExprList) {
+            Operator operator = binaryExpr.getOperator();
+            boolean arithmeticExpr = ARITHMETIC_OPERATORS.contains(operator);
+            if (arithmeticExpr) {
+                final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
+                final ExpressionTyper expressionTyper = new ExpressionTyper(context, patternType, bindingId, isPositional, expressionTyperContext);
+                TypedExpressionResult leftTypedExpressionResult = expressionTyper.toTypedExpression(binaryExpr.getLeft());
+                Optional<TypedExpression> optLeft = leftTypedExpressionResult.getTypedExpression();
+                if (!optLeft.isPresent()) {
+                    return Optional.of(new DrlxParseFail());
+                }
+
+                TypedExpression left = optLeft.get();
+                if (left.isBigDecimal()) {
+                    ConstraintCompiler constraintCompiler = createConstraintCompiler(this.context, of(patternType));
+                    CompiledExpressionResult compiledExpressionResult = constraintCompiler.compileExpression(binaryExpr);
+
+                    Expression convertedExpr = compiledExpressionResult.getExpression();
+                    Optional<Node> optParentNode = binaryExpr.getParentNode();
+                    if (!optParentNode.isPresent()) {
+                        return Optional.of(new DrlxParseFail());
+                    }
+                    Node parentNode = optParentNode.get();
+                    parentNode.replace(binaryExpr, convertedExpr);
+                }
+            }
+        }
+        return Optional.empty();
     }
 }
