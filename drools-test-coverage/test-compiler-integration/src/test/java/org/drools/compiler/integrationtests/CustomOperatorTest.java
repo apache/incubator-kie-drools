@@ -61,12 +61,27 @@ public class CustomOperatorTest {
 
     @Test
     public void testCustomOperatorUsingCollections() {
+        String constraints =
+                "    $alice : Person(name == \"Alice\")\n" +
+                "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n";
+        customOperatorUsingCollections(constraints);
+    }
+
+    @Test
+    public void testCustomOperatorUsingCollectionsInverted() {
+        // DROOLS-6983
+        String constraints =
+                "    $bob : Person(name == \"Bob\")\n" +
+                "    $alice : Person(name == \"Alice\", $bob.addresses supersetOf this.addresses)\n";
+        customOperatorUsingCollections(constraints);
+    }
+
+    private void customOperatorUsingCollections(String constraints) {
         final String drl =
                 "import " + Address.class.getCanonicalName() + ";\n" +
                         "import " + Person.class.getCanonicalName() + ";\n" +
                         "rule R when\n" +
-                        "    $alice : Person(name == \"Alice\")\n" +
-                        "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
+                        constraints +
                         "then\n" +
                         "end\n";
 
