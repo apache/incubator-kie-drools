@@ -39,8 +39,7 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class NullTest {
@@ -72,8 +71,8 @@ public class NullTest {
 
         ksession.fireAllRules();
 
-        assertEquals("Indexing with null values is not working correctly.", "OK", bob.getStatus());
-        assertEquals("Indexing with null values is not working correctly.", "OK", pete.getStatus());
+        assertThat(bob.getStatus()).as("Indexing with null values is not working correctly.").isEqualTo("OK");
+        assertThat(pete.getStatus()).as("Indexing with null values is not working correctly.").isEqualTo("OK");
     }
 
     @Test
@@ -107,7 +106,7 @@ public class NullTest {
 
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
         session.fireAllRules();
-        assertEquals(2, ((List) session.getGlobal("messages")).size());
+        assertThat(((List) session.getGlobal("messages")).size()).isEqualTo(2);
     }
 
     @Test
@@ -123,9 +122,9 @@ public class NullTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
-        assertEquals("OK", list.get(0));
+        assertThat(list.get(0)).isEqualTo("OK");
     }
 
     @Test
@@ -143,7 +142,7 @@ public class NullTest {
         ksession.insert(new Person(null));
         ksession.insert(new Person("Mark"));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -160,8 +159,8 @@ public class NullTest {
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
         ksession.fireAllRules();
 
-        assertEquals(1, ((List) ksession.getGlobal("list")).size());
-        assertEquals("X", ((List) ksession.getGlobal("list")).get(0));
+        assertThat(((List) ksession.getGlobal("list")).size()).isEqualTo(1);
+        assertThat(((List) ksession.getGlobal("list")).get(0)).isEqualTo("X");
     }
 
     @Test
@@ -187,13 +186,13 @@ public class NullTest {
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal("list")).get(0));
-        assertEquals(3, ((List) session.getGlobal("list")).size());
+        assertThat(((List) session.getGlobal("list")).size()).isEqualTo(3);
 
         nullPerson = new Person(null);
 
         session.insert(nullPerson);
         session.fireAllRules();
-        assertEquals(4, ((List) session.getGlobal("list")).size());
+        assertThat(((List) session.getGlobal("list")).size()).isEqualTo(4);
     }
 
     @Test
@@ -210,7 +209,7 @@ public class NullTest {
 
         ksession.fireAllRules();
 
-        assertEquals(3, results.size());
+        assertThat(results.size()).isEqualTo(3);
     }
 
     @Test
@@ -248,7 +247,7 @@ public class NullTest {
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
-        assertTrue(list.contains("OK"));
+        assertThat(list.contains("OK")).isTrue();
 
         ksession.dispose();
     }
@@ -267,7 +266,7 @@ public class NullTest {
 
         ksession.insert(new PrimitiveBean(0.9, 1.1));
         ksession.insert(new PrimitiveBean(0.9, null));
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 

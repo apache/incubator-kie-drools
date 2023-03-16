@@ -31,8 +31,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class EvalRewriteTest {
@@ -135,12 +134,12 @@ public class EvalRewriteTest {
 
             ksession.fireAllRules();
 
-            assertEquals(5, list.size());
-            assertTrue(list.contains(item11));
-            assertTrue(list.contains(item12));
-            assertTrue(list.contains(item22));
-            assertTrue(list.contains(order3));
-            assertTrue(list.contains(order4));
+            assertThat(list.size()).isEqualTo(5);
+            assertThat(list.contains(item11)).isTrue();
+            assertThat(list.contains(item12)).isTrue();
+            assertThat(list.contains(item22)).isTrue();
+            assertThat(list.contains(order3)).isTrue();
+            assertThat(list.contains(order4)).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -190,9 +189,9 @@ public class EvalRewriteTest {
 
             ksession.fireAllRules();
 
-            assertEquals(2, list.size());
-            assertTrue(list.contains(item11));
-            assertTrue(list.contains(item12));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.contains(item11)).isTrue();
+            assertThat(list.contains(item12)).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -350,17 +349,17 @@ public class EvalRewriteTest {
 
             ksession.fireAllRules();
 
-            assertEquals(9, list.size());
+            assertThat(list.size()).isEqualTo(9);
             int index = 0;
-            assertEquals(item11, list.get(index++));
-            assertEquals(item12, list.get(index++));
-            assertEquals(item21, list.get(index++));
-            assertEquals(item22, list.get(index++));
-            assertEquals(item31, list.get(index++));
-            assertEquals(item33, list.get(index++));
-            assertEquals(item41, list.get(index++));
-            assertEquals(order5, list.get(index++));
-            assertEquals(order5, list.get(index));
+            assertThat(list.get(index++)).isEqualTo(item11);
+            assertThat(list.get(index++)).isEqualTo(item12);
+            assertThat(list.get(index++)).isEqualTo(item21);
+            assertThat(list.get(index++)).isEqualTo(item22);
+            assertThat(list.get(index++)).isEqualTo(item31);
+            assertThat(list.get(index++)).isEqualTo(item33);
+            assertThat(list.get(index++)).isEqualTo(item41);
+            assertThat(list.get(index++)).isEqualTo(order5);
+            assertThat(list.get(index)).isEqualTo(order5);
         } finally {
             ksession.dispose();
         }

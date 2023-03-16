@@ -17,7 +17,6 @@
 package org.kie.dmn.validation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -38,7 +37,7 @@ public class ValidatorInputDataTest extends AbstractValidatorTest {
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).hasSize(1);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
         }
     }
 
@@ -48,7 +47,7 @@ public class ValidatorInputDataTest extends AbstractValidatorTest {
                 getFile("inputdata/INPUTDATA_MISSING_VAR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
     }
 
     @Test
@@ -59,7 +58,7 @@ public class ValidatorInputDataTest extends AbstractValidatorTest {
                                "INPUTDATA_MISSING_VAR"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
     }
 
     @Test
@@ -69,7 +68,7 @@ public class ValidatorInputDataTest extends AbstractValidatorTest {
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).hasSize(1);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH))).isTrue();
         }
     }
 
@@ -79,7 +78,7 @@ public class ValidatorInputDataTest extends AbstractValidatorTest {
                 getFile("inputdata/INPUTDATA_MISMATCH_VAR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH))).isTrue();
     }
 
     @Test
@@ -90,6 +89,6 @@ public class ValidatorInputDataTest extends AbstractValidatorTest {
                                "INPUTDATA_MISSING_VAR"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH))).isTrue();
     }
 }

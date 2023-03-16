@@ -46,8 +46,8 @@ import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class PackageDescrResourceVisitor {
 
@@ -55,7 +55,7 @@ public class PackageDescrResourceVisitor {
 
     private static void checkResource( BaseDescr descr ) {
         if( descr != null ) {
-            assertNotNull(descr.getClass().getSimpleName() + ".resource is null!", descr.getResource());
+            assertThat(descr.getResource()).as(descr.getClass().getSimpleName() + ".resource is null!").isNotNull();
         }
     }
 

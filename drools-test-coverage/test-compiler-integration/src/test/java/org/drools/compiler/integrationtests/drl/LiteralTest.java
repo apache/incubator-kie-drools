@@ -35,7 +35,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class LiteralTest {
@@ -79,7 +79,7 @@ public class LiteralTest {
             session.insert(stilton);
             session.fireAllRules();
 
-            assertEquals("stilton", ((List) session.getGlobal("list")).get(0));
+            assertThat(((List) session.getGlobal("list")).get(0)).isEqualTo("stilton");
         } finally {
             session.dispose();
         }
@@ -109,9 +109,9 @@ public class LiteralTest {
             final Cheese stilton = new Cheese(expected, 5);
             session.insert(stilton);
             final int fired = session.fireAllRules();
-            assertEquals(1, fired);
+            assertThat(fired).isEqualTo(1);
 
-            assertEquals(expected, ((List) session.getGlobal("list")).get(0));
+            assertThat(((List) session.getGlobal("list")).get(0)).isEqualTo(expected);
         } finally {
             session.dispose();
         }
@@ -143,7 +143,7 @@ public class LiteralTest {
             session.insert(bill);
             session.fireAllRules();
 
-            assertEquals(bill, ((List) session.getGlobal("list")).get(0));
+            assertThat(((List) session.getGlobal("list")).get(0)).isEqualTo(bill);
         } finally {
             session.dispose();
         }
@@ -168,7 +168,7 @@ public class LiteralTest {
             session.insert(p);
 
             final int rulesFired = session.fireAllRules();
-            assertEquals(1, rulesFired);
+            assertThat(rulesFired).isEqualTo(1);
         } finally {
             session.dispose();
         }
@@ -248,7 +248,7 @@ public class LiteralTest {
             session.insert(bill);
             session.fireAllRules();
 
-            assertEquals(6, ((List) session.getGlobal("list")).size());
+            assertThat(((List) session.getGlobal("list")).size()).isEqualTo(6);
         } finally {
             session.dispose();
         }

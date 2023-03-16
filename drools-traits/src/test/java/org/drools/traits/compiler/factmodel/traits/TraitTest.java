@@ -98,16 +98,9 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.serialization.protobuf.SerializationHelper.serializeObject;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -172,13 +165,13 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSessionFromString( drl );
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        assertEquals(2, ks.fireAllRules());
+        assertThat(ks.fireAllRules()).isEqualTo(2);
 
         for(Object o : ks.getObjects()) {
             System.out.println(o);
         }
 
-        assertEquals(0, ks.getObjects().size());
+        assertThat(ks.getObjects().size()).isEqualTo(0);
     }
 
 
@@ -188,7 +181,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -220,19 +213,14 @@ public class TraitTest extends CommonTraitTest {
                          "xyz" );
 
             wrapper.entrySet();
-            assertEquals( 4,
-                          wrapper.size() );
-            assertEquals( 2,
-                          virtualFields.size() );
+            assertThat(wrapper.size()).isEqualTo(4);
+            assertThat(virtualFields.size()).isEqualTo(2);
 
-            assertEquals( "john",
-                          wrapper.get( "name" ) );
-            assertEquals( "xyz",
-                          wrapper.get( "virtualField" ) );
+            assertThat(wrapper.get("name")).isEqualTo("john");
+            assertThat(wrapper.get("virtualField")).isEqualTo("xyz");
 
-            assertEquals( "john",
-                          impClass.get( imp,
-                                        "name" ) );
+            assertThat(impClass.get(imp,
+                    "name")).isEqualTo("john");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -255,30 +243,27 @@ public class TraitTest extends CommonTraitTest {
         ks.setGlobal( "list",
                       info );
 
-        assertTrue( info.isEmpty() );
+        assertThat(info.isEmpty()).isTrue();
 
         ks.fireAllRules();
 
-        assertTrue( info.contains( "Student" ) );
-        assertEquals( 1,
-                      info.size() );
+        assertThat(info.contains("Student")).isTrue();
+        assertThat(info.size()).isEqualTo(1);
 
         ks.insert( "hire" );
         ks.fireAllRules();
 
         Collection c = ks.getObjects();
 
-        assertTrue( info.contains( "Worker" ) );
-        assertEquals( 2,
-                      info.size() );
+        assertThat(info.contains("Worker")).isTrue();
+        assertThat(info.size()).isEqualTo(2);
 
         ks.insert( "check" );
         ks.fireAllRules();
 
-        assertEquals( 4,
-                      info.size() );
-        assertTrue( info.contains( "Conflict" ) );
-        assertTrue( info.contains( "Nothing" ) );
+        assertThat(info.size()).isEqualTo(4);
+        assertThat(info.contains("Conflict")).isTrue();
+        assertThat(info.contains("Nothing")).isTrue();
 
     }
 
@@ -302,8 +287,8 @@ public class TraitTest extends CommonTraitTest {
         ks.insert( "go" );
         ks.fireAllRules();
 
-        assertTrue( info.contains( "DON" ) );
-        assertTrue( info.contains( "SHED" ) );
+        assertThat(info.contains("DON")).isTrue();
+        assertThat(info.contains("SHED")).isTrue();
 
         Iterator it = wm.iterator();
         Object x = it.next();
@@ -333,7 +318,7 @@ public class TraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        assertTrue( info.contains( "27" ) );
+        assertThat(info.contains("27")).isTrue();
     }
 
 
@@ -353,7 +338,7 @@ public class TraitTest extends CommonTraitTest {
         if (!errors.isEmpty()) {
             System.err.println( errors.toString() );
         }
-        assertTrue( errors.isEmpty() );
+        assertThat(errors.isEmpty()).isTrue();
 
     }
 
@@ -374,7 +359,7 @@ public class TraitTest extends CommonTraitTest {
         if (!errors.isEmpty()) {
             System.err.println( errors );
         }
-        assertTrue( errors.isEmpty() );
+        assertThat(errors.isEmpty()).isTrue();
 
     }
 
@@ -386,7 +371,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -410,27 +395,24 @@ public class TraitTest extends CommonTraitTest {
             Class trait2 = kb.getFactType( "org.drools.compiler.trait.test",
                                            "Role" ).getFactClass();
 
-            assertNotNull( trait );
+            assertThat(trait).isNotNull();
             TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp,
                                                                       trait );
             proxy.getFields().put( "field",
                                    "xyz" );
             //            proxy.getFields().put("name", "aaa");
 
-            assertNotNull( proxy );
+            assertThat(proxy).isNotNull();
 
             TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(imp,
                                                                        trait );
-            assertSame( proxy2,
-                        proxy );
+            assertThat(proxy).isSameAs(proxy2);
 
             TraitProxyImpl proxy3 = (TraitProxyImpl) tFactory.getProxy(imp,
                                                                        trait2 );
-            assertNotNull( proxy3 );
-            assertEquals( "xyz",
-                          proxy3.getFields().get( "field" ) );
-            assertEquals( "aaa",
-                          proxy3.getFields().get( "name" ) );
+            assertThat(proxy3).isNotNull();
+            assertThat(proxy3.getFields().get("field")).isEqualTo("xyz");
+            assertThat(proxy3.getFields().get("name")).isEqualTo("aaa");
 
             TraitableBean imp2 = (TraitableBean) impClass.newInstance();
             impClass.set( imp2,
@@ -442,8 +424,7 @@ public class TraitTest extends CommonTraitTest {
             proxy4.getFields().put( "field",
                                     "xyz" );
 
-            assertEquals( proxy2,
-                                 proxy4 );
+            assertThat(proxy4).isEqualTo(proxy2);
 
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -464,7 +445,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -489,32 +470,24 @@ public class TraitTest extends CommonTraitTest {
 
             Map<String, Object> virtualFields = imp._getDynamicProperties();
             Map<String, Object> wrapper = proxy.getFields();
-            assertEquals( 3,
-                          wrapper.size() );
-            assertEquals( 1,
-                          virtualFields.size() );
+            assertThat(wrapper.size()).isEqualTo(3);
+            assertThat(virtualFields.size()).isEqualTo(1);
 
             impClass.set(imp,
                          "name",
                          "john");
-            assertEquals( 3,
-                          wrapper.size() );
-            assertEquals( 1,
-                          virtualFields.size() );
+            assertThat(wrapper.size()).isEqualTo(3);
+            assertThat(virtualFields.size()).isEqualTo(1);
 
             proxy.getFields().put( "school",
                                    "skol" );
-            assertEquals( 3,
-                          wrapper.size() );
-            assertEquals( 1,
-                          virtualFields.size() );
+            assertThat(wrapper.size()).isEqualTo(3);
+            assertThat(virtualFields.size()).isEqualTo(1);
 
             proxy.getFields().put( "surname",
                                    "xxx" );
-            assertEquals( 4,
-                          wrapper.size() );
-            assertEquals( 2,
-                          virtualFields.size() );
+            assertThat(wrapper.size()).isEqualTo(4);
+            assertThat(virtualFields.size()).isEqualTo(2);
 
             //            FactType indClass = kb.getFactType("org.drools.compiler.trait.test","Entity");
             //            TraitableBean ind = (TraitableBean) indClass.newInstance();
@@ -525,32 +498,24 @@ public class TraitTest extends CommonTraitTest {
 
             Map virtualFields2 = ind._getDynamicProperties();
             Map wrapper2 = proxy2.getFields();
-            assertEquals( 3,
-                          wrapper2.size() );
-            assertEquals( 3,
-                          virtualFields2.size() );
+            assertThat(wrapper2.size()).isEqualTo(3);
+            assertThat(virtualFields2.size()).isEqualTo(3);
 
             traitClass.set( proxy2,
                             "name",
                             "john" );
-            assertEquals( 3,
-                          wrapper2.size() );
-            assertEquals( 3,
-                          virtualFields2.size() );
+            assertThat(wrapper2.size()).isEqualTo(3);
+            assertThat(virtualFields2.size()).isEqualTo(3);
 
             proxy2.getFields().put( "school",
                                     "skol" );
-            assertEquals( 3,
-                          wrapper2.size() );
-            assertEquals( 3,
-                          virtualFields2.size() );
+            assertThat(wrapper2.size()).isEqualTo(3);
+            assertThat(virtualFields2.size()).isEqualTo(3);
 
             proxy2.getFields().put( "surname",
                                     "xxx" );
-            assertEquals( 4,
-                          wrapper2.size() );
-            assertEquals( 4,
-                          virtualFields2.size() );
+            assertThat(wrapper2.size()).isEqualTo(4);
+            assertThat(virtualFields2.size()).isEqualTo(4);
 
             FactType traitClass2 = kb.getFactType( "org.drools.compiler.trait.test",
                                                    "Role" );
@@ -568,14 +533,12 @@ public class TraitTest extends CommonTraitTest {
             proxy99.getFields().put( "school",
                                      "skol" );
 
-            assertEquals( 3,
-                          proxy99.getFields().size() );
+            assertThat(proxy99.getFields().size()).isEqualTo(3);
 
             TraitProxyImpl proxy100 = (TraitProxyImpl) tFactory.getProxy(ind2,
                                                                          trait );
 
-            assertEquals( 4,
-                          proxy100.getFields().size() );
+            assertThat(proxy100.getFields().size()).isEqualTo(4);
 
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -592,7 +555,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -617,26 +580,26 @@ public class TraitTest extends CommonTraitTest {
 
             Map<String, Object> virtualFields = imp._getDynamicProperties();
             Map<String, Object> wrapper = proxy.getFields();
-            assertFalse( wrapper.isEmpty() );
+            assertThat(wrapper.isEmpty()).isFalse();
 
             studentClass.set( proxy,
                               "name",
                               "john" );
-            assertFalse( wrapper.isEmpty() );
+            assertThat(wrapper.isEmpty()).isFalse();
             studentClass.set( proxy,
                               "name",
                               null );
-            assertFalse( wrapper.isEmpty() );
+            assertThat(wrapper.isEmpty()).isFalse();
 
             studentClass.set( proxy,
                               "age",
                               32 );
-            assertFalse( wrapper.isEmpty() );
+            assertThat(wrapper.isEmpty()).isFalse();
 
             studentClass.set( proxy,
                               "age",
                               null );
-            assertFalse( wrapper.isEmpty() );
+            assertThat(wrapper.isEmpty()).isFalse();
 
             //            FactType indClass = kb.getFactType("org.drools.compiler.trait.test","Entity");
             TraitableBean ind = new Entity();
@@ -648,15 +611,15 @@ public class TraitTest extends CommonTraitTest {
                                                                        trait2 );
 
             Map<String, Object> wrapper2 = proxy2.getFields();
-            assertTrue( wrapper2.isEmpty() );
+            assertThat(wrapper2.isEmpty()).isTrue();
 
             proxy2.getFields().put( "name",
                                     "john" );
-            assertFalse( wrapper2.isEmpty() );
+            assertThat(wrapper2.isEmpty()).isFalse();
 
             proxy2.getFields().put( "name",
                                     null );
-            assertFalse( wrapper2.isEmpty() );
+            assertThat(wrapper2.isEmpty()).isFalse();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -673,7 +636,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -703,16 +666,16 @@ public class TraitTest extends CommonTraitTest {
             Map<String, Object> virtualFields = imp._getDynamicProperties();
             Map<String, Object> wrapper = proxy.getFields();
 
-            assertTrue( wrapper.containsKey( "name" ) );
-            assertTrue( wrapper.containsKey( "school" ) );
-            assertTrue( wrapper.containsKey( "age" ) );
-            assertFalse( wrapper.containsKey( "surname" ) );
+            assertThat(wrapper.containsKey("name")).isTrue();
+            assertThat(wrapper.containsKey("school")).isTrue();
+            assertThat(wrapper.containsKey("age")).isTrue();
+            assertThat(wrapper.containsKey("surname")).isFalse();
 
             proxy.getFields().put( "school",
                                    "skol" );
             proxy.getFields().put( "surname",
                                    "xxx" );
-            assertTrue( wrapper.containsKey( "surname" ) );
+            assertThat(wrapper.containsKey("surname")).isTrue();
 
             //            FactType indClass = kb.getFactType("org.drools.compiler.trait.test","Entity");
             TraitableBean ind = new Entity();
@@ -722,10 +685,10 @@ public class TraitTest extends CommonTraitTest {
 
             Map virtualFields2 = ind._getDynamicProperties();
             Map wrapper2 = proxy2.getFields();
-            assertTrue( wrapper2.containsKey( "name" ) );
-            assertTrue( wrapper2.containsKey( "school" ) );
-            assertTrue( wrapper2.containsKey( "age" ) );
-            assertFalse( wrapper2.containsKey( "surname" ) );
+            assertThat(wrapper2.containsKey("name")).isTrue();
+            assertThat(wrapper2.containsKey("school")).isTrue();
+            assertThat(wrapper2.containsKey("age")).isTrue();
+            assertThat(wrapper2.containsKey("surname")).isFalse();
 
             traitClass.set( proxy2,
                             "name",
@@ -734,7 +697,7 @@ public class TraitTest extends CommonTraitTest {
                                     "skol" );
             proxy2.getFields().put( "surname",
                                     "xxx" );
-            assertTrue( wrapper2.containsKey( "surname" ) );
+            assertThat(wrapper2.containsKey("surname")).isTrue();
 
             FactType traitClass2 = kb.getFactType( "org.drools.compiler.trait.test",
                                                    "Role" );
@@ -745,10 +708,10 @@ public class TraitTest extends CommonTraitTest {
                                                                         trait2 );
             Map<String, Object> wrapper99 = proxy99.getFields();
 
-            assertFalse( wrapper99.containsKey( "name" ) );
-            assertFalse( wrapper99.containsKey( "school" ) );
-            assertFalse( wrapper99.containsKey( "age" ) );
-            assertFalse( wrapper99.containsKey( "surname" ) );
+            assertThat(wrapper99.containsKey("name")).isFalse();
+            assertThat(wrapper99.containsKey("school")).isFalse();
+            assertThat(wrapper99.containsKey("age")).isFalse();
+            assertThat(wrapper99.containsKey("surname")).isFalse();
 
             proxy99.getFields().put( "surname",
                                      "xxx" );
@@ -757,31 +720,30 @@ public class TraitTest extends CommonTraitTest {
             proxy99.getFields().put( "school",
                                      "skol" );
 
-            assertTrue( wrapper99.containsKey( "name" ) );
-            assertTrue( wrapper99.containsKey( "school" ) );
-            assertFalse( wrapper99.containsKey( "age" ) );
-            assertTrue( wrapper99.containsKey( "surname" ) );
-            assertEquals( 3,
-                          proxy99.getFields().size() );
+            assertThat(wrapper99.containsKey("name")).isTrue();
+            assertThat(wrapper99.containsKey("school")).isTrue();
+            assertThat(wrapper99.containsKey("age")).isFalse();
+            assertThat(wrapper99.containsKey("surname")).isTrue();
+            assertThat(proxy99.getFields().size()).isEqualTo(3);
 
             TraitableBean ind0 = new Entity();
 
             TraitProxyImpl proxy100 = (TraitProxyImpl) tFactory.getProxy(ind0,
                                                                          trait2 );
             Map<String, Object> wrapper100 = proxy100.getFields();
-            assertFalse( wrapper100.containsKey( "name" ) );
-            assertFalse( wrapper100.containsKey( "school" ) );
-            assertFalse( wrapper100.containsKey( "age" ) );
-            assertFalse( wrapper100.containsKey( "surname" ) );
+            assertThat(wrapper100.containsKey("name")).isFalse();
+            assertThat(wrapper100.containsKey("school")).isFalse();
+            assertThat(wrapper100.containsKey("age")).isFalse();
+            assertThat(wrapper100.containsKey("surname")).isFalse();
 
             TraitProxyImpl proxy101 = (TraitProxyImpl) tFactory.getProxy(ind0,
                                                                          trait );
             // object gains properties by virtue of another trait
             // so new props are accessible even using the old proxy
-            assertTrue( wrapper100.containsKey( "name" ) );
-            assertTrue( wrapper100.containsKey( "school" ) );
-            assertTrue( wrapper100.containsKey( "age" ) );
-            assertFalse( wrapper100.containsKey( "surname" ) );
+            assertThat(wrapper100.containsKey("name")).isTrue();
+            assertThat(wrapper100.containsKey("school")).isTrue();
+            assertThat(wrapper100.containsKey("age")).isTrue();
+            assertThat(wrapper100.containsKey("surname")).isFalse();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -797,7 +759,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -823,22 +785,22 @@ public class TraitTest extends CommonTraitTest {
             Object coreTraits = imp._getTraitMap();
             Object coreProperties = imp._getDynamicProperties();
 
-            assertTrue( proxy.getObject() instanceof TraitableBean );
+            assertThat(proxy.getObject() instanceof TraitableBean).isTrue();
 
-            assertNotNull( proxyFields );
-            assertNotNull( coreTraits );
-            assertNotNull( coreProperties );
+            assertThat(proxyFields).isNotNull();
+            assertThat(coreTraits).isNotNull();
+            assertThat(coreProperties).isNotNull();
 
             if ( mode == VirtualPropertyMode.MAP ) {
-                assertTrue( proxyFields instanceof MapWrapper );
-                assertTrue( coreTraits instanceof TraitTypeMapImpl);
-                assertTrue( coreProperties instanceof HashMap );
+                assertThat(proxyFields instanceof MapWrapper).isTrue();
+                assertThat(coreTraits instanceof TraitTypeMapImpl).isTrue();
+                assertThat(coreProperties instanceof HashMap).isTrue();
             } else {
-                assertEquals( "org.drools.compiler.trait.test.Student.org.drools.compiler.trait.test.Imp_ProxyWrapper", proxyFields.getClass().getName() );
+                assertThat(proxyFields.getClass().getName()).isEqualTo("org.drools.compiler.trait.test.Student.org.drools.compiler.trait.test.Imp_ProxyWrapper");
 
-                assertTrue(proxyFields instanceof TripleBasedStruct );
-                assertTrue( coreTraits instanceof TraitTypeMapImpl);
-                assertTrue( coreProperties instanceof TripleBasedBean );
+                assertThat(proxyFields instanceof TripleBasedStruct).isTrue();
+                assertThat(coreTraits instanceof TraitTypeMapImpl).isTrue();
+                assertThat(coreProperties instanceof TripleBasedBean).isTrue();
             }
 
 
@@ -860,7 +822,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -900,10 +862,8 @@ public class TraitTest extends CommonTraitTest {
             set.add( "name2" );
             set.add( "nfield" );
 
-            assertEquals( 6,
-                          proxy.getFields().keySet().size() );
-            assertEquals( set,
-                          proxy.getFields().keySet() );
+            assertThat(proxy.getFields().keySet().size()).isEqualTo(6);
+            assertThat(proxy.getFields().keySet()).isEqualTo(set);
 
             Collection col1 = proxy.getFields().values();
             Collection col2 = Arrays.asList( "john",
@@ -933,15 +893,14 @@ public class TraitTest extends CommonTraitTest {
                               comp );
             Collections.sort( (List) col2,
                               comp );
-            assertEquals( col1,
-                          col2 );
+            assertThat(col2).isEqualTo(col1);
 
-            assertTrue( proxy.getFields().containsValue( null ) );
-            assertTrue( proxy.getFields().containsValue( "john" ) );
-            assertTrue( proxy.getFields().containsValue( 0 ) );
-            assertTrue( proxy.getFields().containsValue( "xxx" ) );
-            assertFalse( proxy.getFields().containsValue( "randomString" ) );
-            assertFalse( proxy.getFields().containsValue( -96 ) );
+            assertThat(proxy.getFields().containsValue(null)).isTrue();
+            assertThat(proxy.getFields().containsValue("john")).isTrue();
+            assertThat(proxy.getFields().containsValue(0)).isTrue();
+            assertThat(proxy.getFields().containsValue("xxx")).isTrue();
+            assertThat(proxy.getFields().containsValue("randomString")).isFalse();
+            assertThat(proxy.getFields().containsValue(-96)).isFalse();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -958,7 +917,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -997,24 +956,20 @@ public class TraitTest extends CommonTraitTest {
             set.add( "name2" );
             set.add( "nfield" );
 
-            assertEquals( 6,
-                          proxy.getFields().keySet().size() );
-            assertEquals( set,
-                          proxy.getFields().keySet() );
+            assertThat(proxy.getFields().keySet().size()).isEqualTo(6);
+            assertThat(proxy.getFields().keySet()).isEqualTo(set);
 
             proxy.getFields().clear();
 
             Map<String, Object> fields = proxy.getFields();
-            assertEquals( 3,
-                          fields.size() );
-            assertTrue( fields.containsKey( "age" ) );
-            assertTrue( fields.containsKey( "school" ) );
-            assertTrue( fields.containsKey( "name" ) );
+            assertThat(fields.size()).isEqualTo(3);
+            assertThat(fields.containsKey("age")).isTrue();
+            assertThat(fields.containsKey("school")).isTrue();
+            assertThat(fields.containsKey("name")).isTrue();
 
-            assertEquals( 0,
-                          fields.get( "age" ) );
-            assertNull( fields.get( "school" ) );
-            assertNotNull( fields.get( "name" ) );
+            assertThat(fields.get("age")).isEqualTo(0);
+            assertThat(fields.get("school")).isNull();
+            assertThat(fields.get("name")).isNotNull();
 
             proxy.getFields().put( "surname",
                                    "xxx" );
@@ -1025,45 +980,32 @@ public class TraitTest extends CommonTraitTest {
             proxy.getFields().put( "age",
                                    24 );
 
-            assertEquals( "john",
-                          proxy.getFields().get( "name" ) );
-            assertEquals( "xxx",
-                          proxy.getFields().get( "surname" ) );
-            assertEquals( "john",
-                          proxy.getFields().get( "name2" ) );
-            assertEquals( null,
-                          proxy.getFields().get( "nfield" ) );
-            assertEquals( 24,
-                          proxy.getFields().get( "age" ) );
-            assertEquals( null,
-                          proxy.getFields().get( "school" ) );
+            assertThat(proxy.getFields().get("name")).isEqualTo("john");
+            assertThat(proxy.getFields().get("surname")).isEqualTo("xxx");
+            assertThat(proxy.getFields().get("name2")).isEqualTo("john");
+            assertThat(proxy.getFields().get("nfield")).isEqualTo(null);
+            assertThat(proxy.getFields().get("age")).isEqualTo(24);
+            assertThat(proxy.getFields().get("school")).isEqualTo(null);
 
             proxy.getFields().remove( "surname" );
             proxy.getFields().remove( "name2" );
             proxy.getFields().remove( "age" );
             proxy.getFields().remove( "school" );
             proxy.getFields().remove( "nfield" );
-            assertEquals( 3,
-                          proxy.getFields().size() );
+            assertThat(proxy.getFields().size()).isEqualTo(3);
 
-            assertEquals( 0,
-                          proxy.getFields().get( "age" ) );
-            assertEquals( null,
-                          proxy.getFields().get( "school" ) );
-            assertEquals( "john",
-                          proxy.getFields().get( "name" ) );
+            assertThat(proxy.getFields().get("age")).isEqualTo(0);
+            assertThat(proxy.getFields().get("school")).isEqualTo(null);
+            assertThat(proxy.getFields().get("name")).isEqualTo("john");
 
-            assertEquals( null,
-                          proxy.getFields().get( "nfield" ) );
-            assertFalse( proxy.getFields().containsKey( "nfield" ) );
+            assertThat(proxy.getFields().get("nfield")).isEqualTo(null);
+            assertThat(proxy.getFields().containsKey("nfield")).isFalse();
 
-            assertEquals( null,
-                          proxy.getFields().get( "name2" ) );
-            assertFalse( proxy.getFields().containsKey( "name2" ) );
+            assertThat(proxy.getFields().get("name2")).isEqualTo(null);
+            assertThat(proxy.getFields().containsKey("name2")).isFalse();
 
-            assertEquals( null,
-                          proxy.getFields().get( "surname" ) );
-            assertFalse( proxy.getFields().containsKey( "surname" ) );
+            assertThat(proxy.getFields().get("surname")).isEqualTo(null);
+            assertThat(proxy.getFields().containsKey("surname")).isFalse();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1144,7 +1086,7 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         System.out.println( info );
-        assertTrue( info.contains( "ok" ) );
+        assertThat(info.contains("ok")).isTrue();
     }
 
 
@@ -1166,10 +1108,9 @@ public class TraitTest extends CommonTraitTest {
         int num = 10;
 
         System.out.println( info );
-        assertEquals( num,
-                      info.size() );
+        assertThat(info.size()).isEqualTo(num);
         for (int j = 0; j < num; j++) {
-            assertTrue( info.contains( "" + j ) );
+            assertThat(info.contains("" + j)).isTrue();
         }
 
     }
@@ -1191,7 +1132,7 @@ public class TraitTest extends CommonTraitTest {
             ks.fireAllRules();
             fail( "An exception was expected since a trait can't override the type of a core class field with these settings " );
         } catch ( Throwable rde ) {
-            assertTrue( rde.getCause() instanceof UnsupportedOperationException );
+            assertThat(rde.getCause() instanceof UnsupportedOperationException).isTrue();
         }
     }
 
@@ -1221,7 +1162,7 @@ public class TraitTest extends CommonTraitTest {
             ks.fireAllRules();
             fail( "An exception was expected since a trait can't override the type of a core class field with these settings " );
         } catch ( Throwable rde ) {
-            assertTrue( rde.getCause() instanceof UnsupportedOperationException );
+            assertThat(rde.getCause() instanceof UnsupportedOperationException).isTrue();
         }
     }
 
@@ -1250,7 +1191,7 @@ public class TraitTest extends CommonTraitTest {
             ks.fireAllRules();
             fail( "An exception was expected since a trait can't override the type of a core class field with these settings " );
         } catch ( Throwable rde ) {
-            assertTrue( rde.getCause() instanceof UnsupportedOperationException );
+            assertThat(rde.getCause() instanceof UnsupportedOperationException).isTrue();
         }
     }
 
@@ -1277,13 +1218,12 @@ public class TraitTest extends CommonTraitTest {
         System.err.println( info );
         System.err.println( " --------------  ---------------- " );
 
-        assertEquals( 5,
-                      info.size() );
-        assertTrue( info.contains( "OK" ) );
-        assertTrue( info.contains( "OK2" ) );
-        assertTrue( info.contains( "OK3" ) );
-        assertTrue( info.contains( "OK4" ) );
-        assertTrue( info.contains( "OK5" ) );
+        assertThat(info.size()).isEqualTo(5);
+        assertThat(info.contains("OK")).isTrue();
+        assertThat(info.contains("OK2")).isTrue();
+        assertThat(info.contains("OK3")).isTrue();
+        assertThat(info.contains("OK4")).isTrue();
+        assertThat(info.contains("OK5")).isTrue();
 
     }
 
@@ -1312,9 +1252,8 @@ public class TraitTest extends CommonTraitTest {
         System.err.println( info );
         System.err.println( " --------------  ---------------- " );
 
-        assertEquals( 1,
-                      info.size() );
-        assertTrue( info.contains( "OK" ) );
+        assertThat(info.size()).isEqualTo(1);
+        assertThat(info.contains("OK")).isTrue();
 
     }
 
@@ -1342,10 +1281,9 @@ public class TraitTest extends CommonTraitTest {
         System.err.println( info );
         System.err.println( " --------------  ---------------- " );
 
-        assertTrue( info.contains( "OK" ) );
-        assertTrue( info.contains( "OK2" ) );
-        assertEquals( 2,
-                      info.size() );
+        assertThat(info.contains("OK")).isTrue();
+        assertThat(info.contains("OK2")).isTrue();
+        assertThat(info.size()).isEqualTo(2);
 
     }
 
@@ -1365,8 +1303,8 @@ public class TraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        assertTrue( info.contains( "DON" ) );
-        assertTrue( info.contains( "EQUAL" ) );
+        assertThat(info.contains("DON")).isTrue();
+        assertThat(info.contains("EQUAL")).isTrue();
 
     }
 
@@ -1389,10 +1327,10 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
         ks.dispose();
 
-        assertTrue( trueTraits.contains( 1 ) );
-        assertFalse( trueTraits.contains( 2 ) );
-        assertTrue( untrueTraits.contains( 2 ) );
-        assertFalse( untrueTraits.contains( 1 ) );
+        assertThat(trueTraits.contains(1)).isTrue();
+        assertThat(trueTraits.contains(2)).isFalse();
+        assertThat(untrueTraits.contains(2)).isTrue();
+        assertThat(untrueTraits.contains(1)).isFalse();
     }
 
 
@@ -1414,10 +1352,10 @@ public class TraitTest extends CommonTraitTest {
         session.fireAllRules();
         session.dispose();
 
-        assertTrue( trueTraits.contains( 1 ) );
-        assertFalse( trueTraits.contains( 2 ) );
-        assertTrue( untrueTraits.contains( 2 ) );
-        assertFalse( untrueTraits.contains( 1 ) );
+        assertThat(trueTraits.contains(1)).isTrue();
+        assertThat(trueTraits.contains(2)).isFalse();
+        assertThat(untrueTraits.contains(2)).isTrue();
+        assertThat(untrueTraits.contains(1)).isFalse();
     }
 
 
@@ -1444,12 +1382,9 @@ public class TraitTest extends CommonTraitTest {
 
         List<AfterMatchFiredEvent> values = cap.getAllValues();
 
-        assertThat( values.get( 0 ).getMatch().getRule().getName(),
-                    is( "create student" ) );
-        assertThat( values.get( 1 ).getMatch().getRule().getName(),
-                    is( "print student" ) );
-        assertThat( values.get( 2 ).getMatch().getRule().getName(),
-                    is( "print school" ) );
+        assertThat(values.get(0).getMatch().getRule().getName()).isEqualTo("create student");
+        assertThat(values.get(1).getMatch().getRule().getName()).isEqualTo("print student");
+        assertThat(values.get(2).getMatch().getRule().getName()).isEqualTo("print school");
 
     }
 
@@ -1510,8 +1445,8 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "OK" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("OK")).isTrue();
 
     }
 
@@ -1530,14 +1465,14 @@ public class TraitTest extends CommonTraitTest {
             System.err.println( o );
         }
         Collection x = ksession.getObjects();
-        assertEquals( 2, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(2);
 
-        assertEquals( 5, list.size() );
-        assertEquals( 0, list.get( 0 ) );
-        assertTrue( list.contains( 1 ) );
-        assertTrue( list.contains( 2 ) );
-        assertTrue( list.contains( 3 ) );
-        assertTrue( list.contains( 4 ) );
+        assertThat(list.size()).isEqualTo(5);
+        assertThat(list.get(0)).isEqualTo(0);
+        assertThat(list.contains(1)).isTrue();
+        assertThat(list.contains(2)).isTrue();
+        assertThat(list.contains(3)).isTrue();
+        assertThat(list.contains(4)).isTrue();
 
 
     }
@@ -1612,9 +1547,9 @@ public class TraitTest extends CommonTraitTest {
 
         System.out.println("Finished...");
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( 1 ) );
-        assertTrue( list.contains( 2 ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains(1)).isTrue();
+        assertThat(list.contains(2)).isTrue();
     }
 
 
@@ -1674,8 +1609,8 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.execute( CommandFactory.newFireAllRules() );
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "OK" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("OK")).isTrue();
 
     }
 
@@ -1742,14 +1677,14 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 9, list.size() );
-        assertTrue( list.contains( "UniBoh" ) );
-        assertTrue( list.contains( "Skool" ) );
-        assertTrue( ( (Collection) list.get(3) ).containsAll( Arrays.asList( "workPlace", "nomen", "level" ) ) );
-        assertTrue( ( (Collection) list.get(5) ).containsAll( Arrays.asList( "davide", "Skool", 0 ) ) );
-        assertTrue( list.contains( true ) );
-        assertTrue( list.contains( "Floor84" ) );
-        assertTrue( list.contains( 99 ) );
+        assertThat(list.size()).isEqualTo(9);
+        assertThat(list.contains("UniBoh")).isTrue();
+        assertThat(list.contains("Skool")).isTrue();
+        assertThat(((Collection) list.get(3)).containsAll(Arrays.asList("workPlace", "nomen", "level"))).isTrue();
+        assertThat(((Collection) list.get(5)).containsAll(Arrays.asList("davide", "Skool", 0))).isTrue();
+        assertThat(list.contains(true)).isTrue();
+        assertThat(list.contains("Floor84")).isTrue();
+        assertThat(list.contains(99)).isTrue();
 
     }
 
@@ -1804,28 +1739,28 @@ public class TraitTest extends CommonTraitTest {
 
         FactHandle h = ksession.insert( "trigger" );
         ksession.fireAllRules();
-        assertEquals( 3, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(3);
 
         ksession.delete( h );
         ksession.fireAllRules();
 
-        assertEquals( 0, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(0);
 
         FactHandle h1 = ksession.insert( "trigger" );
         FactHandle h2 = ksession.insert( "trigger2" );
         ksession.fireAllRules();
 
-        assertEquals( 5, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(5);
 
         ksession.delete( h2 );
         ksession.fireAllRules();
 
-        assertEquals( 3, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(3);
 
         ksession.delete( h1 );
         ksession.fireAllRules();
 
-        assertEquals( 0, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(0);
 
     }
 
@@ -1875,7 +1810,7 @@ public class TraitTest extends CommonTraitTest {
         InternalFactHandle h = ((InternalFactHandle) personHandle);
         ObjectTypeConfigurationRegistry reg = h.getEntryPoint(( InternalWorkingMemory ) ksession).getObjectTypeConfigurationRegistry();
         ObjectTypeConf conf = reg.getOrCreateObjectTypeConf( h.getEntryPointId(), ((InternalFactHandle) personHandle).getObject() );
-        assertTrue( conf.isTMSEnabled() );
+        assertThat(conf.isTMSEnabled()).isTrue();
 
         ksession.dispose();
     }
@@ -1951,7 +1886,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         Collection yOld = ksession.getObjects();
-        assertEquals( 2, yOld.size() );
+        assertThat(yOld.size()).isEqualTo(2);
 
         TraitableBean coreOld = null;
         for ( Object o : yOld ) {
@@ -1960,13 +1895,13 @@ public class TraitTest extends CommonTraitTest {
                 break;
             }
         }
-        assertNotNull( coreOld );
+        assertThat(coreOld).isNotNull();
 
-        assertSame( TBean.class, coreOld.getClass().getSuperclass() );
+        assertThat(coreOld.getClass().getSuperclass()).isSameAs(TBean.class);
 
-        assertEquals( "abc", ((TBean) coreOld).getFld() );
-        assertEquals( 1, coreOld._getDynamicProperties().size() );
-        assertEquals( 1, coreOld._getTraitMap().size() );
+        assertThat(((TBean) coreOld).getFld()).isEqualTo("abc");
+        assertThat(coreOld._getDynamicProperties().size()).isEqualTo(1);
+        assertThat(coreOld._getTraitMap().size()).isEqualTo(1);
     }
 
 
@@ -1978,7 +1913,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull(res);
+        assertThat(res).isNotNull();
         kbuilder.add(res, ResourceType.DRL);
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -1996,7 +1931,7 @@ public class TraitTest extends CommonTraitTest {
             Class trait = kb.getFactType("org.drools.compiler.trait.test","Student").getFactClass();
             Class trait2 = kb.getFactType("org.drools.compiler.trait.test","Role").getFactClass();
 
-            assertNotNull( trait);
+            assertThat(trait).isNotNull();
 
             TraitProxyImpl proxy = (TraitProxyImpl) traitBuilder.getProxy(imp, trait);
             Thing thing = traitBuilder.getProxy(imp, Thing.class);
@@ -2007,10 +1942,10 @@ public class TraitTest extends CommonTraitTest {
             TraitProxyImpl proxy2 = (TraitProxyImpl) traitBuilder.getProxy(imp, trait);
             Thing thing2 = traitBuilder.getProxy(imp, Thing.class);
 
-            assertSame(proxy,proxy2);
-            assertSame(thing,thing2);
+            assertThat(proxy2).isSameAs(proxy);
+            assertThat(thing2).isSameAs(thing);
 
-            assertEquals(2, core.getTraits().size());
+            assertThat(core.getTraits().size()).isEqualTo(2);
 
 
         } catch ( Exception e ) {
@@ -2081,7 +2016,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.insert( new StudentImpl("skool", "john", 27 ) );
 
 
-        assertEquals( 3, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
 
         for ( Object o : ksession.getObjects() ) {
             System.err.println( o );
@@ -2132,14 +2067,14 @@ public class TraitTest extends CommonTraitTest {
         for ( Object o : ksession.getObjects() ) {
             if ( o instanceof TraitableBean ) {
                 TraitableBean tb = (TraitableBean) o;
-                assertEquals( 1, tb._getTraitMap().size() );
+                assertThat(tb._getTraitMap().size()).isEqualTo(1);
                 BitSet bs = new BitSet();
                 bs.set( 0 );
-                assertEquals( bs, tb.getCurrentTypeCode() );
+                assertThat(tb.getCurrentTypeCode()).isEqualTo(bs);
             }
             if ( o instanceof TraitProxyImpl) {
                 TraitProxyImpl tp = (TraitProxyImpl) o;
-                assertEquals( 0, tp.listAssignedOtnTypeCodes().size() );
+                assertThat(tp.listAssignedOtnTypeCodes().size()).isEqualTo(0);
             }
         }
     }
@@ -2212,13 +2147,13 @@ public class TraitTest extends CommonTraitTest {
         ksession.insert( ent );
         ksession.fireAllRules();
 
-        assertEquals( 1, ent.getMostSpecificTraits().size() );
+        assertThat(ent.getMostSpecificTraits().size()).isEqualTo(1);
 
         ksession.insert( "y" );
         ksession.fireAllRules();
 
         System.out.println( ent.getMostSpecificTraits() );
-        assertEquals( 2, ent.getMostSpecificTraits().size() );
+        assertThat(ent.getMostSpecificTraits().size()).isEqualTo(2);
 
     }
 
@@ -2253,31 +2188,31 @@ public class TraitTest extends CommonTraitTest {
 
         TraitableBean ent = (TraitableBean) ksession.getGlobal( "core" );
 
-        assertEquals( CodedHierarchyImpl.stringToBitSet( "1" ), ent.getCurrentTypeCode( ) );
+        assertThat(ent.getCurrentTypeCode()).isEqualTo(CodedHierarchyImpl.stringToBitSet("1"));
 
         ksession.insert( "b" );
         ksession.fireAllRules();
-        assertEquals( CodedHierarchyImpl.stringToBitSet( "11" ), ent.getCurrentTypeCode( ) );
+        assertThat(ent.getCurrentTypeCode()).isEqualTo(CodedHierarchyImpl.stringToBitSet("11"));
 
         ksession.insert( "c" );
         ksession.fireAllRules();
-        assertEquals( CodedHierarchyImpl.stringToBitSet( "1011" ), ent.getCurrentTypeCode( ) );
+        assertThat(ent.getCurrentTypeCode()).isEqualTo(CodedHierarchyImpl.stringToBitSet("1011"));
 
         ksession.insert( "e" );
         ksession.fireAllRules();
-        assertEquals( CodedHierarchyImpl.stringToBitSet( "11011" ), ent.getCurrentTypeCode( ) );
+        assertThat(ent.getCurrentTypeCode()).isEqualTo(CodedHierarchyImpl.stringToBitSet("11011"));
 
         ksession.insert( "-c" );
         ksession.fireAllRules();
-        assertEquals( CodedHierarchyImpl.stringToBitSet( "11" ), ent.getCurrentTypeCode( ) );
+        assertThat(ent.getCurrentTypeCode()).isEqualTo(CodedHierarchyImpl.stringToBitSet("11"));
 
         ksession.insert( "dg" );
         ksession.fireAllRules();
-        assertEquals( CodedHierarchyImpl.stringToBitSet( "111111" ), ent.getCurrentTypeCode( ) );
+        assertThat(ent.getCurrentTypeCode()).isEqualTo(CodedHierarchyImpl.stringToBitSet("111111"));
 
         ksession.insert( "-f" );
         ksession.fireAllRules();
-        assertEquals( CodedHierarchyImpl.stringToBitSet( "111" ), ent.getCurrentTypeCode( ) );
+        assertThat(ent.getCurrentTypeCode()).isEqualTo(CodedHierarchyImpl.stringToBitSet("111"));
 
     }
 
@@ -2375,8 +2310,8 @@ public class TraitTest extends CommonTraitTest {
 
         int k = ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( "john", "john", "john", "john", "alan", "alan", "alan", "alan" ), list );
-        assertEquals( 11, k );
+        assertThat(list).isEqualTo(Arrays.asList("john", "john", "john", "john", "alan", "alan", "alan", "alan"));
+        assertThat(k).isEqualTo(11);
 
     }
 
@@ -2470,12 +2405,12 @@ public class TraitTest extends CommonTraitTest {
         KieSession ksession = kbase.newKieSession();
         int k = ksession.fireAllRules();
 
-        assertEquals( 7, k );
+        assertThat(k).isEqualTo(7);
 
         ksession.insert( "go" );
         k = ksession.fireAllRules();
 
-        assertEquals( 6, k );
+        assertThat(k).isEqualTo(6);
 
     }
 
@@ -2538,8 +2473,8 @@ public class TraitTest extends CommonTraitTest {
 
         int k = ksession.fireAllRules();
 
-        assertTrue( list.contains( true ) );
-        assertEquals( 1, list.size() );
+        assertThat(list.contains(true)).isTrue();
+        assertThat(list.size()).isEqualTo(1);
     }
 
 
@@ -2643,9 +2578,9 @@ public class TraitTest extends CommonTraitTest {
         ksession.insert( "go" );
         ksession.fireAllRules();
 
-        assertEquals( 14, list.size() );
+        assertThat(list.size()).isEqualTo(14);
         for ( int j = 1; j <= 14; j++ ) {
-            assertTrue( list.contains( j ) );
+            assertThat(list.contains(j)).isTrue();
         }
 
 
@@ -2761,13 +2696,13 @@ public class TraitTest extends CommonTraitTest {
         ksession.insert( "go" );
         k = ksession.fireAllRules();
 
-        assertEquals( 5, k );
+        assertThat(k).isEqualTo(5);
 
-        assertEquals( 4, list.size() );
-        assertTrue( list.contains( 1 ) );
-        assertTrue( list.contains( 2 ) );
-        assertTrue( list.contains( 3 ) );
-        assertTrue( list.contains( 4 ) );
+        assertThat(list.size()).isEqualTo(4);
+        assertThat(list.contains(1)).isTrue();
+        assertThat(list.contains(2)).isTrue();
+        assertThat(list.contains(3)).isTrue();
+        assertThat(list.contains(4)).isTrue();
 
     }
 
@@ -2828,7 +2763,7 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertTrue( list.contains( "Italy" ) );
+        assertThat(list.contains("Italy")).isTrue();
     }
 
 
@@ -2885,9 +2820,9 @@ public class TraitTest extends CommonTraitTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "E" ) );
-        assertTrue( list.contains( "X" ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains("E")).isTrue();
+        assertThat(list.contains("X")).isTrue();
 
     }
 
@@ -2957,9 +2892,9 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         System.out.println( list );
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "E" ) );
-        assertTrue( list.contains( "X" ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains("E")).isTrue();
+        assertThat(list.contains("X")).isTrue();
 
         ks.insert( "shed" );
         ks.fireAllRules();
@@ -2967,7 +2902,7 @@ public class TraitTest extends CommonTraitTest {
         for ( Object o : ks.getObjects() ) {
             System.out.println( o );
         }
-        assertEquals( 3, ks.getObjects().size() );
+        assertThat(ks.getObjects().size()).isEqualTo(3);
 
     }
 
@@ -3029,21 +2964,21 @@ public class TraitTest extends CommonTraitTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        assertEquals( 6, list.size() );
-        assertFalse( list.contains( null ) );
+        assertThat(list.size()).isEqualTo(6);
+        assertThat(list.contains(null)).isFalse();
 
         List hard = (List) list.get( 0 );
         List soft = (List) list.get( 1 );
         List otra = (List) list.get( 2 );
         List more = (List) list.get( 3 );
 
-        assertTrue( hard.isEmpty() );
-        assertTrue( soft.isEmpty() );
-        assertEquals( more, Arrays.asList( 1, 2, 3 ) );
-        assertEquals( otra, Arrays.asList( 42 ) );
+        assertThat(hard.isEmpty()).isTrue();
+        assertThat(soft.isEmpty()).isTrue();
+        assertThat(Arrays.asList(1, 2, 3)).isEqualTo(more);
+        assertThat(Arrays.asList(42)).isEqualTo(otra);
 
-        assertTrue( list.contains( 3 ) );
-        assertTrue( list.contains( 0.421 ) );
+        assertThat(list.contains(3)).isTrue();
+        assertThat(list.contains(0.421)).isTrue();
     }
 
 
@@ -3153,7 +3088,7 @@ public class TraitTest extends CommonTraitTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        assertEquals( 3, list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
     }
 
@@ -3218,7 +3153,7 @@ public class TraitTest extends CommonTraitTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
     }
 
@@ -3262,7 +3197,7 @@ public class TraitTest extends CommonTraitTest {
 
         QueryResults res = ks.getQueryResults( "QueryTraitA" );
 
-        assertEquals( 1, res.size() );
+        assertThat(res.size()).isEqualTo(1);
 
     }
 
@@ -3323,7 +3258,7 @@ public class TraitTest extends CommonTraitTest {
 
         QueryResults res;
         res = ks.getQueryResults( "queryA1" );
-        assertEquals( 1, res.size() );
+        assertThat(res.size()).isEqualTo(1);
 
     }
 
@@ -3385,7 +3320,7 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         System.out.println( list );
-        assertEquals( Arrays.asList( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'Z' ), list );
+        assertThat(list).isEqualTo(Arrays.asList('A', 'B', 'C', 'D', 'E', 'F', 'G', 'Z'));
 
 
         for ( Object o : ks.getObjects( new ObjectFilter() {
@@ -3395,7 +3330,7 @@ public class TraitTest extends CommonTraitTest {
             }
         } ) ) {
             Set<BitSet> otns = checkOTNPartitioning( (TraitableBean) o, ks );
-            assertEquals( 7, otns.size() );
+            assertThat(otns.size()).isEqualTo(7);
         }
 
     }
@@ -3459,7 +3394,7 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         System.out.println( list );
-        assertEquals( Arrays.asList( 'A', 'D', 'G', 'Z' ), list );
+        assertThat(list).isEqualTo(Arrays.asList('A', 'D', 'G', 'Z'));
 
 
         for ( Object o : ks.getObjects( new ObjectFilter() {
@@ -3469,7 +3404,7 @@ public class TraitTest extends CommonTraitTest {
             }
         } ) ) {
             Set<BitSet> otns = checkOTNPartitioning( (TraitableBean) o, ks );
-            assertEquals( 3, otns.size() );
+            assertThat(otns.size()).isEqualTo(3);
         }
 
     }
@@ -3526,9 +3461,9 @@ public class TraitTest extends CommonTraitTest {
         QueryResults res = ks.getQueryResults( "queryA" );
         Iterator<QueryResultsRow> iter = res.iterator();
         Object a = iter.next().get( "$x" );
-        assertFalse( iter.hasNext() );
+        assertThat(iter.hasNext()).isFalse();
 
-        assertEquals( 1, res.size() );
+        assertThat(res.size()).isEqualTo(1);
 
     }
 
@@ -3589,7 +3524,7 @@ public class TraitTest extends CommonTraitTest {
         for ( Object o : ks.getObjects() ) {
             System.err.println( o );
         }
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
 
@@ -3673,7 +3608,7 @@ public class TraitTest extends CommonTraitTest {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 4, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(4);
 
         ksession.delete( h1 );
         ksession.fireAllRules();
@@ -3683,7 +3618,7 @@ public class TraitTest extends CommonTraitTest {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 3, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(3);
 
         ksession.delete( h2 );
         ksession.fireAllRules();
@@ -3693,7 +3628,7 @@ public class TraitTest extends CommonTraitTest {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 1, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(1);
 
         ksession.insert( "trigger3" );
         ksession.fireAllRules();
@@ -3703,7 +3638,7 @@ public class TraitTest extends CommonTraitTest {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 1, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(1);
 
         ksession.insert( "trigger4" );
         ksession.fireAllRules();
@@ -3713,7 +3648,7 @@ public class TraitTest extends CommonTraitTest {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 3, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(3);
 
         ksession.insert( "trigger5" );
         ksession.fireAllRules();
@@ -3723,7 +3658,7 @@ public class TraitTest extends CommonTraitTest {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 1, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(1);
     }
 
 
@@ -3795,7 +3730,7 @@ public class TraitTest extends CommonTraitTest {
             System.out.println( o );
         }
 
-        assertEquals( 1, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(1);
     }
 
 
@@ -3866,7 +3801,7 @@ public class TraitTest extends CommonTraitTest {
             System.out.println( o );
         }
 
-        assertEquals( 0, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(0);
     }
 
     @Test
@@ -3914,7 +3849,7 @@ public class TraitTest extends CommonTraitTest {
 
         FactHandle h = ksession.insert( "trigger" );
         ksession.fireAllRules();
-        assertEquals( 5, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(5);
 
         ksession.delete( h );
         ksession.fireAllRules();
@@ -3923,7 +3858,7 @@ public class TraitTest extends CommonTraitTest {
             // lose the string and the Student proxy
             System.out.println( o );
         }
-        assertEquals( 3, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(3);
 
     }
 
@@ -3988,7 +3923,7 @@ public class TraitTest extends CommonTraitTest {
             System.out.println( o );
         }
 
-        assertEquals( 2, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(2);
     }
 
 
@@ -4055,7 +3990,7 @@ public class TraitTest extends CommonTraitTest {
             System.out.println( o );
         }
 
-        assertEquals( 0, ks.getObjects().size() );
+        assertThat(ks.getObjects().size()).isEqualTo(0);
 
         ks.dispose();
     }
@@ -4114,8 +4049,8 @@ public class TraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        assertTrue( list.contains( 0 ) );
-        assertEquals( 1, list.size() );
+        assertThat(list.contains(0)).isTrue();
+        assertThat(list.size()).isEqualTo(1);
 
         ks.dispose();
     }
@@ -4201,8 +4136,8 @@ public class TraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        assertEquals( 5, list.size() );
-        assertEquals( Arrays.asList( 99, "b", 11, Object.class, 42 ), list );
+        assertThat(list.size()).isEqualTo(5);
+        assertThat(list).isEqualTo(Arrays.asList(99, "b", 11, Object.class, 42));
 
         ks.dispose();
     }
@@ -4315,8 +4250,8 @@ public class TraitTest extends CommonTraitTest {
         HashMap map;
         ks.fireAllRules();
 
-        assertTrue( list.contains( 1 ) );
-        assertEquals( 1, list.size() );
+        assertThat(list.contains(1)).isTrue();
+        assertThat(list.size()).isEqualTo(1);
 
         ks.dispose();
 
@@ -4364,12 +4299,12 @@ public class TraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        assertTrue( list.contains( "A" ) );
-        assertTrue( list.contains( "B" ) );
-        assertTrue( list.contains( "C" ) );
-        assertTrue( list.contains( "E" ) );
-        assertTrue( list.contains( "F" ) );
-        assertEquals( 5, list.size() );
+        assertThat(list.contains("A")).isTrue();
+        assertThat(list.contains("B")).isTrue();
+        assertThat(list.contains("C")).isTrue();
+        assertThat(list.contains("E")).isTrue();
+        assertThat(list.contains("F")).isTrue();
+        assertThat(list.size()).isEqualTo(5);
 
         list.clear();
 
@@ -4378,17 +4313,17 @@ public class TraitTest extends CommonTraitTest {
         ks.insert( "go" );
         ks.fireAllRules();
 
-        assertTrue( list.contains( "H" ) );
-        assertTrue( list.contains( "G" ) );
-        assertTrue( list.contains( "HA" ) );
-        assertTrue( list.contains( "HB" ) );
-        assertTrue( list.contains( "HC" ) );
-        assertTrue( list.contains( "HE" ) );
-        assertTrue( list.contains( "HF" ) );
-        assertTrue( list.contains( "HG" ) );
-        assertTrue( list.contains( "HH" ) );
+        assertThat(list.contains("H")).isTrue();
+        assertThat(list.contains("G")).isTrue();
+        assertThat(list.contains("HA")).isTrue();
+        assertThat(list.contains("HB")).isTrue();
+        assertThat(list.contains("HC")).isTrue();
+        assertThat(list.contains("HE")).isTrue();
+        assertThat(list.contains("HF")).isTrue();
+        assertThat(list.contains("HG")).isTrue();
+        assertThat(list.contains("HH")).isTrue();
         System.out.println( list );
-        assertEquals( 9, list.size() );
+        assertThat(list.size()).isEqualTo(9);
         list.clear();
 
         System.out.println( "---------------------------------------" );
@@ -4396,17 +4331,17 @@ public class TraitTest extends CommonTraitTest {
         ks.insert( "go2" );
         ks.fireAllRules();
 
-        assertTrue( list.contains( "D" ) );
-        assertTrue( list.contains( "HA" ) );
-        assertTrue( list.contains( "HB" ) );
-        assertTrue( list.contains( "HC" ) );
-        assertTrue( list.contains( "HE" ) );
-        assertTrue( list.contains( "HF" ) );
-        assertTrue( list.contains( "HG" ) );
-        assertTrue( list.contains( "HH" ) );
-        assertTrue( list.contains( "HH" ) );
-        assertTrue( list.contains( "HD" ) );
-        assertEquals( 9, list.size() );
+        assertThat(list.contains("D")).isTrue();
+        assertThat(list.contains("HA")).isTrue();
+        assertThat(list.contains("HB")).isTrue();
+        assertThat(list.contains("HC")).isTrue();
+        assertThat(list.contains("HE")).isTrue();
+        assertThat(list.contains("HF")).isTrue();
+        assertThat(list.contains("HG")).isTrue();
+        assertThat(list.contains("HH")).isTrue();
+        assertThat(list.contains("HH")).isTrue();
+        assertThat(list.contains("HD")).isTrue();
+        assertThat(list.size()).isEqualTo(9);
 
         ks.dispose();
 
@@ -4500,7 +4435,7 @@ public class TraitTest extends CommonTraitTest {
         ks.insert( "go3" );
         ks.fireAllRules();
 
-        assertEquals( Arrays.asList( 100 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(100));
 
         ks.dispose();
     }
@@ -4557,8 +4492,8 @@ public class TraitTest extends CommonTraitTest {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
-        assertTrue(list.contains("correct1"));
-        assertTrue(list.contains("correct2"));
+        assertThat(list.contains("correct1")).isTrue();
+        assertThat(list.contains("correct2")).isTrue();
     }
 
 
@@ -4611,7 +4546,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         System.out.println( list );
-        assertEquals( Arrays.asList( "B", "C", "A" ), list );
+        assertThat(list).isEqualTo(Arrays.asList("B", "C", "A"));
     }
 
 
@@ -4648,7 +4583,7 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(2);
 
     }
 
@@ -4781,9 +4716,9 @@ public class TraitTest extends CommonTraitTest {
 
         // insert Core Bean, A, B, Thing.
         // Update the bean on don B
-        assertEquals( 0, cwm.getdeletes() );
-        assertEquals( 3, cwm.getInserts() );
-        assertEquals( 1, cwm.getUpdates() );
+        assertThat(cwm.getdeletes()).isEqualTo(0);
+        assertThat(cwm.getInserts()).isEqualTo(3);
+        assertThat(cwm.getUpdates()).isEqualTo(1);
         cwm.reset();
 
         FactHandle handle = ksession.insert( "go" );
@@ -4791,9 +4726,9 @@ public class TraitTest extends CommonTraitTest {
 
         // don C, D, E, F at once : 4 inserts
         // Update the bean, A and B.
-        assertEquals( 0, cwm.getdeletes() );
-        assertEquals( 4, cwm.getInserts() );
-        assertEquals( 3, cwm.getUpdates() );
+        assertThat(cwm.getdeletes()).isEqualTo(0);
+        assertThat(cwm.getInserts()).isEqualTo(4);
+        assertThat(cwm.getUpdates()).isEqualTo(3);
         cwm.reset();
 
         ksession.delete( handle );
@@ -4801,9 +4736,9 @@ public class TraitTest extends CommonTraitTest {
 
         // logically asserted C, D, E, F are deleteed
         // as a logical deleteion, no update is made. This could be a bug....
-        assertEquals( 4, cwm.getdeletes() );
-        assertEquals( 0, cwm.getInserts() );
-        assertEquals( 0, cwm.getUpdates() );
+        assertThat(cwm.getdeletes()).isEqualTo(4);
+        assertThat(cwm.getInserts()).isEqualTo(0);
+        assertThat(cwm.getUpdates()).isEqualTo(0);
         cwm.reset();
 
         for ( Object o : ksession.getObjects() ) {
@@ -4815,14 +4750,14 @@ public class TraitTest extends CommonTraitTest {
 
         // deleteing the core bean
         // A, B, Thing are deleteed too
-        assertEquals( 3, cwm.getdeletes() );
-        assertEquals( 0, cwm.getInserts() );
-        assertEquals( 0, cwm.getUpdates() );
+        assertThat(cwm.getdeletes()).isEqualTo(3);
+        assertThat(cwm.getInserts()).isEqualTo(0);
+        assertThat(cwm.getUpdates()).isEqualTo(0);
         cwm.reset();
 
 
-        assertEquals( 4, list.size() );
-        assertTrue( list.containsAll( Arrays.asList( 0, 1, 2, 3 ) ) );
+        assertThat(list.size()).isEqualTo(4);
+        assertThat(list.containsAll(Arrays.asList(0, 1, 2, 3))).isTrue();
     }
 
     @Test
@@ -4869,11 +4804,11 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( 0 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(0));
 
-        assertEquals( 0, cwm.getdeletes() );
-        assertEquals( 3, cwm.getInserts() );
-        assertEquals( 1, cwm.getUpdates() );
+        assertThat(cwm.getdeletes()).isEqualTo(0);
+        assertThat(cwm.getInserts()).isEqualTo(3);
+        assertThat(cwm.getUpdates()).isEqualTo(1);
 
     }
 
@@ -4961,8 +4896,8 @@ public class TraitTest extends CommonTraitTest {
             executorService.awaitTermination(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
             final List<Runnable> queuedTasks = executorService.shutdownNow();
 
-            assertEquals(0, queuedTasks.size());
-            assertEquals(true, executorService.isTerminated());
+            assertThat(queuedTasks.size()).isEqualTo(0);
+            assertThat(executorService.isTerminated()).isEqualTo(true);
         }
     }
 
@@ -5011,14 +4946,14 @@ public class TraitTest extends CommonTraitTest {
 
         knowledgeSession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy" ), list );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy"));
 
         knowledgeSession.insert( "shed" );
         knowledgeSession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy", "org.drools.core.factmodel.traits.Thing.test.Core_Proxy" ), list );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy", "org.drools.core.factmodel.traits.Thing.test.Core_Proxy"));
     }
 
 
@@ -5089,27 +5024,27 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.insert( "don1" );
         knowledgeSession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy" ), list );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy"));
 
         knowledgeSession.insert( "shed1" );
         knowledgeSession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy" ), list );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy"));
 
         knowledgeSession.insert( "don2" );
         knowledgeSession.fireAllRules();
 
         System.out.println( list );
-        assertEquals( 2, list.size() );
-        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy" ), list );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy"));
 
         knowledgeSession.insert( "shed2" );
         knowledgeSession.fireAllRules();
 
-        assertEquals( 3, list.size() );
-        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy", "org.drools.core.factmodel.traits.Thing.test.Core_Proxy" ), list );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy", "org.drools.core.factmodel.traits.Thing.test.Core_Proxy"));
 
     }
 
@@ -5143,7 +5078,7 @@ public class TraitTest extends CommonTraitTest {
             knowledgeSession.fireAllRules();
             fail( "Core is not declared @Traitable, this test should have thrown an exception" );
         } catch ( Exception csq ) {
-            assertTrue( csq.getCause() instanceof IllegalStateException );
+            assertThat(csq.getCause() instanceof IllegalStateException).isTrue();
         }
 
     }
@@ -5179,7 +5114,7 @@ public class TraitTest extends CommonTraitTest {
 
         knowledgeSession.fireAllRules();
 
-        assertEquals( 2, knowledgeSession.getObjects().size() );
+        assertThat(knowledgeSession.getObjects().size()).isEqualTo(2);
     }
 
     @Test
@@ -5217,7 +5152,7 @@ public class TraitTest extends CommonTraitTest {
 
         knowledgeSession.fireAllRules();
 
-        assertEquals( Arrays.asList( 1 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(1));
     }
 
     @Category(ReviseTraitTestWithPRAlwaysCategory.class)
@@ -5275,7 +5210,7 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( 1 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(1));
 
     }
 
@@ -5337,9 +5272,9 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( 1 ) );
-        assertTrue( list.contains( 2 ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains(1)).isTrue();
+        assertThat(list.contains(2)).isTrue();
 
     }
 
@@ -5365,14 +5300,14 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kb.add( new ByteArrayResource( drl0.getBytes() ), ResourceType.DRL );
-        assertFalse( kb.hasErrors() );
+        assertThat(kb.hasErrors()).isFalse();
 
         knowledgeBase.addPackages( kb.getKnowledgePackages() );
 
         KnowledgeBuilder kb2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kb2.add( new ByteArrayResource( drl1.getBytes() ), ResourceType.DRL );
         System.out.print( kb2.getErrors() );
-        assertFalse( kb2.hasErrors() );
+        assertThat(kb2.hasErrors()).isFalse();
 
         knowledgeBase.addPackages( kb2.getKnowledgePackages() );
 
@@ -5381,7 +5316,7 @@ public class TraitTest extends CommonTraitTest {
         BitSet c = (BitSet) hier.getCode( "org.drools.test.C" ).clone();
 
         c.and( b );
-        assertEquals( b, c );
+        assertThat(c).isEqualTo(b);
 
     }
 
@@ -5431,21 +5366,21 @@ public class TraitTest extends CommonTraitTest {
         TBean e = new TBean( "aaa" );
 
         int n = knowledgeSession.fireAllRules();
-        assertEquals( 1, n );
+        assertThat(n).isEqualTo(1);
 
         knowledgeSession.insert( e );
         n = knowledgeSession.fireAllRules();
-        assertEquals( 2, n );
+        assertThat(n).isEqualTo(2);
 
         knowledgeSession.insert( e );
         n = knowledgeSession.fireAllRules();
-        assertEquals( 0, n );
+        assertThat(n).isEqualTo(0);
 
         knowledgeSession.delete( knowledgeSession.getFactHandle( e ) );
         n = knowledgeSession.fireAllRules();
-        assertEquals( 1, n );
+        assertThat(n).isEqualTo(1);
 
-        assertEquals( 0, knowledgeSession.getObjects().size() );
+        assertThat(knowledgeSession.getObjects().size()).isEqualTo(0);
 
     }
 
@@ -5499,7 +5434,7 @@ public class TraitTest extends CommonTraitTest {
 
         knowledgeSession.fireAllRules();
 
-        assertEquals( Arrays.asList( 42, 43 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(42, 43));
     }
 
 
@@ -5546,7 +5481,7 @@ public class TraitTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kbase );
         KieSession kSession = kbase.newKieSession();
 
-        assertEquals( 3, kSession.fireAllRules() );
+        assertThat(kSession.fireAllRules()).isEqualTo(3);
     }
 
     @Test
@@ -5581,11 +5516,11 @@ public class TraitTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kbase );
         KieSession kSession = kbase.newKieSession();
 
-        assertEquals( 3, kSession.fireAllRules() );
+        assertThat(kSession.fireAllRules()).isEqualTo(3);
         NamedEntryPoint nep = ( (NamedEntryPoint) kSession.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) );
         ObjectTypeNode otn = nep.getEntryPointNode().getObjectTypeNodes().get( new ClassObjectType( Entity.class ) );
-        assertNotNull( otn );
-        assertEquals( 1, otn.getObjectSinkPropagator().getSinks().length );
+        assertThat(otn).isNotNull();
+        assertThat(otn.getObjectSinkPropagator().getSinks().length).isEqualTo(1);
     }
 
     @Test
@@ -5629,15 +5564,15 @@ public class TraitTest extends CommonTraitTest {
         ksession.insert( e );
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( 'A', 'B', 'C' ), list );
+        assertThat(list).isEqualTo(Arrays.asList('A', 'B', 'C'));
 
         ksession.insert( "go" );
         ksession.fireAllRules();
 
         Set<BitSet> s = checkOTNPartitioning( e, ksession );
-        assertEquals( 2, s.size() );
+        assertThat(s.size()).isEqualTo(2);
 
-        assertEquals( Arrays.asList( 'A', 'B', 'C' ), list );
+        assertThat(list).isEqualTo(Arrays.asList('A', 'B', 'C'));
     }
 
 
@@ -5691,11 +5626,11 @@ public class TraitTest extends CommonTraitTest {
         } ) ) {
             InternalFactHandle handle = (InternalFactHandle) ksession.getFactHandle( o );
             LeftTuple first = handle.getFirstLeftTuple();
-            assertTrue( first instanceof RuleTerminalNodeLeftTuple );
-            assertEquals( "Check", ((RuleTerminalNodeLeftTuple) first).getRule().getName() );
+            assertThat(first instanceof RuleTerminalNodeLeftTuple).isTrue();
+            assertThat(((RuleTerminalNodeLeftTuple) first).getRule().getName()).isEqualTo("Check");
         }
 
-        assertEquals( Arrays.asList( 0, 42 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(0, 42));
     }
 
     @Test
@@ -5744,7 +5679,7 @@ public class TraitTest extends CommonTraitTest {
         BitSet d = (BitSet) hier.getCode( "org.drools.test.D" ).clone();
 
         int n = ksession.fireAllRules();
-        assertEquals( 2, n );
+        assertThat(n).isEqualTo(2);
 
         System.err.print( "---------------------------------------------------------------\n\n\n " );
 
@@ -5753,11 +5688,11 @@ public class TraitTest extends CommonTraitTest {
             if ( o instanceof TraitProxyImpl) {
                 TraitProxyImpl tp = (TraitProxyImpl) o;
                 if ( tp._getTypeCode().equals( c ) ) {
-                    assertEquals( 1, tp.listAssignedOtnTypeCodes().size() );
-                    assertTrue( tp.listAssignedOtnTypeCodes().contains( b ) );
+                    assertThat(tp.listAssignedOtnTypeCodes().size()).isEqualTo(1);
+                    assertThat(tp.listAssignedOtnTypeCodes().contains(b)).isTrue();
                     counter++;
                 } else if ( tp._getTypeCode().equals( d ) ) {
-                    assertTrue( tp.listAssignedOtnTypeCodes().isEmpty() );
+                    assertThat(tp.listAssignedOtnTypeCodes().isEmpty()).isTrue();
                     counter++;
                 }
             } else if ( o instanceof TraitableBean ) {
@@ -5766,7 +5701,7 @@ public class TraitTest extends CommonTraitTest {
                 counter++;
             }
         }
-        assertEquals( 3, counter );
+        assertThat(counter).isEqualTo(3);
 
 
         ksession.insert( "go" );
@@ -5778,17 +5713,17 @@ public class TraitTest extends CommonTraitTest {
         for ( Object o : ksession.getObjects() ) {
             if ( o instanceof TraitProxyImpl) {
                 TraitProxyImpl tp = (TraitProxyImpl) o;
-                assertEquals( d, tp._getTypeCode() );
-                assertEquals( 1, tp.listAssignedOtnTypeCodes().size() );
-                assertTrue( tp.listAssignedOtnTypeCodes().contains( b ) );
+                assertThat(tp._getTypeCode()).isEqualTo(d);
+                assertThat(tp.listAssignedOtnTypeCodes().size()).isEqualTo(1);
+                assertThat(tp.listAssignedOtnTypeCodes().contains(b)).isTrue();
                 counter2++;
             } else if ( o instanceof TraitableBean ) {
                 TraitableBean tb = (TraitableBean) o;
-                assertEquals( d, tb.getCurrentTypeCode() );
+                assertThat(tb.getCurrentTypeCode()).isEqualTo(d);
                 counter2++;
             }
         }
-        assertEquals( 2, counter2 );
+        assertThat(counter2).isEqualTo(2);
     }
 
 
@@ -5829,7 +5764,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.update( handle, new ExtEntity( "x1", 35 ) );
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( "x1", 42, "x1", 42 ), list );
+        assertThat(list).isEqualTo(Arrays.asList("x1", 42, "x1", 42));
     }
 
 
@@ -5861,8 +5796,8 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.setGlobal( "list", list );
         knowledgeSession.insert( new StudentImpl(  ) );
 
-        assertEquals( 2, knowledgeSession.fireAllRules() );
-        assertEquals( Arrays.asList( 1, 2 ), list );
+        assertThat(knowledgeSession.fireAllRules()).isEqualTo(2);
+        assertThat(list).isEqualTo(Arrays.asList(1, 2));
     }
 
 
@@ -5887,8 +5822,8 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.setGlobal( "list", list );
         knowledgeSession.insert( "hello" );
 
-        assertEquals( 1, knowledgeSession.fireAllRules() );
-        assertEquals( Arrays.asList( 1 ), list );
+        assertThat(knowledgeSession.fireAllRules()).isEqualTo(1);
+        assertThat(list).isEqualTo(Arrays.asList(1));
     }
 
 
@@ -5920,7 +5855,7 @@ public class TraitTest extends CommonTraitTest {
             Set<BitSet> localNodes = tp.listAssignedOtnTypeCodes();
 
             for ( BitSet code : localNodes ) {
-                assertFalse( otns.contains( code ) );
+                assertThat(otns.contains(code)).isFalse();
                 otns.add( code );
             }
         }
@@ -5963,8 +5898,8 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.setGlobal( "list", list );
         knowledgeSession.insert( new StudentImpl(  ) );
 
-        assertEquals( 2, knowledgeSession.fireAllRules() );
-        assertEquals( Arrays.asList( 1, 2 ), list );
+        assertThat(knowledgeSession.fireAllRules()).isEqualTo(2);
+        assertThat(list).isEqualTo(Arrays.asList(1, 2));
     }
 
     @Test
@@ -6117,9 +6052,9 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         System.out.println(list);
-        assertEquals( "Y", list.get(0) );
-        assertEquals( "Z", list.get(1) );
-        assertEquals( first, list.get(2) );
+        assertThat(list.get(0)).isEqualTo("Y");
+        assertThat(list.get(1)).isEqualTo("Z");
+        assertThat(list.get(2)).isEqualTo(first);
     }
 
     @Test
@@ -6230,14 +6165,14 @@ public class TraitTest extends CommonTraitTest {
         for ( Object o : kSession.getObjects( new ClassObjectFilter( Entity.class ) ) ) {
             Entity e = (Entity) o;
             if ( e.getId().equals( "X" ) ) {
-                assertTrue( e.hasTrait( "t.x.D" ) );
-                assertFalse( e.hasTrait( "t.x.E" ) );
-                assertFalse( e.hasTrait( "t.x.F" ) );
-                assertEquals( 0, ( (List) e._getDynamicProperties().get( "objProp" ) ).size() );
+                assertThat(e.hasTrait("t.x.D")).isTrue();
+                assertThat(e.hasTrait("t.x.E")).isFalse();
+                assertThat(e.hasTrait("t.x.F")).isFalse();
+                assertThat(((List) e._getDynamicProperties().get("objProp")).size()).isEqualTo(0);
             } else if ( e.getId().equals( "Y" ) ) {
-                assertTrue( e.hasTrait( "t.x.F" ) );
-                assertFalse( e.hasTrait( "t.x.D" ) );
-                assertFalse( e.hasTrait( "t.x.E" ) );
+                assertThat(e.hasTrait("t.x.F")).isTrue();
+                assertThat(e.hasTrait("t.x.D")).isFalse();
+                assertThat(e.hasTrait("t.x.E")).isFalse();
             } else {
                 fail( "Unrecognized entity in WM" );
             }

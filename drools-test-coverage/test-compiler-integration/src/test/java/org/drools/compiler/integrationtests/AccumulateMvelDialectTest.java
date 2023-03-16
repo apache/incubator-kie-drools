@@ -46,9 +46,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import static java.util.Arrays.asList;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AccumulateMvelDialectTest {
@@ -89,11 +87,11 @@ public class AccumulateMvelDialectTest {
 
             wm.fireAllRules();
 
-            assertEquals(165, results.get(0));
-            assertEquals(10, results.get(1));
-            assertEquals(150, results.get(2));
-            assertEquals(10, results.get(3));
-            assertEquals(210, results.get(4));
+            assertThat(results.get(0)).isEqualTo(165);
+            assertThat(results.get(1)).isEqualTo(10);
+            assertThat(results.get(2)).isEqualTo(150);
+            assertThat(results.get(3)).isEqualTo(10);
+            assertThat(results.get(4)).isEqualTo(210);
         } finally {
             wm.dispose();
         }
@@ -149,17 +147,17 @@ public class AccumulateMvelDialectTest {
                 wm2.dispose();
             }
 
-            assertEquals(165, results1.get(0));
-            assertEquals(10, results1.get(1));
-            assertEquals(150, results1.get(2));
-            assertEquals(10, results1.get(3));
-            assertEquals(210, results1.get(4));
+            assertThat(results1.get(0)).isEqualTo(165);
+            assertThat(results1.get(1)).isEqualTo(10);
+            assertThat(results1.get(2)).isEqualTo(150);
+            assertThat(results1.get(3)).isEqualTo(10);
+            assertThat(results1.get(4)).isEqualTo(210);
 
-            assertEquals(165, results2.get(0));
-            assertEquals(10, results2.get(1));
-            assertEquals(150, results2.get(2));
-            assertEquals(10, results2.get(3));
-            assertEquals(210, results2.get(4));
+            assertThat(results2.get(0)).isEqualTo(165);
+            assertThat(results2.get(1)).isEqualTo(10);
+            assertThat(results2.get(2)).isEqualTo(150);
+            assertThat(results2.get(3)).isEqualTo(10);
+            assertThat(results2.get(4)).isEqualTo(210);
         } finally {
             wm1.dispose();
         }
@@ -255,18 +253,18 @@ public class AccumulateMvelDialectTest {
 
             // init data
             ks.fireAllRules();
-            assertEquals(Collections.singletonList(8), list);
-            assertEquals(Collections.singletonList(8), list2);
+            assertThat(list).isEqualTo(Collections.singletonList(8));
+            assertThat(list2).isEqualTo(Collections.singletonList(8));
 
             ks.insert(1);
             ks.fireAllRules();
-            assertEquals(asList(8, 10), list);
-            assertEquals(asList(8, 10), list2);
+            assertThat(list).isEqualTo(asList(8, 10));
+            assertThat(list2).isEqualTo(asList(8, 10));
 
             ks.insert(2);
             ks.fireAllRules();
-            assertEquals(asList(8, 10, 12), list);
-            assertEquals(asList(8, 10, 12), list2);
+            assertThat(list).isEqualTo(asList(8, 10, 12));
+            assertThat(list2).isEqualTo(asList(8, 10, 12));
         } finally {
             ks.dispose();
         }
@@ -305,16 +303,16 @@ public class AccumulateMvelDialectTest {
 
             // Check the network formation, to ensure the RiaNode is shared.
             final ObjectTypeNode cheeseOtn = KieUtil.getObjectTypeNode(kbase, Cheese.class);
-            assertNotNull(cheeseOtn);
+            assertThat(cheeseOtn).isNotNull();
             final ObjectSink[] oSinks = cheeseOtn.getObjectSinkPropagator().getSinks();
-            assertEquals(1, oSinks.length);
+            assertThat(oSinks.length).isEqualTo(1);
 
             final JoinNode cheeseJoin = (JoinNode) oSinks[0];
             final LeftTupleSink[] ltSinks = cheeseJoin.getSinkPropagator().getSinks();
 
-            assertEquals(1, ltSinks.length);
+            assertThat(ltSinks.length).isEqualTo(1);
             final RightInputAdapterNode rian = (RightInputAdapterNode) ltSinks[0];
-            assertEquals(2, rian.getObjectSinkPropagator().size());   //  RiaNode is shared, if this has two outputs
+            assertThat(rian.getObjectSinkPropagator().size()).isEqualTo(2);   //  RiaNode is shared, if this has two outputs
 
             wm.insert(new Cheese("stilton", 10));
             wm.insert(new Person("Alice", "brie"));
@@ -322,9 +320,9 @@ public class AccumulateMvelDialectTest {
 
             wm.fireAllRules();
 
-            assertEquals(2, list.size());
-            assertEquals("r1:10", list.get(0));
-            assertEquals("r2:10", list.get(1));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(0)).isEqualTo("r1:10");
+            assertThat(list.get(1)).isEqualTo("r2:10");
         } finally {
             wm.dispose();
         }

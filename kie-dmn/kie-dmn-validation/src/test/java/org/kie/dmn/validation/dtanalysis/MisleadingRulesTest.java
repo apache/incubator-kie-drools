@@ -30,10 +30,7 @@ import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.MisleadingRule;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
@@ -43,9 +40,9 @@ public class MisleadingRulesTest extends AbstractDTAnalysisTest {
     public void testMisleadingRules() {
         List<DMNMessage> validate = validator.validate(getReader("MisleadingRules.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_BA703D04-803A-44AA-8A31-F5EEDD4FD54E");
-        assertThat(analysis.getGaps(), hasSize(0));
+        assertThat(analysis.getGaps()).hasSize(0);
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(1));
+        assertThat(analysis.getOverlaps()).hasSize(1);
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(4,
                                                                          2),
@@ -62,19 +59,17 @@ public class MisleadingRulesTest extends AbstractDTAnalysisTest {
                                                                                                                    new Bound("M",
                                                                                                                              RangeBoundary.CLOSED,
                                                                                                                              null))))));
-        assertThat(overlaps, hasSize(1));
+        assertThat(overlaps).hasSize(1);
         // Assert OVERLAPs same values
-        assertThat(analysis.getOverlaps(), contains(overlaps.toArray()));
+        assertThat(analysis.getOverlaps()).containsAll(overlaps);
 
         // MisleadingRules count.
-        assertThat(analysis.getMisleadingRules(), hasSize(1));
+        assertThat(analysis.getMisleadingRules()).hasSize(1);
         List<MisleadingRule> misleadingRules = Arrays.asList(new MisleadingRule(4, 2));
-        assertThat(misleadingRules, hasSize(1));
-        assertThat(analysis.getMisleadingRules(), contains(misleadingRules.toArray()));
-        assertTrue("It should contain at least 1 DMNMessage for the MisleadingRule",
-                   validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
-        assertTrue("This test case is not a Masked rule example",
-                   validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
+        assertThat(misleadingRules).hasSize(1);
+        assertThat(analysis.getMisleadingRules()).containsAll(misleadingRules);
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE))).as("It should contain at least 1 DMNMessage for the MisleadingRule").isTrue();
+        assertThat(validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE))).as("This test case is not a Masked rule example").isTrue();
     }
 
     @Test
@@ -82,11 +77,11 @@ public class MisleadingRulesTest extends AbstractDTAnalysisTest {
         List<DMNMessage> validate = validator.validate(getReader("MisleadingRules2.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_0cffdf05-071b-423b-94b9-182c2cc2435c");
 
-        assertThat(analysis.getGaps(), hasSize(0));
+        assertThat(analysis.getGaps()).hasSize(0);
 
         // no need for assert overlaps.
 
         // MisleadingRules count.
-        assertThat(analysis.getMisleadingRules(), hasSize(0));
+        assertThat(analysis.getMisleadingRules()).hasSize(0);
     }
 }

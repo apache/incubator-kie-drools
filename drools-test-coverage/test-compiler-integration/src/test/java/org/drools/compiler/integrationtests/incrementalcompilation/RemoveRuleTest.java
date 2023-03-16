@@ -25,6 +25,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.model.Tuple;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
@@ -40,10 +41,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class RemoveRuleTest {
@@ -184,10 +183,10 @@ public class RemoveRuleTest {
         KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, str);
         final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
         final KieBase kbase = kieContainer.getKieBase();
-        assertEquals(2, kbase.getKiePackage("org.drools.compiler").getRules().size());
+        assertThat(kbase.getKiePackage("org.drools.compiler").getRules().size()).isEqualTo(2);
         kbase.removeRule( "org.drools.compiler", "R2" );
 
-        assertEquals( 1, kbase.getKiePackage( "org.drools.compiler" ).getRules().size() );
+        assertThat(kbase.getKiePackage("org.drools.compiler").getRules().size()).isEqualTo(1);
     }
 
     @Test
@@ -219,12 +218,12 @@ public class RemoveRuleTest {
         final DefaultFactHandle handle = (DefaultFactHandle) ksession.insert("hello");
         ksession.fireAllRules();
         LeftTuple leftTuple = handle.getFirstLeftTuple();
-        assertNotNull(leftTuple);
-        assertNotNull(leftTuple.getPeer());
+        assertThat(leftTuple).isNotNull();
+        assertThat(leftTuple.getPeer()).isNotNull();
         kbase.removeRule("org.drools.compiler", "rule2");
         leftTuple = handle.getFirstLeftTuple();
-        assertNotNull(leftTuple);
-        assertNull(leftTuple.getHandleNext());
+        assertThat(leftTuple).isNotNull();
+        assertThat((Tuple) leftTuple.getHandleNext()).isNull();
     }
 
      @Test

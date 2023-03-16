@@ -23,8 +23,7 @@ import org.drools.verifier.core.index.keys.Values;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ChangeHandledMultiMapPreExistingDataTest {
 
@@ -59,27 +58,27 @@ public class ChangeHandledMultiMapPreExistingDataTest {
                   new Values<>( new Value( "hello" ) ),
                   "b" );
 
-        assertEquals( 1, timesCalled );
+        assertThat(timesCalled).isEqualTo(1);
 
         // Check data moved
-        assertEquals( 2, map.get( new Value( "hello" ) ).size() );
-        assertTrue( map.get( new Value( "hello" ) ).contains( "a" ) );
-        assertTrue( map.get( new Value( "hello" ) ).contains( "b" ) );
-        assertEquals( 1, map.get( new Value( "ok" ) ).size() );
-        assertTrue( map.get( new Value( "ok" ) ).contains( "c" ) );
+        assertThat(map.get(new Value( "hello" )).size()).isEqualTo(2);
+        assertThat(map.get(new Value( "hello" )).contains("a")).isTrue();
+        assertThat(map.get(new Value( "hello" )).contains("b")).isTrue();
+        assertThat(map.get(new Value( "ok" )).size()).isEqualTo(1);
+        assertThat(map.get(new Value( "ok" )).contains("c")).isTrue();
 
         // Updates should be up to date
-        assertEquals( 1, changeSet.getRemoved().get( new Value( "ok" ) ).size() );
-        assertEquals( 1, changeSet.getAdded().get( new Value( "hello" ) ).size() );
+        assertThat(changeSet.getRemoved().get(new Value( "ok" )).size()).isEqualTo(1);
+        assertThat(changeSet.getAdded().get(new Value( "hello" )).size()).isEqualTo(1);
     }
 
     @Test
     public void testRemove() throws Exception {
         map.remove( new Value( "ok" ) );
 
-        assertEquals( 2, changeSet.getRemoved().get( new Value( "ok" ) ).size() );
+        assertThat(changeSet.getRemoved().get(new Value( "ok" )).size()).isEqualTo(2);
 
-        assertEquals( 1, timesCalled );
+        assertThat(timesCalled).isEqualTo(1);
     }
 
     @Test
@@ -87,23 +86,23 @@ public class ChangeHandledMultiMapPreExistingDataTest {
         map.removeValue( new Value( "ok" ),
                          "b" );
 
-        assertEquals( 1, changeSet.getRemoved().get( new Value( "ok" ) ).size() );
-        assertTrue( changeSet.getRemoved().get( new Value( "ok" ) ).contains( "b" ) );
+        assertThat(changeSet.getRemoved().get(new Value( "ok" )).size()).isEqualTo(1);
+        assertThat(changeSet.getRemoved().get(new Value( "ok" )).contains("b")).isTrue();
 
-        assertEquals( 1, timesCalled );
+        assertThat(timesCalled).isEqualTo(1);
     }
 
     @Test
     public void testClear() throws Exception {
         map.clear();
 
-        assertEquals( 1, changeSet.getRemoved().get( new Value( "hello" ) ).size() );
-        assertTrue( changeSet.getRemoved().get( new Value( "hello" ) ).contains( "a" ) );
-        assertEquals( 2, changeSet.getRemoved().get( new Value( "ok" ) ).size() );
-        assertTrue( changeSet.getRemoved().get( new Value( "ok" ) ).contains( "b" ) );
-        assertTrue( changeSet.getRemoved().get( new Value( "ok" ) ).contains( "c" ) );
+        assertThat(changeSet.getRemoved().get(new Value( "hello" )).size()).isEqualTo(1);
+        assertThat(changeSet.getRemoved().get(new Value( "hello" )).contains("a")).isTrue();
+        assertThat(changeSet.getRemoved().get(new Value( "ok" )).size()).isEqualTo(2);
+        assertThat(changeSet.getRemoved().get(new Value( "ok" )).contains("b")).isTrue();
+        assertThat(changeSet.getRemoved().get(new Value( "ok" )).contains("c")).isTrue();
 
-        assertEquals( 1, timesCalled );
+        assertThat(timesCalled).isEqualTo(1);
     }
 
     @Test
@@ -116,13 +115,13 @@ public class ChangeHandledMultiMapPreExistingDataTest {
         MultiMap.merge( map,
                         other );
 
-        assertEquals( 1, changeSet.getAdded().get( new Value( "hello" ) ).size() );
-        assertTrue( changeSet.getAdded().get( new Value( "hello" ) ).contains( "d" ) );
-        assertEquals( 1, changeSet.getAdded().get( new Value( "ok" ) ).size() );
-        assertTrue( changeSet.getAdded().get( new Value( "ok" ) ).contains( "e" ) );
-        assertEquals( 1, changeSet.getAdded().get( new Value( "newOne" ) ).size() );
-        assertTrue( changeSet.getAdded().get( new Value( "newOne" ) ).contains( "f" ) );
+        assertThat(changeSet.getAdded().get(new Value( "hello" )).size()).isEqualTo(1);
+        assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("d")).isTrue();
+        assertThat(changeSet.getAdded().get(new Value( "ok" )).size()).isEqualTo(1);
+        assertThat(changeSet.getAdded().get(new Value( "ok" )).contains("e")).isTrue();
+        assertThat(changeSet.getAdded().get(new Value( "newOne" )).size()).isEqualTo(1);
+        assertThat(changeSet.getAdded().get(new Value( "newOne" )).contains("f")).isTrue();
 
-        assertEquals( 1, timesCalled );
+        assertThat(timesCalled).isEqualTo(1);
     }
 }

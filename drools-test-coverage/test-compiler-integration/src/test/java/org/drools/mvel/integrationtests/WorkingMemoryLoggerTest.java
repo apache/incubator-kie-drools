@@ -41,9 +41,8 @@ import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class WorkingMemoryLoggerTest {
@@ -95,8 +94,8 @@ public class WorkingMemoryLoggerTest {
 
         for (final LogEvent logEvent : logger.getLogEvents()) {
             if (logEvent instanceof ActivationLogEvent) {
-                assertTrue( ((ActivationLogEvent) logEvent ).getDeclarations().contains( "$messageInstance" ));
-                assertTrue( ((ActivationLogEvent) logEvent ).getDeclarations().contains( "$myMessage" ));
+                assertThat(((ActivationLogEvent) logEvent).getDeclarations().contains("$messageInstance")).isTrue();
+                assertThat(((ActivationLogEvent) logEvent).getDeclarations().contains("$myMessage")).isTrue();
             }
         }
     }
@@ -150,7 +149,7 @@ public class WorkingMemoryLoggerTest {
         ksession.insert(new AnyType(1, "Extended"));
         ksession.insert(new AnyType(1, "test"));
 
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -182,8 +181,8 @@ public class WorkingMemoryLoggerTest {
 
         logger.afterNodeLeft(new ProcessNodeLeftEventImpl(new EmtpyNodeInstance(), ksession));
         List<LogEvent> logEvents = logger.getLogEvents();
-        assertEquals(logEvents.size(), 1);
-        assertTrue(logEvents.get(0).toString().startsWith("AFTER PROCESS NODE EXITED"));
+        assertThat(1).isEqualTo(logEvents.size());
+        assertThat(logEvents.get(0).toString().startsWith("AFTER PROCESS NODE EXITED")).isTrue();
 
     }
 

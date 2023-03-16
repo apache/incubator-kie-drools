@@ -36,10 +36,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleBatchExecutionTest extends CommonTestMethodBase {
 
@@ -58,7 +55,7 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(ruleString.getBytes()), ResourceType.DRL );
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        assertFalse( kbuilder.hasErrors() );
+        assertThat(kbuilder.hasErrors()).isFalse();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         ksession = createKnowledgeSession(kbase);
@@ -87,22 +84,22 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
         
         Object fact_1 = result.getValue("out_1");
-        assertNotNull(fact_1);
+        assertThat(fact_1).isNotNull();
         Object fact_2 = result.getValue("out_2");
-        assertNotNull(fact_2);
+        assertThat(fact_2).isNotNull();
         ksession.fireAllRules();
 
         Object [] expectedArr = {expected_1, expected_2};
         List<Object> expectedList = new ArrayList<Object>(Arrays.asList(expectedArr));
         
         Collection<? extends Object> factList = ksession.getObjects();
-        assertTrue("Expected " + expectedList.size() + " objects but retrieved " + factList.size(), factList.size() == expectedList.size() );
+        assertThat(factList.size() == expectedList.size()).as("Expected " + expectedList.size() + " objects but retrieved " + factList.size()).isTrue();
         for( Object fact : factList ) { 
            if( expectedList.contains(fact) ) { 
                expectedList.remove(fact);
            }
         }
-        assertTrue("Retrieved object list did not contain expected objects.", expectedList.isEmpty() );
+        assertThat(expectedList.isEmpty()).as("Retrieved object list did not contain expected objects.").isTrue();
     }
     
     @Test 
@@ -121,19 +118,19 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
         
         Collection<? extends Object> outList = (Collection<? extends Object>) result.getValue("out_list");
-        assertNotNull(outList);
+        assertThat(outList).isNotNull();
         ksession.fireAllRules();
     
         List<Object> expectedList = new ArrayList<Object>(Arrays.asList(expectedArr));
         
         Collection<? extends Object> factList = ksession.getObjects();
-        assertTrue("Expected " + expectedList.size() + " objects but retrieved " + factList.size(), factList.size() == expectedList.size() );
+        assertThat(factList.size() == expectedList.size()).as("Expected " + expectedList.size() + " objects but retrieved " + factList.size()).isTrue();
         for( Object fact : factList ) { 
            if( expectedList.contains(fact) ) { 
                expectedList.remove(fact);
            }
         }
-        assertTrue("Retrieved object list did not contain expected objects.", expectedList.isEmpty() );
+        assertThat(expectedList.isEmpty()).as("Retrieved object list did not contain expected objects.").isTrue();
     }
 
     @Test 
@@ -150,10 +147,10 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         Command cmds = CommandFactory.newBatchExecution( commands );
     
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
-        assertNotNull(result);
+        assertThat(result).isNotNull();
         Object global = result.getValue("globalCheeseCountry");
-        assertNotNull(global);
-        assertEquals("France", global);
+        assertThat(global).isNotNull();
+        assertThat(global).isEqualTo("France");
     }
 
     @Test 
@@ -170,10 +167,10 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         Command cmds = CommandFactory.newBatchExecution( commands );
 
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
-        assertNotNull("GetGlobalCommand result is null!", result);
+        assertThat(result).as("GetGlobalCommand result is null!").isNotNull();
         Object global = result.getValue("cheeseCountry");
-        assertNotNull("Retrieved global fact is null!", global);
-        assertEquals("Retrieved global is not equal to 'France'.", "France", global );
+        assertThat(global).as("Retrieved global fact is null!").isNotNull();
+        assertThat(global).as("Retrieved global is not equal to 'France'.").isEqualTo("France");
     }
    
     @Test 
@@ -187,8 +184,8 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         
         Object fact = ksession.getObject(handle_1);
-        assertNotNull(fact);
-        assertEquals(expected_1, fact);
+        assertThat(fact).isNotNull();
+        assertThat(fact).isEqualTo(expected_1);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newGetObject(handle_1, "out_1"));
@@ -196,10 +193,10 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         Command cmds = CommandFactory.newBatchExecution( commands );
         
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
-        assertNotNull("GetObjectCommand result is null!", result);
-        
-        assertEquals( expected_1, result.getValue("out_1") );
-        assertEquals( expected_2, result.getValue("out_2") );
+        assertThat(result).as("GetObjectCommand result is null!").isNotNull();
+
+        assertThat(result.getValue("out_1")).isEqualTo(expected_1);
+        assertThat(result.getValue("out_2")).isEqualTo(expected_2);
     }
     
     @Test 
@@ -213,32 +210,32 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         
         Object object = ksession.getObject(handle_1);
-        assertNotNull(object);
-        assertEquals(expected_1, object);
+        assertThat(object).isNotNull();
+        assertThat(object).isEqualTo(expected_1);
         object = ksession.getObject(handle_2);
-        assertNotNull(object);
-        assertEquals(expected_2, object);
+        assertThat(object).isNotNull();
+        assertThat(object).isEqualTo(expected_2);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newGetObjects("out_list"));
         Command cmds = CommandFactory.newBatchExecution( commands );
         
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
-        assertNotNull("GetObjectsCommand result is null!", result);
+        assertThat(result).as("GetObjectsCommand result is null!").isNotNull();
         
         List<Object> objectList = (List) result.getValue("out_list");
-        assertTrue("Retrieved object list is null or empty!", objectList != null && ! objectList.isEmpty());
+        assertThat(objectList != null && !objectList.isEmpty()).as("Retrieved object list is null or empty!").isTrue();
         
         Collection<? extends Object> factList = ksession.getObjects();
         Object [] expectedArr = {expected_1, expected_2};
         List<Object> expectedList = new ArrayList<Object>(Arrays.asList(expectedArr));
-        assertTrue("Expected " + expectedList.size() + " objects but retrieved " + factList.size(), factList.size() == expectedList.size() );
+        assertThat(factList.size() == expectedList.size()).as("Expected " + expectedList.size() + " objects but retrieved " + factList.size()).isTrue();
         for( Object fact : factList ) { 
            if( expectedList.contains(fact) ) { 
                expectedList.remove(fact);
            }
         }
-        assertTrue("Retrieved object list did not contain expected objects.", expectedList.isEmpty() );
+        assertThat(expectedList.isEmpty()).as("Retrieved object list did not contain expected objects.").isTrue();
     }
     
 }

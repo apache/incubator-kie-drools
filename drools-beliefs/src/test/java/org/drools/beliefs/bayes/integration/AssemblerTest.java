@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AssemblerTest {
 
@@ -33,6 +33,6 @@ public class AssemblerTest {
 
         InternalKnowledgePackage kpkg = kbuilder.getPackageRegistry("org.drools.beliefs.bayes.integration").getPackage();
         BayesPackage bkpg = (BayesPackage) kpkg.getResourceTypePackages().get( ResourceType.BAYES );
-        assertNotNull(bkpg.getJunctionTree("Garden"));
+        assertThat(bkpg.getJunctionTree("Garden")).isNotNull();
     }
 }

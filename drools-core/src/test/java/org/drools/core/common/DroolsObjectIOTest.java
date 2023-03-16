@@ -30,14 +30,14 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import static org.junit.Assert.*;
-
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.rule.GroupElement;
+import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DroolsObjectIOTest {
 
@@ -65,7 +65,7 @@ public class DroolsObjectIOTest {
         InputStream fis = new FileInputStream(testFile);
         GroupElement streamedGroupElement = (GroupElement) DroolsStreamUtils.streamIn(new FileInputStream(testFile));
 
-        assertEquals(streamedGroupElement, testGroupElement);
+        assertThat(testGroupElement).isEqualTo(streamedGroupElement);
     }
 
     public static class SerializableObject implements Serializable {
@@ -111,11 +111,11 @@ public class DroolsObjectIOTest {
         SerializableObject    obj = new ExternalizableObject();
 
         byte[]  buf = serialize(obj);
-        assertEquals(deserialize(buf), obj);
+        assertThat(obj).isEqualTo(deserialize(buf));
 
         obj = new SerializableObject();
         buf = serialize(obj);
-        assertEquals(deserialize(buf), obj);
+        assertThat(obj).isEqualTo(deserialize(buf));
     }
 
     private static Object deserialize(byte[] buf) throws Exception {
@@ -153,10 +153,10 @@ public class DroolsObjectIOTest {
         InternalKnowledgePackage pkg = new KnowledgePackageImpl("test");
 
         byte[]  buf = marshal(pkg);
-        assertEquals(unmarshal(buf), pkg);
+        assertThat(pkg).isEqualTo(unmarshal(buf));
 
         buf = serialize(pkg);
-        assertEquals(deserialize(buf), pkg);
+        assertThat(pkg).isEqualTo(deserialize(buf));
     }
 
     @Test
@@ -168,10 +168,10 @@ public class DroolsObjectIOTest {
         rule.setCalendars(new String[] {"mycalendar"});
         byte[] buf = marshal(rule);
         RuleImpl retrievedRule = (RuleImpl)unmarshal(buf);
-        assertNotNull(retrievedRule);
-        assertNotNull(retrievedRule.getCalendars());
-        assertEquals(1, retrievedRule.getCalendars().length);
-        assertEquals("mycalendar", retrievedRule.getCalendars()[0]);
+        assertThat(retrievedRule).isNotNull();
+        assertThat(retrievedRule.getCalendars()).isNotNull();
+        assertThat(retrievedRule.getCalendars()).hasSize(1);
+        assertThat(retrievedRule.getCalendars()[0]).isEqualTo("mycalendar");
 
     }
 }

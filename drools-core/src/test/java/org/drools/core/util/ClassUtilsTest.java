@@ -17,57 +17,51 @@
 package org.drools.core.util;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassUtilsTest {
 
     @Test
     public void testCanonicalNameSimpleClass() {
         String name = ClassUtils.canonicalName( ClassUtilsTest.class );
-        assertEquals( "org.drools.core.util.ClassUtilsTest",
-                      name );
+        assertThat(name).isEqualTo("org.drools.core.util.ClassUtilsTest");
     }
 
     @Test
     public void testCanonicalNameInnerClass() {
         String name = ClassUtils.canonicalName( A.class );
-        assertEquals( "org.drools.core.util.ClassUtilsTest.A",
-                      name );
+        assertThat(name).isEqualTo("org.drools.core.util.ClassUtilsTest.A");
     }
     
     @Test
     public void testCanonicalNameInnerInnerClass() {
         String name = ClassUtils.canonicalName( A.B.class );
-        assertEquals( "org.drools.core.util.ClassUtilsTest.A.B",
-                      name );
+        assertThat(name).isEqualTo("org.drools.core.util.ClassUtilsTest.A.B");
     }
     
     @Test
     public void testCanonicalNameArray() {
         String name = ClassUtils.canonicalName( Object[].class );
-        assertEquals( "java.lang.Object[]",
-                      name );
+        assertThat(name).isEqualTo("java.lang.Object[]");
     }
     
     @Test
     public void testCanonicalNameMultiIndexArray() {
         String name = ClassUtils.canonicalName( Object[][][].class );
-        assertEquals( "java.lang.Object[][][]",
-                      name );
+        assertThat(name).isEqualTo("java.lang.Object[][][]");
     }
     
     @Test
     public void testCanonicalNameMultiIndexArrayInnerClass() {
         String name = ClassUtils.canonicalName( A.B[][][].class );
-        assertEquals( "org.drools.core.util.ClassUtilsTest.A.B[][][]",
-                      name );
+        assertThat(name).isEqualTo("org.drools.core.util.ClassUtilsTest.A.B[][][]");
     }
     
     @Test
     public void testCanonicalNameMultiIndexArrayPrimitives() {
         String name = ClassUtils.canonicalName( long[][][].class );
-        assertEquals( "long[][][]",
-                      name );
+        assertThat(name).isEqualTo("long[][][]");
     }
     
     public static class A {

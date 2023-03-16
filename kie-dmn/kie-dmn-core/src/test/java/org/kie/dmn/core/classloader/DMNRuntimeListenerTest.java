@@ -17,14 +17,12 @@
 package org.kie.dmn.core.classloader;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.drools.core.util.Drools;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -53,14 +51,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
 
@@ -118,32 +109,32 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
                                                   )
                         );
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
         final KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         final DMNRuntime runtime = DMNRuntimeUtil.typeSafeGetKieRuntime(kieContainer);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_2027051c-0030-40f1-8b96-1b1422f8b257", "Drawing 1");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = newEmptyContextWithTestMetadata();
         context.set("Name", "John Doe");
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Greeting the Name"), is("Hello John Doe"));
-        assertThat(result.getMetadata().asMap(), is(TEST_METADATA));
+        assertThat(result.get("Greeting the Name")).isEqualTo("Hello John Doe");
+        assertThat(result.getMetadata().asMap()).isEqualTo(TEST_METADATA);
 
         Object listenerInstance = kieContainer.getClassLoader().loadClass("com.acme.TestListener").newInstance();
         @SuppressWarnings("unchecked") // this was by necessity classloaded
         List<Object> results = (List<Object>) listenerInstance.getClass().getMethod("getResults").invoke(listenerInstance);
-        assertThat(results, contains("Hello John Doe"));
+        assertThat(results).contains("Hello John Doe");
     }
 
     @Test
@@ -152,60 +143,60 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         TestEventListener listener = new TestEventListener();
         runtime.addListener(listener);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c", "say for hello");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext emptyContext = newEmptyContextWithTestMetadata();
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("just say"), is(Arrays.asList("Hello", "Hello", "Hello")));
-        assertThat(result.getMetadata().asMap(), is(TEST_METADATA));
+        assertThat(result.get("just say")).asList().containsExactly("Hello", "Hello", "Hello");
+        assertThat(result.getMetadata().asMap()).isEqualTo(TEST_METADATA);
 
         List<DMNEvent> eventList = listener.getEventList();
-        assertThat(eventList.get(0), instanceOf(BeforeEvaluateDecisionEvent.class));
-        assertThat(eventList.get(0).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((BeforeEvaluateDecisionEvent) eventList.get(0)).getDecision().getName(), is("just say"));
+        assertThat(eventList.get(0)).isInstanceOf(BeforeEvaluateDecisionEvent.class);
+        assertThat(eventList.get(0).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((BeforeEvaluateDecisionEvent) eventList.get(0)).getDecision().getName()).isEqualTo("just say");
 
         // Evaluate 2 BKMs
-        assertThat(eventList.get(1), instanceOf(BeforeEvaluateBKMEvent.class));
-        assertThat(eventList.get(1).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((BeforeEvaluateBKMEvent) eventList.get(1)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
-        assertThat(eventList.get(2), instanceOf(AfterEvaluateBKMEvent.class));
-        assertThat(eventList.get(2).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((AfterEvaluateBKMEvent) eventList.get(2)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
-        assertThat(eventList.get(3), instanceOf(BeforeEvaluateBKMEvent.class));
-        assertThat(eventList.get(3).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((BeforeEvaluateBKMEvent) eventList.get(3)).getBusinessKnowledgeModel().getName(), is("prefix aaa for hello"));
-        assertThat(eventList.get(4), instanceOf(AfterEvaluateBKMEvent.class));
-        assertThat(eventList.get(4).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((AfterEvaluateBKMEvent) eventList.get(4)).getBusinessKnowledgeModel().getName(), is("prefix aaa for hello"));
+        assertThat(eventList.get(1)).isInstanceOf(BeforeEvaluateBKMEvent.class);
+        assertThat(eventList.get(1).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((BeforeEvaluateBKMEvent) eventList.get(1)).getBusinessKnowledgeModel().getName()).isEqualTo("prefix say for hello");
+        assertThat(eventList.get(2)).isInstanceOf(AfterEvaluateBKMEvent.class);
+        assertThat(eventList.get(2).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((AfterEvaluateBKMEvent) eventList.get(2)).getBusinessKnowledgeModel().getName()).isEqualTo("prefix say for hello");
+        assertThat(eventList.get(3)).isInstanceOf(BeforeEvaluateBKMEvent.class);
+        assertThat(eventList.get(3).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((BeforeEvaluateBKMEvent) eventList.get(3)).getBusinessKnowledgeModel().getName()).isEqualTo("prefix aaa for hello");
+        assertThat(eventList.get(4)).isInstanceOf(AfterEvaluateBKMEvent.class);
+        assertThat(eventList.get(4).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((AfterEvaluateBKMEvent) eventList.get(4)).getBusinessKnowledgeModel().getName()).isEqualTo("prefix aaa for hello");
 
         // Invoke function 3 times
-        assertThat(eventList.get(5), instanceOf(BeforeInvokeBKMEvent.class));
-        assertThat(eventList.get(5).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((BeforeInvokeBKMEvent) eventList.get(5)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
-        assertThat(eventList.get(6), instanceOf(AfterInvokeBKMEvent.class));
-        assertThat(eventList.get(6).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((AfterInvokeBKMEvent) eventList.get(6)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
-        assertThat(eventList.get(7), instanceOf(BeforeInvokeBKMEvent.class));
-        assertThat(eventList.get(7).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((BeforeInvokeBKMEvent) eventList.get(7)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
-        assertThat(eventList.get(8), instanceOf(AfterInvokeBKMEvent.class));
-        assertThat(eventList.get(8).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((AfterInvokeBKMEvent) eventList.get(8)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
-        assertThat(eventList.get(9), instanceOf(BeforeInvokeBKMEvent.class));
-        assertThat(eventList.get(9).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((BeforeInvokeBKMEvent) eventList.get(9)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
-        assertThat(eventList.get(10), instanceOf(AfterInvokeBKMEvent.class));
-        assertThat(eventList.get(10).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((AfterInvokeBKMEvent) eventList.get(10)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
+        assertThat(eventList.get(5)).isInstanceOf(BeforeInvokeBKMEvent.class);
+        assertThat(eventList.get(5).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((BeforeInvokeBKMEvent) eventList.get(5)).getBusinessKnowledgeModel().getName()).isEqualTo("prefix say for hello");
+        assertThat(eventList.get(6)).isInstanceOf(AfterInvokeBKMEvent.class);
+        assertThat(eventList.get(6).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((AfterInvokeBKMEvent) eventList.get(6)).getBusinessKnowledgeModel().getName()).isEqualTo("prefix say for hello");
+        assertThat(eventList.get(7)).isInstanceOf(BeforeInvokeBKMEvent.class);
+        assertThat(eventList.get(7).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((BeforeInvokeBKMEvent) eventList.get(7)).getBusinessKnowledgeModel().getName()).isEqualTo("prefix say for hello");
+        assertThat(eventList.get(8)).isInstanceOf(AfterInvokeBKMEvent.class);
+        assertThat(eventList.get(8).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((AfterInvokeBKMEvent) eventList.get(8)).getBusinessKnowledgeModel().getName()).isEqualTo("prefix say for hello");
+        assertThat(eventList.get(9)).isInstanceOf(BeforeInvokeBKMEvent.class);
+        assertThat(eventList.get(9).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((BeforeInvokeBKMEvent) eventList.get(9)).getBusinessKnowledgeModel().getName()).isEqualTo("prefix say for hello");
+        assertThat(eventList.get(10)).isInstanceOf(AfterInvokeBKMEvent.class);
+        assertThat(eventList.get(10).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((AfterInvokeBKMEvent) eventList.get(10)).getBusinessKnowledgeModel().getName()).isEqualTo("prefix say for hello");
 
-        assertThat(eventList.get(11), instanceOf(AfterEvaluateDecisionEvent.class));
-        assertThat(eventList.get(11).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((AfterEvaluateDecisionEvent) eventList.get(11)).getDecision().getName(), is("just say"));
+        assertThat(eventList.get(11)).isInstanceOf(AfterEvaluateDecisionEvent.class);
+        assertThat(eventList.get(11).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((AfterEvaluateDecisionEvent) eventList.get(11)).getDecision().getName()).isEqualTo("just say");
     }
 
     @Test
@@ -214,45 +205,45 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         TestEventListener listener = new TestEventListener();
         runtime.addListener(listener);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60", "Drawing 1");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = newEmptyContextWithTestMetadata();
 
         final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Invoking Decision");
 
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
 
-        assertThat(result.get("Invoking Decision"), is("abc"));
+        assertThat(result.get("Invoking Decision")).isEqualTo("abc");
 
         List<DMNEvent> eventList = listener.getEventList();
 
-        assertThat(eventList.get(0), instanceOf(BeforeEvaluateDecisionEvent.class));
-        assertThat(eventList.get(0).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((BeforeEvaluateDecisionEvent) eventList.get(0)).getDecision().getName(), is("Invoking Decision"));
+        assertThat(eventList.get(0)).isInstanceOf(BeforeEvaluateDecisionEvent.class);
+        assertThat(eventList.get(0).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((BeforeEvaluateDecisionEvent) eventList.get(0)).getDecision().getName()).isEqualTo("Invoking Decision");
 
         // Evaluate DecisionService
-        assertThat(eventList.get(1), instanceOf(BeforeEvaluateDecisionServiceEvent.class));
-        assertThat(eventList.get(1).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((BeforeEvaluateDecisionServiceEvent) eventList.get(1)).getDecisionService().getName(), is("Decision Service ABC"));
+        assertThat(eventList.get(1)).isInstanceOf(BeforeEvaluateDecisionServiceEvent.class);
+        assertThat(eventList.get(1).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((BeforeEvaluateDecisionServiceEvent) eventList.get(1)).getDecisionService().getName()).isEqualTo("Decision Service ABC");
 
         // Evaluate internal Decision
-        assertThat(eventList.get(2), instanceOf(BeforeEvaluateDecisionEvent.class));
-        assertThat(eventList.get(2).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((BeforeEvaluateDecisionEvent) eventList.get(2)).getDecision().getName(), is("ABC"));
-        assertThat(eventList.get(3), instanceOf(AfterEvaluateDecisionEvent.class));
-        assertThat(eventList.get(3).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((AfterEvaluateDecisionEvent) eventList.get(3)).getDecision().getName(), is("ABC"));
+        assertThat(eventList.get(2)).isInstanceOf(BeforeEvaluateDecisionEvent.class);
+        assertThat(eventList.get(2).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((BeforeEvaluateDecisionEvent) eventList.get(2)).getDecision().getName()).isEqualTo("ABC");
+        assertThat(eventList.get(3)).isInstanceOf(AfterEvaluateDecisionEvent.class);
+        assertThat(eventList.get(3).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((AfterEvaluateDecisionEvent) eventList.get(3)).getDecision().getName()).isEqualTo("ABC");
 
-        assertThat(eventList.get(4), instanceOf(AfterEvaluateDecisionServiceEvent.class));
-        assertThat(eventList.get(4).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((AfterEvaluateDecisionServiceEvent) eventList.get(4)).getDecisionService().getName(), is("Decision Service ABC"));
+        assertThat(eventList.get(4)).isInstanceOf(AfterEvaluateDecisionServiceEvent.class);
+        assertThat(eventList.get(4).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((AfterEvaluateDecisionServiceEvent) eventList.get(4)).getDecisionService().getName()).isEqualTo("Decision Service ABC");
 
-        assertThat(eventList.get(5), instanceOf(AfterEvaluateDecisionEvent.class));
-        assertThat(eventList.get(5).getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
-        assertThat(((AfterEvaluateDecisionEvent) eventList.get(5)).getDecision().getName(), is("Invoking Decision"));
+        assertThat(eventList.get(5)).isInstanceOf(AfterEvaluateDecisionEvent.class);
+        assertThat(eventList.get(5).getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
+        assertThat(((AfterEvaluateDecisionEvent) eventList.get(5)).getDecision().getName()).isEqualTo("Invoking Decision");
     }
 
     @Test
@@ -270,17 +261,17 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         final DMNContext emptyContext = newEmptyContextWithTestMetadata();
         runtime.evaluateAll(dmnModel, emptyContext);
 
-        assertNotNull(listener.beforeEvent);
-        assertEquals(listener.beforeEvent.getModelNamespace(), modelNamespace);
-        assertEquals(listener.beforeEvent.getModelName(), modelName);
-        assertNotNull(listener.beforeEvent.getResult());
-        assertThat(listener.beforeEvent.getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
+        assertThat(listener.beforeEvent).isNotNull();
+        assertThat(modelNamespace).isEqualTo(listener.beforeEvent.getModelNamespace());
+        assertThat(modelName).isEqualTo(listener.beforeEvent.getModelName());
+        assertThat(listener.beforeEvent.getResult()).isNotNull();
+        assertThat(listener.beforeEvent.getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
 
-        assertNotNull(listener.afterEvent);
-        assertEquals(listener.afterEvent.getModelNamespace(), modelNamespace);
-        assertEquals(listener.afterEvent.getModelName(), modelName);
-        assertNotNull(listener.afterEvent.getResult());
-        assertThat(listener.afterEvent.getResult().getContext().getMetadata().asMap(), is(TEST_METADATA));
+        assertThat(listener.afterEvent).isNotNull();
+        assertThat(modelNamespace).isEqualTo(listener.afterEvent.getModelNamespace());
+        assertThat(modelName).isEqualTo(listener.afterEvent.getModelName());
+        assertThat(listener.afterEvent.getResult()).isNotNull();
+        assertThat(listener.afterEvent.getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
     }
 
     private static DMNContext newEmptyContextWithTestMetadata() {

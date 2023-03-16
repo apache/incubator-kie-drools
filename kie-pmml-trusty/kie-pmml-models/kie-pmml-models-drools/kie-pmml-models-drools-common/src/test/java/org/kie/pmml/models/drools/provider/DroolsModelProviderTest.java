@@ -50,9 +50,7 @@ import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
@@ -70,9 +68,9 @@ public class DroolsModelProviderTest {
     @BeforeClass
     public static void setup() throws Exception {
         pmml = TestUtils.loadFromFile(SOURCE_1);
-        assertNotNull(pmml);
+        assertThat(pmml).isNotNull();
         scorecard = (Scorecard) pmml.getModels().get(0);
-        assertNotNull(scorecard);
+        assertThat(scorecard).isNotNull();
         droolsModelProvider = new DroolsModelProvider<Scorecard, KiePMMLDroolsModel>() {
             @Override
             public KiePMMLDroolsModel getKiePMMLDroolsModel(final DroolsCompilationDTO<Scorecard> compilationDTO) {
@@ -114,26 +112,26 @@ public class DroolsModelProviderTest {
                                                                        scorecard,
                                                                        new HasKnowledgeBuilderMock(knowledgeBuilder));
         KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModel(compilationDTO);
-        assertNotNull(retrieved);
-        assertTrue(retrieved instanceof KiePMMLDroolsModelTest);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(KiePMMLDroolsModelTest.class);
         KiePMMLDroolsModelTest retrievedTest = (KiePMMLDroolsModelTest) retrieved;
         final List<DataField> originalDataFields = pmml.getDataDictionary().getDataFields();
         final List<DataField> retrievedDataFields = retrievedTest.dataDictionary.getDataFields();
-        assertEquals(originalDataFields.size(), retrievedTest.dataDictionary.getDataFields().size());
+        assertThat(retrievedTest.dataDictionary.getDataFields()).hasSameSizeAs(originalDataFields);
         originalDataFields.forEach(dataField -> {
             Optional<DataField> optRet = retrievedDataFields.stream()
                     .filter(retrievedDataField -> dataField.getName().equals(retrievedDataField.getName()))
                     .findFirst();
-            assertTrue(optRet.isPresent());
-            assertEquals(dataField.getDataType(), optRet.get().getDataType());
+            assertThat(optRet).isPresent();
+            assertThat(optRet.get().getDataType()).isEqualTo(dataField.getDataType());
         });
-        assertEquals(pmml.getTransformationDictionary(), retrievedTest.transformationDictionary);
-        assertEquals(scorecard, retrievedTest.model);
+        assertThat(retrievedTest.transformationDictionary).isEqualTo(pmml.getTransformationDictionary());
+        assertThat(retrievedTest.model).isEqualTo(scorecard);
         String expectedPackageName = getSanitizedPackageName(PACKAGE_NAME);
-        assertEquals(expectedPackageName, retrievedTest.getKModulePackageName());
-        assertEquals(PACKAGE_NAME, retrievedTest.getName());
+        assertThat(retrievedTest.getKModulePackageName()).isEqualTo(expectedPackageName);
+        assertThat(retrievedTest.getName()).isEqualTo(PACKAGE_NAME);
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs("packagename").get(0);
-        assertTrue(packageDescr instanceof CompositePackageDescr);
+        assertThat(packageDescr).isInstanceOf(CompositePackageDescr.class);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -155,14 +153,14 @@ public class DroolsModelProviderTest {
                                                                        scorecard,
                                                                        new HasKnowledgeBuilderMock(knowledgeBuilder));
         KiePMMLDroolsModelWithSources retrieved = droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
-        assertNotNull(retrieved);
-        assertEquals(SOURCE_MAP, retrieved.getSourcesMap());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getSourcesMap()).isEqualTo(SOURCE_MAP);
         String expectedPackageName = compilationDTO.getPackageName();
-        assertEquals(expectedPackageName, retrieved.getKModulePackageName());
-        assertEquals(scorecard.getModelName(), retrieved.getName());
+        assertThat(retrieved.getKModulePackageName()).isEqualTo(expectedPackageName);
+        assertThat(retrieved.getName()).isEqualTo(scorecard.getModelName());
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);
         commonVerifyPackageDescr(packageDescr, expectedPackageName);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         final String rootPath = expectedPackageName + ".";
         commonVerifyRulesSourcesMap(retrieved.getRulesSourcesMap(), packageDescr, rootPath);
     }
@@ -212,7 +210,7 @@ public class DroolsModelProviderTest {
         String expectedPackageName = compilationDTO.getPackageName();
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);
         final Map<String, String> retrieved = droolsModelProvider.getRulesSourceMap(packageDescr);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         final String rootPath = expectedPackageName + ".";
         commonVerifyRulesSourcesMap(retrieved, packageDescr, rootPath);
     }
@@ -229,54 +227,54 @@ public class DroolsModelProviderTest {
         String expectedPackageName = compilationDTO.getPackageName();
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);
         final List<GeneratedFile> retrieved = droolsModelProvider.generateRulesFiles(packageDescr);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         final String rootPath = expectedPackageName.replace('.', '/') + "/";
         packageDescr.getTypeDeclarations().forEach(typeDeclarationDescr -> {
             String expectedPath = rootPath + typeDeclarationDescr.getTypeName() + ".java";
-            assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedPath)));
+            assertThat(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedPath))).isTrue();
         });
         String pkgUUID = packageDescr.getPreferredPkgUUID().get();
         String expectedRule = rootPath + "Rules" + pkgUUID + ".java";
-        assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedRule)));
+        assertThat(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedRule))).isTrue();
         String expectedDomain = rootPath + "DomainClassesMetadata" + pkgUUID + ".java";
-        assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedDomain)));
+        assertThat(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedDomain))).isTrue();
     }
 
     private void commonVerifyRulesSourcesMap(Map<String, String> toVerify, PackageDescr packageDescr, String rootPath) {
         packageDescr.getTypeDeclarations().forEach(typeDeclarationDescr -> {
             String expectedPath = rootPath + typeDeclarationDescr.getTypeName();
-            assertTrue(toVerify.keySet().stream().anyMatch(className -> className.equals(expectedPath)));
+            assertThat(toVerify.keySet().stream().anyMatch(className -> className.equals(expectedPath))).isTrue();
         });
         String pkgUUID = packageDescr.getPreferredPkgUUID().get();
         String expectedRule = rootPath + "Rules" + pkgUUID;
-        assertTrue(toVerify.keySet().stream().anyMatch(className -> className.equals(expectedRule)));
+        assertThat(toVerify.keySet().stream().anyMatch(className -> className.equals(expectedRule))).isTrue();
         String expectedDomain = rootPath + "DomainClassesMetadata" + pkgUUID;
-        assertTrue(toVerify.keySet().stream().anyMatch(className -> className.equals(expectedDomain)));
+        assertThat(toVerify.keySet().stream().anyMatch(className -> className.equals(expectedDomain))).isTrue();
     }
 
     private void commonVerifyPackageDescr(PackageDescr toVerify, String expectedPackageName) {
-        assertEquals(expectedPackageName, toVerify.getName());
+        assertThat(toVerify.getName()).isEqualTo(expectedPackageName);
     }
 
     private void commonVerifyKiePMMLDroolsAST(final KiePMMLDroolsAST toVerify, final Map<String,
             KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        assertNotNull(toVerify);
-        assertTrue(toVerify instanceof KiePMMLDroolsASTTest);
+        assertThat(toVerify).isNotNull();
+        assertThat(toVerify).isInstanceOf(KiePMMLDroolsASTTest.class);
         KiePMMLDroolsASTTest toVerifyTest = (KiePMMLDroolsASTTest) toVerify;
 
         final List<DataField> originalDataFields = pmml.getDataDictionary().getDataFields();
         final List<DataField> retrievedDataFields = toVerifyTest.dataDictionary.getDataFields();
-        assertEquals(originalDataFields.size(), toVerifyTest.dataDictionary.getDataFields().size());
+        assertThat(toVerifyTest.dataDictionary.getDataFields()).hasSameSizeAs(originalDataFields);
         originalDataFields.forEach(dataField -> {
             Optional<DataField> optRet = retrievedDataFields.stream()
                     .filter(retrievedDataField -> dataField.getName().equals(retrievedDataField.getName()))
                     .findFirst();
-            assertTrue(optRet.isPresent());
-            assertEquals(dataField.getDataType(), optRet.get().getDataType());
+            assertThat(optRet).isPresent();
+            assertThat(optRet.get().getDataType()).isEqualTo(dataField.getDataType());
         });
-        assertEquals(scorecard, toVerifyTest.model);
+        assertThat(toVerifyTest.model).isEqualTo(scorecard);
         if (fieldTypeMap != null) {
-            assertEquals(fieldTypeMap, toVerifyTest.fieldTypeMap);
+            assertThat(toVerifyTest.fieldTypeMap).isEqualTo(fieldTypeMap);
         }
         commonVerifyTypesList(toVerify.getTypes(),
                               pmml.getDataDictionary().getDataFields(),
@@ -288,14 +286,14 @@ public class DroolsModelProviderTest {
                                        List<DerivedField> transformationsFields,
                                        List<DerivedField> localTransformationsFields) {
         int expectedEntries = dataFields.size() + transformationsFields.size() + localTransformationsFields.size();
-        assertEquals(expectedEntries, toVerify.size());
+        assertThat(toVerify).hasSize(expectedEntries);
         dataFields.forEach(dataField -> commonVerifyTypesList(dataField, toVerify));
         transformationsFields.forEach(derivedField -> commonVerifyTypesList(derivedField, toVerify));
         localTransformationsFields.forEach(derivedField -> commonVerifyTypesList(derivedField, toVerify));
     }
 
     private void commonVerifyTypesList(Field<?> toVerify, final List<KiePMMLDroolsType> types) {
-        assertTrue(types.stream()
+        assertThat(types.stream()
                            .anyMatch(type -> {
                                String expectedName = getSanitizedClassName(toVerify.getName().getValue());
                                if (!type.getName().startsWith(expectedName)) {
@@ -303,16 +301,16 @@ public class DroolsModelProviderTest {
                                }
                                String expectedType =
                                        DATA_TYPE.byName(toVerify.getDataType().value()).getMappedClass().getSimpleName();
-                               assertEquals(expectedType, type.getType());
+                               assertThat(type.getType()).isEqualTo(expectedType);
                                return true;
-                           }));
+                           })).isTrue();
     }
 
     private void commonVerifyFieldTypeMap(final Map<String, KiePMMLOriginalTypeGeneratedType> toVerify,
                                           List<DataField> dataFields, List<DerivedField> transformationsFields,
                                           List<DerivedField> localTransformationsFields) {
         int expectedEntries = dataFields.size() + transformationsFields.size() + localTransformationsFields.size();
-        assertEquals(expectedEntries, toVerify.size());
+        assertThat(toVerify).hasSize(expectedEntries);
         dataFields.forEach(dataField -> commonVerifyFieldTypeMap(dataField, toVerify));
         transformationsFields.forEach(derivedField -> commonVerifyFieldTypeMap(derivedField, toVerify));
         localTransformationsFields.forEach(derivedField -> commonVerifyFieldTypeMap(derivedField, toVerify));
@@ -320,18 +318,18 @@ public class DroolsModelProviderTest {
 
     private void commonVerifyFieldTypeMap(Field<?> toVerify,
                                           final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        assertTrue(fieldTypeMap.entrySet().stream()
+        assertThat(fieldTypeMap.entrySet().stream()
                            .anyMatch(entry -> {
                                if (!entry.getKey().equals(toVerify.getName().getValue())) {
                                    return false;
                                }
                                KiePMMLOriginalTypeGeneratedType value = entry.getValue();
-                               assertEquals(toVerify.getDataType().value(), value.getOriginalType());
+                               assertThat(value.getOriginalType()).isEqualTo(toVerify.getDataType().value());
                                String expectedGeneratedType =
                                        getSanitizedClassName(toVerify.getName().getValue());
-                               assertTrue(value.getGeneratedType().startsWith(expectedGeneratedType));
+                               assertThat(value.getGeneratedType()).startsWith(expectedGeneratedType);
                                return true;
-                           }));
+                           })).isTrue();
     }
 
     //  Needed to avoid Mockito usage

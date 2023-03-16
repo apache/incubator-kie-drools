@@ -30,8 +30,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class UnlinkingTest {
@@ -88,9 +87,7 @@ public class UnlinkingTest {
 
         wmOne.fireAllRules();
 
-        assertEquals( "Should not have fired",
-                      0,
-                      listOne.size() );
+        assertThat(listOne.size()).as("Should not have fired").isEqualTo(0);
 
         // WM Two - first round o inserts
         wmTwo.insert( name );
@@ -99,28 +96,21 @@ public class UnlinkingTest {
 
         wmTwo.fireAllRules();
 
-        assertEquals( "Should not have fired",
-                      0,
-                      listTwo.size() );
+        assertThat(listTwo.size()).as("Should not have fired").isEqualTo(0);
         
         wmOne.insert( hair );
         wmOne.insert( happy );
         InternalFactHandle matchHandle = (InternalFactHandle) wmOne.insert( match );
         
         wmOne.fireAllRules();
-        
-        assertTrue( "Should have fired",
-                      listOne.size() > 0);
-                
-        assertEquals("Should have inserted the match Person",
-                     matchHandle.getObject(),
-                     listOne.get( 0 ));
+
+        assertThat(listOne.size() > 0).as("Should have fired").isTrue();
+
+        assertThat(listOne.get(0)).as("Should have inserted the match Person").isEqualTo(matchHandle.getObject());
         
         wmTwo.fireAllRules();
-        
-        assertEquals( "Should not have fired",
-                      0,
-                      listTwo.size() );
+
+        assertThat(listTwo.size()).as("Should not have fired").isEqualTo(0);
         
         wmTwo.insert( hair );
         wmTwo.insert( happy );
@@ -128,8 +118,7 @@ public class UnlinkingTest {
         
         wmTwo.fireAllRules();
 
-        assertTrue( "Should have fired",
-                    listTwo.size() > 0);
+        assertThat(listTwo.size() > 0).as("Should have fired").isTrue();
 
     }
 

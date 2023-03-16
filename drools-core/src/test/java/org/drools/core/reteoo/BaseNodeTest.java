@@ -26,19 +26,17 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaseNodeTest {
 
     @Test
     public void testBaseNode() {
         MockBaseNode node = new MockBaseNode( 10 );
-        assertEquals( 10,
-                      node.getId() );
+        assertThat(node.getId()).isEqualTo(10);
 
         node = new MockBaseNode( 155 );
-        assertEquals( 155,
-                      node.getId() );
+        assertThat(node.getId()).isEqualTo(155);
     }
 
     class MockBaseNode extends BaseNode {

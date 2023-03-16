@@ -27,9 +27,8 @@ import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class DSLMappingFileTest {
     private DSLMappingFile file     = null;
@@ -46,12 +45,10 @@ public class DSLMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
-            assertTrue( this.file.getErrors().isEmpty() );
+            assertThat(parsingResult).as(this.file.getErrors().toString()).isTrue();
+            assertThat(this.file.getErrors().isEmpty()).isTrue();
 
-            assertEquals( 31,
-                          this.file.getMapping().getEntries().size() );
+            assertThat(this.file.getMapping().getEntries().size()).isEqualTo(31);
         } catch ( final IOException e ) {
             e.printStackTrace();
             fail( "Should not raise exception " );
@@ -69,23 +66,17 @@ public class DSLMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
-            assertTrue( this.file.getErrors().isEmpty() );
+            assertThat(parsingResult).as(this.file.getErrors().toString()).isTrue();
+            assertThat(this.file.getErrors().isEmpty()).isTrue();
 
-            assertEquals( 1,
-                          this.file.getMapping().getEntries().size() );
+            assertThat(this.file.getMapping().getEntries().size()).isEqualTo(1);
 
             DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
 
-            assertEquals( DSLMappingEntry.CONDITION,
-                          entry.getSection() );
-            assertEquals( DSLMappingEntry.EMPTY_METADATA,
-                          entry.getMetaData() );
-            assertEquals( "ATTRIBUTE \"{attr}\" IS IN \\[{list}\\]",
-                          entry.getMappingKey() );
-            assertEquals( "Attribute( {attr} in ({list}) )",
-                          entry.getMappingValue() );
+            assertThat(entry.getSection()).isEqualTo(DSLMappingEntry.CONDITION);
+            assertThat(entry.getMetaData()).isEqualTo(DSLMappingEntry.EMPTY_METADATA);
+            assertThat(entry.getMappingKey()).isEqualTo("ATTRIBUTE \"{attr}\" IS IN \\[{list}\\]");
+            assertThat(entry.getMappingValue()).isEqualTo("Attribute( {attr} in ({list}) )");
 
         } catch ( final IOException e ) {
             e.printStackTrace();
@@ -104,23 +95,17 @@ public class DSLMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
-            assertTrue( this.file.getErrors().isEmpty() );
+            assertThat(parsingResult).as(this.file.getErrors().toString()).isTrue();
+            assertThat(this.file.getErrors().isEmpty()).isTrue();
 
-            assertEquals( 1,
-                          this.file.getMapping().getEntries().size() );
+            assertThat(this.file.getMapping().getEntries().size()).isEqualTo(1);
 
             DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
 
-            assertEquals( DSLMappingEntry.CONSEQUENCE,
-                          entry.getSection() );
-            assertEquals( "$policy",
-                          entry.getMetaData().toString() );
-            assertEquals( "Add surcharge {surcharge} to Policy",
-                          entry.getMappingKey() );
-            assertEquals( "modify(policy) \\{price = {surcharge}\\}",
-                          entry.getMappingValue() );
+            assertThat(entry.getSection()).isEqualTo(DSLMappingEntry.CONSEQUENCE);
+            assertThat(entry.getMetaData().toString()).isEqualTo("$policy");
+            assertThat(entry.getMappingKey()).isEqualTo("Add surcharge {surcharge} to Policy");
+            assertThat(entry.getMappingValue()).isEqualTo("modify(policy) \\{price = {surcharge}\\}");
             
             String input = "rule x" + NL + "when" + NL + "then" + NL + "Add surcharge 300 to Policy" + NL + "end" + NL + "";
             String expected = "rule x" + NL + "when" + NL + "then" + NL + "modify(policy) {price = 300}" + NL + "end" + NL + "";
@@ -129,11 +114,10 @@ public class DSLMappingFileTest {
             de.addDSLMapping( this.file.getMapping() );
 
             final String result = de.expand( input );
-            
+
 //            String result = entry.getKeyPattern().matcher( input ).replaceAll( entry.getValuePattern() );
             
-            assertEquals( expected, 
-                          result );
+            assertThat(result).isEqualTo(expected);
 
         } catch ( final IOException e ) {
             e.printStackTrace();
@@ -156,9 +140,8 @@ public class DSLMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
-            assertTrue( this.file.getErrors().isEmpty() );
+            assertThat(parsingResult).as(this.file.getErrors().toString()).isTrue();
+            assertThat(this.file.getErrors().isEmpty()).isTrue();
 
             final String LHS = "code 1041 occurs and sum of all digit not equal ( 1034 + 1035 )";
             final String rule = "rule \"x\"" + NL + "when" + NL + "" + LHS + "" + NL + "then" + NL + "end";
@@ -170,8 +153,7 @@ public class DSLMappingFileTest {
 
             final String expected = "rule \"x\"" + NL + "when" + NL + "AAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))" + NL + "then" + NL + "end";
 
-            assertEquals( expected,
-                          ruleAfterExpansion );
+            assertThat(ruleAfterExpansion).isEqualTo(expected);
 
         } catch ( final IOException e ) {
             e.printStackTrace();
@@ -191,9 +173,8 @@ public class DSLMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
-            assertTrue( this.file.getErrors().isEmpty() );
+            assertThat(parsingResult).as(this.file.getErrors().toString()).isTrue();
+            assertThat(this.file.getErrors().isEmpty()).isTrue();
 
             final String LHS = "code 1041 occurs and sum of all digit not equal ( 1034 + 1035 )";
             final String rule = "rule \"x\"" + NL + "when" + NL + "" + LHS + "" + NL + "then" + NL + "TEST" + NL + "end";
@@ -205,8 +186,7 @@ public class DSLMappingFileTest {
 
             final String expected = "rule \"x\"" + NL + "when" + NL + "AAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))" + NL + "then" + NL + "System.out.println(\"DO_SOMETHING\");" + NL + "end";
 
-            assertEquals( expected,
-                          ruleAfterExpansion );
+            assertThat(ruleAfterExpansion).isEqualTo(expected);
 
         } catch ( final IOException e ) {
             e.printStackTrace();
@@ -225,23 +205,17 @@ public class DSLMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
-            assertTrue( this.file.getErrors().isEmpty() );
+            assertThat(parsingResult).as(this.file.getErrors().toString()).isTrue();
+            assertThat(this.file.getErrors().isEmpty()).isTrue();
 
-            assertEquals( 1,
-                          this.file.getMapping().getEntries().size() );
+            assertThat(this.file.getMapping().getEntries().size()).isEqualTo(1);
 
             DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
 
-            assertEquals( DSLMappingEntry.CONDITION,
-                          entry.getSection() );
-            assertEquals( DSLMappingEntry.EMPTY_METADATA,
-                          entry.getMetaData() );
-            assertEquals( "something:={value}",
-                          entry.getMappingKey() );
-            assertEquals( "Attribute( something == \"{value}\" )",
-                          entry.getMappingValue() );
+            assertThat(entry.getSection()).isEqualTo(DSLMappingEntry.CONDITION);
+            assertThat(entry.getMetaData()).isEqualTo(DSLMappingEntry.EMPTY_METADATA);
+            assertThat(entry.getMappingKey()).isEqualTo("something:={value}");
+            assertThat(entry.getMappingValue()).isEqualTo("Attribute( something == \"{value}\" )");
 
         } catch ( final IOException e ) {
             e.printStackTrace();
@@ -260,28 +234,21 @@ public class DSLMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
-            assertTrue( this.file.getErrors().isEmpty() );
+            assertThat(parsingResult).as(this.file.getErrors().toString()).isTrue();
+            assertThat(this.file.getErrors().isEmpty()).isTrue();
 
-            assertEquals( 1,
-                          this.file.getMapping().getEntries().size() );
+            assertThat(this.file.getMapping().getEntries().size()).isEqualTo(1);
 
             DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
 
-            assertEquals( DSLMappingEntry.CONDITION,
-                          entry.getSection() );
-            assertEquals( DSLMappingEntry.EMPTY_METADATA,
-                          entry.getMetaData() );
+            assertThat(entry.getSection()).isEqualTo(DSLMappingEntry.CONDITION);
+            assertThat(entry.getMetaData()).isEqualTo(DSLMappingEntry.EMPTY_METADATA);
             System.out.println( entry.getValuePattern() );
             System.out.println( entry.getVariables() );
-            assertEquals( "ATTRIBUTE {attr:ENUM:Attribute.value} in {list}",
-                          entry.getMappingKey() );
-            assertEquals( "Attribute( {attr} in ({list}) )",
-                          entry.getMappingValue() );
+            assertThat(entry.getMappingKey()).isEqualTo("ATTRIBUTE {attr:ENUM:Attribute.value} in {list}");
+            assertThat(entry.getMappingValue()).isEqualTo("Attribute( {attr} in ({list}) )");
 
-            assertEquals( "(?:(?<=^)|(?<=\\W))ATTRIBUTE\\s+(.*?)\\s+in\\s+(.*?)$",
-                          entry.getKeyPattern().toString() );
+            assertThat(entry.getKeyPattern().toString()).isEqualTo("(?:(?<=^)|(?<=\\W))ATTRIBUTE\\s+(.*?)\\s+in\\s+(.*?)$");
 
         } catch ( final IOException e ) {
             e.printStackTrace();

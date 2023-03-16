@@ -45,8 +45,8 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class NotTest {
@@ -108,7 +108,7 @@ public class NotTest {
             ksession.update(fa2, a2);
             ksession.fireAllRules();
 
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -131,7 +131,7 @@ public class NotTest {
         final KieSession ksession = kbase.newKieSession();
         try {
             ksession.insert(new Person("Mario", 45));
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -170,18 +170,18 @@ public class NotTest {
             InternalFactHandle handle1 = (InternalFactHandle) ksession.insert(p1);
             InternalFactHandle handle2 = (InternalFactHandle) ksession.insert(p2);
             InternalFactHandle handle3 = (InternalFactHandle) ksession.insert(p3);
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
 
             InternalFactHandle blockerHandle = getBlockerFactHandle(ksession);
             Person blockerFact = (Person) blockerHandle.getObject(); // for example, it returns p3 "George"
 
             blockerFact.setAge(40); // modify unrelated property
             ksession.update(blockerHandle, blockerFact, "age");
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
 
             blockerFact.setSalary(new BigDecimal(1000)); // now this fact should match but remaining 2 facts shouldn't
             ksession.update(blockerHandle, blockerFact, "salary");
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
 
             // Then, modify remaining facts
             List<InternalFactHandle> handleList = new ArrayList<>();
@@ -195,7 +195,7 @@ public class NotTest {
                 p.setSalary(new BigDecimal(1000));
                 ksession.update(handle, p, "salary");
             }
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         } finally {
             ksession.dispose();
@@ -303,7 +303,7 @@ public class NotTest {
         ksession.update(dublinFH, dublin);
 
         ksession.fireAllRules();
-        assertEquals(1, results.size());
-        assertEquals("Paris", results.get(0));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo("Paris");
     }
 }

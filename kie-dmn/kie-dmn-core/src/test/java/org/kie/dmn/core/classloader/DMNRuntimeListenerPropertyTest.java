@@ -19,7 +19,6 @@ package org.kie.dmn.core.classloader;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -35,11 +34,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNRuntimeListenerPropertyTest {
 
@@ -71,12 +66,12 @@ public class DMNRuntimeListenerPropertyTest {
         kfs.generateAndWritePomXML(releaseId);
 
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
         final KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         final DMNRuntime runtime = DMNRuntimeUtil.typeSafeGetKieRuntime(kieContainer);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         return runtime;
     }
 
@@ -88,19 +83,19 @@ public class DMNRuntimeListenerPropertyTest {
         try {
             final DMNRuntime runtime = setup();
             final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_2027051c-0030-40f1-8b96-1b1422f8b257", "Drawing 1");
-            assertThat(dmnModel, notNullValue());
-            assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+            assertThat(dmnModel).isNotNull();
+            assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
             final DMNContext context = DMNFactory.newContext();
             context.set("Name", "John Doe");
 
             final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-            assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+            assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
             Object listenerInstance = runtime.getRootClassLoader().loadClass(LISTENER_VALUE).newInstance();
             @SuppressWarnings("unchecked") // this was by necessity classloaded
             List<Object> results = (List<Object>) listenerInstance.getClass().getMethod("getResults").invoke(listenerInstance);
-            assertThat(results, contains("Hello John Doe"));
+            assertThat(results).contains("Hello John Doe");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

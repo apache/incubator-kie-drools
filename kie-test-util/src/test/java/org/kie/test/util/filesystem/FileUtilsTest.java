@@ -22,9 +22,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileUtilsTest {
 
@@ -34,8 +32,8 @@ public class FileUtilsTest {
     @Test
     public void getFileExisting() {
         final File retrieved = FileUtils.getFile(TEST_FILE);
-        assertTrue(retrieved.exists());
-        assertEquals(TEST_FILE, retrieved.getName());
+        assertThat(retrieved.exists()).isTrue();
+        assertThat(retrieved.getName()).isEqualTo(TEST_FILE);
     }
 
     @Test(expected = AssertionError.class)
@@ -46,7 +44,7 @@ public class FileUtilsTest {
     @Test
     public void getFileInputStreamExisting() throws IOException {
         final FileInputStream retrieved = FileUtils.getFileInputStream(TEST_FILE);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         retrieved.close();
     }
 

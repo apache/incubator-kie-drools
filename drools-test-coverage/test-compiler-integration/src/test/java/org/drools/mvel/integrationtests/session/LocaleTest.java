@@ -32,7 +32,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class LocaleTest {
@@ -66,16 +66,16 @@ public class LocaleTest {
             final FactHandle handle = ksession.insert(mycheese);
             ksession.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertEquals("1", results.get(0));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.get(0)).isEqualTo("1");
 
             mycheese.setPrice(8);
             mycheese.setDoublePrice(8.50);
 
             ksession.update(handle, mycheese);
             ksession.fireAllRules();
-            assertEquals(2, results.size());
-            assertEquals("3", results.get(1));
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(results.get(1)).isEqualTo("3");
         } finally {
             Locale.setDefault(defaultLoc);
         }

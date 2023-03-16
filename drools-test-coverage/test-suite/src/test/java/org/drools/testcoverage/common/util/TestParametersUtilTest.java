@@ -18,45 +18,55 @@ package org.drools.testcoverage.common.util;
 
 import org.junit.Test;
 
-import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.*;
-
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_EQUALITY;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_EQUALITY_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_IDENTITY;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_IDENTITY_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.STREAM_IDENTITY;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.STREAM_IDENTITY_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK;
 
 public class TestParametersUtilTest {
 
     @Test
     public void testGetEqualityInstanceOf() {
-        assertEquals(CLOUD_EQUALITY, TestParametersUtil.getEqualityInstanceOf(CLOUD_IDENTITY));
-        assertEquals(CLOUD_EQUALITY, TestParametersUtil.getEqualityInstanceOf(CLOUD_EQUALITY));
-        assertEquals(CLOUD_EQUALITY_ALPHA_NETWORK, TestParametersUtil.getEqualityInstanceOf(CLOUD_IDENTITY_ALPHA_NETWORK));
-        assertEquals(CLOUD_EQUALITY_MODEL_PATTERN, TestParametersUtil.getEqualityInstanceOf(CLOUD_IDENTITY_MODEL_PATTERN));
-        assertEquals(CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK, TestParametersUtil.getEqualityInstanceOf(CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK));
+        assertThat(TestParametersUtil.getEqualityInstanceOf(CLOUD_IDENTITY)).isEqualTo(CLOUD_EQUALITY);
+        assertThat(TestParametersUtil.getEqualityInstanceOf(CLOUD_EQUALITY)).isEqualTo(CLOUD_EQUALITY);
+        assertThat(TestParametersUtil.getEqualityInstanceOf(CLOUD_IDENTITY_ALPHA_NETWORK)).isEqualTo(CLOUD_EQUALITY_ALPHA_NETWORK);
+        assertThat(TestParametersUtil.getEqualityInstanceOf(CLOUD_IDENTITY_MODEL_PATTERN)).isEqualTo(CLOUD_EQUALITY_MODEL_PATTERN);
+        assertThat(TestParametersUtil.getEqualityInstanceOf(CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK)).isEqualTo(CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK);
     }
 
     @Test
     public void testGetIdentityInstanceOf() {
-        assertEquals(CLOUD_IDENTITY, TestParametersUtil.getIdentityInstanceOf(CLOUD_EQUALITY));
-        assertEquals(CLOUD_IDENTITY, TestParametersUtil.getIdentityInstanceOf(CLOUD_IDENTITY));
-        assertEquals(CLOUD_IDENTITY_ALPHA_NETWORK, TestParametersUtil.getIdentityInstanceOf(CLOUD_EQUALITY_ALPHA_NETWORK));
-        assertEquals(CLOUD_IDENTITY_MODEL_PATTERN, TestParametersUtil.getIdentityInstanceOf(CLOUD_EQUALITY_MODEL_PATTERN));
-        assertEquals(CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, TestParametersUtil.getIdentityInstanceOf(CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK));
+        assertThat(TestParametersUtil.getIdentityInstanceOf(CLOUD_EQUALITY)).isEqualTo(CLOUD_IDENTITY);
+        assertThat(TestParametersUtil.getIdentityInstanceOf(CLOUD_IDENTITY)).isEqualTo(CLOUD_IDENTITY);
+        assertThat(TestParametersUtil.getIdentityInstanceOf(CLOUD_EQUALITY_ALPHA_NETWORK)).isEqualTo(CLOUD_IDENTITY_ALPHA_NETWORK);
+        assertThat(TestParametersUtil.getIdentityInstanceOf(CLOUD_EQUALITY_MODEL_PATTERN)).isEqualTo(CLOUD_IDENTITY_MODEL_PATTERN);
+        assertThat(TestParametersUtil.getIdentityInstanceOf(CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK)).isEqualTo(CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK);
     }
 
     @Test
     public void testGetStreamInstanceOf() {
-        assertEquals(STREAM_IDENTITY, TestParametersUtil.getStreamInstanceOf(CLOUD_IDENTITY));
-        assertEquals(STREAM_IDENTITY, TestParametersUtil.getStreamInstanceOf(STREAM_IDENTITY));
-        assertEquals(STREAM_IDENTITY_ALPHA_NETWORK, TestParametersUtil.getStreamInstanceOf(CLOUD_IDENTITY_ALPHA_NETWORK));
-        assertEquals(STREAM_IDENTITY_MODEL_PATTERN, TestParametersUtil.getStreamInstanceOf(CLOUD_IDENTITY_MODEL_PATTERN));
-        assertEquals(STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, TestParametersUtil.getStreamInstanceOf(CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK));
+        assertThat(TestParametersUtil.getStreamInstanceOf(CLOUD_IDENTITY)).isEqualTo(STREAM_IDENTITY);
+        assertThat(TestParametersUtil.getStreamInstanceOf(STREAM_IDENTITY)).isEqualTo(STREAM_IDENTITY);
+        assertThat(TestParametersUtil.getStreamInstanceOf(CLOUD_IDENTITY_ALPHA_NETWORK)).isEqualTo(STREAM_IDENTITY_ALPHA_NETWORK);
+        assertThat(TestParametersUtil.getStreamInstanceOf(CLOUD_IDENTITY_MODEL_PATTERN)).isEqualTo(STREAM_IDENTITY_MODEL_PATTERN);
+        assertThat(TestParametersUtil.getStreamInstanceOf(CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK)).isEqualTo(STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK);
     }
 
     @Test
     public void testGetCloudInstanceOf() {
-        assertEquals(CLOUD_IDENTITY, TestParametersUtil.getCloudInstanceOf(STREAM_IDENTITY));
-        assertEquals(CLOUD_IDENTITY, TestParametersUtil.getCloudInstanceOf(CLOUD_IDENTITY));
-        assertEquals(CLOUD_IDENTITY_ALPHA_NETWORK, TestParametersUtil.getCloudInstanceOf(STREAM_IDENTITY_ALPHA_NETWORK));
-        assertEquals(CLOUD_IDENTITY_MODEL_PATTERN, TestParametersUtil.getCloudInstanceOf(STREAM_IDENTITY_MODEL_PATTERN));
-        assertEquals(CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, TestParametersUtil.getCloudInstanceOf(STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK));
+        assertThat(TestParametersUtil.getCloudInstanceOf(STREAM_IDENTITY)).isEqualTo(CLOUD_IDENTITY);
+        assertThat(TestParametersUtil.getCloudInstanceOf(CLOUD_IDENTITY)).isEqualTo(CLOUD_IDENTITY);
+        assertThat(TestParametersUtil.getCloudInstanceOf(STREAM_IDENTITY_ALPHA_NETWORK)).isEqualTo(CLOUD_IDENTITY_ALPHA_NETWORK);
+        assertThat(TestParametersUtil.getCloudInstanceOf(STREAM_IDENTITY_MODEL_PATTERN)).isEqualTo(CLOUD_IDENTITY_MODEL_PATTERN);
+        assertThat(TestParametersUtil.getCloudInstanceOf(STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK)).isEqualTo(CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK);
     }
 }

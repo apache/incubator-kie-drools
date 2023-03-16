@@ -33,8 +33,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Tests bad using and accessing to queries.
@@ -90,7 +89,7 @@ public class QueryBadResultTest {
             ksession.getQueryResults("personWithName");
             fail("invocation with wrong number of arguments must fail");
         } catch (RuntimeException e) {
-            assertTrue( e.getMessage().contains( "wrong number of arguments" ) );
+            assertThat(e.getMessage().contains("wrong number of arguments")).isTrue();
         }
     }
 

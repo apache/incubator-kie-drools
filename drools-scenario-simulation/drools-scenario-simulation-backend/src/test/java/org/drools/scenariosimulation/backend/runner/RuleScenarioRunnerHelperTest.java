@@ -69,15 +69,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.within;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.COVERAGE_LISTENER;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.RULES_AVAILABLE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -199,13 +197,13 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                                                                               scenario1.getUnmodifiableFactMappingValues(),
                                                                               classLoader,
                                                                               expressionEvaluatorFactory);
-        assertEquals(1, scenario1Inputs.size());
+        assertThat(scenario1Inputs.size()).isEqualTo(1);
 
         List<InstanceGiven> scenario2Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
                                                                               scenario2.getUnmodifiableFactMappingValues(),
                                                                               classLoader,
                                                                               expressionEvaluatorFactory);
-        assertEquals(2, scenario2Inputs.size());
+        assertThat(scenario2Inputs.size()).isEqualTo(2);
 
         // add expression
         scenario2.addOrUpdateMappingValue(disputeFactIdentifier, expressionGivenExpressionIdentifier, "# new org.drools.scenariosimulation.backend.model.Dispute(\"dispute description\", 10)");
@@ -214,13 +212,13 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                                                           scenario2.getUnmodifiableFactMappingValues(),
                                                           classLoader,
                                                           expressionEvaluatorFactory);
-        assertEquals(2, scenario2Inputs.size());
+        assertThat(scenario2Inputs.size()).isEqualTo(2);
         Optional<Dispute> disputeGivenOptional = scenario2Inputs.stream()
                 .filter(elem -> elem.getValue() instanceof Dispute)
                 .map(elem -> (Dispute) elem.getValue())
                 .findFirst();
-        assertTrue(disputeGivenOptional.isPresent());
-        assertEquals("dispute description", disputeGivenOptional.get().getDescription());
+        assertThat(disputeGivenOptional.isPresent()).isTrue();
+        assertThat(disputeGivenOptional.get().getDescription()).isEqualTo("dispute description");
 
         scenario2.addOrUpdateMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "WrongValue");
         assertThatThrownBy(() -> runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
@@ -234,22 +232,22 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
     @Test
     public void extractExpectedValuesTest() {
         List<ScenarioExpect> scenario1Outputs = runnerHelper.extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
-        assertEquals(1, scenario1Outputs.size());
+        assertThat(scenario1Outputs.size()).isEqualTo(1);
 
         scenario2.addOrUpdateMappingValue(FactIdentifier.create("TEST", String.class.getCanonicalName()),
                                           ExpressionIdentifier.create("TEST", FactMappingType.EXPECT),
                                           "TEST");
         List<ScenarioExpect> scenario2Outputs = runnerHelper.extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
-        assertEquals(3, scenario2Outputs.size());
-        assertEquals(1, scenario2Outputs.stream().filter(ScenarioExpect::isNewFact).count());
+        assertThat(scenario2Outputs.size()).isEqualTo(3);
+        assertThat(scenario2Outputs.stream().filter(ScenarioExpect::isNewFact).count()).isEqualTo(1);
 
         /* A Given "TEST" fact with null rawValue should works as the previous case, i.e. to not consider the GIVEN fact with empty data */
         scenario2.addOrUpdateMappingValue(FactIdentifier.create("TEST", String.class.getCanonicalName()),
                                           ExpressionIdentifier.create("TEST", FactMappingType.GIVEN),
                                           null);
         List<ScenarioExpect> scenario2aOutputs = runnerHelper.extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
-        assertEquals(3, scenario2aOutputs.size());
-        assertEquals(1, scenario2aOutputs.stream().filter(ScenarioExpect::isNewFact).count());
+        assertThat(scenario2aOutputs.size()).isEqualTo(3);
+        assertThat(scenario2aOutputs.stream().filter(ScenarioExpect::isNewFact).count()).isEqualTo(1);
     }
 
     @Test
@@ -268,7 +266,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                                       scenarioRunnerData1,
                                       expressionEvaluatorFactory,
                                       null);
-        assertEquals(1, scenarioRunnerData1.getResults().size());
+        assertThat(scenarioRunnerData1.getResults().size()).isEqualTo(1);
 
         List<InstanceGiven> scenario2Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
                                                                               scenario2.getUnmodifiableFactMappingValues(),
@@ -284,7 +282,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                                       scenarioRunnerData2,
                                       expressionEvaluatorFactory,
                                       null);
-        assertEquals(2, scenarioRunnerData2.getResults().size());
+        assertThat(scenarioRunnerData2.getResults().size()).isEqualTo(2);
     }
 
     @Test
@@ -295,15 +293,15 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                                                                               expressionEvaluatorFactory);
         List<ScenarioExpect> scenario1Outputs = runnerHelper.extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
 
-        assertTrue(scenario1Inputs.size() > 0);
+        assertThat(scenario1Inputs.size() > 0).isTrue();
 
         InstanceGiven input1 = scenario1Inputs.get(0);
 
         scenario1Outputs = scenario1Outputs.stream().filter(elem -> elem.getFactIdentifier().equals(input1.getFactIdentifier())).collect(toList());
         List<ScenarioResult> scenario1Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getScesimModelDescriptor(), scenario1Outputs, input1, expressionEvaluatorFactory);
 
-        assertEquals(1, scenario1Results.size());
-        assertEquals(FactMappingValueStatus.SUCCESS, scenario1Outputs.get(0).getExpectedResult().get(0).getStatus());
+        assertThat(scenario1Results.size()).isEqualTo(1);
+        assertThat(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
 
         List<InstanceGiven> scenario2Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
                                                                               scenario2.getUnmodifiableFactMappingValues(),
@@ -311,31 +309,31 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                                                                               expressionEvaluatorFactory);
         List<ScenarioExpect> scenario2Outputs = runnerHelper.extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
 
-        assertTrue(scenario2Inputs.size() > 0);
+        assertThat(scenario2Inputs.size() > 0).isTrue();
 
         InstanceGiven input2 = scenario2Inputs.get(0);
 
         scenario2Outputs = scenario2Outputs.stream().filter(elem -> elem.getFactIdentifier().equals(input2.getFactIdentifier())).collect(toList());
         List<ScenarioResult> scenario2Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getScesimModelDescriptor(), scenario2Outputs, input2, expressionEvaluatorFactory);
 
-        assertEquals(1, scenario2Results.size());
-        assertEquals(FactMappingValueStatus.SUCCESS, scenario1Outputs.get(0).getExpectedResult().get(0).getStatus());
+        assertThat(scenario2Results.size()).isEqualTo(1);
+        assertThat(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
 
         List<ScenarioExpect> newFact = singletonList(new ScenarioExpect(personFactIdentifier, emptyList(), true));
         List<ScenarioResult> scenario2NoResults = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getScesimModelDescriptor(), newFact, input2, expressionEvaluatorFactory);
 
-        assertEquals(0, scenario2NoResults.size());
+        assertThat(scenario2NoResults.size()).isEqualTo(0);
 
         Person person = new Person();
         person.setFirstName("ANOTHER STRING");
         InstanceGiven newInput = new InstanceGiven(personFactIdentifier, person);
 
         List<ScenarioResult> scenario3Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getScesimModelDescriptor(), scenario1Outputs, newInput, expressionEvaluatorFactory);
-        assertEquals(FactMappingValueStatus.FAILED_WITH_ERROR, scenario1Outputs.get(0).getExpectedResult().get(0).getStatus());
+        assertThat(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR);
 
-        assertEquals(1, scenario3Results.size());
-        assertEquals(person.getFirstName(), scenario3Results.get(0).getResultValue().get());
-        assertEquals("NAME", scenario3Results.get(0).getFactMappingValue().getRawValue());
+        assertThat(scenario3Results.size()).isEqualTo(1);
+        assertThat(scenario3Results.get(0).getResultValue().get()).isEqualTo(person.getFirstName());
+        assertThat(scenario3Results.get(0).getFactMappingValue().getRawValue()).isEqualTo("NAME");
     }
 
     @Test
@@ -344,9 +342,9 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
             runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
-            fail();
+            fail("Unexpected execution path");
         } catch (IllegalStateException exception) {
-            assertEquals("Illegal FactMappingValue status", exception.getMessage());
+            assertThat(exception.getMessage()).isEqualTo("Illegal FactMappingValue status");
         }
 
         amountNameExpectedFactMappingValue.resetStatus();
@@ -354,13 +352,12 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
             runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
-            fail();
+            fail("Unexpected execution path");
         } catch (ScenarioException exception) {
-            assertTrue(exception.isFailedAssertion());
-            assertEquals(ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage("Fact 2.amount",
-                                                                                                amountNameExpectedFactMappingValue.getRawValue(),
-                                                                                                amountNameExpectedFactMappingValue.getErrorValue()),
-                         exception.getMessage());
+            assertThat(exception.isFailedAssertion()).isTrue();
+            assertThat(exception.getMessage()).isEqualTo(ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage("Fact 2.amount",
+                    amountNameExpectedFactMappingValue.getRawValue(),
+                    amountNameExpectedFactMappingValue.getErrorValue()));
         }
 
         String exceptionMessage = "Message";
@@ -369,11 +366,10 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
             runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
-            fail();
+            fail("Unexpected execution path");
         } catch (ScenarioException exception) {
-            assertFalse(exception.isFailedAssertion());
-            assertEquals(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(exceptionMessage),
-                         exception.getMessage());
+            assertThat(exception.isFailedAssertion()).isFalse();
+            assertThat(exception.getMessage()).isEqualTo(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(exceptionMessage));
         }
 
         List<String> pathToValue = Arrays.asList("Item #2");
@@ -382,13 +378,12 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
             runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
-            fail();
+            fail("Unexpected execution path");
         } catch (ScenarioException exception) {
-            assertTrue(exception.isFailedAssertion());
-            assertEquals(ScenarioSimulationServerMessages.getCollectionFactExceptionMessage("Fact 2.amount",
-                                                                                            pathToValue,
-                                                                                            amountNameExpectedFactMappingValue.getErrorValue()),
-                         exception.getMessage());
+            assertThat(exception.isFailedAssertion()).isTrue();
+            assertThat(exception.getMessage()).isEqualTo(ScenarioSimulationServerMessages.getCollectionFactExceptionMessage("Fact 2.amount",
+                    pathToValue,
+                    amountNameExpectedFactMappingValue.getErrorValue()));
         }
 
         List<ScenarioResult> scenarioSuccessResult = new ArrayList<>();
@@ -403,19 +398,19 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         Map<FactIdentifier, List<FactMappingValue>> scenario2Given = runnerHelper.groupByFactIdentifierAndFilter(scenario2.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN);
         Map<FactIdentifier, List<FactMappingValue>> scenario2Expected = runnerHelper.groupByFactIdentifierAndFilter(scenario2.getUnmodifiableFactMappingValues(), FactMappingType.EXPECT);
 
-        assertEquals(1, scenario1Given.keySet().size());
-        assertEquals(1, scenario1Expected.keySet().size());
-        assertEquals(2, scenario2Given.keySet().size());
-        assertEquals(2, scenario2Expected.keySet().size());
+        assertThat(scenario1Given.keySet().size()).isEqualTo(1);
+        assertThat(scenario1Expected.keySet().size()).isEqualTo(1);
+        assertThat(scenario2Given.keySet().size()).isEqualTo(2);
+        assertThat(scenario2Expected.keySet().size()).isEqualTo(2);
 
-        assertEquals(1, scenario1Given.get(personFactIdentifier).size());
-        assertEquals(1, scenario1Expected.get(personFactIdentifier).size());
-        assertEquals(1, scenario2Given.get(disputeFactIdentifier).size());
-        assertEquals(1, scenario2Expected.get(disputeFactIdentifier).size());
+        assertThat(scenario1Given.get(personFactIdentifier).size()).isEqualTo(1);
+        assertThat(scenario1Expected.get(personFactIdentifier).size()).isEqualTo(1);
+        assertThat(scenario2Given.get(disputeFactIdentifier).size()).isEqualTo(1);
+        assertThat(scenario2Expected.get(disputeFactIdentifier).size()).isEqualTo(1);
 
         Scenario scenario = new Scenario();
         scenario.addMappingValue(FactIdentifier.EMPTY, ExpressionIdentifier.DESCRIPTION, null);
-        assertEquals(0, runnerHelper.groupByFactIdentifierAndFilter(scenario.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN).size());
+        assertThat(runnerHelper.groupByFactIdentifierAndFilter(scenario.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN).size()).isEqualTo(0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -435,10 +430,10 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         Person person = new Person();
 
         person.setFirstName(personName);
-        assertTrue(extractorFunction.apply(person).isValid());
+        assertThat(extractorFunction.apply(person).isValid()).isTrue();
 
         person.setFirstName("OtherString");
-        assertFalse(extractorFunction.apply(person).isValid());
+        assertThat(extractorFunction.apply(person).isValid()).isFalse();
 
         Function<Object, ValueWrapper> extractorFunction1 = runnerHelper.createExtractorFunction(expressionEvaluator,
                                                                                                   new FactMappingValue(personFactIdentifier,
@@ -446,8 +441,8 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                                                                                                                        null),
                                                                                                   simulation.getScesimModelDescriptor());
         ValueWrapper nullValue = extractorFunction1.apply(new Person());
-        assertTrue(nullValue.isValid());
-        assertNull(nullValue.getValue());
+        assertThat(nullValue.isValid()).isTrue();
+        assertThat(nullValue.getValue()).isNull();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -467,9 +462,9 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
         factMappingValues.forEach(fmv -> verify(fmv, times(2)).getRawValue());
 
-        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, factMappingValue1.getStatus());
-        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, factMappingValue2.getStatus());
-        assertEquals(FactMappingValueStatus.SUCCESS, factMappingValue3.getStatus());
+        assertThat(factMappingValue1.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
+        assertThat(factMappingValue2.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
+        assertThat(factMappingValue3.getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
     }
 
     @Test
@@ -477,23 +472,23 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
         paramsToSet.put(emptyList(), "Test");
 
-        assertEquals("Test", runnerHelper.getDirectMapping(paramsToSet).getValue());
+        assertThat(runnerHelper.getDirectMapping(paramsToSet).getValue()).isEqualTo("Test");
 
         paramsToSet.clear();
         paramsToSet.put(emptyList(), 1);
 
-        assertEquals(1, runnerHelper.getDirectMapping(paramsToSet).getValue());
+        assertThat(runnerHelper.getDirectMapping(paramsToSet).getValue()).isEqualTo(1);
 
         paramsToSet.clear();
         paramsToSet.put(emptyList(), null);
 
-        assertNull(runnerHelper.getDirectMapping(paramsToSet).getValue());
+        assertThat(runnerHelper.getDirectMapping(paramsToSet).getValue()).isNull();
 
         paramsToSet.clear();
 
         ValueWrapper<Object> directMapping = runnerHelper.getDirectMapping(paramsToSet);
-        assertFalse(directMapping.isValid());
-        assertEquals("No direct mapping available", directMapping.getErrorMessage().get());
+        assertThat(directMapping.isValid()).isFalse();
+        assertThat(directMapping.getErrorMessage().get()).isEqualTo("No direct mapping available");
     }
 
     @Test
@@ -508,11 +503,11 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 Person.class.getCanonicalName(),
                 params,
                 this.getClass().getClassLoader());
-        assertTrue(objectRaw instanceof Person);
+        assertThat(objectRaw instanceof Person).isTrue();
 
         Person object = (Person) objectRaw;
-        assertEquals(10, object.getAge());
-        assertEquals("TestName", object.getFirstName());
+        assertThat(object.getAge()).isEqualTo(10);
+        assertThat(object.getFirstName()).isEqualTo("TestName");
     }
 
     @Test
@@ -528,9 +523,9 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 params,
                 this.getClass().getClassLoader());
 
-        assertTrue(objectRaw instanceof String);
+        assertThat(objectRaw instanceof String).isTrue();
 
-        assertEquals(directMappingSimpleTypeValue, objectRaw);
+        assertThat(objectRaw).isEqualTo(directMappingSimpleTypeValue);
     }
 
     @Test
@@ -545,7 +540,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 params,
                 this.getClass().getClassLoader());
 
-        assertNull(objectRaw);
+        assertThat(objectRaw).isNull();
     }
 
     @SuppressWarnings("unchecked")
@@ -564,11 +559,11 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 params,
                 this.getClass().getClassLoader());
 
-        assertTrue(objectRaw instanceof Person);
+        assertThat(objectRaw instanceof Person).isTrue();
 
         Person object = (Person) objectRaw;
-        assertEquals(10, object.getAge());
-        assertEquals("TestName", object.getFirstName());
+        assertThat(object.getAge()).isEqualTo(10);
+        assertThat(object.getFirstName()).isEqualTo("TestName");
     }
 
     @Test
@@ -589,16 +584,16 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
         ScenarioResultMetadata scenarioResultMetadata = runnerHelper.extractResultMetadata(requestContext, scenarioWithIndexMock);
 
-        assertEquals(scenarioWithIndexMock, scenarioResultMetadata.getScenarioWithIndex());
-        assertEquals(2, scenarioResultMetadata.getAvailable().size());
-        assertEquals(2, scenarioResultMetadata.getExecuted().size());
-        assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule1"));
-        assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule2"));
+        assertThat(scenarioResultMetadata.getScenarioWithIndex()).isEqualTo(scenarioWithIndexMock);
+        assertThat(scenarioResultMetadata.getAvailable().size()).isEqualTo(2);
+        assertThat(scenarioResultMetadata.getExecuted().size()).isEqualTo(2);
+        assertThat(scenarioResultMetadata.getExecutedWithCounter().get("rule1")).isEqualTo((Integer) 2);
+        assertThat(scenarioResultMetadata.getExecutedWithCounter().get("rule2")).isEqualTo((Integer) 2);
         List<String> expectedMessages = new ArrayList<>();
         commonAddMessageString(Arrays.asList("rule1", "rule2"), expectedMessages);
 
         final List<AuditLogLine> auditLogLines = scenarioResultMetadata.getAuditLogLines();
-        assertEquals(expectedMessages.size(), auditLogLines.size());
+        assertThat(auditLogLines.size()).isEqualTo(expectedMessages.size());
         for (int i = 0; i < expectedMessages.size(); i++) {
             commonCheckAuditLogLine(auditLogLines.get(i), expectedMessages.get(i), ConstantsHolder.EXECUTED, null);
         }
@@ -611,31 +606,31 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         List<InstanceGiven> emptyBackgroundGivens = runnerHelper.extractBackgroundValues(emptyBackground,
                                                                                          classLoader,
                                                                                          expressionEvaluatorFactory);
-        assertEquals(0, emptyBackgroundGivens.size());
+        assertThat(emptyBackgroundGivens.size()).isEqualTo(0);
 
         emptyBackground.addData();
         emptyBackgroundGivens = runnerHelper.extractBackgroundValues(emptyBackground,
                                                                      classLoader,
                                                                      expressionEvaluatorFactory);
-        assertEquals(0, emptyBackgroundGivens.size());
+        assertThat(emptyBackgroundGivens.size()).isEqualTo(0);
 
         // TEST 1 - background correct
         List<InstanceGiven> backgroundGivens = runnerHelper.extractBackgroundValues(this.background,
                                                                                     classLoader,
                                                                                     expressionEvaluatorFactory);
-        assertEquals(3, backgroundGivens.size());
+        assertThat(backgroundGivens.size()).isEqualTo(3);
         for (InstanceGiven backgroundGiven : backgroundGivens) {
             if (backgroundGiven.getFactIdentifier().equals(personFactIdentifier)) {
-                assertEquals(personFactIdentifier, backgroundGiven.getFactIdentifier());
+                assertThat(backgroundGiven.getFactIdentifier()).isEqualTo(personFactIdentifier);
                 Person person = (Person) backgroundGiven.getValue();
-                assertEquals(NAME, person.getFirstName());
+                assertThat(person.getFirstName()).isEqualTo(NAME);
             } else if (backgroundGiven.getFactIdentifier().equals(disputeFactIdentifier)) {
-                assertEquals(disputeFactIdentifier, backgroundGiven.getFactIdentifier());
+                assertThat(backgroundGiven.getFactIdentifier()).isEqualTo(disputeFactIdentifier);
                 Dispute dispute = (Dispute) backgroundGiven.getValue();
                 double parsedAmount = Double.parseDouble(AMOUNT);
-                assertEquals(parsedAmount, dispute.getAmount(), 0.1);
+                assertThat(dispute.getAmount()).isCloseTo(parsedAmount, within(0.1));
             } else {
-                fail();
+                fail("Unexpected execution path");
             }
         }
 
@@ -650,10 +645,10 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 .isInstanceOf(ScenarioException.class)
                 .hasMessage("Error in BACKGROUND data");
 
-        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, notValid1.getStatus());
-        assertTrue(notValid1.getExceptionMessage().startsWith("Impossible to parse"));
-        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, notValid2.getStatus());
-        assertTrue(notValid2.getExceptionMessage().startsWith("Impossible to parse"));
+        assertThat(notValid1.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
+        assertThat(notValid1.getExceptionMessage().startsWith("Impossible to parse")).isTrue();
+        assertThat(notValid2.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
+        assertThat(notValid2.getExceptionMessage().startsWith("Impossible to parse")).isTrue();
     }
 
     @Test
@@ -679,13 +674,13 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
         verify(ruleScenarioExecutableBuilderMock, times(inputObjects)).insert(insertCaptor.capture());
         for (Object value : insertCaptor.getAllValues()) {
-            assertTrue(value instanceof Person || value instanceof Dispute);
+            assertThat(value instanceof Person || value instanceof Dispute).isTrue();
         }
 
         verify(ruleScenarioExecutableBuilderMock, times(1)).addInternalCondition(eq(Person.class), any(), any());
         verify(ruleScenarioExecutableBuilderMock, times(1)).run();
 
-        assertEquals(1, scenarioRunnerData.getResults().size());
+        assertThat(scenarioRunnerData.getResults().size()).isEqualTo(1);
 
         // test not rule error
         settings.setType(ScenarioSimulationModel.Type.DMN);

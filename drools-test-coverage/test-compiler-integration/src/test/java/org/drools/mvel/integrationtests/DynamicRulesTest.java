@@ -62,11 +62,8 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -116,25 +113,21 @@ public class DynamicRulesTest {
         workingMemory.insert(cheddar);
         workingMemory.fireAllRules();
 
-        assertEquals(1,
-                     list.size());
+        assertThat(list.size()).isEqualTo(1);
 
-        assertEquals("stilton",
-                     list.get(0));
+        assertThat(list.get(0)).isEqualTo("stilton");
 
         Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_Dynamic2.drl").getKiePackages();
         kbase.addPackages(kpkgs);
 
         workingMemory.fireAllRules();
-        assertEquals(5,
-                     list.size());
+        assertThat(list.size()).isEqualTo(5);
 
-        assertEquals("stilton",
-                     list.get(0));
+        assertThat(list.get(0)).isEqualTo("stilton");
 
-        assertTrue("cheddar".equals(list.get(1)) || "cheddar".equals(list.get(2)));
+        assertThat("cheddar".equals(list.get(1)) || "cheddar".equals(list.get(2))).isTrue();
 
-        assertTrue("stilton".equals(list.get(1)) || "stilton".equals(list.get(2)));
+        assertThat("stilton".equals(list.get(1)) || "stilton".equals(list.get(2))).isTrue();
 
         list.clear();
 
@@ -145,29 +138,21 @@ public class DynamicRulesTest {
         // As we added person instance in advance, rule should fire now
         workingMemory.fireAllRules();
 
-        assertEquals("Rule from package 3 should have been fired",
-                     "match Person ok",
-                     bob.getStatus());
+        assertThat(bob.getStatus()).as("Rule from package 3 should have been fired").isEqualTo("match Person ok");
 
-        assertEquals(1,
-                     list.size());
+        assertThat(list.size()).isEqualTo(1);
 
-        assertEquals(bob,
-                     list.get(0));
+        assertThat(list.get(0)).isEqualTo(bob);
 
         kpkgs = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_Dynamic4.drl").getKiePackages();
         kbase.addPackages(kpkgs);
         workingMemory.fireAllRules();
 
-        assertEquals("Rule from package 4 should have been fired",
-                     "Who likes Stilton ok",
-                     bob.getStatus());
+        assertThat(bob.getStatus()).as("Rule from package 4 should have been fired").isEqualTo("Who likes Stilton ok");
 
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
-        assertEquals(bob,
-                     list.get(1));
+        assertThat(list.get(1)).isEqualTo(bob);
 
     }
 
@@ -208,7 +193,7 @@ public class DynamicRulesTest {
         FactHandle fh4 = wm.insert( cheddar );
 
         wm.fireAllRules();
-        assertEquals(15, list.size());
+        assertThat(list.size()).isEqualTo(15);
         list.clear();
 
         kbase.removeRule("org.drools.mvel.compiler.test",
@@ -220,7 +205,7 @@ public class DynamicRulesTest {
         wm.update(fh3, stilton3);
         wm.update(fh4, cheddar);
         wm.fireAllRules();
-        assertEquals(12, list.size());
+        assertThat(list.size()).isEqualTo(12);
         list.clear();
 
         kbase.removeRule("org.drools.mvel.compiler.test",
@@ -232,7 +217,7 @@ public class DynamicRulesTest {
         wm.update(fh3, stilton3);
         wm.update(fh4, cheddar);
         wm.fireAllRules();
-        assertEquals(8, list.size());
+        assertThat(list.size()).isEqualTo(8);
         list.clear();
 
         final Cheese muzzarela = new Cheese( "muzzarela",
@@ -240,7 +225,7 @@ public class DynamicRulesTest {
         wm.insert( muzzarela );
         wm.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
         list.clear();
     }
 
@@ -253,8 +238,7 @@ public class DynamicRulesTest {
 
         KieSession workingMemory = kbase.newKieSession();
 
-        assertEquals( 2,
-                      kbase.getKiePackages().size() );
+        assertThat(kbase.getKiePackages().size()).isEqualTo(2);
 
         KiePackage knowledgePackage = null;
         for (KiePackage pkg : kbase.getKiePackages()) {
@@ -264,22 +248,18 @@ public class DynamicRulesTest {
             }
         }
 
-        assertEquals( 5,
-                      knowledgePackage.getRules().size() );
+        assertThat(knowledgePackage.getRules().size()).isEqualTo(5);
 
         kbase.removeRule( "org.drools.mvel.compiler.test",
                           "Who likes Stilton" );
-        assertEquals( 4,
-                      knowledgePackage.getRules().size() );
+        assertThat(knowledgePackage.getRules().size()).isEqualTo(4);
 
         kbase.removeRule( "org.drools.mvel.compiler.test",
                           "like cheese" );
-        assertEquals( 3,
-                      knowledgePackage.getRules().size() );
+        assertThat(knowledgePackage.getRules().size()).isEqualTo(3);
 
         kbase.removeKiePackage( "org.drools.mvel.compiler.test" );
-        assertEquals( 1,
-                      kbase.getKiePackages().size() );
+        assertThat(kbase.getKiePackages().size()).isEqualTo(1);
     }
 
     @Ignore("Fails with standard-drl after changing to new API. See DROOLS-6060")
@@ -306,8 +286,7 @@ public class DynamicRulesTest {
 
         workingMemory.fireAllRules();
 
-        assertEquals( new Integer( 5 ),
-                      list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo(new Integer( 5 ));
 
         // Check a function can be removed from a package.
         // Once removed any efforts to use it should throw an Exception
@@ -334,8 +313,7 @@ public class DynamicRulesTest {
 
         workingMemory.fireAllRules();
 
-        assertEquals( new Integer( 6 ),
-                      list.get( 1 ) );
+        assertThat(list.get(1)).isEqualTo(new Integer( 6 ));
 
         Collection<KiePackage> kpkgs3 = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_DynamicFunction3.drl").getKiePackages();
 
@@ -347,8 +325,7 @@ public class DynamicRulesTest {
 
         workingMemory.fireAllRules();
 
-        assertEquals( new Integer( 5 ),
-                      list.get( 2 ) );
+        assertThat(list.get(2)).isEqualTo(new Integer( 5 ));
     }
 
     @Test (timeout=10000)
@@ -547,10 +524,8 @@ public class DynamicRulesTest {
         session.fireAllRules();
 
         // fire all rules is automatic
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( 2,
-                      ((List<?>) list.get( 0 )).size() );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(((List<?>) list.get(0)).size()).isEqualTo(2);
     }
 
     @Test(timeout=10000)
@@ -584,8 +559,7 @@ public class DynamicRulesTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 0,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(0);
 
         kbase.removeKiePackage( "org.drools.mvel.compiler" );
 
@@ -601,8 +575,7 @@ public class DynamicRulesTest {
         results = (List<?>) ksession.getGlobal( "results" );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
     }
 
     @Test(timeout=10000)
@@ -638,21 +611,19 @@ public class DynamicRulesTest {
 
             session.fireAllRules();
 
-            assertEquals( 3,
-                          results.size() );
-            assertTrue( results.contains( h1.getObject() ) );
-            assertTrue( results.contains( h6.getObject() ) );
-            assertTrue( results.contains( h10.getObject() ) );
+            assertThat(results.size()).isEqualTo(3);
+            assertThat(results.contains(h1.getObject())).isTrue();
+            assertThat(results.contains(h6.getObject())).isTrue();
+            assertThat(results.contains(h10.getObject())).isTrue();
             results.clear();
 
             Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_DynamicRulesFred.drl").getKiePackages();
             kbase.addPackages(kpkgs);
             session.fireAllRules();
 
-            assertEquals( 2,
-                          results.size() );
-            assertTrue( results.contains( h2.getObject() ) );
-            assertTrue( results.contains( h4.getObject() ) );
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(results.contains(h2.getObject())).isTrue();
+            assertThat(results.contains(h4.getObject())).isTrue();
             results.clear();
 
             kbase.removeKiePackage( "tom" );
@@ -661,10 +632,9 @@ public class DynamicRulesTest {
             kbase.addPackages(kpkgs);
             session.fireAllRules();
 
-            assertEquals( 2,
-                          results.size() );
-            assertTrue( results.contains( h5.getObject() ) );
-            assertTrue( results.contains( h9.getObject() ) );
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(results.contains(h5.getObject())).isTrue();
+            assertThat(results.contains(h9.getObject())).isTrue();
             results.clear();
 
             ((Person) h3.getObject()).setName( "ed" );
@@ -672,9 +642,8 @@ public class DynamicRulesTest {
                             h3.getObject() );
             session.fireAllRules();
 
-            assertEquals( 1,
-                          results.size() );
-            assertTrue( results.contains( h3.getObject() ) );
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.contains(h3.getObject())).isTrue();
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( "Should not raise any exception: " + e.getMessage() );
@@ -734,7 +703,7 @@ public class DynamicRulesTest {
 
         session.insert( order );
         session.fireAllRules();
-        assertEquals( 11, list.size() );
+        assertThat(list.size()).isEqualTo(11);
 
         kbase.removeRule( "org.drools.mvel.compiler",
                           "Apply Discount on all books" );
@@ -746,7 +715,7 @@ public class DynamicRulesTest {
         session.update( item4Fh, item4 );
         session.fireAllRules();
 
-        assertEquals( 10, list.size() );
+        assertThat(list.size()).isEqualTo(10);
 
         kbase.removeRule( "org.drools.mvel.compiler",
                           "like book" );
@@ -757,14 +726,14 @@ public class DynamicRulesTest {
         session.update( item4Fh, item4 );
         session.fireAllRules();
 
-        assertEquals( 8, list.size() );
+        assertThat(list.size()).isEqualTo(8);
 
         final OrderItem item5 = new OrderItem( order, 5, "Sinatra : Vegas", OrderItem.TYPE_CD, 5 );
         FactHandle item5Fh = session.insert( item5 );
 
         session.fireAllRules();
 
-        assertEquals( 10, list.size() );
+        assertThat(list.size()).isEqualTo(10);
 
         kbase.removeKiePackage( "org.drools.mvel.compiler" );
         list.clear();
@@ -775,7 +744,7 @@ public class DynamicRulesTest {
         session.update( item5Fh, item5 );
         session.fireAllRules();
 
-        assertEquals( 0, list.size() );
+        assertThat(list.size()).isEqualTo(0);
     }
 
     @Test(timeout=10000)
@@ -785,21 +754,17 @@ public class DynamicRulesTest {
                                                                                                            "test_DynamicRulesWithSubnetwork2.drl",
                                                                                                            "test_DynamicRulesWithSubnetwork.drl");
 
-        assertEquals( 2, kbase.getKiePackages().size() );
-        assertEquals( 4,
-                      kbase.getPackagesMap().get("org.drools.mvel.compiler").getRules().size() );
+        assertThat(kbase.getKiePackages().size()).isEqualTo(2);
+        assertThat(kbase.getPackagesMap().get("org.drools.mvel.compiler").getRules().size()).isEqualTo(4);
 
         kbase.removeRule( "org.drools.mvel.compiler", "Apply Discount on all books" );
-        assertEquals( 3,
-                      kbase.getPackagesMap().get("org.drools.mvel.compiler").getRules().size() );
+        assertThat(kbase.getPackagesMap().get("org.drools.mvel.compiler").getRules().size()).isEqualTo(3);
 
         kbase.removeRule( "org.drools.mvel.compiler", "like book" );
-        assertEquals( 2,
-                      kbase.getPackagesMap().get("org.drools.mvel.compiler").getRules().size() );
+        assertThat(kbase.getPackagesMap().get("org.drools.mvel.compiler").getRules().size()).isEqualTo(2);
 
         kbase.removeKiePackage( "org.drools.mvel.compiler" );
-        assertEquals( 1,
-                      kbase.getKiePackages().size() );
+        assertThat(kbase.getKiePackages().size()).isEqualTo(1);
     }
 
     @Test(timeout=10000)
@@ -849,10 +814,8 @@ public class DynamicRulesTest {
 
         workingMemory.insert( order );
         workingMemory.fireAllRules();
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( 3,
-                      ((List) results.get( 0 )).size() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(((List) results.get(0)).size()).isEqualTo(3);
         results.clear();
 
         InternalKnowledgeBase ruleBaseWM = (InternalKnowledgeBase) workingMemory.getKieBase();
@@ -863,28 +826,22 @@ public class DynamicRulesTest {
         
         workingMemory.fireAllRules();
         results = (List) workingMemory.getGlobal( "results" );
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( 3,
-                      ((List) results.get( 0 )).size() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(((List) results.get(0)).size()).isEqualTo(3);
         results.clear();
 
         ruleBaseWM.removeKiePackage( packageName );
         ruleBaseWM.addPackages(kpkgs);
         workingMemory.fireAllRules();
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( 3,
-                      ((List) results.get( 0 )).size() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(((List) results.get(0)).size()).isEqualTo(3);
         results.clear();
 
         ruleBaseWM.removeKiePackage( packageName );
         ruleBaseWM.addPackages(kpkgs);
         workingMemory.fireAllRules();
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( 3,
-                      ((List) results.get( 0 )).size() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(((List) results.get(0)).size()).isEqualTo(3);
         results.clear();
     }
 
@@ -939,8 +896,7 @@ public class DynamicRulesTest {
                                   20000 ) );
 
         ksession.fireAllRules();
-        assertEquals( 3,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(3);
 
     }
 
@@ -965,8 +921,8 @@ public class DynamicRulesTest {
             KieSession ksession = kbase.newKieSession();
             List list = new ArrayList();
             ksession.setGlobal( "list", list);
-            assertEquals( 1, ksession.fireAllRules() );
-            assertEquals( 1, list.size() );
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
+            assertThat(list.size()).isEqualTo(1);
 
             // now, create another classloader and make sure it has access to the classes
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
@@ -984,8 +940,8 @@ public class DynamicRulesTest {
             ksession = kbase2.newKieSession();
             list = new ArrayList();
             ksession.setGlobal( "list", list);
-            assertEquals( 1, ksession.fireAllRules() );
-            assertEquals( 1, list.size() );
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
+            assertThat(list.size()).isEqualTo(1);
 
         } catch ( ClassCastException cce ) {
             cce.printStackTrace();
@@ -1017,8 +973,8 @@ public class DynamicRulesTest {
                 KieSession ksession = kbase.newKieSession();
                 List list = new ArrayList();
                 ksession.setGlobal( "list", list);
-                assertEquals( 1, ksession.fireAllRules() );
-                assertEquals( 1, list.size() );
+                assertThat(ksession.fireAllRules()).isEqualTo(1);
+                assertThat(list.size()).isEqualTo(1);
             } finally {
                 Thread.currentThread().setContextClassLoader( ccl );
             }
@@ -1044,8 +1000,8 @@ public class DynamicRulesTest {
                 KieSession ksession = kbase2.newKieSession();
                 List list = new ArrayList();
                 ksession.setGlobal( "list", list);
-                assertEquals( 1, ksession.fireAllRules() );
-                assertEquals( 1, list.size() );
+                assertThat(ksession.fireAllRules()).isEqualTo(1);
+                assertThat(list.size()).isEqualTo(1);
             } finally {
                 Thread.currentThread().setContextClassLoader( ccl );
             }
@@ -1085,8 +1041,7 @@ public class DynamicRulesTest {
 
         kbase.removeKiePackage( "org.drools.mvel.compiler" );
 
-        assertEquals( 0,
-                      kbase.getKiePackages().size() );
+        assertThat(kbase.getKiePackages().size()).isEqualTo(0);
 
         // lets re-compile and add it again
         Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_DynamicRulesWithNotSubnetwork.drl").getKiePackages();
@@ -1122,8 +1077,7 @@ public class DynamicRulesTest {
         session.setGlobal( "list",
                            list );
         session.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
         list.clear();
         // ... remove ...
@@ -1134,8 +1088,7 @@ public class DynamicRulesTest {
         session.setGlobal( "list",
                            list );
         session.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test(timeout=10000)
@@ -1181,14 +1134,14 @@ public class DynamicRulesTest {
         ksession.fireAllRules();
         ArgumentCaptor<AfterMatchFiredEvent> capt = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael, times(1) ).afterMatchFired( capt.capture() );
-        assertThat( "R1", is( capt.getValue().getMatch().getRule().getName() ) );
+        assertThat(capt.getValue().getMatch().getRule().getName()).isEqualTo("R1");
 
         kpkgs = KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, type, r2).getKiePackages();
         kbase.addPackages(kpkgs);
         
         ksession.fireAllRules();
         verify( ael, times(2) ).afterMatchFired( capt.capture() );
-        assertThat( "R2", is( capt.getAllValues().get( 2 ).getMatch().getRule().getName() ) );
+        assertThat(capt.getAllValues().get(2).getMatch().getRule().getName()).isEqualTo("R2");
         
         ksession.dispose();
         
@@ -1219,7 +1172,7 @@ public class DynamicRulesTest {
         verify( ael, times( 2 ) ).matchCreated(any(MatchCreatedEvent.class));
         int fireCount = session.fireAllRules();
         // both should have fired
-        assertEquals( 2, fireCount );
+        assertThat(fireCount).isEqualTo(2);
 
         kpkgs = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_JBRULES_2206_2.drl").getKiePackages();
         kbase.addPackages(kpkgs);
@@ -1229,7 +1182,7 @@ public class DynamicRulesTest {
         verify( ael, times( 3 ) ).matchCreated(any(MatchCreatedEvent.class));
         fireCount = session.fireAllRules();
         // that rule should fire again
-        assertEquals( 1, fireCount );
+        assertThat(fireCount).isEqualTo(1);
 
         session.dispose();
     }
@@ -1295,7 +1248,7 @@ public class DynamicRulesTest {
         ksession.insert(12);
 
         ksession.fireAllRules();
-        assertEquals(8, (int)list.get(0));
+        assertThat((int) list.get(0)).isEqualTo(8);
         list.clear();
 
         kpkgs = KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, drl2).getKiePackages();
@@ -1304,6 +1257,6 @@ public class DynamicRulesTest {
         kbase.removeRule("defaultpkg", "R1");
 
         ksession.fireAllRules();
-        assertEquals(12, (int)list.get(0));
+        assertThat((int) list.get(0)).isEqualTo(12);
     }
 }

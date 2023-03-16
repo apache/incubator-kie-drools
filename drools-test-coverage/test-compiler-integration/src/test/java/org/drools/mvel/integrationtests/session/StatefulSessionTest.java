@@ -37,11 +37,8 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class StatefulSessionTest {
@@ -74,7 +71,7 @@ public class StatefulSessionTest {
 
         ksession.insert(new Message("test"));
         final int rules = ksession.fireAllRules();
-        assertEquals(1, rules);
+        assertThat(rules).isEqualTo(1);
 
         ksession.dispose();
 
@@ -98,22 +95,22 @@ public class StatefulSessionTest {
         final FactHandle handle_2 = ksession_1.insert(expected_2);
         ksession_1.fireAllRules();
         final Collection<? extends KieSession> coll_1 = kbase.getKieSessions();
-        assertTrue(coll_1.size() == 1);
+        assertThat(coll_1.size() == 1).isTrue();
 
         final KieSession ksession_2 = coll_1.iterator().next();
         final Object actual_1 = ksession_2.getObject(handle_1);
         final Object actual_2 = ksession_2.getObject(handle_2);
-        assertEquals(expected_1, actual_1);
-        assertEquals(expected_2, actual_2);
+        assertThat(actual_1).isEqualTo(expected_1);
+        assertThat(actual_2).isEqualTo(expected_2);
 
         ksession_1.dispose();
         final Collection<? extends KieSession> coll_2 = kbase.getKieSessions();
-        assertTrue(coll_2.size() == 0);
+        assertThat(coll_2.size() == 0).isTrue();
 
         // here to make sure it's safe to call dispose() twice
         ksession_1.dispose();
         final Collection<? extends KieSession> coll_3 = kbase.getKieSessions();
-        assertTrue(coll_3.size() == 0);
+        assertThat(coll_3.size() == 0).isTrue();
     }
 
     @Test
@@ -125,8 +122,8 @@ public class StatefulSessionTest {
             final Object object = new Object();
             ksession.insert(object);
             final FactHandle factHandle = ksession.getFactHandle(object);
-            assertNotNull(factHandle);
-            assertEquals(object, ksession.getObject(factHandle));
+            assertThat(factHandle).isNotNull();
+            assertThat(ksession.getObject(factHandle)).isEqualTo(object);
         }
         ksession.dispose();
     }
@@ -140,7 +137,7 @@ public class StatefulSessionTest {
         final CheeseEqual cheese = new CheeseEqual("stilton", 10);
         ksession.insert(cheese);
         final FactHandle fh = ksession.getFactHandle(new CheeseEqual("stilton", 10));
-        assertNotNull(fh);
+        assertThat(fh).isNotNull();
     }
 
     @Test
@@ -152,9 +149,9 @@ public class StatefulSessionTest {
         final CheeseEqual cheese = new CheeseEqual("stilton", 10);
         ksession.insert(cheese);
         final FactHandle fh1 = ksession.getFactHandle(new Cheese("stilton", 10));
-        assertNull(fh1);
+        assertThat(fh1).isNull();
         final FactHandle fh2 = ksession.getFactHandle(cheese);
-        assertNotNull(fh2);
+        assertThat(fh2).isNotNull();
     }
 
     @Test
@@ -165,12 +162,10 @@ public class StatefulSessionTest {
         final DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert( "goodbye" );
 
         FactHandle key = DefaultFactHandle.createFromExternalFormat( helloHandle.toExternalForm() );
-        assertEquals( "hello",
-                ksession.getObject( key ) );
+        assertThat(ksession.getObject(key)).isEqualTo("hello");
 
         key = DefaultFactHandle.createFromExternalFormat( goodbyeHandle.toExternalForm() );
-        assertEquals( "goodbye",
-                ksession.getObject( key ) );
+        assertThat(ksession.getObject(key)).isEqualTo("goodbye");
     }
 
     @Test
@@ -185,8 +180,8 @@ public class StatefulSessionTest {
         ksession.fireAllRules();
 
         final Iterator events = ksession.getObjects(new ClassObjectFilter(PersonInterface.class)).iterator();
-        assertTrue(events.hasNext());
-        assertEquals(1, results.size());
-        assertEquals(results.get(0), events.next());
+        assertThat(events.hasNext()).isTrue();
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(events.next()).isEqualTo(results.get(0));
     }
 }

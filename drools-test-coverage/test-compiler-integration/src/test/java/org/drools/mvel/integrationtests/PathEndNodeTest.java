@@ -35,8 +35,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class PathEndNodeTest {
@@ -80,13 +79,13 @@ public class PathEndNodeTest {
         RuleTerminalNode rtn1 = (RuleTerminalNode) sinks[0];
         RuleTerminalNode rtn2 = (RuleTerminalNode) sinks[1];
 
-        assertEquals(3, rian.getPathEndNodes().length);
-        assertTrue( asList(rian.getPathEndNodes()).containsAll( asList(rtn1, rtn2, rian) ) );
+        assertThat(rian.getPathEndNodes().length).isEqualTo(3);
+        assertThat(asList(rian.getPathEndNodes()).containsAll(asList(rtn1, rtn2, rian))).isTrue();
 
         kbase.removeRule( "org.test", "xxx" );
 
-        assertEquals(2, rian.getPathEndNodes().length);
+        assertThat(rian.getPathEndNodes().length).isEqualTo(2);
         RuleTerminalNode remainingRTN = rtn1.getRule().getName().equals( "yyy" ) ? rtn1 : rtn2;
-        assertTrue( asList(rian.getPathEndNodes()).containsAll( asList(remainingRTN, rian) ) );
+        assertThat(asList(rian.getPathEndNodes()).containsAll(asList(remainingRTN, rian))).isTrue();
     }
 }

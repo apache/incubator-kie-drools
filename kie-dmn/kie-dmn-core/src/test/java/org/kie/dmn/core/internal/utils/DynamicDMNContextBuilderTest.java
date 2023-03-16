@@ -21,7 +21,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,9 +38,7 @@ import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DynamicDMNContextBuilderTest {
 
@@ -66,8 +63,8 @@ public class DynamicDMNContextBuilderTest {
     public void testOneOfEachType() throws Exception {
         DMNRuntime runtime = createRuntime("OneOfEachType.dmn", DMNRuntimeTypesTest.class);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_4f5608e9-4d74-4c22-a47e-ab657257fc9c", "OneOfEachType");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         DMNContext context = runtime.newContext();
         final String JSON = "{\n" +
@@ -84,23 +81,23 @@ public class DynamicDMNContextBuilderTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("DecisionString").getResult(), is("Hello, John Doe"));
-        assertThat(dmnResult.getDecisionResultByName("DecisionNumber").getResult(), is(new BigDecimal(2)));
-        assertThat(dmnResult.getDecisionResultByName("DecisionBoolean").getResult(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("DecisionDTDuration").getResult(), is(Duration.parse("P2D")));
-        assertThat(dmnResult.getDecisionResultByName("DecisionYMDuration").getResult(), is(ComparablePeriod.parse("P2M")));
-        assertThat(dmnResult.getDecisionResultByName("DecisionDateAndTime").getResult(), is(LocalDateTime.of(2020, 4, 2, 10, 0)));
-        assertThat(dmnResult.getDecisionResultByName("DecisionDate").getResult(), is(LocalDate.of(2020, 4, 3)));
-        assertThat(dmnResult.getDecisionResultByName("DecisionTime").getResult(), is(LocalTime.of(10, 0)));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("DecisionString").getResult()).isEqualTo("Hello, John Doe");
+        assertThat(dmnResult.getDecisionResultByName("DecisionNumber").getResult()).isEqualTo(new BigDecimal(2));
+        assertThat(dmnResult.getDecisionResultByName("DecisionBoolean").getResult()).isEqualTo(Boolean.FALSE);
+        assertThat(dmnResult.getDecisionResultByName("DecisionDTDuration").getResult()).isEqualTo(Duration.parse("P2D"));
+        assertThat(dmnResult.getDecisionResultByName("DecisionYMDuration").getResult()).isEqualTo(ComparablePeriod.parse("P2M"));
+        assertThat(dmnResult.getDecisionResultByName("DecisionDateAndTime").getResult()).isEqualTo(LocalDateTime.of(2020, 4, 2, 10, 0));
+        assertThat(dmnResult.getDecisionResultByName("DecisionDate").getResult()).isEqualTo(LocalDate.of(2020, 4, 3));
+        assertThat(dmnResult.getDecisionResultByName("DecisionTime").getResult()).isEqualTo(LocalTime.of(10, 0));
     }
 
     @Test
     public void testNextDays() throws Exception {
         final DMNRuntime runtime = createRuntime("nextDays.dmn", DMNRuntimeTypesTest.class);
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_8A1F9719-02AA-4517-97D4-5C4F5D22FE82", "nextDays");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         DMNContext context = runtime.newContext();
         final String JSON = "{\n" +
@@ -110,16 +107,16 @@ public class DynamicDMNContextBuilderTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is(Arrays.asList(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 22))));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult()).asList().containsExactly(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 2, 22));
     }
 
     @Test
     public void testTrafficViolationAll() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Traffic Violation.dmn", DMNRuntimeTypesTest.class);
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF", "Traffic Violation");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         DMNContext context = runtime.newContext();
         final String JSON = "{\n" +
@@ -148,8 +145,8 @@ public class DynamicDMNContextBuilderTest {
     public void testTrafficViolationMin() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Traffic Violation.dmn", DMNRuntimeTypesTest.class);
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF", "Traffic Violation");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         DMNContext context = runtime.newContext();
         final String JSON = "{\n" +
@@ -172,8 +169,8 @@ public class DynamicDMNContextBuilderTest {
     public void testTrafficViolationArbitraryFine() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Traffic Violation.dmn", DMNRuntimeTypesTest.class);
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF", "Traffic Violation");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         DMNContext context = runtime.newContext();
         final String JSON = "{\n" +
@@ -201,16 +198,16 @@ public class DynamicDMNContextBuilderTest {
     private void assertTrafficViolationSuspendedCase(final DMNRuntime runtime, final DMNModel dmnModel, DMNContext context) {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("Should the driver be suspended?").getResult(), is("Yes"));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Should the driver be suspended?").getResult()).isEqualTo("Yes");
     }
 
     @Test
     public void testDSBasicDS1() throws Exception {
         final DMNRuntime runtime = createRuntime("0004-decision-services.dmn", DMNDecisionServicesTest.class);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         DMNContext context = runtime.newContext();
         final String JSON = "{ \"D\":\"d\", \"E\":\"e\"}";
@@ -218,16 +215,16 @@ public class DynamicDMNContextBuilderTest {
         
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "A only as output knowing D and E");
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("A").getResult(), is("de"));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("A").getResult()).isEqualTo("de");
     }
 
     @Test
     public void testDSBasicDS2() throws Exception {
         final DMNRuntime runtime = createRuntime("0004-decision-services.dmn", DMNDecisionServicesTest.class);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         DMNContext context = runtime.newContext();
         final String JSON = "{ \"additional\":123, \"D\":\"d\", \"E\":\"e\", \"B\":\"inB\", \"C\":\"inC\"}";
@@ -235,7 +232,7 @@ public class DynamicDMNContextBuilderTest {
 
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "A Only Knowing B and C");
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("A").getResult(), is("inBinC"));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("A").getResult()).isEqualTo("inBinC");
     }
 }

@@ -16,10 +16,6 @@
 
 package org.drools.verifier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +34,9 @@ import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.solver.Solvers;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class SolversTest {
 
@@ -97,10 +96,8 @@ public class SolversTest {
         solvers.endRuleSolver();
 
         List<SubRule> list = solvers.getRulePossibilities();
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( 2,
-                      list.get( 0 ).getItems().size() );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0).getItems().size()).isEqualTo(2);
 
         List<Restriction> result = new ArrayList<Restriction>();
         result.add( r );
@@ -118,9 +115,9 @@ public class SolversTest {
          * Order may change but it doesn't matter.
          */
         if ( p1.getItems().containsAll( result ) ) {
-            assertTrue( p2.getItems().containsAll( result2 ) );
+            assertThat(p2.getItems().containsAll(result2)).isTrue();
         } else if ( p1.getItems().containsAll( result2 ) ) {
-            assertTrue( p2.getItems().containsAll( result ) );
+            assertThat(p2.getItems().containsAll(result)).isTrue();
         } else {
             fail( "No items found." );
         }
@@ -158,10 +155,8 @@ public class SolversTest {
         solvers.endRuleSolver();
 
         List<SubRule> list = solvers.getRulePossibilities();
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( 1,
-                      list.get( 0 ).getItems().size() );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0).getItems().size()).isEqualTo(1);
 
         List<Restriction> result = new ArrayList<Restriction>();
         result.add( r );
@@ -170,7 +165,7 @@ public class SolversTest {
         Set<RuleComponent> set = list.get( 0 ).getItems();
         for ( RuleComponent component : set ) {
             SubPattern possibility = (SubPattern) component;
-            assertTrue( possibility.getItems().containsAll( result ) );
+            assertThat(possibility.getItems().containsAll(result)).isTrue();
         }
     }
 }

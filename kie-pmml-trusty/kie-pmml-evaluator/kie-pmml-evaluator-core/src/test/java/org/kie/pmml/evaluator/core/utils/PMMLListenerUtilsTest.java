@@ -26,9 +26,7 @@ import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PMMLListenerUtilsTest {
 
@@ -39,10 +37,10 @@ public class PMMLListenerUtilsTest {
         PMMLContext pmmlContext = getPMMLContext(size, listenerFeedback);
         AtomicBoolean invoked = new AtomicBoolean(false);
         PMMLListenerUtils.stepExecuted(() -> new PMMLStepTest(invoked), pmmlContext);
-        assertTrue(invoked.get());
-        assertEquals(size, listenerFeedback.size());
+        assertThat(invoked).isTrue();
+        assertThat(listenerFeedback).hasSize(size);
         final PMMLStep retrieved = listenerFeedback.get(0);
-        IntStream.range(1, size).forEach(i -> assertEquals(retrieved, listenerFeedback.get(i)));
+        IntStream.range(1, size).forEach(i -> assertThat(listenerFeedback.get(i)).isEqualTo(retrieved));
     }
 
     @Test
@@ -50,7 +48,7 @@ public class PMMLListenerUtilsTest {
         PMMLContext pmmlContext = new PMMLContextImpl(new PMMLRequestData());
         AtomicBoolean invoked = new AtomicBoolean(false);
         PMMLListenerUtils.stepExecuted(() -> new PMMLStepTest(invoked), pmmlContext);
-        assertFalse(invoked.get());
+        assertThat(invoked).isFalse();
     }
 
     private PMMLContext getPMMLContext(int size, Map<Integer, PMMLStep> listenerFeedback) {

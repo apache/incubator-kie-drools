@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -95,6 +95,6 @@ public class CompilerTest extends BaseModelTest {
                 "Lower the alarm\n" +
                 "Everything is ok\n";
 
-        assertEquals(result, sb.toString());
+        assertThat(sb.toString()).isEqualTo(result);
     }
 }

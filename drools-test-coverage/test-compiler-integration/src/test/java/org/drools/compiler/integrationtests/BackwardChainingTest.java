@@ -74,10 +74,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.api.runtime.rule.Variable.v;
 
 @RunWith(Parameterized.class)
@@ -144,27 +142,27 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
             if (kieBaseTestConfiguration.isIdentity()) {
-                assertEquals(10, list.size());
-                assertEquals(p1, list.get(list.indexOf("darth : 100") - 1));
-                assertTrue(list.contains("darth : 100"));
-                assertEquals(p2, list.get(list.indexOf("darth : 200") - 1));
-                assertTrue(list.contains("darth : 200"));
-                assertEquals(p3, list.get(list.indexOf("yoda : 300") - 1));
-                assertTrue(list.contains("yoda : 300"));
-                assertEquals(p4, list.get(list.indexOf("luke : 300") - 1));
-                assertTrue(list.contains("luke : 300"));
-                assertEquals(p5, list.get(list.indexOf("bobba : 300") - 1));
-                assertTrue(list.contains("bobba : 300"));
+                assertThat(list.size()).isEqualTo(10);
+                assertThat(list.get(list.indexOf("darth : 100") - 1)).isEqualTo(p1);
+                assertThat(list.contains("darth : 100")).isTrue();
+                assertThat(list.get(list.indexOf("darth : 200") - 1)).isEqualTo(p2);
+                assertThat(list.contains("darth : 200")).isTrue();
+                assertThat(list.get(list.indexOf("yoda : 300") - 1)).isEqualTo(p3);
+                assertThat(list.contains("yoda : 300")).isTrue();
+                assertThat(list.get(list.indexOf("luke : 300") - 1)).isEqualTo(p4);
+                assertThat(list.contains("luke : 300")).isTrue();
+                assertThat(list.get(list.indexOf("bobba : 300") - 1)).isEqualTo(p5);
+                assertThat(list.contains("bobba : 300")).isTrue();
             } else {
-                assertEquals(8, list.size());
-                assertEquals(p1, list.get(list.indexOf("darth : 100") - 1));
-                assertTrue(list.contains("darth : 100"));
-                assertEquals(p3, list.get(list.indexOf("yoda : 300") - 1));
-                assertTrue(list.contains("yoda : 300"));
-                assertEquals(p4, list.get(list.indexOf("luke : 300") - 1));
-                assertTrue(list.contains("luke : 300"));
-                assertEquals(p5, list.get(list.indexOf("bobba : 300") - 1));
-                assertTrue(list.contains("bobba : 300"));
+                assertThat(list.size()).isEqualTo(8);
+                assertThat(list.get(list.indexOf("darth : 100") - 1)).isEqualTo(p1);
+                assertThat(list.contains("darth : 100")).isTrue();
+                assertThat(list.get(list.indexOf("yoda : 300") - 1)).isEqualTo(p3);
+                assertThat(list.contains("yoda : 300")).isTrue();
+                assertThat(list.get(list.indexOf("luke : 300") - 1)).isEqualTo(p4);
+                assertThat(list.contains("luke : 300")).isTrue();
+                assertThat(list.get(list.indexOf("bobba : 300") - 1)).isEqualTo(p5);
+                assertThat(list.contains("bobba : 300")).isTrue();
             }
         } finally {
             ksession.dispose();
@@ -212,9 +210,9 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.insert("go1");
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
-            assertTrue(list.contains("darth : stilton : s1"));
-            assertTrue(list.contains("yoda : stilton : s2"));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.contains("darth : stilton : s1")).isTrue();
+            assertThat(list.contains("yoda : stilton : s2")).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -260,14 +258,14 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
             ksession.insert("s1");
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            assertTrue(list.contains("darth : stilton : s1"));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.contains("darth : stilton : s1")).isTrue();
 
             list.clear();
             ksession.insert("s2");
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            assertTrue(list.contains("yoda : stilton : s2"));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.contains("yoda : stilton : s2")).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -295,7 +293,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("backward-chaining-test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
         try {
-            final List<String> list = new ArrayList<>();
+            final List<Person> list = new ArrayList<>();
             ksession.setGlobal("list", list);
 
             final Person p1 = new Person("darth",
@@ -309,16 +307,16 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.insert("darth");
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            assertEquals(p1, list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo(p1);
 
             list.clear();
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.insert("yoda");
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            assertEquals(p2, list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo(p2);
         } finally {
             ksession.dispose();
         }
@@ -354,7 +352,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("backward-chaining-test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
         try {
-            final List<String> list = new ArrayList<>();
+            final List<Person> list = new ArrayList<>();
             ksession.setGlobal("list", list);
 
             final Person p1 = new Person("darth",
@@ -367,8 +365,8 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.insert("yoda"); // darth exists, so yoda won't get created
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            assertEquals(p1, list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo(p1);
         } finally {
             ksession.dispose();
         }
@@ -438,7 +436,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add((Integer) result.get("x"));
             }
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             list.clear();
             results = ksession.getQueryResults("p", new Integer[]{1});
@@ -446,47 +444,47 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                 list.add((Integer) result.get("x"));
             }
 
-            assertEquals(1, list.size());
-            assertEquals(1, list.get(0).intValue());
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0).intValue()).isEqualTo(1);
 
             list.clear();
             results = ksession.getQueryResults("p", new Integer[]{2});
             for (final QueryResultsRow result : results) {
                 list.add((Integer) result.get("x"));
             }
-            assertEquals(1, list.size());
-            assertEquals(2, list.get(0).intValue());
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0).intValue()).isEqualTo(2);
 
             list.clear();
             results = ksession.getQueryResults("p", new Integer[]{3});
             for (final QueryResultsRow result : results) {
                 list.add((Integer) result.get("x"));
             }
-            assertEquals(1, list.size());
-            assertEquals(3, list.get(0).intValue());
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0).intValue()).isEqualTo(3);
 
             list.clear();
             results = ksession.getQueryResults("p", new Integer[]{4});
             for (final QueryResultsRow result : results) {
                 list.add((Integer) result.get("x"));
             }
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             list.clear();
             results = ksession.getQueryResults("p", new Integer[]{5});
             for (final QueryResultsRow result : results) {
                 list.add((Integer) result.get("x"));
             }
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             list.clear();
             results = ksession.getQueryResults("p", new Integer[]{6});
             for (final QueryResultsRow result : results) {
                 list.add((Integer) result.get("x"));
             }
-            assertEquals(2, list.size());
-            assertEquals(6, list.get(0).intValue());
-            assertEquals(6, list.get(1).intValue());
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(0).intValue()).isEqualTo(6);
+            assertThat(list.get(1).intValue()).isEqualTo(6);
         } finally {
             ksession.dispose();
         }
@@ -632,7 +630,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add((String) result.get("name"));
             }
-            assertEquals(5, list.size());
+            assertThat(list.size()).isEqualTo(5);
             assertContains(new String[]{"janet", "mary", "tina", "eve", "jill"}, list);
 
             list.clear();
@@ -640,7 +638,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add((String) result.get("name"));
             }
-            assertEquals(6, list.size());
+            assertThat(list.size()).isEqualTo(6);
             assertContains(new String[]{"stan", "john", "peter", "carl", "adam", "paul"}, list);
 
             list.clear();
@@ -648,7 +646,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add(result.get("father") + ", " + result.get("child"));
             }
-            assertEquals(7, list.size());
+            assertThat(list.size()).isEqualTo(7);
             assertContains(new String[]{"john, adam", "john, stan",
                                    "carl, eve", "carl, mary",
                                    "adam, peter", "adam, paul",
@@ -659,7 +657,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add(result.get("mother") + ", " + result.get("child"));
             }
-            assertEquals(7, list.size());
+            assertThat(list.size()).isEqualTo(7);
             assertContains(new String[]{"janet, adam", "janet, stan",
                                    "mary, paul", "tina, eve",
                                    "tina, mary", "eve, peter",
@@ -672,8 +670,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add(result.get("son") + ", " + result.get("parent"));
             }
-            assertEquals(8,
-                         list.size());
+            assertThat(list.size()).isEqualTo(8);
             assertContains(new String[]{"stan, john", "stan, janet",
                                    "peter, adam", "peter, eve",
                                    "adam, john", "adam, janet",
@@ -684,7 +681,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add(result.get("daughter") + ", " + result.get("parent"));
             }
-            assertEquals(6, list.size());
+            assertThat(list.size()).isEqualTo(6);
             assertContains(new String[]{"mary, carl", "mary, tina",
                                    "eve, carl", "eve, tina",
                                    "jill, adam", "jill, eve"}, list);
@@ -694,7 +691,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add(result.get("c1") + ", " + result.get("c2"));
             }
-            assertEquals(16, list.size());
+            assertThat(list.size()).isEqualTo(16);
             assertContains(new String[]{"eve, mary", "mary, eve",
                                    "adam, stan", "stan, adam",
                                    "adam, stan", "stan, adam",
@@ -725,7 +722,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                 list.add(result.get("c1") + ", " + result.get("c2"));
             }
             System.out.println(list);
-            assertEquals(12, list.size());
+            assertThat(list.size()).isEqualTo(12);
             assertContains(new String[]{"eve, mary", "mary, eve",
                                    "adam, stan", "stan, adam",
                                    "adam, stan", "stan, adam",
@@ -738,7 +735,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add(result.get("c1") + ", " + result.get("c2"));
             }
-            assertEquals(12, list.size());
+            assertThat(list.size()).isEqualTo(12);
             assertContains(new String[]{"eve, mary", "mary, eve",
                                    "adam, stan", "stan, adam",
                                    "adam, stan", "stan, adam",
@@ -751,7 +748,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add(result.get("uncle") + ", " + result.get("n"));
             }
-            assertEquals(6, list.size());
+            assertThat(list.size()).isEqualTo(6);
             assertContains(new String[]{"stan, peter",
                                    "stan, paul",
                                    "stan, jill",
@@ -764,7 +761,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add(result.get("aunt") + ", " + result.get("n"));
             }
-            assertEquals(6, list.size());
+            assertThat(list.size()).isEqualTo(6);
             assertContains(new String[]{"mary, peter",
                                    "mary, jill",
                                    "mary, peter",
@@ -777,7 +774,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow result : results) {
                 list.add(result.get("gp") + ", " + result.get("gc"));
             }
-            assertEquals(12, list.size());
+            assertThat(list.size()).isEqualTo(12);
             assertContains(new String[]{"carl, peter",
                                    "carl, jill",
                                    "carl, paul",
@@ -921,21 +918,21 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
             ksession.fireAllRules();
 
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
             assertContains(new String[]{"2:crackers", "2:apple"}, list);
 
             list.clear();
             kbase.addPackages(Collections.singletonList(pkgs.get("org.drools.compiler.test3")));
 
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
             assertContains(new String[]{"3:crackers", "3:apple"}, list);
 
             list.clear();
             kbase.addPackages(Collections.singletonList(pkgs.get("org.drools.compiler.test4")));
 
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
             assertContains(new String[]{"4:crackers", "4:apple"}, list);
         } finally {
             ksession.dispose();
@@ -1058,7 +1055,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             p.setLikes("lamp");
             ksession.insert(p);
             ksession.fireAllRules();
-            assertEquals("not blah", list.get(0));
+            assertThat(list.get(0)).isEqualTo("not blah");
 
             list.clear();
 
@@ -1067,40 +1064,40 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
             fh = getFactHandle(fh, ksession);
             ksession.delete(fh);
-            assertEquals("go1", list.get(0));
-            assertEquals("exists blah", list.get(1));
+            assertThat(list.get(0)).isEqualTo("go1");
+            assertThat(list.get(1)).isEqualTo("exists blah");
 
             fh = (InternalFactHandle) ksession.insert("go2");
             ksession.fireAllRules();
 
             fh = getFactHandle(fh, ksession);
             ksession.delete(fh);
-            assertEquals("go2", list.get(2));
-            assertEquals("not blah", list.get(3));
+            assertThat(list.get(2)).isEqualTo("go2");
+            assertThat(list.get(3)).isEqualTo("not blah");
 
             fh = (InternalFactHandle) ksession.insert("go3");
             ksession.fireAllRules();
 
             fh = getFactHandle(fh, ksession);
             ksession.delete(fh);
-            assertEquals("go3", list.get(4));
-            assertEquals("exists blah", list.get(5));
+            assertThat(list.get(4)).isEqualTo("go3");
+            assertThat(list.get(5)).isEqualTo("exists blah");
 
             fh = (InternalFactHandle) ksession.insert("go4");
             ksession.fireAllRules();
 
             fh = getFactHandle(fh, ksession);
             ksession.delete(fh);
-            assertEquals("go4", list.get(6));
-            assertEquals("not blah", list.get(7));
+            assertThat(list.get(6)).isEqualTo("go4");
+            assertThat(list.get(7)).isEqualTo("not blah");
 
             fh = (InternalFactHandle) ksession.insert("go5");
             ksession.fireAllRules();
 
             fh = getFactHandle(fh, ksession);
             ksession.delete(fh);
-            assertEquals("go5", list.get(8));
-            assertEquals("exists blah", list.get(9));
+            assertThat(list.get(8)).isEqualTo("go5");
+            assertThat(list.get(9)).isEqualTo("exists blah");
 
             // This simulates a modify of the root DroolsQuery object, but first we break it
             fh = (InternalFactHandle) ksession.insert("go6");
@@ -1108,8 +1105,8 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
             fh = getFactHandle(fh, ksession);
             ksession.delete(fh);
-            assertEquals("go6", list.get(10));
-            assertEquals("not blah", list.get(11));
+            assertThat(list.get(10)).isEqualTo("go6");
+            assertThat(list.get(11)).isEqualTo("not blah");
 
             // now fix it
             fh = (InternalFactHandle) ksession.insert("go7");
@@ -1117,8 +1114,8 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
             fh = getFactHandle(fh, ksession);
             ksession.delete(fh);
-            assertEquals("go7", list.get(12));
-            assertEquals("exists blah", list.get(13));
+            assertThat(list.get(12)).isEqualTo("go7");
+            assertThat(list.get(13)).isEqualTo("exists blah");
         } finally {
             ksession.dispose();
         }
@@ -1237,8 +1234,8 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                 final FactHandle fh = ksession.insert("go" + i);
                 ksession.fireAllRules();
                 ksession.delete(fh);
-                assertEquals(1, list.size());
-                assertEquals("kitchen has peach", list.get(0));
+                assertThat(list.size()).isEqualTo(1);
+                assertThat(list.get(0)).isEqualTo("kitchen has peach");
             } finally {
                 ksession.dispose();
             }
@@ -1255,19 +1252,19 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         // expect all inserted objects + InitialFact
         runTestQueryFindAll(0, queryList, ruleList, objects);
 
-        assertEquals(oCount, queryList.size());
+        assertThat(queryList.size()).isEqualTo(oCount);
         assertContains(objects, queryList);
 
         // expect inserted objects + InitialFact
         queryList.clear();
         ruleList.clear();
         runTestQueryFindAll(1, queryList, ruleList, objects);
-        assertEquals(oCount * oCount, queryList.size());
+        assertThat(queryList.size()).isEqualTo(oCount * oCount);
 
         queryList.clear();
         ruleList.clear();
         runTestQueryFindAll(2, queryList, ruleList, objects);
-        assertEquals(oCount * oCount, queryList.size());
+        assertThat(queryList.size()).isEqualTo(oCount * oCount);
     }
 
     private void runTestQueryFindAll(final int iCase,
@@ -1382,7 +1379,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.insert("go1");
             ksession.fireAllRules();
 
-            assertEquals(12, list.size());
+            assertThat(list.size()).isEqualTo(12);
             assertContains(new Object[]{
                     "go1", "init", new Q(6), new R(6), new S(3),
                     new R(2), new R(1), new R(4), new S(2),
@@ -1404,7 +1401,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.insert("init");
             ksession.fireAllRules();
 
-            assertEquals(12, list.size());
+            assertThat(list.size()).isEqualTo(12);
             assertContains(new Object[]{
                     "go1", "init", new Q(6), new R(6), new S(3),
                     new R(2), new R(1), new R(4), new S(2),
@@ -1693,9 +1690,9 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.insert("go1");
             ksession.fireAllRules();
 
-            assertEquals(2, list.size());
-            assertEquals("go1", list.get(0));
-            assertEquals("org.drools.test.Foo", list.get(1).getClass().getName());
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(0)).isEqualTo("go1");
+            assertThat(list.get(1).getClass().getName()).isEqualTo("org.drools.test.Foo");
         } finally {
             ksession.dispose();
         }
@@ -1747,7 +1744,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.insert("go");
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -1786,7 +1783,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             final ArrayList list = new ArrayList();
             ksession.setGlobal("list", list);
             ksession.fireAllRules();
-            assertEquals(Collections.singletonList(42), list);
+            assertThat(list).isEqualTo(Collections.singletonList(42));
         } finally {
             ksession.dispose();
         }
@@ -1837,8 +1834,8 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
             kieSession.fireAllRules();
 
-            assertEquals(1, list.size());
-            assertEquals(20, (int) list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat((int) list.get(0)).isEqualTo(20);
         } finally {
             kieSession.dispose();
         }
@@ -1898,12 +1895,12 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertTrue(list.isEmpty());
+            assertThat(list.isEmpty()).isTrue();
 
             ksession.insert("go");
             ksession.fireAllRules();
 
-            assertEquals(Arrays.asList(178, 178, 178), list);
+            assertThat(list).isEqualTo(Arrays.asList(178, 178, 178));
         } finally {
             ksession.dispose();
         }
@@ -2079,17 +2076,17 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.fireAllRules();
 
             Map<String, Object> map = list.get(0);
-            assertEquals("kitchen", map.get("place"));
+            assertThat(map.get("place")).isEqualTo("kitchen");
             List<String> items = (List<String>) map.get("things");
-            assertEquals(3, items.size());
+            assertThat(items.size()).isEqualTo(3);
             assertContains(new String[]{"apple", "broccoli", "crackers"}, items);
 
             items = (List<String>) map.get("food");
-            assertEquals(2, items.size());
+            assertThat(items.size()).isEqualTo(2);
             assertContains(new String[]{"apple", "crackers"}, items);
 
             items = (List<String>) map.get("exits");
-            assertEquals(3, items.size());
+            assertThat(items.size()).isEqualTo(3);
             assertContains(new String[]{"office", "cellar", "dining room"}, items);
 
             ksession.insert("go2");
@@ -2097,31 +2094,31 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.fireAllRules();
 
             map = list.get(1);
-            assertEquals("office", map.get("place"));
+            assertThat(map.get("place")).isEqualTo("office");
             items = (List<String>) map.get("things");
-            assertEquals(2, items.size());
+            assertThat(items.size()).isEqualTo(2);
             assertContains(new String[]{"computer", "desk",}, items);
 
             items = (List<String>) map.get("food");
-            assertEquals(1, items.size());
+            assertThat(items.size()).isEqualTo(1);
             assertContains(new String[]{"apple"}, items); // notice the apple is on the desk in the office
 
             items = (List<String>) map.get("exits");
-            assertEquals(2, items.size());
+            assertThat(items.size()).isEqualTo(2);
             assertContains(new String[]{"hall", "kitchen"}, items);
 
             QueryResults results = ksession.getQueryResults("isContainedIn", "key", "office");
-            assertEquals(1, results.size());
+            assertThat(results.size()).isEqualTo(1);
             final QueryResultsRow result = results.iterator().next();
-            assertEquals("key", result.get("x"));
-            assertEquals("office", result.get("y"));
+            assertThat(result.get("x")).isEqualTo("key");
+            assertThat(result.get("y")).isEqualTo("office");
 
             results = ksession.getQueryResults("isContainedIn", "key", Variable.v);
             List<List<String>> l = new ArrayList<>();
             for (final QueryResultsRow r : results) {
                 l.add(Arrays.asList((String) r.get("x"), (String) r.get("y")));
             }
-            assertEquals(3, results.size());
+            assertThat(results.size()).isEqualTo(3);
             assertContains(Arrays.asList("key", "desk"), l);
             assertContains(Arrays.asList("key", "office"), l);
             assertContains(Arrays.asList("key", "envelope"), l);
@@ -2132,7 +2129,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                 l.add(Arrays.asList((String) r.get("x"), (String) r.get("y")));
             }
 
-            assertEquals(6, results.size());
+            assertThat(results.size()).isEqualTo(6);
             assertContains(Arrays.asList("desk", "office"), l);
             assertContains(Arrays.asList("computer", "office"), l);
             assertContains(Arrays.asList("apple", "office"), l);
@@ -2145,7 +2142,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             for (final QueryResultsRow r : results) {
                 l.add(Arrays.asList((String) r.get("x"), (String) r.get("y")));
             }
-            assertEquals(17, results.size());
+            assertThat(results.size()).isEqualTo(17);
             assertContains(Arrays.asList("apple", "kitchen"), l);
             assertContains(Arrays.asList("apple", "desk"), l);
             assertContains(Arrays.asList("envelope", "desk"), l);
@@ -2231,7 +2228,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             }
         }
 
-        assertNotNull(node);
+        assertThat(node).isNotNull();
         final BetaNode stringBetaNode = (BetaNode) node.getObjectSinkPropagator().getSinks()[0];
         final QueryElementNode queryElementNode1 = (QueryElementNode) stringBetaNode.getSinkPropagator().getSinks()[0];
         final RightInputAdapterNode riaNode1 = (RightInputAdapterNode) queryElementNode1.getSinkPropagator().getSinks()[0];
@@ -2264,18 +2261,18 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
             // Execute normal query and check no subnetwork tuples are left behind
             QueryResults results = ksession.getQueryResults("look", "kitchen", Variable.v);
-            assertEquals(1, results.size());
+            assertThat(results.size()).isEqualTo(1);
 
             for (final org.kie.api.runtime.rule.QueryResultsRow row : results) {
                 food.addAll((Collection) row.get("food"));
             }
-            assertEquals(2, food.size());
+            assertThat(food.size()).isEqualTo(2);
             assertContains(new String[]{"crackers", "apple"}, food);
 
-            assertEquals(0, accMemory.getBetaMemory().getRightTupleMemory().size());
-            assertEquals(0, existsMemory.getRightTupleMemory().size());
-            assertEquals(0, fromMemory.getBetaMemory().getLeftTupleMemory().size());
-            assertEquals(0, notMemory.getRightTupleMemory().size());
+            assertThat(accMemory.getBetaMemory().getRightTupleMemory().size()).isEqualTo(0);
+            assertThat(existsMemory.getRightTupleMemory().size()).isEqualTo(0);
+            assertThat(fromMemory.getBetaMemory().getLeftTupleMemory().size()).isEqualTo(0);
+            assertThat(notMemory.getRightTupleMemory().size()).isEqualTo(0);
 
             // Now execute an open query and ensure the memory is left populated
             food.clear();
@@ -2295,29 +2292,29 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                             food.addAll((Collection) row.get("food"));
                         }
                     });
-            assertEquals(2, food.size());
+            assertThat(food.size()).isEqualTo(2);
             assertContains(new String[]{"crackers", "apple"}, food);
 
-            assertEquals(2, accMemory.getBetaMemory().getRightTupleMemory().size());
-            assertEquals(0, existsMemory.getRightTupleMemory().size()); // This is zero, as it's held directly on the LeftTuple context
-            assertEquals(2, fromMemory.getBetaMemory().getLeftTupleMemory().size());
-            assertEquals(0, notMemory.getRightTupleMemory().size());
+            assertThat(accMemory.getBetaMemory().getRightTupleMemory().size()).isEqualTo(2);
+            assertThat(existsMemory.getRightTupleMemory().size()).isEqualTo(0); // This is zero, as it's held directly on the LeftTuple context
+            assertThat(fromMemory.getBetaMemory().getLeftTupleMemory().size()).isEqualTo(2);
+            assertThat(notMemory.getRightTupleMemory().size()).isEqualTo(0);
 
             food.clear();
             // Now try again, make sure it only delete's it's own tuples
             results = ksession.getQueryResults("look", "kitchen", Variable.v);
-            assertEquals(1, results.size());
+            assertThat(results.size()).isEqualTo(1);
 
             for (final org.kie.api.runtime.rule.QueryResultsRow row : results) {
                 food.addAll((Collection) row.get("food"));
             }
-            assertEquals(2, food.size());
+            assertThat(food.size()).isEqualTo(2);
             assertContains(new String[]{"crackers", "apple"}, food);
 
-            assertEquals(2, accMemory.getBetaMemory().getRightTupleMemory().size());
-            assertEquals(0, existsMemory.getRightTupleMemory().size());  // This is zero, as it's held directly on the LeftTuple context
-            assertEquals(2, fromMemory.getBetaMemory().getLeftTupleMemory().size());
-            assertEquals(0, notMemory.getRightTupleMemory().size());
+            assertThat(accMemory.getBetaMemory().getRightTupleMemory().size()).isEqualTo(2);
+            assertThat(existsMemory.getRightTupleMemory().size()).isEqualTo(0);  // This is zero, as it's held directly on the LeftTuple context
+            assertThat(fromMemory.getBetaMemory().getLeftTupleMemory().size()).isEqualTo(2);
+            assertThat(notMemory.getRightTupleMemory().size()).isEqualTo(0);
             food.clear();
 
             // do an update and check it's  still memory size 2
@@ -2325,34 +2322,34 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.update(fh, "crackers");
             ksession.fireAllRules();
 
-            assertEquals(2, accMemory.getBetaMemory().getRightTupleMemory().size());
-            assertEquals(1, existsMemory.getLeftTupleMemory().size());
-            assertEquals(0, existsMemory.getRightTupleMemory().size());  // This is zero, as it's held directly on the LeftTuple context
-            assertEquals(2, fromMemory.getBetaMemory().getLeftTupleMemory().size());
-            assertEquals(0, notMemory.getRightTupleMemory().size());  // This is zero, as it's held directly on the LeftTuple context
+            assertThat(accMemory.getBetaMemory().getRightTupleMemory().size()).isEqualTo(2);
+            assertThat(existsMemory.getLeftTupleMemory().size()).isEqualTo(1);
+            assertThat(existsMemory.getRightTupleMemory().size()).isEqualTo(0);  // This is zero, as it's held directly on the LeftTuple context
+            assertThat(fromMemory.getBetaMemory().getLeftTupleMemory().size()).isEqualTo(2);
+            assertThat(notMemory.getRightTupleMemory().size()).isEqualTo(0);  // This is zero, as it's held directly on the LeftTuple context
 
-            assertEquals(0, foodUpdated.size());
+            assertThat(foodUpdated.size()).isEqualTo(0);
 
             // do an update and check it's  still memory size 2
             // this time
             ksession.update(fh, "oranges");
             ksession.fireAllRules();
 
-            assertEquals(2, accMemory.getBetaMemory().getRightTupleMemory().size());
-            assertEquals(1, existsMemory.getLeftTupleMemory().size());
-            assertEquals(0, existsMemory.getRightTupleMemory().size());  // This is zero, as it's held directly on the LeftTuple context
-            assertEquals(2, fromMemory.getBetaMemory().getLeftTupleMemory().size());
-            assertEquals(0, notMemory.getRightTupleMemory().size());
+            assertThat(accMemory.getBetaMemory().getRightTupleMemory().size()).isEqualTo(2);
+            assertThat(existsMemory.getLeftTupleMemory().size()).isEqualTo(1);
+            assertThat(existsMemory.getRightTupleMemory().size()).isEqualTo(0);  // This is zero, as it's held directly on the LeftTuple context
+            assertThat(fromMemory.getBetaMemory().getLeftTupleMemory().size()).isEqualTo(2);
+            assertThat(notMemory.getRightTupleMemory().size()).isEqualTo(0);
 
-            assertEquals(2, food.size());
+            assertThat(food.size()).isEqualTo(2);
             assertContains(new String[]{"crackers", "apple"}, food);
 
             // Close the open
             query.close();
-            assertEquals(0, accMemory.getBetaMemory().getRightTupleMemory().size());
-            assertEquals(0, existsMemory.getRightTupleMemory().size());
-            assertEquals(0, fromMemory.getBetaMemory().getLeftTupleMemory().size());
-            assertEquals(0, notMemory.getRightTupleMemory().size());
+            assertThat(accMemory.getBetaMemory().getRightTupleMemory().size()).isEqualTo(0);
+            assertThat(existsMemory.getRightTupleMemory().size()).isEqualTo(0);
+            assertThat(fromMemory.getBetaMemory().getLeftTupleMemory().size()).isEqualTo(0);
+            assertThat(notMemory.getRightTupleMemory().size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -2457,9 +2454,9 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                 InternalFactHandle fh = (InternalFactHandle) ksession.insert(i);
                 ksession.fireAllRules();
 
-                assertEquals(2, list.size());
-                assertEquals("peach", list.get(0));
-                assertEquals("peach", list.get(1));
+                assertThat(list.size()).isEqualTo(2);
+                assertThat(list.get(0)).isEqualTo("peach");
+                assertThat(list.get(1)).isEqualTo("peach");
                 list.clear();
 
                 final InternalFactHandle[] handles = ksession.getFactHandles().toArray(new InternalFactHandle[0]);
@@ -2476,9 +2473,9 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                     handles[j] = (InternalFactHandle) ksession.insert(o);
 
                     ksession.fireAllRules();
-                    assertEquals(2, list.size());
-                    assertEquals("peach", list.get(0));
-                    assertEquals("peach", list.get(1));
+                    assertThat(list.size()).isEqualTo(2);
+                    assertThat(list.get(0)).isEqualTo("peach");
+                    assertThat(list.get(1)).isEqualTo("peach");
                     list.clear();
 
                     // now try update
@@ -2487,9 +2484,9 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                     ksession.update(handles[j], handles[j].getObject());
 
                     ksession.fireAllRules();
-                    assertEquals(2, list.size());
-                    assertEquals("peach", list.get(0));
-                    assertEquals("peach", list.get(1));
+                    assertThat(list.size()).isEqualTo(2);
+                    assertThat(list.get(0)).isEqualTo("peach");
+                    assertThat(list.get(1)).isEqualTo("peach");
                     list.clear();
                 }
 
@@ -2510,9 +2507,9 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
                 InternalFactHandle fh = (InternalFactHandle) ksession.insert(i);
                 ksession.fireAllRules();
-                assertEquals(2, list.size());
-                assertEquals("table", list.get(0));
-                assertEquals("peach", list.get(1));
+                assertThat(list.size()).isEqualTo(2);
+                assertThat(list.get(0)).isEqualTo("table");
+                assertThat(list.get(1)).isEqualTo("peach");
                 list.clear();
 
                 final InternalFactHandle[] handles = ksession.getFactHandles().toArray(new InternalFactHandle[0]);
@@ -2528,9 +2525,9 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                     handles[j] = (InternalFactHandle) ksession.insert(o);
 
                     ksession.fireAllRules();
-                    assertEquals(2, list.size());
-                    assertEquals("table", list.get(0));
-                    assertEquals("peach", list.get(1));
+                    assertThat(list.size()).isEqualTo(2);
+                    assertThat(list.get(0)).isEqualTo("table");
+                    assertThat(list.get(1)).isEqualTo("peach");
                     list.clear();
 
                     // now try update
@@ -2538,9 +2535,9 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                     ksession.update(handles[j], handles[j].getObject());
 
                     ksession.fireAllRules();
-                    assertEquals(2, list.size());
-                    assertEquals("table", list.get(0));
-                    assertEquals("peach", list.get(1));
+                    assertThat(list.size()).isEqualTo(2);
+                    assertThat(list.get(0)).isEqualTo("table");
+                    assertThat(list.get(1)).isEqualTo("peach");
                     list.clear();
                 }
 

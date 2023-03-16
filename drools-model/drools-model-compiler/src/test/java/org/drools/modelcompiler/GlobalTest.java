@@ -23,13 +23,12 @@ import java.util.List;
 import org.drools.modelcompiler.domain.InputDataTypes;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GlobalTest extends BaseModelTest {
 
@@ -61,7 +60,7 @@ public class GlobalTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( "Mark is 37", result.getValue() );
+        assertThat(result.getValue()).isEqualTo("Mark is 37");
     }
 
     @Test
@@ -91,7 +90,7 @@ public class GlobalTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( "Mark is 37", result.getValue() );
+        assertThat(result.getValue()).isEqualTo("Mark is 37");
     }
 
     public static class Functions {
@@ -189,7 +188,7 @@ public class GlobalTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( "Mark is 37", result.getValue() );
+        assertThat(result.getValue()).isEqualTo("Mark is 37");
     }
 
     @Test
@@ -220,7 +219,7 @@ public class GlobalTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( "Mark is 37", result.getValue() );
+        assertThat(result.getValue()).isEqualTo("Mark is 37");
     }
 
     @Test
@@ -251,7 +250,7 @@ public class GlobalTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( "Mark is 37", result.getValue() );
+        assertThat(result.getValue()).isEqualTo("Mark is 37");
     }
 
     public static class Family {
@@ -278,7 +277,7 @@ public class GlobalTest extends BaseModelTest {
         ksession.setGlobal("functions", new Functions());
         ksession.insert(new Family());
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -299,7 +298,7 @@ public class GlobalTest extends BaseModelTest {
         ksession.setGlobal("functions", new Functions());
         ksession.insert(new Family());
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -322,7 +321,7 @@ public class GlobalTest extends BaseModelTest {
         ksession.insert(new Family());
         ksession.insert("test");
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -343,7 +342,7 @@ public class GlobalTest extends BaseModelTest {
         ksession.setGlobal("functions", new Functions());
         ksession.insert(new Family());
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
 
@@ -385,7 +384,7 @@ public class GlobalTest extends BaseModelTest {
         ksession.setGlobal("functions", new Functions());
         ksession.insert(new InputDataTypes());
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -454,7 +453,7 @@ public class GlobalTest extends BaseModelTest {
         ksession.setGlobal("functions", new Functions());
         ksession.insert(new InputDataTypes());
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -482,7 +481,7 @@ public class GlobalTest extends BaseModelTest {
         KieSession ksession = getKieSession( rule, def );
         KieBase kb = ksession.getKieBase();
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         FactType ft = kb.getFactType("org.drools.reproducer.definitions", "Fact");
 
@@ -495,7 +494,7 @@ public class GlobalTest extends BaseModelTest {
         ks.fireAllRules();
 
         List<String> globalList = (List<String>)ks.getGlobal("globalList");
-        Assert.assertEquals(1, globalList.size());
-        Assert.assertEquals("FOO matched", globalList.get(0));
+        assertThat(globalList.size()).isEqualTo(1);
+        assertThat(globalList.get(0)).isEqualTo("FOO matched");
     }
 }

@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
-import org.drools.compiler.compiler.DroolsError;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.template.parser.DataListener;
@@ -34,9 +33,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *         basic tests for converter utility. Note that some of this may
@@ -52,14 +50,14 @@ public class ExternalSpreadsheetCompilerTest {
                                               "/templates/test_template1.drl",
                                               11,
                                               2 );
-        assertNotNull( drl );
+        assertThat(drl).isNotNull();
 
         // System.out.println(drl);
 
-        assertTrue( drl.indexOf( "rule \"How cool is Shaun 12\"" ) > 0 );
-        assertTrue( drl.indexOf( "rule \"How cool is Kumar 11\"" ) > 0 );
-        assertTrue( drl.indexOf( "import example.model.User;" ) > -1 );
-        assertTrue( drl.indexOf( "import example.model.Car;" ) > -1 );
+        assertThat(drl.indexOf("rule \"How cool is Shaun 12\"") > 0).isTrue();
+        assertThat(drl.indexOf("rule \"How cool is Kumar 11\"") > 0).isTrue();
+        assertThat(drl.indexOf("import example.model.User;") > -1).isTrue();
+        assertThat(drl.indexOf("import example.model.Car;") > -1).isTrue();
     }
 
     @Test
@@ -71,7 +69,7 @@ public class ExternalSpreadsheetCompilerTest {
                                               11,
                                               2 );
         // System.out.println(drl);
-        assertNotNull( drl );
+        assertThat(drl).isNotNull();
     }
 
     @Test
@@ -82,12 +80,12 @@ public class ExternalSpreadsheetCompilerTest {
                                               InputType.CSV,
                                               10,
                                               2 );
-        assertNotNull( drl );
+        assertThat(drl).isNotNull();
 
-        assertTrue( drl.indexOf( "myObject.setIsValid(1, 2)" ) > 0 );
-        assertTrue( drl.indexOf( "myObject.size () > 2" ) > 0 );
+        assertThat(drl.indexOf("myObject.setIsValid(1, 2)") > 0).isTrue();
+        assertThat(drl.indexOf("myObject.size () > 2") > 0).isTrue();
 
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red),\n        myObject.size () > 1" ) > 0 );
+        assertThat(drl.indexOf("Foo(myObject.getColour().equals(red),\n        myObject.size () > 1") > 0).isTrue();
     }
 
     @Test
@@ -105,23 +103,22 @@ public class ExternalSpreadsheetCompilerTest {
                                                21,
                                                2 );
 
-        assertNotNull( drl );
+        assertThat(drl).isNotNull();
 
         Pattern p = Pattern.compile( ".*setIsValid\\(Y\\).*setIsValid\\(Y\\).*setIsValid\\(Y\\).*",
                                      Pattern.DOTALL | Pattern.MULTILINE );
         Matcher m = p.matcher( drl );
-        assertTrue( m.matches() );
+        assertThat(m.matches()).isTrue();
 
-        assertTrue( drl.indexOf( "This is a function block" ) > -1 );
-        assertTrue( drl.indexOf( "global Class1 obj1;" ) > -1 );
-        assertTrue( drl1.indexOf( "myObject.setIsValid(10-Jul-1974)" ) > -1 );
-        assertTrue( drl.indexOf( "myObject.getColour().equals(blue)" ) > -1 );
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(colors.get(\"red\")), myObject.size() > 12\")" ) > -1 );
+        assertThat(drl.indexOf("This is a function block") > -1).isTrue();
+        assertThat(drl.indexOf("global Class1 obj1;") > -1).isTrue();
+        assertThat(drl1.indexOf("myObject.setIsValid(10-Jul-1974)") > -1).isTrue();
+        assertThat(drl.indexOf("myObject.getColour().equals(blue)") > -1).isTrue();
+        assertThat(drl.indexOf("Foo(myObject.getColour().equals(colors.get(\"red\")), myObject.size() > 12\")") > -1).isTrue();
+        assertThat(drl.indexOf("b: Bar()\n        eval(myObject.size() < 3)") > -1).isTrue();
+        assertThat(drl.indexOf("b: Bar()\n        eval(myObject.size() < 9)") > -1).isTrue();
 
-        assertTrue( drl.indexOf( "b: Bar()\n        eval(myObject.size() < 3)" ) > -1 );
-        assertTrue( drl.indexOf( "b: Bar()\n        eval(myObject.size() < 9)" ) > -1 );
-
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) < drl.indexOf( "b: Bar()\n        eval(myObject.size() < 3)" ) );
+        assertThat(drl.indexOf("Foo(myObject.getColour().equals(red), myObject.size() > 1)") < drl.indexOf("b: Bar()\n        eval(myObject.size() < 3)")).isTrue();
 
     }
 
@@ -133,17 +130,16 @@ public class ExternalSpreadsheetCompilerTest {
                                              InputType.XLS,
                                              10,
                                              2 );
-        assertNotNull( drl );
+        assertThat(drl).isNotNull();
 
-        assertTrue( drl.indexOf( "This is a function block" ) > -1 );
-        assertTrue( drl.indexOf( "global Class1 obj1;" ) > -1 );
-        assertTrue( drl.indexOf( "myObject.getColour().equals(blue)" ) > -1 );
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(colors.get(\"red\")), myObject.size() > 12\")" ) > -1 );
+        assertThat(drl.indexOf("This is a function block") > -1).isTrue();
+        assertThat(drl.indexOf("global Class1 obj1;") > -1).isTrue();
+        assertThat(drl.indexOf("myObject.getColour().equals(blue)") > -1).isTrue();
+        assertThat(drl.indexOf("Foo(myObject.getColour().equals(colors.get(\"red\")), myObject.size() > 12\")") > -1).isTrue();
+        assertThat(drl.indexOf("b: Bar()\n        eval(myObject.size() < 3)") > -1).isTrue();
+        assertThat(drl.indexOf("b: Bar()\n        eval(myObject.size() < 9)") > -1).isTrue();
 
-        assertTrue( drl.indexOf( "b: Bar()\n        eval(myObject.size() < 3)" ) > -1 );
-        assertTrue( drl.indexOf( "b: Bar()\n        eval(myObject.size() < 9)" ) > -1 );
-
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) < drl.indexOf( "b: Bar()\n        eval(myObject.size() < 3)" ) );
+        assertThat(drl.indexOf("Foo(myObject.getColour().equals(red), myObject.size() > 1)") < drl.indexOf("b: Bar()\n        eval(myObject.size() < 3)")).isTrue();
     }
 
 
@@ -154,7 +150,7 @@ public class ExternalSpreadsheetCompilerTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        assertFalse(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isFalse();
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
@@ -166,7 +162,7 @@ public class ExternalSpreadsheetCompilerTest {
         List<String> list = new ArrayList<String>();
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -183,7 +179,7 @@ public class ExternalSpreadsheetCompilerTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(l1.renderDRL().getBytes()), ResourceType.DRL);
         kbuilder.add(ResourceFactory.newByteArrayResource(l2.renderDRL().getBytes()), ResourceType.DRL);
-        assertFalse(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isFalse();
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
@@ -202,7 +198,7 @@ public class ExternalSpreadsheetCompilerTest {
         System.out.println("DISCOUNT IS: " + policy.getDiscountPercent());
 
         int basePrice = policy.getBasePrice();
-        assertEquals(120, basePrice);
+        assertThat(basePrice).isEqualTo(120);
     }
 
 }

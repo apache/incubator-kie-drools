@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.function.Consumer;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
@@ -28,7 +27,7 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PMMLCommandExecutorImplTest {
 
@@ -71,19 +70,19 @@ public class PMMLCommandExecutorImplTest {
         PMMLRequestData pmmlRequestData = getPMMLRequestData();
         PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
         PMMLRequestData retrieved = cmdExecutor.getCleanedRequestData(pmmlRequestData);
-        assertNotNull(retrieved);
-        assertEquals(pmmlRequestData.getSource(), retrieved.getSource());
-        assertEquals(pmmlRequestData.getCorrelationId(), retrieved.getCorrelationId());
-        assertEquals(pmmlRequestData.getModelName(), retrieved.getModelName());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getSource()).isEqualTo(pmmlRequestData.getSource());
+        assertThat(retrieved.getCorrelationId()).isEqualTo(pmmlRequestData.getCorrelationId());
+        assertThat(retrieved.getModelName()).isEqualTo(pmmlRequestData.getModelName());
         Map<String, ParameterInfo> requestParams = retrieved.getMappedRequestParams();
         pmmlRequestData.getRequestParams().forEach(parameterInfo -> {
-            assertTrue(requestParams.containsKey(parameterInfo.getName()));
+        	assertThat(requestParams).containsKey(parameterInfo.getName());
             ParameterInfo cleaned = requestParams.get(parameterInfo.getName());
-            assertEquals(parameterInfo.getName(), cleaned.getName());
-            assertEquals(parameterInfo.getCorrelationId(), cleaned.getCorrelationId());
-            assertEquals(parameterInfo.getType(), cleaned.getType());
-            assertEquals(parameterInfo.getValue(), cleaned.getValue().toString());
-            assertEquals(cleaned.getType(), cleaned.getValue().getClass());
+            assertThat(cleaned.getName()).isEqualTo(parameterInfo.getName());
+            assertThat(cleaned.getCorrelationId()).isEqualTo(parameterInfo.getCorrelationId());
+            assertThat(cleaned.getType()).isEqualTo(parameterInfo.getType());
+            assertThat(cleaned.getValue().toString()).isEqualTo(parameterInfo.getValue());
+            assertThat(cleaned.getValue().getClass()).isEqualTo(cleaned.getType());
         });
 
 

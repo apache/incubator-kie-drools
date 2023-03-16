@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
@@ -143,18 +143,14 @@ public class NumericIntegerConditionInspectorConflictResolverOverlapTest {
         NumericIntegerConditionInspector b = getCondition(value2,
                                                           operator2);
 
-        assertEquals(getAssertDescription(a,
-                                          b,
-                                          overlapExpected,
-                                          "overlap"),
-                     overlapExpected,
-                     a.overlaps(b));
-        assertEquals(getAssertDescription(b,
-                                          a,
-                                          overlapExpected,
-                                          "overlap"),
-                     overlapExpected,
-                     b.overlaps(a));
+        assertThat(a.overlaps(b)).as(getAssertDescription(a,
+                b,
+                overlapExpected,
+                "overlap")).isEqualTo(overlapExpected);
+        assertThat(b.overlaps(a)).as(getAssertDescription(b,
+                a,
+                overlapExpected,
+                "overlap")).isEqualTo(overlapExpected);
     }
 
     @Test
@@ -164,18 +160,14 @@ public class NumericIntegerConditionInspectorConflictResolverOverlapTest {
         NumericIntegerConditionInspector b = getCondition(value2,
                                                           operator2);
 
-        assertEquals(getAssertDescription(a,
-                                          b,
-                                          !overlapExpected,
-                                          "conflict"),
-                     !overlapExpected,
-                     a.conflicts(b));
-        assertEquals(getAssertDescription(b,
-                                          a,
-                                          !overlapExpected,
-                                          "conflict"),
-                     !overlapExpected,
-                     b.conflicts(a));
+        assertThat(a.conflicts(b)).as(getAssertDescription(a,
+                b,
+                !overlapExpected,
+                "conflict")).isEqualTo(!overlapExpected);
+        assertThat(b.conflicts(a)).as(getAssertDescription(b,
+                a,
+                !overlapExpected,
+                "conflict")).isEqualTo(!overlapExpected);
     }
 
     private String getAssertDescription(final NumericIntegerConditionInspector a,

@@ -28,9 +28,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class RuleMetadataTest {
@@ -54,20 +52,20 @@ public class RuleMetadataTest {
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
-        assertEquals(1, consequenceMetaData.getStatements().size());
+        assertThat(consequenceMetaData.getStatements().size()).isEqualTo(1);
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
-        assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment.getType());
-        assertEquals("org.drools.A", statment.getFactClassName());
+        assertThat(statment.getType()).isEqualTo(ConsequenceMetaData.Statement.Type.MODIFY);
+        assertThat(statment.getFactClassName()).isEqualTo("org.drools.A");
 
-        assertEquals(2, statment.getFields().size());
+        assertThat(statment.getFields().size()).isEqualTo(2);
         ConsequenceMetaData.Field field1 = statment.getFields().get(0);
-        assertEquals("a", field1.getName());
-        assertEquals("20", field1.getValue());
-        assertTrue(field1.isLiteral());
+        assertThat(field1.getName()).isEqualTo("a");
+        assertThat(field1.getValue()).isEqualTo("20");
+        assertThat(field1.isLiteral()).isTrue();
         ConsequenceMetaData.Field field2 = statment.getFields().get(1);
-        assertEquals("b", field2.getName());
-        assertEquals("$bb", field2.getValue());
-        assertFalse(field2.isLiteral());
+        assertThat(field2.getName()).isEqualTo("b");
+        assertThat(field2.getValue()).isEqualTo("$bb");
+        assertThat(field2.isLiteral()).isFalse();
     }
 
     @Test
@@ -77,25 +75,25 @@ public class RuleMetadataTest {
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
-        assertEquals(2, consequenceMetaData.getStatements().size());
+        assertThat(consequenceMetaData.getStatements().size()).isEqualTo(2);
 
         ConsequenceMetaData.Statement statment1 = consequenceMetaData.getStatements().get(0);
-        assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment1.getType());
-        assertEquals("org.drools.A", statment1.getFactClassName());
-        assertEquals(1, statment1.getFields().size());
+        assertThat(statment1.getType()).isEqualTo(ConsequenceMetaData.Statement.Type.MODIFY);
+        assertThat(statment1.getFactClassName()).isEqualTo("org.drools.A");
+        assertThat(statment1.getFields().size()).isEqualTo(1);
         ConsequenceMetaData.Field field1 = statment1.getFields().get(0);
-        assertEquals("c", field1.getName());
-        assertEquals("$bc", field1.getValue());
-        assertFalse(field1.isLiteral());
+        assertThat(field1.getName()).isEqualTo("c");
+        assertThat(field1.getValue()).isEqualTo("$bc");
+        assertThat(field1.isLiteral()).isFalse();
 
         ConsequenceMetaData.Statement statment2 = consequenceMetaData.getStatements().get(1);
-        assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment2.getType());
-        assertEquals( RuleMetadataTest.B.class.getName(), statment2.getFactClassName());
-        assertEquals(1, statment2.getFields().size());
+        assertThat(statment2.getType()).isEqualTo(ConsequenceMetaData.Statement.Type.MODIFY);
+        assertThat(statment2.getFactClassName()).isEqualTo(RuleMetadataTest.B.class.getName());
+        assertThat(statment2.getFields().size()).isEqualTo(1);
         ConsequenceMetaData.Field field2 = statment2.getFields().get(0);
-        assertEquals("c", field2.getName());
-        assertEquals("\"Hello\"", field2.getValue());
-        assertTrue(field2.isLiteral());
+        assertThat(field2.getName()).isEqualTo("c");
+        assertThat(field2.getValue()).isEqualTo("\"Hello\"");
+        assertThat(field2.isLiteral()).isTrue();
     }
 
     @Test
@@ -105,11 +103,11 @@ public class RuleMetadataTest {
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
-        assertEquals(1, consequenceMetaData.getStatements().size());
+        assertThat(consequenceMetaData.getStatements().size()).isEqualTo(1);
 
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
-        assertEquals(ConsequenceMetaData.Statement.Type.RETRACT, statment.getType());
-        assertEquals(RuleMetadataTest.B.class.getName(), statment.getFactClassName());
+        assertThat(statment.getType()).isEqualTo(ConsequenceMetaData.Statement.Type.RETRACT);
+        assertThat(statment.getFactClassName()).isEqualTo(RuleMetadataTest.B.class.getName());
     }
 
     @Test
@@ -119,11 +117,11 @@ public class RuleMetadataTest {
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
-        assertEquals(1, consequenceMetaData.getStatements().size());
+        assertThat(consequenceMetaData.getStatements().size()).isEqualTo(1);
 
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
-        assertEquals(ConsequenceMetaData.Statement.Type.RETRACT, statment.getType());
-        assertEquals("org.drools.A", statment.getFactClassName());
+        assertThat(statment.getType()).isEqualTo(ConsequenceMetaData.Statement.Type.RETRACT);
+        assertThat(statment.getFactClassName()).isEqualTo("org.drools.A");
     }
 
     @Test
@@ -133,20 +131,20 @@ public class RuleMetadataTest {
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
-        assertEquals(1, consequenceMetaData.getStatements().size());
+        assertThat(consequenceMetaData.getStatements().size()).isEqualTo(1);
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
-        assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment.getType());
-        assertEquals("org.drools.A", statment.getFactClassName());
+        assertThat(statment.getType()).isEqualTo(ConsequenceMetaData.Statement.Type.MODIFY);
+        assertThat(statment.getFactClassName()).isEqualTo("org.drools.A");
 
-        assertEquals(2, statment.getFields().size());
+        assertThat(statment.getFields().size()).isEqualTo(2);
         ConsequenceMetaData.Field field1 = statment.getFields().get(0);
-        assertEquals("a", field1.getName());
-        assertEquals("20", field1.getValue());
-        assertTrue(field1.isLiteral());
+        assertThat(field1.getName()).isEqualTo("a");
+        assertThat(field1.getValue()).isEqualTo("20");
+        assertThat(field1.isLiteral()).isTrue();
         ConsequenceMetaData.Field field2 = statment.getFields().get(1);
-        assertEquals("b", field2.getName());
-        assertEquals("$bb", field2.getValue());
-        assertFalse(field2.isLiteral());
+        assertThat(field2.getName()).isEqualTo("b");
+        assertThat(field2.getValue()).isEqualTo("$bb");
+        assertThat(field2.isLiteral()).isFalse();
     }
 
     @Test
@@ -156,25 +154,25 @@ public class RuleMetadataTest {
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
-        assertEquals(2, consequenceMetaData.getStatements().size());
+        assertThat(consequenceMetaData.getStatements().size()).isEqualTo(2);
 
         ConsequenceMetaData.Statement statment1 = consequenceMetaData.getStatements().get(0);
-        assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment1.getType());
-        assertEquals("org.drools.A", statment1.getFactClassName());
-        assertEquals(1, statment1.getFields().size());
+        assertThat(statment1.getType()).isEqualTo(ConsequenceMetaData.Statement.Type.MODIFY);
+        assertThat(statment1.getFactClassName()).isEqualTo("org.drools.A");
+        assertThat(statment1.getFields().size()).isEqualTo(1);
         ConsequenceMetaData.Field field1 = statment1.getFields().get(0);
-        assertEquals("c", field1.getName());
-        assertEquals("$bc", field1.getValue());
-        assertFalse(field1.isLiteral());
+        assertThat(field1.getName()).isEqualTo("c");
+        assertThat(field1.getValue()).isEqualTo("$bc");
+        assertThat(field1.isLiteral()).isFalse();
 
         ConsequenceMetaData.Statement statment2 = consequenceMetaData.getStatements().get(1);
-        assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment2.getType());
-        assertEquals(RuleMetadataTest.B.class.getName(), statment2.getFactClassName());
-        assertEquals(1, statment2.getFields().size());
+        assertThat(statment2.getType()).isEqualTo(ConsequenceMetaData.Statement.Type.MODIFY);
+        assertThat(statment2.getFactClassName()).isEqualTo(RuleMetadataTest.B.class.getName());
+        assertThat(statment2.getFields().size()).isEqualTo(1);
         ConsequenceMetaData.Field field2 = statment2.getFields().get(0);
-        assertEquals("c", field2.getName());
-        assertEquals("\"Hello\"", field2.getValue());
-        assertTrue(field2.isLiteral());
+        assertThat(field2.getName()).isEqualTo("c");
+        assertThat(field2.getValue()).isEqualTo("\"Hello\"");
+        assertThat(field2.isLiteral()).isTrue();
     }
 
     @Test
@@ -184,24 +182,24 @@ public class RuleMetadataTest {
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
-        assertEquals(1, consequenceMetaData.getStatements().size());
+        assertThat(consequenceMetaData.getStatements().size()).isEqualTo(1);
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
-        assertEquals(ConsequenceMetaData.Statement.Type.INSERT, statment.getType());
-        assertEquals("org.drools.A", statment.getFactClassName());
+        assertThat(statment.getType()).isEqualTo(ConsequenceMetaData.Statement.Type.INSERT);
+        assertThat(statment.getFactClassName()).isEqualTo("org.drools.A");
 
-        assertEquals(3, statment.getFields().size());
+        assertThat(statment.getFields().size()).isEqualTo(3);
         ConsequenceMetaData.Field field1 = statment.getFields().get(0);
-        assertEquals("a", field1.getName());
-        assertEquals("1", field1.getValue());
-        assertTrue(field1.isLiteral());
+        assertThat(field1.getName()).isEqualTo("a");
+        assertThat(field1.getValue()).isEqualTo("1");
+        assertThat(field1.isLiteral()).isTrue();
         ConsequenceMetaData.Field field2 = statment.getFields().get(1);
-        assertEquals("b", field2.getName());
-        assertEquals("$bb", field2.getValue());
-        assertFalse(field2.isLiteral());
+        assertThat(field2.getName()).isEqualTo("b");
+        assertThat(field2.getValue()).isEqualTo("$bb");
+        assertThat(field2.isLiteral()).isFalse();
         ConsequenceMetaData.Field field3 = statment.getFields().get(2);
-        assertEquals("c", field3.getName());
-        assertEquals("\"3\"", field3.getValue());
-        assertTrue(field3.isLiteral());
+        assertThat(field3.getName()).isEqualTo("c");
+        assertThat(field3.getValue()).isEqualTo("\"3\"");
+        assertThat(field3.isLiteral()).isTrue();
     }
 
     @Test
@@ -211,10 +209,10 @@ public class RuleMetadataTest {
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
-        assertEquals(1, consequenceMetaData.getStatements().size());
+        assertThat(consequenceMetaData.getStatements().size()).isEqualTo(1);
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
-        assertEquals(ConsequenceMetaData.Statement.Type.INSERT, statment.getType());
-        assertEquals(RuleMetadataTest.B.class.getName(), statment.getFactClassName());
+        assertThat(statment.getType()).isEqualTo(ConsequenceMetaData.Statement.Type.INSERT);
+        assertThat(statment.getFactClassName()).isEqualTo(RuleMetadataTest.B.class.getName());
     }
 
     private KieBase getKnowledgeBase(String... consequences) {

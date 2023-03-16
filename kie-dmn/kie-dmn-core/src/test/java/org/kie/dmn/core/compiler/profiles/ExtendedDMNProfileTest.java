@@ -24,8 +24,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.functions.AbsFunction;
 import org.kie.dmn.feel.runtime.functions.EvenFunction;
@@ -44,8 +42,7 @@ import org.kie.dmn.feel.runtime.functions.extended.DateFunction;
 import org.kie.dmn.feel.runtime.functions.extended.TimeFunction;
 
 import static java.math.BigDecimal.valueOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExtendedDMNProfileTest {
     private final DateFunction dateFunction = DateFunction.INSTANCE;
@@ -164,16 +161,16 @@ public class ExtendedDMNProfileTest {
     }
 
     private static <T> void assertResult(final FEELFnResult<T> result, final T val) {
-        assertTrue(result.isRight());
-        assertThat(result.getOrElse(null), Matchers.equalTo(val));
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getOrElse(null)).isEqualTo(val);
     }
 
     private static void assertResultDoublePrecision(final FEELFnResult<BigDecimal> result, final BigDecimal val) {
-        assertTrue(result.isRight());
-        assertThat(Double.compare(result.getOrElse(null).doubleValue(), val.doubleValue()), Matchers.equalTo(0));
+        assertThat(result.isRight()).isTrue();
+        assertThat(Double.compare(result.getOrElse(null).doubleValue(), val.doubleValue())).isEqualTo(0);
     }
 
     private static void assertNull(final FEELFnResult<?> result) {
-        Assert.assertNull(result.getOrElse(null));
+        assertThat(result.getOrElse(null)).isNull();
     }
 }

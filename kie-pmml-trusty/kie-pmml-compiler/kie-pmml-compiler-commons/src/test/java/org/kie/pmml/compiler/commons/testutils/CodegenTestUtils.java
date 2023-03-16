@@ -40,9 +40,8 @@ import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Utility methods for Codegen-related tests
@@ -159,7 +158,7 @@ public class CodegenTestUtils {
                                                  String generatedClassName,
                                                  Map<Integer, Expression> superInvocationExpressionsMap,
                                                  Map<String, Expression> assignExpressionsMap) {
-        assertEquals(new SimpleName(generatedClassName), constructorDeclaration.getName());
+        assertThat(constructorDeclaration.getName()).isEqualTo(new SimpleName(generatedClassName));
         final BlockStmt body = constructorDeclaration.getBody();
         return commonEvaluateSuperInvocationExpr(body, superInvocationExpressionsMap) &&
         commonEvaluateAssignExpr(body, assignExpressionsMap);
@@ -174,7 +173,7 @@ public class CodegenTestUtils {
             @Override
             public void accept(Integer integer, Expression expression) {
                 try {
-                    assertEquals(expression, explicitConstructorInvocationStmt.getArgument(integer));
+                    assertThat(explicitConstructorInvocationStmt.getArgument(integer)).isEqualTo(expression);
                 } catch (AssertionError e) {
                     if (e.getMessage() != null && !e.getMessage().isEmpty()) {
                         LOGGER.error(e.getMessage());
@@ -193,9 +192,9 @@ public class CodegenTestUtils {
         final List<AssertionError> errors = new ArrayList<>();
         for (Map.Entry<String, Expression> entry : assignExpressionMap.entrySet()) {
             try {
-                assertTrue(retrieved.stream()
+                assertThat(retrieved.stream()
                                    .filter(assignExpr -> assignExpr.getTarget().asNameExpr().equals(new NameExpr(entry.getKey())))
-                                   .anyMatch(assignExpr -> assignExpr.getValue().equals(entry.getValue())));
+                                   .anyMatch(assignExpr -> assignExpr.getValue().equals(entry.getValue()))).isTrue();
             } catch (AssertionError e) {
                 if (e.getMessage() != null && !e.getMessage().isEmpty()) {
                     LOGGER.error(e.getMessage());

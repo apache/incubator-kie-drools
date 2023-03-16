@@ -42,7 +42,7 @@ import org.drools.modelcompiler.domain.SubFact;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ComplexRulesTest extends BaseModelTest {
 
@@ -169,9 +169,9 @@ public class ComplexRulesTest extends BaseModelTest {
         ksession.insert( new ChildFactComplex(8, 7, true, false, EnumFact1.SECOND, EnumFact2.FIRST) );
         ksession.insert( new ChildFactWithEnum3(9, 2, EnumFact1.FIRST) );
 
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(1, list.size());
-        assertEquals(1, (int)list.get(0));
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(1);
     }
 
     @Test
@@ -214,8 +214,8 @@ public class ComplexRulesTest extends BaseModelTest {
         ksession.insert(childFact3First);
         ksession.insert(childFact4First);
 
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -251,9 +251,9 @@ public class ComplexRulesTest extends BaseModelTest {
         ksession.insert( new ChildFactWithObject(5, 3, new Object[0]) );
         ksession.insert( new ChildFactComplex(5, 7, true, false, EnumFact1.SECOND, EnumFact2.FIRST) );
 
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(1, list.size());
-        assertEquals(1, (int)list.get(0));
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(1);
     }
 
     @Test
@@ -287,9 +287,9 @@ public class ComplexRulesTest extends BaseModelTest {
         ksession.insert( new ChildFactWithObject(5, 3, new Object[0]) );
         ksession.insert( new ChildFactComplex(5, 7, true, false, EnumFact1.SECOND, EnumFact2.FIRST) );
 
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(1, list.size());
-        assertEquals(1, (int)list.get(0));
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(1);
     }
 
     @Test
@@ -305,7 +305,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.FIRST) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -321,7 +321,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.SECOND) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -337,7 +337,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.SECOND) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -357,7 +357,7 @@ public class ComplexRulesTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -379,7 +379,7 @@ public class ComplexRulesTest extends BaseModelTest {
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( "test" );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -396,7 +396,7 @@ public class ComplexRulesTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -417,7 +417,7 @@ public class ComplexRulesTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -438,7 +438,7 @@ public class ComplexRulesTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -453,7 +453,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -468,7 +468,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -483,7 +483,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -502,7 +502,7 @@ public class ComplexRulesTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -519,7 +519,7 @@ public class ComplexRulesTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         ksession.insert( new ChildFactWithObject(6, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -534,7 +534,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -550,7 +550,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public static class BusinessFunctions {
@@ -587,7 +587,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         ksession.insert( new ListContainer() );
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     public static class Primitives {
@@ -614,7 +614,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         ksession.insert( new Primitives() );
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -631,7 +631,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         ksession.insert( (short) 1 );
         ksession.insert( 2.0 );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -671,7 +671,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
             int fired = ksession.fireAllRules(2); // avoid infinite loop
 
-            assertEquals(1, fired);
+            assertThat(fired).isEqualTo(1);
         } finally {
             System.clearProperty("drools.propertySpecific");
         }
@@ -710,7 +710,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         ksession.insert( new CaseData( 5 ) );
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -727,7 +727,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         ksession.insert( new CaseData( "OK" ) );
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -742,7 +742,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.insert( new Person( "Mario", 45 ) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test

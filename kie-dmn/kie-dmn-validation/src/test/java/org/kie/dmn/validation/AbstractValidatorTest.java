@@ -37,9 +37,7 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.internal.utils.ChainedProperties;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractValidatorTest {
 
@@ -72,7 +70,7 @@ public abstract class AbstractValidatorTest {
      * Return the Reader for the specified Resource with resourceFileName, using the supplied Class to locate it.
      */
     protected Reader getReader(final String resourceFileName, Class<?> clazz) {
-        return new InputStreamReader(clazz.getResourceAsStream(resourceFileName));
+        return new InputStreamReader(clazz.getResourceAsStream(resourceFileName)); 
     }
 
     protected File getFile(final String resourceFileName ) {
@@ -89,17 +87,17 @@ public abstract class AbstractValidatorTest {
 
     protected Definitions getDefinitions(final String resourceName, final String namespace, final String modelName ) {
         final Definitions definitions = marshaller.unmarshal(getReader(resourceName));
-        assertThat( definitions, notNullValue() );
-        assertThat(definitions.getNamespace(), is(namespace));
-        assertThat(definitions.getName(), is(modelName));
+        assertThat(definitions).isNotNull();
+        assertThat(definitions.getNamespace()).isEqualTo(namespace);
+        assertThat(definitions.getName()).isEqualTo(modelName);
         return definitions;
     }
 
     protected Definitions getDefinitions(final Reader resourceReader, final String namespace, final String modelName) {
         final Definitions definitions = marshaller.unmarshal(resourceReader);
-        assertThat(definitions, notNullValue());
-        assertThat(definitions.getNamespace(), is(namespace));
-        assertThat(definitions.getName(), is(modelName));
+        assertThat(definitions).isNotNull();
+        assertThat(definitions.getNamespace()).isEqualTo(namespace);
+        assertThat(definitions.getName()).isEqualTo(modelName);
         return definitions;
     }
 
@@ -111,13 +109,13 @@ public abstract class AbstractValidatorTest {
                                                       .map(this::getReader)
                                                       .map(marshaller::unmarshal)
                                                       .collect(Collectors.toList());
-        assertThat(definitionss.isEmpty(), is(false));
+        assertThat(definitionss).isNotEmpty();
 
         final Optional<Definitions> definitions = definitionss.stream()
                                                               .filter(d -> {
                                                                   return d.getNamespace().equals(namespace) && d.getName().equals(modelName);
                                                               }).findFirst();
-        assertThat(definitions.isPresent(), is(true));
+        assertThat(definitions.isPresent()).isTrue();
         return definitions.get();
     }
 }

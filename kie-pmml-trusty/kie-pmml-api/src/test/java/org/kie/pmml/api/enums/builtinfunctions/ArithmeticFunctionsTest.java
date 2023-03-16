@@ -19,9 +19,10 @@ package org.kie.pmml.api.enums.builtinfunctions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.assertj.core.data.Offset;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArithmeticFunctionsTest {
 
@@ -59,10 +60,10 @@ public class ArithmeticFunctionsTest {
     public void getAvgValueCorrectInput() {
         Object[] input1 = {35, 12, 347, 2, 123};
         Object retrieved = ArithmeticFunctions.AVG.getValue(input1);
-        assertEquals(103.8, retrieved);
+        assertThat(retrieved).isEqualTo(103.8);
         Object[] input2 = {35, 12, -347, 2, 123};
         retrieved = ArithmeticFunctions.AVG.getValue(input2);
-        assertEquals(-35.0, retrieved);
+        assertThat(retrieved).isEqualTo(-35.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -75,7 +76,7 @@ public class ArithmeticFunctionsTest {
     public void getDivisionValueCorrectInput() {
         final Object[] input = {35, 5};
         Object retrieved = ArithmeticFunctions.DIVISION.getValue(input);
-        assertEquals(7.0, retrieved);
+        assertThat(retrieved).isEqualTo(7.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -94,10 +95,10 @@ public class ArithmeticFunctionsTest {
     public void getMaxValueCorrectInput() {
         Object[] input1 = {35, 12, 347, 2, 123};
         Object retrieved = ArithmeticFunctions.MAX.getValue(input1);
-        assertEquals(347.0, retrieved);
+        assertThat(retrieved).isEqualTo(347.0);
         Object[] input2 = {35, 12, -347, 2, 123};
         retrieved = ArithmeticFunctions.MAX.getValue(input2);
-        assertEquals(123.0, retrieved);
+        assertThat(retrieved).isEqualTo(123.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -110,10 +111,10 @@ public class ArithmeticFunctionsTest {
     public void getMedianValueCorrectInput() {
         Object[] input1 = {35, 12, 347, 2, 123};
         Object retrieved = ArithmeticFunctions.MEDIAN.getValue(input1);
-        assertEquals(35.0, retrieved);
+        assertThat(retrieved).isEqualTo(35.0);
         Object[] input2 = {35, 12, 2, 123};
         retrieved = ArithmeticFunctions.MEDIAN.getValue(input2);
-        assertEquals(23.5, retrieved);
+        assertThat(retrieved).isEqualTo(23.5);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -126,10 +127,10 @@ public class ArithmeticFunctionsTest {
     public void getMinValueCorrectInput() {
         Object[] input1 = {35, 12, 347, 2, 123};
         Object retrieved = ArithmeticFunctions.MIN.getValue(input1);
-        assertEquals(2.0, retrieved);
+        assertThat(retrieved).isEqualTo(2.0);
         Object[] input2 = {35, 12, -347, 2, 123};
         retrieved = ArithmeticFunctions.MIN.getValue(input2);
-        assertEquals(-347.0, retrieved);
+        assertThat(retrieved).isEqualTo(-347.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -142,7 +143,7 @@ public class ArithmeticFunctionsTest {
     public void getMinusValueCorrectInput() {
         final Object[] input = {35, 12};
         Object retrieved = ArithmeticFunctions.MINUS.getValue(input);
-        assertEquals(23.0, retrieved);
+        assertThat(retrieved).isEqualTo(23.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -161,7 +162,7 @@ public class ArithmeticFunctionsTest {
     public void getMultiValueCorrectInput() {
         final Object[] input = {7, 5};
         Object retrieved = ArithmeticFunctions.MULTI.getValue(input);
-        assertEquals(35.0, retrieved);
+        assertThat(retrieved).isEqualTo(35.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -180,7 +181,7 @@ public class ArithmeticFunctionsTest {
     public void getPlusValueCorrectInput() {
         final Object[] input = {35, 12};
         Object retrieved = ArithmeticFunctions.PLUS.getValue(input);
-        assertEquals(47.0, retrieved);
+        assertThat(retrieved).isEqualTo(47.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -199,10 +200,10 @@ public class ArithmeticFunctionsTest {
     public void getProductValueCorrectInput() {
         Object[] input1 = {35, 12, 347, 2, 123};
         Object retrieved = ArithmeticFunctions.PRODUCT.getValue(input1);
-        assertEquals(35852040.0, retrieved);
+        assertThat(retrieved).isEqualTo(35852040.0);
         Object[] input2 = {35, 12, -2, 123};
         retrieved = ArithmeticFunctions.PRODUCT.getValue(input2);
-        assertEquals(-103320.0, retrieved);
+        assertThat(retrieved).isEqualTo(-103320.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -215,10 +216,10 @@ public class ArithmeticFunctionsTest {
     public void getSumValueCorrectInput() {
         Object[] input1 = {35, 12, 347, 2, 123};
         Object retrieved = ArithmeticFunctions.SUM.getValue(input1);
-        assertEquals(519.0, retrieved);
+        assertThat(retrieved).isEqualTo(519.0);
         Object[] input2 = {35, 12, -347, 2, 123};
         retrieved = ArithmeticFunctions.SUM.getValue(input2);
-        assertEquals(-175.0, retrieved);
+        assertThat(retrieved).isEqualTo(-175.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -231,7 +232,7 @@ public class ArithmeticFunctionsTest {
     public void getLog10ValueCorrectInput() {
         Object[] input = {35};
         Object retrieved = ArithmeticFunctions.LOG10.getValue(input);
-        assertEquals(1.5440680443503, (double)retrieved, 0.00000001);
+        assertThat((double)retrieved).isCloseTo(1.5440680443503, Offset.offset(0.00000001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -244,7 +245,7 @@ public class ArithmeticFunctionsTest {
     public void getLnValueCorrectInput() {
         Object[] input = {35};
         Object retrieved = ArithmeticFunctions.LN.getValue(input);
-        assertEquals(3.5553480614894, (double)retrieved, 0.00000001);
+        assertThat((double)retrieved).isCloseTo(3.5553480614894, Offset.offset(0.00000001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -257,7 +258,7 @@ public class ArithmeticFunctionsTest {
     public void getSqrtValueCorrectInput() {
         Object[] input = {81};
         Object retrieved = ArithmeticFunctions.SQRT.getValue(input);
-        assertEquals(9, (double)retrieved, 0.00000001);
+        assertThat((double)retrieved).isCloseTo(9, Offset.offset(0.00000001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -270,7 +271,7 @@ public class ArithmeticFunctionsTest {
     public void getAbsValueCorrectInput() {
         Object[] input = {-3.5553480614894};
         Object retrieved = ArithmeticFunctions.ABS.getValue(input);
-        assertEquals(3.5553480614894, (double)retrieved, 0.00000001);
+        assertThat((double)retrieved).isCloseTo(3.5553480614894, Offset.offset(0.00000001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -283,7 +284,7 @@ public class ArithmeticFunctionsTest {
     public void getExpValueCorrectInput() {
         Object[] input = {-3.5553480614894};
         Object retrieved = ArithmeticFunctions.EXP.getValue(input);
-        assertEquals(0.0285714285714, (double)retrieved, 0.00000001);
+        assertThat((double)retrieved).isCloseTo(0.0285714285714, Offset.offset(0.00000001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -296,7 +297,7 @@ public class ArithmeticFunctionsTest {
     public void getPowValueCorrectInput() {
         Object[] input = {3, 4};
         Object retrieved = ArithmeticFunctions.POW.getValue(input);
-        assertEquals(81.0, retrieved);
+        assertThat(retrieved).isEqualTo(81.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -309,13 +310,13 @@ public class ArithmeticFunctionsTest {
     public void getThresholdValueCorrectInput() {
         Object[] input1 = {5, 4};
         Object retrieved = ArithmeticFunctions.THRESHOLD.getValue(input1);
-        assertEquals(1.0, retrieved);
+        assertThat(retrieved).isEqualTo(1.0);
         Object[] input2 = {5, 5};
         retrieved = ArithmeticFunctions.THRESHOLD.getValue(input2);
-        assertEquals(0.0, retrieved);
+        assertThat(retrieved).isEqualTo(0.0);
         Object[] input3 = {4, 5};
         retrieved = ArithmeticFunctions.THRESHOLD.getValue(input3);
-        assertEquals(0.0, retrieved);
+        assertThat(retrieved).isEqualTo(0.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -328,10 +329,10 @@ public class ArithmeticFunctionsTest {
     public void getFloorValueCorrectInput() {
         Object[] input1 = {-3.5553480614894};
         Object retrieved = ArithmeticFunctions.FLOOR.getValue(input1);
-        assertEquals(-4.0, retrieved);
+        assertThat(retrieved).isEqualTo(-4.0);
         Object[] input2 = {3.5553480614894};
         retrieved = ArithmeticFunctions.FLOOR.getValue(input2);
-        assertEquals(3.0, retrieved);
+        assertThat(retrieved).isEqualTo(3.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -344,10 +345,10 @@ public class ArithmeticFunctionsTest {
     public void getCeilValueCorrectInput() {
         Object[] input1 = {-3.5553480614894};
         Object retrieved = ArithmeticFunctions.CEIL.getValue(input1);
-        assertEquals(-3.0, retrieved);
+        assertThat(retrieved).isEqualTo(-3.0);
         Object[] input2 = {3.5553480614894};
         retrieved = ArithmeticFunctions.CEIL.getValue(input2);
-        assertEquals(4.0, retrieved);
+        assertThat(retrieved).isEqualTo(4.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -360,10 +361,10 @@ public class ArithmeticFunctionsTest {
     public void getRoundValueCorrectInput() {
         Object[] input1 = {3.3553480614894};
         Object retrieved = ArithmeticFunctions.ROUND.getValue(input1);
-        assertEquals(3.0, retrieved);
+        assertThat(retrieved).isEqualTo(3.0);
         Object[] input2 = {3.5553480614894};
         retrieved = ArithmeticFunctions.ROUND.getValue(input2);
-        assertEquals(4.0, retrieved);
+        assertThat(retrieved).isEqualTo(4.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -376,7 +377,7 @@ public class ArithmeticFunctionsTest {
     public void getModuloValueCorrectInput() {
         Object[] input = {35, 8};
         Object retrieved = ArithmeticFunctions.MODULO.getValue(input);
-        assertEquals(3.0, retrieved);
+        assertThat(retrieved).isEqualTo(3.0);
     }
 
     @Test(expected = IllegalArgumentException.class)

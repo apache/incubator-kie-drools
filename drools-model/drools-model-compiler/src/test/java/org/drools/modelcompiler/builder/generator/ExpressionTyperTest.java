@@ -34,9 +34,8 @@ import org.drools.mvel.parser.printer.PrintUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 public class ExpressionTyperTest {
 
@@ -58,33 +57,33 @@ public class ExpressionTyperTest {
 
     @Test
     public void toTypedExpressionTest() {
-        assertEquals("$mark.getAge()", toTypedExpression("$mark.age", null, aPersonDecl("$mark")).getExpression().toString());
-        assertEquals("$p.getName()", toTypedExpression("$p.name", null, aPersonDecl("$p")).getExpression().toString());
+        assertThat(toTypedExpression("$mark.age", null, aPersonDecl("$mark")).getExpression().toString()).isEqualTo("$mark.getAge()");
+        assertThat(toTypedExpression("$p.name", null, aPersonDecl("$p")).getExpression().toString()).isEqualTo("$p.getName()");
 
-        assertEquals(THIS_PLACEHOLDER + ".getName().length()", toTypedExpression("name.length", Person.class).getExpression().toString());
+        assertThat(toTypedExpression("name.length", Person.class).getExpression().toString()).isEqualTo(THIS_PLACEHOLDER + ".getName().length()");
 
-        assertEquals(THIS_PLACEHOLDER + ".method(5, 9, \"x\")", toTypedExpression("method(5,9,\"x\")", Overloaded.class).getExpression().toString());
-        assertEquals(THIS_PLACEHOLDER + ".getAddress().getCity().length()", toTypedExpression("address.getCity().length", Person.class).getExpression().toString());
+        assertThat(toTypedExpression("method(5,9,\"x\")", Overloaded.class).getExpression().toString()).isEqualTo(THIS_PLACEHOLDER + ".method(5, 9, \"x\")");
+        assertThat(toTypedExpression("address.getCity().length", Person.class).getExpression().toString()).isEqualTo(THIS_PLACEHOLDER + ".getAddress().getCity().length()");
     }
 
     @Test
     public void inlineCastTest() {
-        String result = "((org.drools.modelcompiler.domain.Person) _this).getName()";
-        assertEquals(result, toTypedExpression("this#Person.name", Object.class).getExpression().toString());
+        String result = "((" + Person.class.getCanonicalName() + ") _this).getName()";
+        assertThat(toTypedExpression("this#Person.name", Object.class).getExpression().toString()).isEqualTo(result);
     }
 
     @Test
     public void inlineCastTest2() {
         addInlineCastImport();
-        String result = "((org.drools.modelcompiler.inlinecast.ICC) ((org.drools.modelcompiler.inlinecast.ICB) _this.getSomeB()).getSomeC()).onlyConcrete()";
-        assertEquals(result, toTypedExpression("someB#ICB.someC#ICC.onlyConcrete() ", ICA.class).getExpression().toString());
+        String result = "((" + ICC.class.getCanonicalName() + ") ((" + ICB.class.getCanonicalName() + ") _this.getSomeB()).getSomeC()).onlyConcrete()";
+        assertThat(toTypedExpression("someB#ICB.someC#ICC.onlyConcrete() ", ICA.class).getExpression().toString()).isEqualTo(result);
     }
 
     @Test
     public void inlineCastTest3() {
         addInlineCastImport();
-        String result = "((org.drools.modelcompiler.inlinecast.ICB) _this.getSomeB()).onlyConcrete()";
-        assertEquals(result, toTypedExpression("someB#ICB.onlyConcrete()", ICA.class).getExpression().toString());
+        String result = "((" + ICB.class.getCanonicalName() + ") _this.getSomeB()).onlyConcrete()";
+        assertThat(toTypedExpression("someB#ICB.onlyConcrete()", ICA.class).getExpression().toString()).isEqualTo(result);
     }
 
     @Test
@@ -93,28 +92,28 @@ public class ExpressionTyperTest {
         TypedExpressionResult typedExpressionResult = new ExpressionTyper(ruleContext, Person.class, null, true).toTypedExpression(expression);
         final TypedExpression actual = typedExpressionResult.getTypedExpression().get();
         final TypedExpression expected = typedResult("D.eval(org.drools.model.operators.MatchesOperator.INSTANCE, _this.getName(), \"[A-Z]\")", String.class);
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     public void testBigDecimalConstant() {
         final TypedExpression expected = typedResult("java.math.BigDecimal.ONE", BigDecimal.class);
         final TypedExpression actual = toTypedExpression("java.math.BigDecimal.ONE", null);
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     public void testBigDecimalLiteral() {
         final TypedExpression expected = typedResult("13.111B", BigDecimal.class);
         final TypedExpression actual = toTypedExpression("13.111B", null);
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     public void testBooleanComparison() {
         final TypedExpression expected = typedResult(THIS_PLACEHOLDER + ".getAge() == 18", int.class);
         final TypedExpression actual = toTypedExpression("age == 18", Person.class);
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -123,7 +122,7 @@ public class ExpressionTyperTest {
         final TypedExpression actual = toTypedExpression("total = total + $cheese.price", Object.class,
                                                          new DeclarationSpec("$cheese", Cheese.class),
                                                          new DeclarationSpec("total", Integer.class));
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     public static class Cheese {
@@ -138,25 +137,25 @@ public class ExpressionTyperTest {
     public void arrayAccessExpr() {
         final TypedExpression expected = typedResult(THIS_PLACEHOLDER + ".getItems().get(1)", Integer.class);
         final TypedExpression actual = toTypedExpression("items[1]", Person.class);
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
 
         final TypedExpression expected2 = typedResult(THIS_PLACEHOLDER + ".getItems().get(((Integer)1))", Integer.class);
         final TypedExpression actual2 = toTypedExpression("items[(Integer)1]", Person.class);
-        assertEquals(expected2, actual2);
+        assertThat(actual2).isEqualTo(expected2);
     }
 
     @Test
     public void mapAccessExpr() {
         final TypedExpression expected3 = typedResult(THIS_PLACEHOLDER + ".get(\"type\")", Map.class);
         final TypedExpression actual3 = toTypedExpression("this[\"type\"]", Map.class);
-        assertEquals(expected3, actual3);
+        assertThat(actual3).isEqualTo(expected3);
     }
 
     @Test
     public void mapAccessExpr2() {
         final TypedExpression expected3 = typedResult("$p.getItems().get(\"type\")", Integer.class, "$p.items[\"type\"]");
         final TypedExpression actual3 = toTypedExpression("$p.items[\"type\"]", Object.class, new DeclarationSpec("$p", Person.class));
-        assertEquals(expected3, actual3);
+        assertThat(actual3).isEqualTo(expected3);
     }
 
     @Test
@@ -164,7 +163,7 @@ public class ExpressionTyperTest {
         final TypedExpression expected = typedResult("$p.getItems().get(1)", Integer.class, "$p.items[1]");
         final TypedExpression actual = toTypedExpression("$p.items[1]", Object.class,
                                                          new DeclarationSpec("$p", Person.class));
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -172,7 +171,7 @@ public class ExpressionTyperTest {
         final TypedExpression expected = typedResult("$data.getValues().get(0)", Integer.class, "$data.values[0]");
         final TypedExpression actual = toTypedExpression("$data.values[0]", Object.class,
                                                          new DeclarationSpec("$data", Data.class));
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     public static class Data {
@@ -190,7 +189,7 @@ public class ExpressionTyperTest {
 
     @Test
     public void testAssignment2() {
-        assertEquals(THIS_PLACEHOLDER + ".getName().length()", toTypedExpression("name.length", Person.class).getExpression().toString());
+        assertThat(toTypedExpression("name.length", Person.class).getExpression().toString()).isEqualTo(THIS_PLACEHOLDER + ".getName().length()");
 
     }
 
@@ -203,9 +202,9 @@ public class ExpressionTyperTest {
 
         final MethodCallExpr expected = StaticJavaParser.parseExpression("_this.getAddress().getCity().startsWith(\"M\")");
 
-        assertEquals(expected.toString(), toTypedExpression(expr, Person.class).getExpression().toString());
-        assertEquals(expected.toString(), toTypedExpression(expr1, Person.class).getExpression().toString());
-        assertEquals(expected.toString(), toTypedExpression(expr2, Person.class).getExpression().toString());
+        assertThat(toTypedExpression(expr, Person.class).getExpression().toString()).isEqualTo(expected.toString());
+        assertThat(toTypedExpression(expr1, Person.class).getExpression().toString()).isEqualTo(expected.toString());
+        assertThat(toTypedExpression(expr2, Person.class).getExpression().toString()).isEqualTo(expected.toString());
     }
 
     @Test
@@ -215,13 +214,13 @@ public class ExpressionTyperTest {
         final DrlxExpression expr = DrlxParseUtil.parseExpression("address#InternationalAddress.state");
         final MethodCallExpr expected = StaticJavaParser.parseExpression("((org.drools.modelcompiler.domain.InternationalAddress)_this.getAddress()).getState()");
 
-        assertEquals(PrintUtil.printNode(expected), toTypedExpression(PrintUtil.printNode(expr.getExpr()), Person.class).getExpression().toString());
+        assertThat(toTypedExpression(PrintUtil.printNode(expr.getExpr()), Person.class).getExpression().toString()).isEqualTo(PrintUtil.printNode(expected));
     }
 
     @Test
     public void halfBinaryOrAndAmpersand() {
         String expected = "_this.getAge() < 15 || _this.getAge() > 20 && _this.getAge() < 30";
-        assertEquals(expected, toTypedExpression("age < 15 || > 20 && < 30", Person.class).getExpression().toString());
+        assertThat(toTypedExpression("age < 15 || > 20 && < 30", Person.class).getExpression().toString()).isEqualTo(expected);
     }
 
     @Test(expected = CannotTypeExpressionException.class)
@@ -232,7 +231,7 @@ public class ExpressionTyperTest {
     @Test
     public void halfPointFreeOrAndAmpersand() {
         String expected = "D.eval(org.drools.model.operators.StringStartsWithOperator.INSTANCE, _this.getName(), \"M\") || D.eval(org.drools.model.operators.StringEndsWithOperator.INSTANCE, _this.getName(), \"a\") && D.eval(org.drools.model.operators.StringLengthWithOperator.INSTANCE, _this.getName(), 4)";
-        assertEquals(expected, toTypedExpression("name str[startsWith] \"M\" || str[endsWith] \"a\" && str[length] 4", Person.class).getExpression().toString());
+        assertThat(toTypedExpression("name str[startsWith] \"M\" || str[endsWith] \"a\" && str[length] 4", Person.class).getExpression().toString()).isEqualTo(expected);
     }
 
     @Test(expected = CannotTypeExpressionException.class)
@@ -243,9 +242,9 @@ public class ExpressionTyperTest {
     @Test
     public void parseIntStringConcatenation() {
         TypedExpression typedExpression = toTypedExpression("Integer.parseInt('1' + this) > 3", String.class);
-        assertFalse(ruleContext.hasCompilationError());
+        assertThat(ruleContext.hasCompilationError()).isFalse();
         String expected = "Integer.parseInt('1' + _this) > 3";
-        assertEquals(expected, typedExpression.getExpression().toString());
+        assertThat(typedExpression.getExpression().toString()).isEqualTo(expected);
     }
 
     private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, DeclarationSpec... declarations) {

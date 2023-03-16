@@ -31,7 +31,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -146,10 +146,8 @@ public class IntegrationInterfacesTest {
         List<String> list = new ArrayList<String>();
         ksession.insert( list );
         ksession.fireAllRules();
-        assertEquals( "rule 1 executed",
-                      list.get( 0 ) );
-        assertEquals( "rule 2 executed boo",
-                      list.get( 1 ) );
+        assertThat(list.get(0)).isEqualTo("rule 1 executed");
+        assertThat(list.get(1)).isEqualTo("rule 2 executed boo");
     }
     
     @Test

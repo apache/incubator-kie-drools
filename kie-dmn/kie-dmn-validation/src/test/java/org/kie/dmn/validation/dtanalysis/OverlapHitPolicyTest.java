@@ -38,10 +38,7 @@ import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
@@ -68,26 +65,24 @@ public class OverlapHitPolicyTest extends AbstractDTAnalysisTest {
         checkAnalysis(validate);
 
         if (hp == HitPolicy.UNIQUE) {
-            assertTrue("It should contain at least 1 DMNMessage for the type",
-                       validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE))).as("It should contain at least 1 DMNMessage for the type").isTrue();
         } else if (hp == HitPolicy.ANY) {
-            assertTrue("It should contain at least 1 DMNMessage for the type",
-                       validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY))).as("It should contain at least 1 DMNMessage for the type").isTrue();
         } else {
             LOG.debug("Testing for {} I am expecting there is NOT DMNMessage pertaining to Overlaps", hp);
-            assertTrue(validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)) &&
-                       validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY)) &&
-                       validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP)));
+            assertThat(validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)) &&
+                    validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY)) &&
+                    validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP))).isTrue();
         }
     }
 
     private void checkAnalysis(List<DMNMessage> validate) {
         DTAnalysis analysis = getAnalysis(validate, "_C4A1625B-0606-4F2D-9779-49B1A981718E");
 
-        assertThat(analysis.getGaps(), hasSize(0));
+        assertThat(analysis.getGaps()).hasSize(0);
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(1));
+        assertThat(analysis.getOverlaps()).hasSize(1);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(2,
@@ -99,10 +94,10 @@ public class OverlapHitPolicyTest extends AbstractDTAnalysisTest {
                                                                                                                    new Bound(new BigDecimal("30"),
                                                                                                                              RangeBoundary.CLOSED,
                                                                                                                              null))))));
-        assertThat(overlaps, hasSize(1));
+        assertThat(overlaps).hasSize(1);
 
         // Assert OVERLAPs same values
-        assertThat(analysis.getOverlaps(), contains(overlaps.toArray()));
+        assertThat(analysis.getOverlaps()).containsAll(overlaps);
     }
 
 }

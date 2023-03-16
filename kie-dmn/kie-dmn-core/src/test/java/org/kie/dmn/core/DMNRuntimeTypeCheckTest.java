@@ -44,12 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class DMNRuntimeTypeCheckTest extends BaseInterpretedVsCompiledTest {
 
@@ -141,7 +136,7 @@ public class DMNRuntimeTypeCheckTest extends BaseInterpretedVsCompiledTest {
 
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         final Results results = kieBuilder.getResults();
-        assertThat(results.getMessages().toString(), results.hasMessages(org.kie.api.builder.Message.Level.ERROR), is(false));
+        assertThat(results.hasMessages(org.kie.api.builder.Message.Level.ERROR)).as(results.getMessages().toString()).isFalse();
 
         final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
         return kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
@@ -149,50 +144,48 @@ public class DMNRuntimeTypeCheckTest extends BaseInterpretedVsCompiledTest {
 
     private void assertNoTypeCheck(final DMNRuntime runtime) {
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6d8af9a2-dcf4-4b9e-8d90-6ccddc8c1bbd", "forTypeCheckTest");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("a number", "ciao");
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
 
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()),
-                   dmnResult.getMessages(DMNMessage.Severity.ERROR)
+        assertThat(dmnResult.getMessages(DMNMessage.Severity.ERROR)
                             .stream()
-                            .allMatch(m -> m.getSourceId().equals(dmnModel.getDecisionByName("hundred minus number").getId())),
-                   is(true));
+                            .allMatch(m -> m.getSourceId().equals(dmnModel.getDecisionByName("hundred minus number").getId())))
+        .as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
 
         final DMNDecisionResult textPlusNumberDR = dmnResult.getDecisionResultByName("text plus number");
-        assertThat(textPlusNumberDR.getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
-        assertThat(textPlusNumberDR.getResult(), is("The input number is: ciao"));
+        assertThat(textPlusNumberDR.getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
+        assertThat(textPlusNumberDR.getResult()).isEqualTo("The input number is: ciao");
 
         final DMNDecisionResult hundredMinusNumber = dmnResult.getDecisionResultByName("hundred minus number");
-        assertThat(hundredMinusNumber.getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
-        assertThat(hundredMinusNumber.getResult(), nullValue());
+        assertThat(hundredMinusNumber.getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
+        assertThat(hundredMinusNumber.getResult()).isNull();
     }
 
     private void assertPerformTypeCheck(final DMNRuntime runtime) {
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6d8af9a2-dcf4-4b9e-8d90-6ccddc8c1bbd", "forTypeCheckTest");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("a number", "ciao");
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
 
-        assertThat("Should throw several errors, not only for 1 specific Decision: " + DMNRuntimeUtil.formatMessages(dmnResult.getMessages()),
-                   dmnResult.getMessages(DMNMessage.Severity.ERROR)
+        assertThat(dmnResult.getMessages(DMNMessage.Severity.ERROR)
                             .stream()
-                            .allMatch(m -> m.getSourceId().equals(dmnModel.getDecisionByName("hundred minus number").getId())),
-                   is(false));
+                            .allMatch(m -> m.getSourceId().equals(dmnModel.getDecisionByName("hundred minus number").getId())))
+        .as("Should throw several errors, not only for 1 specific Decision: " + DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNDecisionResult textPlusNumberDR = dmnResult.getDecisionResultByName("text plus number");
-        assertThat(textPlusNumberDR.getEvaluationStatus(), is(DecisionEvaluationStatus.SKIPPED)); // dependency failed type check
+        assertThat(textPlusNumberDR.getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SKIPPED); // dependency failed type check
 
         final DMNDecisionResult hundredMinusNumber = dmnResult.getDecisionResultByName("hundred minus number");
-        assertThat(hundredMinusNumber.getEvaluationStatus(), is(DecisionEvaluationStatus.SKIPPED)); // dependency failed type check
+        assertThat(hundredMinusNumber.getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SKIPPED); // dependency failed type check
     }
 
     @Test
@@ -211,7 +204,7 @@ public class DMNRuntimeTypeCheckTest extends BaseInterpretedVsCompiledTest {
 
             fail("");
         } catch (final Exception e) {
-            assertTrue(e.getMessage().contains("'model'"));
+            assertThat(e.getMessage()).contains("'model'");
             /* java.lang.NullPointerException: Kie DMN API parameter 'model' cannot be null.
                 at java.util.Objects.requireNonNull(Objects.java:290)
                 at org.kie.dmn.core.impl.DMNRuntimeImpl.evaluateAll(DMNRuntimeImpl.java:123)

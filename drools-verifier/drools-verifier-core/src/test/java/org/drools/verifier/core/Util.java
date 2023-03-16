@@ -24,8 +24,7 @@ import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.Value;
 import org.drools.verifier.core.maps.MultiMap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class Util {
 
@@ -33,10 +32,10 @@ public class Util {
                                             final Comparable... keyValues) {
 
         final Set<Value> keys = objectMultiMap.keySet();
-        assertEquals(new HashSet<>(Arrays.asList(keyValues)).size(), keys.size());
+        assertThat(keys.size()).isEqualTo(new HashSet<>(Arrays.asList(keyValues)).size());
 
         for (final Comparable keyValue : keyValues) {
-            assertTrue(objectMultiMap.containsKey(getValue(keyValue)));
+            assertThat(objectMultiMap.containsKey(getValue(keyValue))).isTrue();
         }
     }
 

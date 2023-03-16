@@ -21,7 +21,9 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 
 public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     InternalReadAccessor reader;
@@ -38,8 +40,8 @@ public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest
 
     @Test
     public void testGetBooleanValue() {
-        assertTrue(this.reader.getBooleanValue(null,
-                this.bean));
+        assertThat(this.reader.getBooleanValue(null,
+                this.bean)).isTrue();
     }
 
     @Test
@@ -121,14 +123,13 @@ public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest
 
     @Test
     public void testGetValue() {
-            assertSame(Boolean.TRUE,
-                    this.reader.getValue(null,
-                            this.bean));
+        assertThat(this.reader.getValue(null,
+                this.bean)).isSameAs(Boolean.TRUE);
     }
 
     @Test
     public void testIsNullValue() {
-            assertFalse(this.reader.isNullValue(null,
-                    this.bean));
+        assertThat(this.reader.isNullValue(null,
+                this.bean)).isFalse();
     }
 }

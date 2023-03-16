@@ -46,12 +46,8 @@ import org.drools.mvel.java.JavaExprAnalyzer;
 import org.junit.Test;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.mvel.asm.AsmUtil.fixBlockDescr;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 public class JavaConsequenceBuilderPRAlwaysTest {
 
@@ -141,8 +137,7 @@ public class JavaConsequenceBuilderPRAlwaysTest {
 //            System.out.println( "=============================" );
 //            System.out.println( fixed );
 
-            assertNotNull( context.getErrors().toString(),
-                           fixed );
+            assertThat(fixed).as(context.getErrors().toString()).isNotNull();
             assertEqualsIgnoreSpaces( expected,
                                       fixed );
         } catch ( RecognitionException e ) {
@@ -175,8 +170,7 @@ public class JavaConsequenceBuilderPRAlwaysTest {
 //            System.out.println( "=============================" );
 //            System.out.println( fixed );
 
-            assertNotNull( context.getErrors().toString(),
-                           fixed );
+            assertThat(fixed).as(context.getErrors().toString()).isNotNull();
             assertEqualsIgnoreSpaces( expected,
                                       fixed );
         } catch ( RecognitionException e ) {
@@ -189,10 +183,10 @@ public class JavaConsequenceBuilderPRAlwaysTest {
     public void testDefaultConsequenceCompilation() {
         String consequence = " System.out.println(\"this is a test\");\n ";
         setupTest( consequence, new HashMap<String, Object>() );
-        assertNotNull( context.getRule().getConsequence() );
-        assertFalse( context.getRule().hasNamedConsequences() );
-        assertTrue( context.getRule().getConsequence() instanceof CompiledInvoker );
-        assertTrue( context.getRule().getConsequence() instanceof Consequence );
+        assertThat(context.getRule().getConsequence()).isNotNull();
+        assertThat(context.getRule().hasNamedConsequences()).isFalse();
+        assertThat(context.getRule().getConsequence() instanceof CompiledInvoker).isTrue();
+        assertThat(context.getRule().getConsequence() instanceof Consequence).isTrue();
     }
     
     @Test
@@ -205,13 +199,13 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         
         setupTest( defaultCon, namedConsequences);
 
-        assertTrue( context.getRule().getConsequence() instanceof CompiledInvoker );
-        assertTrue( context.getRule().getConsequence() instanceof Consequence );
+        assertThat(context.getRule().getConsequence() instanceof CompiledInvoker).isTrue();
+        assertThat(context.getRule().getConsequence() instanceof Consequence).isTrue();
+
+        assertThat(context.getRule().getNamedConsequence("name1") instanceof CompiledInvoker).isTrue();
+        assertThat(context.getRule().getNamedConsequence("name1") instanceof Consequence).isTrue();
         
-        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof CompiledInvoker );
-        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof Consequence );
-        
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name1" ) );
+        assertThat(context.getRule().getNamedConsequence("name1")).isNotSameAs(context.getRule().getConsequence());
     }
     
     @Test
@@ -226,26 +220,25 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         
         setupTest( defaultCon, namedConsequences);
 
-        assertTrue( context.getRule().getConsequence() instanceof CompiledInvoker );
-        assertTrue( context.getRule().getConsequence() instanceof Consequence );
+        assertThat(context.getRule().getConsequence() instanceof CompiledInvoker).isTrue();
+        assertThat(context.getRule().getConsequence() instanceof Consequence).isTrue();
+
+        assertThat(context.getRule().getNamedConsequence("name1") instanceof CompiledInvoker).isTrue();
+        assertThat(context.getRule().getNamedConsequence("name1") instanceof Consequence).isTrue();
+
+        assertThat(context.getRule().getNamedConsequence("name2") instanceof CompiledInvoker).isTrue();
+        assertThat(context.getRule().getNamedConsequence("name2") instanceof Consequence).isTrue();
         
-        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof CompiledInvoker );
-        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof Consequence );
-        
-        assertTrue( context.getRule().getNamedConsequence( "name2" ) instanceof CompiledInvoker );
-        assertTrue( context.getRule().getNamedConsequence( "name2" ) instanceof Consequence );
-        
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name1" ) );
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name2" ) );
-        assertNotSame(  context.getRule().getNamedConsequence( "name1"), context.getRule().getNamedConsequence( "name2" ) );
+        assertThat(context.getRule().getNamedConsequence("name1")).isNotSameAs(context.getRule().getConsequence());
+        assertThat(context.getRule().getNamedConsequence("name2")).isNotSameAs(context.getRule().getConsequence());
+        assertThat(context.getRule().getNamedConsequence("name2")).isNotSameAs(context.getRule().getNamedConsequence( "name1"));
     }
 
     private void assertEqualsIgnoreSpaces(String expected,
                                           String fixed) {
-        assertEquals( expected.replaceAll( "\\s+",
-                                           "" ),
-                      fixed.replaceAll( "\\s+",
-                                        "" ) );
+        assertThat(fixed.replaceAll("\\s+",
+                "")).isEqualTo(expected.replaceAll("\\s+",
+                ""));
     }
 
 }

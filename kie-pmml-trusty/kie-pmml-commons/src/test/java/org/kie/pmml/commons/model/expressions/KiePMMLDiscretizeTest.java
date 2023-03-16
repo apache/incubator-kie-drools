@@ -28,11 +28,7 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLDiscretizeTest {
@@ -71,11 +67,11 @@ public class KiePMMLDiscretizeTest {
         KiePMMLDiscretize kiePMMLDiscretize = getKiePMMLDiscretize(null, null);
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         Object retrieved = kiePMMLDiscretize.evaluate(processingDTO);
-        assertNull(retrieved);
+        assertThat(retrieved).isNull();
         kiePMMLDiscretize = getKiePMMLDiscretize(MAP_MISSING_TO, null);
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
-        assertNotNull(retrieved);
-        assertEquals(MAP_MISSING_TO, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(MAP_MISSING_TO);
     }
 
     @Test
@@ -84,63 +80,63 @@ public class KiePMMLDiscretizeTest {
 
         ProcessingDTO processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 20)));
         Object retrieved = kiePMMLDiscretize.evaluate(processingDTO);
-        assertNull(retrieved);
+        assertThat(retrieved).isNull();
         kiePMMLDiscretize = getKiePMMLDiscretize(MAP_MISSING_TO, DEFAULTVALUE);
         processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 20)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
-        assertNotNull(retrieved);
-        assertEquals(DEFAULTVALUE, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(DEFAULTVALUE);
         processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 21)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
-        assertNotNull(retrieved);
-        assertEquals(DEFAULTVALUE, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(DEFAULTVALUE);
         processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 40)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
-        assertNotNull(retrieved);
-        assertEquals(DEFAULTVALUE, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(DEFAULTVALUE);
     }
 
     @Test
     public void getFromDiscretizeBins() {
         KiePMMLDiscretize kiePMMLDiscretize = getKiePMMLDiscretize(null, null);
         Optional<String> retrieved = kiePMMLDiscretize.getFromDiscretizeBins(10);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved).isPresent();
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(20);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(21);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(29);
-        assertTrue(retrieved.isPresent());
-        assertEquals(kiePMMLDiscretizeBin2.getBinValue(), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin2.getBinValue());
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(30);
-        assertTrue(retrieved.isPresent());
-        assertEquals(kiePMMLDiscretizeBin2.getBinValue(), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin2.getBinValue());
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(31);
-        assertTrue(retrieved.isPresent());
-        assertEquals(kiePMMLDiscretizeBin3.getBinValue(), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin3.getBinValue());
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(32);
-        assertTrue(retrieved.isPresent());
-        assertEquals(kiePMMLDiscretizeBin3.getBinValue(), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin3.getBinValue());
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(40);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(41);
-        assertTrue(retrieved.isPresent());
-        assertEquals(kiePMMLDiscretizeBin4.getBinValue(), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin4.getBinValue());
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(42);
-        assertTrue(retrieved.isPresent());
-        assertEquals(kiePMMLDiscretizeBin4.getBinValue(), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin4.getBinValue());
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(49);
-        assertTrue(retrieved.isPresent());
-        assertEquals(kiePMMLDiscretizeBin4.getBinValue(), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin4.getBinValue());
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(50);
-        assertTrue(retrieved.isPresent());
-        assertEquals(kiePMMLDiscretizeBin4.getBinValue(), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin4.getBinValue());
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(51);
-        assertTrue(retrieved.isPresent());
-        assertEquals(kiePMMLDiscretizeBin5.getBinValue(), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin5.getBinValue());
         retrieved = kiePMMLDiscretize.getFromDiscretizeBins(52);
-        assertTrue(retrieved.isPresent());
-        assertEquals(kiePMMLDiscretizeBin5.getBinValue(), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin5.getBinValue());
     }
     
     private KiePMMLDiscretize getKiePMMLDiscretize(String mapMissingTo, String defaultValue) {

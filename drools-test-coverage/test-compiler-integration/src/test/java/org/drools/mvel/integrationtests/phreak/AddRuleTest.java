@@ -33,6 +33,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.spi.Tuple;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
@@ -49,11 +50,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.rule.Match;
 
 import static java.util.Arrays.asList;
-import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AddRuleTest {
@@ -100,13 +97,13 @@ public class AddRuleTest {
 
         LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
-        assertNotNull(sm.getStagedLeftTuples().getInsertFirst());
+        assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNotNull();
 
         wm.fireAllRules();
-        assertNull(sm.getStagedLeftTuples().getInsertFirst());
-        assertEquals(1, list.size());
+        assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNull();
+        assertThat(list.size()).isEqualTo(1);
 
-        assertEquals("r1", list.get(0).getRule().getName());
+        assertThat(list.get(0).getRule().getName()).isEqualTo("r1");
     }
 
     @Test
@@ -139,25 +136,25 @@ public class AddRuleTest {
 
         LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
-        assertNull( sm.getStagedLeftTuples().getInsertFirst() );
+        assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNull();
 
         SegmentMemory subSm = sm.getFirst();
         SegmentMemory mainSm = subSm.getNext();
 
 
-        assertNotNull( subSm.getStagedLeftTuples().getInsertFirst() );
-        assertNotNull( subSm.getStagedLeftTuples().getInsertFirst().getStagedNext() );
-        assertNull( subSm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
-        assertNotNull( mainSm.getStagedLeftTuples().getInsertFirst() );
-        assertNotNull( mainSm.getStagedLeftTuples().getInsertFirst().getStagedNext() );
-        assertNull( mainSm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
+        assertThat(subSm.getStagedLeftTuples().getInsertFirst()).isNotNull();
+        assertThat((Tuple) subSm.getStagedLeftTuples().getInsertFirst().getStagedNext()).isNotNull();
+        assertThat((Tuple)subSm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext()).isNull();
+        assertThat(mainSm.getStagedLeftTuples().getInsertFirst()).isNotNull();
+        assertThat((Tuple) mainSm.getStagedLeftTuples().getInsertFirst().getStagedNext()).isNotNull();
+        assertThat((Tuple)mainSm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext()).isNull();
 
         wm.fireAllRules();
-        assertNull(subSm.getStagedLeftTuples().getInsertFirst());
-        assertNull(mainSm.getStagedLeftTuples().getInsertFirst());
-        assertEquals(2, list.size() );
+        assertThat(subSm.getStagedLeftTuples().getInsertFirst()).isNull();
+        assertThat(mainSm.getStagedLeftTuples().getInsertFirst()).isNull();
+        assertThat(list.size()).isEqualTo(2);
 
-        assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
+        assertThat(((Match) list.get(0)).getRule().getName()).isEqualTo("r1");
     }
 
     @Test
@@ -177,7 +174,7 @@ public class AddRuleTest {
         wm.insert(new E(1));
 
         wm.fireAllRules();
-        assertEquals( 3, list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B() C(2;) X() E()\n") );
 
@@ -192,35 +189,35 @@ public class AddRuleTest {
         SegmentMemory sm = lm.getSegmentMemory();
 
         BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
-        assertSame( sm.getFirst(), c1Mem.getSegmentMemory());
-        assertEquals( 3, c1Mem.getLeftTupleMemory().size() );
-        assertEquals( 1, c1Mem.getRightTupleMemory().size() );
+        assertThat(c1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
+        assertThat(c1Mem.getLeftTupleMemory().size()).isEqualTo(3);
+        assertThat(c1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
         BetaMemory c2Mem = ( BetaMemory ) wm.getNodeMemory(c2Node);
         SegmentMemory c2Smem =  sm.getFirst().getNext();
-        assertSame( c2Smem, c2Mem.getSegmentMemory());
-        assertEquals( 0, c2Mem.getLeftTupleMemory().size() );
-        assertEquals( 0, c2Mem.getRightTupleMemory().size() );
-        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst() );
-        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext() );
-        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
-        assertNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext() );
+        assertThat(c2Mem.getSegmentMemory()).isSameAs(c2Smem);
+        assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(0);
+        assertThat(c2Mem.getRightTupleMemory().size()).isEqualTo(0);
+        assertThat(c2Smem.getStagedLeftTuples().getInsertFirst()).isNotNull();
+        assertThat((Tuple) c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext()).isNotNull();
+        assertThat((Tuple) c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext()).isNotNull();
+        assertThat((Tuple) c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext()).isNull();
 
         wm.fireAllRules();
-        assertEquals( 3, c2Mem.getLeftTupleMemory().size() );
-        assertEquals( 1, c2Mem.getRightTupleMemory().size() );
-        assertNull(c2Smem.getStagedLeftTuples().getInsertFirst());
-        assertEquals(6, list.size() );
+        assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(3);
+        assertThat(c2Mem.getRightTupleMemory().size()).isEqualTo(1);
+        assertThat(c2Smem.getStagedLeftTuples().getInsertFirst()).isNull();
+        assertThat(list.size()).isEqualTo(6);
 
-        assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
-        assertEquals( "r1", ((Match)list.get(1)).getRule().getName() );
-        assertEquals( "r1", ((Match)list.get(2)).getRule().getName() );
-        assertEquals( "r2", ((Match)list.get(3)).getRule().getName() );
-        assertEquals( 3, ((A)((Match)list.get(3)).getDeclarationValue("a")).getObject() );
-        assertEquals( "r2", ((Match)list.get(4)).getRule().getName() );
-        assertEquals( 2, ((A)((Match)list.get(4)).getDeclarationValue("a")).getObject() );
-        assertEquals( "r2", ((Match)list.get(5)).getRule().getName() );
-        assertEquals( 1, ((A)((Match)list.get(5)).getDeclarationValue("a")).getObject() );
+        assertThat(((Match) list.get(0)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(1)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(2)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(3)).getRule().getName()).isEqualTo("r2");
+        assertThat(((A) ((Match) list.get(3)).getDeclarationValue("a")).getObject()).isEqualTo(3);
+        assertThat(((Match) list.get(4)).getRule().getName()).isEqualTo("r2");
+        assertThat(((A) ((Match) list.get(4)).getDeclarationValue("a")).getObject()).isEqualTo(2);
+        assertThat(((Match) list.get(5)).getRule().getName()).isEqualTo("r2");
+        assertThat(((A) ((Match) list.get(5)).getDeclarationValue("a")).getObject()).isEqualTo(1);
     }
 
     @Test
@@ -238,7 +235,7 @@ public class AddRuleTest {
         wm.insert(new C(2));
 
         wm.fireAllRules();
-        assertEquals( 3, list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   a:A() B() eval(1==1) eval(1==1) C(2;) \n") );
 
@@ -256,35 +253,35 @@ public class AddRuleTest {
         SegmentMemory sm = lm.getSegmentMemory();
 
         BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
-        assertSame( sm.getFirst(), c1Mem.getSegmentMemory());
-        assertEquals( 3, c1Mem.getLeftTupleMemory().size() );
-        assertEquals( 1, c1Mem.getRightTupleMemory().size() );
+        assertThat(c1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
+        assertThat(c1Mem.getLeftTupleMemory().size()).isEqualTo(3);
+        assertThat(c1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
         BetaMemory c2Mem = ( BetaMemory ) wm.getNodeMemory(c2Node);
         SegmentMemory c2Smem =  sm.getFirst().getNext();
-        assertSame( c2Smem, c2Mem.getSegmentMemory());
-        assertEquals( 0, c2Mem.getLeftTupleMemory().size() );
-        assertEquals( 0, c2Mem.getRightTupleMemory().size() );
-        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst() );
-        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext() );
-        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
-        assertNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext() );
+        assertThat(c2Mem.getSegmentMemory()).isSameAs(c2Smem);
+        assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(0);
+        assertThat(c2Mem.getRightTupleMemory().size()).isEqualTo(0);
+        assertThat(c2Smem.getStagedLeftTuples().getInsertFirst()).isNotNull();
+        assertThat((Tuple) c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext()).isNotNull();
+        assertThat((Tuple) c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext()).isNotNull();
+        assertThat((Tuple) c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext()).isNull();
 
         wm.fireAllRules();
-        assertEquals( 3, c2Mem.getLeftTupleMemory().size() );
-        assertEquals( 1, c2Mem.getRightTupleMemory().size() );
-        assertNull( c2Smem.getStagedLeftTuples().getInsertFirst() );
-        assertEquals(6, list.size() );
+        assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(3);
+        assertThat(c2Mem.getRightTupleMemory().size()).isEqualTo(1);
+        assertThat(c2Smem.getStagedLeftTuples().getInsertFirst()).isNull();
+        assertThat(list.size()).isEqualTo(6);
 
-        assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
-        assertEquals( "r1", ((Match)list.get(1)).getRule().getName() );
-        assertEquals( "r1", ((Match)list.get(2)).getRule().getName() );
-        assertEquals( "r2", ((Match)list.get(3)).getRule().getName() );
-        assertEquals( 3, ((A)((Match)list.get(3)).getDeclarationValue("a")).getObject() );
-        assertEquals( "r2", ((Match)list.get(4)).getRule().getName() );
-        assertEquals( 2, ((A)((Match)list.get(4)).getDeclarationValue("a")).getObject() );
-        assertEquals( "r2", ((Match)list.get(5)).getRule().getName() );
-        assertEquals( 1, ((A)((Match)list.get(5)).getDeclarationValue("a")).getObject() );
+        assertThat(((Match) list.get(0)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(1)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(2)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(3)).getRule().getName()).isEqualTo("r2");
+        assertThat(((A) ((Match) list.get(3)).getDeclarationValue("a")).getObject()).isEqualTo(3);
+        assertThat(((Match) list.get(4)).getRule().getName()).isEqualTo("r2");
+        assertThat(((A) ((Match) list.get(4)).getDeclarationValue("a")).getObject()).isEqualTo(2);
+        assertThat(((Match) list.get(5)).getRule().getName()).isEqualTo("r2");
+        assertThat(((A) ((Match) list.get(5)).getDeclarationValue("a")).getObject()).isEqualTo(1);
     }
 
     @Test
@@ -304,7 +301,7 @@ public class AddRuleTest {
         wm.insert(new E(1));
 
         wm.fireAllRules();
-        assertEquals( 3, list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B(2;) C() X() E()\n") );
 
@@ -315,27 +312,27 @@ public class AddRuleTest {
 
         BetaMemory bm = ( BetaMemory ) wm.getNodeMemory(bNode2);
         SegmentMemory sm = bm.getSegmentMemory();
-        assertNotNull( sm.getStagedLeftTuples().getInsertFirst() );
-        assertNotNull( sm.getStagedLeftTuples().getInsertFirst().getStagedNext() );
-        assertNotNull( sm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
-        assertNull( sm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext() );
+        assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNotNull();
+        assertThat((Tuple) sm.getStagedLeftTuples().getInsertFirst().getStagedNext()).isNotNull();
+        assertThat((Tuple) sm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext()).isNotNull();
+        assertThat((Tuple) sm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext()).isNull();
 
         wm.fireAllRules();
-        assertNull( sm.getStagedLeftTuples().getInsertFirst() );
-        assertEquals(6, list.size() );
+        assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNull();
+        assertThat(list.size()).isEqualTo(6);
 
-        assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
-        assertEquals( "r1", ((Match)list.get(1)).getRule().getName() );
-        assertEquals( "r1", ((Match)list.get(2)).getRule().getName() );
-        assertEquals( "r2", ((Match)list.get(3)).getRule().getName() );
-        assertEquals( "r2", ((Match)list.get(4)).getRule().getName() );
-        assertEquals( "r2", ((Match)list.get(5)).getRule().getName() );
+        assertThat(((Match) list.get(0)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(1)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(2)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(3)).getRule().getName()).isEqualTo("r2");
+        assertThat(((Match) list.get(4)).getRule().getName()).isEqualTo("r2");
+        assertThat(((Match) list.get(5)).getRule().getName()).isEqualTo("r2");
 
         List results = new ArrayList();
         results.add(((A)((Match)list.get(3)).getDeclarationValue("a")).getObject());
         results.add(((A)((Match)list.get(4)).getDeclarationValue("a")).getObject());
         results.add(((A)((Match)list.get(5)).getDeclarationValue("a")).getObject());
-        assertTrue(results.containsAll(asList(1, 2, 3)));
+        assertThat(results.containsAll(asList(1, 2, 3))).isTrue();
     }
 
     @Test
@@ -353,7 +350,7 @@ public class AddRuleTest {
         wm.insert(new E(1));
 
         wm.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   A() B() C() X() E()\n") );
 
@@ -363,18 +360,18 @@ public class AddRuleTest {
 
         PathMemory pm = (PathMemory) wm.getNodeMemory(rtn);
         SegmentMemory sm = pm.getSegmentMemory();
-        assertNotNull( sm.getStagedLeftTuples().getInsertFirst() );
-        assertNotNull( sm.getStagedLeftTuples().getInsertFirst().getStagedNext() );
-        assertNull( sm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
+        assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNotNull();
+        assertThat((Tuple) sm.getStagedLeftTuples().getInsertFirst().getStagedNext()).isNotNull();
+        assertThat((Tuple) sm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext()).isNull();
 
         wm.fireAllRules();
-        assertNull( sm.getStagedLeftTuples().getInsertFirst() );
-        assertEquals(4, list.size() );
+        assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNull();
+        assertThat(list.size()).isEqualTo(4);
 
-        assertEquals("r1", ((Match) list.get(0)).getRule().getName());
-        assertEquals( "r1", ((Match)list.get(1)).getRule().getName() );
-        assertEquals( "r2", ((Match)list.get(2)).getRule().getName() );
-        assertEquals( "r2", ((Match)list.get(3)).getRule().getName() );
+        assertThat(((Match) list.get(0)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(1)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(2)).getRule().getName()).isEqualTo("r2");
+        assertThat(((Match) list.get(3)).getRule().getName()).isEqualTo("r2");
     }
 
     @Test
@@ -396,7 +393,7 @@ public class AddRuleTest {
         wm.insert(new E(1));
 
         wm.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
 
@@ -405,13 +402,13 @@ public class AddRuleTest {
 
         wm.fireAllRules();
         System.out.println(list);
-        assertEquals( 5, list.size() );
+        assertThat(list.size()).isEqualTo(5);
 
-        assertEquals("r1", ((Match) list.get(0)).getRule().getName());
-        assertEquals( "r1", ((Match)list.get(1)).getRule().getName() );
-        assertEquals( "r3", ((Match)list.get(2)).getRule().getName() ); // only one A3
-        assertEquals( "r2", ((Match)list.get(3)).getRule().getName() );
-        assertEquals( "r2", ((Match)list.get(4)).getRule().getName() );
+        assertThat(((Match) list.get(0)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(1)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(2)).getRule().getName()).isEqualTo("r3"); // only one A3
+        assertThat(((Match) list.get(3)).getRule().getName()).isEqualTo("r2");
+        assertThat(((Match) list.get(4)).getRule().getName()).isEqualTo("r2");
     }
 
     @Test
@@ -436,34 +433,34 @@ public class AddRuleTest {
 
         PathMemory pm1 = (PathMemory) wm.getNodeMemory(rtn1);
         SegmentMemory[] smems = pm1.getSegmentMemories();
-        assertEquals(4, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[1]);
-        assertNull( smems[3]);
+        assertThat(smems.length).isEqualTo(4);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[1]).isNull();
+        assertThat(smems[3]).isNull();
         SegmentMemory sm = smems[2];
-        assertEquals( 2, sm.getPos() );
-        assertEquals( 4, sm.getSegmentPosMaskBit() );
-        assertEquals( 4, pm1.getLinkedSegmentMask() );
+        assertThat(sm.getPos()).isEqualTo(2);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(4);
+        assertThat(pm1.getLinkedSegmentMask()).isEqualTo(4);
 
         kbase1.addPackages( buildKnowledgePackage("r5",  "   A(1;)  A(2;) B(1;) B(2;) \n") );
 
         smems = pm1.getSegmentMemories();
-        assertEquals(5, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[1]);
-        assertNull( smems[2]);
+        assertThat(smems.length).isEqualTo(5);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[1]).isNull();
+        assertThat(smems[2]).isNull();
 
         sm = smems[3];
-        assertEquals( 3, sm.getPos() );
-        assertEquals( 8, sm.getSegmentPosMaskBit() );
-        assertEquals( 8, pm1.getLinkedSegmentMask() );
+        assertThat(sm.getPos()).isEqualTo(3);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(8);
+        assertThat(pm1.getLinkedSegmentMask()).isEqualTo(8);
 
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
         PathMemory pm5 = (PathMemory) wm.getNodeMemory(rtn5);
         smems = pm5.getSegmentMemories();
-        assertEquals(2, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[1]);
+        assertThat(smems.length).isEqualTo(2);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[1]).isNull();
     }
 
 
@@ -489,54 +486,54 @@ public class AddRuleTest {
 
         PathMemory pm1 = (PathMemory) wm.getNodeMemory(rtn1);
         SegmentMemory[] smems = pm1.getSegmentMemories();
-        assertEquals(4, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[2]);
-        assertNull( smems[3]);
+        assertThat(smems.length).isEqualTo(4);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[2]).isNull();
+        assertThat(smems[3]).isNull();
         SegmentMemory sm = smems[1];
-        assertEquals( 1, sm.getPos() );
-        assertEquals( 2, sm.getSegmentPosMaskBit() );
-        assertEquals( 2, pm1.getLinkedSegmentMask() );
+        assertThat(sm.getPos()).isEqualTo(1);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(2);
+        assertThat(pm1.getLinkedSegmentMask()).isEqualTo(2);
 
         PathMemory pm3 = (PathMemory) wm.getNodeMemory(rtn3);
         SegmentMemory[] smemsP3 = pm3.getSegmentMemories();
-        assertEquals(3, smemsP3.length);
-        assertNull( smemsP3[0]);
-        assertNull( smemsP3[2]);
+        assertThat(smemsP3.length).isEqualTo(3);
+        assertThat(smemsP3[0]).isNull();
+        assertThat(smemsP3[2]).isNull();
         sm = smems[1];
-        assertEquals( 1, sm.getPos() );
-        assertEquals( 2, sm.getSegmentPosMaskBit() );
-        assertEquals( 2, pm1.getLinkedSegmentMask() );
+        assertThat(sm.getPos()).isEqualTo(1);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(2);
+        assertThat(pm1.getLinkedSegmentMask()).isEqualTo(2);
 
         kbase1.addPackages( buildKnowledgePackage("r5",  "   A(1;)  A(2;) B(1;) B(2;) \n") );
 
         smems = pm1.getSegmentMemories();
-        assertEquals(5, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[1]);
-        assertNull( smems[3]);
-        assertNull( smems[4]);
+        assertThat(smems.length).isEqualTo(5);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[1]).isNull();
+        assertThat(smems[3]).isNull();
+        assertThat(smems[4]).isNull();
         sm = smems[2];
-        assertEquals( 2, sm.getPos() );
-        assertEquals( 4, sm.getSegmentPosMaskBit() );
-        assertEquals( 4, pm1.getLinkedSegmentMask() );
+        assertThat(sm.getPos()).isEqualTo(2);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(4);
+        assertThat(pm1.getLinkedSegmentMask()).isEqualTo(4);
 
         smems = pm3.getSegmentMemories();
-        assertEquals(4, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[1]);
-        assertNull( smems[3]);
+        assertThat(smems.length).isEqualTo(4);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[1]).isNull();
+        assertThat(smems[3]).isNull();
         sm = smems[2];
-        assertEquals( 2, sm.getPos() );
-        assertEquals( 4, sm.getSegmentPosMaskBit() );
-        assertEquals( 4, pm1.getLinkedSegmentMask() );
+        assertThat(sm.getPos()).isEqualTo(2);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(4);
+        assertThat(pm1.getLinkedSegmentMask()).isEqualTo(4);
 
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
         PathMemory pm5 = (PathMemory) wm.getNodeMemory(rtn5);
         smems = pm5.getSegmentMemories();
-        assertEquals(2, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[1]);
+        assertThat(smems.length).isEqualTo(2);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[1]).isNull();
     }
 
     @Test
@@ -559,48 +556,48 @@ public class AddRuleTest {
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
 
         PathMemory pm1 = (PathMemory) wm.getNodeMemory(rtn1);
-        assertEquals( 2, pm1.getLinkedSegmentMask() );
+        assertThat(pm1.getLinkedSegmentMask()).isEqualTo(2);
         SegmentMemory[] smems = pm1.getSegmentMemories();
-        assertEquals(4, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[2]);
-        assertNull( smems[3]);
+        assertThat(smems.length).isEqualTo(4);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[2]).isNull();
+        assertThat(smems[3]).isNull();
         SegmentMemory sm = smems[1];
-        assertEquals( 1, sm.getPos() );
-        assertEquals( 2, sm.getSegmentPosMaskBit() );
+        assertThat(sm.getPos()).isEqualTo(1);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(2);
 
 
         kbase1.addPackages( buildKnowledgePackage("r5", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(3;)\n") );
         wm.fireAllRules();
 
-        assertEquals( 6, pm1.getLinkedSegmentMask() );
+        assertThat(pm1.getLinkedSegmentMask()).isEqualTo(6);
         smems = pm1.getSegmentMemories();
-        assertEquals(5, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[3]);
-        assertNull( smems[4]);
+        assertThat(smems.length).isEqualTo(5);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[3]).isNull();
+        assertThat(smems[4]).isNull();
         sm = smems[1];
-        assertEquals( 1, sm.getPos() );
-        assertEquals( 2, sm.getSegmentPosMaskBit() );
+        assertThat(sm.getPos()).isEqualTo(1);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(2);
 
         sm = smems[2];
-        assertEquals( 2, sm.getPos() );
-        assertEquals( 4, sm.getSegmentPosMaskBit() );
+        assertThat(sm.getPos()).isEqualTo(2);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(4);
 
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
         PathMemory pm5 = (PathMemory) wm.getNodeMemory(rtn5);
-        assertEquals( 6, pm5.getLinkedSegmentMask() );
+        assertThat(pm5.getLinkedSegmentMask()).isEqualTo(6);
 
         smems = pm5.getSegmentMemories();
-        assertEquals(3, smems.length);
-        assertNull( smems[0]);
+        assertThat(smems.length).isEqualTo(3);
+        assertThat(smems[0]).isNull();
         sm = smems[1];
-        assertEquals( 1, sm.getPos() );
-        assertEquals( 2, sm.getSegmentPosMaskBit() );
+        assertThat(sm.getPos()).isEqualTo(1);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(2);
 
         sm = smems[2];
-        assertEquals( 2, sm.getPos() );
-        assertEquals( 4, sm.getSegmentPosMaskBit() );
+        assertThat(sm.getPos()).isEqualTo(2);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(4);
     }
 
 

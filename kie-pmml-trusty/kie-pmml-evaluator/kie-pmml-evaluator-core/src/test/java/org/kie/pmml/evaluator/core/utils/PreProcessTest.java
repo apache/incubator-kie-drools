@@ -49,9 +49,7 @@ import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PreProcessTest {
 
@@ -77,13 +75,13 @@ public class PreProcessTest {
         pmmlRequestData.addRequestParam("FIELD-1", "123");
         pmmlRequestData.addRequestParam("FIELD-2", "1.23");
         Map<String, ParameterInfo> mappedRequestParams = pmmlRequestData.getMappedRequestParams();
-        assertEquals(123, mappedRequestParams.get("FIELD-0").getValue());
-        assertEquals("123", mappedRequestParams.get("FIELD-1").getValue());
-        assertEquals("1.23", mappedRequestParams.get("FIELD-2").getValue());
+        assertThat(mappedRequestParams.get("FIELD-0").getValue()).isEqualTo(123);
+        assertThat(mappedRequestParams.get("FIELD-1").getValue()).isEqualTo("123");
+        assertThat(mappedRequestParams.get("FIELD-2").getValue()).isEqualTo("1.23");
         PreProcess.convertInputData(miningFields, pmmlRequestData);
-        assertEquals("123", mappedRequestParams.get("FIELD-0").getValue());
-        assertEquals(123, mappedRequestParams.get("FIELD-1").getValue());
-        assertEquals(1.23f, mappedRequestParams.get("FIELD-2").getValue());
+        assertThat(mappedRequestParams.get("FIELD-0").getValue()).isEqualTo("123");
+        assertThat(mappedRequestParams.get("FIELD-1").getValue()).isEqualTo(123);
+        assertThat(mappedRequestParams.get("FIELD-2").getValue()).isEqualTo(1.23f);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -187,7 +185,7 @@ public class PreProcessTest {
         pmmlRequestData.addRequestParam("FIELD-1", 12.5);
         pmmlRequestData.addRequestParam("FIELD-2", 14.6);
         PreProcess.verifyFixInvalidValues(miningFields, pmmlRequestData);
-        assertTrue(pmmlRequestData.getRequestParams().isEmpty());
+        assertThat(pmmlRequestData.getRequestParams()).isEmpty();
     }
 
     @Test
@@ -219,9 +217,9 @@ public class PreProcessTest {
         pmmlRequestData.addRequestParam("FIELD-2", 14.6);
         PreProcess.verifyFixInvalidValues(miningFields, pmmlRequestData);
         Map<String, ParameterInfo> mappedRequestParams = pmmlRequestData.getMappedRequestParams();
-        assertEquals("123", mappedRequestParams.get("FIELD-0").getValue());
-        assertEquals(1.23, mappedRequestParams.get("FIELD-1").getValue());
-        assertEquals(12.3, mappedRequestParams.get("FIELD-2").getValue());
+        assertThat(mappedRequestParams.get("FIELD-0").getValue()).isEqualTo("123");
+        assertThat(mappedRequestParams.get("FIELD-1").getValue()).isEqualTo(1.23);
+        assertThat(mappedRequestParams.get("FIELD-2").getValue()).isEqualTo(12.3);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -281,9 +279,9 @@ public class PreProcessTest {
         pmmlRequestData.addRequestParam("FIELD-2", 14.6);
         PreProcess.verifyFixInvalidValues(miningFields, pmmlRequestData);
         Map<String, ParameterInfo> mappedRequestParams = pmmlRequestData.getMappedRequestParams();
-        assertEquals("122", mappedRequestParams.get("FIELD-0").getValue());
-        assertEquals(12.5, mappedRequestParams.get("FIELD-1").getValue());
-        assertEquals(14.6, mappedRequestParams.get("FIELD-2").getValue());
+        assertThat(mappedRequestParams.get("FIELD-0").getValue()).isEqualTo("122");
+        assertThat(mappedRequestParams.get("FIELD-1").getValue()).isEqualTo(12.5);
+        assertThat(mappedRequestParams.get("FIELD-2").getValue()).isEqualTo(14.6);
     }
 
     @Test
@@ -342,13 +340,13 @@ public class PreProcessTest {
 
         List<KiePMMLMiningField> miningFields = Arrays.asList(miningField0, miningField1, miningField2);
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
-        assertTrue(pmmlRequestData.getRequestParams().isEmpty());
+        assertThat(pmmlRequestData.getRequestParams()).isEmpty();
         PreProcess.verifyAddMissingValues(miningFields, pmmlRequestData);
         Map<String, ParameterInfo> mappedRequestParams = pmmlRequestData.getMappedRequestParams();
-        assertEquals(miningFields.size(), mappedRequestParams.size());
-        assertEquals("123", mappedRequestParams.get("FIELD-0").getValue());
-        assertEquals(1.23, mappedRequestParams.get("FIELD-1").getValue());
-        assertEquals(12.9f, mappedRequestParams.get("FIELD-2").getValue());
+        assertThat(mappedRequestParams).hasSameSizeAs(miningFields);
+        assertThat(mappedRequestParams.get("FIELD-0").getValue()).isEqualTo("123");
+        assertThat(mappedRequestParams.get("FIELD-1").getValue()).isEqualTo(1.23);
+        assertThat(mappedRequestParams.get("FIELD-2").getValue()).isEqualTo(12.9f);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -425,20 +423,20 @@ public class PreProcessTest {
                 PreProcess.getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
         Optional<KiePMMLNameValue> retrieved =
                 kiePMMLNameValues.stream().filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(INPUT_FIELD)).findFirst();
-        assertTrue(retrieved.isPresent());
-        assertEquals(value1, retrieved.get().getValue());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get().getValue()).isEqualTo(value1);
 
         ProcessingDTO processingDTO = new ProcessingDTO(kiePMMLModel, kiePMMLNameValues);
         PreProcess.executeTransformations(processingDTO, pmmlRequestData);
         mappedRequestParams = pmmlRequestData.getMappedRequestParams();
 
         Object expected = value1 / value2;
-        assertTrue(mappedRequestParams.containsKey(CUSTOM_REF_FIELD));
-        assertEquals(expected, mappedRequestParams.get(CUSTOM_REF_FIELD).getValue());
+        assertThat(mappedRequestParams).containsKey(CUSTOM_REF_FIELD);
+        assertThat(mappedRequestParams.get(CUSTOM_REF_FIELD).getValue()).isEqualTo(expected);
         retrieved =
                 kiePMMLNameValues.stream().filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(CUSTOM_REF_FIELD)).findFirst();
-        assertTrue(retrieved.isPresent());
-        assertEquals(expected, retrieved.get().getValue());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get().getValue()).isEqualTo(expected);
     }
 
     @Test
@@ -450,15 +448,15 @@ public class PreProcessTest {
                 .build();
         List<ParameterInfo> toRemove = new ArrayList<>();
         PreProcess.manageInvalidValues(miningField, parameterInfo, toRemove);
-        assertEquals(1, toRemove.size());
-        assertTrue(toRemove.contains(parameterInfo));
+        assertThat(toRemove).hasSize(1);
+        assertThat(toRemove).contains(parameterInfo);
         // AS_IS
         miningField = KiePMMLMiningField.builder("FIELD", null)
                 .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_IS)
                 .build();
         toRemove = new ArrayList<>();
         PreProcess.manageInvalidValues(miningField, parameterInfo, toRemove);
-        assertTrue(toRemove.isEmpty());
+        assertThat(toRemove).isEmpty();
         // AS_VALUE with replacement
         String invalidValueReplacement = "REPLACEMENT";
         miningField = KiePMMLMiningField.builder("FIELD", null)
@@ -467,12 +465,12 @@ public class PreProcessTest {
                 .withInvalidValueReplacement(invalidValueReplacement)
                 .build();
         toRemove = new ArrayList<>();
-        assertNull(parameterInfo.getValue());
-        assertNull(parameterInfo.getType());
+        assertThat(parameterInfo.getValue()).isNull();
+        assertThat(parameterInfo.getType()).isNull();
         PreProcess.manageInvalidValues(miningField, parameterInfo, toRemove);
-        assertTrue(toRemove.isEmpty());
-        assertEquals(invalidValueReplacement, parameterInfo.getValue());
-        assertEquals(String.class, parameterInfo.getType());
+        assertThat(toRemove).isEmpty();
+        assertThat(parameterInfo.getValue()).isEqualTo(invalidValueReplacement);
+        assertThat(parameterInfo.getType()).isEqualTo(String.class);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -484,8 +482,8 @@ public class PreProcessTest {
                 .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_VALUE)
                 .build();
         List<ParameterInfo> toRemove = new ArrayList<>();
-        assertNull(parameterInfo.getValue());
-        assertNull(parameterInfo.getType());
+        assertThat(parameterInfo.getValue()).isNull();
+        assertThat(parameterInfo.getType()).isNull();
         PreProcess.manageInvalidValues(miningField, parameterInfo, toRemove);
     }
 
@@ -514,7 +512,7 @@ public class PreProcessTest {
                     .build();
             PMMLRequestData pmmlRequestData = new PMMLRequestData();
             PreProcess.manageMissingValues(miningField, pmmlRequestData);
-            assertTrue(pmmlRequestData.getRequestParams().isEmpty());
+            assertThat(pmmlRequestData.getRequestParams()).isEmpty();
             String missingValueReplacement = "REPLACEMENT";
             miningField = KiePMMLMiningField.builder(fieldName, null)
                     .withDataType(DATA_TYPE.STRING)
@@ -523,11 +521,11 @@ public class PreProcessTest {
                     .build();
             pmmlRequestData = new PMMLRequestData();
             PreProcess.manageMissingValues(miningField, pmmlRequestData);
-            assertEquals(1, pmmlRequestData.getRequestParams().size());
-            assertTrue(pmmlRequestData.getMappedRequestParams().containsKey(fieldName));
+            assertThat(pmmlRequestData.getRequestParams()).hasSize(1);
+            assertThat(pmmlRequestData.getMappedRequestParams()).containsKey(fieldName);
             ParameterInfo parameterInfo = pmmlRequestData.getMappedRequestParams().get(fieldName);
-            assertEquals(missingValueReplacement, parameterInfo.getValue());
-            assertEquals(String.class, parameterInfo.getType());
+            assertThat(parameterInfo.getValue()).isEqualTo(missingValueReplacement);
+            assertThat(parameterInfo.getType()).isEqualTo(String.class);
         });
     }
 

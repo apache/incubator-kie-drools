@@ -37,10 +37,8 @@ import org.kie.api.runtime.conf.DirectFiringOption;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.mockito.ArgumentCaptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -90,11 +88,11 @@ public class AgendaFilterTest {
         ksession.addEventListener(ael);
 
         final int rules = ksession.fireAllRules(agendaFilter);
-        assertEquals(1, rules);
+        assertThat(rules).isEqualTo(1);
 
         final ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael).afterMatchFired(arg.capture());
-        assertThat(arg.getValue().getMatch().getRule().getName(), is(expectedMatchingRuleName));
+        assertThat(arg.getValue().getMatch().getRule().getName()).isEqualTo(expectedMatchingRuleName);
     }
 
     @Test
@@ -113,7 +111,7 @@ public class AgendaFilterTest {
             Environment environment = KieServices.get().newEnvironment();
             KieSession ksession = kbase.newKieSession(config, environment);
             ksession.insert("Lukas");
-            assertEquals(0, ksession.fireAllRules(match -> false));
+            assertThat(ksession.fireAllRules(match -> false)).isEqualTo(0);
         } catch (Throwable ex) {
             fail("Should not have thrown.", ex);
         }

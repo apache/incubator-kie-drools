@@ -28,9 +28,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class KnowledgeBuilderTest {
@@ -38,7 +36,7 @@ public class KnowledgeBuilderTest {
     @Test
     public void testKnowledgeProvider() {
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        assertNotNull( builder );
+        assertThat(builder).isNotNull();
     }
 
     @Test
@@ -69,24 +67,24 @@ public class KnowledgeBuilderTest {
         builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 
         Collection<KiePackage> pkgs = builder.getKnowledgePackages();
-        assertNotNull( pkgs );
-        assertEquals( 2, pkgs.size() );
+        assertThat(pkgs).isNotNull();
+        assertThat(pkgs.size()).isEqualTo(2);
 
         KiePackage test1 = getKnowledgePackage(pkgs, "org.drools.mvel.compiler.test1" );
         Collection<Rule> rules = test1.getRules();
-        assertEquals( 2, rules.size() );
+        assertThat(rules.size()).isEqualTo(2);
         Rule rule = getRule( rules, "rule1" );
-        assertEquals("rule1", rule.getName() );
+        assertThat(rule.getName()).isEqualTo("rule1");
         rule = getRule( rules, "rule2" );
-        assertEquals( "rule2", rule.getName() );
+        assertThat(rule.getName()).isEqualTo("rule2");
 
         KiePackage test2 = getKnowledgePackage(pkgs, "org.drools.mvel.compiler.test2" );
         rules = test2.getRules();
-        assertEquals( 2, rules.size() );
+        assertThat(rules.size()).isEqualTo(2);
         rule = getRule( rules, "rule3" );
-        assertEquals("rule3", rule.getName() );
+        assertThat(rule.getName()).isEqualTo("rule3");
         rule = getRule( rules, "rule4" );
-        assertEquals( "rule4", rule.getName() );
+        assertThat(rule.getName()).isEqualTo("rule4");
     }
 
     public Rule getRule(Collection<Rule> rules, String name) {
@@ -114,6 +112,6 @@ public class KnowledgeBuilderTest {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", new String(content) );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertTrue( results.getMessages().size() > 0 );
+        assertThat(results.getMessages().size() > 0).isTrue();
     }
 }

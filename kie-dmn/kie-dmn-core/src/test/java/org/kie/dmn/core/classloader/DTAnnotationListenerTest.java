@@ -40,9 +40,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
@@ -95,15 +92,15 @@ public class DTAnnotationListenerTest {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("license.dmn", this.getClass());
         runtime.addListener(listenerUT);
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_1F095E5D-0E50-4564-9A76-DD4735BF938A", "license");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("a person", mapOf(entry("name", "John Doe"), entry("age", 47)));
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         assertThat(dmnResult.getDecisionResultByName("can get license").getResult()).isEqualTo(Boolean.TRUE);
 

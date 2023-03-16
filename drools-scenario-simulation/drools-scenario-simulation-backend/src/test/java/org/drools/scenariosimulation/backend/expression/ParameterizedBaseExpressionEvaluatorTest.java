@@ -23,8 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class ParameterizedBaseExpressionEvaluatorTest {
@@ -106,11 +106,11 @@ public class ParameterizedBaseExpressionEvaluatorTest {
     public void evaluateUnaryExpression() {
 
         if (!(resultValue instanceof Class)) {
-            assertEquals(expectedResult.isSuccessful(), baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, resultValue, clazz).isSuccessful());
+            assertThat(baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, resultValue, clazz).isSuccessful()).isEqualTo(expectedResult.isSuccessful());
         } else {
             try {
                 baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, true, clazz);
-                fail();
+                fail("Should have failed");
             } catch (Exception ignored) {
             }
         }

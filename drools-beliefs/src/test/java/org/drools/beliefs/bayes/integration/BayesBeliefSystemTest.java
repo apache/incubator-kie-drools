@@ -15,10 +15,10 @@
 
 package org.drools.beliefs.bayes.integration;
 
-import org.drools.beliefs.bayes.BayesModeFactory;
-import org.drools.beliefs.bayes.BayesModeFactoryImpl;
 import org.drools.beliefs.bayes.BayesBeliefSystem;
 import org.drools.beliefs.bayes.BayesInstance;
+import org.drools.beliefs.bayes.BayesModeFactory;
+import org.drools.beliefs.bayes.BayesModeFactoryImpl;
 import org.drools.beliefs.bayes.PropertyReference;
 import org.drools.beliefs.bayes.runtime.BayesRuntime;
 import org.drools.core.BeliefSystemType;
@@ -36,14 +36,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import static junit.framework.TestCase.assertFalse;
-import static org.drools.beliefs.bayes.JunctionTreeTest.scaleDouble;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class BayesBeliefSystemTest {
 
@@ -101,40 +96,40 @@ public class BayesBeliefSystemTest {
 
         BayesRuntime bayesRuntime = ksession.getKieRuntime(BayesRuntime.class);
         BayesInstance<Garden> instance = bayesRuntime.createInstance(Garden.class);
-        assertNotNull(  instance );
+        assertThat(instance).isNotNull();
 
-        assertTrue(instance.isDecided());
+        assertThat(instance.isDecided()).isTrue();
         instance.globalUpdate();
         Garden garden = instance.marginalize();
-        assertTrue( garden.isWetGrass() );
+        assertThat(garden.isWetGrass()).isTrue();
 
         FactHandle fh = ksession.insert( garden );
         FactHandle fh1 = ksession.insert( "rule1" );
         ksession.fireAllRules();
-        assertTrue(instance.isDecided());
+        assertThat(instance.isDecided()).isTrue();
         instance.globalUpdate(); // rule1 has added evidence, update the bayes network
         garden = instance.marginalize();
-        assertTrue(garden.isWetGrass());  // grass was wet before rule1 and continues to be wet
+        assertThat(garden.isWetGrass()).isTrue();  // grass was wet before rule1 and continues to be wet
 
 
         FactHandle fh2 = ksession.insert( "rule2" ); // applies 2 logical insertions
         ksession.fireAllRules();
-        assertTrue(instance.isDecided());
+        assertThat(instance.isDecided()).isTrue();
         instance.globalUpdate();
         garden = instance.marginalize();
-        assertFalse(garden.isWetGrass() );  // new evidence means grass is no longer wet
+        assertThat(garden.isWetGrass() ).isFalse();  // new evidence means grass is no longer wet
 
         FactHandle fh3 = ksession.insert( "rule3" ); // adds an additional support for the sprinkler, belief set of 2
         ksession.fireAllRules();
-        assertTrue(instance.isDecided());
+        assertThat(instance.isDecided()).isTrue();
         instance.globalUpdate();
         garden = instance.marginalize();
-        assertFalse(garden.isWetGrass() ); // nothing has changed
+        assertThat(garden.isWetGrass() ).isFalse(); // nothing has changed
 
         FactHandle fh4 = ksession.insert( "rule4" ); // rule4 introduces a conflict, and the BayesFact becomes undecided
         ksession.fireAllRules();
 
-        assertFalse(instance.isDecided());
+        assertThat(instance.isDecided()).isFalse();
         try {
             instance.globalUpdate();
             fail( "The BayesFact is undecided, it should throw an exception, as it cannot be updated." );
@@ -144,23 +139,23 @@ public class BayesBeliefSystemTest {
 
         ksession.delete( fh4 ); // the conflict is resolved, so it should be decided again
         ksession.fireAllRules();
-        assertTrue(instance.isDecided());
+        assertThat(instance.isDecided()).isTrue();
         instance.globalUpdate();
         garden = instance.marginalize();
-        assertFalse(garden.isWetGrass() );// back to grass is not wet
+        assertThat(garden.isWetGrass() ).isFalse();// back to grass is not wet
 
 
         ksession.delete( fh2 ); // takes the sprinkler belief set back to 1
         ksession.fireAllRules();
         instance.globalUpdate();
         garden = instance.marginalize();
-        assertFalse(garden.isWetGrass() ); // still grass is not wet
+        assertThat(garden.isWetGrass() ).isFalse(); // still grass is not wet
 
         ksession.delete( fh3 ); // no sprinkler support now
         ksession.fireAllRules();
         instance.globalUpdate();
         garden = instance.marginalize();
-        assertTrue(garden.isWetGrass()); // grass is wet again
+        assertThat(garden.isWetGrass()).isTrue(); // grass is wet again
     }
 
     protected KieSession getSessionFromString( String drlString) {
@@ -172,7 +167,7 @@ public class BayesBeliefSystemTest {
 
         if ( kBuilder.hasErrors() ) {
             System.err.println( kBuilder.getErrors() );
-            fail();
+            fail("Unexpected errors");
         }
 
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -192,7 +187,7 @@ public class BayesBeliefSystemTest {
                       ResourceType.DRL );
         if ( kBuilder.hasErrors() ) {
             System.err.println( kBuilder.getErrors() );
-            fail();
+            fail("Unexpected execution path");
         }
 
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();

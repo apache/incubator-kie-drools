@@ -24,8 +24,7 @@ import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.gt;
 
 public class ManualQuantTest {
@@ -61,7 +60,7 @@ public class ManualQuantTest {
         Object result = compiledExpression.apply(emptyContext);
         LOG.debug("{}", result);
 
-        assertThat(result, is(true));
+        assertThat(result).isEqualTo(Boolean.TRUE);
     }
 
 }

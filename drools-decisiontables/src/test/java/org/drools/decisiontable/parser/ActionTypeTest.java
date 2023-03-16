@@ -18,13 +18,10 @@ package org.drools.decisiontable.parser;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
+import org.drools.decisiontable.parser.ActionType.Code;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-import org.drools.decisiontable.parser.ActionType;
-import static org.drools.decisiontable.parser.ActionType.Code;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ActionTypeTest {
 
@@ -34,172 +31,172 @@ public class ActionTypeTest {
         Map<Integer, ActionType> actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "C", 0, 1 );
         ActionType type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals( Code.CONDITION, type.getCode() );
+        assertThat(type.getCode()).isEqualTo(Code.CONDITION);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "CONDITION", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.CONDITION, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.CONDITION);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "A", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.ACTION, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.ACTION);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "ACTION", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.ACTION, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.ACTION);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "N", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.NAME, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.NAME);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "NAME", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.NAME, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.NAME);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "I", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.DESCRIPTION, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.DESCRIPTION);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "DESCRIPTION", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.DESCRIPTION, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.DESCRIPTION);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "P", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.SALIENCE, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.SALIENCE);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "PRIORITY", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.SALIENCE, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.SALIENCE);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "D", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.DURATION, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.DURATION);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "DURATION", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.DURATION, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.DURATION);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "T", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.TIMER, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.TIMER);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "TIMER", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.TIMER, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.TIMER);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "E", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.CALENDARS, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.CALENDARS);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "CALENDARS", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.CALENDARS, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.CALENDARS);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "U", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.NOLOOP, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.NOLOOP);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "NO-LOOP", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.NOLOOP, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.NOLOOP);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "L", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.LOCKONACTIVE, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.LOCKONACTIVE);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "LOCK-ON-ACTIVE", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.LOCKONACTIVE, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.LOCKONACTIVE);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "F", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.AUTOFOCUS, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.AUTOFOCUS);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "AUTO-FOCUS", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.AUTOFOCUS, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.AUTOFOCUS);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "X", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.ACTIVATIONGROUP, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.ACTIVATIONGROUP);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "ACTIVATION-GROUP", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.ACTIVATIONGROUP, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.ACTIVATIONGROUP);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "G", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.AGENDAGROUP, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.AGENDAGROUP);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "AGENDA-GROUP", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.AGENDAGROUP, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.AGENDAGROUP);
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "R", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.RULEFLOWGROUP, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.RULEFLOWGROUP);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "RULEFLOW-GROUP", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.RULEFLOWGROUP, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.RULEFLOWGROUP);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "V", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.DATEEFFECTIVE, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.DATEEFFECTIVE);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "DATE-EFFECTIVE", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.DATEEFFECTIVE, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.DATEEFFECTIVE);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "Z", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.DATEEXPIRES, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.DATEEXPIRES);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "DATE-EXPIRES", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.DATEEXPIRES, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.DATEEXPIRES);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "@", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.METADATA, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.METADATA);
 
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "METADATA", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(Code.METADATA, type.getCode());
+        assertThat(type.getCode()).isEqualTo(Code.METADATA);
 
     }
     

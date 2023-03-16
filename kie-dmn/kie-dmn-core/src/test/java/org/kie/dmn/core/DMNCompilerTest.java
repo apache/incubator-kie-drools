@@ -19,7 +19,6 @@ package org.kie.dmn.core;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
@@ -44,14 +43,8 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
@@ -67,21 +60,21 @@ public class DMNCompilerTest extends BaseVariantTest {
     public void testJavadocSimple() {
         final DMNRuntime runtime = createRuntime("javadocSimple.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_55F8F74F-3E9F-4FAA-BBF4-E6F9534B6B19", "new-file");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNType tVowel = dmnModel.getItemDefinitionByName("tVowel").getType();
-        assertThat(tVowel, is(notNullValue()));
-        assertThat(tVowel.isComposite(), is(false));
-        assertThat(tVowel, is(instanceOf(SimpleTypeImpl.class)));
-        assertThat(tVowel.getBaseType(), notNullValue());
-        assertThat(tVowel.getFields().size(), is(0));
+        assertThat(tVowel).isNotNull();
+        assertThat(tVowel.isComposite()).isFalse();
+        assertThat(tVowel).isInstanceOf(SimpleTypeImpl.class);
+        assertThat(tVowel.getBaseType()).isNotNull();
+        assertThat(tVowel.getFields()).hasSize(0);
 
         final DMNType tNumbers = dmnModel.getItemDefinitionByName("tNumbers").getType();
-        assertThat(tNumbers, is(notNullValue()));
-        assertThat(tNumbers.isComposite(), is(false));
-        assertThat(tNumbers, is(instanceOf(SimpleTypeImpl.class)));
-        assertThat(tNumbers.getBaseType(), notNullValue());
-        assertThat(tNumbers.getFields().size(), is(0));
+        assertThat(tNumbers).isNotNull();
+        assertThat(tNumbers.isComposite()).isFalse();
+        assertThat(tNumbers).isInstanceOf(SimpleTypeImpl.class);
+        assertThat(tNumbers.getBaseType()).isNotNull();
+        assertThat(tNumbers.getFields()).hasSize(0);
 
         final DMNContext context = runtime.newContext();
         context.set("a vowel", "a");
@@ -90,60 +83,60 @@ public class DMNCompilerTest extends BaseVariantTest {
 
         final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", evaluateAll);
-        assertThat(evaluateAll.hasErrors(), is(false));
+        assertThat(evaluateAll.hasErrors()).isFalse();
     }
 
     @Test
     public void testJavadocComposite() {
         final DMNRuntime runtime = createRuntime("javadocComposite.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7EC096B1-878B-4E85-8334-58B440BB6AD9", "new-file");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNType tPerson = dmnModel.getItemDefinitionByName("tPerson").getType();
-        assertThat(tPerson, is(notNullValue()));
-        assertThat(tPerson.isComposite(), is(true));
-        assertThat(tPerson, is(instanceOf(CompositeTypeImpl.class)));
-        assertThat(tPerson.getBaseType(), nullValue());
-        assertThat(tPerson.getFields().size(), is(2));
+        assertThat(tPerson).isNotNull();
+        assertThat(tPerson.isComposite()).isTrue();
+        assertThat(tPerson).isInstanceOf(CompositeTypeImpl.class);
+        assertThat(tPerson.getBaseType()).isNull();
+        assertThat(tPerson.getFields()).hasSize(2);
 
         final DMNContext context = runtime.newContext();
         context.set("a person", mapOf(entry("full name", "John Doe"), entry("age", 47)));
 
         final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", evaluateAll);
-        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
     }
 
     @Test
     public void testJavadocInnerComposite() {
         final DMNRuntime runtime = createRuntime("javadocInnerComposite.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7EC096B1-878B-4E85-8334-58B440BB6AD9bis", "new-file");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
         
         DMNTypeRegistry typeRegistry = ((DMNModelImpl) dmnModel).getTypeRegistry();
 
         final DMNType tPerson = dmnModel.getItemDefinitionByName("tPerson").getType();
-        assertThat(tPerson, is(notNullValue()));
-        assertThat(tPerson.isComposite(), is(true));
-        assertThat(tPerson, is(instanceOf(CompositeTypeImpl.class)));
-        assertThat(tPerson.getBaseType(), nullValue());
-        assertThat(tPerson.getFields().size(), is(2));
-        assertThat(typeRegistry.resolveType(tPerson.getNamespace(), tPerson.getName()), notNullValue());
+        assertThat(tPerson).isNotNull();
+        assertThat(tPerson.isComposite()).isTrue();
+        assertThat(tPerson).isInstanceOf(CompositeTypeImpl.class);
+        assertThat(tPerson.getBaseType()).isNull();
+        assertThat(tPerson.getFields()).hasSize(2);
+        assertThat(typeRegistry.resolveType(tPerson.getNamespace(), tPerson.getName())).isNotNull();
         final DMNType addressType = tPerson.getFields().get("address");
-        assertThat(addressType, is(instanceOf(CompositeTypeImpl.class)));
-        assertThat(addressType.getName(), is("address"));
-        assertThat(addressType.getFields().size(), is(2));
-        assertThat(typeRegistry.resolveType(addressType.getNamespace(), addressType.getName()), nullValue());
+        assertThat(addressType).isInstanceOf(CompositeTypeImpl.class);
+        assertThat(addressType.getName()).isEqualTo("address");
+        assertThat(addressType.getFields()).hasSize(2);
+        assertThat(typeRegistry.resolveType(addressType.getNamespace(), addressType.getName())).isNull();
 
         final DMNType tPart = dmnModel.getItemDefinitionByName("tPart").getType();
-        assertThat(tPart, is(notNullValue()));
-        assertThat(tPart.isComposite(), is(true));
-        assertThat(tPart, is(instanceOf(CompositeTypeImpl.class)));
-        assertThat(typeRegistry.resolveType(tPart.getNamespace(), tPart.getName()), notNullValue());
+        assertThat(tPart).isNotNull();
+        assertThat(tPart.isComposite()).isTrue();
+        assertThat(tPart).isInstanceOf(CompositeTypeImpl.class);
+        assertThat(typeRegistry.resolveType(tPart.getNamespace(), tPart.getName())).isNotNull();
         final DMNType gradeType = tPart.getFields().get("grade");
-        assertThat(gradeType, is(instanceOf(SimpleTypeImpl.class)));
-        assertThat(gradeType.getName(), is("grade"));
-        assertThat(typeRegistry.resolveType(gradeType.getNamespace(), gradeType.getName()), nullValue());
+        assertThat(gradeType).isInstanceOf(SimpleTypeImpl.class);
+        assertThat(gradeType.getName()).isEqualTo("grade");
+        assertThat(typeRegistry.resolveType(gradeType.getNamespace(), gradeType.getName())).isNull();
 
         final DMNContext context = runtime.newContext();
         context.set("a person", mapOf(entry("full name", "John Doe"), entry("address", mapOf(entry("country", "IT"), entry("zip", "abcde")))));
@@ -151,74 +144,74 @@ public class DMNCompilerTest extends BaseVariantTest {
         
         final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", evaluateAll);
-        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
     }
 
     @Test
     public void testItemDefAllowedValuesString() {
         final DMNRuntime runtime = createRuntime("0003-input-data-string-allowed-values.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
-        assertThat( dmnModel, notNullValue() );
+        assertThat(dmnModel).isNotNull();
 
         final ItemDefNode itemDef = dmnModel.getItemDefinitionByName("tEmploymentStatus" );
 
-        assertThat( itemDef.getName(), is( "tEmploymentStatus" ) );
-        assertThat( itemDef.getId(), is( nullValue() ) );
+        assertThat(itemDef.getName()).isEqualTo("tEmploymentStatus");
+        assertThat(itemDef.getId()).isNull();
 
         final DMNType type = itemDef.getType();
 
-        assertThat( type, is( notNullValue() ) );
-        assertThat( type.getName(), is( "tEmploymentStatus" ) );
-        assertThat( type.getId(), is( nullValue() ) );
-        assertThat( type, is( instanceOf( SimpleTypeImpl.class ) ) );
+        assertThat(type).isNotNull();
+        assertThat(type.getName()).isEqualTo("tEmploymentStatus");
+        assertThat(type.getId()).isNull();
+        assertThat(type).isInstanceOf(SimpleTypeImpl.class);
 
         final SimpleTypeImpl feelType = (SimpleTypeImpl) type;
 
         final EvaluationContext ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null);
-        assertThat( feelType.getFeelType(), is(instanceOf(AliasFEELType.class)));
-        assertThat( feelType.getFeelType().getName(), is("tEmploymentStatus"));
-        assertThat( feelType.getAllowedValuesFEEL().size(), is( 4 ) );
-        assertThat( feelType.getAllowedValuesFEEL().get( 0 ).apply( ctx, "UNEMPLOYED" ), is( true ) );
-        assertThat( feelType.getAllowedValuesFEEL().get( 1 ).apply( ctx, "EMPLOYED" ), is( true )   );
-        assertThat( feelType.getAllowedValuesFEEL().get( 2 ).apply( ctx, "SELF-EMPLOYED" ), is( true )  );
-        assertThat( feelType.getAllowedValuesFEEL().get( 3 ).apply( ctx, "STUDENT" ), is( true )  );
+        assertThat(feelType.getFeelType()).isInstanceOf(AliasFEELType.class);
+        assertThat(feelType.getFeelType().getName()).isEqualTo("tEmploymentStatus");
+        assertThat(feelType.getAllowedValuesFEEL()).hasSize(4);
+        assertThat(feelType.getAllowedValuesFEEL().get(0).apply(ctx, "UNEMPLOYED")).isTrue();
+        assertThat(feelType.getAllowedValuesFEEL().get(1).apply(ctx, "EMPLOYED")).isTrue();
+        assertThat(feelType.getAllowedValuesFEEL().get(2).apply(ctx, "SELF-EMPLOYED")).isTrue();
+        assertThat(feelType.getAllowedValuesFEEL().get(3).apply(ctx, "STUDENT")).isTrue();
     }
 
     @Test
     public void testCompositeItemDefinition() {
         final DMNRuntime runtime = createRuntime("0008-LX-arithmetic.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0008-LX-arithmetic" );
-        assertThat( dmnModel, notNullValue() );
+        assertThat(dmnModel).isNotNull();
 
         final ItemDefNode itemDef = dmnModel.getItemDefinitionByName("tLoan" );
 
-        assertThat( itemDef.getName(), is( "tLoan" ) );
-        assertThat( itemDef.getId(), is( "tLoan" ) );
+        assertThat(itemDef.getName()).isEqualTo("tLoan");
+        assertThat(itemDef.getId()).isEqualTo("tLoan");
 
         final DMNType type = itemDef.getType();
 
-        assertThat( type, is( notNullValue() ) );
-        assertThat( type.getName(), is( "tLoan" ) );
-        assertThat( type.getId(), is( "tLoan" ) );
-        assertThat( type, is( instanceOf( CompositeTypeImpl.class ) ) );
+        assertThat(type).isNotNull();
+        assertThat(type.getName()).isEqualTo("tLoan");
+        assertThat(type.getId()).isEqualTo("tLoan");
+        assertThat(type).isInstanceOf(CompositeTypeImpl.class);
 
         final CompositeTypeImpl compType = (CompositeTypeImpl) type;
 
-        assertThat( compType.getFields().size(), is( 3 ) );
+        assertThat(compType.getFields()).hasSize(3);
         final DMNType principal = compType.getFields().get("principal" );
-        assertThat( principal, is( notNullValue() ) );
-        assertThat( principal.getName(), is( "number" ) );
-        assertThat( ((SimpleTypeImpl)principal).getFeelType(), is( BuiltInType.NUMBER ) );
+        assertThat(principal).isNotNull();
+        assertThat(principal.getName()).isEqualTo("number");
+        assertThat(((SimpleTypeImpl)principal).getFeelType()).isEqualTo(BuiltInType.NUMBER);
 
         final DMNType rate = compType.getFields().get("rate" );
-        assertThat( rate, is( notNullValue() ) );
-        assertThat( rate.getName(), is( "number" ) );
-        assertThat( ((SimpleTypeImpl)rate).getFeelType(), is( BuiltInType.NUMBER ) );
+        assertThat(rate).isNotNull();
+        assertThat(rate.getName()).isEqualTo("number");
+        assertThat(((SimpleTypeImpl)rate).getFeelType()).isEqualTo(BuiltInType.NUMBER);
 
         final DMNType termMonths = compType.getFields().get("termMonths" );
-        assertThat( termMonths, is( notNullValue() ) );
-        assertThat( termMonths.getName(), is( "number" ) );
-        assertThat( ((SimpleTypeImpl)termMonths).getFeelType(), is( BuiltInType.NUMBER ) );
+        assertThat(termMonths).isNotNull();
+        assertThat(termMonths.getName()).isEqualTo("number");
+        assertThat(((SimpleTypeImpl)termMonths).getFeelType()).isEqualTo(BuiltInType.NUMBER);
     }
 
     @Test
@@ -227,7 +220,7 @@ public class DMNCompilerTest extends BaseVariantTest {
             createRuntime("compilationThrowsNPE.dmn", this.getClass());
             fail("shouldn't have reached here.");
         } catch (final Exception ex) {
-            assertThat(ex.getMessage(), Matchers.containsString("Unable to compile DMN model for the resource"));
+            assertThat(ex.getMessage()).containsSequence("Unable to compile DMN model for the resource");
         }
     }
 
@@ -236,8 +229,8 @@ public class DMNCompilerTest extends BaseVariantTest {
         // DROOLS-2161
         final DMNRuntime runtime = createRuntime("Recursive.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "Recursive" );
-        assertThat( dmnModel, notNullValue() );
-        assertFalse( evaluateModel(runtime, dmnModel, DMNFactory.newContext() ).hasErrors() );
+        assertThat(dmnModel).isNotNull();
+        assertThat(evaluateModel(runtime, dmnModel, DMNFactory.newContext()).hasErrors()).isFalse();
     }
 
     @Test
@@ -248,14 +241,14 @@ public class DMNCompilerTest extends BaseVariantTest {
 
         final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
                                                         "Imported Model");
-        assertThat(importedModel, notNullValue());
+        assertThat(importedModel).isNotNull();
         for (final DMNMessage message : importedModel.getMessages()) {
             LOG.debug("{}", message);
         }
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edab52",
                                                    "Importing Model");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
         for (final DMNMessage message : dmnModel.getMessages()) {
             LOG.debug("{}", message);
         }
@@ -268,12 +261,12 @@ public class DMNCompilerTest extends BaseVariantTest {
             LOG.debug("{}", message);
         }
         LOG.debug("{}", evaluateAll);
-        assertThat(evaluateAll.getDecisionResultByName("Greeting").getResult(), is("Hello John!"));
+        assertThat(evaluateAll.getDecisionResultByName("Greeting").getResult()).isEqualTo("Hello John!");
 
         if (isTypeSafe()) {
             FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)evaluateAll.getContext()).getFpa();
             Map<String, Object> allProperties = outputSet.allFEELProperties();
-            assertThat(allProperties.get("Greeting"), is("Hello John!"));
+            assertThat(allProperties.get("Greeting")).isEqualTo("Hello John!");
         }
     }
 
@@ -281,18 +274,16 @@ public class DMNCompilerTest extends BaseVariantTest {
     public void testWrongComparisonOps() {
         final DMNRuntime runtime = createRuntime("WrongComparisonOps.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_a937d093-86d3-4306-8db8-1e7a33588b68", "Drawing 1");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.getMessages(), hasSize(4));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.getMessages(DMNMessage.Severity.WARN), hasSize(4));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()),
-                   dmnModel.getMessages(DMNMessage.Severity.WARN)
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        assertThat(dmnModel.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).hasSize(4);
+        assertThat(dmnModel.getMessages(DMNMessage.Severity.WARN)).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).hasSize(4);
+        assertThat(dmnModel.getMessages(DMNMessage.Severity.WARN)
                            .stream()
                            .filter(m -> m.getSourceId().equals("_d72d6fab-1e67-4fe7-9c12-54800d6fe294") ||
                                         m.getSourceId().equals("_2390dd99-094d-4f97-aecc-9cccb697ce05") ||
                                         m.getSourceId().equals("_0c292d34-498e-4b08-ae99-3c694197b69f") ||
                                         m.getSourceId().equals("_21c7d800-b806-4b2e-9a10-00828de7f2d2"))
-                           .count(),
-                   is(4L));
+                           .count()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isEqualTo(4L);
     }
 }

@@ -35,7 +35,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class PropertyReactivityTest {
@@ -81,10 +81,10 @@ public class PropertyReactivityTest {
 
         Person me = new Person("Mario", 45);
         FactHandle meFh = ksession.insert( me );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         me.setAge( 46 );
         ksession.update( meFh, me, "age" );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

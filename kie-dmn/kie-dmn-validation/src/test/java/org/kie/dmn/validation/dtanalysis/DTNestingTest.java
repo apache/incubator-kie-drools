@@ -28,9 +28,7 @@ import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class DTNestingTest extends AbstractDTAnalysisTest {
@@ -45,7 +43,7 @@ public class DTNestingTest extends AbstractDTAnalysisTest {
     private void checkPositiveTableNestedInSubcontextOfDecision(List<DMNMessage> validate) {
         DTAnalysis analysis = getAnalysis(validate, "_83a8fbd6-ffcb-4068-ab6a-4a19086ce9c7");
 
-        assertThat(analysis.getGaps(), hasSize(1));
+        assertThat(analysis.getGaps()).hasSize(1);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
@@ -55,19 +53,19 @@ public class DTNestingTest extends AbstractDTAnalysisTest {
                                                                                                           new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(1));
+        assertThat(gaps).hasSize(1);
 
         // Assert GAPS
-        assertThat(analysis.getGaps(), contains(gaps.toArray()));
+        assertThat(analysis.getGaps()).containsAll(gaps);
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.getOverlaps()).hasSize(0);
     }
 
     private void checkNegativeTableInBKM(List<DMNMessage> validate) {
         DTAnalysis analysis = getAnalysis(validate, "_68839ac9-1d1b-4e12-9c4f-6b9048b860e1");
 
-        assertThat(analysis.getGaps(), hasSize(1));
+        assertThat(analysis.getGaps()).hasSize(1);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
@@ -77,12 +75,12 @@ public class DTNestingTest extends AbstractDTAnalysisTest {
                                                                                                           new Bound(Interval.POS_INF,
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(1));
+        assertThat(gaps).hasSize(1);
 
         // Assert GAPS
-        assertThat(analysis.getGaps(), contains(gaps.toArray()));
+        assertThat(analysis.getGaps()).containsAll(gaps);
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.getOverlaps()).hasSize(0);
     }
 }

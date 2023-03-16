@@ -35,10 +35,7 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DeclareTest extends AbstractDeclareTest {
@@ -87,14 +84,14 @@ public class DeclareTest extends AbstractDeclareTest {
 
             ksession.dispose();
 
-            assertNotEquals(34, list.get(0).hashCode());
-            assertNotEquals(34, list.get(1).hashCode());
-            assertNotEquals(list.get(0).hashCode(), list.get(1).hashCode());
-            assertNotSame(list.get(0), list.get(1));
-            assertNotEquals(list.get(0), list.get(1));
+            assertThat(list.get(0).hashCode()).isNotEqualTo(34);
+            assertThat(list.get(1).hashCode()).isNotEqualTo(34);
+            assertThat(list.get(0).hashCode()).isNotEqualTo(list.get(1).hashCode());
+            assertThat(list.get(0)).isNotSameAs(list.get(1));
+            assertThat(list.get(0)).isNotEqualTo(list.get(1));
 
-            assertNotSame(list.get(2), list.get(3));
-            assertEquals(list.get(2), list.get(3));
+            assertThat(list.get(2)).isNotSameAs(list.get(3));
+            assertThat(list.get(3)).isEqualTo(list.get(2));
         } finally {
             ksession.dispose();
         }
@@ -162,9 +159,9 @@ public class DeclareTest extends AbstractDeclareTest {
             session.fireAllRules();
 
             list = (List) session.getGlobal("list");
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
-            assertEquals("r1", list.get(0));
+            assertThat(list.get(0)).isEqualTo("r1");
         } finally {
             session.dispose();
         }
@@ -195,10 +192,10 @@ public class DeclareTest extends AbstractDeclareTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl1, drl2);
         final KieSession ksession = kbase.newKieSession();
         try {
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
             ksession.insert(new Person("Bob"));
-            assertEquals(1, ksession.fireAllRules());
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -259,7 +256,7 @@ public class DeclareTest extends AbstractDeclareTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
-            assertEquals(20, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(20);
         } finally {
             ksession.dispose();
         }
@@ -312,7 +309,7 @@ public class DeclareTest extends AbstractDeclareTest {
             ksession.setGlobal( "value", sb );
             ksession.fireAllRules();
 
-            assertEquals( "mario", sb.toString() );
+            assertThat(sb.toString()).isEqualTo("mario");
         } finally {
             ksession.dispose();
         }
@@ -376,7 +373,7 @@ public class DeclareTest extends AbstractDeclareTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertTrue(list.contains("OK"));
+            assertThat(list.contains("OK")).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -417,7 +414,7 @@ public class DeclareTest extends AbstractDeclareTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertTrue(list.contains(true));
+            assertThat(list.contains(true)).isTrue();
         } finally {
             ksession.dispose();
         }

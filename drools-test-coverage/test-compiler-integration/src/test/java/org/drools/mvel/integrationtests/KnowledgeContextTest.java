@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class KnowledgeContextTest {
@@ -63,7 +63,7 @@ public class KnowledgeContextTest {
         ksession.setGlobal("list", list);
         ksession.insert(new Message());
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("Hello World", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Hello World");
     }
 }

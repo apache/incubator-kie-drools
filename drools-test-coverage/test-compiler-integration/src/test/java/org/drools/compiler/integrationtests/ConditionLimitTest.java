@@ -12,7 +12,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ConditionLimitTest {
@@ -71,10 +71,10 @@ public class ConditionLimitTest {
         FieldObject result = new FieldObject("result", "");
         kSession.insert(result);
 
-        assertEquals("", result.getValue());		//make sure result is set right
+        assertThat(result.getValue()).isEqualTo("");		//make sure result is set right
 
         kSession.fireAllRules();
-        assertEquals("The rule has run.", result.getValue());		//rule has fired
+        assertThat(result.getValue()).isEqualTo("The rule has run.");		//rule has fired
 
 
         result.setValue("XXXXXX");
@@ -94,7 +94,7 @@ public class ConditionLimitTest {
              * and the input value is ignored.
              */
             kSession.fireAllRules();
-            assertEquals("The rule has run.", result.getValue());
+            assertThat(result.getValue()).isEqualTo("The rule has run.");
             result.setValue("XXXXXX");
         }
     }

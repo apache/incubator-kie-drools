@@ -40,10 +40,7 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassLoaderTest {
 
@@ -79,7 +76,7 @@ public class ClassLoaderTest {
         final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
         final ClassLoader classLoader = kieContainer.getClassLoader();
         final URL url = classLoader.getResource("META-INF/foo.xml");
-        assertNotNull(url);
+        assertThat(url).isNotNull();
 
         final KieSession ksession = kieContainer.newKieSession(KieSessionTestConfiguration.KIE_SESSION_MODEL_NAME);
         try {
@@ -88,8 +85,8 @@ public class ClassLoaderTest {
 
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
-            assertEquals(url.getPath(), list.get(0).getPath());
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0).getPath()).isEqualTo(url.getPath());
         } finally {
             ksession.dispose();
         }
@@ -141,22 +138,22 @@ public class ClassLoaderTest {
         kfs.generateAndWritePomXML(releaseId);
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(KieBaseTestConfiguration.CLOUD_IDENTITY, kfs, true);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
 
         final KieContainer kieContainer = ks.newKieContainer(releaseId);
         final ClassLoader classLoader = kieContainer.getClassLoader();
         final URL url = classLoader.getResource("META-INF/foo.xml");
-        assertNotNull(url);
+        assertThat(url).isNotNull();
 
         final KieSession ksession = kieContainer.newKieSession("testKsession");
         try {
-            final List<URL> list = new ArrayList<>();
+            final List<String> list = new ArrayList<>();
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
-            assertEquals(url.getPath(), list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo(url.getPath());
         } finally {
             ksession.dispose();
         }
@@ -172,7 +169,6 @@ public class ClassLoaderTest {
                      ResourceType.DRL);
         kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("test_NullFieldOnCompositeSink.drl")),
                      ResourceType.DRL);
-        assertFalse(kbuilder.getErrors().toString(),
-                    kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).as(kbuilder.getErrors().toString()).isFalse();
     }
 }

@@ -16,7 +16,6 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +35,7 @@ import org.kie.dmn.feel.util.EvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DirectCompilerUnaryTestsTest {
 
@@ -65,48 +63,48 @@ public class DirectCompilerUnaryTestsTest {
 
     @Test
     public void test_Dash() {
-        assertThat(parseCompileEvaluate("-", 1), is(Arrays.asList(true)));
-        assertThat(parseCompileEvaluate("-, -", 1), is(Collections.emptyList()));
+        assertThat(parseCompileEvaluate("-", 1)).containsExactly(Boolean.TRUE);
+        assertThat(parseCompileEvaluate("-, -", 1)).isEmpty();
     }
     
     @Test
     public void test_positiveUnaryTestIneq() {
-        assertThat(parseCompileEvaluate("<47", 1), is(Arrays.asList(true)));
-        assertThat(parseCompileEvaluate("<47, <100", 1), is(Arrays.asList(true, true)));
-        assertThat(parseCompileEvaluate("<47, <100, <-47", 1), is(Arrays.asList(true, true, false)));
-        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 0), is(Arrays.asList(false, false, true, true)));
-        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 1), is(Arrays.asList(true, false, true, true)));
-        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 2), is(Arrays.asList(true, false, true, true)));
-        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 3), is(Arrays.asList(true, true, false, true)));
-        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 4), is(Arrays.asList(true, true, false, true)));
-        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 5), is(Arrays.asList(true, true, false, false)));
-        assertThat(parseCompileEvaluate("!=1, !=42", 1), is(Arrays.asList(false, true)));
+        assertThat(parseCompileEvaluate("<47", 1)).containsExactly(Boolean.TRUE);
+        assertThat(parseCompileEvaluate("<47, <100", 1)).containsExactly(Boolean.TRUE, Boolean.TRUE);
+        assertThat(parseCompileEvaluate("<47, <100, <-47", 1)).containsExactly(Boolean.TRUE, Boolean.TRUE, Boolean.FALSE);
+        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 0)).containsExactly(Boolean.FALSE, Boolean.FALSE, Boolean.TRUE, Boolean.TRUE);
+        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 1)).containsExactly(Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, Boolean.TRUE);
+        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 2)).containsExactly(Boolean.TRUE, Boolean.FALSE, Boolean.TRUE, Boolean.TRUE);
+        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 3)).containsExactly(Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE);
+        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 4)).containsExactly(Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE);
+        assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 5)).containsExactly(Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE);
+        assertThat(parseCompileEvaluate("!=1, !=42", 1)).containsExactly(Boolean.FALSE, Boolean.TRUE);
     }
     
     @Test
     public void test_positiveUnaryTestIneq_forEQ() {
-        assertThat(parseCompileEvaluate("<47, =1", 1), is(Arrays.asList(true, true)));
-        assertThat(parseCompileEvaluate("<47, =47", 1), is(Arrays.asList(true, false)));
-        assertThat(parseCompileEvaluate("<47, 1", 1), is(Arrays.asList(true, true)));
-        assertThat(parseCompileEvaluate("<47, 47", 1), is(Arrays.asList(true, false)));
+        assertThat(parseCompileEvaluate("<47, =1", 1)).containsExactly(Boolean.TRUE, Boolean.TRUE);
+        assertThat(parseCompileEvaluate("<47, =47", 1)).containsExactly(Boolean.TRUE, Boolean.FALSE);
+        assertThat(parseCompileEvaluate("<47, 1", 1)).containsExactly(Boolean.TRUE, Boolean.TRUE);
+        assertThat(parseCompileEvaluate("<47, 47", 1)).containsExactly(Boolean.TRUE, Boolean.FALSE);
     }
 
     @Test
     public void test_not() {
-        assertThat(parseCompileEvaluate("not(=47), not(<1), not(!=1)", 1), is(Collections.emptyList()));
+        assertThat(parseCompileEvaluate("not(=47), not(<1), not(!=1)", 1)).isEmpty();
     }
 
     @Test
     public void test_simpleUnaryTest_forRANGE() {
-        assertThat(parseCompileEvaluate("[1..2]", 1), is(Collections.singletonList(true)));
-        assertThat(parseCompileEvaluate("[1..2], [2..3]", 1), is(Arrays.asList(true, false)));
-        assertThat(parseCompileEvaluate("(1..2], [2..3]", 1), is(Arrays.asList(false, false)));
-        assertThat(parseCompileEvaluate("(1..2], [2..3]", 2), is(Arrays.asList(true, true)));
+        assertThat(parseCompileEvaluate("[1..2]", 1)).containsExactly(Boolean.TRUE);
+        assertThat(parseCompileEvaluate("[1..2], [2..3]", 1)).containsExactly(Boolean.TRUE, Boolean.FALSE);
+        assertThat(parseCompileEvaluate("(1..2], [2..3]", 1)).containsExactly(Boolean.FALSE, Boolean.FALSE);
+        assertThat(parseCompileEvaluate("(1..2], [2..3]", 2)).containsExactly(Boolean.TRUE, Boolean.TRUE);
     }
 
     @Test
     public void t2() {
-        assertThat(parseCompileEvaluate("\"asd\"", "asd"), is(Collections.singletonList(true)));
+        assertThat(parseCompileEvaluate("\"asd\"", "asd")).containsExactly(Boolean.TRUE);
     }
 
     private CompiledFEELUnaryTests parse(String input, FEELEventListenersManager mgr, CompiledFEELSupport.SyntaxErrorListener listener) {

@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith( Parameterized.class )
 public class SelectExactMatcherNegateTest {
@@ -85,19 +85,17 @@ public class SelectExactMatcherNegateTest {
     public void testAll() throws Exception {
         final Collection<Item> all = select.all();
 
-        assertEquals( amount, all.size() );
+        assertThat(all.size()).isEqualTo(amount);
     }
 
     @Test
     public void testFirst() throws Exception {
-        assertEquals( firstValue,
-                      select.first().cost );
+        assertThat(select.first().cost).isEqualTo(firstValue);
     }
 
     @Test
     public void testLast() throws Exception {
-        assertEquals( lastValue,
-                      select.last().cost );
+        assertThat(select.last().cost).isEqualTo(lastValue);
     }
 
     private class Item {

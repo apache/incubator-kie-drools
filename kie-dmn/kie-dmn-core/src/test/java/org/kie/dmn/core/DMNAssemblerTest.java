@@ -19,9 +19,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNAssemblerTest extends BaseInterpretedVsCompiledTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNAssemblerTest.class);
@@ -42,8 +40,8 @@ public class DMNAssemblerTest extends BaseInterpretedVsCompiledTest {
         
         LOG.info("buildAll() completed.");
         results.getMessages(Level.ERROR).forEach( e -> LOG.error("{}", e));
-        
-        assertTrue( results.getMessages(Level.ERROR).size() > 0 );
+
+        assertThat(results.getMessages(Level.ERROR)).hasSizeGreaterThan(0);
     }
 
     @Test
@@ -53,7 +51,7 @@ public class DMNAssemblerTest extends BaseInterpretedVsCompiledTest {
         final DMNContext ctx = runtime.newContext();
         ctx.set( "timestring", "2016-12-20T14:30:22z" );
         final DMNResult result = runtime.evaluateAll(model, ctx);
-        assertEquals( DateTimeFormatter.ISO_TIME.parse( "14:30:22z", OffsetTime::from ), result.getDecisionResultByName( "time" ).getResult() );
+        assertThat(result.getDecisionResultByName("time").getResult()).isEqualTo(DateTimeFormatter.ISO_TIME.parse("14:30:22z", OffsetTime::from));
     }
 
     @Test
@@ -64,7 +62,7 @@ public class DMNAssemblerTest extends BaseInterpretedVsCompiledTest {
         final DMNContext ctx = runtime.newContext();
         ctx.set( "timestring", "2016-12-20T14:30:22z" );
         final DMNResult result = runtime.evaluateAll(model, ctx);
-        assertNull( result.getDecisionResultByName("time").getResult() );
+        assertThat(result.getDecisionResultByName("time").getResult()).isNull();
     }
 
     @Test
@@ -82,7 +80,7 @@ public class DMNAssemblerTest extends BaseInterpretedVsCompiledTest {
         final DMNContext ctx = runtime.newContext();
         ctx.set( "timestring", "2016-12-20T14:30:22z" );
         final DMNResult result = runtime.evaluateAll(model, ctx);
-        assertNull( result.getDecisionResultByName("time").getResult() );
+        assertThat(result.getDecisionResultByName("time").getResult()).isNull();
     }
 
     @After

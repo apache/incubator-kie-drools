@@ -15,16 +15,23 @@
 
 package org.drools.verifier.visitor;
 
-import org.drools.core.base.evaluators.Operator;
+import java.util.Collection;
+
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.verifier.TestBase;
-import org.drools.verifier.components.*;
+import org.drools.verifier.components.Eval;
+import org.drools.verifier.components.Field;
+import org.drools.verifier.components.NumberRestriction;
+import org.drools.verifier.components.Restriction;
+import org.drools.verifier.components.StringRestriction;
+import org.drools.verifier.components.VariableRestriction;
+import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.junit.Test;
 
-import java.util.Collection;
-
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ExprConstraintDescrVisitorTest extends TestBase {
 
@@ -33,18 +40,18 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("ExprConstraintDescr1.drl"));
 
-        assertNotNull(packageDescr);
+        assertThat(packageDescr).isNotNull();
 
         packageDescrVisitor.visitPackageDescr(packageDescr);
 
         Collection<StringRestriction> allRestrictions = verifierData.getAll(VerifierComponentType.RESTRICTION);
         Collection<Field> allFields = verifierData.getAll(VerifierComponentType.FIELD);
 
-        assertEquals(3, allRestrictions.size());
-        assertEquals(3, allFields.size());
+        assertThat(allRestrictions.size()).isEqualTo(3);
+        assertThat(allFields.size()).isEqualTo(3);
 
         for (Field field : allFields) {
-            assertNotNull(field.getFieldType());
+            assertThat(field.getFieldType()).isNotNull();
         }
 
         assertContainsField("name");
@@ -62,13 +69,13 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("ExprConstraintDescr2.drl"));
 
-        assertNotNull(packageDescr);
+        assertThat(packageDescr).isNotNull();
 
         packageDescrVisitor.visitPackageDescr(packageDescr);
 
         Collection<StringRestriction> allRestrictions = verifierData.getAll(VerifierComponentType.RESTRICTION);
 
-        assertEquals(2, allRestrictions.size());
+        assertThat(allRestrictions.size()).isEqualTo(2);
         assertContainsFields(1);
 
 
@@ -83,13 +90,13 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("ExprConstraintDescr3.drl"));
 
-        assertNotNull(packageDescr);
+        assertThat(packageDescr).isNotNull();
 
         packageDescrVisitor.visitPackageDescr(packageDescr);
 
         Collection<StringRestriction> allRestrictions = verifierData.getAll(VerifierComponentType.RESTRICTION);
 
-        assertEquals(1, allRestrictions.size());
+        assertThat(allRestrictions.size()).isEqualTo(1);
         assertContainsFields(1);
 
         assertContainsField("age");

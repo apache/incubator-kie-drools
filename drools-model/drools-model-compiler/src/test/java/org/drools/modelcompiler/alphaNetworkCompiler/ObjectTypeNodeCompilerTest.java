@@ -10,7 +10,7 @@ import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ObjectTypeNodeCompilerTest extends BaseModelTest {
 
@@ -32,7 +32,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         ksession.insert("Luca");
         ksession.insert("Asdrubale");
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         ksession.insert(new Person("Luca"));
         ksession.insert(new Person("Asdrubale"));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     /*
@@ -92,7 +92,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         ksession.insert(new Person("Luca", new BigDecimal(0)));
         ksession.insert(new Person("Asdrubale", new BigDecimal(10)));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -120,7 +120,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         ksession.insert(new Person("Luca"));
         ksession.insert(new Person("Asdrubale"));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -147,7 +147,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         ksession.insert("Luca");
         ksession.insert("Asdrubale");
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -171,7 +171,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
         ksession.insert(new ChildFactWithEnum1(1, 3, EnumFact1.FIRST));
         ksession.insert(new ChildFactWithEnum1(1, 3, EnumFact1.SECOND));
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -194,10 +194,10 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         Result result = new Result();
         ksession.insert(result);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.fireAllRules();
-        assertEquals("Asdrubale is greater than 4 and smaller than 10", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Asdrubale is greater than 4 and smaller than 10");
     }
 
     @Test
@@ -216,10 +216,10 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         final Person luca = new Person("Luca", 30);
         ksession.insert(luca);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.fireAllRules();
-        assertEquals("Luca30", luca.getName());
+        assertThat(luca.getName()).isEqualTo("Luca30");
     }
 
     @Test
@@ -241,10 +241,10 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         Result result = new Result();
         ksession.insert(result);
 
-        assertEquals(10, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(10);
 
         ksession.fireAllRules();
-        assertTrue(luca.getAge() == 40);
+        assertThat(luca.getAge() == 40).isTrue();
     }
 
     @Test
@@ -259,7 +259,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
         try {
             ksession.insert(new Person("Mario", 45));
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }

@@ -36,10 +36,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class QueryTest extends CommonTestMethodBase {
 
@@ -56,41 +53,40 @@ public class QueryTest extends CommonTestMethodBase {
 
         FlatQueryResults flatResults = new FlatQueryResults(results);
 
-        assertEquals( "Query results size", results.size(), flatResults.size() );
-        assertEquals( "Query results identifiers", results.getIdentifiers().length, flatResults.getIdentifiers().length );
+        assertThat(flatResults.size()).as("Query results size").isEqualTo(results.size());
+        assertThat(flatResults.getIdentifiers().length).as("Query results identifiers").isEqualTo(results.getIdentifiers().length);
         Set<String> resultIds = new TreeSet<String>(Arrays.asList(results.getIdentifiers()));
         Set<String> flatIds = new TreeSet<String>(Arrays.asList(flatResults.getIdentifiers()));
-        assertArrayEquals("Flat query results identifiers", resultIds.toArray(), flatIds.toArray() );
+        assertThat(flatIds.toArray() ).as("Flat query results identifiers").isEqualTo(resultIds.toArray());
 
         String [] identifiers = results.getIdentifiers();
         Iterator<QueryResultsRow> copyFlatIter = flatResults.iterator();
         for( int i = 0; i < results.size(); ++i ) {
             QueryResultsRow row = results.get(i);
-            assertTrue( "Round-tripped flat query results contain less rows than original query results", copyFlatIter.hasNext());
+            assertThat(copyFlatIter.hasNext()).as("Round-tripped flat query results contain less rows than original query results").isTrue();
             QueryResultsRow copyRow = copyFlatIter.next();
             for( String id : identifiers ) {
                 Object obj = row.get(id);
                 if( obj != null ) {
                     Object copyObj = copyRow.get(id);
-                    assertTrue( "Flat query result [" + i + "] does not contain result: '" + id + "': " + obj + "/" + copyObj, obj != null && obj.equals(copyObj));
+                    assertThat(obj != null && obj.equals(copyObj)).as("Flat query result [" + i + "] does not contain result: '" + id + "': " + obj + "/" + copyObj).isTrue();
                 }
                 FactHandle fh = row.getFactHandle(id);
                 FactHandle copyFh = copyRow.getFactHandle(id);
                 if( fh != null ) {
-                    assertNotNull( "Flat query result [" + i + "] does not contain facthandle: '" + ((InternalFactHandle) fh).getId() + "'", copyFh);
+                    assertThat(copyFh).as("Flat query result [" + i + "] does not contain facthandle: '" + ((InternalFactHandle) fh).getId() + "'").isNotNull();
                     String fhStr = fh.toExternalForm();
                     fhStr = fhStr.substring(0, fhStr.lastIndexOf(":"));
                     String copyFhStr = copyFh.toExternalForm();
                     copyFhStr = copyFhStr.substring(0, copyFhStr.lastIndexOf(":"));
-                    assertEquals( "Unequal fact handles for fact handle '" + ((InternalFactHandle) fh).getId() + "':",
-                                  fhStr, copyFhStr );
+                    assertThat(copyFhStr).as("Unequal fact handles for fact handle '" + ((InternalFactHandle) fh).getId() + "':").isEqualTo(fhStr);
                 }
             }
         }
 
         // check identifiers
         Set<String> copyFlatIds = new TreeSet<String>(Arrays.asList(flatResults.getIdentifiers()));
-        assertArrayEquals("Flat query results identifiers", flatIds.toArray(), copyFlatIds.toArray() );
+        assertThat(copyFlatIds.toArray() ).as("Flat query results identifiers").isEqualTo(flatIds.toArray());
         return flatResults;
     }
 
@@ -106,16 +102,15 @@ public class QueryTest extends CommonTestMethodBase {
 
         String queryName = "simple query";
         org.kie.api.runtime.rule.QueryResults results = getQueryResults(session, queryName);
-        assertEquals( 1,
-                results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         QueryResultsRow row = results.iterator().next();
         if( row instanceof FlatQueryResultRow ) {
             FlatQueryResultRow flatRow = (FlatQueryResultRow) row;
-            assertEquals( 0, flatRow.getIdentifiers().size() );
+            assertThat(flatRow.getIdentifiers().size()).isEqualTo(0);
         } else if( row instanceof QueryResultsRowImpl ) {
             QueryResultsRowImpl rowImpl = (QueryResultsRowImpl) row;
-            assertEquals( 0, rowImpl.getDeclarations().size() );
+            assertThat(rowImpl.getDeclarations().size()).isEqualTo(0);
         }
     }
 
@@ -129,23 +124,21 @@ public class QueryTest extends CommonTestMethodBase {
         session.insert( stilton );
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
         QueryResults results = session.getQueryResults( "simple query" );
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         Rule rule = kbase.getKiePackage( "org.drools.compiler.test" ).getRules().iterator().next();
 
-        assertEquals( "simple query",
-                      rule.getName());
+        assertThat(rule.getName()).isEqualTo("simple query");
 
         kbase.removeQuery( "org.drools.compiler.test",
                            "simple query" );
 
-        assertTrue( kbase.getKiePackage( "org.drools.compiler.test" ).getRules().isEmpty() );
+        assertThat(kbase.getKiePackage("org.drools.compiler.test").getRules().isEmpty()).isTrue();
 
         try {
             results = session.getQueryResults( "simple query" );
         } catch ( Exception e ) {
-            assertTrue( e.getMessage().endsWith( "does not exist") );
+            assertThat(e.getMessage().endsWith("does not exist")).isTrue();
         }
     }
 }

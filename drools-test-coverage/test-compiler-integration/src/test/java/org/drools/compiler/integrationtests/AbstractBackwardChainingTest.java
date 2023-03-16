@@ -26,8 +26,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractBackwardChainingTest {
 
@@ -207,18 +206,18 @@ public abstract class AbstractBackwardChainingTest {
             ksession.insert("go1");
             ksession.fireAllRules();
             if (kieBaseTestConfiguration.isIdentity()) {
-                assertEquals(5, list.size());
-                assertTrue(list.contains("darth : 100"));
-                assertTrue(list.contains("darth : 200"));
-                assertTrue(list.contains("yoda : 300"));
-                assertTrue(list.contains("luke : 300"));
-                assertTrue(list.contains("bobba : 300"));
+                assertThat(list.size()).isEqualTo(5);
+                assertThat(list.contains("darth : 100")).isTrue();
+                assertThat(list.contains("darth : 200")).isTrue();
+                assertThat(list.contains("yoda : 300")).isTrue();
+                assertThat(list.contains("luke : 300")).isTrue();
+                assertThat(list.contains("bobba : 300")).isTrue();
             } else {
-                assertEquals(4, list.size());
-                assertTrue(list.contains("darth : 100"));
-                assertTrue(list.contains("yoda : 300"));
-                assertTrue(list.contains("luke : 300"));
-                assertTrue(list.contains("bobba : 300"));
+                assertThat(list.size()).isEqualTo(4);
+                assertThat(list.contains("darth : 100")).isTrue();
+                assertThat(list.contains("yoda : 300")).isTrue();
+                assertThat(list.contains("luke : 300")).isTrue();
+                assertThat(list.contains("bobba : 300")).isTrue();
             }
 
             list.clear();
@@ -226,14 +225,14 @@ public abstract class AbstractBackwardChainingTest {
             ksession.fireAllRules();
 
             if (kieBaseTestConfiguration.isIdentity()) {
-                assertEquals(3, list.size());
-                assertTrue(list.contains("darth : 100"));
-                assertTrue(list.contains("darth : 200"));
-                assertTrue(list.contains("yoda : 300"));
+                assertThat(list.size()).isEqualTo(3);
+                assertThat(list.contains("darth : 100")).isTrue();
+                assertThat(list.contains("darth : 200")).isTrue();
+                assertThat(list.contains("yoda : 300")).isTrue();
             } else {
-                assertEquals(2, list.size());
-                assertTrue(list.contains("darth : 100"));
-                assertTrue(list.contains("yoda : 300"));
+                assertThat(list.size()).isEqualTo(2);
+                assertThat(list.contains("darth : 100")).isTrue();
+                assertThat(list.contains("yoda : 300")).isTrue();
             }
 
             list.clear();
@@ -241,22 +240,22 @@ public abstract class AbstractBackwardChainingTest {
             ksession.fireAllRules();
 
             if (kieBaseTestConfiguration.isIdentity()) {
-                assertEquals(2, list.size());
-                assertTrue(list.contains("darth : 100"));
-                assertTrue(list.contains("darth : 200"));
+                assertThat(list.size()).isEqualTo(2);
+                assertThat(list.contains("darth : 100")).isTrue();
+                assertThat(list.contains("darth : 200")).isTrue();
             } else {
-                assertEquals(1, list.size());
-                assertTrue(list.contains("darth : 100"));
+                assertThat(list.size()).isEqualTo(1);
+                assertThat(list.contains("darth : 100")).isTrue();
             }
 
             list.clear();
             ksession.insert("go4");
             ksession.fireAllRules();
             if (kieBaseTestConfiguration.isIdentity()) {
-                assertEquals(1, list.size());
-                assertTrue(list.contains("darth : 200"));
+                assertThat(list.size()).isEqualTo(1);
+                assertThat(list.contains("darth : 200")).isTrue();
             } else {
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
             }
         } finally {
             ksession.dispose();

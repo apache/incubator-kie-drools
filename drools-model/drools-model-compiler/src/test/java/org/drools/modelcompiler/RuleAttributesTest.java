@@ -32,8 +32,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class RuleAttributesTest extends BaseModelTest {
 
@@ -57,7 +55,7 @@ public class RuleAttributesTest extends BaseModelTest {
         ksession.insert( me );
         ksession.fireAllRules();
 
-        assertEquals( 41, me.getAge() );
+        assertThat(me.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -85,8 +83,8 @@ public class RuleAttributesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals(1, results.size());
-        assertTrue(results.contains("R2"));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.contains("R2")).isTrue();
     }
 
     @Test
@@ -112,8 +110,8 @@ public class RuleAttributesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals(1, results.size());
-        assertTrue(results.contains("R2"));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.contains("R2")).isTrue();
     }
 
     @Test
@@ -137,9 +135,9 @@ public class RuleAttributesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Object> results = getObjectsIntoList(ksession, Object.class);
-        assertEquals(2, results.size());
-        assertTrue(results.contains(mario));
-        assertTrue(!results.contains("R1"));
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains(mario)).isTrue();
+        assertThat(!results.contains("R1")).isTrue();
     }
 
     @Test
@@ -178,7 +176,7 @@ public class RuleAttributesTest extends BaseModelTest {
         ksession.getAgenda().getAgendaGroup( "Start" ).setFocus();
 
         int x = ksession.fireAllRules( 10 );
-        assertEquals( 2, x );
+        assertThat(x).isEqualTo(2);
     }
 
     @Test
@@ -215,7 +213,7 @@ public class RuleAttributesTest extends BaseModelTest {
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     private static final org.kie.api.time.Calendar WEEKEND = new org.kie.api.time.Calendar() {
@@ -440,7 +438,7 @@ public class RuleAttributesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "ok" );
@@ -449,7 +447,7 @@ public class RuleAttributesTest extends BaseModelTest {
         ksession.insert( 1 );
 
         ksession.fireAllRules();
-        assertEquals(list, Arrays.asList("test", 3, "ok", 1));
+        assertThat(list).isEqualTo(Arrays.asList("test", 3, "ok", 1));
     }
 
     public static final int CONST_SALIENCE = 1;
@@ -473,13 +471,13 @@ public class RuleAttributesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "ok" );
         ksession.insert( 1 );
 
         ksession.fireAllRules();
-        assertEquals(list, Arrays.asList(1, "ok"));
+        assertThat(list).isEqualTo(Arrays.asList(1, "ok"));
     }
 }

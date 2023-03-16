@@ -26,12 +26,11 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.backend.util.ResourceHelper.getClassPathElements;
 import static org.drools.scenariosimulation.backend.util.ResourceHelper.getResourcesByExtension;
 import static org.drools.scenariosimulation.backend.util.ResourceHelper.getResourcesFromDirectory;
 import static org.drools.scenariosimulation.backend.util.ResourceHelper.internalGetResources;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ResourceHelperTest {
 
@@ -39,40 +38,40 @@ public class ResourceHelperTest {
     public void getClassPathElementsTest() {
         List<String> classPathElements = Arrays.asList(getClassPathElements());
         List<String> notJar = classPathElements.stream().filter(elem -> !elem.contains(".jar")).collect(Collectors.toList());
-        assertTrue(notJar.stream().anyMatch(elem -> elem.contains("test-classes")));
+        assertThat(notJar.stream().anyMatch(elem -> elem.contains("test-classes"))).isTrue();
     }
 
     @Test
     public void getResourcesByExtensionTest() {
         Stream<String> txtResources = getResourcesByExtension("txt");
         List<String> resources = txtResources.collect(Collectors.toList());
-        assertEquals(1, resources.size());
-        assertTrue(resources.stream().anyMatch(elem -> elem.endsWith("testFile.txt")));
+        assertThat(resources.size()).isEqualTo(1);
+        assertThat(resources.stream().anyMatch(elem -> elem.endsWith("testFile.txt"))).isTrue();
     }
 
     @Test
     public void getResourcesFromDirectoryTest() {
         List<String> classPathElements = Arrays.asList(getClassPathElements());
         Optional<String> testFolder = classPathElements.stream().filter(elem -> elem.contains("test-classes")).findFirst();
-        assertTrue(testFolder.isPresent());
+        assertThat(testFolder.isPresent()).isTrue();
         File dir = new File(testFolder.get());
         List<String> filesFound = getResourcesFromDirectory(dir, Pattern.compile(".*testFile.txt"))
                 .collect(Collectors.toList());
-        assertEquals(1, filesFound.size());
+        assertThat(filesFound.size()).isEqualTo(1);
 
-        assertEquals(0, getResourcesFromDirectory(null, null).count());
-        assertEquals(0, getResourcesFromDirectory(dir, Pattern.compile("noMatch")).count());
+        assertThat(getResourcesFromDirectory(null, null).count()).isEqualTo(0);
+        assertThat(getResourcesFromDirectory(dir, Pattern.compile("noMatch")).count()).isEqualTo(0);
     }
 
     @Test
     public void internalGetResourcesTest() {
         List<String> classPathElements = Arrays.asList(getClassPathElements());
         Optional<String> testFolder = classPathElements.stream().filter(elem -> elem.contains("test-classes")).findFirst();
-        assertTrue(testFolder.isPresent());
+        assertThat(testFolder.isPresent()).isTrue();
         File dir = new File(testFolder.get());
         List<String> filesFound = internalGetResources(testFolder.get(), Pattern.compile(".*\\.txt$")).collect(Collectors.toList());
-        assertEquals(1, filesFound.size());
+        assertThat(filesFound.size()).isEqualTo(1);
 
-        assertEquals(0, internalGetResources(filesFound.get(0), Pattern.compile(".*\\.txt$")).count());
+        assertThat(internalGetResources(filesFound.get(0), Pattern.compile(".*\\.txt$")).count()).isEqualTo(0);
     }
 }

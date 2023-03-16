@@ -15,10 +15,6 @@
 
 package org.drools.verifier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -37,6 +33,9 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.visitor.PackageDescrVisitor;
 import org.junit.Before;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class TestBase {
 
@@ -59,7 +58,7 @@ public class TestBase {
         Variable variable = verifierData.getVariableByRuleAndVariableName(ruleName,
                 variableName);
 
-        assertNotNull(String.format("Could not find Variable : %s ", variableName), variable);
+        assertThat(variable).as(String.format("Could not find Variable : %s ", variableName)).isNotNull();
     }
 
     protected void assertContainsField(String name) {
@@ -77,6 +76,6 @@ public class TestBase {
     protected void assertContainsFields(int amount) {
         Collection<Field> allFields = verifierData.getAll(VerifierComponentType.FIELD);
 
-        assertEquals(amount, allFields.size());
+        assertThat(allFields.size()).isEqualTo(amount);
     }
 }

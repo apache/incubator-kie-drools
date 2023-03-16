@@ -26,9 +26,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class VacationDaysTest extends BaseDMN1_1VariantTest {
 
@@ -74,7 +72,7 @@ public class VacationDaysTest extends BaseDMN1_1VariantTest {
     private void executeTest(final int age, final int yearsService, final int expectedVacationDays ) {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0020-vacation-days.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0020-vacation-days" );
-        assertThat( dmnModel, notNullValue() );
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = DMNFactory.newContext();
 
@@ -85,7 +83,7 @@ public class VacationDaysTest extends BaseDMN1_1VariantTest {
 
         final DMNContext result = dmnResult.getContext();
 
-        assertThat( result.get( "Total Vacation Days" ), is( BigDecimal.valueOf( expectedVacationDays ) ) );
+        assertThat(result.get("Total Vacation Days")).isEqualTo(BigDecimal.valueOf(expectedVacationDays));
     }
 }
 

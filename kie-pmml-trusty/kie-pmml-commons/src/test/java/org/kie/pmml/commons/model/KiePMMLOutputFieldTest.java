@@ -33,11 +33,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLOutputFieldTest {
@@ -55,12 +51,12 @@ public class KiePMMLOutputFieldTest {
                 "val-" + i, i)).collect(Collectors.toList());
         Optional<Object> retrieved = KiePMMLOutputField.getValueFromKiePMMLNameValuesByVariableName(variableName,
                                                                                                     kiePMMLNameValues);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         final Object variableValue = 243.94;
         kiePMMLNameValues.add(new KiePMMLNameValue(variableName, variableValue));
         retrieved = KiePMMLOutputField.getValueFromKiePMMLNameValuesByVariableName(variableName, kiePMMLNameValues);
-        assertTrue(retrieved.isPresent());
-        assertEquals(variableValue, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(variableValue);
     }
 
     @Test
@@ -69,12 +65,12 @@ public class KiePMMLOutputFieldTest {
         final Map<String, Object> resultsVariables = new HashMap<>();
         Optional<Object> retrieved = KiePMMLOutputField.getValueFromPMMLResultByVariableName(variableName,
                                                                                              resultsVariables);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         final Object variableValue = 243.94;
         resultsVariables.put(variableName, variableValue);
         retrieved = KiePMMLOutputField.getValueFromPMMLResultByVariableName(variableName, resultsVariables);
-        assertTrue(retrieved.isPresent());
-        assertEquals(variableValue, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(variableValue);
     }
 
     @Test
@@ -88,14 +84,14 @@ public class KiePMMLOutputFieldTest {
                 "val-" + i, i)).collect(Collectors.toList());
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
                                                        kiePMMLNameValues, Collections.emptyList());
-        assertNull(kiePMMLOutputField.evaluate(processingDTO));
+        assertThat(kiePMMLOutputField.evaluate(processingDTO)).isNull();
         final Object variableValue = 243.94;
         kiePMMLNameValues.add(new KiePMMLNameValue(variableName, variableValue));
         processingDTO = getProcessingDTO(Collections.emptyList(),
                                          kiePMMLNameValues, Collections.emptyList());
         Object retrieved = kiePMMLOutputField.evaluate(processingDTO);
-        assertNotNull(retrieved);
-        assertEquals(variableValue, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(variableValue);
     }
 
     @Test
@@ -108,13 +104,13 @@ public class KiePMMLOutputFieldTest {
                                                                                 "reasonCode-" + i)
                 .collect(Collectors.toList());
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), reasonCodes);
-        assertNull(kiePMMLOutputField.evaluate(processingDTO));
+        assertThat(kiePMMLOutputField.evaluate(processingDTO)).isNull();
         final String variableValue = "reasonCode-3";
         reasonCodes.add(variableValue);
         processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), reasonCodes);
         Object retrieved = kiePMMLOutputField.evaluate(processingDTO);
-        assertNotNull(retrieved);
-        assertEquals(variableValue, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(variableValue);
     }
 
     @Test
@@ -130,7 +126,7 @@ public class KiePMMLOutputFieldTest {
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), new ArrayList<>(),
                                                        Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
-        assertEquals(value1, retrieved);
+        assertThat(retrieved).isEqualTo(value1);
     }
 
     @Test
@@ -147,7 +143,7 @@ public class KiePMMLOutputFieldTest {
                                                        Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)),
                                                        Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
-        assertEquals(value1, retrieved);
+        assertThat(retrieved).isEqualTo(value1);
     }
 
     @Test
@@ -171,7 +167,7 @@ public class KiePMMLOutputFieldTest {
                                                        Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
         Object expected = value1 / value2;
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -194,7 +190,7 @@ public class KiePMMLOutputFieldTest {
         ProcessingDTO processingDTO = getProcessingDTO(getOutputFields(), new ArrayList<>(), Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
         Object expected = value1 / value2;
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     private List<KiePMMLNameValue> getKiePMMLNameValues() {

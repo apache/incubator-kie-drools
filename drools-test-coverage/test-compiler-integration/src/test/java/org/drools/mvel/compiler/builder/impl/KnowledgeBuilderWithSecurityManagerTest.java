@@ -29,7 +29,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KnowledgeBuilderWithSecurityManagerTest extends DroolsTestCase {
 
@@ -64,7 +64,7 @@ public class KnowledgeBuilderWithSecurityManagerTest extends DroolsTestCase {
 
         InputStream is = this.getClass().getResourceAsStream( "/com/security/example.drl" );
         builder.addPackageFromDrl( new InputStreamReader( is ) );
-        assertTrue( builder.getErrors().getErrors().length == 0  );
+        assertThat(builder.getErrors().getErrors().length == 0).isTrue();
     }
 
 }

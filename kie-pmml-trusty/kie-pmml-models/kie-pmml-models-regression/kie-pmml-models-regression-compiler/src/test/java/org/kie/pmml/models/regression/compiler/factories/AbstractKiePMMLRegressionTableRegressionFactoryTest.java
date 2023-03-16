@@ -23,15 +23,15 @@ import java.util.stream.IntStream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.validator.language_level_validations.Java8Validator;
 import com.github.javaparser.ast.validator.ProblemReporter;
+import com.github.javaparser.ast.validator.language_level_validations.Java8Validator;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionTable;
 import org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getCategoricalPredictor;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getNumericPredictor;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getPredictorTerm;

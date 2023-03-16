@@ -32,8 +32,7 @@ import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -66,8 +65,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "Toni");
 
-        assertTrue(a.isRedundant(b));
-        assertTrue(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isTrue();
+        assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
@@ -89,8 +88,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "Rambo");
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isFalse();
+        assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
@@ -112,8 +111,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "Toni");
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isFalse();
+        assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
@@ -134,8 +133,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "true");
 
-        assertTrue(a.isRedundant(b));
-        assertTrue(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isTrue();
+        assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
@@ -156,8 +155,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "false");
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isFalse();
+        assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
@@ -178,8 +177,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "20");
 
-        assertTrue(a.isRedundant(b));
-        assertTrue(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isTrue();
+        assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
@@ -200,8 +199,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "10");
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isFalse();
+        assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
@@ -223,8 +222,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      format(date));
 
-        assertTrue(a.isRedundant(b));
-        assertTrue(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isTrue();
+        assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
@@ -248,8 +247,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "29-Dec-1981");
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isFalse();
+        assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
@@ -271,8 +270,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "Rambo");
 
-        assertTrue(a.conflicts(b));
-        assertTrue(b.conflicts(a));
+        assertThat(a.conflicts(b)).isTrue();
+        assertThat(b.conflicts(a)).isTrue();
     }
 
     @Test
@@ -293,8 +292,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "false");
 
-        assertTrue(a.conflicts(b));
-        assertTrue(b.conflicts(a));
+        assertThat(a.conflicts(b)).isTrue();
+        assertThat(b.conflicts(a)).isTrue();
     }
 
     @Test
@@ -315,8 +314,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "Rambo");
 
-        assertFalse(a.conflicts(b));
-        assertFalse(b.conflicts(a));
+        assertThat(a.conflicts(b)).isFalse();
+        assertThat(b.conflicts(a)).isFalse();
     }
 
     @Test
@@ -337,8 +336,8 @@ public class ActionInspectorConflictResolverTest {
                                                      DataType.DataTypes.STRING,
                                                      "Toni");
 
-        assertFalse(a.conflicts(b));
-        assertFalse(b.conflicts(a));
+        assertThat(a.conflicts(b)).isFalse();
+        assertThat(b.conflicts(a)).isFalse();
     }
 
     @Test
@@ -363,8 +362,8 @@ public class ActionInspectorConflictResolverTest {
                                                                      new Values(true),
                                                                      new AnalyzerConfigurationMock()));
 
-        assertFalse(a.conflicts(b));
-        assertFalse(b.conflicts(a));
+        assertThat(a.conflicts(b)).isFalse();
+        assertThat(b.conflicts(a)).isFalse();
     }
 
     private ActionInspector createSetActionInspector(final Field field,

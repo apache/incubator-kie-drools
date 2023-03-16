@@ -41,8 +41,8 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class DRLDumperTest {
@@ -86,10 +86,10 @@ public class DRLDumperTest {
 
         ksession.fireAllRules();
 
-        assertEquals(3, list.size());
-        assertEquals("3 1", list.get(0));
-        assertEquals("MAIN", list.get(1));
-        assertEquals("1 1", list.get(2));
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.get(0)).isEqualTo("3 1");
+        assertThat(list.get(1)).isEqualTo("MAIN");
+        assertThat(list.get(2)).isEqualTo("1 1");
 
         //---------------------------
         
@@ -108,10 +108,10 @@ public class DRLDumperTest {
 
         ksession.fireAllRules();
 
-        assertEquals(3, list.size());
-        assertEquals("3 1", list.get(0));
-        assertEquals("MAIN", list.get(1));
-        assertEquals("1 1", list.get(2));
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.get(0)).isEqualTo("3 1");
+        assertThat(list.get(1)).isEqualTo("MAIN");
+        assertThat(list.get(2)).isEqualTo("1 1");
     }
 
 }

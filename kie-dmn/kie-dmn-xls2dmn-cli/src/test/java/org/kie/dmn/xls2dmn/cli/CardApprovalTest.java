@@ -29,8 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.kie.dmn.xls2dmn.cli.TestUtils.getRuntime;
 
 import picocli.CommandLine;
@@ -71,9 +69,9 @@ public class CardApprovalTest {
         dmnContext.set("Assets", 150);
         DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, dmnContext);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("Standard card score").getResult(), is(new BigDecimal(562)));
-        assertThat(dmnResult.getDecisionResultByName("Gold card score").getResult(), is(new BigDecimal(468)));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Standard card score").getResult()).isEqualTo(new BigDecimal(562));
+        assertThat(dmnResult.getDecisionResultByName("Gold card score").getResult()).isEqualTo(new BigDecimal(468));
     }
 
 

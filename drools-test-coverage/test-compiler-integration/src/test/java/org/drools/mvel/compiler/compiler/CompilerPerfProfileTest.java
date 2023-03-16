@@ -23,8 +23,7 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompilerPerfProfileTest {
 
@@ -58,8 +57,8 @@ public class CompilerPerfProfileTest {
         long start = System.currentTimeMillis();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( resource ) ) );
         InternalKnowledgePackage pkg = builder.getPackage("org.drools.mvel.compiler.test");
-        assertFalse(builder.hasErrors());
-        assertNotNull(pkg);
+        assertThat(builder.hasErrors()).isFalse();
+        assertThat(pkg).isNotNull();
         if (showResults) {
             System.out.print( "Time taken for " + msg + " : " + (System.currentTimeMillis() - start) );
         }

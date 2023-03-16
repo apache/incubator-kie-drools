@@ -27,10 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.core.util.StringUtils.getPkgUUID;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class ModelBuilderImplTest {
 
@@ -52,17 +51,17 @@ public class ModelBuilderImplTest {
         String pkgUUID = generateUUID();
         PackageDescr packageDescr = getPackageDescr(pkgUUID);
         PackageModel retrieved =  modelBuilder.getPackageModel(packageDescr, packageRegistry, internalKnowledgePackage.getName());
-        assertNotNull(retrieved);
-        assertEquals(pkgUUID, retrieved.getPackageUUID());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getPackageUUID()).isEqualTo(pkgUUID);
     }
 
     @Test
     public void getPackageModelWithoutPkgUUID() {
         PackageDescr packageDescr = getPackageDescr(null);
         PackageModel retrieved =  modelBuilder.getPackageModel(packageDescr, packageRegistry, internalKnowledgePackage.getName());
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String expected = getPkgUUID(RELEASE_ID, internalKnowledgePackage.getName());
-        assertEquals(expected, retrieved.getPackageUUID());
+        assertThat(retrieved.getPackageUUID()).isEqualTo(expected);
     }
 
     private PackageDescr getPackageDescr(String pkgUUID) {

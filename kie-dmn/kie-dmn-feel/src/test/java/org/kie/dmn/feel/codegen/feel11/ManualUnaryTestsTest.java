@@ -29,8 +29,7 @@ import org.kie.dmn.feel.util.EvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.lt;
 
 public class ManualUnaryTestsTest {
@@ -61,7 +60,7 @@ public class ManualUnaryTestsTest {
         List<Boolean> result = compiledUnaryTests.getUnaryTests().stream().map(ut -> ut.apply(emptyContext, left)).collect(Collectors.toList());
         LOG.debug("{}", result);
 
-        assertThat(result, is(Arrays.asList(true, false)));
+        assertThat(result).asList().containsExactly(true, false);
     }
 
 }

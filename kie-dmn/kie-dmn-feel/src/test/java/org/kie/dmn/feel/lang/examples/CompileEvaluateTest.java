@@ -38,12 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.prototype;
 
@@ -90,7 +84,7 @@ public class CompileEvaluateTest {
         
         CompiledExpression compiledExpression = feel.compile( "Person List[My Variable 1 = \"A\"]", ctx );
         
-        assertThat(errors.toString(), errors.size(), is(0) );
+        assertThat(errors).as(errors.toString()).hasSize(0);
 
         Map<String, Object> inputs = new HashMap<>();
         List<Map<String, ?>> pList = new ArrayList<>();
@@ -104,9 +98,9 @@ public class CompileEvaluateTest {
         
         Object result = feel.evaluate(compiledExpression, inputs);
         
-        assertThat( result, instanceOf( List.class ) );
-        assertThat( (List<?>) result, hasSize(1) );
-        assertThat( ((Map<?, ?>) ((List<?>) result).get(0)).get("Full Name"), is("Edson Tirelli") );
+        assertThat(result).isInstanceOf(List.class);
+        assertThat((List<?>) result).hasSize(1);
+        assertThat(((Map<?, ?>) ((List<?>) result).get(0)).get("Full Name")).isEqualTo("Edson Tirelli");
     }        
     
     @Test
@@ -116,14 +110,14 @@ public class CompileEvaluateTest {
         
         CompiledExpression compiledExpression = feel.compile( "MyPerson.fullName", ctx );
         
-        assertThat(errors.toString(), errors.size(), is(1) );
+        assertThat(errors).as(errors.toString()).hasSize(1);
         
         Map<String, Object> inputs = new HashMap<>();
         inputs.put( "MyPerson", prototype(entry("FullName", "John Doe")) );
         
         Object result = feel.evaluate(compiledExpression, inputs);
         
-        assertThat(result, nullValue());
+        assertThat(result).isNull();
     }
 
     @Test
@@ -138,7 +132,7 @@ public class CompileEvaluateTest {
         
         Object result = feel.evaluate(compiledExpression, inputs);
         
-        assertThat(result, is("John Doe"));
+        assertThat(result).isEqualTo("John Doe");
     }
     
     @Test
@@ -146,13 +140,13 @@ public class CompileEvaluateTest {
         CompilerContext ctx = feel.newCompilerContext();
         ctx.addInputVariableType( "input", new MapBackedType().addField( "Primary-Key", BuiltInType.STRING ).addField( "Value", BuiltInType.STRING ) );
         CompiledExpression compiledExpression = feel.compile( "input.Primary-Key", ctx );
-        assertTrue(errors.isEmpty());
+        assertThat(errors).isEmpty();
         
         Map<String, Object> inputs = new HashMap<>();
         inputs.put( "input", prototype(entry("Primary-Key", "k987")) );
         Object result = feel.evaluate(compiledExpression, inputs);
-        assertThat(result, is("k987"));
-        assertTrue(errors.isEmpty());
+        assertThat(result).isEqualTo("k987");
+        assertThat(errors).isEmpty();
     }
     
     @Test
@@ -161,13 +155,13 @@ public class CompileEvaluateTest {
         CompilerContext ctx = feel.newCompilerContext();
         ctx.addInputVariableType( "input", new GenListType(compositeType) );
         CompiledExpression compiledExpression = feel.compile( "input.Primary-Key", ctx );
-        assertTrue(errors.isEmpty());
+        assertThat(errors).isEmpty();
         
         Map<String, Object> inputs = new HashMap<>();
         inputs.put( "input", Arrays.asList(prototype(entry("Primary-Key", "k987"))) );
         Object result = feel.evaluate(compiledExpression, inputs);
-        assertThat(result, is(Arrays.asList("k987")));
-        assertTrue(errors.isEmpty());
+        assertThat(result).asList().containsExactly("k987");
+        assertThat(errors).isEmpty();
     }
     
     @Test
@@ -176,13 +170,13 @@ public class CompileEvaluateTest {
         CompilerContext ctx = feel.newCompilerContext();
         ctx.addInputVariableType( "my input", new GenListType(compositeType) );
         CompiledExpression compiledExpression = feel.compile( "my input[1].Primary-Key", ctx );
-        assertTrue(errors.isEmpty());
+        assertThat(errors).isEmpty();
         
         Map<String, Object> inputs = new HashMap<>();
         inputs.put( "my input", Arrays.asList(prototype(entry("Primary-Key", "k987"))) );
         Object result = feel.evaluate(compiledExpression, inputs);
-        assertThat(result, is("k987"));
-        assertTrue(errors.isEmpty());
+        assertThat(result).isEqualTo("k987");
+        assertThat(errors).isEmpty();
     }
     
     @Test

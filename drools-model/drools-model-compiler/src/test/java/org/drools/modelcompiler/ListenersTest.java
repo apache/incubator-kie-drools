@@ -24,7 +24,7 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ListenersTest extends BaseModelTest {
 
@@ -64,8 +64,8 @@ public class ListenersTest extends BaseModelTest {
         ksession.addEventListener( workingMemoryListener );
 
         ksession.insert(42);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(1, results.size());
-        assertEquals("R", results.get(0));
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo("R");
     }
 }

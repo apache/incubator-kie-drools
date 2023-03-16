@@ -38,9 +38,8 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -69,8 +68,8 @@ public class RuleStatelessScenarioExecutableBuilderTest {
 
         Map<String, Object> result = builder.run();
         verify(kieContainerMock, times(1)).newStatelessKieSession(eq(sessionName));
-        assertTrue(result.containsKey(RuleScenarioExecutableBuilder.COVERAGE_LISTENER));
-        assertTrue(result.containsKey(RuleScenarioExecutableBuilder.RULES_AVAILABLE));
+        assertThat(result.containsKey(RuleScenarioExecutableBuilder.COVERAGE_LISTENER)).isTrue();
+        assertThat(result.containsKey(RuleScenarioExecutableBuilder.RULES_AVAILABLE)).isTrue();
     }
 
     @Test
@@ -80,41 +79,41 @@ public class RuleStatelessScenarioExecutableBuilderTest {
         RuleStatelessScenarioExecutableBuilder builder = new RuleStatelessScenarioExecutableBuilder(null, null);
 
         Command<ExecutionResults> batchCommand = builder.generateCommands(null);
-        assertTrue(verifyCommand(batchCommand, AddCoverageListenerCommand.class));
-        assertTrue(verifyCommand(batchCommand, FireAllRulesCommand.class));
-        assertFalse(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class));
-        assertFalse(verifyCommand(batchCommand, InsertElementsCommand.class));
-        assertFalse(verifyCommand(batchCommand, ValidateFactCommand.class));
+        assertThat(verifyCommand(batchCommand, AddCoverageListenerCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, FireAllRulesCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class)).isFalse();
+        assertThat(verifyCommand(batchCommand, InsertElementsCommand.class)).isFalse();
+        assertThat(verifyCommand(batchCommand, ValidateFactCommand.class)).isFalse();
 
         builder.setActiveAgendaGroup("test");
         batchCommand = builder.generateCommands(null);
 
-        assertTrue(verifyCommand(batchCommand, AddCoverageListenerCommand.class));
-        assertTrue(verifyCommand(batchCommand, FireAllRulesCommand.class));
-        assertTrue(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class));
-        assertFalse(verifyCommand(batchCommand, InsertElementsCommand.class));
-        assertFalse(verifyCommand(batchCommand, ValidateFactCommand.class));
+        assertThat(verifyCommand(batchCommand, AddCoverageListenerCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, FireAllRulesCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, InsertElementsCommand.class)).isFalse();
+        assertThat(verifyCommand(batchCommand, ValidateFactCommand.class)).isFalse();
 
         builder.insert(new Object());
         batchCommand = builder.generateCommands(null);
-        assertTrue(verifyCommand(batchCommand, AddCoverageListenerCommand.class));
-        assertTrue(verifyCommand(batchCommand, FireAllRulesCommand.class));
-        assertTrue(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class));
-        assertTrue(verifyCommand(batchCommand, InsertElementsCommand.class));
-        assertFalse(verifyCommand(batchCommand, ValidateFactCommand.class));
+        assertThat(verifyCommand(batchCommand, AddCoverageListenerCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, FireAllRulesCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, InsertElementsCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, ValidateFactCommand.class)).isFalse();
 
         builder.addInternalCondition(String.class, obj -> null, new ScenarioResult(emptyFMV, null));
         batchCommand = builder.generateCommands(null);
-        assertTrue(verifyCommand(batchCommand, AddCoverageListenerCommand.class));
-        assertTrue(verifyCommand(batchCommand, FireAllRulesCommand.class));
-        assertTrue(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class));
-        assertTrue(verifyCommand(batchCommand, InsertElementsCommand.class));
-        assertTrue(verifyCommand(batchCommand, ValidateFactCommand.class));
+        assertThat(verifyCommand(batchCommand, AddCoverageListenerCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, FireAllRulesCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, InsertElementsCommand.class)).isTrue();
+        assertThat(verifyCommand(batchCommand, ValidateFactCommand.class)).isTrue();
     }
 
     private boolean verifyCommand(Command<ExecutionResults> batchCommand, Class<?> classToFind) {
         if (!(batchCommand instanceof Batch)) {
-            fail();
+            fail("Unexpected execution path");
         }
 
         List<Command> commands = ((Batch) batchCommand).getCommands();

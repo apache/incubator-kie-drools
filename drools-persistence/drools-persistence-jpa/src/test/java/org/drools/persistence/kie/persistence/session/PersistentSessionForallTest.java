@@ -39,11 +39,11 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class PersistentSessionForallTest {
@@ -134,7 +134,7 @@ public class PersistentSessionForallTest {
         kieSession.insert(dog);
         kieSession.fireAllRules();
 
-        assertTrue(listener.isRuleFired("Forall2"));
+        assertThat(listener.isRuleFired("Forall2")).isTrue();
     }
 
     public static class Pet implements Serializable {

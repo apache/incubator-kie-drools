@@ -82,12 +82,8 @@ import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.debug.DebugTools;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class MVELConsequenceBuilderTest {
 
@@ -156,8 +152,7 @@ public class MVELConsequenceBuilderTest {
         context.getRule().getConsequence().evaluate( kbHelper,
                                                      ksession );
 
-        assertEquals( 5,
-                      cheddar.getPrice() );
+        assertThat(cheddar.getPrice()).isEqualTo(5);
     }
 
     @Test
@@ -227,8 +222,7 @@ public class MVELConsequenceBuilderTest {
         } catch ( Exception e ) {
         }
 
-        assertEquals( 10,
-                      cheddar.getPrice() );
+        assertThat(cheddar.getPrice()).isEqualTo(10);
     }
 
     /**
@@ -243,32 +237,25 @@ public class MVELConsequenceBuilderTest {
     public void testLineSpanOptionalSemis() throws Exception {
 
         String simpleEx = "foo\nbar\nbaz";
-        assertEquals( "foo;\nbar;\nbaz",
-                      MVELConsequenceBuilder.delimitExpressions( simpleEx ) );
+        assertThat(MVELConsequenceBuilder.delimitExpressions(simpleEx)).isEqualTo("foo;\nbar;\nbaz");
 
         String ex = "foo (\n bar \n)\nbar;\nyeah;\nman\nbaby";
-        assertEquals( "foo ( bar );\n\n\nbar;\nyeah;\nman;\nbaby",
-                      MVELConsequenceBuilder.delimitExpressions( ex ) );
+        assertThat(MVELConsequenceBuilder.delimitExpressions(ex)).isEqualTo("foo ( bar );\n\n\nbar;\nyeah;\nman;\nbaby");
 
         ex = "foo {\n bar \n}\nbar;   \nyeah;\nman\nbaby";
-        assertEquals( "foo { bar };\n\n\nbar;   \nyeah;\nman;\nbaby",
-                      MVELConsequenceBuilder.delimitExpressions( ex ) );
+        assertThat(MVELConsequenceBuilder.delimitExpressions(ex)).isEqualTo("foo { bar };\n\n\nbar;   \nyeah;\nman;\nbaby");
 
         ex = "foo [\n bar \n]\nbar;  x\nyeah();\nman[42]\nbaby;ca chiga;\nend";
-        assertEquals( "foo [ bar ];\n\n\nbar;  x;\nyeah();\nman[42];\nbaby;ca chiga;\nend",
-                      MVELConsequenceBuilder.delimitExpressions( ex ) );
+        assertThat(MVELConsequenceBuilder.delimitExpressions(ex)).isEqualTo("foo [ bar ];\n\n\nbar;  x;\nyeah();\nman[42];\nbaby;ca chiga;\nend");
 
         ex = "   \n\nfoo [\n bar \n]\n\n\nbar;  x\n  \nyeah();\nman[42]\nbaby;ca chiga;\nend";
-        assertEquals( "   \n\nfoo [ bar ];\n\n\n\n\nbar;  x;\n  \nyeah();\nman[42];\nbaby;ca chiga;\nend",
-                      MVELConsequenceBuilder.delimitExpressions( ex ) );
+        assertThat(MVELConsequenceBuilder.delimitExpressions(ex)).isEqualTo("   \n\nfoo [ bar ];\n\n\n\n\nbar;  x;\n  \nyeah();\nman[42];\nbaby;ca chiga;\nend");
 
         ex = "   retract(f1) // some comment\n   retract(f2)\nend";
-        assertEquals( "   retract(f1) ;// some comment\n   retract(f2);\nend",
-                      MVELConsequenceBuilder.delimitExpressions( ex ) );
+        assertThat(MVELConsequenceBuilder.delimitExpressions(ex)).isEqualTo("   retract(f1) ;// some comment\n   retract(f2);\nend");
 
         ex = "   retract(f1 /* inline comment */) /* some\n comment\n*/   retract(f2)\nend";
-        assertEquals( "   retract(f1 /* inline comment */) ;/* some\n comment\n*/   retract(f2);\nend",
-                      MVELConsequenceBuilder.delimitExpressions( ex ) );
+        assertThat(MVELConsequenceBuilder.delimitExpressions(ex)).isEqualTo("   retract(f1 /* inline comment */) ;/* some\n comment\n*/   retract(f2);\nend");
 
     }
 
@@ -282,8 +269,7 @@ public class MVELConsequenceBuilderTest {
             final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "mvel_rule.drl" ) ) );
 
             // just checking there is no parsing errors
-            assertFalse( parser.getErrors().toString(),
-                                parser.hasErrors() );
+            assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
             InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools" );
 
@@ -301,8 +287,7 @@ public class MVELConsequenceBuilderTest {
 
             RuleBuilder.build( context );
 
-            assertTrue( context.getErrors().toString(),
-                               context.getErrors().isEmpty() );
+            assertThat(context.getErrors().isEmpty()).as(context.getErrors().toString()).isTrue();
 
             final RuleImpl rule = context.getRule();
 
@@ -316,8 +301,7 @@ public class MVELConsequenceBuilderTest {
                                             fromIndex + 1 )) > -1 ) {
                 count++;
             }
-            assertEquals( 4,
-                          count );
+            assertThat(count).isEqualTo(4);
         } finally {
             MVELDebugHandler.setDebugMode( false );
         }
@@ -349,8 +333,7 @@ public class MVELConsequenceBuilderTest {
                                         fromIndex + 1 )) > -1 ) {
             count++;
         }
-        assertEquals( 4,
-                      count );
+        assertThat(count).isEqualTo(4);
 
     }
     
@@ -415,9 +398,9 @@ public class MVELConsequenceBuilderTest {
         		"c2 = new Cheese().{ type = $map[$cheese.type] };" +
         		"c3 = new Cheese().{ type = $map['key'] };";
         setupTest( consequence, new HashMap<String, Object>() );
-         assertNotNull( context.getRule().getConsequence() );
-        assertFalse( context.getRule().hasNamedConsequences() );
-        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );
+         assertThat(context.getRule().getConsequence()).isNotNull();
+        assertThat(context.getRule().hasNamedConsequences()).isFalse();
+        assertThat(context.getRule().getConsequence() instanceof MVELConsequence).isTrue();
     }
     
     @Test
@@ -430,11 +413,11 @@ public class MVELConsequenceBuilderTest {
         
         setupTest( defaultCon, namedConsequences);
 
-        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );
+        assertThat(context.getRule().getConsequence() instanceof MVELConsequence).isTrue();
+
+        assertThat(context.getRule().getNamedConsequence("name1") instanceof MVELConsequence).isTrue();
         
-        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof MVELConsequence );
-        
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name1" ) );
+        assertThat(context.getRule().getNamedConsequence( "name1")).isNotSameAs(context.getRule().getConsequence());
     }
     
     @Test
@@ -449,15 +432,15 @@ public class MVELConsequenceBuilderTest {
         
         setupTest( defaultCon, namedConsequences);
 
-        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );
+        assertThat(context.getRule().getConsequence() instanceof MVELConsequence).isTrue();
+
+        assertThat(context.getRule().getNamedConsequence("name1") instanceof MVELConsequence).isTrue();
+
+        assertThat(context.getRule().getNamedConsequence("name2") instanceof MVELConsequence).isTrue();
         
-        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof MVELConsequence );
-        
-        assertTrue( context.getRule().getNamedConsequence( "name2" ) instanceof MVELConsequence );
-        
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name1" ) );
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name2" ) );
-        assertNotSame(  context.getRule().getNamedConsequence( "name1"), context.getRule().getNamedConsequence( "name2" ) );
+        assertThat(context.getRule().getNamedConsequence("name1")).isNotSameAs(context.getRule().getConsequence());
+        assertThat(context.getRule().getNamedConsequence("name2")).isNotSameAs(context.getRule().getConsequence());
+        assertThat(context.getRule().getNamedConsequence("name2")).isNotSameAs(context.getRule().getNamedConsequence( "name1"));
     }
 
     public static class MockBetaNode extends BetaNode {

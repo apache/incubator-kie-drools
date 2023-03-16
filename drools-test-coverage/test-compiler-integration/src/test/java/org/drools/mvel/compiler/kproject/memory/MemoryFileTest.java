@@ -25,10 +25,8 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class MemoryFileTest {
 
@@ -44,18 +42,18 @@ public class MemoryFileTest {
         mres.create();
         
         f1 = mres.getFile( "MyClass.java" );
-        assertTrue( f1.exists());
+        assertThat(f1.exists()).isTrue();
         
         f1.create( new ByteArrayInputStream( "ABC".getBytes() ) );        
         f1 = mres.getFile( "MyClass.java" );
-        assertTrue( f1.exists() );
-        
-        assertEquals( "ABC", StringUtils.toString( f1.getContents() ) );
+        assertThat(f1.exists()).isTrue();
+
+        assertThat(StringUtils.toString(f1.getContents())).isEqualTo("ABC");
 
         f1.create( new ByteArrayInputStream( "ABC".getBytes() ) );
         
         f1.setContents( new ByteArrayInputStream( "DEF".getBytes() ) );
-        assertEquals( "DEF", StringUtils.toString( f1.getContents() ) );
+        assertThat(StringUtils.toString(f1.getContents())).isEqualTo("DEF");
     }
     
     @Test
@@ -66,14 +64,14 @@ public class MemoryFileTest {
         mres.create();
         
         File f1 = mres.getFile( "MyClass.java" );                
-        f1.create( new ByteArrayInputStream( "ABC".getBytes() ) );        
-        assertTrue( f1.exists() );        
-        assertEquals( "ABC", StringUtils.toString( f1.getContents() ) );
+        f1.create( new ByteArrayInputStream( "ABC".getBytes() ) );
+        assertThat(f1.exists()).isTrue();
+        assertThat(StringUtils.toString(f1.getContents())).isEqualTo("ABC");
         
         fs.remove( f1 );
         
-        f1 = mres.getFile( "MyClass.java" );  
-        assertFalse( f1.exists() );
+        f1 = mres.getFile( "MyClass.java" );
+        assertThat(f1.exists()).isFalse();
         
         try {
             f1.getContents();
@@ -90,8 +88,7 @@ public class MemoryFileTest {
         Folder mres = fs.getFolder( "src/main/java/org/domain" );  
         
         File f1 = mres.getFile( "MyClass.java" );
-        assertEquals( "src/main/java/org/domain/MyClass.java",
-                      f1.getPath().toPortableString() );
+        assertThat(f1.getPath().toPortableString()).isEqualTo("src/main/java/org/domain/MyClass.java");
     }
 
     @Test
@@ -102,8 +99,7 @@ public class MemoryFileTest {
         Folder f2 = fs.getFolder( "src/main/java/org/domain/f1/f2/" );
         
         File f1 = mres.getFile( "MyClass.java" );
-        assertEquals( "../../MyClass.java",
-                      f1.getPath().toRelativePortableString( f2.getPath() ) );
+        assertThat(f1.getPath().toRelativePortableString(f2.getPath())).isEqualTo( "../../MyClass.java");
     }
 
     @Test
@@ -114,7 +110,6 @@ public class MemoryFileTest {
         Folder f2 = fs.getFolder( "src/main/resources/org/domain/" );
         
         File f1 = mres.getFile( "MyClass.java" );
-        assertEquals( "../../../java/org/domain/MyClass.java",
-                      f1.getPath().toRelativePortableString( f2.getPath() ) );
+        assertThat(f1.getPath().toRelativePortableString( f2.getPath())).isEqualTo( "../../../java/org/domain/MyClass.java");
     }     
 }

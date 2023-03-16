@@ -30,7 +30,7 @@ import org.kie.api.internal.io.ResourceTypePackage;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class WeaverTest {
 
@@ -47,7 +47,7 @@ public class WeaverTest {
         ResourceTypePackageRegistry map = kpkg.getResourceTypePackages();
         BayesPackage existing  = (BayesPackage) map.get( ResourceType.BAYES );
         JunctionTree jtree =  existing.getJunctionTree("Garden");
-        assertNotNull( jtree );
+        assertThat(jtree).isNotNull();
     }
 
     protected InternalKnowledgeBase getKnowledgeBase() {

@@ -27,10 +27,10 @@ import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.compiler.compiler.DRLFactory.buildParser;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+
 
 public class ErrorsParserTest {
 
@@ -38,7 +38,7 @@ public class ErrorsParserTest {
     public void testNotBindindShouldBarf() throws Exception {
         final DRLParser parser = parseResource( "not_with_binding_error.drl" );
         parser.compilationUnit();
-        assertTrue(parser.hasErrors());
+        assertThat(parser.hasErrors()).isTrue();
     }
 
     @Test
@@ -50,58 +50,56 @@ public class ErrorsParserTest {
         
         DRLParser parser = parse( name, expanded );
         parser.compilationUnit();
-        assertTrue( parser.hasErrors() );
+        assertThat(parser.hasErrors()).isTrue();
 
-        assertEquals( 1,
-                      parser.getErrors().size() );
+        assertThat(parser.getErrors().size()).isEqualTo(1);
         DroolsParserException err = (DroolsParserException) parser.getErrors().get( 0 );
-        assertEquals(6,
-                err.getLineNumber());
+        assertThat(err.getLineNumber()).isEqualTo(6);
     }
 
     @Test
     public void testInvalidSyntax_Catches() throws Exception {
         DRLParser parser = parseResource("invalid_syntax.drl");
         parser.compilationUnit();
-        assertTrue(parser.hasErrors());
+        assertThat(parser.hasErrors()).isTrue();
     }
 
     @Test
     public void testMultipleErrors() throws Exception {
         DRLParser parser = parseResource( "multiple_errors.drl" );
         parser.compilationUnit();
-        assertTrue(parser.hasErrors());
-        assertEquals(2, parser.getErrors().size());
+        assertThat(parser.hasErrors()).isTrue();
+        assertThat(parser.getErrors().size()).isEqualTo(2);
     }
 
     @Test
     public void testPackageGarbage() throws Exception {
         DRLParser parser = parseResource( "package_garbage.drl" );
         parser.compilationUnit();
-        assertTrue(parser.hasErrors());
+        assertThat(parser.hasErrors()).isTrue();
     }
 
     @Test
     public void testEvalWithSemicolon() throws Exception {
         DRLParser parser = parseResource( "eval_with_semicolon.drl" );
         parser.compilationUnit();
-        assertTrue( parser.hasErrors() );
-        assertEquals(1, parser.getErrorMessages().size());
-        assertEquals("ERR 102", parser.getErrors().get(0).getErrorCode());
+        assertThat(parser.hasErrors()).isTrue();
+        assertThat(parser.getErrorMessages().size()).isEqualTo(1);
+        assertThat(parser.getErrors().get(0).getErrorCode()).isEqualTo("ERR 102");
     }
 
     @Test
     public void testLexicalError() throws Exception {
         DRLParser parser = parseResource( "lex_error.drl" );
         parser.compilationUnit();
-        assertTrue( parser.hasErrors() );
+        assertThat(parser.hasErrors()).isTrue();
     }
 
     @Test
     public void testTempleteError() throws Exception {
         DRLParser parser = parseResource( "template_test_error.drl" );
         parser.compilationUnit();
-        assertTrue(parser.hasErrors());
+        assertThat(parser.hasErrors()).isTrue();
     }
 
     @Test
@@ -109,27 +107,22 @@ public class ErrorsParserTest {
         final DRLParser parser = parseResource( "misplaced_parenthesis.drl" );
         parser.compilationUnit();
 
-        assertTrue( "Parser should have raised errors",
-                    parser.hasErrors() );
+        assertThat(parser.hasErrors()).as("Parser should have raised errors").isTrue();
 
-        assertEquals( 1,
-                      parser.getErrors().size() );
+        assertThat(parser.getErrors().size()).isEqualTo(1);
 
-        assertEquals("ERR 102",
-                parser.getErrors().get(0).getErrorCode());
+        assertThat(parser.getErrors().get(0).getErrorCode()).isEqualTo("ERR 102");
     }
 
     @Test
     public void testNPEOnParser() throws Exception {
         final DRLParser parser = parseResource( "npe_on_parser.drl" );
         parser.compilationUnit();
-        assertTrue( "Parser should have raised errors",
-                    parser.hasErrors() );
+        assertThat(parser.hasErrors()).as("Parser should have raised errors").isTrue();
 
-        assertEquals( 1,
-                      parser.getErrors().size() );
+        assertThat(parser.getErrors().size()).isEqualTo(1);
 
-        assertTrue( parser.getErrors().get( 0 ).getErrorCode().equals( "ERR 102" ) );
+        assertThat(parser.getErrors().get(0).getErrorCode().equals("ERR 102")).isTrue();
     }
 
     @Test
@@ -137,8 +130,7 @@ public class ErrorsParserTest {
         final DRLParser parser = parseResource( "comma_misuse.drl" );
         try {
             parser.compilationUnit();
-            assertTrue( "Parser should have raised errors",
-                        parser.hasErrors() );
+            assertThat(parser.hasErrors()).as("Parser should have raised errors").isTrue();
         } catch ( NullPointerException npe ) {
             fail( "Should not raise NPE" );
         }

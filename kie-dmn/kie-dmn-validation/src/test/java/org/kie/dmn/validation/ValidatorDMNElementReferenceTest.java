@@ -24,9 +24,7 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -62,10 +60,10 @@ public class ValidatorDMNElementReferenceTest extends AbstractValidatorTest {
     }
 
     private void assertValiadationResult(List<DMNMessage> validationMessages) {
-        assertThat(ValidatorUtil.formatMessages(validationMessages), validationMessages.size(), is(3));
-        assertTrue(validationMessages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
-        assertTrue(validationMessages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_HREF_SYNTAX)));
-        assertTrue(validationMessages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+    	assertThat(validationMessages).as(ValidatorUtil.formatMessages(validationMessages)).hasSize(3);
+        assertThat(validationMessages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
+        assertThat(validationMessages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_HREF_SYNTAX))).isTrue();
+        assertThat(validationMessages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
 }

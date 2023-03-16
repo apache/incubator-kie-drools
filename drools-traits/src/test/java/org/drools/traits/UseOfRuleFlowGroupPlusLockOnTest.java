@@ -2,13 +2,14 @@ package org.drools.traits;
 
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.reteoo.ReteDumper;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UseOfRuleFlowGroupPlusLockOnTest {
 
@@ -45,7 +46,7 @@ public class UseOfRuleFlowGroupPlusLockOnTest {
             ksession.insert(new Cheese("eidam"));
             ((DefaultAgenda) ksession.getAgenda()).activateRuleFlowGroup("group1");
             int rulesFired = ksession.fireAllRules();
-            Assert.assertEquals(1, rulesFired);
+            assertThat(rulesFired).isEqualTo(1);
 
 
         } finally {

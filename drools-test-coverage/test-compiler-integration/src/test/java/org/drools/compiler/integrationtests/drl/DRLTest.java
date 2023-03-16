@@ -44,11 +44,6 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class DRLTest {
@@ -102,8 +97,8 @@ public class DRLTest {
 
             ksession.fireAllRules();
 
-            assertTrue(list.contains("fired1"));
-            assertTrue(list.contains("fired2"));
+            assertThat(list.contains("fired1")).isTrue();
+            assertThat(list.contains("fired2")).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -125,10 +120,10 @@ public class DRLTest {
         try {
             final Rule rule = kbase.getRule("org.drools.compiler.integrationtests.drl", "test meta attributes");
 
-            assertNotNull(rule);
-            assertThat(rule.getMetaData().get("id"), is(1234));
-            assertThat(rule.getMetaData().get("author"), is("john_doe"));
-            assertThat(rule.getMetaData().get("text"), is("It's an escaped\" string"));
+            assertThat(rule).isNotNull();
+            assertThat(rule.getMetaData().get("id")).isEqualTo(1234);
+            assertThat(rule.getMetaData().get("author")).isEqualTo("john_doe");
+            assertThat(rule.getMetaData().get("text")).isEqualTo("It's an escaped\" string");
         } finally {
             ksession.dispose();
         }
@@ -228,22 +223,22 @@ public class DRLTest {
             ksession.insert(brie);
 
             ksession.fireAllRules();
-            assertEquals(5, result.size());
-            assertEquals(stilton.getPrice(), ((Integer) result.get(stilton.getType())).intValue());
-            assertEquals(brie.getPrice(), ((Integer) result.get(brie.getType())).intValue());
+            assertThat(result.size()).isEqualTo(5);
+            assertThat(((Integer) result.get(stilton.getType())).intValue()).isEqualTo(stilton.getPrice());
+            assertThat(((Integer) result.get(brie.getType())).intValue()).isEqualTo(brie.getPrice());
 
-            assertEquals(stilton.getPrice(), ((Integer) result.get(stilton)).intValue());
-            assertEquals(brie.getPrice(), ((Integer) result.get(brie)).intValue());
+            assertThat(((Integer) result.get(stilton)).intValue()).isEqualTo(stilton.getPrice());
+            assertThat(((Integer) result.get(brie)).intValue()).isEqualTo(brie.getPrice());
 
-            assertEquals(stilton.getPrice(), ((Integer) result.get("test3" + stilton.getType())).intValue());
+            assertThat(((Integer) result.get("test3" + stilton.getType())).intValue()).isEqualTo(stilton.getPrice());
 
             final Person bob = new Person("bob");
             bob.setLikes(brie.getType());
             ksession.insert(bob);
             ksession.fireAllRules();
 
-            assertEquals(6, result.size());
-            assertEquals(brie.getPrice(), ((Integer) result.get("test3" + brie.getType())).intValue());
+            assertThat(result.size()).isEqualTo(6);
+            assertThat(((Integer) result.get("test3" + brie.getType())).intValue()).isEqualTo(brie.getPrice());
         } finally {
             ksession.dispose();
         }
@@ -310,7 +305,7 @@ public class DRLTest {
 
         // no package defined, so it is set to the default
         final FactType factType = kbase.getFactType("defaultpkg", "Person");
-        assertNotNull(factType);
+        assertThat(factType).isNotNull();
         final Object bob = factType.newInstance();
         factType.set(bob, "name", "Bob");
         factType.set(bob, "age", 30);
@@ -323,8 +318,8 @@ public class DRLTest {
             session.insert(bob);
             session.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertEquals(bob, results.get(0));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.get(0)).isEqualTo(bob);
         } finally {
             session.dispose();
         }
@@ -357,7 +352,7 @@ public class DRLTest {
             ksession.insert(myDeclaredFactInstance);
 
             final int rulesFired = ksession.fireAllRules();
-            assertEquals(1, rulesFired);
+            assertThat(rulesFired).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

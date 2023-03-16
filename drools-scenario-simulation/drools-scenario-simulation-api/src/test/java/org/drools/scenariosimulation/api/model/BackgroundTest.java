@@ -23,9 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BackgroundTest {
 
@@ -58,16 +56,16 @@ public class BackgroundTest {
     @Test
     public void cloneModel() {
         final Background cloned = this.background.cloneModel();
-        assertNotNull(cloned);
+        assertThat(cloned).isNotNull();
         final ScesimModelDescriptor originalDescriptor = background.getScesimModelDescriptor();
         final ScesimModelDescriptor clonedDescriptor = cloned.getScesimModelDescriptor();
-        assertEquals(originalDescriptor.getUnmodifiableFactMappings().size(), clonedDescriptor.getUnmodifiableFactMappings().size());
+        assertThat(clonedDescriptor.getUnmodifiableFactMappings().size()).isEqualTo(originalDescriptor.getUnmodifiableFactMappings().size());
         IntStream.range(0, originalDescriptor.getUnmodifiableFactMappings().size()).forEach(index -> {
-            assertEquals(originalDescriptor.getUnmodifiableFactMappings().get(index), clonedDescriptor.getUnmodifiableFactMappings().get(index));
+            assertThat(clonedDescriptor.getUnmodifiableFactMappings().get(index)).isEqualTo(originalDescriptor.getUnmodifiableFactMappings().get(index));
         });
-        assertEquals(background.getUnmodifiableData().size(), cloned.getUnmodifiableData().size());
+        assertThat(cloned.getUnmodifiableData().size()).isEqualTo(background.getUnmodifiableData().size());
         IntStream.range(0, background.getUnmodifiableData().size()).forEach(index -> {
-            assertEquals(background.getUnmodifiableData().get(index).getDescription(), cloned.getUnmodifiableData().get(index).getDescription());
+        	assertThat(cloned.getUnmodifiableData().get(index).getDescription()).isEqualTo(background.getUnmodifiableData().get(index).getDescription());
         });
     }
 
@@ -75,13 +73,13 @@ public class BackgroundTest {
     public void cloneData() {
         BackgroundData clonedBackgroundData = background.cloneData(0, 1);
 
-        assertEquals(originalBackgroundData.getDescription(), clonedBackgroundData.getDescription());
-        assertEquals(originalBackgroundData.getUnmodifiableFactMappingValues().size(), clonedBackgroundData.getUnmodifiableFactMappingValues().size());
-        assertEquals(originalBackgroundData, background.getDataByIndex(0));
-        assertEquals(clonedBackgroundData, background.getDataByIndex(1));
+        assertThat(clonedBackgroundData.getDescription()).isEqualTo(originalBackgroundData.getDescription());
+        assertThat(clonedBackgroundData.getUnmodifiableFactMappingValues().size()).isEqualTo(originalBackgroundData.getUnmodifiableFactMappingValues().size());
+        assertThat(background.getDataByIndex(0)).isEqualTo(originalBackgroundData);
+        assertThat(background.getDataByIndex(1)).isEqualTo(clonedBackgroundData);
 
-        assertNotEquals(originalBackgroundData, clonedBackgroundData);
-        assertNotEquals(originalBackgroundData.getUnmodifiableFactMappingValues().get(0), clonedBackgroundData.getUnmodifiableFactMappingValues().get(0));
+        assertThat(clonedBackgroundData).isNotEqualTo(originalBackgroundData);
+        assertThat(clonedBackgroundData.getUnmodifiableFactMappingValues().get(0)).isNotEqualTo(originalBackgroundData.getUnmodifiableFactMappingValues().get(0));
     }
 
     @Test
@@ -102,28 +100,28 @@ public class BackgroundTest {
 
     @Test
     public void removeFactMappingByIndex() {
-        assertEquals(2, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(1, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
+        assertThat(background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size()).isEqualTo(2);
+        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings().size()).isEqualTo(1);
         background.removeFactMappingByIndex(0);
-        assertEquals(1, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(0, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
+        assertThat(background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size()).isEqualTo(1);
+        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings().size()).isEqualTo(0);
     }
 
     @Test
     public void removeFactMapping() {
-        assertEquals(2, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(1, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
+        assertThat(background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size()).isEqualTo(2);
+        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings().size()).isEqualTo(1);
         background.removeFactMapping(background.getScesimModelDescriptor().getFactMappingByIndex(0));
-        assertEquals(1, background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(0, background.getScesimModelDescriptor().getUnmodifiableFactMappings().size());
+        assertThat(background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues().size()).isEqualTo(1);
+        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings().size()).isEqualTo(0);
     }
 
     @Test
     public void getBackgroundDataWithIndex() {
         List<BackgroundDataWithIndex> backgroundDataWithIndex = background.getBackgroundDataWithIndex();
-        assertEquals(background.getUnmodifiableData().size(), backgroundDataWithIndex.size());
+        assertThat(backgroundDataWithIndex.size()).isEqualTo(background.getUnmodifiableData().size());
         BackgroundDataWithIndex backgroundData = backgroundDataWithIndex.get(0);
         int index = backgroundData.getIndex();
-        assertEquals(background.getDataByIndex(index - 1), backgroundData.getScesimData());
+        assertThat(backgroundData.getScesimData()).isEqualTo(background.getDataByIndex(index - 1));
     }
 }

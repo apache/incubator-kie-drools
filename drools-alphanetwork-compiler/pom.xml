@@ -44,13 +44,6 @@
       <artifactId>kie-internal</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>

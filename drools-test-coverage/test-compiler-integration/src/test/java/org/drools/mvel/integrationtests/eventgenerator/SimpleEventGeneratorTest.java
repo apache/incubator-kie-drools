@@ -29,8 +29,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class SimpleEventGeneratorTest {
@@ -58,7 +57,7 @@ public class SimpleEventGeneratorTest {
         // generate 10 events, starting from the session clock
         myGenerator.addEventSource("Conveyor1", new Event(EventType.CUSTOM, null), PseudoSessionClock.timeInSeconds(4), PseudoSessionClock.timeInSeconds(6), 0, 10);
         myGenerator.generate();
-        assertEquals(ksession.getQueryResults("all inserted events").size(), 10);
+        assertThat(10).isEqualTo(ksession.getQueryResults("all inserted events").size());
     }
 
     @Test
@@ -71,7 +70,7 @@ public class SimpleEventGeneratorTest {
         // generate events for 1 min, starting from the session clock
         myGenerator.addEventSource("Conveyor1", new Event(EventType.CUSTOM, null), PseudoSessionClock.timeInSeconds(4), PseudoSessionClock.timeInSeconds(6), PseudoSessionClock.timeInMinutes(1), 0);
         myGenerator.generate();
-        assertEquals(ksession.getQueryResults("all inserted events").size(), ksession.getQueryResults("all inserted events with generation time < 1 min").size());
+        assertThat(ksession.getQueryResults("all inserted events with generation time < 1 min").size()).isEqualTo(ksession.getQueryResults("all inserted events").size());
     }
 
     @Test
@@ -84,8 +83,8 @@ public class SimpleEventGeneratorTest {
         // generate at most 10 events not exceeding 1 min, starting from the session clock
         myGenerator.addEventSource("Conveyor1", new Event(EventType.CUSTOM, null), PseudoSessionClock.timeInSeconds(4), PseudoSessionClock.timeInSeconds(6), PseudoSessionClock.timeInMinutes(1), 10);
         myGenerator.generate();
-        assertEquals(ksession.getQueryResults("all inserted events").size(), ksession.getQueryResults("all inserted events with generation time < 1 min").size());
-        assertTrue(ksession.getQueryResults("all inserted events with generation time < 1 min").size()<=10);
+        assertThat(ksession.getQueryResults("all inserted events with generation time < 1 min").size()).isEqualTo(ksession.getQueryResults("all inserted events").size());
+        assertThat(ksession.getQueryResults("all inserted events with generation time < 1 min").size() <= 10).isTrue();
     }
 
     @Test
@@ -98,7 +97,7 @@ public class SimpleEventGeneratorTest {
         // generate 10 events, delayed by 2 minutes from start session clock
         myGenerator.addDelayedEventSource("Conveyor1", new Event(EventType.CUSTOM, null), PseudoSessionClock.timeInSeconds(4), PseudoSessionClock.timeInSeconds(6), PseudoSessionClock.timeInMinutes(2), 0, 10);
         myGenerator.generate();
-        assertEquals(ksession.getQueryResults("all inserted events").size(), 10);
+        assertThat(10).isEqualTo(ksession.getQueryResults("all inserted events").size());
     }
 
     @Test
@@ -111,7 +110,7 @@ public class SimpleEventGeneratorTest {
         // generate events for 1 min, delayed by 2 minutes from start session clock
         myGenerator.addDelayedEventSource("Conveyor1", new Event(EventType.CUSTOM, null), PseudoSessionClock.timeInSeconds(4), PseudoSessionClock.timeInSeconds(6), PseudoSessionClock.timeInMinutes(2), PseudoSessionClock.timeInMinutes(1), 0);
         myGenerator.generate();
-        assertEquals(ksession.getQueryResults("all inserted events").size(), ksession.getQueryResults("all inserted events with 2 min < generation time < 3 min").size());
+        assertThat(ksession.getQueryResults("all inserted events with 2 min < generation time < 3 min").size()).isEqualTo(ksession.getQueryResults("all inserted events").size());
     }
 
     @Test
@@ -124,8 +123,8 @@ public class SimpleEventGeneratorTest {
         // generate at most 10 events not exceeding 1 min, delayed by 2 minutes from start session clock
         myGenerator.addDelayedEventSource("Conveyor1", new Event(EventType.CUSTOM, null), PseudoSessionClock.timeInSeconds(4), PseudoSessionClock.timeInSeconds(6), PseudoSessionClock.timeInMinutes(2), PseudoSessionClock.timeInMinutes(1), 10);
         myGenerator.generate();
-        assertEquals(ksession.getQueryResults("all inserted events").size(), ksession.getQueryResults("all inserted events with 2 min < generation time < 3 min").size());
-        assertTrue(ksession.getQueryResults("all inserted events with 2 min < generation time < 3 min").size()<=10);
+        assertThat(ksession.getQueryResults("all inserted events with 2 min < generation time < 3 min").size()).isEqualTo(ksession.getQueryResults("all inserted events").size());
+        assertThat(ksession.getQueryResults("all inserted events with 2 min < generation time < 3 min").size() <= 10).isTrue();
     }
 
     @Test
@@ -139,7 +138,7 @@ public class SimpleEventGeneratorTest {
         // generate events for 1 min, starting from the session clock
         myGenerator.addEventSource("Conveyor1", new Event(EventType.CUSTOM, null), PseudoSessionClock.timeInSeconds(4), PseudoSessionClock.timeInSeconds(6), PseudoSessionClock.timeInMinutes(3), 0);
         myGenerator.generate();
-        assertEquals(ksession.getQueryResults("all inserted events").size(), ksession.getQueryResults("all inserted events with generation time < 1 min").size());
+        assertThat(ksession.getQueryResults("all inserted events with generation time < 1 min").size()).isEqualTo(ksession.getQueryResults("all inserted events").size());
     }
 
     @Test
@@ -153,8 +152,8 @@ public class SimpleEventGeneratorTest {
         myGenerator.addEventSource("Conveyor1", new Event(EventType.CUSTOM, "resA"), PseudoSessionClock.timeInSeconds(4), PseudoSessionClock.timeInSeconds(6), 0, 15);
         myGenerator.addEventSource("Conveyor2", new Event(EventType.CUSTOM, "resB"), PseudoSessionClock.timeInSeconds(3), PseudoSessionClock.timeInSeconds(5), 0, 20);
         myGenerator.generate();
-        assertEquals(ksession.getQueryResults("all inserted events with parent resource A").size(), 15);
-        assertEquals(ksession.getQueryResults("all inserted events with parent resource B").size(), 20);
+        assertThat(15).isEqualTo(ksession.getQueryResults("all inserted events with parent resource A").size());
+        assertThat(20).isEqualTo(ksession.getQueryResults("all inserted events with parent resource B").size());
     }
 
 }

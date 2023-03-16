@@ -26,8 +26,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -44,8 +43,8 @@ public class StringConditionInspectorOverlapTest {
         StringConditionInspector b = getCondition(new Values<>("Toni"),
                                                   "!=");
 
-        assertFalse(a.overlaps(b));
-        assertFalse(b.overlaps(a));
+        assertThat(a.overlaps(b)).isFalse();
+        assertThat(b.overlaps(a)).isFalse();
     }
 
     @Test
@@ -56,8 +55,8 @@ public class StringConditionInspectorOverlapTest {
         StringConditionInspector b = getCondition(new Values<>("Eder"),
                                                   "!=");
 
-        assertTrue(a.overlaps(b));
-        assertTrue(b.overlaps(a));
+        assertThat(a.overlaps(b)).isTrue();
+        assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
@@ -70,8 +69,8 @@ public class StringConditionInspectorOverlapTest {
         StringConditionInspector b = getCondition(new Values<>("Toni"),
                                                   "!=");
 
-        assertTrue(a.overlaps(b));
-        assertTrue(b.overlaps(a));
+        assertThat(a.overlaps(b)).isTrue();
+        assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
@@ -84,8 +83,8 @@ public class StringConditionInspectorOverlapTest {
         StringConditionInspector b = getCondition(new Values<>("Toni"),
                                                   "==");
 
-        assertTrue(a.overlaps(b));
-        assertTrue(b.overlaps(a));
+        assertThat(a.overlaps(b)).isTrue();
+        assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
@@ -97,8 +96,8 @@ public class StringConditionInspectorOverlapTest {
         StringConditionInspector b = getCondition(new Values<>("Eder"),
                                                   "==");
 
-        assertFalse(a.overlaps(b));
-        assertFalse(b.overlaps(a));
+        assertThat(a.overlaps(b)).isFalse();
+        assertThat(b.overlaps(a)).isFalse();
     }
 
     @Test
@@ -110,8 +109,8 @@ public class StringConditionInspectorOverlapTest {
         StringConditionInspector b = getCondition(new Values<>("Eder"),
                                                   "!=");
 
-        assertTrue(a.overlaps(b));
-        assertTrue(b.overlaps(a));
+        assertThat(a.overlaps(b)).isTrue();
+        assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
@@ -124,8 +123,8 @@ public class StringConditionInspectorOverlapTest {
                                                                "John"),
                                                   "in");
 
-        assertFalse(a.overlaps(b));
-        assertFalse(b.overlaps(a));
+        assertThat(a.overlaps(b)).isFalse();
+        assertThat(b.overlaps(a)).isFalse();
     }
 
     @Test
@@ -138,8 +137,8 @@ public class StringConditionInspectorOverlapTest {
                                                                "Eder"),
                                                   "in");
 
-        assertTrue(a.overlaps(b));
-        assertTrue(b.overlaps(a));
+        assertThat(a.overlaps(b)).isTrue();
+        assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
@@ -151,8 +150,8 @@ public class StringConditionInspectorOverlapTest {
                                                                "Toni"),
                                                   "in");
 
-        assertTrue(a.overlaps(b));
-        assertTrue(b.overlaps(a));
+        assertThat(a.overlaps(b)).isTrue();
+        assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
@@ -163,8 +162,8 @@ public class StringConditionInspectorOverlapTest {
         StringConditionInspector b = getCondition(new Values<>(""),
                                                   "==");
 
-        assertFalse(a.overlaps(b));
-        assertFalse(b.overlaps(a));
+        assertThat(a.overlaps(b)).isFalse();
+        assertThat(b.overlaps(a)).isFalse();
     }
 
     @Test
@@ -175,8 +174,8 @@ public class StringConditionInspectorOverlapTest {
         StringConditionInspector b = getCondition(new Values<>("Toni"),
                                                   "==");
 
-        assertTrue(a.overlaps(b));
-        assertTrue(b.overlaps(a));
+        assertThat(a.overlaps(b)).isTrue();
+        assertThat(b.overlaps(a)).isTrue();
     }
 
     private StringConditionInspector getCondition(final Values values,

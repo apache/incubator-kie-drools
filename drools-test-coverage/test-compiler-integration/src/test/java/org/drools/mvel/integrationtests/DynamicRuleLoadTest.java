@@ -37,9 +37,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DynamicRuleLoadTest {
@@ -145,7 +143,7 @@ public class DynamicRuleLoadTest {
         ksession.insert( new Message( "Hi Universe" ) );
         ksession.fireAllRules();
 
-        assertTrue( done );
+        assertThat(done).isTrue();
     }
 
     @Test
@@ -179,10 +177,10 @@ public class DynamicRuleLoadTest {
         ksession.insert( person );
         ksession.fireAllRules();
 
-        assertNotNull(person);
+        assertThat(person).isNotNull();
         Object personId = valueOf(person, "id");
-        assertNotNull(personId);
-        assertEquals("Person from version 1", personId);
+        assertThat(personId).isNotNull();
+        assertThat(personId).isEqualTo("Person from version 1");
 
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade-java", "1.1.0" );
         Resource javaResource2 = ResourceFactory.newByteArrayResource(javaSrc_2.getBytes()).setResourceType( ResourceType.JAVA )
@@ -194,7 +192,7 @@ public class DynamicRuleLoadTest {
 
         // update container
         kieContainer.updateToVersion(releaseId2);
-        assertEquals(releaseId2, kieContainer.getReleaseId());
+        assertThat(kieContainer.getReleaseId()).isEqualTo(releaseId2);
         // now let's run the rules
         ksession = kieContainer.newKieSession();
 
@@ -203,10 +201,10 @@ public class DynamicRuleLoadTest {
         ksession.insert( person );
         ksession.fireAllRules();
 
-        assertNotNull(person);
+        assertThat(person).isNotNull();
         personId = valueOf(person, "id");
-        assertNotNull(personId);
-        assertEquals("Person from version 2", personId);
+        assertThat(personId).isNotNull();
+        assertThat(personId).isEqualTo("Person from version 2");
     }
 
     public void updateToVersion() {

@@ -20,7 +20,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScenarioSimulationServerMessagesTest {
 
@@ -28,19 +28,16 @@ public class ScenarioSimulationServerMessagesTest {
     public void getFactWithWrongValueExceptionMessage() {
         String factName = "Fact.name";
         String testResult = ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factName, null, null);
-        assertEquals("Failed in \"Fact.name\": The expected value is \"" + ScenarioSimulationServerMessages.NULL + "\" but the actual one is \"" + ScenarioSimulationServerMessages.NULL + "\"",
-                     testResult);
+        assertThat(testResult).isEqualTo("Failed in \"Fact.name\": The expected value is \"" + ScenarioSimulationServerMessages.NULL + "\" but the actual one is \"" + ScenarioSimulationServerMessages.NULL + "\"");
         testResult = ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factName, 1, null);
-        assertEquals("Failed in \"Fact.name\": The expected value is \"" + 1 + "\" but the actual one is \"" + ScenarioSimulationServerMessages.NULL + "\"",
-                     testResult);
+        assertThat(testResult).isEqualTo("Failed in \"Fact.name\": The expected value is \"" + 1 + "\" but the actual one is \"" + ScenarioSimulationServerMessages.NULL + "\"");
         testResult = ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factName, null, "value");
-        assertEquals("Failed in \"Fact.name\": The expected value is \"" + ScenarioSimulationServerMessages.NULL + "\" but the actual one is \"value\"",
-                     testResult);
+        assertThat(testResult).isEqualTo("Failed in \"Fact.name\": The expected value is \"" + ScenarioSimulationServerMessages.NULL + "\" but the actual one is \"value\"");
     }
 
     @Test
     public void getGenericScenarioExceptionMessage() {
-        assertEquals("Failure reason: An exception message", ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage("An exception message"));
+        assertThat(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage("An exception message")).isEqualTo("Failure reason: An exception message");
     }
 
     @Test
@@ -48,11 +45,11 @@ public class ScenarioSimulationServerMessagesTest {
         String factName = "Fact.name";
         String wrongValue = "value";
         String testResult = ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName, Collections.emptyList(), wrongValue);
-        assertEquals("Failed in \"Fact.name\": Impossible to find elements in the collection to satisfy the conditions.", testResult);
+        assertThat(testResult).isEqualTo("Failed in \"Fact.name\": Impossible to find elements in the collection to satisfy the conditions.");
         testResult = ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName, Arrays.asList("Item #2"), wrongValue);
-        assertEquals("Failed in \"Fact.name\": Value \"value\" is wrong in \"Item #2\"", testResult);
+        assertThat(testResult).isEqualTo("Failed in \"Fact.name\": Value \"value\" is wrong in \"Item #2\"");
         testResult = ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName, Arrays.asList("Item #2"), null);
-        assertEquals("Failed in \"Fact.name\": Wrong in \"Item #2\"", testResult);
+        assertThat(testResult).isEqualTo("Failed in \"Fact.name\": Wrong in \"Item #2\"");
 
     }
 
@@ -62,13 +59,13 @@ public class ScenarioSimulationServerMessagesTest {
         String scenarioDescription = "First Case";
         String fileName = "ScesimTest";
         String testResult = ScenarioSimulationServerMessages.getIndexedScenarioMessage(failureMessage, 1, scenarioDescription, fileName);
-        assertEquals("#1 First Case: Failure message (ScesimTest)", testResult);
+        assertThat(testResult).isEqualTo("#1 First Case: Failure message (ScesimTest)");
         testResult = ScenarioSimulationServerMessages.getIndexedScenarioMessage(failureMessage, 1, scenarioDescription, null);
-        assertEquals("#1 First Case: Failure message", testResult);
+        assertThat(testResult).isEqualTo("#1 First Case: Failure message");
         testResult = ScenarioSimulationServerMessages.getIndexedScenarioMessage(failureMessage, 1, "", fileName);
-        assertEquals("#1: Failure message (ScesimTest)", testResult);
+        assertThat(testResult).isEqualTo("#1: Failure message (ScesimTest)");
         testResult = ScenarioSimulationServerMessages.getIndexedScenarioMessage(failureMessage, 1, null, fileName);
-        assertEquals("#1: Failure message (ScesimTest)", testResult);
+        assertThat(testResult).isEqualTo("#1: Failure message (ScesimTest)");
     }
 
 }

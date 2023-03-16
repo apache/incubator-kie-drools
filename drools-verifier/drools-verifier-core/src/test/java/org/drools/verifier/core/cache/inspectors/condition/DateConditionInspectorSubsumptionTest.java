@@ -28,8 +28,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,8 +45,8 @@ public class DateConditionInspectorSubsumptionTest {
         ComparableConditionInspector<Date> b = getCondition(new Date(100),
                                                             "!=");
 
-        assertTrue(a.subsumes(b));
-        assertTrue(b.subsumes(a));
+        assertThat(a.subsumes(b)).isTrue();
+        assertThat(b.subsumes(a)).isTrue();
     }
 
     @Test
@@ -58,8 +57,8 @@ public class DateConditionInspectorSubsumptionTest {
         ComparableConditionInspector<Date> b = getCondition(new Date(10),
                                                             ">");
 
-        assertFalse(a.subsumes(b));
-        assertTrue(b.subsumes(a));
+        assertThat(a.subsumes(b)).isFalse();
+        assertThat(b.subsumes(a)).isTrue();
     }
 
     @Test
@@ -70,8 +69,8 @@ public class DateConditionInspectorSubsumptionTest {
         ComparableConditionInspector<Date> b = getCondition(new Date(100),
                                                             ">");
 
-        assertFalse(a.subsumes(b));
-        assertFalse(b.subsumes(a));
+        assertThat(a.subsumes(b)).isFalse();
+        assertThat(b.subsumes(a)).isFalse();
     }
 
     private ComparableConditionInspector<Date> getCondition(Date date,

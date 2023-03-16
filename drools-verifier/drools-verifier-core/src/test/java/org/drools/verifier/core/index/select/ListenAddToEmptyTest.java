@@ -27,8 +27,7 @@ import org.drools.verifier.core.maps.MultiMapFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ListenAddToEmptyTest {
 
@@ -72,9 +71,9 @@ public class ListenAddToEmptyTest {
 
     @Test
     public void testEmpty() throws Exception {
-        assertNull( all );
-        assertNull( first );
-        assertNull( last );
+        assertThat(all).isNull();
+        assertThat(first).isNull();
+        assertThat(last).isNull();
     }
 
     @Test
@@ -84,9 +83,9 @@ public class ListenAddToEmptyTest {
         map.put( new Value( 0 ),
                  baby );
 
-        assertEquals( baby, first );
-        assertEquals( baby, last );
-        assertEquals( 1, all.size() );
+        assertThat(first).isEqualTo(baby);
+        assertThat(last).isEqualTo(baby);
+        assertThat(all.size()).isEqualTo(1);
     }
 
     class Person {

@@ -17,7 +17,8 @@ package org.drools.core.xml;
 
 import java.util.Collection;
 import org.drools.core.io.internal.InternalResource;
-import org.junit.Assert;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.kie.internal.ChangeSet;
 import org.kie.api.io.Resource;
@@ -38,14 +39,14 @@ public class XmlChangeSetReaderTest {
                                    null );
         
         ChangeSet changeSet = changeSetReader.read(XmlChangeSetReaderTest.class.getClassLoader().getResourceAsStream("org/drools/core/xml/test-change-set.xml"));
-        
-        Assert.assertNotNull(changeSet);
+
+        assertThat(changeSet).isNotNull();
         
         Collection<Resource> resourcesAdded = changeSet.getResourcesAdded();
-        
-        Assert.assertNotNull(resourcesAdded);
-        
-        Assert.assertEquals(4, resourcesAdded.size());
+
+        assertThat(resourcesAdded).isNotNull();
+
+        assertThat(resourcesAdded.size()).isEqualTo(4);
         
         InternalResource resource1 = null;
         InternalResource resource2 = null;
@@ -64,19 +65,19 @@ public class XmlChangeSetReaderTest {
                 resource2 = resource;
             }
         }
-        
-        Assert.assertNotNull(resource1);
-        Assert.assertNotNull(resource2);
-        Assert.assertNotNull(resource3);
-        Assert.assertNotNull(secureResource);
-        
-        Assert.assertNull(resource1.getDescription());
-        
-        Assert.assertEquals("another description", resource2.getDescription());
-        
-        Assert.assertEquals("some useful description", secureResource.getDescription());
 
-        Assert.assertEquals(2, changeSetReader.getParser().getAttrs().getLength());
-        Assert.assertEquals("DRL", changeSetReader.getParser().getAttrs().getValue("type"));
+        assertThat(resource1).isNotNull();
+        assertThat(resource2).isNotNull();
+        assertThat(resource3).isNotNull();
+        assertThat(secureResource).isNotNull();
+
+        assertThat(resource1.getDescription()).isNull();
+
+        assertThat(resource2.getDescription()).isEqualTo("another description");
+
+        assertThat(secureResource.getDescription()).isEqualTo("some useful description");
+
+        assertThat(changeSetReader.getParser().getAttrs().getLength()).isEqualTo(2);
+        assertThat(changeSetReader.getParser().getAttrs().getValue("type")).isEqualTo("DRL");
     }
 }

@@ -19,7 +19,6 @@ import org.dmg.pmml.TextIndex;
 import org.junit.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLTextIndex;
 
-import static org.junit.Assert.*;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTextIndex;
 import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommon.commonVerifyKiePMMLTextIndex;
 

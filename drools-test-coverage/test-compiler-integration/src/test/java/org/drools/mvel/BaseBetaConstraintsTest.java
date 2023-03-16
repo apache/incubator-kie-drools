@@ -45,10 +45,7 @@ import org.drools.mvel.model.Cheese;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public abstract class BaseBetaConstraintsTest {
@@ -145,16 +142,14 @@ public abstract class BaseBetaConstraintsTest {
             indexedPositions[i] = i;
         }
 
-        assertEquals( (indexedPositions.length > 0),
-                      betaConstraints.isIndexed() );
-        assertEquals( indexedPositions.length,
-                      betaConstraints.getIndexCount() );
+        assertThat(betaConstraints.isIndexed()).isEqualTo((indexedPositions.length > 0));
+        assertThat(betaConstraints.getIndexCount()).isEqualTo(indexedPositions.length);
         BetaMemory betaMemory = betaConstraints.createBetaMemory( config, NodeTypeEnums.JoinNode );
 
         if ( indexedPositions.length > 0 ) {
             if (((IndexableConstraint)constraints[indexedPositions[0]]).getConstraintType() == ConstraintType.EQUAL) {
                 TupleIndexHashTable tupleHashTable = (TupleIndexHashTable) betaMemory.getLeftTupleMemory();
-                assertTrue( tupleHashTable.isIndexed() );
+                assertThat(tupleHashTable.isIndexed()).isTrue();
                 Index index = tupleHashTable.getIndex();
 
                 for ( int i = 0; i < indexedPositions.length; i++ ) {
@@ -163,7 +158,7 @@ public abstract class BaseBetaConstraintsTest {
                 }
 
                 TupleIndexHashTable factHashTable = (TupleIndexHashTable) betaMemory.getRightTupleMemory();
-                assertTrue( factHashTable.isIndexed() );
+                assertThat(factHashTable.isIndexed()).isTrue();
                 index = factHashTable.getIndex();
 
                 for ( int i = 0; i < indexedPositions.length; i++ ) {
@@ -175,19 +170,17 @@ public abstract class BaseBetaConstraintsTest {
             }
         } else {
             TupleList tupleHashTable = (TupleList) betaMemory.getLeftTupleMemory();
-            assertFalse( tupleHashTable.isIndexed() );
+            assertThat(tupleHashTable.isIndexed()).isFalse();
 
             TupleList factHashTable = (TupleList) betaMemory.getRightTupleMemory();
-            assertFalse( factHashTable.isIndexed() );
+            assertThat(factHashTable.isIndexed()).isFalse();
         }
     }
 
     protected void checkSameConstraintForIndex(IndexableConstraint constraint,
                                                FieldIndex fieldIndex) {
-        assertSame( constraint.getRequiredDeclarations()[0],
-                    fieldIndex.getLeftExtractor() );
-        assertSame( constraint.getFieldExtractor(),
-                    fieldIndex.getRightExtractor() );
+        assertThat(fieldIndex.getLeftExtractor()).isSameAs(constraint.getRequiredDeclarations()[0]);
+        assertThat(fieldIndex.getRightExtractor()).isSameAs(constraint.getFieldExtractor());
     }
 
     protected BetaNodeFieldConstraint[] convertToConstraints(LinkedList list) {

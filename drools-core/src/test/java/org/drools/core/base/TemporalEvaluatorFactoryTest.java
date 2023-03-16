@@ -49,10 +49,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test coverage for the temporal evaluators.
@@ -930,7 +927,7 @@ public class TemporalEvaluatorFactoryTest {
                 parameters = parameters.split( "\\]" )[0];
             }
             EvaluatorDefinition evalDef = registry.getEvaluatorDefinition( evaluatorStr );
-            assertNotNull( evalDef );
+            assertThat(evalDef).isNotNull();
             final Evaluator evaluator = evalDef.getEvaluator( valueType,
                                                               evaluatorStr,
                                                               isNegated,
@@ -954,8 +951,7 @@ public class TemporalEvaluatorFactoryTest {
                                                 row,
                                                 evaluator );
 
-            assertEquals( valueType,
-                          evaluator.getValueType() );
+            assertThat(evaluator.getValueType()).isEqualTo(valueType);
 
         }
     }
@@ -972,11 +968,9 @@ public class TemporalEvaluatorFactoryTest {
         final String message = "The evaluator type: [" + valueType + "] with 2 extractors incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
-            assertTrue( message,
-                        result );
+            assertThat(result).as(message).isTrue();
         } else {
-            assertFalse( message,
-                         result );
+            assertThat(result).as(message).isFalse();
         }
     }
 
@@ -995,11 +989,9 @@ public class TemporalEvaluatorFactoryTest {
         final String message = "The evaluator type: [" + valueType + "] with CachedRight incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
-            assertTrue( message,
-                        result );
+            assertThat(result).as(message).isTrue();
         } else {
-            assertFalse( message,
-                         result );
+            assertThat(result).as(message).isFalse();
         }
     }
 
@@ -1018,11 +1010,9 @@ public class TemporalEvaluatorFactoryTest {
         final String message = "The evaluator type: [" + valueType + "] with CachedLeft incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
-            assertTrue( message,
-                        result );
+            assertThat(result).as(message).isTrue();
         } else {
-            assertFalse( message,
-                         result );
+            assertThat(result).as(message).isFalse();
         }
     }
 
@@ -1040,7 +1030,7 @@ public class TemporalEvaluatorFactoryTest {
         } catch ( RuntimeException e ) {
             exc = e;
         }
-        assertNotNull( exc );
+        assertThat(exc).isNotNull();
     }
 
     private VariableContextEntry getContextEntry(final Evaluator evaluator,
