@@ -59,9 +59,7 @@ import org.kie.api.time.SessionPseudoClock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -121,12 +119,9 @@ public class FirstOrderLogicTest {
         wm = SerializationHelper.getSerialisedStatefulKnowledgeSession(wm, true);
         results = (List) wm.getGlobal( "results" );
 
-        assertEquals( 1,
-                             results.size() );
-        assertEquals( 3,
-                             ((Collection) results.get( 0 )).size() );
-        assertEquals( ArrayList.class.getName(),
-                             results.get( 0 ).getClass().getName() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(((Collection) results.get(0)).size()).isEqualTo(3);
+        assertThat(results.get(0).getClass().getName()).isEqualTo(ArrayList.class.getName());
     }
 
     @Test
@@ -154,11 +149,9 @@ public class FirstOrderLogicTest {
         wm = SerializationHelper.getSerialisedStatefulKnowledgeSession(wm, true);
         results = (List) wm.getGlobal( "results" );
 
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
-        assertEquals( 2,
-                      ((List) results.get( 0 )).size() );
+        assertThat(((List) results.get(0)).size()).isEqualTo(2);
     }
 
     @Test
@@ -190,12 +183,9 @@ public class FirstOrderLogicTest {
         // ---------------- 1st scenario 
         int fireCount = 0;
         wm.fireAllRules();
-        assertEquals( ++fireCount,
-                             results.size() );
-        assertEquals( 3,
-                             ((Collection) results.get( fireCount - 1 )).size() );
-        assertEquals( ArrayList.class.getName(),
-                             results.get( fireCount - 1 ).getClass().getName() );
+        assertThat(results.size()).isEqualTo(++fireCount);
+        assertThat(((Collection) results.get(fireCount - 1)).size()).isEqualTo(3);
+        assertThat(results.get(fireCount - 1).getClass().getName()).isEqualTo(ArrayList.class.getName());
 
         // ---------------- 2nd scenario 
         final int index = 1;
@@ -205,12 +195,9 @@ public class FirstOrderLogicTest {
 
         wm.fireAllRules();
 
-        assertEquals( ++fireCount,
-                             results.size() );
-        assertEquals( 3,
-                             ((Collection) results.get( fireCount - 1 )).size() );
-        assertEquals( ArrayList.class.getName(),
-                             results.get( fireCount - 1 ).getClass().getName() );
+        assertThat(results.size()).isEqualTo(++fireCount);
+        assertThat(((Collection) results.get(fireCount - 1)).size()).isEqualTo(3);
+        assertThat(results.get(fireCount - 1).getClass().getName()).isEqualTo(ArrayList.class.getName());
 
         // ---------------- 3rd scenario 
         bob.setLikes( "brie" );
@@ -218,16 +205,14 @@ public class FirstOrderLogicTest {
                    bob );
         wm.fireAllRules();
 
-        assertEquals( fireCount,
-                             results.size() );
+        assertThat(results.size()).isEqualTo(fireCount);
 
         // ---------------- 4th scenario 
         wm.retract( cheeseHandles[3] );
         wm.fireAllRules();
 
         // should not have fired as per constraint 
-        assertEquals( fireCount,
-                             results.size() );
+        assertThat(results.size()).isEqualTo(fireCount);
     }
 
     @Test
@@ -246,10 +231,8 @@ public class FirstOrderLogicTest {
 
         wm.fireAllRules();
 
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( 1,
-                      ((Collection) results.get( 0 )).size() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(((Collection) results.get(0)).size()).isEqualTo(1);
 
         wm.insert( new Cheese( "stilton",
                                7 ) );
@@ -260,13 +243,10 @@ public class FirstOrderLogicTest {
         wm = SerializationHelper.getSerialisedStatefulKnowledgeSession(wm, true);
         results = (List) wm.getGlobal( "results" );
 
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
         // It's 3 as while the rule does not fire, it does continue to evaluate and update the collection
-        assertEquals( 3,
-                      ((Collection) results.get( 0 )).size() );
-        assertEquals( ArrayList.class.getName(),
-                      results.get( 0 ).getClass().getName() );
+        assertThat(((Collection) results.get(0)).size()).isEqualTo(3);
+        assertThat(results.get(0).getClass().getName()).isEqualTo(ArrayList.class.getName());
     }
 
     @Test
@@ -286,9 +266,8 @@ public class FirstOrderLogicTest {
         wm.insert( p );
         wm.fireAllRules();
 
-        assertTrue( list.contains( c.getType() ) );
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.contains(c.getType())).isTrue();
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -307,19 +286,17 @@ public class FirstOrderLogicTest {
         final FactHandle cheddarHandle = (FactHandle) wm.insert( cheddar );
         wm.fireAllRules();
 
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         wm.retract( stiltonHandle );
 
         wm.fireAllRules();
 
-        assertEquals( 4,
-                      list.size() );
-        assertTrue( list.contains( new Integer( 5 ) ) );
-        assertTrue( list.contains( new Integer( 6 ) ) );
-        assertTrue( list.contains( new Integer( 7 ) ) );
-        assertTrue( list.contains( new Integer( 8 ) ) );
+        assertThat(list.size()).isEqualTo(4);
+        assertThat(list.contains(new Integer( 5 ))).isTrue();
+        assertThat(list.contains(new Integer( 6 ))).isTrue();
+        assertThat(list.contains(new Integer( 7 ))).isTrue();
+        assertThat(list.contains(new Integer( 8 ))).isTrue();
     }
 
     @Test
@@ -344,15 +321,13 @@ public class FirstOrderLogicTest {
         wm.insert( paul );
         wm.fireAllRules();
 
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         wm.retract( stiltonHandle );
 
         wm.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -368,24 +343,21 @@ public class FirstOrderLogicTest {
         final FactHandle cheddarHandle = (FactHandle) wm.insert( cheddar );
         wm.fireAllRules();
 
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         final FactHandle stiltonHandle = (FactHandle) wm.insert( stilton );
         wm.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
         final Cheese brie = new Cheese( "brie",
                                         5 );
         final FactHandle brieHandle = (FactHandle) wm.insert( brie );
         wm.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -408,23 +380,19 @@ public class FirstOrderLogicTest {
 
         workingMemory.insert( cheddar );
         workingMemory.fireAllRules();
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         workingMemory.insert( provolone );
         workingMemory.fireAllRules();
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         workingMemory.insert( edson );
         workingMemory.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
         workingMemory.insert( bob );
         workingMemory.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -456,15 +424,13 @@ public class FirstOrderLogicTest {
 
         workingMemory.fireAllRules();
 
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         workingMemory.insert( new Cheese( bob.getLikes(),
                                           10 ) );
         workingMemory.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -486,8 +452,7 @@ public class FirstOrderLogicTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         final State qc = new State( "QC" );
         ksession.insert( qc );
@@ -498,8 +463,7 @@ public class FirstOrderLogicTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -528,24 +492,19 @@ public class FirstOrderLogicTest {
         final FactHandle stilton2Handle =  (FactHandle) workingMemory.insert( stilton2 );
 
         workingMemory.fireAllRules();
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         workingMemory.retract( stilton1Handle );
 
         workingMemory.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( mark,
-                      list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo(mark);
 
         workingMemory.retract( stilton2Handle );
 
         workingMemory.fireAllRules();
-        assertEquals( 2,
-                      list.size() );
-        assertEquals( bob,
-                      list.get( 1 ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(1)).isEqualTo(bob);
     }
 
     @Test
@@ -577,15 +536,11 @@ public class FirstOrderLogicTest {
 
         workingMemory.fireAllRules();
 
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
         List cheeses = (List) results.get( 0 );
-        assertEquals( 2,
-                      cheeses.size() );
-        assertEquals( bob.getLikes(),
-                      ((Cheese) cheeses.get( 0 )).getType() );
-        assertEquals( bob.getLikes(),
-                      ((Cheese) cheeses.get( 1 )).getType() );
+        assertThat(cheeses.size()).isEqualTo(2);
+        assertThat(((Cheese) cheeses.get(0)).getType()).isEqualTo(bob.getLikes());
+        assertThat(((Cheese) cheeses.get(1)).getType()).isEqualTo(bob.getLikes());
 
     }
 
@@ -613,9 +568,9 @@ public class FirstOrderLogicTest {
         // ---------------- 1st scenario 
         int fireCount = 0;
         wm.fireAllRules();
-        assertEquals( ++fireCount,  results.size() );
-        assertEquals( 3, ((Collection) results.get( fireCount - 1 )).size() );
-        assertEquals( ArrayList.class.getName(),  results.get( fireCount - 1 ).getClass().getName() );
+        assertThat(results.size()).isEqualTo(++fireCount);
+        assertThat(((Collection) results.get(fireCount - 1)).size()).isEqualTo(3);
+        assertThat(results.get(fireCount - 1).getClass().getName()).isEqualTo(ArrayList.class.getName());
 
         // ---------------- 2nd scenario 
         final int index = 1;
@@ -623,17 +578,17 @@ public class FirstOrderLogicTest {
         wm.update( cheeseHandles[index], cheese[index] );
         wm.fireAllRules();
 
-        assertEquals( ++fireCount, results.size() );
-        assertEquals( 2, ((Collection) results.get( fireCount - 1 )).size() );
-        assertEquals( ArrayList.class.getName(), results.get( fireCount - 1 ).getClass().getName() );
+        assertThat(results.size()).isEqualTo(++fireCount);
+        assertThat(((Collection) results.get(fireCount - 1)).size()).isEqualTo(2);
+        assertThat(results.get(fireCount - 1).getClass().getName()).isEqualTo(ArrayList.class.getName());
 
         // ---------------- 3rd scenario 
         wm.retract( cheeseHandles[2] );
         wm.fireAllRules();
 
-        assertEquals( ++fireCount,  results.size() );
-        assertEquals( 1,  ((Collection) results.get( fireCount - 1 )).size() );
-        assertEquals( ArrayList.class.getName(), results.get( fireCount - 1 ).getClass().getName() );
+        assertThat(results.size()).isEqualTo(++fireCount);
+        assertThat(((Collection) results.get(fireCount - 1)).size()).isEqualTo(1);
+        assertThat(results.get(fireCount - 1).getClass().getName()).isEqualTo(ArrayList.class.getName());
 
     }
 
@@ -649,47 +604,40 @@ public class FirstOrderLogicTest {
 
         // no cheeses, so should fire 
         workingMemory.fireAllRules();
-        assertEquals( ++fired,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(++fired);
 
         // only stilton, so should not fire again 
         FactHandle stilton1 = (FactHandle) workingMemory.insert( new Cheese( "stilton",
                                                                 10 ) );
         workingMemory.fireAllRules();
-        assertEquals( fired,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(fired);
 
         // only stilton, so should not fire again 
         FactHandle stilton2 = (FactHandle) workingMemory.insert( new Cheese( "stilton",
                                                                 11 ) );
         workingMemory.fireAllRules();
-        assertEquals( fired,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(fired);
 
         // still only stilton, so should not fire  
         workingMemory.retract( stilton1 );
         workingMemory.fireAllRules();
-        assertEquals( fired,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(fired);
 
         // there is a brie, so should not fire  
         FactHandle brie = (FactHandle) workingMemory.insert( new Cheese( "brie",
                                                             10 ) );
         workingMemory.fireAllRules();
-        assertEquals( fired,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(fired);
 
         // no brie anymore, so should fire  
         workingMemory.retract( brie );
         workingMemory.fireAllRules();
-        assertEquals( ++fired,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(++fired);
 
         // no more cheese, but since it already fired, should not fire again 
         workingMemory.retract( stilton2 );
         workingMemory.fireAllRules();
-        assertEquals( fired,  
-                      list.size() );
+        assertThat(list.size()).isEqualTo(fired);
 
     }
 
@@ -707,8 +655,7 @@ public class FirstOrderLogicTest {
 
         // no cheeses, so should fire 
         int fired = ksession.fireAllRules();
-        assertEquals( 1,
-                      fired );
+        assertThat(fired).isEqualTo(1);
 
         ksession.dispose();
     }
@@ -742,10 +689,8 @@ public class FirstOrderLogicTest {
 
         wm.fireAllRules();
 
-        assertEquals( 1,
-                             results.size() );
-        assertEquals( 6,
-                             ((List) results.get( 0 )).size() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(((List) results.get(0)).size()).isEqualTo(6);
     }
 
     @Test
@@ -782,30 +727,26 @@ public class FirstOrderLogicTest {
         //System.out.println( "Firing rules ..." );
 
         // check all lists are empty 
-        assertTrue( list1.isEmpty() );
-        assertTrue( list2.isEmpty() );
-        assertTrue( list3.isEmpty() );
-        assertTrue( list4.isEmpty() );
+        assertThat(list1.isEmpty()).isTrue();
+        assertThat(list2.isEmpty()).isTrue();
+        assertThat(list3.isEmpty()).isTrue();
+        assertThat(list4.isEmpty()).isTrue();
 
         session.fireAllRules();
 
         //System.out.println( "Done." );
 
         // check first list is populated correctly 
-        assertEquals( 0,
-                      list1.size() );
+        assertThat(list1.size()).isEqualTo(0);
 
         // check second list is populated correctly         
-        assertEquals( 0,
-                      list2.size() );
+        assertThat(list2.size()).isEqualTo(0);
 
         // check third list is populated correctly         
-        assertEquals( 1,
-                      list3.size() );
+        assertThat(list3.size()).isEqualTo(1);
 
         // check fourth list is populated correctly         
-        assertEquals( 0,
-                      list4.size() );
+        assertThat(list4.size()).isEqualTo(0);
     }
 
     @Test
@@ -828,8 +769,7 @@ public class FirstOrderLogicTest {
 
         FactHandle handle = (FactHandle) workingMemory.insert( cheesery );
         workingMemory.fireAllRules();
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         cheesery.addCheese( new Cheese( "stilton",
                                         10 ) );
@@ -837,8 +777,7 @@ public class FirstOrderLogicTest {
         workingMemory.update( handle,
                               cheesery );
         workingMemory.fireAllRules();
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
     }
 
@@ -866,8 +805,7 @@ public class FirstOrderLogicTest {
         FactHandle markh = (FactHandle) workingMemory.insert( mark );
 
         workingMemory.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     // JBRULES-2482 
@@ -938,24 +876,15 @@ public class FirstOrderLogicTest {
         workingMemory.fireAllRules();
 
         int index = 0;
-        assertEquals( 8,
-                      list.size() );
-        assertSame( order1,
-                    list.get( index++ ) );
-        assertSame( item11,
-                    list.get( index++ ) );
-        assertSame( order2,
-                    list.get( index++ ) );
-        assertSame( item21,
-                    list.get( index++ ) );
-        assertSame( order1,
-                    list.get( index++ ) );
-        assertSame( item11,
-                    list.get( index++ ) );
-        assertSame( order2,
-                    list.get( index++ ) );
-        assertSame( item21,
-                    list.get( index++ ) );
+        assertThat(list.size()).isEqualTo(8);
+        assertThat(list.get(index++)).isSameAs(order1);
+        assertThat(list.get(index++)).isSameAs(item11);
+        assertThat(list.get(index++)).isSameAs(order2);
+        assertThat(list.get(index++)).isSameAs(item21);
+        assertThat(list.get(index++)).isSameAs(order1);
+        assertThat(list.get(index++)).isSameAs(item11);
+        assertThat(list.get(index++)).isSameAs(order2);
+        assertThat(list.get(index++)).isSameAs(item21);
 
     }
 
@@ -991,24 +920,15 @@ public class FirstOrderLogicTest {
         workingMemory.fireAllRules();
 
         int index = 0;
-        assertEquals( 8,
-                      list.size() );
-        assertSame( order1,
-                    list.get( index++ ) );
-        assertSame( item11,
-                    list.get( index++ ) );
-        assertSame( order2,
-                    list.get( index++ ) );
-        assertSame( item21,
-                    list.get( index++ ) );
-        assertSame( order1,
-                    list.get( index++ ) );
-        assertSame( item11,
-                    list.get( index++ ) );
-        assertSame( order2,
-                    list.get( index++ ) );
-        assertSame( item21,
-                    list.get( index++ ) );
+        assertThat(list.size()).isEqualTo(8);
+        assertThat(list.get(index++)).isSameAs(order1);
+        assertThat(list.get(index++)).isSameAs(item11);
+        assertThat(list.get(index++)).isSameAs(order2);
+        assertThat(list.get(index++)).isSameAs(item21);
+        assertThat(list.get(index++)).isSameAs(order1);
+        assertThat(list.get(index++)).isSameAs(item11);
+        assertThat(list.get(index++)).isSameAs(order2);
+        assertThat(list.get(index++)).isSameAs(item21);
 
     }
 
@@ -1037,7 +957,7 @@ public class FirstOrderLogicTest {
 
         workingMemory.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
     }
 
@@ -1056,19 +976,15 @@ public class FirstOrderLogicTest {
 
         wm.fireAllRules();
 
-        assertEquals( 0,
-                             results.size() );
+        assertThat(results.size()).isEqualTo(0);
 
         wm.insert( new Double( 15 ) );
         wm.fireAllRules();
 
-        assertEquals( 2,
-                             results.size() );
+        assertThat(results.size()).isEqualTo(2);
 
-        assertEquals( "collect",
-                             results.get( 0 ) );
-        assertEquals( "accumulate",
-                             results.get( 1 ) );
+        assertThat(results.get(0)).isEqualTo("collect");
+        assertThat(results.get(1)).isEqualTo("accumulate");
     }
 
     @Test
@@ -1095,10 +1011,9 @@ public class FirstOrderLogicTest {
         session.insert( p );
         session.fireAllRules();
 
-        assertEquals( 2,
-                      results.size() );
-        assertTrue( results.contains( a1 ) );
-        assertTrue( results.contains( a2 ) );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains(a1)).isTrue();
+        assertThat(results.contains(a2)).isTrue();
 
     }
 
@@ -1120,8 +1035,7 @@ public class FirstOrderLogicTest {
         clock.advanceTime( 60,
                            TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         int seq = 1;
         // advance time... there are matching events now, but forall still not fire 
@@ -1132,8 +1046,7 @@ public class FirstOrderLogicTest {
         clock.advanceTime( 5,
                            TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
         ksession.insert( new StockTick( seq++,
                                         "RHT",
                                         10,
@@ -1141,8 +1054,7 @@ public class FirstOrderLogicTest {
         clock.advanceTime( 5,
                            TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         // advance time... there are non-matching events now, so forall de-activates 
         ksession.insert( new StockTick( seq++,
@@ -1152,8 +1064,7 @@ public class FirstOrderLogicTest {
         clock.advanceTime( 10,
                            TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         // advance time... there are non-matching events now, so forall is still deactivated 
         ksession.insert( new StockTick( seq++,
@@ -1163,8 +1074,7 @@ public class FirstOrderLogicTest {
         clock.advanceTime( 10,
                            TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         // advance time... non-matching event expires now, so forall should fire 
         ksession.insert( new StockTick( seq++,
@@ -1174,8 +1084,7 @@ public class FirstOrderLogicTest {
         clock.advanceTime( 10,
                            TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals( 2,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(2);
 
         // advance time... forall still matches and should not fire 
         ksession.insert( new StockTick( seq++,
@@ -1185,15 +1094,13 @@ public class FirstOrderLogicTest {
         clock.advanceTime( 10,
                            TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals( 2,  
-                      results.size() );
+        assertThat(results.size()).isEqualTo(2);
 
         // advance time... forall still matches and should not fire 
         clock.advanceTime( 60,
                            TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals( 2,  
-                      results.size() );
+        assertThat(results.size()).isEqualTo(2);
 
     }
 
@@ -1224,10 +1131,8 @@ public class FirstOrderLogicTest {
 
         wm.fireAllRules();
 
-        assertEquals( 2,
-                             results.size() );
-        assertEquals( 3,
-                             ((Collection) results.get( 0 )).size() );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(((Collection) results.get(0)).size()).isEqualTo(3);
     }
 
     @Test
@@ -1243,8 +1148,7 @@ public class FirstOrderLogicTest {
         session.insert( bonFromage );
 
         int rules = session.fireAllRules();
-        assertEquals( 2,
-                      rules );
+        assertThat(rules).isEqualTo(2);
     }
     
     @Test 
@@ -1331,7 +1235,7 @@ public class FirstOrderLogicTest {
         
         ksession.insert( new Message( "test" ) );
         int rules = ksession.fireAllRules();
-        assertEquals( 2, rules );
+        assertThat(rules).isEqualTo(2);
         ksession.dispose();
     }
 

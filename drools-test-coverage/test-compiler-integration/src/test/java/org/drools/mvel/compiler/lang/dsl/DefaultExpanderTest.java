@@ -28,9 +28,7 @@ import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultExpanderTest {
 
@@ -87,8 +85,7 @@ public class DefaultExpanderTest {
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()" + NL + "[then]bar {num}=baz({num});";
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
 
@@ -100,8 +97,7 @@ public class DefaultExpanderTest {
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[keyword]key {param}=Foo( attr=={param} )";
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
 
@@ -109,8 +105,8 @@ public class DefaultExpanderTest {
         String drl = ex.expand(source);
         System.out.println(drl);
 
-        assertTrue(drl.contains("attr==1"));
-        assertTrue(drl.contains("attr==2"));
+        assertThat(drl.contains("attr==1")).isTrue();
+        assertThat(drl.contains("attr==2")).isTrue();
         //System.err.println(ex.expand( "rule 'x' " + NL + " when " + NL + " foo " + NL + " then " + NL + " end" ));
     }
 
@@ -119,8 +115,7 @@ public class DefaultExpanderTest {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()" + NL + "[then]bar {num}=baz({num});";
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
 
@@ -133,14 +128,13 @@ public class DefaultExpanderTest {
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()" + NL + "[then]bar {num}=baz({num});";
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
         String source = "rule 'q'" + NL + "agenda-group 'x'" + NL + "when" + NL + "    foo  " + NL + "then" + NL + "    bar 42" + NL + "end";
         String drl = ex.expand(source);
-        assertFalse(ex.hasErrors());
+        assertThat(ex.hasErrors()).isFalse();
 
         ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
@@ -148,9 +142,8 @@ public class DefaultExpanderTest {
         source = "rule 'q' agenda-group 'x'" + NL + "when" + NL + "    foos " + NL + "then" + NL + "    bar 42" + NL + " end";
         drl = ex.expand(source);
         //System.out.println( drl );
-        assertTrue(ex.hasErrors());
-        assertEquals(1,
-                ex.getErrors().size());
+        assertThat(ex.hasErrors()).isTrue();
+        assertThat(ex.getErrors().size()).isEqualTo(1);
         //System.err.println(( (ExpanderException) ex.getErrors().get( 0 )).getMessage());
     }
 
@@ -160,14 +153,13 @@ public class DefaultExpanderTest {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()" + NL + "[then]bar {num}=baz({num});";
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
         String source = "rule 'q'" + NL + "agenda-group 'x'" + NL + "when" + NL + "    foo  " + NL + "then" + NL + "    bar 42" + NL + "end";
         String drl = ex.expand(source);
-        assertFalse(ex.hasErrors());
+        assertThat(ex.hasErrors()).isFalse();
 
         ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
@@ -175,9 +167,8 @@ public class DefaultExpanderTest {
         source = "rule 'q' agenda-group 'x'" + NL + "when" + NL + "    foos " + NL + "then" + NL + "    bar 42" + NL + " end";
         drl = ex.expand(source);
         //System.out.println( drl );
-        assertTrue(ex.hasErrors());
-        assertEquals(1,
-                ex.getErrors().size());
+        assertThat(ex.hasErrors()).isTrue();
+        assertThat(ex.getErrors().size()).isEqualTo(1);
         //System.err.println(( (ExpanderException) ex.getErrors().get( 0 )).getMessage());
     }
 
@@ -187,8 +178,7 @@ public class DefaultExpanderTest {
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]Invoke rule executor=ruleExec: RuleExecutor()" + NL + "[then]Execute rule \"{id}\"=ruleExec.ExecuteSubRule( new Long({id}));";
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
@@ -197,7 +187,7 @@ public class DefaultExpanderTest {
         String drl = ex.expand(source);
         //        System.out.println("["+drl+"]" );
         //        System.out.println("["+expected+"]" );
-        assertFalse(ex.hasErrors());
+        assertThat(ex.hasErrors()).isFalse();
         equalsIgnoreWhiteSpace(expected,
                 drl);
 
@@ -209,8 +199,7 @@ public class DefaultExpanderTest {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]Invoke rule executor=ruleExec: RuleExecutor()" + NL + "[then]Execute rule \"{id}\"=ruleExec.ExecuteSubRule( new Long({id}));";
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
@@ -219,9 +208,8 @@ public class DefaultExpanderTest {
         String drl = ex.expand(source);
         //        System.out.println("["+drl+"]" );
         //        System.out.println("["+expected+"]" );
-        assertFalse(ex.hasErrors());
-        assertEquals(expected,
-                drl);
+        assertThat(ex.hasErrors()).isFalse();
+        assertThat(drl).isEqualTo(expected);
     }
 
     @Test
@@ -235,15 +223,12 @@ public class DefaultExpanderTest {
         String source = "rule 'q'" + NL + "agenda-group 'x'" + NL + "when" + NL + "    __  " + NL +
                 "then" + NL + "    bar 42" + NL + "\tgoober" + NL + "end";
         ex.expand(source);
-        assertTrue(ex.hasErrors());
-        assertEquals(2,
-                ex.getErrors().size());
+        assertThat(ex.hasErrors()).isTrue();
+        assertThat(ex.getErrors().size()).isEqualTo(2);
         ExpanderException err = (ExpanderException) ex.getErrors().get(0);
-        assertEquals(4,
-                err.getLine());
+        assertThat(err.getLine()).isEqualTo(4);
         err = (ExpanderException) ex.getErrors().get(1);
-        assertEquals(7,
-                err.getLine());
+        assertThat(err.getLine()).isEqualTo(7);
 
     }
 
@@ -258,15 +243,12 @@ public class DefaultExpanderTest {
         String source = "rule 'q'" + NL + "agenda-group 'x'" + NL + "when" + NL + "    __  " + NL +
                 "then" + NL + "    bar 42" + NL + "\tgoober" + NL + "end";
         ex.expand(source);
-        assertTrue(ex.hasErrors());
-        assertEquals(2,
-                ex.getErrors().size());
+        assertThat(ex.hasErrors()).isTrue();
+        assertThat(ex.getErrors().size()).isEqualTo(2);
         ExpanderException err = (ExpanderException) ex.getErrors().get(0);
-        assertEquals(4,
-                err.getLine());
+        assertThat(err.getLine()).isEqualTo(4);
         err = (ExpanderException) ex.getErrors().get(1);
-        assertEquals(7,
-                err.getLine());
+        assertThat(err.getLine()).isEqualTo(7);
 
     }
 
@@ -275,8 +257,7 @@ public class DefaultExpanderTest {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]When the credit rating is {rating:ENUM:Applicant.creditRating} = applicant:Applicant(credit=={rating})";
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
         String source = "rule \"TestNewDslSetup\"" + NL + "dialect \"mvel\"" + NL + "when" + NL + "When the credit rating is AA" + NL + "then " + NL + "end";
@@ -296,10 +277,8 @@ public class DefaultExpanderTest {
                 "applicant:Applicant(credit==AA)" + NL +
                 "then  " + NL + "end";
 
-        assertFalse(ex.getErrors().toString(),
-                ex.hasErrors());
-        assertEquals(expected,
-                drl);
+        assertThat(ex.hasErrors()).as(ex.getErrors().toString()).isFalse();
+        assertThat(drl).isEqualTo(expected);
 
         //System.err.println(ex.expand( "rule 'x' " + NL + " when " + NL + " foo " + NL + " then " + NL + " end" ));
     }
@@ -387,16 +366,15 @@ public class DefaultExpanderTest {
                 + "[when]-startDate is before {date}=startDate>DateUtils.parseDate(\"{date}\")" + NL
                 + "[when]-endDate is after {date}=endDate>DateUtils.parseDate(\"{date}\")";
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
 
         String drl = ex.expand(source);
-        assertFalse(ex.hasErrors());
+        assertThat(ex.hasErrors()).isFalse();
 
-        assertEquals(expected, drl);
+        assertThat(drl).isEqualTo(expected);
     }
 
     @Test
@@ -416,16 +394,15 @@ public class DefaultExpanderTest {
                 "end" + NL;
 
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
 
         String drl = ex.expand(source);
-        assertFalse(ex.hasErrors());
+        assertThat(ex.hasErrors()).isFalse();
 
-        assertEquals(expected, drl);
+        assertThat(drl).isEqualTo(expected);
     }
 
     @Test
@@ -448,17 +425,16 @@ public class DefaultExpanderTest {
                 "end";
 
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
 
         String drl = ex.expand(source);
 
-        assertFalse(ex.hasErrors());
+        assertThat(ex.hasErrors()).isFalse();
 
-        assertEquals(expected, drl);
+        assertThat(drl).isEqualTo(expected);
     }
 
     @Test(timeout = 1000)
@@ -467,13 +443,13 @@ public class DefaultExpanderTest {
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]Foo with {var} bars=Foo( bars == {var} )";
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0, file.getErrors().size());
+        assertThat(file.getErrors().size()).isEqualTo(0);
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
         String source = "rule 'dsl rule'" + NL + "when" + NL + " Foo with {var} bars" + NL + "then" + NL + NL + "end";
         ex.expand(source);
-        assertFalse(ex.hasErrors());
+        assertThat(ex.hasErrors()).isFalse();
     }
 
     @Test
@@ -519,17 +495,15 @@ public class DefaultExpanderTest {
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(file.getErrors().toString(),
-                0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).as(file.getErrors().toString()).isEqualTo(0);
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
 
         String drl = ex.expand(source);
-        assertFalse(ex.hasErrors());
+        assertThat(ex.hasErrors()).isFalse();
 
-        assertEquals(expected, drl);
+        assertThat(drl).isEqualTo(expected);
     }
 
     @Test
@@ -558,17 +532,15 @@ public class DefaultExpanderTest {
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(file.getErrors().toString(),
-                0,
-                file.getErrors().size());
+        assertThat(file.getErrors().size()).as(file.getErrors().toString()).isEqualTo(0);
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
 
         String drl = ex.expand(source);
-        assertFalse(ex.hasErrors());
+        assertThat(ex.hasErrors()).isFalse();
 
-        assertEquals(expected, drl);
+        assertThat(drl).isEqualTo(expected);
     }
 
 }

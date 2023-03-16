@@ -18,9 +18,6 @@ package org.drools.verifier.data;
 
 import java.util.Collection;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.verifier.VerifierComponentMockFactory;
@@ -32,28 +29,31 @@ import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.PatternEval;
 import org.drools.verifier.components.PatternOperatorDescr;
+import org.drools.verifier.components.PatternVariable;
 import org.drools.verifier.components.QualifiedIdentifierRestriction;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.ReturnValueFieldDescr;
 import org.drools.verifier.components.ReturnValueRestriction;
+import org.drools.verifier.components.RuleEval;
 import org.drools.verifier.components.RuleOperatorDescr;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.TextConsequence;
-import org.drools.verifier.components.PatternVariable;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.VerifierAccessorDescr;
 import org.drools.verifier.components.VerifierAccumulateDescr;
 import org.drools.verifier.components.VerifierCollectDescr;
 import org.drools.verifier.components.VerifierComponentType;
-import org.drools.verifier.components.RuleEval;
 import org.drools.verifier.components.VerifierFieldAccessDescr;
 import org.drools.verifier.components.VerifierFromDescr;
 import org.drools.verifier.components.VerifierMethodAccessDescr;
-import org.drools.verifier.components.PatternEval;
 import org.drools.verifier.components.VerifierRule;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class VerifierDataMapsTest {
 
@@ -69,24 +69,19 @@ public class VerifierDataMapsTest {
 
         Collection<VerifierComponent> all = data.getAll();
 
-        assertEquals( 1,
-                      all.size() );
-        assertEquals( rule,
-                      all.toArray()[0] );
+        assertThat(all.size()).isEqualTo(1);
+        assertThat(all.toArray()[0]).isEqualTo(rule);
 
         Collection<VerifierRule> rules = data.getAll( VerifierComponentType.RULE );
 
-        assertEquals( 1,
-                      rules.size() );
-        assertEquals( rule,
-                      rules.toArray()[0] );
+        assertThat(rules.size()).isEqualTo(1);
+        assertThat(rules.toArray()[0]).isEqualTo(rule);
 
         VerifierRule rule2 = data.getVerifierObject( VerifierComponentType.RULE,
                                                      rulePath );
 
-        assertNotNull( rule2 );
-        assertEquals( rule,
-                      rule2 );
+        assertThat(rule2).isNotNull();
+        assertThat(rule2).isEqualTo(rule);
     }
 
     @Test
@@ -148,25 +143,21 @@ public class VerifierDataMapsTest {
         VerifierData data = VerifierReportFactory.newVerifierData();
 
         VerifierRule rule = VerifierComponentMockFactory.createRule1();
-        assertNotNull( rule.getName() );
-        assertEquals( "testRule1",
-                      rule.getName() );
+        assertThat(rule.getName()).isNotNull();
+        assertThat(rule.getName()).isEqualTo("testRule1");
 
         ObjectType objectType = new ObjectType(new PackageDescr("testPackage1"));
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        assertNotNull( pattern.getRulePath() );
-        assertEquals( rule.getPath(),
-                      pattern.getRulePath() );
+        assertThat(pattern.getRulePath()).isNotNull();
+        assertThat(pattern.getRulePath()).isEqualTo(rule.getPath());
 
-        assertNotNull( pattern.getName() );
-        assertEquals( rule.getName(),
-                      pattern.getRuleName() );
+        assertThat(pattern.getName()).isNotNull();
+        assertThat(pattern.getRuleName()).isEqualTo(rule.getName());
 
         pattern.setObjectTypePath( objectType.getPath() );
-        assertNotNull( pattern.getObjectTypePath() );
-        assertEquals( objectType.getPath(),
-                      pattern.getObjectTypePath() );
+        assertThat(pattern.getObjectTypePath()).isNotNull();
+        assertThat(pattern.getObjectTypePath()).isEqualTo(objectType.getPath());
 
         data.add( rule );
         data.add( objectType );
@@ -174,32 +165,27 @@ public class VerifierDataMapsTest {
 
         Collection<VerifierComponent> all = data.getAll();
 
-        assertEquals( 3,
-                      all.size() );
-        assertTrue( all.contains( pattern ) );
-        assertTrue( all.contains( objectType ) );
-        assertTrue( all.contains( rule ) );
+        assertThat(all.size()).isEqualTo(3);
+        assertThat(all.contains(pattern)).isTrue();
+        assertThat(all.contains(objectType)).isTrue();
+        assertThat(all.contains(rule)).isTrue();
 
         Collection<VerifierComponent> components = data.getAll( pattern.getVerifierComponentType() );
 
-        assertEquals( 1,
-                      components.size() );
-        assertEquals( pattern,
-                      components.toArray()[0] );
+        assertThat(components.size()).isEqualTo(1);
+        assertThat(components.toArray()[0]).isEqualTo(pattern);
 
         VerifierComponent objectType2 = data.getVerifierObject( objectType.getVerifierComponentType(),
                                                                 objectType.getPath() );
 
-        assertNotNull( objectType2 );
-        assertEquals( objectType,
-                      objectType2 );
+        assertThat(objectType2).isNotNull();
+        assertThat(objectType2).isEqualTo(objectType);
 
         VerifierComponent rule2 = data.getVerifierObject( rule.getVerifierComponentType(),
                                                           rule.getPath() );
 
-        assertNotNull( rule2 );
-        assertEquals( rule,
-                      rule2 );
+        assertThat(rule2).isNotNull();
+        assertThat(rule2).isEqualTo(rule);
     }
 
     private void saveVerifierComponentAndGet(Field field) {
@@ -214,38 +200,31 @@ public class VerifierDataMapsTest {
 
         Collection<VerifierComponent> all = data.getAll();
 
-        assertEquals( 2,
-                      all.size() );
-        assertTrue( all.contains( objectType ) );
-        assertTrue( all.contains( field ) );
+        assertThat(all.size()).isEqualTo(2);
+        assertThat(all.contains(objectType)).isTrue();
+        assertThat(all.contains(field)).isTrue();
 
         Collection<VerifierComponent> fields = data.getAll( field.getVerifierComponentType() );
 
-        assertEquals( 1,
-                      fields.size() );
-        assertEquals( field,
-                      fields.toArray()[0] );
+        assertThat(fields.size()).isEqualTo(1);
+        assertThat(fields.toArray()[0]).isEqualTo(field);
 
         VerifierComponent field2 = data.getVerifierObject( field.getVerifierComponentType(),
                                                            field.getPath() );
 
-        assertNotNull( field2 );
-        assertEquals( field,
-                      field2 );
+        assertThat(field2).isNotNull();
+        assertThat(field2).isEqualTo(field);
 
         Collection<VerifierComponent> objectTypes = data.getAll( objectType.getVerifierComponentType() );
 
-        assertEquals( 1,
-                      objectTypes.size() );
-        assertEquals( objectType,
-                      objectTypes.toArray()[0] );
+        assertThat(objectTypes.size()).isEqualTo(1);
+        assertThat(objectTypes.toArray()[0]).isEqualTo(objectType);
 
         VerifierComponent objectType2 = data.getVerifierObject( objectType.getVerifierComponentType(),
                                                                 objectType.getPath() );
 
-        assertNotNull( objectType2 );
-        assertEquals( objectType,
-                      objectType2 );
+        assertThat(objectType2).isNotNull();
+        assertThat(objectType2).isEqualTo(objectType);
     }
 
     private void saveVerifierComponentAndGet(Restriction component) {
@@ -258,7 +237,7 @@ public class VerifierDataMapsTest {
 
         component.setFieldPath( field.getPath() );
 
-        assertNotNull( component.getFieldPath() );
+        assertThat(component.getFieldPath()).isNotNull();
 
         data.add( objectType );
         data.add( field );
@@ -266,53 +245,43 @@ public class VerifierDataMapsTest {
 
         Collection<VerifierComponent> all = data.getAll();
 
-        assertEquals( 3,
-                      all.size() );
-        assertTrue( all.contains( objectType ) );
-        assertTrue( all.contains( field ) );
-        assertTrue( all.contains( component ) );
+        assertThat(all.size()).isEqualTo(3);
+        assertThat(all.contains(objectType)).isTrue();
+        assertThat(all.contains(field)).isTrue();
+        assertThat(all.contains(component)).isTrue();
 
         Collection<VerifierComponent> components = data.getAll( component.getVerifierComponentType() );
 
-        assertEquals( 1,
-                      components.size() );
-        assertEquals( component,
-                      components.toArray()[0] );
+        assertThat(components.size()).isEqualTo(1);
+        assertThat(components.toArray()[0]).isEqualTo(component);
 
         VerifierComponent component2 = data.getVerifierObject( component.getVerifierComponentType(),
                                                                component.getPath() );
 
-        assertNotNull( component2 );
-        assertEquals( component,
-                      component2 );
+        assertThat(component2).isNotNull();
+        assertThat(component2).isEqualTo(component);
 
         Collection<VerifierComponent> fields = data.getAll( field.getVerifierComponentType() );
 
-        assertEquals( 1,
-                      fields.size() );
-        assertEquals( field,
-                      fields.toArray()[0] );
+        assertThat(fields.size()).isEqualTo(1);
+        assertThat(fields.toArray()[0]).isEqualTo(field);
 
         VerifierComponent field2 = data.getVerifierObject( field.getVerifierComponentType(),
                                                            field.getPath() );
 
-        assertNotNull( field2 );
-        assertEquals( field,
-                      field2 );
+        assertThat(field2).isNotNull();
+        assertThat(field2).isEqualTo(field);
 
         Collection<VerifierComponent> objectTypes = data.getAll( objectType.getVerifierComponentType() );
 
-        assertEquals( 1,
-                      objectTypes.size() );
-        assertEquals( objectType,
-                      objectTypes.toArray()[0] );
+        assertThat(objectTypes.size()).isEqualTo(1);
+        assertThat(objectTypes.toArray()[0]).isEqualTo(objectType);
 
         VerifierComponent objectType2 = data.getVerifierObject( objectType.getVerifierComponentType(),
                                                                 objectType.getPath() );
 
-        assertNotNull( objectType2 );
-        assertEquals( objectType,
-                      objectType2 );
+        assertThat(objectType2).isNotNull();
+        assertThat(objectType2).isEqualTo(objectType);
     }
 
     private void saveVerifierComponentAndGet(VerifierComponent component) {
@@ -322,24 +291,19 @@ public class VerifierDataMapsTest {
 
         Collection<VerifierComponent> all = data.getAll();
 
-        assertEquals( 1,
-                      all.size() );
-        assertEquals( component,
-                      all.toArray()[0] );
+        assertThat(all.size()).isEqualTo(1);
+        assertThat(all.toArray()[0]).isEqualTo(component);
 
         Collection<VerifierComponent> components = data.getAll( component.getVerifierComponentType() );
 
-        assertEquals( 1,
-                      components.size() );
-        assertEquals( component,
-                      components.toArray()[0] );
+        assertThat(components.size()).isEqualTo(1);
+        assertThat(components.toArray()[0]).isEqualTo(component);
 
         VerifierComponent component2 = data.getVerifierObject( component.getVerifierComponentType(),
                                                                component.getPath() );
 
-        assertNotNull( component2 );
-        assertEquals( component,
-                      component2 );
+        assertThat(component2).isNotNull();
+        assertThat(component2).isEqualTo(component);
     }
 
 }

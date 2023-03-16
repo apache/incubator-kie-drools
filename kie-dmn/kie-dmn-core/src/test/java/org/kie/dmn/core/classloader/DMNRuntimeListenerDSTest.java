@@ -36,9 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DMNRuntimeListenerDSTest {
 
@@ -78,15 +75,15 @@ public class DMNRuntimeListenerDSTest {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("helloDS.dmn", this.getClass());
         runtime.addListener(listenerUT);
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_4D937A56-2648-4AA8-A252-EBD405CFC6A8", "helloDS");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("my name", "John Doe");
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
         assertThat(dmnResult.getDecisionResultByName("greeting").getResult()).isEqualTo("Hello, John Doe");
         assertThat(dmnResult.getDecisionResultByName("hardcoded").getResult()).isEqualTo("Hello, hc");
 
@@ -112,15 +109,15 @@ public class DMNRuntimeListenerDSTest {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("helloDS.dmn", this.getClass());
         runtime.addListener(listenerUT);
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_4D937A56-2648-4AA8-A252-EBD405CFC6A8", "helloDS");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("my name", "Alice");
 
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "myDS");
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
         assertThat(dmnResult.getDecisionResultByName("greeting").getResult()).isEqualTo("Hello, Alice");
 
         assertThat(listenerUT.getInvParams()).hasSize(1);

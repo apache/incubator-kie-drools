@@ -46,9 +46,7 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.compiler.dto.TreeCompilationDTO;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
@@ -89,14 +87,14 @@ public class KiePMMLTreeModelFactoryTest {
                                                                                                         new HasClassLoaderMock());
         KiePMMLTreeModel retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.fromCompilationDTO(source));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                         pmml2,
                                                                         treeModel2,
                                                                         new HasClassLoaderMock());
         retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.fromCompilationDTO(source));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -107,14 +105,14 @@ public class KiePMMLTreeModelFactoryTest {
                                                                                                         new HasClassLoaderMock());
         Map<String, String> retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(source));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                         pmml2,
                                                                         treeModel2,
                                                                         new HasClassLoaderMock());
         retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(source));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -142,38 +140,38 @@ public class KiePMMLTreeModelFactoryTest {
         BlockStmt body = constructorDeclaration.getBody();
         // targetField
         Optional<AssignExpr> optRetrieved = CommonCodegenUtils.getAssignExpression(body, "targetField");
-        assertTrue(optRetrieved.isPresent());
+        assertThat(optRetrieved).isPresent();
         AssignExpr retrieved = optRetrieved.get();
         Expression initializer = retrieved.getValue();
-        assertTrue(initializer instanceof StringLiteralExpr);
+        assertThat(initializer).isInstanceOf(StringLiteralExpr.class);
         String expected = String.format("\"%s\"", targetField);
-        assertEquals(expected, initializer.toString());
+        assertThat(initializer.toString()).isEqualTo(expected);
         // miningFunction
         optRetrieved = CommonCodegenUtils.getAssignExpression(body, "miningFunction");
-        assertTrue(optRetrieved.isPresent());
+        assertThat(optRetrieved).isPresent();
         retrieved = optRetrieved.get();
         initializer = retrieved.getValue();
-        assertTrue(initializer instanceof NameExpr);
+        assertThat(initializer).isInstanceOf(NameExpr.class);
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(treeModel1.getMiningFunction().value());
         expected = miningFunction.getClass().getName() + "." + miningFunction.name();
-        assertEquals(expected, initializer.toString());
+        assertThat(initializer.toString()).isEqualTo(expected);
         // pmmlMODEL
         optRetrieved = CommonCodegenUtils.getAssignExpression(body, "pmmlMODEL");
-        assertTrue(optRetrieved.isPresent());
+        assertThat(optRetrieved).isPresent();
         retrieved = optRetrieved.get();
         initializer = retrieved.getValue();
-        assertTrue(initializer instanceof NameExpr);
+        assertThat(initializer).isInstanceOf(NameExpr.class);
         expected = PMML_MODEL.TREE_MODEL.getClass().getName() + "." + PMML_MODEL.TREE_MODEL.name();
-        assertEquals(expected, initializer.toString());
+        assertThat(initializer.toString()).isEqualTo(expected);
         // nodeFunction
         optRetrieved = CommonCodegenUtils.getAssignExpression(body, "nodeFunction");
-        assertTrue(optRetrieved.isPresent());
+        assertThat(optRetrieved).isPresent();
         retrieved = optRetrieved.get();
         initializer = retrieved.getValue();
-        assertTrue(initializer instanceof MethodReferenceExpr);
+        assertThat(initializer).isInstanceOf(MethodReferenceExpr.class);
         expected = fullNodeClassName;
-        assertEquals(expected, ((MethodReferenceExpr) initializer).getScope().toString());
+        assertThat(((MethodReferenceExpr) initializer).getScope().toString()).isEqualTo(expected);
         expected = "evaluateNode";
-        assertEquals(expected, ((MethodReferenceExpr) initializer).getIdentifier());
+        assertThat(((MethodReferenceExpr) initializer).getIdentifier()).isEqualTo(expected);
     }
 }

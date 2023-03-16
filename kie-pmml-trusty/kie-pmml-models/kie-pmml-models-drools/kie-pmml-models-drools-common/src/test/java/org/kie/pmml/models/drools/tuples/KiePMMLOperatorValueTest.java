@@ -19,7 +19,7 @@ package org.kie.pmml.models.drools.tuples;
 import org.junit.Test;
 import org.kie.pmml.api.enums.OPERATOR;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue.VALUE_CONSTRAINT_PATTERN;
 
 public class KiePMMLOperatorValueTest {
@@ -31,7 +31,7 @@ public class KiePMMLOperatorValueTest {
         KiePMMLOperatorValue kiePMMLOperatorValue = new KiePMMLOperatorValue(operator, value);
         String retrieved = kiePMMLOperatorValue.getConstraintsAsString();
         String expected = String.format(VALUE_CONSTRAINT_PATTERN, operator.getOperator(), value);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -41,6 +41,6 @@ public class KiePMMLOperatorValueTest {
         KiePMMLOperatorValue kiePMMLOperatorValue = new KiePMMLOperatorValue(operator, value);
         String retrieved = kiePMMLOperatorValue.buildConstraintsString();
         String expected = String.format(VALUE_CONSTRAINT_PATTERN, operator.getOperator(), value);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 }

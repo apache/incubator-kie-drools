@@ -31,7 +31,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class RuleExecutionTest {
@@ -81,7 +81,7 @@ public class RuleExecutionTest {
         ksession.insert(3L);
         ksession.fireAllRules();
 
-        assertEquals(asList(-1, 1, -2, 2, -3, 3), list);
+        assertThat(list).isEqualTo(asList(-1, 1, -2, 2, -3, 3));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class RuleExecutionTest {
         ksession.insert(3L);
         ksession.fireAllRules();
 
-        assertEquals(asList(-1, -2, -3, 1, 2, 3), list);
+        assertThat(list).isEqualTo(asList(-1, -2, -3, 1, 2, 3));
     }
 
     @Test
@@ -157,11 +157,11 @@ public class RuleExecutionTest {
         ksession.insert(3L);
         ksession.fireAllRules();
 
-        assertEquals(asList(-5,         // onBeforeAllFire
-                            -1, -2, -3, // all R2
-                            -12,        // onAfterAllFire
-                            1, 2, 3     // R1
-                           ), list);
+        assertThat(list).isEqualTo(asList(-5,         // onBeforeAllFire
+                -1, -2, -3, // all R2
+                -12,        // onAfterAllFire
+                1, 2, 3     // R1
+        ));
     }
 
     @Test
@@ -183,11 +183,11 @@ public class RuleExecutionTest {
         FactHandle fact = ksession.insert(mario);
         ksession.fireAllRules();
 
-        assertEquals("in", mario.getStatus());
+        assertThat(mario.getStatus()).isEqualTo("in");
 
         ksession.delete(fact);
         ksession.fireAllRules();
 
-        assertEquals("out", mario.getStatus());
+        assertThat(mario.getStatus()).isEqualTo("out");
     }
 }

@@ -43,10 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class DeleteTest {
@@ -186,7 +182,7 @@ public class DeleteTest {
 
         ksession.insert(new ClassA());
         ksession.insert(new ClassB());
-        assertEquals(3, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
     @Test
@@ -208,12 +204,12 @@ public class DeleteTest {
         for (final String result : results) {
             logger.info(result);
         }
-        assertEquals(5, results.size());
-        assertTrue(results.contains("first"));
-        assertTrue(results.contains("second"));
-        assertTrue(results.contains("third"));
-        assertTrue(results.contains("fourth"));
-        assertTrue(results.contains("fifth"));
+        assertThat(results.size()).isEqualTo(5);
+        assertThat(results.contains("first")).isTrue();
+        assertThat(results.contains("second")).isTrue();
+        assertThat(results.contains("third")).isTrue();
+        assertThat(results.contains("fourth")).isTrue();
+        assertThat(results.contains("fifth")).isTrue();
     }
 
     @Test
@@ -241,8 +237,8 @@ public class DeleteTest {
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals(1, list.size());
-        assertEquals("ackbar", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("ackbar");
     }
 
     @Test
@@ -261,7 +257,7 @@ public class DeleteTest {
 
         ksession.fireAllRules(2);
 
-        assertEquals("should have fired only once", 1, list.size());
+        assertThat(list.size()).as("should have fired only once").isEqualTo(1);
     }
 
     @Test
@@ -277,12 +273,12 @@ public class DeleteTest {
 
         ksession.fireAllRules();
 
-        assertEquals(sum, stilton.getPrice());
-        assertEquals(1, ksession.getFactCount());
-        assertNotNull(ksession.getObject(stiltonHandle));
-        assertNotNull(ksession.getFactHandle(stilton));
+        assertThat(stilton.getPrice()).isEqualTo(sum);
+        assertThat(ksession.getFactCount()).isEqualTo(1);
+        assertThat(ksession.getObject(stiltonHandle)).isNotNull();
+        assertThat(ksession.getFactHandle(stilton)).isNotNull();
 
-        assertNull(ksession.getObject(muzzarellaHandle));
-        assertNull(ksession.getFactHandle(muzzarella));
+        assertThat(ksession.getObject(muzzarellaHandle)).isNull();
+        assertThat(ksession.getFactHandle(muzzarella)).isNull();
     }
 }

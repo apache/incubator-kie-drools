@@ -26,7 +26,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AlphaNodeTest {
@@ -55,7 +55,7 @@ public class AlphaNodeTest {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Person( "Mario" ) );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class AlphaNodeTest {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Person( "Mario" ) );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class AlphaNodeTest {
 
         ksession.insert( new Person( "Mario" ) );
         ksession.insert( "Mario" );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class AlphaNodeTest {
 
         ksession.insert( new Person( "Mario" ) );
         ksession.insert( "Mario" );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class AlphaNodeTest {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Person( "Mario" ) );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -154,7 +154,7 @@ public class AlphaNodeTest {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Person( "Mario" ) );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -180,7 +180,7 @@ public class AlphaNodeTest {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Person( "Mario" ) );
-        assertEquals( 3, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
     @Test
@@ -203,7 +203,7 @@ public class AlphaNodeTest {
 
         ksession.insert( new Person( "Mario" ) );
         ksession.insert( "Mario" );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -226,7 +226,7 @@ public class AlphaNodeTest {
 
         ksession.insert( new Person( "Mario" ) );
         ksession.insert( "Mark" );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -248,6 +248,6 @@ public class AlphaNodeTest {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Person( "Mario", 0 ) );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 }

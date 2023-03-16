@@ -24,7 +24,7 @@ import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class KnowledgeSessionConfigurationTest {
@@ -45,22 +45,18 @@ public class KnowledgeSessionConfigurationTest {
         config.setOption( ClockTypeOption.PSEUDO );
 
         // checking the type safe getOption() method
-        assertEquals( ClockTypeOption.PSEUDO,
-                      config.getOption( ClockTypeOption.class ) );
+        assertThat(config.getOption(ClockTypeOption.class)).isEqualTo(ClockTypeOption.PSEUDO);
         // checking the string based getProperty() method
-        assertEquals( "pseudo",
-                      config.getProperty( ClockTypeOption.PROPERTY_NAME ) );
+        assertThat(config.getProperty(ClockTypeOption.PROPERTY_NAME)).isEqualTo("pseudo");
 
         // setting the options using the string based setProperty() method
         config.setProperty( ClockTypeOption.PROPERTY_NAME,
                             "realtime" );
-        
+
         // checking the type safe getOption() method
-        assertEquals( ClockTypeOption.REALTIME,
-                      config.getOption( ClockTypeOption.class ) );
+        assertThat(config.getOption(ClockTypeOption.class)).isEqualTo(ClockTypeOption.REALTIME);
         // checking the string based getProperty() method
-        assertEquals( "realtime",
-                      config.getProperty( ClockTypeOption.PROPERTY_NAME ) );
+        assertThat(config.getProperty(ClockTypeOption.PROPERTY_NAME)).isEqualTo("realtime");
     }
 
 
@@ -68,49 +64,41 @@ public class KnowledgeSessionConfigurationTest {
     public void testBeliefSystemType() {
         config.setOption( BeliefSystemTypeOption.get( BeliefSystemType.JTMS.toString() ) );
 
-        assertEquals( BeliefSystemTypeOption.get( BeliefSystemType.JTMS.toString() ),
-                      config.getOption( BeliefSystemTypeOption.class ) );
+        assertThat(config.getOption(BeliefSystemTypeOption.class)).isEqualTo(BeliefSystemTypeOption.get(BeliefSystemType.JTMS.toString()));
 
         // checking the string based getProperty() method
-        assertEquals( BeliefSystemType.JTMS.getId(),
-                      config.getProperty( BeliefSystemTypeOption.PROPERTY_NAME ) );
+        assertThat(config.getProperty(BeliefSystemTypeOption.PROPERTY_NAME)).isEqualTo(BeliefSystemType.JTMS.getId());
 
         // setting the options using the string based setProperty() method
         config.setProperty( BeliefSystemTypeOption.PROPERTY_NAME,
                             BeliefSystemType.DEFEASIBLE.getId() );
 
         // checking the type safe getOption() method
-        assertEquals( BeliefSystemTypeOption.get( BeliefSystemType.DEFEASIBLE.getId() ),
-                      config.getOption( BeliefSystemTypeOption.class ) );
+        assertThat(config.getOption(BeliefSystemTypeOption.class)).isEqualTo(BeliefSystemTypeOption.get(BeliefSystemType.DEFEASIBLE.getId()));
         // checking the string based getProperty() method
-        assertEquals( BeliefSystemType.DEFEASIBLE.getId(),
-                      config.getProperty( BeliefSystemTypeOption.PROPERTY_NAME ) );
+        assertThat(config.getProperty(BeliefSystemTypeOption.PROPERTY_NAME)).isEqualTo(BeliefSystemType.DEFEASIBLE.getId());
     }
 
     @Test
     public void testAccumulateNullPropagation() {
         // false by default
-        assertEquals(AccumulateNullPropagationOption.NO, config.getOption(AccumulateNullPropagationOption.class));
-        assertEquals("false", config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME));
+        assertThat(config.getOption(AccumulateNullPropagationOption.class)).isEqualTo(AccumulateNullPropagationOption.NO);
+        assertThat(config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME)).isEqualTo("false");
 
         config.setOption(AccumulateNullPropagationOption.YES);
 
-        assertEquals(AccumulateNullPropagationOption.YES,
-                     config.getOption(AccumulateNullPropagationOption.class));
+        assertThat(config.getOption(AccumulateNullPropagationOption.class)).isEqualTo(AccumulateNullPropagationOption.YES);
 
         // checking the string based getProperty() method
-        assertEquals("true",
-                     config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME));
+        assertThat(config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME)).isEqualTo("true");
 
         // setting the options using the string based setProperty() method
         config.setProperty(AccumulateNullPropagationOption.PROPERTY_NAME,
                            "false");
 
         // checking the type safe getOption() method
-        assertEquals(AccumulateNullPropagationOption.NO,
-                     config.getOption(AccumulateNullPropagationOption.class));
+        assertThat(config.getOption(AccumulateNullPropagationOption.class)).isEqualTo(AccumulateNullPropagationOption.NO);
         // checking the string based getProperty() method
-        assertEquals("false",
-                     config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME));
+        assertThat(config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME)).isEqualTo("false");
     }
 }

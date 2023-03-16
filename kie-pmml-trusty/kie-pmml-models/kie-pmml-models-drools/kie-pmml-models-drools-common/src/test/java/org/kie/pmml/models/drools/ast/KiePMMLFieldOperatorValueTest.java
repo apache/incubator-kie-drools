@@ -25,7 +25,7 @@ import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLFieldOperatorValueTest {
 
@@ -37,11 +37,11 @@ public class KiePMMLFieldOperatorValueTest {
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithName();
         String expected = "value < 35 surrogate value > 85";
         String retrieved = kiePMMLFieldOperatorValue.getConstraintsAsString();
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithoutName();
         expected = "value < 35 surrogate value > 85";
         retrieved = kiePMMLFieldOperatorValue.buildConstraintsString();
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -49,11 +49,11 @@ public class KiePMMLFieldOperatorValueTest {
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithName();
         String expected = "value < 35 surrogate value > 85";
         String retrieved = kiePMMLFieldOperatorValue.buildConstraintsString();
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithoutName();
         expected = "value < 35 surrogate value > 85";
         retrieved = kiePMMLFieldOperatorValue.buildConstraintsString();
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     private KiePMMLFieldOperatorValue getKiePMMLFieldOperatorValueWithName() {

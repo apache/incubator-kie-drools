@@ -19,8 +19,8 @@ package org.drools.decisiontable.parser;
 import java.util.Properties;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
 import org.drools.template.parser.DataListener;
@@ -54,8 +54,8 @@ public class PropertiesSheetListenerTest {
         listener.newCell( 1, 1,
                           "key3", DataListener.NON_MERGED );
 
-        assertEquals( "value1", props.getSingleProperty( "Key1" ) );
-        assertEquals( "value2", props.getSingleProperty( "key2" ) );
+        assertThat(props.getSingleProperty("Key1")).isEqualTo("value1");
+        assertThat(props.getSingleProperty("key2")).isEqualTo("value2");
         
     }
 
@@ -66,15 +66,15 @@ public class PropertiesSheetListenerTest {
         map.addProperty("x4", new String[]{ "wHee", "C3" } );
         map.addProperty("XXx", new String[]{ "hey2", "D4" } );
 
-        assertNull( map.getProperty("x") );
-        assertEquals("hey", map.getSingleProperty("x3"));
-        assertEquals("hey", map.getSingleProperty("X3"));
-        assertEquals("wHee", map.getSingleProperty("x4"));
-        assertEquals("hey2", map.getSingleProperty("xxx"));
-        assertEquals("hey2", map.getSingleProperty("XXX"));
-        assertEquals("hey2", map.getSingleProperty("XXx"));
+        assertThat(map.getProperty("x")).isNull();
+        assertThat(map.getSingleProperty("x3")).isEqualTo("hey");
+        assertThat(map.getSingleProperty("X3")).isEqualTo("hey");
+        assertThat(map.getSingleProperty("x4")).isEqualTo("wHee");
+        assertThat(map.getSingleProperty("xxx")).isEqualTo("hey2");
+        assertThat(map.getSingleProperty("XXX")).isEqualTo("hey2");
+        assertThat(map.getSingleProperty("XXx")).isEqualTo("hey2");
 
-        assertEquals("Whee2", map.getSingleProperty("x", "Whee2"));
+        assertThat(map.getSingleProperty("x", "Whee2")).isEqualTo("Whee2");
 
     }
 

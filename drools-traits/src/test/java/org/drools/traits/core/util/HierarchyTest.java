@@ -29,9 +29,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HierarchyTest {
 
@@ -48,10 +46,10 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertEquals(  parseBitSet( "0" ), encoder.getCode( "A" ) );
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "B" ) );
-        assertEquals(  parseBitSet( "11" ), encoder.getCode( "C" ) );
-        assertEquals(  parseBitSet( "111" ), encoder.getCode( "D" ) );
+        assertThat(encoder.getCode("A")).isEqualTo(parseBitSet("0"));
+        assertThat(encoder.getCode("B")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("C")).isEqualTo(parseBitSet("11"));
+        assertThat(encoder.getCode("D")).isEqualTo(parseBitSet("111"));
     }
 
     @Test
@@ -66,15 +64,15 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "A" ) );
-        assertEquals(  parseBitSet( "10" ), encoder.getCode( "B" ) );
-        assertEquals(  parseBitSet( "100" ), encoder.getCode( "C" ) );
-        assertEquals(  parseBitSet( "1000" ), encoder.getCode( "D" ) );
-        assertEquals(  parseBitSet( "10000" ), encoder.getCode( "E" ) );
+        assertThat(encoder.getCode("A")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("B")).isEqualTo(parseBitSet("10"));
+        assertThat(encoder.getCode("C")).isEqualTo(parseBitSet("100"));
+        assertThat(encoder.getCode("D")).isEqualTo(parseBitSet("1000"));
+        assertThat(encoder.getCode("E")).isEqualTo(parseBitSet("10000"));
 
-        assertEquals( 5, encoder.size() );
-        assertEquals( 5, encoder.getSortedMembers().size() );
-        assertEquals( 5, encoder.getSortedMap().size() );
+        assertThat(encoder.size()).isEqualTo(5);
+        assertThat(encoder.getSortedMembers().size()).isEqualTo(5);
+        assertThat(encoder.getSortedMap().size()).isEqualTo(5);
 
     }
 
@@ -97,17 +95,17 @@ public class HierarchyTest {
         BitSet d = encoder.getCode( "D" );
         BitSet e = encoder.getCode( "E" );
 
-        assertTrue( encoder.superset( b, a ) > 0 );
-        assertTrue( encoder.superset( c, a ) > 0 );
-        assertTrue( encoder.superset( d, a ) > 0 );
-        assertTrue( encoder.superset( d, b ) > 0 );
-        assertTrue( encoder.superset( d, c ) > 0 );
+        assertThat(encoder.superset(b, a) > 0).isTrue();
+        assertThat(encoder.superset(c, a) > 0).isTrue();
+        assertThat(encoder.superset(d, a) > 0).isTrue();
+        assertThat(encoder.superset(d, b) > 0).isTrue();
+        assertThat(encoder.superset(d, c) > 0).isTrue();
 
-        assertTrue( encoder.superset( e, a ) < 0 );
-        assertTrue( encoder.superset( e, b ) < 0 );
-        assertTrue( encoder.superset( e, c ) < 0 );
-        assertTrue( encoder.superset( e, d ) < 0 );
-        assertTrue( encoder.superset( e, e ) == 0 );
+        assertThat(encoder.superset(e, a) < 0).isTrue();
+        assertThat(encoder.superset(e, b) < 0).isTrue();
+        assertThat(encoder.superset(e, c) < 0).isTrue();
+        assertThat(encoder.superset(e, d) < 0).isTrue();
+        assertThat(encoder.superset(e, e) == 0).isTrue();
 
     }
 
@@ -122,10 +120,10 @@ public class HierarchyTest {
             encoder.encode( "X" + j, Arrays.asList( "A" ) );
         }
 
-        assertEquals( N, encoder.size() );
+        assertThat(encoder.size()).isEqualTo(N);
         BitSet code = encoder.getCode( "X" + ( N -1 ) );
-        assertEquals( 1, code.cardinality() );
-        assertTrue( code.get( N - 2 ) );
+        assertThat(code.cardinality()).isEqualTo(1);
+        assertThat(code.get(N - 2)).isTrue();
     }
 
 
@@ -144,13 +142,13 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertEquals( parseBitSet("0"), encoder.getCode("A"));
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "B" ) );
-        assertEquals(  parseBitSet( "10" ), encoder.getCode( "C" ) );
-        assertEquals(  parseBitSet( "101" ), encoder.getCode( "D" ) );
-        assertEquals(  parseBitSet( "1001" ), encoder.getCode( "E" ) );
-        assertEquals(  parseBitSet( "110" ), encoder.getCode( "F" ) );
-        assertEquals(  parseBitSet( "1010" ), encoder.getCode( "G" ) );
+        assertThat(encoder.getCode("A")).isEqualTo(parseBitSet("0"));
+        assertThat(encoder.getCode("B")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("C")).isEqualTo(parseBitSet("10"));
+        assertThat(encoder.getCode("D")).isEqualTo(parseBitSet("101"));
+        assertThat(encoder.getCode("E")).isEqualTo(parseBitSet("1001"));
+        assertThat(encoder.getCode("F")).isEqualTo(parseBitSet("110"));
+        assertThat(encoder.getCode("G")).isEqualTo(parseBitSet("1010"));
     }
 
 
@@ -174,17 +172,17 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertEquals( parseBitSet( "0"), encoder.getCode("R"));
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "A1" ) );
-        assertEquals(  parseBitSet( "10" ), encoder.getCode( "A2" ) );
-        assertEquals(  parseBitSet( "100" ), encoder.getCode( "A3" ) );
-        assertEquals(  parseBitSet( "1000" ), encoder.getCode( "B1" ) );
-        assertEquals(  parseBitSet( "10000" ), encoder.getCode( "B2" ) );
-        assertEquals(  parseBitSet( "100000" ), encoder.getCode( "B3" ) );
-        assertEquals(  parseBitSet( "11000" ), encoder.getCode( "B4" ) );
-        assertEquals(  parseBitSet( "101000" ), encoder.getCode( "B5" ) );
-        assertEquals(  parseBitSet( "110000" ), encoder.getCode( "B6" ) );
-        assertEquals(  parseBitSet( "111000" ), encoder.getCode( "B7" ) );
+        assertThat(encoder.getCode("R")).isEqualTo(parseBitSet("0"));
+        assertThat(encoder.getCode("A1")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("A2")).isEqualTo(parseBitSet("10"));
+        assertThat(encoder.getCode("A3")).isEqualTo(parseBitSet("100"));
+        assertThat(encoder.getCode("B1")).isEqualTo(parseBitSet("1000"));
+        assertThat(encoder.getCode("B2")).isEqualTo(parseBitSet("10000"));
+        assertThat(encoder.getCode("B3")).isEqualTo(parseBitSet("100000"));
+        assertThat(encoder.getCode("B4")).isEqualTo(parseBitSet("11000"));
+        assertThat(encoder.getCode("B5")).isEqualTo(parseBitSet("101000"));
+        assertThat(encoder.getCode("B6")).isEqualTo(parseBitSet("110000"));
+        assertThat(encoder.getCode("B7")).isEqualTo(parseBitSet("111000"));
     }
 
 
@@ -209,18 +207,18 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertEquals( parseBitSet( "0"), encoder.getCode("R"));
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "B1" ) );
-        assertEquals(  parseBitSet( "10" ), encoder.getCode( "B2" ) );
-        assertEquals(  parseBitSet( "100" ), encoder.getCode( "B3" ) );
+        assertThat(encoder.getCode("R")).isEqualTo(parseBitSet("0"));
+        assertThat(encoder.getCode("B1")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("B2")).isEqualTo(parseBitSet("10"));
+        assertThat(encoder.getCode("B3")).isEqualTo(parseBitSet("100"));
 
-        assertEquals(  parseBitSet( "11" ), encoder.getCode( "B4" ) );
-        assertEquals(  parseBitSet( "101" ), encoder.getCode( "B5" ) );
-        assertEquals(  parseBitSet( "110" ), encoder.getCode( "B6" ) );
-        assertEquals(  parseBitSet( "111" ), encoder.getCode( "B7" ) );
-        assertEquals(  parseBitSet( "1000" ), encoder.getCode( "A1" ) );
-        assertEquals(  parseBitSet( "10000" ), encoder.getCode( "A2" ) );
-        assertEquals(  parseBitSet( "100000" ), encoder.getCode( "A3" ) );
+        assertThat(encoder.getCode("B4")).isEqualTo(parseBitSet("11"));
+        assertThat(encoder.getCode("B5")).isEqualTo(parseBitSet("101"));
+        assertThat(encoder.getCode("B6")).isEqualTo(parseBitSet("110"));
+        assertThat(encoder.getCode("B7")).isEqualTo(parseBitSet("111"));
+        assertThat(encoder.getCode("A1")).isEqualTo(parseBitSet("1000"));
+        assertThat(encoder.getCode("A2")).isEqualTo(parseBitSet("10000"));
+        assertThat(encoder.getCode("A3")).isEqualTo(parseBitSet("100000"));
     }
 
 
@@ -246,16 +244,16 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertEquals( parseBitSet( "0"), encoder.getCode("R"));
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "A1" ) );
-        assertEquals(  parseBitSet( "10" ), encoder.getCode( "A2" ) );
-        assertEquals(  parseBitSet( "100" ), encoder.getCode( "A3" ) );
-        assertEquals(  parseBitSet( "1000" ), encoder.getCode( "B1" ) );
-        assertEquals(  parseBitSet( "10000" ), encoder.getCode( "B2" ) );
-        assertEquals(  parseBitSet( "100000" ), encoder.getCode( "B3" ) );
-        assertEquals(  parseBitSet( "10111000" ), encoder.getCode( "B4" ) );
-        assertEquals(  parseBitSet( "1111000" ), encoder.getCode( "B5" ) );
-        assertEquals(  parseBitSet( "100111000" ), encoder.getCode( "B6" ) );
+        assertThat(encoder.getCode("R")).isEqualTo(parseBitSet("0"));
+        assertThat(encoder.getCode("A1")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("A2")).isEqualTo(parseBitSet("10"));
+        assertThat(encoder.getCode("A3")).isEqualTo(parseBitSet("100"));
+        assertThat(encoder.getCode("B1")).isEqualTo(parseBitSet("1000"));
+        assertThat(encoder.getCode("B2")).isEqualTo(parseBitSet("10000"));
+        assertThat(encoder.getCode("B3")).isEqualTo(parseBitSet("100000"));
+        assertThat(encoder.getCode("B4")).isEqualTo(parseBitSet("10111000"));
+        assertThat(encoder.getCode("B5")).isEqualTo(parseBitSet("1111000"));
+        assertThat(encoder.getCode("B6")).isEqualTo(parseBitSet("100111000"));
     }
 
 
@@ -278,16 +276,16 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertEquals( parseBitSet( "0"), encoder.getCode("R"));
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "B1" ) );
-        assertEquals(  parseBitSet( "10" ), encoder.getCode( "B2" ) );
-        assertEquals(  parseBitSet( "100" ), encoder.getCode( "B3" ) );
-        assertEquals(  parseBitSet( "10111" ), encoder.getCode( "B4" ) );
-        assertEquals(  parseBitSet( "1111" ), encoder.getCode( "B5" ) );
-        assertEquals(  parseBitSet( "100111" ), encoder.getCode( "B6" ) );
-        assertEquals(  parseBitSet( "1000000" ), encoder.getCode( "A1" ) );
-        assertEquals(  parseBitSet( "10000000" ), encoder.getCode( "A2" ) );
-        assertEquals(  parseBitSet( "100000000" ), encoder.getCode( "A3" ) );
+        assertThat(encoder.getCode("R")).isEqualTo(parseBitSet("0"));
+        assertThat(encoder.getCode("B1")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("B2")).isEqualTo(parseBitSet("10"));
+        assertThat(encoder.getCode("B3")).isEqualTo(parseBitSet("100"));
+        assertThat(encoder.getCode("B4")).isEqualTo(parseBitSet("10111"));
+        assertThat(encoder.getCode("B5")).isEqualTo(parseBitSet("1111"));
+        assertThat(encoder.getCode("B6")).isEqualTo(parseBitSet("100111"));
+        assertThat(encoder.getCode("A1")).isEqualTo(parseBitSet("1000000"));
+        assertThat(encoder.getCode("A2")).isEqualTo(parseBitSet("10000000"));
+        assertThat(encoder.getCode("A3")).isEqualTo(parseBitSet("100000000"));
     }
 
 
@@ -304,11 +302,11 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertEquals(  parseBitSet( "0" ), encoder.getCode( "T" ) );
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "A" ) );
-        assertEquals(  parseBitSet( "10" ), encoder.getCode( "B" ) );
-        assertEquals(  parseBitSet( "111" ), encoder.getCode( "D" ) );
-        assertEquals(  parseBitSet( "1011" ), encoder.getCode( "C" ) );
+        assertThat(encoder.getCode("T")).isEqualTo(parseBitSet("0"));
+        assertThat(encoder.getCode("A")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("B")).isEqualTo(parseBitSet("10"));
+        assertThat(encoder.getCode("D")).isEqualTo(parseBitSet("111"));
+        assertThat(encoder.getCode("C")).isEqualTo(parseBitSet("1011"));
 
 
     }
@@ -331,28 +329,28 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertEquals(  parseBitSet( "0" ), encoder.getCode( "A" ) );
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "B" ) );
-        assertEquals(  parseBitSet( "10" ), encoder.getCode( "C" ) );
-        assertEquals(  parseBitSet( "101" ), encoder.getCode( "D" ) );
-        assertEquals(  parseBitSet( "1001" ), encoder.getCode( "E" ) );
-        assertEquals(  parseBitSet( "110" ), encoder.getCode( "F" ) );
-        assertEquals(  parseBitSet( "1010" ), encoder.getCode( "G" ) );
-        assertEquals(  parseBitSet( "11001" ), encoder.getCode( "H" ) );
+        assertThat(encoder.getCode("A")).isEqualTo(parseBitSet("0"));
+        assertThat(encoder.getCode("B")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("C")).isEqualTo(parseBitSet("10"));
+        assertThat(encoder.getCode("D")).isEqualTo(parseBitSet("101"));
+        assertThat(encoder.getCode("E")).isEqualTo(parseBitSet("1001"));
+        assertThat(encoder.getCode("F")).isEqualTo(parseBitSet("110"));
+        assertThat(encoder.getCode("G")).isEqualTo(parseBitSet("1010"));
+        assertThat(encoder.getCode("H")).isEqualTo(parseBitSet("11001"));
 
         encoder.encode( "I", Arrays.asList( "E", "F" ) );
 
         System.out.println( encoder );
 
-        assertEquals(  parseBitSet( "0" ), encoder.getCode( "A" ) );
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "B" ) );
-        assertEquals(  parseBitSet( "10" ), encoder.getCode( "C" ) );
-        assertEquals(  parseBitSet( "101" ), encoder.getCode( "D" ) );
-        assertEquals(  parseBitSet( "1000001" ), encoder.getCode( "E" ) );
-        assertEquals(  parseBitSet( "100010" ), encoder.getCode( "F" ) );
-        assertEquals(  parseBitSet( "1010" ), encoder.getCode( "G" ) );
-        assertEquals(  parseBitSet( "1010001" ), encoder.getCode( "H" ) );
-        assertEquals(  parseBitSet( "1100011" ), encoder.getCode( "I" ) );
+        assertThat(encoder.getCode("A")).isEqualTo(parseBitSet("0"));
+        assertThat(encoder.getCode("B")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("C")).isEqualTo(parseBitSet("10"));
+        assertThat(encoder.getCode("D")).isEqualTo(parseBitSet("101"));
+        assertThat(encoder.getCode("E")).isEqualTo(parseBitSet("1000001"));
+        assertThat(encoder.getCode("F")).isEqualTo(parseBitSet("100010"));
+        assertThat(encoder.getCode("G")).isEqualTo(parseBitSet("1010"));
+        assertThat(encoder.getCode("H")).isEqualTo(parseBitSet("1010001"));
+        assertThat(encoder.getCode("I")).isEqualTo(parseBitSet("1100011"));
 
         checkHier( encoder, 'I' );
     }
@@ -412,21 +410,21 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertEquals( parseBitSet( "0"), encoder.getCode("R"));
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "B1" ) );
-        assertEquals(  parseBitSet( "10" ), encoder.getCode( "B2" ) );
-        assertEquals(  parseBitSet( "100" ), encoder.getCode( "B3" ) );
-        assertEquals(  parseBitSet( "11" ), encoder.getCode( "B4" ) );
-        assertEquals(  parseBitSet( "101" ), encoder.getCode( "B5" ) );
-        assertEquals(  parseBitSet( "110" ), encoder.getCode( "B6" ) );
-        assertEquals(  parseBitSet( "111" ), encoder.getCode( "B7" ) );
-        assertEquals(  parseBitSet( "1000" ), encoder.getCode( "A1" ) );
-        assertEquals(  parseBitSet( "10000" ), encoder.getCode( "A2" ) );
-        assertEquals(  parseBitSet( "100000" ), encoder.getCode( "A3" ) );
-        assertEquals(  parseBitSet( "111000" ), encoder.getCode( "A4" ) );
-        assertEquals(  parseBitSet( "1111000" ), encoder.getCode( "A5" ) );
-        assertEquals(  parseBitSet( "10111000" ), encoder.getCode( "A6" ) );
-        assertEquals(  parseBitSet( "100111000" ), encoder.getCode( "A7" ) );
+        assertThat(encoder.getCode("R")).isEqualTo(parseBitSet("0"));
+        assertThat(encoder.getCode("B1")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("B2")).isEqualTo(parseBitSet("10"));
+        assertThat(encoder.getCode("B3")).isEqualTo(parseBitSet("100"));
+        assertThat(encoder.getCode("B4")).isEqualTo(parseBitSet("11"));
+        assertThat(encoder.getCode("B5")).isEqualTo(parseBitSet("101"));
+        assertThat(encoder.getCode("B6")).isEqualTo(parseBitSet("110"));
+        assertThat(encoder.getCode("B7")).isEqualTo(parseBitSet("111"));
+        assertThat(encoder.getCode("A1")).isEqualTo(parseBitSet("1000"));
+        assertThat(encoder.getCode("A2")).isEqualTo(parseBitSet("10000"));
+        assertThat(encoder.getCode("A3")).isEqualTo(parseBitSet("100000"));
+        assertThat(encoder.getCode("A4")).isEqualTo(parseBitSet("111000"));
+        assertThat(encoder.getCode("A5")).isEqualTo(parseBitSet("1111000"));
+        assertThat(encoder.getCode("A6")).isEqualTo(parseBitSet("10111000"));
+        assertThat(encoder.getCode("A7")).isEqualTo(parseBitSet("100111000"));
     }
 
 
@@ -456,23 +454,23 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertEquals( parseBitSet( "0"), encoder.getCode("R"));
+        assertThat(encoder.getCode("R")).isEqualTo(parseBitSet("0"));
 
-        assertEquals(  parseBitSet( "1" ), encoder.getCode( "A1" ) );
-        assertEquals(  parseBitSet( "10" ), encoder.getCode( "A2" ) );
-        assertEquals(  parseBitSet( "100" ), encoder.getCode( "A3" ) );
-        assertEquals(  parseBitSet( "111" ), encoder.getCode( "A4" ) );
-        assertEquals(  parseBitSet( "1111" ), encoder.getCode( "A5" ) );
-        assertEquals(  parseBitSet( "10111" ), encoder.getCode( "A6" ) );
-        assertEquals(  parseBitSet( "100111" ), encoder.getCode( "A7" ) );
+        assertThat(encoder.getCode("A1")).isEqualTo(parseBitSet("1"));
+        assertThat(encoder.getCode("A2")).isEqualTo(parseBitSet("10"));
+        assertThat(encoder.getCode("A3")).isEqualTo(parseBitSet("100"));
+        assertThat(encoder.getCode("A4")).isEqualTo(parseBitSet("111"));
+        assertThat(encoder.getCode("A5")).isEqualTo(parseBitSet("1111"));
+        assertThat(encoder.getCode("A6")).isEqualTo(parseBitSet("10111"));
+        assertThat(encoder.getCode("A7")).isEqualTo(parseBitSet("100111"));
 
-        assertEquals(  parseBitSet( "1000000" ), encoder.getCode( "B1" ) );
-        assertEquals(  parseBitSet( "10000000" ), encoder.getCode( "B2" ) );
-        assertEquals(  parseBitSet( "100000000" ), encoder.getCode( "B3" ) );
-        assertEquals(  parseBitSet( "011000000" ), encoder.getCode( "B4" ) );
-        assertEquals(  parseBitSet( "101000000" ), encoder.getCode( "B5" ) );
-        assertEquals(  parseBitSet( "110000000" ), encoder.getCode( "B6" ) );
-        assertEquals(  parseBitSet( "111000000" ), encoder.getCode( "B7" ) );
+        assertThat(encoder.getCode("B1")).isEqualTo(parseBitSet("1000000"));
+        assertThat(encoder.getCode("B2")).isEqualTo(parseBitSet("10000000"));
+        assertThat(encoder.getCode("B3")).isEqualTo(parseBitSet("100000000"));
+        assertThat(encoder.getCode("B4")).isEqualTo(parseBitSet("011000000"));
+        assertThat(encoder.getCode("B5")).isEqualTo(parseBitSet("101000000"));
+        assertThat(encoder.getCode("B6")).isEqualTo(parseBitSet("110000000"));
+        assertThat(encoder.getCode("B7")).isEqualTo(parseBitSet("111000000"));
     }
 
     private BitSet parseBitSet( String s ) {
@@ -545,7 +543,7 @@ public class HierarchyTest {
             BitSet ns = iter.next();
             Long next = toLong( ns );
             System.out.println( next );
-            assertTrue( next > last );
+            assertThat(next > last).isTrue();
             last = next;
         }
     }
@@ -578,11 +576,11 @@ public class HierarchyTest {
                 int subOf = ((HierarchyEncoderImpl) encoder).superset(xcode, ycode);
 
                 if ( x.equals( y ) ) {
-                    assertEquals( x + " vs " + y, 0, subOf );
+                    assertThat(subOf).as(x + " vs " + y).isEqualTo(0);
                 } else if ( sups[ j - 'A' ].contains( y ) ) {
-                    assertEquals( x + " vs " + y, 1, subOf );
+                    assertThat(subOf).as(x + " vs " + y).isEqualTo(1);
                 } else {
-                    assertEquals( x + " vs " + y, -1, subOf );
+                    assertThat(subOf).as(x + " vs " + y).isEqualTo(-1);
                 }
 
             }
@@ -638,11 +636,11 @@ public class HierarchyTest {
                 int subOf = encoder.superset( xcode, ycode );
 
                 if ( x.equals( y ) ) {
-                    assertEquals( 0, subOf );
+                    assertThat(subOf).isEqualTo(0);
                 } else if ( sups[ j - 'A' ].contains( y ) ) {
-                    assertEquals( 1, subOf );
+                    assertThat(subOf).isEqualTo(1);
                 } else {
-                    assertEquals( -1, subOf );
+                    assertThat(subOf).isEqualTo(-1);
                 }
 
             }
@@ -670,8 +668,8 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        assertTrue( ((HierarchyEncoderImpl) encoder).superset(encoder.getCode("Z"), encoder.getCode("F")) < 0 ) ;
-        assertTrue( ((HierarchyEncoderImpl) encoder).superset(encoder.getCode("F"), encoder.getCode("Z")) < 0 ) ;
+        assertThat(((HierarchyEncoderImpl) encoder).superset(encoder.getCode("Z"), encoder.getCode("F")) < 0).isTrue() ;
+        assertThat(((HierarchyEncoderImpl) encoder).superset(encoder.getCode("F"), encoder.getCode("Z")) < 0).isTrue() ;
     }
 
 
@@ -705,81 +703,81 @@ public class HierarchyTest {
         x = encoder.upperAncestors(b);
         System.out.println( "ANC " + x );
 
-        assertTrue( x.contains( "A" ) );
-        assertTrue( x.contains( "Z" ) );
-        assertTrue( x.contains( "C" ) );
-        assertTrue( x.contains( "Q" ) );
-        assertTrue( x.contains( "T" ) );
-        assertTrue( x.contains( "R" ) );
-        assertTrue( x.contains( "S" ) );
-        assertTrue( x.contains( "M" ) );
-        assertTrue( x.contains( "Thing" ) );
-        assertEquals( 9, x.size() );
+        assertThat(x.contains("A")).isTrue();
+        assertThat(x.contains("Z")).isTrue();
+        assertThat(x.contains("C")).isTrue();
+        assertThat(x.contains("Q")).isTrue();
+        assertThat(x.contains("T")).isTrue();
+        assertThat(x.contains("R")).isTrue();
+        assertThat(x.contains("S")).isTrue();
+        assertThat(x.contains("M")).isTrue();
+        assertThat(x.contains("Thing")).isTrue();
+        assertThat(x.size()).isEqualTo(9);
 
 
         b = parseBitSet( "100000" );
         x = encoder.upperAncestors(b);
         System.out.println( "ANC " + x );
 
-        assertEquals( 2, x.size() );
-        assertTrue( x.contains( "Q" ) );
-        assertTrue( x.contains( "Thing" ) );
+        assertThat(x.size()).isEqualTo(2);
+        assertThat(x.contains("Q")).isTrue();
+        assertThat(x.contains("Thing")).isTrue();
 
         b = parseBitSet( "1111" );
         x = encoder.upperAncestors(b);
         System.out.println( "ANC " + x );
 
-        assertEquals( 6, x.size() );
-        assertTrue( x.contains( "A" ) );
-        assertTrue( x.contains( "Z" ) );
-        assertTrue( x.contains( "B" ) );
-        assertTrue( x.contains( "C" ) );
-        assertTrue( x.contains( "N" ) );
-        assertTrue( x.contains( "Thing" ) );
+        assertThat(x.size()).isEqualTo(6);
+        assertThat(x.contains("A")).isTrue();
+        assertThat(x.contains("Z")).isTrue();
+        assertThat(x.contains("B")).isTrue();
+        assertThat(x.contains("C")).isTrue();
+        assertThat(x.contains("N")).isTrue();
+        assertThat(x.contains("Thing")).isTrue();
 
         b = parseBitSet( "111" );
         x = encoder.upperAncestors(b);
         System.out.println( "ANC " + x );
 
-        assertEquals( 4, x.size() );
-        assertTrue( x.contains( "A" ) );
-        assertTrue( x.contains( "Z" ) );
-        assertTrue( x.contains( "C" ) );
-        assertTrue( x.contains( "Thing" ) );
+        assertThat(x.size()).isEqualTo(4);
+        assertThat(x.contains("A")).isTrue();
+        assertThat(x.contains("Z")).isTrue();
+        assertThat(x.contains("C")).isTrue();
+        assertThat(x.contains("Thing")).isTrue();
 
         b = parseBitSet( "1" );
         x = encoder.upperAncestors(b);
         System.out.println( "ANC " + x );
 
-        assertEquals( 2, x.size() );
-        assertTrue( x.contains( "A" ) );
-        assertTrue( x.contains( "Thing" ) );
+        assertThat(x.size()).isEqualTo(2);
+        assertThat(x.contains("A")).isTrue();
+        assertThat(x.contains("Thing")).isTrue();
 
         b = parseBitSet( "10" );
         x = encoder.upperAncestors(b);
         System.out.println( "ANC " + x );
 
-        assertEquals( 2, x.size() );
-        assertTrue( x.contains( "Z" ) );
-        assertTrue( x.contains( "Thing" ) );
+        assertThat(x.size()).isEqualTo(2);
+        assertThat(x.contains("Z")).isTrue();
+        assertThat(x.contains("Thing")).isTrue();
 
         b = parseBitSet( "0" );
         x = encoder.upperAncestors(b);
         System.out.println( "ANC " + x );
 
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "Thing" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("Thing")).isTrue();
 
 
         b = parseBitSet( "1011" );
         x = encoder.upperAncestors(b);
         System.out.println( "ANC " + x );
 
-        assertEquals( 4, x.size() );
-        assertTrue( x.contains( "Thing" ) );
-        assertTrue( x.contains( "A" ) );
-        assertTrue( x.contains( "B" ) );
-        assertTrue( x.contains( "Z" ) );
+        assertThat(x.size()).isEqualTo(4);
+        assertThat(x.contains("Thing")).isTrue();
+        assertThat(x.contains("A")).isTrue();
+        assertThat(x.contains("B")).isTrue();
+        assertThat(x.contains("Z")).isTrue();
 
     }
 
@@ -811,33 +809,33 @@ public class HierarchyTest {
         x = encoder.lowerDescendants(b);
         System.out.println( "DESC " + x );
 
-        assertEquals( 3, x.size() );
-        assertTrue( x.contains( "C" ) );
-        assertTrue( x.contains( "N" ) );
-        assertTrue( x.contains( "T" ) );
+        assertThat(x.size()).isEqualTo(3);
+        assertThat(x.contains("C")).isTrue();
+        assertThat(x.contains("N")).isTrue();
+        assertThat(x.contains("T")).isTrue();
 
 
         b = parseBitSet( "10" );
         x = encoder.lowerDescendants(b);
         System.out.println( "DESC " + x );
 
-        assertEquals( 5, x.size() );
-        assertTrue( x.contains( "C" ) );
-        assertTrue( x.contains( "N" ) );
-        assertTrue( x.contains( "T" ) );
-        assertTrue( x.contains( "Z" ) );
-        assertTrue( x.contains( "B" ) );
+        assertThat(x.size()).isEqualTo(5);
+        assertThat(x.contains("C")).isTrue();
+        assertThat(x.contains("N")).isTrue();
+        assertThat(x.contains("T")).isTrue();
+        assertThat(x.contains("Z")).isTrue();
+        assertThat(x.contains("B")).isTrue();
 
 
         b = parseBitSet( "100000" );
         x = encoder.lowerDescendants(b);
         System.out.println( "DESC " + x );
 
-        assertEquals( 4, x.size() );
-        assertTrue( x.contains( "Q" ) );
-        assertTrue( x.contains( "T" ) );
-        assertTrue( x.contains( "M" ) );
-        assertTrue( x.contains( "O" ) );
+        assertThat(x.size()).isEqualTo(4);
+        assertThat(x.contains("Q")).isTrue();
+        assertThat(x.contains("T")).isTrue();
+        assertThat(x.contains("M")).isTrue();
+        assertThat(x.contains("O")).isTrue();
 
 
 
@@ -846,36 +844,36 @@ public class HierarchyTest {
         x = encoder.lowerDescendants(b);
         System.out.println( "DESC " + x );
 
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "T" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("T")).isTrue();
 
         b = parseBitSet( "1111" );
         x = encoder.lowerDescendants(b);
         System.out.println( "DESC " + x );
 
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "N" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("N")).isTrue();
 
 
         b = parseBitSet( "1" );
         x = encoder.lowerDescendants(b);
         System.out.println( "DESC " + x );
 
-        assertEquals( 5, x.size() );
-        assertTrue( x.contains( "A" ) );
-        assertTrue( x.contains( "B" ) );
-        assertTrue( x.contains( "C" ) );
-        assertTrue( x.contains( "N" ) );
-        assertTrue( x.contains( "T" ) );
+        assertThat(x.size()).isEqualTo(5);
+        assertThat(x.contains("A")).isTrue();
+        assertThat(x.contains("B")).isTrue();
+        assertThat(x.contains("C")).isTrue();
+        assertThat(x.contains("N")).isTrue();
+        assertThat(x.contains("T")).isTrue();
 
         System.out.println(" +*******************************+ ");
 
         x = encoder.lowerDescendants(new BitSet());
         System.out.println( "DESC " + x );
 
-        assertEquals( 13, x.size() );
-        assertTrue( x.contains( "Z" ) );
-        assertTrue( x.contains( "Thing" ) );
+        assertThat(x.size()).isEqualTo(13);
+        assertThat(x.contains("Z")).isTrue();
+        assertThat(x.contains("Thing")).isTrue();
 
     }
 
@@ -904,27 +902,27 @@ public class HierarchyTest {
 
         x = encoder.lowerBorder( encoder.metMembersCode( Arrays.asList( "B" ) ) );
         System.out.println( "GCS " + x );
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "B" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("B")).isTrue();
 
         x = encoder.immediateChildren( encoder.metMembersCode( Arrays.asList( "B" ) ) );
         System.out.println( "GCS " + x );
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "N" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("N")).isTrue();
 
 
 
         x = encoder.lowerBorder( encoder.metMembersCode( Arrays.asList( "Z", "Q" ) ) );
         System.out.println( "GCS " + x );
 
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "T" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("T")).isTrue();
 
         x = encoder.immediateChildren( encoder.metMembersCode( Arrays.asList( "Z", "Q" ) ) );
         System.out.println( "GCS " + x );
 
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "T" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("T")).isTrue();
 
 
 
@@ -932,16 +930,16 @@ public class HierarchyTest {
         x = encoder.lowerBorder( encoder.metMembersCode( Arrays.asList( "A", "Z" ) ) );
         System.out.println( "GCS " + x );
 
-        assertEquals( 2, x.size() );
-        assertTrue( x.contains( "B" ) );
-        assertTrue( x.contains( "C" ) );
+        assertThat(x.size()).isEqualTo(2);
+        assertThat(x.contains("B")).isTrue();
+        assertThat(x.contains("C")).isTrue();
 
         x = encoder.immediateChildren( encoder.metMembersCode( Arrays.asList( "A", "Z" ) ) );
         System.out.println( "GCS " + x );
 
-        assertEquals( 2, x.size() );
-        assertTrue( x.contains( "B" ) );
-        assertTrue( x.contains( "C" ) );
+        assertThat(x.size()).isEqualTo(2);
+        assertThat(x.contains("B")).isTrue();
+        assertThat(x.contains("C")).isTrue();
 
 
 
@@ -949,18 +947,18 @@ public class HierarchyTest {
         x = encoder.lowerBorder( encoder.metMembersCode( Arrays.asList( "Thing" ) ) );
         System.out.println( "GCS " + x );
 
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "Thing" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("Thing")).isTrue();
 
         x = encoder.immediateChildren( encoder.metMembersCode( Arrays.asList( "Thing" ) ) );
         System.out.println( "GCS " + x );
 
-        assertEquals( 5, x.size() );
-        assertTrue( x.contains( "A" ) );
-        assertTrue( x.contains( "Z" ) );
-        assertTrue( x.contains( "P" ) );
-        assertTrue( x.contains( "Q" ) );
-        assertTrue( x.contains( "R" ) );
+        assertThat(x.size()).isEqualTo(5);
+        assertThat(x.contains("A")).isTrue();
+        assertThat(x.contains("Z")).isTrue();
+        assertThat(x.contains("P")).isTrue();
+        assertThat(x.contains("Q")).isTrue();
+        assertThat(x.contains("R")).isTrue();
 
     }
 
@@ -990,58 +988,58 @@ public class HierarchyTest {
 
         x = encoder.upperBorder( encoder.metMembersCode( Arrays.asList( "B" ) ) );
         System.out.println( "LCS " + x );
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "B" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("B")).isTrue();
 
         x = encoder.immediateParents( encoder.metMembersCode( Arrays.asList( "B" ) ) );
         System.out.println( "LCS " + x );
-        assertEquals( 2, x.size() );
-        assertTrue( x.contains( "A" ) );
-        assertTrue( x.contains( "Z" ) );
+        assertThat(x.size()).isEqualTo(2);
+        assertThat(x.contains("A")).isTrue();
+        assertThat(x.contains("Z")).isTrue();
 
 
 
         x = encoder.upperBorder( encoder.jointMembersCode( Arrays.asList( "Z", "Q" ) ) );
         System.out.println( "LCS " + x );
 
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "Thing" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("Thing")).isTrue();
 
         x = encoder.immediateParents( encoder.jointMembersCode( Arrays.asList( "Z", "Q" ) ) );
         System.out.println( "LCS " + x );
 
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "Thing" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("Thing")).isTrue();
 
 
 
         x = encoder.upperBorder( encoder.jointMembersCode( Arrays.asList( "B", "C" ) ) );
         System.out.println( "LCS " + x );
 
-        assertEquals( 2, x.size() );
-        assertTrue( x.contains( "A" ) );
-        assertTrue( x.contains( "Z" ) );
+        assertThat(x.size()).isEqualTo(2);
+        assertThat(x.contains("A")).isTrue();
+        assertThat(x.contains("Z")).isTrue();
 
         x = encoder.immediateParents( encoder.jointMembersCode( Arrays.asList( "B", "C" ) ) );
         System.out.println( "LCS " + x );
 
-        assertEquals( 2, x.size() );
-        assertTrue( x.contains( "A" ) );
-        assertTrue( x.contains( "Z" ) );
+        assertThat(x.size()).isEqualTo(2);
+        assertThat(x.contains("A")).isTrue();
+        assertThat(x.contains("Z")).isTrue();
 
 
         x = encoder.upperBorder( encoder.jointMembersCode( Arrays.asList( "T" ) ) );
         System.out.println( "LCS " + x );
 
-        assertEquals( 1, x.size() );
-        assertTrue( x.contains( "T" ) );
+        assertThat(x.size()).isEqualTo(1);
+        assertThat(x.contains("T")).isTrue();
 
         x = encoder.immediateParents( encoder.jointMembersCode( Arrays.asList( "T" ) ) );
         System.out.println( "LCS " + x );
 
-        assertEquals( 2, x.size() );
-        assertTrue( x.contains( "C" ) );
-        assertTrue( x.contains( "Q" ) );
+        assertThat(x.size()).isEqualTo(2);
+        assertThat(x.contains("C")).isTrue();
+        assertThat(x.contains("Q")).isTrue();
 
 
     }
@@ -1087,25 +1085,25 @@ public class HierarchyTest {
 
         System.out.println( types );
 
-        assertEquals( Arrays.asList( "c", "h" ), types.children( "A" ) );
-        assertEquals( Arrays.asList( "f", "n", "o" ), types.children( "c" ) );
-        assertEquals( Arrays.asList( "j", "k" ), types.children( "f" ) );
-        assertEquals( Arrays.asList( "ZZZZ" ), types.children( "j" ) );
-        assertEquals( Arrays.asList( "ZZZZ" ), types.children( "k" ) );
-        assertEquals( Arrays.asList( "ZZZZ" ), types.children( "n" ) );
-        assertEquals( Arrays.asList( "ZZZZ" ), types.children( "o" ) );
-        assertEquals( Arrays.asList( "o" ), types.children( "h" ) );
-        assertEquals( Arrays.asList( ), types.children( "ZZZZ" ) );
+        assertThat(types.children("A")).isEqualTo(Arrays.asList("c", "h"));
+        assertThat(types.children("c")).isEqualTo(Arrays.asList("f", "n", "o"));
+        assertThat(types.children("f")).isEqualTo(Arrays.asList("j", "k"));
+        assertThat(types.children("j")).isEqualTo(Arrays.asList("ZZZZ"));
+        assertThat(types.children("k")).isEqualTo(Arrays.asList("ZZZZ"));
+        assertThat(types.children("n")).isEqualTo(Arrays.asList("ZZZZ"));
+        assertThat(types.children("o")).isEqualTo(Arrays.asList("ZZZZ"));
+        assertThat(types.children("h")).isEqualTo(Arrays.asList("o"));
+        assertThat(types.children("ZZZZ")).isEqualTo(Arrays.asList());
 
-        assertEquals( Arrays.asList( ), types.parents( "a" ) );
-        assertEquals( Arrays.asList( "A" ), types.parents( "c" ) );
-        assertEquals( Arrays.asList( "c" ), types.parents( "f" ) );
-        assertEquals( Arrays.asList( "f" ), types.parents( "j" ) );
-        assertEquals( Arrays.asList( "f" ), types.parents( "k" ) );
-        assertEquals( Arrays.asList( "c" ), types.parents( "n" ) );
-        assertEquals( Arrays.asList( "c", "h" ), types.parents( "o" ) );
-        assertEquals( Arrays.asList( "A" ), types.parents( "h" ) );
-        assertEquals( Arrays.asList( "j", "k", "n", "o" ), types.parents( "ZZZZ" ) );
+        assertThat(types.parents("a")).isEqualTo(Arrays.asList());
+        assertThat(types.parents("c")).isEqualTo(Arrays.asList("A"));
+        assertThat(types.parents("f")).isEqualTo(Arrays.asList("c"));
+        assertThat(types.parents("j")).isEqualTo(Arrays.asList("f"));
+        assertThat(types.parents("k")).isEqualTo(Arrays.asList("f"));
+        assertThat(types.parents("n")).isEqualTo(Arrays.asList("c"));
+        assertThat(types.parents("o")).isEqualTo(Arrays.asList("c", "h"));
+        assertThat(types.parents("h")).isEqualTo(Arrays.asList("A"));
+        assertThat(types.parents("ZZZZ")).isEqualTo(Arrays.asList("j", "k", "n", "o"));
 
 
         BitSet pk = encoder.encode( "P", Arrays.asList( "O" ) );
@@ -1113,21 +1111,21 @@ public class HierarchyTest {
 
         System.out.println( types );
 
-        assertEquals( Arrays.asList( "o" ), types.parents( "p" ) );
-        assertEquals( Arrays.asList( "j", "k", "n", "p" ), types.parents( "ZZZZ" ) );
-        assertEquals( Arrays.asList( "ZZZZ" ), types.children( "p" ) );
+        assertThat(types.parents("p")).isEqualTo(Arrays.asList("o"));
+        assertThat(types.parents("ZZZZ")).isEqualTo(Arrays.asList("j", "k", "n", "p"));
+        assertThat(types.children("p")).isEqualTo(Arrays.asList("ZZZZ"));
 
 
         types.removeMember( "o" );
 
         System.out.println( types );
 
-        assertEquals( Arrays.asList( "c", "h" ), types.parents( "p" ) );
-        assertEquals( Arrays.asList( "f", "n", "p" ), types.children( "c" ) );
-        assertEquals( Arrays.asList( "j", "k" ), types.children( "f" ) );
-        assertEquals( Arrays.asList( "ZZZZ" ), types.children( "n" ) );
-        assertEquals( Arrays.asList( "ZZZZ" ), types.children( "p" ) );
-        assertEquals( Arrays.asList( "p" ), types.children( "h" ) );
+        assertThat(types.parents("p")).isEqualTo(Arrays.asList("c", "h"));
+        assertThat(types.children("c")).isEqualTo(Arrays.asList("f", "n", "p"));
+        assertThat(types.children("f")).isEqualTo(Arrays.asList("j", "k"));
+        assertThat(types.children("n")).isEqualTo(Arrays.asList("ZZZZ"));
+        assertThat(types.children("p")).isEqualTo(Arrays.asList("ZZZZ"));
+        assertThat(types.children("h")).isEqualTo(Arrays.asList("p"));
 
     }
 
@@ -1148,34 +1146,34 @@ public class HierarchyTest {
         BitSet jk = encoder.encode( "J", Arrays.asList( "F", "D" ) );
         BitSet lk = encoder.encode( "L", Arrays.asList( "J" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet ok = encoder.encode( "O", Arrays.asList( "L" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet kk = encoder.encode( "K", Arrays.asList( "F", "G" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet mk = encoder.encode( "M", Arrays.asList( "J", "K" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet nk = encoder.encode( "N", Arrays.asList( "K" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet hk = encoder.encode( "H", Arrays.asList( "F" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet pk = encoder.encode( "P", Arrays.asList( "A" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         System.out.println( encoder );
-        assertEquals( 16, encoder.size() );
+        assertThat(encoder.size()).isEqualTo(16);
     }
 
 

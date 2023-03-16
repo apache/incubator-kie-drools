@@ -44,7 +44,7 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.scorecard.model.KiePMMLAttribute;
 import org.kie.pmml.models.scorecard.model.KiePMMLComplexPartialScore;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getSimplePredicate;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getStringObjects;
@@ -97,7 +97,7 @@ public class KiePMMLAttributeFactoryTest {
                                                                                       getFieldsFromDataDictionary(dataDictionary));
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, valuesString));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLAttribute.class,
                                                KiePMMLComplexPartialScore.class,
                                                KiePMMLCompoundPredicate.class,

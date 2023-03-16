@@ -22,11 +22,10 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.test.model.DroolsTestCase;
-
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TupleSourceTest extends DroolsTestCase {
 
@@ -37,8 +36,7 @@ public class TupleSourceTest extends DroolsTestCase {
         BuildContext          buildContext = new BuildContext(kBase );
 
         final MockTupleSource source = new MockTupleSource(15, buildContext);
-        assertEquals( 15,
-                      source.getId() );
+        assertThat(source.getId()).isEqualTo(15);
     }
 
     @Test
@@ -55,51 +53,37 @@ public class TupleSourceTest extends DroolsTestCase {
         field.setAccessible( true );
         LeftTupleSinkPropagator sink = (LeftTupleSinkPropagator) field.get( source );
 
-        assertSame( EmptyLeftTupleSinkAdapter.getInstance(),
-                    sink );
-
+        assertThat(sink).isSameAs(EmptyLeftTupleSinkAdapter.getInstance());
         final MockLeftTupleSink sink1 = new MockLeftTupleSink(buildContext);
         source.addTupleSink( sink1 );
         sink = (LeftTupleSinkPropagator) field.get( source );
-        assertSame( SingleLeftTupleSinkAdapter.class,
-                    sink.getClass() );
-        assertEquals( 1,
-                      sink.getSinks().length );
+        assertThat(sink).isInstanceOf(SingleLeftTupleSinkAdapter.class);
+        assertThat(sink.getSinks()).hasSize(1);
 
         final MockLeftTupleSink sink2 = new MockLeftTupleSink(buildContext);
         source.addTupleSink( sink2 );
         sink = (LeftTupleSinkPropagator) field.get( source );
-        assertSame( CompositeLeftTupleSinkAdapter.class,
-                    sink.getClass() );
-        assertEquals( 2,
-                      sink.getSinks().length );
+        assertThat(sink).isInstanceOf(CompositeLeftTupleSinkAdapter.class);
+        assertThat(sink.getSinks()).hasSize(2);
 
         final MockLeftTupleSink sink3 = new MockLeftTupleSink(buildContext);
         source.addTupleSink( sink3 );
-        assertSame( CompositeLeftTupleSinkAdapter.class,
-                    sink.getClass() );
-        assertEquals( 3,
-                      sink.getSinks().length );
+        assertThat(sink).isInstanceOf(CompositeLeftTupleSinkAdapter.class);
+        assertThat(sink.getSinks()).hasSize(3);
 
         source.removeTupleSink( sink2 );
-        assertSame( CompositeLeftTupleSinkAdapter.class,
-                    sink.getClass() );
-        assertEquals( 2,
-                      sink.getSinks().length );
+        assertThat(sink).isInstanceOf(CompositeLeftTupleSinkAdapter.class);
+        assertThat(sink.getSinks()).hasSize(2);
 
         source.removeTupleSink( sink1 );
         sink = (LeftTupleSinkPropagator) field.get( source );
-        assertSame( SingleLeftTupleSinkAdapter.class,
-                    sink.getClass() );
-        assertEquals( 1,
-                      sink.getSinks().length );
+        assertThat(sink).isInstanceOf(SingleLeftTupleSinkAdapter.class);
+        assertThat(sink.getSinks()).hasSize(1);
 
         source.removeTupleSink( sink3 );
         sink = (LeftTupleSinkPropagator) field.get( source );
-        assertSame( EmptyLeftTupleSinkAdapter.getInstance(),
-                    sink );
-        assertEquals( 0,
-                      sink.getSinks().length );
+        assertThat(sink).isSameAs(EmptyLeftTupleSinkAdapter.getInstance());
+        assertThat(sink.getSinks()).hasSize(0);
     }
 
 }

@@ -19,8 +19,6 @@ import org.dmg.pmml.Interval;
 import org.junit.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomInterval;
 import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommon.commonVerifyKiePMMLInterval;
 

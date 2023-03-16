@@ -23,11 +23,8 @@ import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class ExpressionEvaluatorFactoryTest {
 
@@ -35,7 +32,7 @@ public class ExpressionEvaluatorFactoryTest {
 
     @Test
     public void create() {
-        assertNotNull(ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.RULE));
+        assertThat(ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.RULE)).isNotNull();
     }
 
     @Test
@@ -51,31 +48,31 @@ public class ExpressionEvaluatorFactoryTest {
         ExpressionEvaluatorFactory ruleEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.RULE);
         ExpressionEvaluatorFactory dmnEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.DMN);
 
-        assertTrue(ruleEvaluatorFactory.getOrCreate(simpleFMV) instanceof BaseExpressionEvaluator);
-        assertTrue(ruleEvaluatorFactory.getOrCreate(objectFMV) instanceof BaseExpressionEvaluator);
-        assertTrue(ruleEvaluatorFactory.getOrCreate(mvelFMV) instanceof MVELExpressionEvaluator);
-        assertTrue(ruleEvaluatorFactory.getOrCreate(mvelWithSpacesFMV) instanceof MVELExpressionEvaluator);
-        assertTrue(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionFMV) instanceof MVELExpressionEvaluator);
-        assertTrue(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionWithSpacesFMV) instanceof MVELExpressionEvaluator);
-        assertTrue(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionWitoutMVELEscapeSymbolFMV) instanceof BaseExpressionEvaluator);
+        assertThat(ruleEvaluatorFactory.getOrCreate(simpleFMV) instanceof BaseExpressionEvaluator).isTrue();
+        assertThat(ruleEvaluatorFactory.getOrCreate(objectFMV) instanceof BaseExpressionEvaluator).isTrue();
+        assertThat(ruleEvaluatorFactory.getOrCreate(mvelFMV) instanceof MVELExpressionEvaluator).isTrue();
+        assertThat(ruleEvaluatorFactory.getOrCreate(mvelWithSpacesFMV) instanceof MVELExpressionEvaluator).isTrue();
+        assertThat(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionFMV) instanceof MVELExpressionEvaluator).isTrue();
+        assertThat(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionWithSpacesFMV) instanceof MVELExpressionEvaluator).isTrue();
+        assertThat(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionWitoutMVELEscapeSymbolFMV) instanceof BaseExpressionEvaluator).isTrue();
 
-        assertTrue(dmnEvaluatorFactory.getOrCreate(simpleFMV) instanceof DMNFeelExpressionEvaluator);
-        assertTrue(dmnEvaluatorFactory.getOrCreate(objectFMV) instanceof DMNFeelExpressionEvaluator);
-        assertTrue(dmnEvaluatorFactory.getOrCreate(mvelFMV) instanceof DMNFeelExpressionEvaluator);
-        assertTrue(dmnEvaluatorFactory.getOrCreate(mvelWithSpacesFMV) instanceof DMNFeelExpressionEvaluator);
-        assertTrue(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionFMV) instanceof DMNFeelExpressionEvaluator);
-        assertTrue(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionWithSpacesFMV) instanceof DMNFeelExpressionEvaluator);
-        assertTrue(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionWitoutMVELEscapeSymbolFMV) instanceof DMNFeelExpressionEvaluator);
+        assertThat(dmnEvaluatorFactory.getOrCreate(simpleFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
+        assertThat(dmnEvaluatorFactory.getOrCreate(objectFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
+        assertThat(dmnEvaluatorFactory.getOrCreate(mvelFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
+        assertThat(dmnEvaluatorFactory.getOrCreate(mvelWithSpacesFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
+        assertThat(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
+        assertThat(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionWithSpacesFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
+        assertThat(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionWitoutMVELEscapeSymbolFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
     }
 
     @Test
     public void isAnMVELExpression() {
         ExpressionEvaluatorFactory ruleEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.RULE);
-        assertFalse(ruleEvaluatorFactory.isAnMVELExpression("10"));
-        assertTrue(ruleEvaluatorFactory.isAnMVELExpression(MVEL_ESCAPE_SYMBOL + "10"));
-        assertTrue(ruleEvaluatorFactory.isAnMVELExpression("     " + MVEL_ESCAPE_SYMBOL + " 10"));
-        assertTrue(ruleEvaluatorFactory.isAnMVELExpression(new TextNode(MVEL_ESCAPE_SYMBOL + " 10").textValue()));
-        assertTrue(ruleEvaluatorFactory.isAnMVELExpression(new TextNode("     " + MVEL_ESCAPE_SYMBOL + " 10").textValue()));
-        assertFalse(ruleEvaluatorFactory.isAnMVELExpression(new TextNode("10").textValue()));
+        assertThat(ruleEvaluatorFactory.isAnMVELExpression("10")).isFalse();
+        assertThat(ruleEvaluatorFactory.isAnMVELExpression(MVEL_ESCAPE_SYMBOL + "10")).isTrue();
+        assertThat(ruleEvaluatorFactory.isAnMVELExpression("     " + MVEL_ESCAPE_SYMBOL + " 10")).isTrue();
+        assertThat(ruleEvaluatorFactory.isAnMVELExpression(new TextNode(MVEL_ESCAPE_SYMBOL + " 10").textValue())).isTrue();
+        assertThat(ruleEvaluatorFactory.isAnMVELExpression(new TextNode("     " + MVEL_ESCAPE_SYMBOL + " 10").textValue())).isTrue();
+        assertThat(ruleEvaluatorFactory.isAnMVELExpression(new TextNode("10").textValue())).isFalse();
     }
 }

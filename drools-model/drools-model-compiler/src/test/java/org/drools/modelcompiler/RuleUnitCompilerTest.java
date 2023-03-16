@@ -29,10 +29,8 @@ import org.junit.Test;
 import org.kie.api.runtime.KieContainer;
 
 import static java.util.Arrays.asList;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.ClassUtils.getCanonicalSimpleName;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class RuleUnitCompilerTest extends BaseModelTest {
 
@@ -83,9 +81,9 @@ public class RuleUnitCompilerTest extends BaseModelTest {
                                                         new Person( "Sofia", 4 ) );
 
         AdultUnit unit = new AdultUnit(persons);
-        assertEquals(2, executor.run( unit ) );
+        assertThat(executor.run(unit)).isEqualTo(2);
 
-        assertTrue( unit.getResults().containsAll( asList("Mario", "Marilena") ) );
+        assertThat(unit.getResults().containsAll(asList("Mario", "Marilena"))).isTrue();
     }
 
     @Test
@@ -107,9 +105,9 @@ public class RuleUnitCompilerTest extends BaseModelTest {
                                                         new Person( "Sofia", 4 ) );
 
         AdultUnit unit = new AdultUnit(persons);
-        assertEquals(2, executor.run( unit ) );
+        assertThat(executor.run(unit)).isEqualTo(2);
 
-        assertTrue( unit.getResults().containsAll( asList("Mario", "Marilena") ) );
+        assertThat(unit.getResults().containsAll(asList("Mario", "Marilena"))).isTrue();
     }
 
     @Test
@@ -135,10 +133,10 @@ public class RuleUnitCompilerTest extends BaseModelTest {
                                                         new Person( "Sofia", 4 ) );
 
         AdultUnit unit = new AdultUnit(persons);
-        assertEquals(1, executor.run( unit ) );
+        assertThat(executor.run(unit)).isEqualTo(1);
 
-        assertEquals( 1, unit.getResults().size() );
-        assertEquals( "86", unit.getResults().get(0) );
+        assertThat(unit.getResults().size()).isEqualTo(1);
+        assertThat(unit.getResults().get(0)).isEqualTo("86");
     }
 
     public static class PositiveNegativeDTUnit implements RuleUnit {
@@ -206,11 +204,11 @@ public class RuleUnitCompilerTest extends BaseModelTest {
 
         PositiveNegativeDTUnit ruleUnit = new PositiveNegativeDTUnit(47);
         executor.run(ruleUnit);
-        assertEquals("positive", ruleUnit.getPositive_or_negative());
+        assertThat(ruleUnit.getPositive_or_negative()).isEqualTo("positive");
 
         ruleUnit = new PositiveNegativeDTUnit(-999);
         executor.run(ruleUnit);
-        assertEquals("negative", ruleUnit.getPositive_or_negative());
+        assertThat(ruleUnit.getPositive_or_negative()).isEqualTo("negative");
     }
 
     @Test
@@ -309,10 +307,10 @@ public class RuleUnitCompilerTest extends BaseModelTest {
         DataSource<Person> persons = DataSource.create( mario );
 
         AdultUnit unit = new AdultUnit( persons );
-        assertEquals( 1, executor.run( unit ) );
+        assertThat(executor.run(unit)).isEqualTo(1);
 
-        assertEquals( 1, unit.getResults().size() );
-        assertEquals( expected, unit.getResults().get( 0 ) );
+        assertThat(unit.getResults().size()).isEqualTo(1);
+        assertThat(unit.getResults().get(0)).isEqualTo(expected);
     }
 
     @Test
@@ -361,10 +359,10 @@ public class RuleUnitCompilerTest extends BaseModelTest {
         DataSource<Person> persons = DataSource.create( mario, mark, edson );
 
         AdultUnit unit = new AdultUnit(persons);
-        assertEquals( 3, executor.run( unit ) );
+        assertThat(executor.run(unit)).isEqualTo(3);
 
-        assertEquals( 3, unit.getResults().size() );
-        assertTrue( unit.getResults().containsAll( asList("Mario", "Mark") ) );
+        assertThat(unit.getResults().size()).isEqualTo(3);
+        assertThat(unit.getResults().containsAll(asList("Mario", "Mark"))).isTrue();
     }
 
     @Test

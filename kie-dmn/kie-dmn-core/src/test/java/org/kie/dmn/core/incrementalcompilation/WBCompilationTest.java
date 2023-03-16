@@ -30,7 +30,7 @@ import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.services.KieAssemblersImpl;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class WBCompilationTest {
 
@@ -91,16 +91,16 @@ public class WBCompilationTest {
 
         kfs.write("src/main/resources/org/kie/scanner/dmn1.dmn", DMN_1);
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
-        assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR)).hasSize(0);
 
         kfs.write("src/main/resources/org/kie/scanner/dmn2.dmn", DMN_2);
         IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/org/kie/scanner/dmn2.dmn").build();
-        assertEquals(0, addResults.getAddedMessages().size());
-        assertEquals(0, addResults.getRemovedMessages().size());
+        assertThat(addResults.getAddedMessages()).hasSize(0);
+        assertThat(addResults.getRemovedMessages()).hasSize(0);
 
         KieContainer kieContainer = ks.newKieContainer(id);
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        assertEquals(2, runtime.getModels().size());
+        assertThat(runtime.getModels()).hasSize(2);
     }
 
     @Test
@@ -116,20 +116,20 @@ public class WBCompilationTest {
         kfs.generateAndWritePomXML(id);
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
-        assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR)).hasSize(0);
 
         kfs.write("src/main/resources/org/kie/scanner/dmn1.dmn", DMN_1);
         IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/org/kie/scanner/dmn1.dmn").build();
-        assertEquals(0, addResults.getAddedMessages().size());
-        assertEquals(0, addResults.getRemovedMessages().size());
+        assertThat(addResults.getAddedMessages()).hasSize(0);
+        assertThat(addResults.getRemovedMessages()).hasSize(0);
 
         kfs.write("src/main/resources/org/kie/scanner/dmn2.dmn", DMN_2);
         addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/org/kie/scanner/dmn2.dmn").build();
-        assertEquals(0, addResults.getAddedMessages().size());
-        assertEquals(0, addResults.getRemovedMessages().size());
+        assertThat(addResults.getAddedMessages()).hasSize(0);
+        assertThat(addResults.getRemovedMessages()).hasSize(0);
 
         KieContainer kieContainer = ks.newKieContainer(id);
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        assertEquals(2, runtime.getModels().size());
+        assertThat(runtime.getModels()).hasSize(2);
     }
 }

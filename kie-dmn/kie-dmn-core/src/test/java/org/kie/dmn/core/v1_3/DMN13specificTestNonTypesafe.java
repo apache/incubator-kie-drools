@@ -30,9 +30,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
@@ -50,8 +48,8 @@ public class DMN13specificTestNonTypesafe extends BaseVariantNonTypeSafeTest {
 
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Recommended Loan Products.dmn", this.getClass(), "Loan info.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_736fa164-03d8-429f-8318-4913a548c3a6", "Recommended Loan Products");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("Credit Score", new BigDecimal(735));
@@ -111,10 +109,10 @@ public class DMN13specificTestNonTypesafe extends BaseVariantNonTypeSafeTest {
 
         final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Recommended Loan Products"), is(Arrays.asList(mapOf(entry("Product", "Lender B - ARM5/1-Standard"),
+        assertThat(result.get("Recommended Loan Products")).asList().containsExactly(mapOf(entry("Product", "Lender B - ARM5/1-Standard"),
                                                                                    entry("Note Amount", "$273,775.90"),
                                                                                    entry("Interest Rate Pct", " 3.75"),
                                                                                    entry("Monthly Payment", "$1,267.90"),
@@ -155,6 +153,6 @@ public class DMN13specificTestNonTypesafe extends BaseVariantNonTypeSafeTest {
                                                                                    entry("Monthly Payment", "$1,969.43"),
                                                                                    entry("Cash to Close", "$75,416.32"),
                                                                                    entry("Required Credit Score", new BigDecimal(720)),
-                                                                                   entry("Recommendation", "Best")))));
+                                                                                   entry("Recommendation", "Best")));
     }
 }

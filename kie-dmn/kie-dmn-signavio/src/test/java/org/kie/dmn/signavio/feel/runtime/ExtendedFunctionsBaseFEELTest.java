@@ -27,10 +27,7 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.signavio.KieDMNSignavioProfile;
 import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -63,7 +60,7 @@ public abstract class ExtendedFunctionsBaseFEELTest {
         if( severity != null ) {
             ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass( FEELEvent.class );
             verify( listener , atLeastOnce()).onEvent( captor.capture() );
-            assertThat( captor.getValue().getSeverity(), is( severity ) );
+            assertThat(captor.getValue().getSeverity()).isEqualTo(severity);
         } else {
             verify( listener, never() ).onEvent( any(FEELEvent.class) );
         }
@@ -71,11 +68,11 @@ public abstract class ExtendedFunctionsBaseFEELTest {
 
     protected void assertResult(String expression, Object result) {
         if (result == null) {
-            assertThat("Evaluating: '" + expression + "'", feel.evaluate(expression), is(nullValue()));
+            assertThat(feel.evaluate(expression)).as("Evaluating: '" + expression + "'").isNull();
         } else if (result instanceof Class<?>) {
-            assertThat("Evaluating: '" + expression + "'", feel.evaluate(expression), is(instanceOf((Class<?>) result)));
+        	assertThat(feel.evaluate(expression)).as("Evaluating: '" + expression + "'").isInstanceOf((Class<?>) result);
         } else {
-            assertThat("Evaluating: '" + expression + "'", feel.evaluate(expression), is(result));
+        	assertThat(feel.evaluate(expression)).as("Evaluating: '" + expression + "'").isEqualTo(result);
         }
     }
 }

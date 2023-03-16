@@ -22,9 +22,7 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class NoGapsDateAdjacentTest extends AbstractDTAnalysisTest {
@@ -34,9 +32,9 @@ public class NoGapsDateAdjacentTest extends AbstractDTAnalysisTest {
         List<DMNMessage> validate = validator.validate(getReader("NoGapsDateAdjacent.dmn"), ANALYZE_DECISION_TABLE);
 
         DTAnalysis analysis = getAnalysis(validate, "_322732ef-01be-40fb-abd7-ec599c2efa47");
-        assertThat(analysis.isError(), is(false));
-        assertThat(analysis.getGaps(), hasSize(0));
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.isError()).isFalse();
+        assertThat(analysis.getGaps()).hasSize(0);
+        assertThat(analysis.getOverlaps()).hasSize(0);
     }
 
 }

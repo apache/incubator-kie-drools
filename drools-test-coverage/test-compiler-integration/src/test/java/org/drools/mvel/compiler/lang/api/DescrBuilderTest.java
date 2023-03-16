@@ -53,13 +53,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -75,16 +68,13 @@ public class DescrBuilderTest {
                 .attribute( "dialect" ).value( "mvel" ).end()
                 .getDescr();
 
-        assertEquals( "org.drools",
-                      pkg.getName() );
-        assertEquals( "mvel",
-                      pkg.getAttribute( "dialect" ).getValue() );
-        assertNull( pkg.getAttribute( "salience" ) );
+        assertThat(pkg.getName()).isEqualTo("org.drools");
+        assertThat(pkg.getAttribute("dialect").getValue()).isEqualTo("mvel");
+        assertThat(pkg.getAttribute("salience")).isNull();
 
         KiePackage kpkg = compilePkgDescr( pkg );
 
-        assertEquals( "org.drools",
-                      kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools");
     }
 
     @Test
@@ -102,23 +92,16 @@ public class DescrBuilderTest {
                             AttributeDescr.Type.BOOLEAN )
                 .getDescr();
 
-        assertEquals( "org.drools",
-                      pkg.getName() );
-        assertEquals( 3,
-                      pkg.getAttributes().size() );
-        assertEquals( "mvel",
-                      pkg.getAttribute( "dialect" ).getValue() );
-        assertEquals( "10",
-                      pkg.getAttribute( "salience" ).getValue() );
-        assertEquals( "true",
-                      pkg.getAttribute( "lock-on-active" ).getValue() );
-        assertEquals( AttributeDescr.Type.BOOLEAN,
-                      pkg.getAttribute( "lock-on-active" ).getType() );
-        assertNull( pkg.getAttribute( "no-loop" ) );
+        assertThat(pkg.getName()).isEqualTo("org.drools");
+        assertThat(pkg.getAttributes().size()).isEqualTo(3);
+        assertThat(pkg.getAttribute("dialect").getValue()).isEqualTo("mvel");
+        assertThat(pkg.getAttribute("salience").getValue()).isEqualTo("10");
+        assertThat(pkg.getAttribute("lock-on-active").getValue()).isEqualTo("true");
+        assertThat(pkg.getAttribute("lock-on-active").getType()).isEqualTo(AttributeDescr.Type.BOOLEAN);
+        assertThat(pkg.getAttribute("no-loop")).isNull();
 
         KiePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools",
-                      kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools");
     }
 
     @Test
@@ -129,12 +112,9 @@ public class DescrBuilderTest {
                 .newImport().target( "org.drools.examples.*" ).end()
                 .getDescr();
 
-        assertEquals( 2,
-                      pkg.getImports().size() );
-        assertEquals( "java.util.List",
-                      pkg.getImports().get( 0 ).getTarget() );
-        assertEquals( "org.drools.examples.*",
-                      pkg.getImports().get( 1 ).getTarget() );
+        assertThat(pkg.getImports().size()).isEqualTo(2);
+        assertThat(pkg.getImports().get(0).getTarget()).isEqualTo("java.util.List");
+        assertThat(pkg.getImports().get(1).getTarget()).isEqualTo("org.drools.examples.*");
     }
 
     @Test
@@ -145,20 +125,14 @@ public class DescrBuilderTest {
                 .newGlobal().type( "Person" ).identifier( "bob" ).end()
                 .getDescr();
 
-        assertEquals( 2,
-                      pkg.getGlobals().size() );
-        assertEquals( "java.util.List",
-                      pkg.getGlobals().get( 0 ).getType() );
-        assertEquals( "list",
-                      pkg.getGlobals().get( 0 ).getIdentifier() );
-        assertEquals( "Person",
-                      pkg.getGlobals().get( 1 ).getType() );
-        assertEquals( "bob",
-                      pkg.getGlobals().get( 1 ).getIdentifier() );
+        assertThat(pkg.getGlobals().size()).isEqualTo(2);
+        assertThat(pkg.getGlobals().get(0).getType()).isEqualTo("java.util.List");
+        assertThat(pkg.getGlobals().get(0).getIdentifier()).isEqualTo("list");
+        assertThat(pkg.getGlobals().get(1).getType()).isEqualTo("Person");
+        assertThat(pkg.getGlobals().get(1).getIdentifier()).isEqualTo("bob");
 
         KiePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools.mvel.compiler",
-                      kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools.mvel.compiler");
     }
 
     @Test
@@ -182,23 +156,18 @@ public class DescrBuilderTest {
                 .end()
                 .getDescr();
 
-        assertEquals( 1,
-                      pkg.getFunctionImports().size() );
-        assertEquals( 1,
-                      pkg.getFunctions().size() );
-        assertEquals( 1,
-                      pkg.getRules().size() );
+        assertThat(pkg.getFunctionImports().size()).isEqualTo(1);
+        assertThat(pkg.getFunctions().size()).isEqualTo(1);
+        assertThat(pkg.getRules().size()).isEqualTo(1);
 
         KiePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools",
-                      kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools");
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
         KieSession ksession = kbase.newKieSession();
         int rules = ksession.fireAllRules();
-        assertEquals( 1,
-                      rules );
+        assertThat(rules).isEqualTo(1);
     }
 
     @Test
@@ -216,12 +185,10 @@ public class DescrBuilderTest {
                 .end()
                 .getDescr();
 
-        assertEquals( 1,
-                      pkg.getRules().size() );
+        assertThat(pkg.getRules().size()).isEqualTo(1);
 
         KiePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools.mvel.compiler",
-                kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools.mvel.compiler");
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
@@ -236,8 +203,7 @@ public class DescrBuilderTest {
         ksession.insert( brie );
 
         int rules = ksession.fireAllRules();
-        assertEquals( 2,
-                      rules );
+        assertThat(rules).isEqualTo(2);
     }
 
     @Test
@@ -270,15 +236,13 @@ public class DescrBuilderTest {
                 .end()
                 .getDescr();
 
-        assertEquals( 1,
-                      pkg.getRules().size() );
+        assertThat(pkg.getRules().size()).isEqualTo(1);
 
         String drl = new DrlDumper().dump( pkg );
         assertThat(expected).isEqualToIgnoringWhitespace(drl);
 
         KiePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools.mvel.compiler",
-                kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools.mvel.compiler");
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
@@ -293,8 +257,7 @@ public class DescrBuilderTest {
         ksession.insert( brie );
 
         int rules = ksession.fireAllRules();
-        assertEquals( 2,
-                      rules );
+        assertThat(rules).isEqualTo(2);
     }
 
     @Test
@@ -320,22 +283,19 @@ public class DescrBuilderTest {
                 .end()
                 .getDescr();
 
-        assertEquals( 1,
-                      pkg.getTypeDeclarations().size() );
+        assertThat(pkg.getTypeDeclarations().size()).isEqualTo(1);
 
-        assertEquals( 1,
-                      pkg.getEnumDeclarations().size() );
+        assertThat(pkg.getEnumDeclarations().size()).isEqualTo(1);
 
         KiePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.beans",
-                      kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.beans");
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
 
         FactType stType = kbase.getFactType( "org.beans",
                                              "StockTick" );
-        assertNotNull( stType );
+        assertThat(stType).isNotNull();
         Object st = stType.newInstance();
         stType.set( st,
                     "symbol",
@@ -344,9 +304,8 @@ public class DescrBuilderTest {
                     "price",
                     10 );
 
-        assertEquals( "RHT",
-                      stType.get( st,
-                                  "symbol" ) );
+        assertThat(stType.get(st,
+                "symbol")).isEqualTo("RHT");
 
         //stType.getAnnotation("author"); TODO: implement support for this
 
@@ -366,18 +325,15 @@ public class DescrBuilderTest {
                 .end()
                 .getDescr();
 
-        assertEquals( 2,
-                      pkg.getEntryPointDeclarations().size() );
+        assertThat(pkg.getEntryPointDeclarations().size()).isEqualTo(2);
 
         KiePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools",
-                      kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools");
         
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
 
-        assertEquals( 2,
-                      kbase.getEntryPointIds().size() );
+        assertThat(kbase.getEntryPointIds().size()).isEqualTo(2);
 
     }
 
@@ -394,8 +350,7 @@ public class DescrBuilderTest {
                 .getDescr();
 
         KiePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools.mvel.compiler",
-                      kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools.mvel.compiler");
         
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
@@ -403,7 +358,7 @@ public class DescrBuilderTest {
         KieSession ksession = kbase.newKieSession();
         ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
         int rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
+        assertThat(rules).isEqualTo(1);
     }
     
     @Test
@@ -420,8 +375,7 @@ public class DescrBuilderTest {
                 .getDescr();
 
         KiePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools.mvel.compiler",
-                      kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools.mvel.compiler");
         
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
@@ -429,7 +383,7 @@ public class DescrBuilderTest {
         KieSession ksession = kbase.newKieSession();
         ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
         int rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
+        assertThat(rules).isEqualTo(1);
     }
     
     @Test
@@ -452,8 +406,7 @@ public class DescrBuilderTest {
                 .getDescr();
 
         KiePackage kpkg = compilePkgDescr( pkg, "org.drools.mvel.compiler" );
-        assertEquals( "org.drools.mvel.compiler",
-                      kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools.mvel.compiler");
         
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
@@ -465,13 +418,13 @@ public class DescrBuilderTest {
         ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
         ksession.insert( new StockTick(2, "RHT", 100, 10 ) );
         int rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
+        assertThat(rules).isEqualTo(1);
         
         ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael ).afterMatchFired(cap.capture());
         
-        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$sum" )).intValue(), is( 180 ) );
-        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$cnt" )).intValue(), is( 2 ) );
+        assertThat(((Number) cap.getValue().getMatch().getDeclarationValue("$sum")).intValue()).isEqualTo(180);
+        assertThat(((Number) cap.getValue().getMatch().getDeclarationValue("$cnt")).intValue()).isEqualTo(2);
     }
     
     @Test
@@ -500,8 +453,7 @@ public class DescrBuilderTest {
         System.out.println(drl);
 
         KiePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools.mvel.compiler",
-                      kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools.mvel.compiler");
         
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
@@ -509,12 +461,12 @@ public class DescrBuilderTest {
         KieSession ksession = kbase.newKieSession();
         ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
         int rules = ksession.fireAllRules();
-        assertEquals( 0, rules );
+        assertThat(rules).isEqualTo(0);
 
         ksession = kbase.newKieSession();
         ksession.insert( new StockTick(2, "RHT", 150, 1 ) );
         rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
+        assertThat(rules).isEqualTo(1);
     }
     
     @Test
@@ -530,8 +482,7 @@ public class DescrBuilderTest {
                 .end().getDescr();
 
         KiePackage kpkg = compilePkgDescr( pkg, "org.drools" );
-        assertEquals( "org.drools",
-                      kpkg.getName() );
+        assertThat(kpkg.getName()).isEqualTo("org.drools");
         
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
@@ -540,7 +491,7 @@ public class DescrBuilderTest {
         EntryPoint ep = ksession.getEntryPoint( "EventStream" );
         ep.insert( "Hello World!" );
         int rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
+        assertThat(rules).isEqualTo(1);
 
     }
 
@@ -565,7 +516,7 @@ public class DescrBuilderTest {
         KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl)KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         System.err.println( knowledgeBuilder.getErrors() );
-        assertFalse(  knowledgeBuilder.getErrors().toString(), knowledgeBuilder.hasErrors() );
+        assertThat(knowledgeBuilder.hasErrors()).as(knowledgeBuilder.getErrors().toString()).isFalse();
 
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -576,15 +527,15 @@ public class DescrBuilderTest {
         org.kie.api.definition.rule.Rule rule = rebuiltPkg.getRules().iterator().next();
         RuleImpl r = ((RuleImpl) rule);
 
-        assertEquals( 2, r.getLhs().getChildren().size() );
+        assertThat(r.getLhs().getChildren().size()).isEqualTo(2);
         Iterator<RuleConditionElement> iter = r.getLhs().getChildren().iterator();
 
         RuleConditionElement arg1 = iter.next();
-        assertTrue( arg1 instanceof GroupElement && ((GroupElement) arg1).getType() == GroupElement.Type.OR );
-        assertEquals( 2, ((GroupElement) arg1).getChildren().size() );
+        assertThat(arg1 instanceof GroupElement && ((GroupElement) arg1).getType() == GroupElement.Type.OR).isTrue();
+        assertThat(((GroupElement) arg1).getChildren().size()).isEqualTo(2);
 
         RuleConditionElement arg2 = iter.next();
-        assertTrue( arg2 instanceof Pattern);
+        assertThat(arg2 instanceof Pattern).isTrue();
 
     }
 
@@ -624,7 +575,7 @@ public class DescrBuilderTest {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         System.err.println( knowledgeBuilder.getErrors() );
-        assertFalse(  knowledgeBuilder.getErrors().toString(), knowledgeBuilder.hasErrors() );
+        assertThat(knowledgeBuilder.hasErrors()).as(knowledgeBuilder.getErrors().toString()).isFalse();
 
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -639,7 +590,7 @@ public class DescrBuilderTest {
         knowledgeSession.insert( 42.0 );
 
         knowledgeSession.fireAllRules();
-        assertEquals( Arrays.asList( 42.0, 84.0 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(42.0, 84.0));
     }
 
     @Test
@@ -654,7 +605,7 @@ public class DescrBuilderTest {
                 .end().getDescr();
 
         String drl = new DrlDumper().dump( pkg );
-        assertTrue(drl.contains("Integer( this > 10, this > 11; this > 12, this > 13 )"));
+        assertThat(drl.contains("Integer( this > 10, this > 11; this > 12, this > 13 )")).isTrue();
     }
 
     @Test
@@ -668,7 +619,7 @@ public class DescrBuilderTest {
                 .end().getDescr();
 
         String drl = new DrlDumper().dump( pkg );
-        assertTrue( drl.contains("duration (int: 0 3600000; repeat-limit = 6)" ) );
+        assertThat(drl.contains("duration (int: 0 3600000; repeat-limit = 6)")).isTrue();
     }
 
     @Test
@@ -682,7 +633,7 @@ public class DescrBuilderTest {
                 .end().getDescr();
 
         String drl = new DrlDumper().dump( pkg );
-        assertTrue( drl.contains("timer (cron:0/5 * * * * ?)" ) );
+        assertThat(drl.contains("timer (cron:0/5 * * * * ?)")).isTrue();
     }
 
     private KiePackage compilePkgDescr( PackageDescr pkg ) {
@@ -694,12 +645,11 @@ public class DescrBuilderTest {
         kbuilder.add( ResourceFactory.newDescrResource( pkg ),
                       ResourceType.DESCR );
 
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
+        assertThat(kbuilder.hasErrors()).as(kbuilder.getErrors().toString()).isFalse();
 
         if (pkgName == null) {
             Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
-            assertEquals( 1, kpkgs.size() );
+            assertThat(kpkgs.size()).isEqualTo(1);
             return kpkgs.iterator().next();
         }
 
@@ -722,7 +672,7 @@ public class DescrBuilderTest {
                 .end().getDescr();
 
         String drl = new DrlDumper().dump( pkg );
-        assertTrue( drl.contains("window:time(5s)" ) );
+        assertThat(drl.contains("window:time(5s)")).isTrue();
     }
 
     @Test
@@ -748,6 +698,6 @@ public class DescrBuilderTest {
                         .end();
 
         String drl = new DrlDumper().dump(packBuilder.getDescr());
-        assertTrue( drl.contains("query \"getTemporalEventById\" ( String eventId ) " ) );
+        assertThat(drl.contains("query \"getTemporalEventById\" ( String eventId ) ")).isTrue();
     }
 }

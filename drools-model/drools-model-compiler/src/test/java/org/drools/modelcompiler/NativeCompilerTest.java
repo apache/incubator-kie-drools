@@ -22,7 +22,8 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.memorycompiler.JavaConfiguration;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class NativeCompilerTest extends BaseModelTest {
 
@@ -54,7 +55,7 @@ public class NativeCompilerTest extends BaseModelTest {
             ksession.insert(me);
             ksession.fireAllRules();
 
-            assertEquals(41, me.getAge());
+            assertThat(me.getAge()).isEqualTo(41);
         } finally {
             JavaDialectConfiguration.setDefaultCompilerType(defaultCompiler);
         }

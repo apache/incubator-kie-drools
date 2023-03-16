@@ -16,13 +16,14 @@
 
 package org.kie.dmn.feel.lang.examples;
 
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.fail;
 
 public abstract class ExamplesBaseTest {
     public static final  String DEFAULT_IDENT = "    ";
@@ -34,7 +35,7 @@ public abstract class ExamplesBaseTest {
             return new String( Files.readAllBytes( Paths.get( ExamplesTest.class.getResource( fileName ).toURI() ) ) );
         } catch ( Exception e ) {
             logger.error( "Error reading file " + fileName, e );
-            Assert.fail( "Error reading file " + fileName);
+            fail( "Error reading file " + fileName);
         }
         return null;
     }

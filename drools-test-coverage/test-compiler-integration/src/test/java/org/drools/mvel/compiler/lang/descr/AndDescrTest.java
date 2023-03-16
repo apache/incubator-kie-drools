@@ -20,7 +20,7 @@ import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AndDescrTest {
 
@@ -31,8 +31,7 @@ public class AndDescrTest {
         and.addDescr( new PatternDescr( "Foo" ) );
         and.addDescr( new NotDescr() );
 
-        assertEquals( 3,
-                      and.getDescrs().size() );
+        assertThat(and.getDescrs().size()).isEqualTo(3);
     }
 
 }

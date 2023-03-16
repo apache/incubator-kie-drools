@@ -17,8 +17,8 @@
 package org.drools.core.facttemplates;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.core.base.ValueType;
 
 public class FieldTemplateTest {
@@ -27,12 +27,9 @@ public class FieldTemplateTest {
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                                 5,
                                                                 String.class );
-        assertEquals( "name",
-                      cheeseName.getName() );
-        assertEquals( ValueType.STRING_TYPE,
-                      cheeseName.getValueType() );
-        assertEquals( 5,
-                      cheeseName.getIndex() );
+        assertThat(cheeseName.getName()).isEqualTo("name");
+        assertThat(cheeseName.getValueType()).isEqualTo(ValueType.STRING_TYPE);
+        assertThat(cheeseName.getIndex()).isEqualTo(5);
 
     }
 }

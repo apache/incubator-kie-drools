@@ -18,11 +18,8 @@ package org.drools.modelcompiler.util.lambdareplace;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import org.hamcrest.MatcherAssert;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /* The diff produced while using equalToIgnoringWhiteSpace is abysmal but is correct, while the one
  * produced by JavaParser's equals is better but it fails also on identical ASTs.
@@ -33,17 +30,17 @@ public class MaterializedLambdaTestUtils {
 
     public static void verifyCreatedClass(CreatedClass aClass, String expectedResult) {
         try {
-            MatcherAssert.assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+            assertThat(aClass.getCompilationUnitAsString()).isEqualToIgnoringWhitespace(expectedResult);
         } catch (AssertionError e) {
-            assertEquals(StaticJavaParser.parse(expectedResult), aClass.getCompilationUnit());
+        	assertThat(StaticJavaParser.parse(expectedResult)).isEqualTo(aClass.getCompilationUnit());
         }
     }
 
     public static void verifyCreatedClass(MethodDeclaration expected, MethodDeclaration actual) {
         try {
-            MatcherAssert.assertThat(actual.toString(), equalToIgnoringWhiteSpace(expected.toString()));
+        	assertThat(actual).asString().isEqualToIgnoringWhitespace(expected.toString());
         } catch (AssertionError e) {
-            MatcherAssert.assertThat(actual, equalTo(expected));
+        	assertThat(actual).isEqualTo(expected);
         }
     }
 }

@@ -32,7 +32,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 // DROOLS-1044
 @RunWith(Parameterized.class)
@@ -133,7 +133,7 @@ public class KieBaseIncludesTest {
         long nrOfRules = getNumberOfRules(kieBase);
 
         // We should have 2 rules in our KieBase. One from our own DRL and one from the DRL in the KieBase we've included.
-        assertEquals(2, nrOfRules);
+        assertThat(nrOfRules).isEqualTo(2);
     }
 
     /**
@@ -220,7 +220,7 @@ public class KieBaseIncludesTest {
         long nrOfRules = getNumberOfRules(kieBase);
 
         // We should have 2 rules in our KieBase. One from our own DRL and one from the DRL in the KieBase we've included.
-        assertEquals(2, nrOfRules);
+        assertThat(nrOfRules).isEqualTo(2);
     }
 
     /**

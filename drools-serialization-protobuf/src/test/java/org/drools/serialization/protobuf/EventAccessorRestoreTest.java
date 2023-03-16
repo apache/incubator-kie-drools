@@ -35,8 +35,8 @@ import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.marshalling.MarshallerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class EventAccessorRestoreTest extends CommonTestMethodBase {
 
@@ -128,8 +128,8 @@ public class EventAccessorRestoreTest extends CommonTestMethodBase {
             knowledgeSession.insert( 30 );
             knowledgeSession.fireAllRules();
 
-            assertEquals( 1, list.size() );
-            assertEquals( "Tick", list.get( 0 ).getClass().getSimpleName() );
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0).getClass().getSimpleName()).isEqualTo("Tick");
 
         } catch ( Exception e ) {
             e.printStackTrace();

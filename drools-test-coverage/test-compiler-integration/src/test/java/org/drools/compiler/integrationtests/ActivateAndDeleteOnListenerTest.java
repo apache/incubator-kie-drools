@@ -41,8 +41,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * see JBPM-4764
@@ -155,18 +154,18 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.addEventListener(agendaEventListener);
 
             ksession.insert("test");
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             final FactHandle fh = ksession.insert(1);
-            assertEquals(2, list.size());
-            assertEquals("activated", list.get(0));
-            assertEquals("activated", list.get(1));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(0)).isEqualTo("activated");
+            assertThat(list.get(1)).isEqualTo("activated");
 
             list.clear();
             ksession.delete( fh );
-            assertEquals(2, list.size());
-            assertEquals("cancelled", list.get(0));
-            assertEquals("cancelled", list.get(1));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(0)).isEqualTo("cancelled");
+            assertThat(list.get(1)).isEqualTo("cancelled");
         } finally {
             ksession.dispose();
         }
@@ -201,10 +200,10 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.addEventListener(agendaEventListener);
 
             ksession.insert("test");
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert(1);
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -241,14 +240,14 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.addEventListener(agendaEventListener);
 
             ksession.insert("test");
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert(Boolean.TRUE);
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert(1);
-            assertEquals(1, list.size());
-            assertEquals("yyy", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("yyy");
         } finally {
             ksession.dispose();
         }
@@ -292,16 +291,16 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.addEventListener(agendaEventListener);
 
             ksession.insert("test");
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert(1);
-            assertEquals(1, list.size());
-            assertEquals("yyy", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("yyy");
 
             list.clear();
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            assertEquals("xxx", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("xxx");
         } finally {
             ksession.dispose();
         }
@@ -313,16 +312,16 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.addEventListener(agendaEventListener);
 
             ksession.insert("test");
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert(Long.valueOf(1));
-            assertEquals(1, list.size());
-            assertEquals("yyy", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("yyy");
 
             list.clear();
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            assertEquals("xxx", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("xxx");
         } finally {
             ksession.dispose();
         }
@@ -376,15 +375,15 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.addEventListener(agendaEventListener);
 
             ksession.insert("test");
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert(0);
             ksession.insert(3);
-            assertEquals("[e1, yyy]", list.toString());
+            assertThat(list.toString()).isEqualTo("[e1, yyy]");
 
             list.clear();
             ksession.fireAllRules();
-            assertEquals("[xxx, zzz]", list.toString());
+            assertThat(list.toString()).isEqualTo("[xxx, zzz]");
         } finally {
             ksession.dispose();
         }
@@ -397,15 +396,15 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.addEventListener(agendaEventListener);
 
             ksession.insert("test");
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert(0);
             ksession.insert(Long.valueOf(1));
-            assertEquals("[e2, yyy]", list.toString());
+            assertThat(list.toString()).isEqualTo("[e2, yyy]");
 
             list.clear();
             ksession.fireAllRules();
-            assertEquals("[xxx, zzz]", list.toString());
+            assertThat(list.toString()).isEqualTo("[xxx, zzz]");
         } finally {
             ksession.dispose();
         }
@@ -451,22 +450,22 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.setGlobal("list", list);
             ksession.insert("test");
             ksession.insert(1);
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             FactHandle fhInt3 = ksession.insert(3);
-            assertEquals("[e1, add:yyy]", list.toString());
+            assertThat(list.toString()).isEqualTo("[e1, add:yyy]");
 
             // No change as the int 1 blocks a token propagating from the not node needed for the long join
             list.clear();
             FactHandle fhLong4 = ksession.insert(Long.valueOf(4));
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.delete(fhInt3);
-            assertEquals("[e2]", list.toString());
+            assertThat(list.toString()).isEqualTo("[e2]");
 
             list.clear();
             ksession.delete(fhLong4);
-            assertEquals("[rem:yyy]", list.toString());
+            assertThat(list.toString()).isEqualTo("[rem:yyy]");
         } finally {
             ksession.dispose();
         }
@@ -480,23 +479,23 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.setGlobal("list", list);
             ksession.insert("test");
             ksession.insert(1);
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             FactHandle fhLong4 = ksession.insert(Long.valueOf(4));
-            assertEquals("[e2, add:yyy]", list.toString());
+            assertThat(list.toString()).isEqualTo("[e2, add:yyy]");
 
             // Unlike scenario  1, e1 eval is not blocked so it will still eval, but the outer not still holds so no over all change.
             list.clear();
             FactHandle fhInt3 = ksession.insert(3);
-            assertEquals("[e1]", list.toString());
+            assertThat(list.toString()).isEqualTo("[e1]");
 
             list.clear();
             ksession.delete(fhLong4);
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             list.clear();
             ksession.delete(fhInt3);
-            assertEquals("[rem:yyy]", list.toString());
+            assertThat(list.toString()).isEqualTo("[rem:yyy]");
         } finally {
             ksession.dispose();
         }
@@ -525,13 +524,13 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.addEventListener(agendaEventListener);
 
             ksession.insert(Boolean.TRUE);
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert("test");
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert(1);
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -577,8 +576,8 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.insert( "test" );
             ksession.fireAllRules();
 
-            assertEquals( 2, list.size() );
-            assertTrue( list.containsAll( asList("1", "2") ) );
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.containsAll(asList("1", "2"))).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -624,8 +623,8 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.insert( "test" );
             ksession.fireAllRules();
 
-            assertEquals( 2, list.size() );
-            assertTrue( list.containsAll( asList("1", "2") ) );
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.containsAll(asList("1", "2"))).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -671,8 +670,8 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.insert( "test" );
             ksession.fireAllRules();
 
-            assertEquals( 2, list.size() );
-            assertTrue( list.containsAll( asList("1", "2") ) );
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.containsAll(asList("1", "2"))).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -696,7 +695,7 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.insert( mario );
             ksession.fireAllRules();
 
-            assertEquals( 43, mario.getAge() );
+            assertThat(mario.getAge()).isEqualTo(43);
         } finally {
             ksession.dispose();
         }

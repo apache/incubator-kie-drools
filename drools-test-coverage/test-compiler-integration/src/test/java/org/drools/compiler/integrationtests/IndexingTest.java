@@ -67,11 +67,6 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class IndexingTest {
@@ -119,20 +114,20 @@ public class IndexingTest {
             final Map<String, Rule> rules = rulestoMap(kbase);
 
             final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
-            assertNotNull(otn);
-            assertEquals(2, otn.getObjectSinkPropagator().size());
+            assertThat(otn).isNotNull();
+            assertThat(otn.getObjectSinkPropagator().size()).isEqualTo(2);
 
             final AlphaNode a1 = (AlphaNode) otn.getObjectSinkPropagator().getSinks()[0];
-            assertEquals(3, a1.getObjectSinkPropagator().size());
-            assertEquals(3, a1.getAssociationsSize());
-            assertTrue(a1.isAssociatedWith(rules.get("r1")));
-            assertTrue(a1.isAssociatedWith(rules.get("r2")));
-            assertTrue(a1.isAssociatedWith(rules.get("r3")));
+            assertThat(a1.getObjectSinkPropagator().size()).isEqualTo(3);
+            assertThat(a1.getAssociationsSize()).isEqualTo(3);
+            assertThat(a1.isAssociatedWith(rules.get("r1"))).isTrue();
+            assertThat(a1.isAssociatedWith(rules.get("r2"))).isTrue();
+            assertThat(a1.isAssociatedWith(rules.get("r3"))).isTrue();
 
             final AlphaNode a2 = (AlphaNode) otn.getObjectSinkPropagator().getSinks()[1];
-            assertEquals(1, a2.getAssociationsSize());
-            assertEquals(1, a2.getObjectSinkPropagator().size());
-            assertTrue(a2.isAssociatedWith(rules.get("r4")));
+            assertThat(a2.getAssociationsSize()).isEqualTo(1);
+            assertThat(a2.getObjectSinkPropagator().size()).isEqualTo(1);
+            assertThat(a2.isAssociatedWith(rules.get("r4"))).isTrue();
         } finally {
             wm.dispose();
         }
@@ -154,18 +149,18 @@ public class IndexingTest {
         final InternalWorkingMemory wm = (InternalWorkingMemory) kbase.newKieSession();
         try {
             final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
-            assertNotNull(otn);
+            assertThat(otn).isNotNull();
             final AlphaNode alphaNode1 = (AlphaNode) otn.getObjectSinkPropagator().getSinks()[0];
             final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) alphaNode1.getObjectSinkPropagator();
             final List<AlphaNode> hashableSinks = sinkAdapter.getHashableSinks();
-            assertNotNull(hashableSinks);
-            assertEquals(2, hashableSinks.size());
+            assertThat(hashableSinks).isNotNull();
+            assertThat(hashableSinks.size()).isEqualTo(2);
 
             final AlphaNode alphaNode2 = (AlphaNode) alphaNode1.getObjectSinkPropagator().getSinks()[0];
-            assertSame(hashableSinks.get(0), alphaNode2);
+            assertThat(alphaNode2).isSameAs(hashableSinks.get(0));
 
             final AlphaNode alphaNode3 = (AlphaNode) alphaNode1.getObjectSinkPropagator().getSinks()[1];
-            assertSame(hashableSinks.get(1), alphaNode3);
+            assertThat(alphaNode3).isSameAs(hashableSinks.get(1));
         } finally {
             wm.dispose();
         }
@@ -195,7 +190,7 @@ public class IndexingTest {
         final InternalWorkingMemory wm = (InternalWorkingMemory) kbase.newKieSession();
         try {
             final ObjectTypeNode node = KieUtil.getObjectTypeNode(kbase, Person.class);
-            assertNotNull(node);
+            assertThat(node).isNotNull();
             final LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
             final JoinNode j2 = (JoinNode) liaNode.getSinkPropagator().getSinks()[0];
             final JoinNode j3 = (JoinNode) j2.getSinkPropagator().getSinks()[0];
@@ -206,45 +201,45 @@ public class IndexingTest {
             final JoinNode j8 = (JoinNode) j7.getSinkPropagator().getSinks()[0];
 
             SingleBetaConstraints c = (SingleBetaConstraints) j2.getRawConstraints();
-            assertTrue(c.isIndexed());
+            assertThat(c.isIndexed()).isTrue();
             BetaMemory bm = (BetaMemory) wm.getNodeMemory(j2);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
+            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
 
             c = (SingleBetaConstraints) j3.getRawConstraints();
-            assertTrue(c.isIndexed());
+            assertThat(c.isIndexed()).isTrue();
             bm = (BetaMemory) wm.getNodeMemory(j3);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
+            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
 
             c = (SingleBetaConstraints) j4.getRawConstraints();
-            assertFalse(c.isIndexed());
+            assertThat(c.isIndexed()).isFalse();
             bm = (BetaMemory) wm.getNodeMemory(j4);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleList);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleList);
+            assertThat(bm.getLeftTupleMemory() instanceof TupleList).isTrue();
+            assertThat(bm.getRightTupleMemory() instanceof TupleList).isTrue();
 
             c = (SingleBetaConstraints) j5.getRawConstraints();
-            assertTrue(c.isIndexed());
+            assertThat(c.isIndexed()).isTrue();
             bm = (BetaMemory) wm.getNodeMemory(j5);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
+            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
 
             c = (SingleBetaConstraints) j6.getRawConstraints();
-            assertTrue(c.isIndexed());
+            assertThat(c.isIndexed()).isTrue();
             bm = (BetaMemory) wm.getNodeMemory(j6);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
+            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
 
             c = (SingleBetaConstraints) j7.getRawConstraints();
-            assertFalse(c.isIndexed());
+            assertThat(c.isIndexed()).isFalse();
             bm = (BetaMemory) wm.getNodeMemory(j7);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleList);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleList);
+            assertThat(bm.getLeftTupleMemory() instanceof TupleList).isTrue();
+            assertThat(bm.getRightTupleMemory() instanceof TupleList).isTrue();
 
             assertThat(j8.getRawConstraints()).isInstanceOf(EmptyBetaConstraints.class);
             bm = (BetaMemory) wm.getNodeMemory(j8);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleList);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleList);
+            assertThat(bm.getLeftTupleMemory() instanceof TupleList).isTrue();
+            assertThat(bm.getRightTupleMemory() instanceof TupleList).isTrue();
         } finally {
             wm.dispose();
         }
@@ -271,16 +266,16 @@ public class IndexingTest {
                 }
             }
 
-            assertNotNull(node);
+            assertThat(node).isNotNull();
             final AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
             final LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getObjectSinkPropagator().getSinks()[0];
             final JoinNode j = (JoinNode) liaNode.getSinkPropagator().getSinks()[0]; // $p2
 
             final TripleNonIndexSkipBetaConstraints c = (TripleNonIndexSkipBetaConstraints) j.getRawConstraints();
-            assertTrue(c.isIndexed());
+            assertThat(c.isIndexed()).isTrue();
             final BetaMemory bm = (BetaMemory) wm.getNodeMemory(j);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
+            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
         } finally {
             wm.dispose();
         }
@@ -308,17 +303,17 @@ public class IndexingTest {
                 }
             }
 
-            assertNotNull(node);
+            assertThat(node).isNotNull();
             final AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
             final LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getObjectSinkPropagator().getSinks()[0];
 
             final NotNode n = (NotNode) liaNode.getSinkPropagator().getSinks()[0];
 
             final DoubleNonIndexSkipBetaConstraints c = (DoubleNonIndexSkipBetaConstraints) n.getRawConstraints();
-            assertTrue(c.isIndexed());
+            assertThat(c.isIndexed()).isTrue();
             final BetaMemory bm = (BetaMemory) wm.getNodeMemory(n);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
+            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
 
             final Map<String, Integer> map = new HashMap<>();
             map.put("inserted", 0);
@@ -372,7 +367,7 @@ public class IndexingTest {
                 p.setAge(90);
                 wm.update(fh, p);
                 wm.fireAllRules();
-                assertEquals("i=" + i, 1, map.get("inserted").intValue()); // make sure this doesn't change
+                assertThat(map.get("inserted").intValue()).as("i=" + i).isEqualTo(1); // make sure this doesn't change
             }
 
             // no change
@@ -385,7 +380,7 @@ public class IndexingTest {
                 p.setAge(102);
                 wm.update(fh, p);
                 wm.fireAllRules();
-                assertEquals("i=" + i, 1, map.get("inserted").intValue()); // make sure this doesn't change
+                assertThat(map.get("inserted").intValue()).as("i=" + i).isEqualTo(1); // make sure this doesn't change
             }
 
             // no change
@@ -398,7 +393,7 @@ public class IndexingTest {
                 p.setAge(90);
                 wm.update(fh, p);
                 wm.fireAllRules();
-                assertEquals("i=" + i, 1, map.get("inserted").intValue()); // make sure this doesn't change
+                assertThat(map.get("inserted").intValue()).as("i=" + i).isEqualTo(1); // make sure this doesn't change
             }
 
             // move x99, should no longer be a blocker, now it can increase
@@ -407,7 +402,7 @@ public class IndexingTest {
             p.setAge(90);
             wm.update(fh, p);
             wm.fireAllRules();
-            assertEquals(2, map.get("inserted").intValue());
+            assertThat(map.get("inserted").intValue()).isEqualTo(2);
         } finally {
             wm.dispose();
         }
@@ -415,9 +410,9 @@ public class IndexingTest {
 
     private void assertInsertedUpdatedDeleted(final Map<String, Integer> insertUpdateDeleteMap, final int expectedInserted,
                                               final int expectedUpdated, final int expectedDeleted) {
-        assertEquals(expectedInserted, insertUpdateDeleteMap.get("inserted").intValue());
-        assertEquals(expectedUpdated, insertUpdateDeleteMap.get("updated").intValue());
-        assertEquals(expectedDeleted, insertUpdateDeleteMap.get("deleted").intValue());
+        assertThat(insertUpdateDeleteMap.get("inserted").intValue()).isEqualTo(expectedInserted);
+        assertThat(insertUpdateDeleteMap.get("updated").intValue()).isEqualTo(expectedUpdated);
+        assertThat(insertUpdateDeleteMap.get("deleted").intValue()).isEqualTo(expectedDeleted);
     }
 
     @Test(timeout = 10000)
@@ -441,17 +436,17 @@ public class IndexingTest {
                 }
             }
 
-            assertNotNull(node);
+            assertThat(node).isNotNull();
             final AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
             final LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getObjectSinkPropagator().getSinks()[0];
 
             final NotNode n = (NotNode) liaNode.getSinkPropagator().getSinks()[0];
 
             final DoubleNonIndexSkipBetaConstraints c = (DoubleNonIndexSkipBetaConstraints) n.getRawConstraints();
-            assertTrue(c.isIndexed());
+            assertThat(c.isIndexed()).isTrue();
             final BetaMemory bm = (BetaMemory) wm.getNodeMemory(n);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
+            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
 
             wm.openLiveQuery("peeps", new Object[]{Variable.v, 99}, new ViewChangedEventListener() {
                 @Override
@@ -482,7 +477,7 @@ public class IndexingTest {
             for (RightTuple rt = n.getFirstRightTuple(null, bm.getRightTupleMemory(), null, it); rt != null; rt = (RightTuple) it.next(rt)) {
                 list.add(rt);
             }
-            assertEquals(100, list.size());
+            assertThat(list.size()).isEqualTo(100);
 
             // check we can resume from each entry in the list above.
             for (int i = 0; i < 100; i++) {
@@ -490,7 +485,7 @@ public class IndexingTest {
                 it = n.getRightIterator(bm.getRightTupleMemory(), rightTuple); // resumes from the current rightTuple
                 int j = i + 1;
                 for (RightTuple rt = (RightTuple) it.next(rightTuple); rt != null; rt = (RightTuple) it.next(rt)) {
-                    assertSame(list.get(j), rt);
+                    assertThat(rt).isSameAs(list.get(j));
                     j++;
                 }
             }
@@ -516,7 +511,7 @@ public class IndexingTest {
             ksession.insert("gorgonzola");
             ksession.insert("stilton");
             ksession.insert(new Cheese("gorgonzola", 10));
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -539,7 +534,7 @@ public class IndexingTest {
             ksession.insert(new Cheese("cheddar", 10));
             ksession.insert(new Cheese("gorgonzola", 10));
             ksession.insert(new Cheese("stilton", 10));
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -567,7 +562,7 @@ public class IndexingTest {
         try {
             ksession.insert(new Person("mario", 10));
             ksession.insert(new Cheese("gorgonzola", 20));
-            assertEquals(3, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(3);
         } finally {
             ksession.dispose();
         }
@@ -594,7 +589,7 @@ public class IndexingTest {
             ksession.insert(new Person("A", 10));
             ksession.insert(new Cheese("C1", 20));
             ksession.insert(new Cheese("C2", 8));
-            assertEquals(2, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -621,7 +616,7 @@ public class IndexingTest {
             ksession.insert(new Person("A", 10));
             ksession.insert(new Cheese("C1", 30));
             ksession.insert(new Cheese("C2", 15));
-            assertEquals(2, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -714,7 +709,7 @@ public class IndexingTest {
             final FactHandle fh_c = session.insert(c);
 
             session.fireAllRules();
-            assertFalse(check.contains("A"));         // A should be blocked by B.
+            assertThat(check.contains("A")).isFalse();         // A should be blocked by B.
 
             c.setVBoolean(true);
             c.setVString("x");
@@ -725,7 +720,7 @@ public class IndexingTest {
             session.update(fh_b, b);
 
             session.fireAllRules();
-            assertFalse(check.contains("A"));       // A is no longer blocked by B, *however* it is now blocked by C !
+            assertThat(check.contains("A")).isFalse();       // A is no longer blocked by B, *however* it is now blocked by C !
         } finally {
             session.dispose();
         }
@@ -801,19 +796,19 @@ public class IndexingTest {
             final FactHandle fq1 = kieSession.insert(queen1);
             final FactHandle fq2 = kieSession.insert(queen2);
             // initially both queens have null row
-            assertEquals(0, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(0);
 
             // now Q1 is the only queen on row1
             kieSession.update(fq1, queen1.setRow(row1));
-            assertEquals(0, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(0);
 
             // Q1 moved to row2 but it's still alone
             kieSession.update(fq1, queen1.setRow(row2));
-            assertEquals(0, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(0);
 
             // now Q2 is on row2 together with Q1 -> rule should fire
             kieSession.update(fq2, queen2.setRow(row2));
-            assertEquals(1, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(1);
         } finally {
             kieSession.dispose();
         }
@@ -868,15 +863,15 @@ public class IndexingTest {
 
         try {
             final ObjectTypeNode node = KieUtil.getObjectTypeNode(wm.getKnowledgeBase(), Person.class);
-            assertNotNull(node);
+            assertThat(node).isNotNull();
             final LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
             final JoinNode j2 = (JoinNode) liaNode.getSinkPropagator().getSinks()[0];
 
             SingleBetaConstraints c = (SingleBetaConstraints) j2.getRawConstraints();
-            assertTrue(c.isIndexed());
+            assertThat(c.isIndexed()).isTrue();
             BetaMemory bm = (BetaMemory) wm.getNodeMemory(j2);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
+            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
         } finally {
             wm.dispose();
         }

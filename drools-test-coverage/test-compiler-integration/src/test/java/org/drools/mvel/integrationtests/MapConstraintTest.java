@@ -41,12 +41,7 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -83,8 +78,8 @@ public class MapConstraintTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertTrue(list.contains(map));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains(map)).isTrue();
     }
 
     @Test
@@ -105,8 +100,8 @@ public class MapConstraintTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertTrue(list.contains(map));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains(map)).isTrue();
     }
 
     // Drools does not support variables inside bindings yet... but we should...
@@ -124,7 +119,7 @@ public class MapConstraintTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -147,14 +142,14 @@ public class MapConstraintTest {
         final ArgumentCaptor<AfterMatchFiredEvent> arg = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael, times(4)).afterMatchFired(arg.capture());
         org.kie.api.event.rule.AfterMatchFiredEvent aaf = arg.getAllValues().get(0);
-        assertThat(aaf.getMatch().getRule().getName(), is("1. home != null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("1. home != null");
         aaf = arg.getAllValues().get(1);
-        assertThat(aaf.getMatch().getRule().getName(), is("2. not home == null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("2. not home == null");
 
         aaf = arg.getAllValues().get(2);
-        assertThat(aaf.getMatch().getRule().getName(), is("7. work == null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("7. work == null");
         aaf = arg.getAllValues().get(3);
-        assertThat(aaf.getMatch().getRule().getName(), is("8. not work != null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("8. not work != null");
     }
 
     @Test
@@ -182,7 +177,7 @@ public class MapConstraintTest {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new MapContainerBean());
-        assertEquals(4, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(4);
         ksession.dispose();
     }
 
@@ -224,7 +219,7 @@ public class MapConstraintTest {
         ksession.insert(mark);
 
         int rules = ksession.fireAllRules();
-        assertEquals(0, rules);
+        assertThat(rules).isEqualTo(0);
 
         final Map<String, String> bob = new HashMap<>();
         bob.put("type", "Person");
@@ -233,7 +228,7 @@ public class MapConstraintTest {
         ksession.insert(bob);
 
         rules = ksession.fireAllRules();
-        assertEquals(1, rules);
+        assertThat(rules).isEqualTo(1);
     }
 
     @Test
@@ -253,7 +248,7 @@ public class MapConstraintTest {
         ksession.insert(list);
         ksession.fireAllRules();
 
-        assertEquals(3, list.size());
+        assertThat(list.size()).isEqualTo(3);
     }
 
     @Test
@@ -273,7 +268,7 @@ public class MapConstraintTest {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
         KieSession session = kbase.newKieSession();
-        assertNotNull(session);
+        assertThat(session).isNotNull();
 
         final Pet pet1 = new Pet("Toni");
         pet1.getAttributes().put("key", "value");
@@ -284,4 +279,5 @@ public class MapConstraintTest {
 
         session.fireAllRules();
     }
+
 }

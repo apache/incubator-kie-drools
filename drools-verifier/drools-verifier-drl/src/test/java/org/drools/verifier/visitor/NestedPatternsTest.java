@@ -16,9 +16,6 @@
 
 package org.drools.verifier.visitor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
@@ -35,6 +32,8 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class NestedPatternsTest {
 
     @Test
@@ -43,12 +42,12 @@ public class NestedPatternsTest {
         PackageDescrVisitor visitor = new PackageDescrVisitor(data,
                 Collections.EMPTY_LIST);
 
-        assertNotNull(data);
+        assertThat(data).isNotNull();
 
         Reader drlReader = new InputStreamReader(getClass().getResourceAsStream("NestedPatterns.drl"));
         PackageDescr packageDescr = new DrlParser(LanguageLevelOption.DRL5).parse(drlReader);
 
-        assertNotNull(packageDescr);
+        assertThat(packageDescr).isNotNull();
 
         visitor.visitPackageDescr(packageDescr);
 
@@ -60,8 +59,7 @@ public class NestedPatternsTest {
                 patternCount++;
             }
         }
-        assertEquals(4,
-                patternCount);
+        assertThat(patternCount).isEqualTo(4);
 
         Collection<Pattern> patterns = data.getAll(VerifierComponentType.PATTERN);
 
@@ -69,9 +67,8 @@ public class NestedPatternsTest {
 //            System.out.println( pattern.getPath() + " " + pattern );
 //        }
 
-        assertNotNull(patterns);
-        assertEquals(4,
-                patterns.size());
+        assertThat(patterns).isNotNull();
+        assertThat(patterns.size()).isEqualTo(4);
 
         Collection<Restriction> restrictions = data.getAll(VerifierComponentType.RESTRICTION);
 
@@ -79,9 +76,8 @@ public class NestedPatternsTest {
 //            System.out.println( restriction.getPath() + " " + restriction );
 //        }
 
-        assertNotNull(restrictions);
-        assertEquals(3,
-                restrictions.size());
+        assertThat(restrictions).isNotNull();
+        assertThat(restrictions.size()).isEqualTo(3);
 
     }
 }

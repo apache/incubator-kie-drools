@@ -32,11 +32,7 @@ import org.kie.dmn.model.api.Definitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -51,8 +47,8 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-            assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+            assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
         }
     }
 
@@ -61,8 +57,8 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("decisionservice/HelloDS_noOutput.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
     }
 
     @Test
@@ -72,8 +68,8 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
                                "https://kiegroup.org/dmn/_7C3C7416-2F33-4718-AE35-F3843C5250DB",
                                "HelloDS"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
     }
 
     @Test
@@ -81,18 +77,18 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime("decisionservice/HelloDS_OK.dmn", this.getClass());
         DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7C3C7416-2F33-4718-AE35-F3843C5250DB",
                                              "HelloDS");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         Definitions definitions = dmnModel.getDefinitions();
-        assertThat(definitions, notNullValue());
+        assertThat(definitions).isNotNull();
 
         List<DMNMessage> messages = DMNValidatorFactory.newValidator().validate(definitions, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(messages.toString(), messages.size(), is(0));
+        assertThat(messages).as(messages.toString()).hasSize(0);
 
         DMNResult evaluateAll = runtime.evaluateAll(dmnModel, runtime.newContext());
         LOG.debug("{}", evaluateAll);
 
-        assertThat(evaluateAll.getDecisionResultByName("Decision-1").getResult(), is("Hello World"));
+        assertThat(evaluateAll.getDecisionResultByName("Decision-1").getResult()).isEqualTo("Hello World");
     }
 
     @Test
@@ -100,13 +96,13 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime("decisionservice/DS1ofEach_OK.dmn", this.getClass());
         DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_40B3D02F-868C-4925-A1F2-5710DFEEF51E",
                                              "DS1ofEach");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         Definitions definitions = dmnModel.getDefinitions();
-        assertThat(definitions, notNullValue());
+        assertThat(definitions).isNotNull();
 
         List<DMNMessage> messages = DMNValidatorFactory.newValidator().validate(definitions, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(messages.toString(), messages.size(), is(0));
+        assertThat(messages).as(messages.toString()).hasSize(0);
 
         DMNContext dmnContext = runtime.newContext();
         dmnContext.set("InputData-1", "id1");
@@ -114,8 +110,8 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
         DMNResult evaluateDS1 = runtime.evaluateDecisionService(dmnModel, dmnContext, "DecisionService-1");
         LOG.debug("{}", evaluateDS1);
 
-        assertThat(evaluateDS1.getDecisionResultByName("Decision-2"), nullValue());
-        assertThat(evaluateDS1.getDecisionResultByName("Decision-3").getResult(), is("d3:d2:id1od1"));
+        assertThat(evaluateDS1.getDecisionResultByName("Decision-2")).isNull();
+        assertThat(evaluateDS1.getDecisionResultByName("Decision-3").getResult()).isEqualTo("d3:d2:id1od1");
     }
 
     @Test
@@ -123,9 +119,9 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decisionservice/DS1ofEach_missingEncapsulated.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader,
                                                                  VALIDATE_SCHEMA, VALIDATE_MODEL);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2)); // DS-1 and Decision-3 are missing their reference now.
-            assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
-            assertThat(validate.get(1).toString(), validate.get(1).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2); // DS-1 and Decision-3 are missing their reference now.
+            assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
+            assertThat(validate.get(1).getMessageType()).as(validate.get(1).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
         }
     }
 
@@ -133,9 +129,9 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
     public void testENCAPSULATED_NOT_FOUND_FOR_DS_FileInput() {
         final List<DMNMessage> validate = validator.validate(getFile("decisionservice/DS1ofEach_missingEncapsulated.dmn"),
                                                              VALIDATE_SCHEMA, VALIDATE_MODEL);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
-        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
-        assertThat(validate.get(1).toString(), validate.get(1).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
+        assertThat(validate.get(1).getMessageType()).as(validate.get(1).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
     }
 
     @Test
@@ -144,9 +140,9 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
                                                                             "https://kiegroup.org/dmn/_40B3D02F-868C-4925-A1F2-5710DFEEF51E",
                                                                             "DS1ofEach"),
                                                              VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), greaterThanOrEqualTo(2));
-        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
-        assertThat(validate.get(1).toString(), validate.get(1).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSizeGreaterThanOrEqualTo(2);
+        assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
+        assertThat(validate.get(1).getMessageType()).as(validate.get(1).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
     }
 
     @Test
@@ -154,9 +150,9 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decisionservice/DS1ofEach_missingDecisionInput.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader,
                                                                  VALIDATE_SCHEMA, VALIDATE_MODEL);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2)); // DS-1 and Decision-2 are missing their reference now.
-            assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
-            assertThat(validate.get(1).toString(), validate.get(1).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2); // DS-1 and Decision-2 are missing their reference now.
+            assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
+            assertThat(validate.get(1).getMessageType()).as(validate.get(1).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
         }
     }
 
@@ -164,9 +160,9 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
     public void testDECISIONINPUT_NOT_FOUND_FOR_DS_FileInput() {
         final List<DMNMessage> validate = validator.validate(getFile("decisionservice/DS1ofEach_missingDecisionInput.dmn"),
                                                              VALIDATE_SCHEMA, VALIDATE_MODEL);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
-        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
-        assertThat(validate.get(1).toString(), validate.get(1).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
+        assertThat(validate.get(1).getMessageType()).as(validate.get(1).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
     }
 
     @Test
@@ -175,9 +171,9 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
                                                                             "https://kiegroup.org/dmn/_40B3D02F-868C-4925-A1F2-5710DFEEF51E",
                                                                             "DS1ofEach"),
                                                              VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), greaterThanOrEqualTo(2));
-        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
-        assertThat(validate.get(1).toString(), validate.get(1).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSizeGreaterThanOrEqualTo(2);
+        assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
+        assertThat(validate.get(1).getMessageType()).as(validate.get(1).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
     }
 
     @Test
@@ -185,9 +181,9 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decisionservice/DS1ofEach_missingInputData.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader,
                                                                  VALIDATE_SCHEMA, VALIDATE_MODEL);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2)); // DS-1 and Decision-2 are missing their reference now.
-            assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
-            assertThat(validate.get(1).toString(), validate.get(1).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2); // DS-1 and Decision-2 are missing their reference now.
+            assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
+            assertThat(validate.get(1).getMessageType()).as(validate.get(1).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
         }
     }
 
@@ -195,9 +191,9 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
     public void testINPUTDATA_NOT_FOUND_FOR_DS_FileInput() {
         final List<DMNMessage> validate = validator.validate(getFile("decisionservice/DS1ofEach_missingInputData.dmn"),
                                                              VALIDATE_SCHEMA, VALIDATE_MODEL);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
-        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
-        assertThat(validate.get(1).toString(), validate.get(1).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
+        assertThat(validate.get(1).getMessageType()).as(validate.get(1).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
     }
 
     @Test
@@ -206,9 +202,9 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
                                                                             "https://kiegroup.org/dmn/_40B3D02F-868C-4925-A1F2-5710DFEEF51E",
                                                                             "DS1ofEach"),
                                                              VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), greaterThanOrEqualTo(2));
-        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
-        assertThat(validate.get(1).toString(), validate.get(1).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSizeGreaterThanOrEqualTo(2);
+        assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
+        assertThat(validate.get(1).getMessageType()).as(validate.get(1).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
     }
 
     @Test
@@ -216,8 +212,8 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decisionservice/DS1ofEach_missingOutput.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader,
                                                                  VALIDATE_SCHEMA, VALIDATE_MODEL);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1)); // DS-1 missing its reference now.
-            assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1); // DS-1 missing its reference now.
+            assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
         }
     }
 
@@ -225,8 +221,8 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
     public void testOUTPUTELEMENT_NOT_FOUND_FOR_DS_FileInput() {
         final List<DMNMessage> validate = validator.validate(getFile("decisionservice/DS1ofEach_missingOutput.dmn"),
                                                              VALIDATE_SCHEMA, VALIDATE_MODEL);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
     }
 
     @Test
@@ -235,7 +231,7 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
                                                                             "https://kiegroup.org/dmn/_40B3D02F-868C-4925-A1F2-5710DFEEF51E",
                                                                             "DS1ofEach"),
                                                              VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), greaterThanOrEqualTo(1));
-        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSizeGreaterThanOrEqualTo(2);
+        assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.REQ_NOT_FOUND);
     }
 }

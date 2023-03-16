@@ -18,19 +18,18 @@ package org.kie.dmn.feel.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AssignableFromUtilTest {
 
     @Test
     public void testIsAssignableFromWhenItIsAssignable() {
-        assertTrue(AssignableFromUtil.isAssignableFrom(A.class, B.class));
+        assertThat(AssignableFromUtil.isAssignableFrom(A.class, B.class)).isTrue();
     }
 
     @Test
     public void testIsAssignableFromWhenItIsNotAssignable() {
-        assertFalse(AssignableFromUtil.isAssignableFrom(A.class, C.class));
+        assertThat(AssignableFromUtil.isAssignableFrom(A.class, C.class)).isFalse();
     }
 
     static class A {

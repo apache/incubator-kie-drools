@@ -14,23 +14,23 @@
 
 package org.drools.mvel.rule;
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.test.model.Cheese;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateImpl;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.facttemplates.FieldTemplate;
 import org.drools.core.facttemplates.FieldTemplateImpl;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.ReadAccessor;
+import org.drools.core.test.model.Cheese;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatternTest {
 
@@ -41,15 +41,14 @@ public class PatternTest {
                                        type,
                                        "foo" );
         final Declaration dec = col.getDeclaration();
-        final InternalReadAccessor ext = dec.getExtractor();
-        assertEquals( Cheese.class,
-                      ext.getExtractToClass() );
+
+        final ReadAccessor ext = dec.getExtractor();
+        assertThat(ext.getExtractToClass()).isEqualTo(Cheese.class);
 
         final Cheese stilton = new Cheese( "stilton",
                                            42 );
 
-        assertEquals( stilton,
-                      dec.getValue( null, stilton ) );
+        assertThat(dec.getValue(null, stilton)).isEqualTo(stilton);
 
     }
 
@@ -74,9 +73,8 @@ public class PatternTest {
                                        type,
                                        "foo" );
         final Declaration dec = col.getDeclaration();
-        final InternalReadAccessor ext = dec.getExtractor();
-        assertEquals( Fact.class,
-                      ext.getExtractToClass() );
+        final ReadAccessor ext = dec.getExtractor();
+        assertThat(ext.getExtractToClass()).isEqualTo(Fact.class);
 
         final Fact stilton = cheese.createFact( 10 );
         stilton.setFieldValue( "name",
@@ -84,8 +82,7 @@ public class PatternTest {
         stilton.setFieldValue( "price",
                                new Integer( 200 ) );
 
-        assertEquals( stilton,
-                      dec.getValue( null, stilton ) );
+        assertThat(dec.getValue(null, stilton)).isEqualTo(stilton);
     }
 
 }

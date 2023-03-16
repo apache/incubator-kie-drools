@@ -38,8 +38,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractKieCiTest {
 
@@ -53,7 +52,7 @@ public class AbstractKieCiTest {
         }
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
@@ -69,7 +68,7 @@ public class AbstractKieCiTest {
         kfs.write("src/main/resources/KBase1/" + file, createDRL(rule));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
@@ -81,7 +80,7 @@ public class AbstractKieCiTest {
         kfs.write("src/main/resources/KBase1/" + file, createDRL(rule));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
     
@@ -105,7 +104,7 @@ public class AbstractKieCiTest {
         }
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
@@ -125,7 +124,7 @@ public class AbstractKieCiTest {
         }
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
@@ -332,10 +331,9 @@ public class AbstractKieCiTest {
             ksession.dispose();
         }
 
-        assertEquals(results.length, list.size());
+        assertThat(list.size()).isEqualTo(results.length);
         for (Object result : results) {
-            assertTrue( String.format( "Expected to contain: %s, got: %s", result, Arrays.toString( list.toArray() ) ),
-                        list.contains( result ) );
+            assertThat(list.contains(result)).as(String.format("Expected to contain: %s, got: %s", result, Arrays.toString(list.toArray()))).isTrue();
         }
     }
 

@@ -33,9 +33,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLDescrRulesFactoryTest {
 
@@ -46,8 +44,8 @@ public class KiePMMLDescrRulesFactoryTest {
     @Before
     public void setUp() throws Exception {
         builder = DescrFactory.newPackage().name(PACKAGE_NAME);
-        assertNotNull(builder.getDescr());
-        assertEquals(PACKAGE_NAME, builder.getDescr().getName());
+        assertThat(builder.getDescr()).isNotNull();
+        assertThat(builder.getDescr().getName()).isEqualTo(PACKAGE_NAME);
     }
 
     @Test
@@ -65,14 +63,14 @@ public class KiePMMLDescrRulesFactoryTest {
                 .withOrConstraints(orConstraints)
                 .build();
         KiePMMLDescrRulesFactory.factory(builder).declareRule(rule);
-        assertNotNull(builder.getDescr().getRules());
-        assertEquals(1, builder.getDescr().getRules().size());
+        assertThat(builder.getDescr().getRules()).isNotNull();
+        assertThat(builder.getDescr().getRules()).hasSize(1);
         final RuleDescr retrieved = builder.getDescr().getRules().get(0);
-        assertEquals(name, retrieved.getName());
-        assertEquals(2, retrieved.getAttributes().size());
-        assertTrue(retrieved.getAttributes().containsKey("agenda-group"));
-        assertEquals(agendaGroup, retrieved.getAttributes().get("agenda-group").getValue());
-        assertTrue(retrieved.getAttributes().containsKey("activation-group"));
-        assertEquals(activationGroup, retrieved.getAttributes().get("activation-group").getValue());
+        assertThat(retrieved.getName()).isEqualTo(name);
+        assertThat(retrieved.getAttributes()).hasSize(2);
+        assertThat(retrieved.getAttributes()).containsKey("agenda-group");
+        assertThat(retrieved.getAttributes().get("agenda-group").getValue()).isEqualTo(agendaGroup);
+        assertThat(retrieved.getAttributes()).containsKey("activation-group");
+        assertThat(retrieved.getAttributes().get("activation-group").getValue()).isEqualTo(activationGroup);
     }
 }

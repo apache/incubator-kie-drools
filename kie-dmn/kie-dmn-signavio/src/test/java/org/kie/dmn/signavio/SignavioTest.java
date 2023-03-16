@@ -40,16 +40,7 @@ import org.kie.dmn.model.api.Definitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.everyItem;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.iterableWithSize;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SignavioTest {
     public static final Logger LOG = LoggerFactory.getLogger(SignavioTest.class);
@@ -68,7 +59,7 @@ public class SignavioTest {
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
         
-        assertThat( (List<?>) evaluateAll.getContext().get( "Greeting for each Person in Persons" ), contains( "Hello p1", "Hello p2" ) );
+        assertThat((List<String>) evaluateAll.getContext().get("Greeting for each Person in Persons")).contains("Hello p1", "Hello p2");
     }
     
     @Test
@@ -78,13 +69,13 @@ public class SignavioTest {
         Definitions definitions = model0.getDefinitions();
         DRGElement decision = definitions.getDrgElement().stream().filter(e -> e.getName().equals("greetingForEachPersonInPersons")).findFirst().orElseThrow(IllegalStateException::new);
         Object extElement = decision.getExtensionElements().getAny().get(0);
-        assertThat(extElement, is(instanceOf(MultiInstanceDecisionLogic.class)));
+        assertThat(extElement).isInstanceOf(MultiInstanceDecisionLogic.class);
         MultiInstanceDecisionLogic mid = (MultiInstanceDecisionLogic) extElement;
         LOG.info("{}", mid);
-        assertThat(mid.getIterationExpression(), is("persons"));
-        assertThat(mid.getIteratorShapeId(), is("id-707bbdf74438414623ac5d7067805b38"));
-        assertThat(mid.getAggregationFunction(), is("COLLECT"));
-        assertThat(mid.getTopLevelDecisionId(), is("id-7a23e2f201e3e0db3c991313cff5cd2b"));
+        assertThat(mid.getIterationExpression()).isEqualTo("persons");
+        assertThat(mid.getIteratorShapeId()).isEqualTo("id-707bbdf74438414623ac5d7067805b38");
+        assertThat(mid.getAggregationFunction()).isEqualTo("COLLECT");
+        assertThat(mid.getTopLevelDecisionId()).isEqualTo("id-7a23e2f201e3e0db3c991313cff5cd2b");
     }
 
     @Test
@@ -102,7 +93,7 @@ public class SignavioTest {
         LOG.info("{}", evaluateAll.getContext());
         evaluateAll.getMessages().forEach(System.out::println);
 
-        assertEquals(true, evaluateAll.getContext().get("myContext"));
+        assertThat(evaluateAll.getContext().get("myContext")).isEqualTo(true);
     }
 
     /**
@@ -124,9 +115,9 @@ public class SignavioTest {
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         evaluateAll.getMessages().forEach(System.out::println);
 
-        assertFalse(evaluateAll.getMessages().toString(), evaluateAll.hasErrors());
+        assertThat(evaluateAll.hasErrors()).as(evaluateAll.getMessages().toString()).isFalse();
 
-        assertEquals(startsWithAnA, evaluateAll.getContext().get("startsWithAnA"));
+        assertThat(evaluateAll.getContext().get("startsWithAnA")).isEqualTo(startsWithAnA);
     }
 
     @Test
@@ -146,7 +137,7 @@ public class SignavioTest {
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
 
-        assertThat(evaluateAll.getDecisionResultByName("iterating").getResult(), is(iterating));
+        assertThat(evaluateAll.getDecisionResultByName("iterating").getResult()).isEqualTo(iterating);
     }
 
     private DMNRuntime createRuntime(String modelFileName) {
@@ -162,7 +153,7 @@ public class SignavioTest {
         Results results = kieBuilder.getResults();
         LOG.info("buildAll() completed.");
         results.getMessages(Level.WARNING).forEach(e -> LOG.warn("{}", e));
-        assertTrue(results.getMessages(Level.WARNING).size() == 0);
+        assertThat(results.getMessages(Level.WARNING)).isEmpty();
 
         final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
@@ -234,8 +225,9 @@ public class SignavioTest {
         LOG.info("{}", evaluateAll);
     
         List<Object> result = (List<Object>) evaluateAll.getDecisionResultByName("calculate").getResult();
-        assertThat(result, iterableWithSize(6));
-        assertThat(result, everyItem(notNullValue()));
+        assertThat(result).hasSize(6);
+        
+        assertThat(result).doesNotContainNull();
     }
     
     
@@ -252,8 +244,8 @@ public class SignavioTest {
         LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
-    
-        assertEquals("JohnJaneDoe", evaluateAll.getDecisionResultByName("concatNames").getResult());
+
+        assertThat(evaluateAll.getDecisionResultByName("concatNames").getResult()).isEqualTo("JohnJaneDoe");
     }
     
     
@@ -269,8 +261,8 @@ public class SignavioTest {
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
         
-        assertThat((List<?>) evaluateAll.getDecisionResultByName("zipvararg").getResult(), iterableWithSize(2));
-        assertThat((List<?>) evaluateAll.getDecisionResultByName("zipsinglelist").getResult(), iterableWithSize(2));
+        assertThat((List<?>) evaluateAll.getDecisionResultByName("zipvararg").getResult()).hasSize(2);
+        assertThat((List<?>) evaluateAll.getDecisionResultByName("zipsinglelist").getResult()).hasSize(2);
     }
     
     @Test
@@ -290,8 +282,8 @@ public class SignavioTest {
         LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
-    
-        assertEquals(Arrays.asList("John Doe", "Alice"), evaluateAll.getDecisionResultByName("extractNames").getResult());
+
+        assertThat(evaluateAll.getDecisionResultByName("extractNames").getResult()).isEqualTo(Arrays.asList("John Doe", "Alice"));
     }
     
     @Test
@@ -306,7 +298,7 @@ public class SignavioTest {
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
     
-        assertThat(evaluateAll.getDecisionResultByName("overallage").getResult(), is(new BigDecimal("18")));
+        assertThat(evaluateAll.getDecisionResultByName("overallage").getResult()).isEqualTo(new BigDecimal("18"));
     }
     
     @Test
@@ -322,6 +314,6 @@ public class SignavioTest {
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
     
-        assertThat(evaluateAll.getDecisionResultByName("sumUp").getResult(), is(new BigDecimal("6")));
+        assertThat(evaluateAll.getDecisionResultByName("sumUp").getResult()).isEqualTo(new BigDecimal("6"));
     }
 }

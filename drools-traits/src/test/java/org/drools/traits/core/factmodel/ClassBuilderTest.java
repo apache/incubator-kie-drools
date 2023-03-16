@@ -37,12 +37,9 @@ import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class ClassBuilderTest {
 
@@ -103,28 +100,20 @@ public class ClassBuilderTest {
 
             byte[] d = builder.buildClass( classDef, classLoader );
 
-            assertSame( "Returned class should be the same",
-                               clazz,
-                               classDef.getDefinedClass() );
-            assertEquals( "Class name should be equal",
-                                 classDef.getClassName(),
-                                 clazz.getName() );
+            assertThat(clazz).as("Returned class should be the same").isSameAs(classDef.getDefinedClass());
+            assertThat(clazz.getName()).as("Class name should be equal").isEqualTo(classDef.getClassName());
 
             Serializable instance = (Serializable) clazz.newInstance();
 
             String stringValue = "Atributo String ok";
             stringDef.setValue( instance,
                                 stringValue );
-            assertEquals( "Attribute should have been correctly set",
-                                 stringValue,
-                                 stringDef.getValue( instance ) );
+            assertThat(stringDef.getValue(instance)).as("Attribute should have been correctly set").isEqualTo(stringValue);
 
             int intValue = 50;
             intDef.setValue( instance,
                              new Integer( intValue ) );
-            assertEquals( "Attribute should have been correctly set",
-                                 intValue,
-                                 ((Integer) intDef.getValue( instance )).intValue() );
+            assertThat(((Integer) intDef.getValue(instance)).intValue()).as("Attribute should have been correctly set").isEqualTo(intValue);
 
             // testing class rebuilding
             clazz = build(builder, classDef);
@@ -239,35 +228,35 @@ public class ClassBuilderTest {
 
             Object o = new Object();
 
-            assertTrue( x.equals( x ) );
-            assertFalse( x.equals( null ) );
-            assertFalse( x.equals( o ) );
+            assertThat(x.equals(x)).isTrue();
+            assertThat(x.equals(null)).isFalse();
+            assertThat(x.equals(o)).isFalse();
 
-            assertTrue( x.equals( y ) );
+            assertThat(x.equals(y)).isTrue();
 
             intDef.setValue( y,
                              new Integer( 1 ) );
-            assertFalse( x.equals( y ) );
+            assertThat(x.equals(y)).isFalse();
 
             intDef.setValue( y,
                              new Integer( 10 ) );
             strDef.setValue( y,
                              "xyz" );
-            assertFalse( x.equals( y ) );
+            assertThat(x.equals(y)).isFalse();
 
             strDef.setValue( y,
                              null );
-            assertFalse( x.equals( y ) );
+            assertThat(x.equals(y)).isFalse();
 
             strDef.setValue( y,
                              "abc" );
             dateDef.setValue( y,
                               new Date( 1 ) );
-            assertFalse( x.equals( y ) );
+            assertThat(x.equals(y)).isFalse();
 
             dateDef.setValue( y,
                               null );
-            assertFalse( x.equals( y ) );
+            assertThat(x.equals(y)).isFalse();
 
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -305,12 +294,8 @@ public class ClassBuilderTest {
             strDef.setValue( x,
                              "abc" );
 
-            assertEquals( "Wrong hashcode calculation",
-                                 31 + 10,
-                                 x.hashCode() );
-            assertEquals( "Wrong hashcode calculation",
-                                 x.hashCode(),
-                                 x.hashCode() );
+            assertThat(x.hashCode()).as("Wrong hashcode calculation").isEqualTo(31 + 10);
+            assertThat(x.hashCode()).as("Wrong hashcode calculation").isEqualTo(x.hashCode());
 
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -389,13 +374,13 @@ public class ClassBuilderTest {
 
             String result = x.toString();
 
-            assertTrue( result.contains( long1Def.getName() ) );
-            assertTrue( result.contains( long2Def.getName() ) );
-            assertTrue( result.contains( doubleDef.getName() ) );
-            assertTrue( result.contains( intDef.getName() ) );
-            assertTrue( result.contains( strDef.getName() ) );
-            assertTrue( result.contains( dateDef.getName() ) );
-            assertTrue( result.contains( str2Def.getName() ) );
+            assertThat(result.contains(long1Def.getName())).isTrue();
+            assertThat(result.contains(long2Def.getName())).isTrue();
+            assertThat(result.contains(doubleDef.getName())).isTrue();
+            assertThat(result.contains(intDef.getName())).isTrue();
+            assertThat(result.contains(strDef.getName())).isTrue();
+            assertThat(result.contains(dateDef.getName())).isTrue();
+            assertThat(result.contains(str2Def.getName())).isTrue();
 
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -434,8 +419,7 @@ public class ClassBuilderTest {
 
             Constructor< ? >[] cons = clazz.getConstructors();
 
-            assertEquals( 3,
-                                 cons.length );
+            assertThat(cons.length).isEqualTo(3);
             for ( Constructor< ? > c : cons ) {
                 Class< ? >[] ptypes = c.getParameterTypes();
                 if ( ptypes.length == 0 ) {
@@ -459,24 +443,15 @@ public class ClassBuilderTest {
                                                      "xyz",
                                                      true );
 
-                    assertEquals( (byte) 1,
-                                  fields[0].getValue( instance ) );
-                    assertEquals( (short) 2,
-                                  fields[1].getValue( instance ) );
-                    assertEquals( 3,
-                                  fields[2].getValue( instance ) );
-                    assertEquals( 4l,
-                                  fields[3].getValue( instance ) );
-                    assertEquals( 5.0f,
-                                  fields[4].getValue( instance ) );
-                    assertEquals( 6.0d,
-                                  fields[5].getValue( instance ) );
-                    assertEquals( 'a',
-                                  fields[6].getValue( instance ) );
-                    assertEquals( "xyz",
-                                  fields[7].getValue( instance ) );
-                    assertEquals( true,
-                                  fields[8].getValue( instance ) );
+                    assertThat(fields[0].getValue(instance)).isEqualTo((byte) 1);
+                    assertThat(fields[1].getValue(instance)).isEqualTo((short) 2);
+                    assertThat(fields[2].getValue(instance)).isEqualTo(3);
+                    assertThat(fields[3].getValue(instance)).isEqualTo(4l);
+                    assertThat(fields[4].getValue(instance)).isEqualTo(5.0f);
+                    assertThat(fields[5].getValue(instance)).isEqualTo(6.0d);
+                    assertThat(fields[6].getValue(instance)).isEqualTo('a');
+                    assertThat(fields[7].getValue(instance)).isEqualTo("xyz");
+                    assertThat(fields[8].getValue(instance)).isEqualTo(true);
                 } else if ( ptypes.length == ( fields.length / 2 +1 ) ) { // as defined in the beginning of the test
                     // constructor with key fields
                     int i = 0;
@@ -492,16 +467,11 @@ public class ClassBuilderTest {
                                                      'a',
                                                      true );
 
-                    assertEquals( (byte) 1,
-                                  fields[0].getValue( instance ) );
-                    assertEquals( 3,
-                                  fields[2].getValue( instance ) );
-                    assertEquals( 5.0f,
-                                  fields[4].getValue( instance ) );
-                    assertEquals( 'a',
-                                  fields[6].getValue( instance ) );
-                    assertEquals( true,
-                                  fields[8].getValue( instance ) );
+                    assertThat(fields[0].getValue(instance)).isEqualTo((byte) 1);
+                    assertThat(fields[2].getValue(instance)).isEqualTo(3);
+                    assertThat(fields[4].getValue(instance)).isEqualTo(5.0f);
+                    assertThat(fields[6].getValue(instance)).isEqualTo('a');
+                    assertThat(fields[8].getValue(instance)).isEqualTo(true);
                     
                 } else {
                     fail( "Unexpected constructor: " + c.toString() );
@@ -525,7 +495,7 @@ public class ClassBuilderTest {
             ClassLoader cl = clazz.getClassLoader();
 
             // We expect normal classloader stuff to work
-            assertFalse(cl.getResources("not-there.txt").hasMoreElements());
+            assertThat(cl.getResources("not-there.txt").hasMoreElements()).isFalse();
         } catch (Exception e) {
             e.printStackTrace();
             fail("Exception not expected: " + e.getMessage());

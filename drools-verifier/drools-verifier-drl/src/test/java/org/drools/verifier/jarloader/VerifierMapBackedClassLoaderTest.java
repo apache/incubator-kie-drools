@@ -15,15 +15,15 @@
 
 package org.drools.verifier.jarloader;
 
-import org.drools.verifier.Verifier;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.jar.JarInputStream;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import org.drools.verifier.Verifier;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,9 +36,9 @@ public class VerifierMapBackedClassLoaderTest {
 
         VerifierMapBackedClassLoader verifierMapBackedClassLoader = new VerifierMapBackedClassLoader(jarInputStreams);
 
-        assertNotNull(verifierMapBackedClassLoader.getStore().containsKey("org.test.Person"));
-        assertNotNull(verifierMapBackedClassLoader.getStore().containsKey("org.test.Rambo"));
-        assertNotNull(verifierMapBackedClassLoader.getStore().containsKey("org.test.Pet"));
+        assertThat(verifierMapBackedClassLoader.getStore().containsKey("org.test.Person")).isNotNull();
+        assertThat(verifierMapBackedClassLoader.getStore().containsKey("org.test.Rambo")).isNotNull();
+        assertThat(verifierMapBackedClassLoader.getStore().containsKey("org.test.Pet")).isNotNull();
     }
 
     @Test()

@@ -24,9 +24,7 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -39,8 +37,8 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND))).isTrue();
         }
     }
 
@@ -49,8 +47,8 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("typeref/TYPEREF_NO_FEEL_TYPE.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -58,8 +56,8 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("typeref/TYPEREF_NO_FEEL_TYPE.dmn", "https://github.com/kiegroup/kie-dmn", "TYPEREF_NO_FEEL_TYPE"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -68,8 +66,8 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND))).isTrue();
         }
     }
 
@@ -78,8 +76,8 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("typeref/TYPEREF_NO_NS.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -87,8 +85,8 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("typeref/TYPEREF_NO_NS.dmn", "https://github.com/kiegroup/kie-dmn", "TYPEREF_NO_NS"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -97,9 +95,9 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_NAME)));
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_NAME))).isTrue();
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND))).isTrue();
         }
     }
 
@@ -108,9 +106,9 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("typeref/TYPEREF_NOT_FEEL_NOT_DEF.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_NAME)));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_NAME))).isTrue();
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -118,9 +116,9 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("typeref/TYPEREF_NOT_FEEL_NOT_DEF.dmn", "https://github.com/kiegroup/kie-dmn", "TYPEREF_NOT_FEEL_NOT_DEF"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_NAME)));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_NAME))).isTrue();
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -132,7 +130,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(0);
         }
     }
 
@@ -144,7 +142,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("typeref/TYPEREF_NOT_FEEL_NOT_DEF_valid.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(0);
     }
 
     @Test
@@ -155,7 +153,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("typeref/TYPEREF_NOT_FEEL_NOT_DEF_valid.dmn", "https://github.com/kiegroup/kie-dmn", "TYPEREF_NOT_FEEL_NOT_DEF_valid"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(0);
     }
     
     @Test
@@ -164,6 +162,6 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("typeref/BKM_WITH_NO_TYPEREF_IS_OK.dmn", "http://www.trisotech.com/dmn/definitions/_7e8d7561-657a-4729-b2a9-5a6279df6d5d", "Drawing 1"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(0);
     }
 }

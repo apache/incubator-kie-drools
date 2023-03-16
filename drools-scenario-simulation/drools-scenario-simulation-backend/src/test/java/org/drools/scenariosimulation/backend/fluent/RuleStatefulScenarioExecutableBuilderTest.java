@@ -41,9 +41,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.RULES_AVAILABLE;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -134,10 +134,10 @@ public class RuleStatefulScenarioExecutableBuilderTest {
         verify(kieSessionFluentMock, times(3)).addCommand(commandArgumentCaptor.capture());
 
         List<ExecutableCommand<?>> allAddCommands = commandArgumentCaptor.getAllValues();
-        assertTrue(allAddCommands.stream().map(Object::getClass).anyMatch(ValidateFactCommand.class::isAssignableFrom));
-        assertTrue(allAddCommands.stream().map(Object::getClass).anyMatch(AddCoverageListenerCommand.class::isAssignableFrom));
+        assertThat(allAddCommands.stream().map(Object::getClass).anyMatch(ValidateFactCommand.class::isAssignableFrom)).isTrue();
+        assertThat(allAddCommands.stream().map(Object::getClass).anyMatch(AddCoverageListenerCommand.class::isAssignableFrom)).isTrue();
 
-        assertTrue(result.containsKey(RuleScenarioExecutableBuilder.COVERAGE_LISTENER));
+        assertThat(result.containsKey(RuleScenarioExecutableBuilder.COVERAGE_LISTENER)).isTrue();
         verify(kieSessionFluentMock, times(1)).out(eq(RULES_AVAILABLE));
     }
 }

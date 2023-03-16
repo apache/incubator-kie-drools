@@ -17,30 +17,31 @@
 package org.drools.core.base;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValueTypeTest {
 
     @Test
     public void testIsBoolean() {
-        assertTrue( ValueType.BOOLEAN_TYPE.isBoolean() );
-        assertTrue( ValueType.PBOOLEAN_TYPE.isBoolean() );
+        assertThat(ValueType.BOOLEAN_TYPE.isBoolean()).isTrue();
+        assertThat(ValueType.PBOOLEAN_TYPE.isBoolean()).isTrue();
     }
 
     @Test
     public void testIsNumber() {
-        assertTrue( ValueType.PBYTE_TYPE.isNumber() );
-        assertTrue( ValueType.PSHORT_TYPE.isNumber() );
-        assertTrue( ValueType.PINTEGER_TYPE.isNumber() );
-        assertTrue( ValueType.PLONG_TYPE.isNumber() );
-        assertTrue( ValueType.PFLOAT_TYPE.isNumber() );
-        assertTrue( ValueType.PDOUBLE_TYPE.isNumber() );
-        assertTrue( ValueType.BYTE_TYPE.isNumber() );
-        assertTrue( ValueType.SHORT_TYPE.isNumber() );
-        assertTrue( ValueType.INTEGER_TYPE.isNumber() );
-        assertTrue( ValueType.LONG_TYPE.isNumber() );
-        assertTrue( ValueType.FLOAT_TYPE.isNumber() );
-        assertTrue( ValueType.DOUBLE_TYPE.isNumber() );
+        assertThat(ValueType.PBYTE_TYPE.isNumber()).isTrue();
+        assertThat(ValueType.PSHORT_TYPE.isNumber()).isTrue();
+        assertThat(ValueType.PINTEGER_TYPE.isNumber()).isTrue();
+        assertThat(ValueType.PLONG_TYPE.isNumber()).isTrue();
+        assertThat(ValueType.PFLOAT_TYPE.isNumber()).isTrue();
+        assertThat(ValueType.PDOUBLE_TYPE.isNumber()).isTrue();
+        assertThat(ValueType.BYTE_TYPE.isNumber()).isTrue();
+        assertThat(ValueType.SHORT_TYPE.isNumber()).isTrue();
+        assertThat(ValueType.INTEGER_TYPE.isNumber()).isTrue();
+        assertThat(ValueType.LONG_TYPE.isNumber()).isTrue();
+        assertThat(ValueType.FLOAT_TYPE.isNumber()).isTrue();
+        assertThat(ValueType.DOUBLE_TYPE.isNumber()).isTrue();
 
     }
 

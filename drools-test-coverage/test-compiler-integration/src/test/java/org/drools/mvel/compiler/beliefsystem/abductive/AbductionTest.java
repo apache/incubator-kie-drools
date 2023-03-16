@@ -56,11 +56,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AbductionTest {
@@ -160,7 +156,7 @@ public class AbductionTest {
             System.out.println( ">> " + o );
         }
         System.err.println( list );
-        assertEquals( Arrays.asList( 1, 2, 3 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(1, 2, 3));
     }
 
 
@@ -203,9 +199,9 @@ public class AbductionTest {
         FactType type = session.getKieBase().getFactType( "org.drools.abductive.test", "Foo" );
         for ( Object o : session.getObjects() ) {
             if ( type.getFactClass().isInstance( o ) ) {
-                assertEquals( "id_0", type.get( o, "id" ) );
-                assertEquals( "name_test", type.get( o, "name" ) );
-                assertEquals( 0.0, type.get( o, "value" ) );
+                assertThat(type.get(o, "id")).isEqualTo("id_0");
+                assertThat(type.get(o, "name")).isEqualTo("name_test");
+                assertThat(type.get(o, "value")).isEqualTo(0.0);
             }
         }
         System.err.println( list );
@@ -235,7 +231,7 @@ public class AbductionTest {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, droolsSource);
         Results res = kieBuilder.getResults();
 
-        assertEquals(1, res.getMessages(Message.Level.ERROR).size());
+        assertThat(res.getMessages(Message.Level.ERROR).size()).isEqualTo(1);
     }
 
     @Test
@@ -269,7 +265,7 @@ public class AbductionTest {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, droolsSource);
         Results res = kieBuilder.getResults();
 
-        assertEquals( 1, res.getMessages( Message.Level.ERROR ).size() );
+        assertThat(res.getMessages(Message.Level.ERROR).size()).isEqualTo(1);
     }
 
     @Test
@@ -290,7 +286,7 @@ public class AbductionTest {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, droolsSource);
         Results res = kieBuilder.getResults();
 
-        assertTrue( res.hasMessages( Message.Level.ERROR ) );
+        assertThat(res.hasMessages(Message.Level.ERROR)).isTrue();
 
     }
 
@@ -336,13 +332,13 @@ public class AbductionTest {
         session.fireAllRules();
 
         System.out.println( map );
-        assertTrue( map.keySet().containsAll( Arrays.asList( 3, 42, 11 ) ) );
+        assertThat(map.keySet().containsAll(Arrays.asList(3, 42, 11))).isTrue();
 
         FactType foo = session.getKieBase().getFactType( "org.drools.abductive.test", "Foo" );
         for ( Object k : map.keySet() ) {
             Object val = map.get( k );
-            assertSame( foo.getFactClass(), val.getClass() );
-            assertEquals( k, foo.get( val, "id" ) );
+            assertThat(val.getClass()).isSameAs(foo.getFactClass());
+            assertThat(foo.get(val, "id")).isEqualTo(k);
         }
 
     }
@@ -425,8 +421,8 @@ public class AbductionTest {
         session.fireAllRules();
 
         System.out.println( map );
-        assertTrue( map.containsKey( 42 ) );
-        assertEquals( new Bean( 42 ), map.get( 42 ) );
+        assertThat(map.containsKey(42)).isTrue();
+        assertThat(map.get(42)).isEqualTo(new Bean( 42 ));
     }
 
 
@@ -468,16 +464,16 @@ public class AbductionTest {
         session.fireAllRules();
 
         System.out.println( map );
-        assertTrue( map.keySet().containsAll( Arrays.asList( 11, 42 ) ) );
-        assertEquals( 2, map.size() );
+        assertThat(map.keySet().containsAll(Arrays.asList(11, 42))).isTrue();
+        assertThat(map.size()).isEqualTo(2);
 
         Bean b11 = (Bean) map.get( 11 );
         InternalFactHandle f11 = (( InternalFactHandle ) session.getFactHandle( b11 ));
-        assertSame( b, b11 );
+        assertThat(b11).isSameAs(b);
 
         Bean b42 = (Bean) map.get( 42 );
         InternalFactHandle f42 = ( InternalFactHandle ) session.getFactHandle( b42 );
-        assertEquals( EqualityKey.JUSTIFIED, f42.getEqualityKey().getStatus() );
+        assertThat(f42.getEqualityKey().getStatus()).isEqualTo(EqualityKey.JUSTIFIED);
 
     }
 
@@ -530,7 +526,7 @@ public class AbductionTest {
             System.out.println( ">> " + o );
         }
         System.err.println( list );
-        assertEquals( Arrays.asList( 1, 2 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(1, 2));
     }
 
 
@@ -564,7 +560,7 @@ public class AbductionTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, droolsSource);
         Results res = kieBuilder.getResults();
-        assertEquals( 1, res.getMessages( Message.Level.ERROR ).size() );
+        assertThat(res.getMessages(Message.Level.ERROR).size()).isEqualTo(1);
     }
 
     @Test
@@ -610,7 +606,7 @@ public class AbductionTest {
             System.out.println( ">> " + o );
         }
         System.err.println( list );
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
 
@@ -705,12 +701,12 @@ public class AbductionTest {
         session.fireAllRules();
         System.out.println( list );
 
-        assertEquals( 3, list.size() );
-        assertTrue( list.contains( "sprinkler" ) );
-        assertTrue( list.contains( "not rain" ) );
-        assertTrue( list.contains( "no_rain_check" ) );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains("sprinkler")).isTrue();
+        assertThat(list.contains("not rain")).isTrue();
+        assertThat(list.contains("no_rain_check")).isTrue();
 
-        assertEquals( 3, session.getObjects().size() );
+        assertThat(session.getObjects().size()).isEqualTo(3);
 
         int i = 0;
         Iterator it = session.getObjects().iterator();
@@ -718,7 +714,7 @@ public class AbductionTest {
             i++;
             it.next();
         }
-        assertEquals( 3, i );
+        assertThat(i).isEqualTo(3);
     }
 
     @Test
@@ -774,8 +770,8 @@ public class AbductionTest {
 
         session.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( "TypeA", list.get( 0 ).getClass().getSimpleName() );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0).getClass().getSimpleName()).isEqualTo("TypeA");
     }
 
 
@@ -822,35 +818,35 @@ public class AbductionTest {
         for ( Object o : session.getObjects() ) {
             System.out.println( ">>> " + o );
         }
-        assertEquals( 1, session.getObjects().size() );
+        assertThat(session.getObjects().size()).isEqualTo(1);
 
         Query q1 = session.getKieBase().getQuery( "org.drools.abductive.test", "foo" );
         Query q2 = session.getKieBase().getQuery( "org.drools.abductive.test", "bar" );
 
-        assertNotNull( q1 );
-        assertNotNull( q2 );
+        assertThat(q1).isNotNull();
+        assertThat(q2).isNotNull();
 
         QueryResults q10res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "foo", "foo", null ));
         QueryResults q11res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "foo", "foo", Variable.v ));
         QueryResults q20res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "bar", "foo", Variable.v ));
 
-        assertEquals( 1, q10res.size() );
-        assertEquals( 1, q11res.size() );
-        assertEquals( 1, q20res.size() );
+        assertThat(q10res.size()).isEqualTo(1);
+        assertThat(q11res.size()).isEqualTo(1);
+        assertThat(q20res.size()).isEqualTo(1);
 
         QueryResultsRow row10 = q10res.iterator().next();
         QueryResultsRow row11 = q11res.iterator().next();
         QueryResultsRow row20 = q20res.iterator().next();
 
-        assertEquals( "foo", row10.get( "$s" ) );
-        assertEquals( "foo", row11.get( "$s" ) );
-        assertEquals( "foo", row20.get( "$s" ) );
+        assertThat(row10.get("$s")).isEqualTo("foo");
+        assertThat(row11.get("$s")).isEqualTo("foo");
+        assertThat(row20.get("$s")).isEqualTo("foo");
 
         Object foo = row20.get( "$foo" );
-        assertSame( foo, session.getObjects().iterator().next() );
+        assertThat(session.getObjects().iterator().next()).isSameAs(foo);
 
         // the implicit return argument, the abduced/retrieved fact, is hidden
-        assertNull( row11.get( "" ) );
+        assertThat(row11.get("")).isNull();
 
     }
 
@@ -927,11 +923,11 @@ public class AbductionTest {
                 InternalFactHandle h = (InternalFactHandle) session.getFactHandle( o );
                 String name = (String) type.get( o, "name" );
                 if ( "Mary".equals( name ) ) {
-                    assertNull( h.getEqualityKey().getBeliefSet() );
+                    assertThat((h.getEqualityKey()).getBeliefSet()).isNull();
                 } else if ( "John".equals( name ) ) {
                     BeliefSet bs = h.getEqualityKey().getBeliefSet();
-                    assertTrue( bs.isPositive() );
-                    assertEquals( 2, bs.size() );
+                    assertThat(bs.isPositive()).isTrue();
+                    assertThat(bs.size()).isEqualTo(2);
                 }
             }
         }
@@ -1156,7 +1152,7 @@ public class AbductionTest {
             System.out.println( ">>> " + o );
         }
 
-        assertEquals( Arrays.asList( "Apple" ), list );
+        assertThat(list).isEqualTo(Arrays.asList("Apple"));
     }
 
 }

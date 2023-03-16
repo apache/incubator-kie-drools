@@ -63,11 +63,7 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MBeansMonitoringTest {
@@ -132,15 +128,15 @@ public class MBeansMonitoringTest {
                 mbserver,
                 DroolsManagementAgent.createObjectNameBy("myID", "org.kie.monitoring.kbase1", KieSessionType.STATEFUL, "org.kie.monitoring.kbase1.ksession1"),
                 StatelessKieSessionMonitoringMXBean.class);
-        
-        assertEquals("myID", c1Monitor.getContainerId() );
 
-        assertTrue(c1Monitor.getConfiguredReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID));
-        assertTrue(c1Monitor.getResolvedReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID));
-        assertEquals("org.kie.monitoring.kbase1.ksession1", statefulKieSessionMonitor.getKieSessionName());
-        assertEquals("org.kie.monitoring.kbase1",           statefulKieSessionMonitor.getKieBaseId());
-        assertEquals("org.kie.monitoring.kbase1.ksession1", statelessKieSessionMonitor.getKieSessionName());
-        assertEquals("org.kie.monitoring.kbase1",           statelessKieSessionMonitor.getKieBaseId());
+        assertThat(c1Monitor.getContainerId()).isEqualTo("myID");
+
+        assertThat(c1Monitor.getConfiguredReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID)).isTrue();
+        assertThat(c1Monitor.getResolvedReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID)).isTrue();
+        assertThat(statefulKieSessionMonitor.getKieSessionName()).isEqualTo("org.kie.monitoring.kbase1.ksession1");
+        assertThat(statefulKieSessionMonitor.getKieBaseId()).isEqualTo("org.kie.monitoring.kbase1");
+        assertThat(statelessKieSessionMonitor.getKieSessionName()).isEqualTo("org.kie.monitoring.kbase1.ksession1");
+        assertThat(statelessKieSessionMonitor.getKieBaseId()).isEqualTo("org.kie.monitoring.kbase1");
         
         
         KieContainer kc2 = ks.newKieClasspathContainer("myID2");
@@ -159,14 +155,14 @@ public class MBeansMonitoringTest {
                 mbserver,
                 DroolsManagementAgent.createObjectNameBy("myID2", "org.kie.monitoring.kbase1", KieSessionType.STATEFUL, "org.kie.monitoring.kbase1.ksession1"),
                 StatelessKieSessionMonitoringMXBean.class);
-        
-        assertEquals("myID2", c2Monitor.getContainerId() );
-        assertTrue(c2Monitor.getConfiguredReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID));
-        assertTrue(c2Monitor.getResolvedReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID));
-        assertEquals("org.kie.monitoring.kbase1.ksession1", statefulKieSessionMonitor2.getKieSessionName());
-        assertEquals("org.kie.monitoring.kbase1",           statefulKieSessionMonitor2.getKieBaseId());
-        assertEquals("org.kie.monitoring.kbase1.ksession1", statelessKieSessionMonitor2.getKieSessionName());
-        assertEquals("org.kie.monitoring.kbase1",           statelessKieSessionMonitor2.getKieBaseId());
+
+        assertThat(c2Monitor.getContainerId()).isEqualTo("myID2");
+        assertThat(c2Monitor.getConfiguredReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID)).isTrue();
+        assertThat(c2Monitor.getResolvedReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID)).isTrue();
+        assertThat(statefulKieSessionMonitor2.getKieSessionName()).isEqualTo("org.kie.monitoring.kbase1.ksession1");
+        assertThat(statefulKieSessionMonitor2.getKieBaseId()).isEqualTo("org.kie.monitoring.kbase1");
+        assertThat(statelessKieSessionMonitor2.getKieSessionName()).isEqualTo("org.kie.monitoring.kbase1.ksession1");
+        assertThat(statelessKieSessionMonitor2.getKieBaseId()).isEqualTo("org.kie.monitoring.kbase1");
         
         kc.dispose();
         kc2.dispose();
@@ -210,7 +206,7 @@ public class MBeansMonitoringTest {
     	mbserver.invoke( kbOn, "startInternalMBeans", new Object[0], new String[0] );
 
     	Object expOffset = mbserver.getAttribute( new ObjectName( kbOn + ",group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.drools.mvel.compiler.StockTick" ), "ExpirationOffset" );
-    	assertEquals( 10001, ((Number) expOffset).longValue() );
+        assertThat(((Number) expOffset).longValue()).isEqualTo(10001);
     	
     	kc.dispose();
     }
@@ -262,31 +258,31 @@ public class MBeansMonitoringTest {
     			mbserver,
     			DroolsManagementAgent.createObjectNameBy(kc1ID),
     	        KieContainerMonitorMXBean.class);
-    	assertEquals(releaseId1.toExternalForm(), c1Monitor.getConfiguredReleaseIdStr());
-    	assertEquals(releaseId1.toExternalForm(), c1Monitor.getResolvedReleaseIdStr());
-    	
-    	assertTrue(c1Monitor.getConfiguredReleaseId().sameGAVof(releaseId1));
-        assertTrue(c1Monitor.getResolvedReleaseId().sameGAVof(releaseId1));
-        assertEquals(releaseId1.getVersion(), c1Monitor.getConfiguredReleaseId().getVersion());
-        assertEquals(releaseId1.getVersion(), c1Monitor.getResolvedReleaseId().getVersion());
+        assertThat(c1Monitor.getConfiguredReleaseIdStr()).isEqualTo(releaseId1.toExternalForm());
+        assertThat(c1Monitor.getResolvedReleaseIdStr()).isEqualTo(releaseId1.toExternalForm());
+
+        assertThat(c1Monitor.getConfiguredReleaseId().sameGAVof(releaseId1)).isTrue();
+        assertThat(c1Monitor.getResolvedReleaseId().sameGAVof(releaseId1)).isTrue();
+        assertThat(c1Monitor.getConfiguredReleaseId().getVersion()).isEqualTo(releaseId1.getVersion());
+        assertThat(c1Monitor.getResolvedReleaseId().getVersion()).isEqualTo(releaseId1.getVersion());
     	
     	KieContainerMonitorMXBean c2Monitor = JMX.newMXBeanProxy(
     			mbserver,
     			DroolsManagementAgent.createObjectNameBy("Matteo"),
     	        KieContainerMonitorMXBean.class);
-    	assertEquals(verRelease.toExternalForm(), c2Monitor.getConfiguredReleaseIdStr());
-    	assertEquals(releaseId1.toExternalForm(), c2Monitor.getResolvedReleaseIdStr());
-    	
-        assertTrue(c2Monitor.getConfiguredReleaseId().sameGAVof(verRelease));
-        assertTrue(c2Monitor.getResolvedReleaseId().sameGAVof(releaseId1));
-        assertEquals(verRelease.getVersion(), c2Monitor.getConfiguredReleaseId().getVersion());
-        assertEquals(releaseId1.getVersion(), c2Monitor.getResolvedReleaseId().getVersion());
-        
+        assertThat(c2Monitor.getConfiguredReleaseIdStr()).isEqualTo(verRelease.toExternalForm());
+        assertThat(c2Monitor.getResolvedReleaseIdStr()).isEqualTo(releaseId1.toExternalForm());
+
+        assertThat(c2Monitor.getConfiguredReleaseId().sameGAVof(verRelease)).isTrue();
+        assertThat(c2Monitor.getResolvedReleaseId().sameGAVof(releaseId1)).isTrue();
+        assertThat(c2Monitor.getConfiguredReleaseId().getVersion()).isEqualTo(verRelease.getVersion());
+        assertThat(c2Monitor.getResolvedReleaseId().getVersion()).isEqualTo(releaseId1.getVersion());
+
         // MBean are supported only via KieContainer public API.
-        assertEquals(3, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(kc1ID)+",*"), null).size());
+        assertThat(mbserver.queryNames(new ObjectName("org.kie:kcontainerId=" + ObjectName.quote(kc1ID) + ",*"), null).size()).isEqualTo(3);
         kc.dispose();
-        assertEquals(0, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(kc1ID)+",*"), null).size());
-        assertEquals(3, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote("Matteo")+",*"), null).size());
+        assertThat(mbserver.queryNames(new ObjectName("org.kie:kcontainerId=" + ObjectName.quote(kc1ID) + ",*"), null).size()).isEqualTo(0);
+        assertThat(mbserver.queryNames(new ObjectName("org.kie:kcontainerId=" + ObjectName.quote("Matteo") + ",*"), null).size()).isEqualTo(3);
 
         kc.dispose();
         kc2.dispose();
@@ -357,10 +353,10 @@ public class MBeansMonitoringTest {
         checkTotalFactCount(aggrMonitor, 0);
         tft = checkTotalFiringTimeGEQ(aggrMonitor, tft);
         checkTotalSessions(aggrMonitor, 1);
-        assertNull( aggrMonitor.getStatsForRule("ND" ) );
-        assertNull( aggrMonitor.getStatsForRule("ND2") );
-        assertFalse( aggrMonitor.getStatsByRule().containsKey("ND" ) );
-        assertFalse( aggrMonitor.getStatsByRule().containsKey("ND2") );
+        assertThat(aggrMonitor.getStatsForRule("ND")).isNull();
+        assertThat(aggrMonitor.getStatsForRule("ND2")).isNull();
+        assertThat(aggrMonitor.getStatsByRule().containsKey("ND")).isFalse();
+        assertThat(aggrMonitor.getStatsByRule().containsKey("ND2")).isFalse();
         
         ksession.insert("Ciao");
         ksession.fireAllRules();
@@ -424,10 +420,10 @@ public class MBeansMonitoringTest {
         checkRuleRuntimeTotals(aggrMonitor2, 0, 0);
         tft = checkTotalFiringTimeGEQ(aggrMonitor2, tft);
         checkTotalSessions(aggrMonitor2, 0);
-        assertNull( aggrMonitor2.getStatsForRule("ND" ) );
-        assertNull( aggrMonitor2.getStatsForRule("ND2") );
-        assertFalse( aggrMonitor2.getStatsByRule().containsKey("ND" ) );
-        assertFalse( aggrMonitor2.getStatsByRule().containsKey("ND2") );
+        assertThat(aggrMonitor2.getStatsForRule("ND")).isNull();
+        assertThat(aggrMonitor2.getStatsForRule("ND2")).isNull();
+        assertThat(aggrMonitor2.getStatsByRule().containsKey("ND")).isFalse();
+        assertThat(aggrMonitor2.getStatsByRule().containsKey("ND2")).isFalse();
 
         stateless.execute("Ciao");
         print(aggrMonitor2);
@@ -467,24 +463,24 @@ public class MBeansMonitoringTest {
         checkStatsByRule(aggrMonitor2,"ND2",3,0,3);
         
         KieContainer kc2 = ks.newKieContainer( "kc2", releaseId1 );
-        assertEquals(5, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(containerId)+",*"), null).size());
+        assertThat(mbserver.queryNames(new ObjectName("org.kie:kcontainerId=" + ObjectName.quote(containerId) + ",*"), null).size()).isEqualTo(5);
         kc.dispose();
-        assertEquals(0, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(containerId)+",*"), null).size());
-        assertEquals(1, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote("kc2")+",*"), null).size());
+        assertThat(mbserver.queryNames(new ObjectName("org.kie:kcontainerId=" + ObjectName.quote(containerId) + ",*"), null).size()).isEqualTo(0);
+        assertThat(mbserver.queryNames(new ObjectName("org.kie:kcontainerId=" + ObjectName.quote("kc2") + ",*"), null).size()).isEqualTo(1);
 
         kc2.dispose();
     }
     
     private void checkStatsByRule(GenericKieSessionMonitoringMXBean mb, String ruleName, long mCreated, long mCancelled, long mFired) {
-        assertEquals(mCreated     , mb.getStatsByRule().get(ruleName).getMatchesCreated()   );
-        assertEquals(mCancelled   , mb.getStatsByRule().get(ruleName).getMatchesCancelled() );
-        assertEquals(mFired       , mb.getStatsByRule().get(ruleName).getMatchesFired()     );
+        assertThat(mb.getStatsByRule().get(ruleName).getMatchesCreated()).isEqualTo(mCreated);
+        assertThat(mb.getStatsByRule().get(ruleName).getMatchesCancelled()).isEqualTo(mCancelled);
+        assertThat(mb.getStatsByRule().get(ruleName).getMatchesFired()).isEqualTo(mFired);
     }
 
     private void checkStatsForRule(GenericKieSessionMonitoringMXBean mb, String ruleName, long mCreated, long mCancelled, long mFired) {
-        assertEquals(mCreated     , mb.getStatsForRule(ruleName).getMatchesCreated()   );
-        assertEquals(mCancelled   , mb.getStatsForRule(ruleName).getMatchesCancelled() );
-        assertEquals(mFired       , mb.getStatsForRule(ruleName).getMatchesFired()     );
+        assertThat(mb.getStatsForRule(ruleName).getMatchesCreated()).isEqualTo(mCreated);
+        assertThat(mb.getStatsForRule(ruleName).getMatchesCancelled()).isEqualTo(mCancelled);
+        assertThat(mb.getStatsForRule(ruleName).getMatchesFired()).isEqualTo(mFired);
     }
 
     private void print(GenericKieSessionMonitoringMXBean mb) {
@@ -502,27 +498,27 @@ public class MBeansMonitoringTest {
     }
     
     private long checkTotalFiringTimeGEQ(GenericKieSessionMonitoringMXBean mb, long amount) {
-        assertTrue(mb.getTotalFiringTime() >= amount);
+        assertThat(mb.getTotalFiringTime() >= amount).isTrue();
         return mb.getTotalFiringTime();
     }
     
     private void checkTotalSessions(GenericKieSessionMonitoringMXBean mb, int totalSessions) {
-        assertEquals(totalSessions, mb.getTotalSessions()         );
+        assertThat(mb.getTotalSessions()).isEqualTo(totalSessions);
     }
     
     private void checkTotalFactCount(KieSessionMonitoringMXBean mb, int factCount) {
-        assertEquals(factCount     , mb.getTotalFactCount()       );
+        assertThat(mb.getTotalFactCount()).isEqualTo(factCount);
     }
     
     private void checkRuleRuntimeTotals(StatelessKieSessionMonitoringMXBean mb, int inserted, int deleted) {
-        assertEquals(inserted     , mb.getTotalObjectsInserted()  );
-        assertEquals(deleted      , mb.getTotalObjectsDeleted()   );
+        assertThat(mb.getTotalObjectsInserted()).isEqualTo(inserted);
+        assertThat(mb.getTotalObjectsDeleted()).isEqualTo(deleted);
     }
     
     private void checkAgendaTotals(GenericKieSessionMonitoringMXBean mb, long mCreated, long mCancelled, long mFired) {
-        assertEquals(mCreated     , mb.getTotalMatchesCreated()   );
-        assertEquals(mCancelled   , mb.getTotalMatchesCancelled() );
-        assertEquals(mFired       , mb.getTotalMatchesFired()     );
+        assertThat(mb.getTotalMatchesCreated()).isEqualTo(mCreated);
+        assertThat(mb.getTotalMatchesCancelled()).isEqualTo(mCancelled);
+        assertThat(mb.getTotalMatchesFired()).isEqualTo(mFired);
     }
     
     /**
@@ -543,8 +539,8 @@ public class MBeansMonitoringTest {
             KieRepository kieRepository = ks.getRepository();
             ReleaseId releaseId = ks.newReleaseId( "org.test", "kie-project-simple", "1.0.0" );
             KieModule kieModule = kieRepository.getKieModule( releaseId );
-            assertNotNull( kieModule );
-            assertEquals( releaseId, kieModule.getReleaseId() );
+            assertThat(kieModule).isNotNull();
+            assertThat(kieModule.getReleaseId()).isEqualTo(releaseId);
             
             KieContainer kc = ks.newKieContainer("myID", releaseId);
             
@@ -552,9 +548,9 @@ public class MBeansMonitoringTest {
                     mbserver,
                     DroolsManagementAgent.createObjectNameBy("myID"),
                     KieContainerMonitorMXBean.class);
-            
-            assertTrue(c1Monitor.getConfiguredReleaseId().sameGAVof(releaseId));
-            assertTrue(c1Monitor.getResolvedReleaseId().sameGAVof(releaseId));
+
+            assertThat(c1Monitor.getConfiguredReleaseId().sameGAVof(releaseId)).isTrue();
+            assertThat(c1Monitor.getResolvedReleaseId().sameGAVof(releaseId)).isTrue();
 
             kc.dispose();
         } finally {

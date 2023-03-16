@@ -32,7 +32,6 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -40,14 +39,9 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
-import org.kie.api.runtime.rule.FactHandle;
 
-import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarWithRealTimeTest {
@@ -100,11 +94,11 @@ public class TimerAndCalendarWithRealTimeTest {
 
         ksession.fireAllRules();
         // now check for update
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         awaitUntilRulesThatFiredAre(1);
         // now check for update
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test(timeout = 10000)
@@ -137,12 +131,12 @@ public class TimerAndCalendarWithRealTimeTest {
         ksession.fireAllRules();
 
         // now check for update
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         awaitUntilRulesThatFiredAre(1);
 
         // now check for update
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test(timeout = 10000)
@@ -180,12 +174,12 @@ public class TimerAndCalendarWithRealTimeTest {
         ksession.fireAllRules();
 
         // now check for update
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         awaitUntilRulesThatFiredAre(1);
 
         // now check for update
-        assertEquals(2, list.size());
+        assertThat(list.size()).isEqualTo(2);
     }
 
     @Test(timeout = 10000)
@@ -200,7 +194,7 @@ public class TimerAndCalendarWithRealTimeTest {
 
         awaitUntilRulesThatFiredAre(2);
         // now check that rule "wrap A" fired once, creating one B
-        assertEquals(2, ksession.getFactCount());
+        assertThat(ksession.getFactCount()).isEqualTo(2);
     }
 
     @Test(timeout = 10000)
@@ -227,7 +221,7 @@ public class TimerAndCalendarWithRealTimeTest {
         await().until(agendaIsNotEmpty());
         ksession.fireAllRules();
 
-        await().until(list::size, greaterThanOrEqualTo(1));
+        await().until(() -> list.size() >= 1);
 
         kbase.removeRule("org.drools.compiler.test", "TimerRule");
         ksession.fireAllRules();
@@ -268,11 +262,11 @@ public class TimerAndCalendarWithRealTimeTest {
 
         long start = System.currentTimeMillis();
 
-        await().until(list::size, equalTo(1));
+        await().until(() -> list.size()  == 1);
 
         long end = System.currentTimeMillis();
 
-        assertTrue(end - start >= 1000);
+        assertThat(end - start >= 1000).isTrue();
     }
 
     private void awaitUntilRulesThatFiredAre(int rulesToFire) throws InterruptedException {

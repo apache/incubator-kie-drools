@@ -37,7 +37,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class TemporalOperatorTest {
@@ -101,7 +101,7 @@ public class TemporalOperatorTest {
             ksession.insert( t2 );
             ksession.fireAllRules();
 
-            assertEquals(t2.getName(), list.get(0));
+            assertThat(list.get(0)).isEqualTo(t2.getName());
         } finally {
             ksession.dispose();
         }
@@ -147,7 +147,7 @@ public class TemporalOperatorTest {
             TimestampedObject t1 = new TimestampedObject( "t1", LocalDateTime.now() );
 
             ksession.insert( t1 );
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -256,7 +256,7 @@ public class TemporalOperatorTest {
             ksession.insert( t1 );
             ksession.fireAllRules();
 
-            assertEquals(t1.getName(), list.get(0));
+            assertThat(list.get(0)).isEqualTo(t1.getName());
         } finally {
             ksession.dispose();
         }

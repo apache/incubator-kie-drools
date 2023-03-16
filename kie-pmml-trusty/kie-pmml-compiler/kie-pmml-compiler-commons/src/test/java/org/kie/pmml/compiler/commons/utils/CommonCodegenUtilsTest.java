@@ -55,6 +55,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.assertj.core.data.Offset;
 import org.junit.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -62,12 +63,8 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseBlock;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.LAMBDA_PARAMETER_NAME;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME;
@@ -82,12 +79,12 @@ public class CommonCodegenUtilsTest {
                 .map(index -> getMethodDeclaration("METHOD_" + index))
                 .collect(Collectors.toList());
         final ClassOrInterfaceDeclaration toPopulate = new ClassOrInterfaceDeclaration();
-        assertTrue(toPopulate.getMembers().isEmpty());
+        assertThat(toPopulate.getMembers()).isEmpty();
         CommonCodegenUtils.populateMethodDeclarations(toPopulate, toAdd);
         final NodeList<BodyDeclaration<?>> retrieved = toPopulate.getMembers();
-        assertEquals(toAdd.size(), retrieved.size());
-        assertTrue(toAdd.stream().anyMatch(methodDeclaration -> retrieved.stream()
-                .anyMatch(bodyDeclaration -> bodyDeclaration.equals(methodDeclaration))));
+        assertThat(retrieved).hasSameSizeAs(toAdd);
+        assertThat(toAdd.stream().anyMatch(methodDeclaration -> retrieved.stream()
+                .anyMatch(bodyDeclaration -> bodyDeclaration.equals(methodDeclaration)))).isTrue();
     }
 
     @Test
@@ -95,7 +92,7 @@ public class CommonCodegenUtilsTest {
         String kiePMMLNameValueListParam = "KIEPMMLNAMEVALUELISTPARAM";
         String fieldNameToRef = "FIELDNAMETOREF";
         ExpressionStmt retrieved = CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef, true);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String expected = String.format("%1$s<%2$s> %3$s = %4$s.stream().filter((%2$s %5$s) -> %6$s.equals(\"%7$s\", %5$s.getName())).findFirst();",
                                         Optional.class.getName(),
                                         KiePMMLNameValue.class.getName(),
@@ -105,7 +102,7 @@ public class CommonCodegenUtilsTest {
                                         Objects.class.getName(),
                                         fieldNameToRef);
         String retrievedString = retrieved.toString();
-        assertEquals(expected, retrievedString);
+        assertThat(retrievedString).isEqualTo(expected);
         BlockStmt body = new BlockStmt();
         body.addStatement(retrieved);
         Parameter listParameter = new Parameter(CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
@@ -113,7 +110,7 @@ public class CommonCodegenUtilsTest {
         commonValidateCompilation(body, Arrays.asList(listParameter, fieldRefParameter));
         //
         retrieved = CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef, false);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         expected = String.format("%1$s<%2$s> %3$s = %4$s.stream().filter((%2$s %5$s) -> %6$s.equals(%7$s, %5$s.getName())).findFirst();",
                                         Optional.class.getName(),
                                         KiePMMLNameValue.class.getName(),
@@ -123,7 +120,7 @@ public class CommonCodegenUtilsTest {
                                         Objects.class.getName(),
                                         fieldNameToRef);
         retrievedString = retrieved.toString();
-        assertEquals(expected, retrievedString);
+        assertThat(retrievedString).isEqualTo(expected);
         body = new BlockStmt();
         body.addStatement(retrieved);
         listParameter = new Parameter(CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
@@ -138,23 +135,23 @@ public class CommonCodegenUtilsTest {
         String mapName = "MAP_NAME";
         CommonCodegenUtils.addMapPopulation(toAdd, body, mapName);
         NodeList<Statement> statements = body.getStatements();
-        assertEquals(toAdd.size(), statements.size());
+        assertThat(statements).hasSize(toAdd.size());
         for (Statement statement : statements) {
-            assertTrue(statement instanceof ExpressionStmt);
+            assertThat(statement).isInstanceOf(ExpressionStmt.class);
             ExpressionStmt expressionStmt = (ExpressionStmt) statement;
             com.github.javaparser.ast.expr.Expression expression = expressionStmt.getExpression();
-            assertTrue(expression instanceof MethodCallExpr);
+            assertThat(expression).isInstanceOf(MethodCallExpr.class);
             MethodCallExpr methodCallExpr = (MethodCallExpr) expression;
             final NodeList<com.github.javaparser.ast.expr.Expression> arguments = methodCallExpr.getArguments();
-            assertEquals(2, arguments.size());
-            assertTrue(arguments.get(0) instanceof StringLiteralExpr);
-            assertTrue(arguments.get(1) instanceof MethodReferenceExpr);
+            assertThat(arguments).hasSize(2);
+            assertThat(arguments.get(0)).isInstanceOf(StringLiteralExpr.class);
+            assertThat(arguments.get(1)).isInstanceOf(MethodReferenceExpr.class);
             MethodReferenceExpr methodReferenceExpr = (MethodReferenceExpr) arguments.get(1);
-            assertTrue(methodReferenceExpr.getScope() instanceof ThisExpr);
+            assertThat(methodReferenceExpr.getScope()).isInstanceOf(ThisExpr.class);
             final com.github.javaparser.ast.expr.Expression scope = methodCallExpr.getScope().orElse(null);
-            assertNotNull(scope);
-            assertTrue(scope instanceof NameExpr);
-            assertEquals(mapName, ((NameExpr) scope).getNameAsString());
+            assertThat(scope).isNotNull();
+            assertThat(scope).isInstanceOf(NameExpr.class);
+            assertThat(((NameExpr) scope).getNameAsString()).isEqualTo(mapName);
         }
         for (Map.Entry<String, MethodDeclaration> entry : toAdd.entrySet()) {
             int matchingDeclarations = (int) statements.stream().filter(statement -> {
@@ -168,7 +165,7 @@ public class CommonCodegenUtilsTest {
                 MethodReferenceExpr methodReferenceExpr = (MethodReferenceExpr) arguments.get(1);
                 return entry.getValue().getName().asString().equals(methodReferenceExpr.getIdentifier());
             }).count();
-            assertEquals(1, matchingDeclarations);
+            assertThat(matchingDeclarations).isEqualTo(1);
         }
     }
 
@@ -186,30 +183,29 @@ public class CommonCodegenUtilsTest {
         CommonCodegenUtils.addMapPopulationExpressions(inputMap, inputBody, inputMapName);
 
         NodeList<Statement> statements = inputBody.getStatements();
-        assertEquals(inputMap.size(), statements.size());
+        assertThat(statements).hasSize(inputMap.size());
 
         List<MethodCallExpr> methodCallExprs = new ArrayList<>(statements.size());
 
         for (Statement statement : statements) {
-            assertTrue(statement instanceof ExpressionStmt);
+            assertThat(statement).isInstanceOf(ExpressionStmt.class);
             Expression expression = ((ExpressionStmt) statement).getExpression();
-            assertTrue(expression instanceof  MethodCallExpr);
+            assertThat(expression).isInstanceOf(MethodCallExpr.class);
             MethodCallExpr methodCallExpr = (MethodCallExpr) expression;
-            assertEquals(inputMapName, methodCallExpr.getScope().map(Node::toString).orElse(null));
-            assertEquals("put", methodCallExpr.getName().asString());
-            assertSame(2, methodCallExpr.getArguments().size());
-            assertTrue(methodCallExpr.getArgument(0) instanceof StringLiteralExpr);
+            assertThat(methodCallExpr.getScope().map(Node::toString).orElse(null)).isEqualTo(inputMapName);
+            assertThat(methodCallExpr.getName().asString()).isEqualTo("put");
+            assertThat(methodCallExpr.getArguments()).hasSize(2);
+            assertThat(methodCallExpr.getArgument(0)).isInstanceOf(StringLiteralExpr.class);
             methodCallExprs.add(methodCallExpr);
         }
 
         for (Map.Entry<String, Expression> inputEntry : inputMap.entrySet()) {
-            assertEquals("Expected one and only one statement for key \"" + inputEntry.getKey() + "\"", 1,
+            assertThat(
                     methodCallExprs.stream().filter(methodCallExpr -> {
                         StringLiteralExpr arg0 = (StringLiteralExpr) methodCallExpr.getArgument(0);
                         return arg0.asString().equals(inputEntry.getKey())
                                 && methodCallExpr.getArgument(1).equals(inputEntry.getValue());
-                    }).count()
-            );
+                    })).as("Expected one and only one statement for key \"" + inputEntry.getKey() + "\"").hasSize(1);
         }
     }
 
@@ -228,21 +224,21 @@ public class CommonCodegenUtilsTest {
         String listName = "LIST_NAME";
         CommonCodegenUtils.addListPopulationByObjectCreationExpr(toAdd, body, listName);
         NodeList<Statement> statements = body.getStatements();
-        assertEquals(toAdd.size(), statements.size());
+        assertThat(statements).hasSameSizeAs(toAdd);
         for (Statement statement : statements) {
-            assertTrue(statement instanceof ExpressionStmt);
+            assertThat(statement).isInstanceOf(ExpressionStmt.class);
             ExpressionStmt expressionStmt = (ExpressionStmt) statement;
-            assertTrue(expressionStmt.getExpression() instanceof MethodCallExpr);
+            assertThat(expressionStmt.getExpression()).isInstanceOf(MethodCallExpr.class);
             MethodCallExpr methodCallExpr = (MethodCallExpr) expressionStmt.getExpression();
-            assertEquals(listName, methodCallExpr.getScope().get().asNameExpr().getNameAsString());
+            assertThat(methodCallExpr.getScope().get().asNameExpr().getNameAsString()).isEqualTo(listName);
             NodeList<com.github.javaparser.ast.expr.Expression> arguments = methodCallExpr.getArguments();
-            assertEquals(1, arguments.size());
-            assertTrue(arguments.get(0) instanceof ObjectCreationExpr);
+            assertThat(arguments).hasSize(1);
+            assertThat(arguments.get(0)).isInstanceOf(ObjectCreationExpr.class);
             ObjectCreationExpr objectCreationExpr = (ObjectCreationExpr) arguments.get(0);
-            assertEquals(objectCreationExpr.getType().asString(), String.class.getSimpleName());
+            assertThat(String.class.getSimpleName()).isEqualTo(objectCreationExpr.getType().asString());
             arguments = objectCreationExpr.getArguments();
-            assertEquals(1, arguments.size());
-            assertTrue(arguments.get(0) instanceof StringLiteralExpr);
+            assertThat(arguments).hasSize(1);
+            assertThat(arguments.get(0)).isInstanceOf(StringLiteralExpr.class);
         }
         for (ObjectCreationExpr entry : toAdd) {
             int matchingDeclarations = (int) statements.stream().filter(statement -> {
@@ -252,17 +248,17 @@ public class CommonCodegenUtilsTest {
                 final NodeList<com.github.javaparser.ast.expr.Expression> arguments = methodCallExpr.getArguments();
                 return entry.equals(arguments.get(0).asObjectCreationExpr());
             }).count();
-            assertEquals(1, matchingDeclarations);
+            assertThat(matchingDeclarations).isEqualTo(1);
         }
     }
 
     @Test
     public void createArraysAsListExpression() {
         ExpressionStmt retrieved = CommonCodegenUtils.createArraysAsListExpression();
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String expected = "java.util.Arrays.asList();";
         String retrievedString = retrieved.toString();
-        assertEquals(expected, retrievedString);
+        assertThat(retrievedString).isEqualTo(expected);
     }
 
     @Test
@@ -271,24 +267,24 @@ public class CommonCodegenUtilsTest {
                 .mapToObj(i -> "Element" + i)
                 .collect(Collectors.toList());
         ExpressionStmt retrieved = CommonCodegenUtils.createArraysAsListFromList(strings);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String arguments = strings.stream()
                 .map(string -> "\"" + string + "\"")
                 .collect(Collectors.joining(", "));
         String expected = String.format("java.util.Arrays.asList(%s);", arguments);
         String retrievedString = retrieved.toString();
-        assertEquals(expected, retrievedString);
+        assertThat(retrievedString).isEqualTo(expected);
         List<Double> doubles = IntStream.range(0, 3)
                 .mapToObj(i ->  i * 0.17)
                 .collect(Collectors.toList());
         retrieved = CommonCodegenUtils.createArraysAsListFromList(doubles);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         arguments = doubles.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
         expected = String.format("java.util.Arrays.asList(%s);", arguments);
         retrievedString = retrieved.toString();
-        assertEquals(expected, retrievedString);
+        assertThat(retrievedString).isEqualTo(expected);
     }
 
     @Test
@@ -315,7 +311,7 @@ public class CommonCodegenUtilsTest {
         String returnedVariable = "RETURNED_VARIABLE";
         ReturnStmt retrieved = CommonCodegenUtils.getReturnStmt(returnedVariable);
         String expected = String.format("return %s;", returnedVariable);
-        assertEquals(expected, retrieved.toString());
+        assertThat(retrieved.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -323,9 +319,9 @@ public class CommonCodegenUtilsTest {
         String className = "CLASS_NAME";
         List<String> typesName = Arrays.asList("TypeA", "TypeB");
         ClassOrInterfaceType retrieved = CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(className, typesName);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String expected = String.format("%1$s<%2$s,%3$s>", className, typesName.get(0), typesName.get(1));
-        assertEquals(expected, retrieved.asString());
+        assertThat(retrieved.asString()).isEqualTo(expected);
     }
 
     @Test
@@ -336,7 +332,7 @@ public class CommonCodegenUtilsTest {
         body.addStatement(assignExpr);
         final Expression value = new DoubleLiteralExpr(24.22);
         CommonCodegenUtils.setAssignExpressionValue(body, "MATCH", value);
-        assertEquals(value, assignExpr.getValue());
+        assertThat(assignExpr.getValue()).isEqualTo(value);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -358,34 +354,34 @@ public class CommonCodegenUtilsTest {
     public void getAssignExpression() {
         BlockStmt body = new BlockStmt();
         Optional<AssignExpr> retrieved = CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
-        assertNotNull(retrieved);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isNotPresent();
         AssignExpr assignExpr = new AssignExpr();
         assignExpr.setTarget(new NameExpr("MATCH"));
         body.addStatement(assignExpr);
         retrieved = CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
-        assertNotNull(retrieved);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isNotPresent();
         retrieved = CommonCodegenUtils.getAssignExpression(body, "MATCH");
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isPresent();
         AssignExpr retrievedAssignExpr = retrieved.get();
-        assertEquals(assignExpr, retrievedAssignExpr);
+        assertThat(retrievedAssignExpr).isEqualTo(assignExpr);
     }
 
     @Test
     public void getExplicitConstructorInvocationStmt() {
         BlockStmt body = new BlockStmt();
         Optional<ExplicitConstructorInvocationStmt> retrieved = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
-        assertNotNull(retrieved);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isNotPresent();
         ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
         body.addStatement(explicitConstructorInvocationStmt);
         retrieved = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isPresent();
         ExplicitConstructorInvocationStmt retrievedExplicitConstructorInvocationStmt = retrieved.get();
-        assertEquals(explicitConstructorInvocationStmt, retrievedExplicitConstructorInvocationStmt);
+        assertThat(retrievedExplicitConstructorInvocationStmt).isEqualTo(explicitConstructorInvocationStmt);
     }
 
     @Test
@@ -394,10 +390,10 @@ public class CommonCodegenUtilsTest {
         final String value = "VALUE";
         final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
         explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER"), new NameExpr(parameterName)));
-        assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isPresent();
         CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(explicitConstructorInvocationStmt, parameterName, value);
-        assertFalse(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
-        assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, value).isPresent());
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isNotPresent();
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, value)).isPresent();
     }
 
     @Test(expected = KiePMMLException.class)
@@ -412,22 +408,22 @@ public class CommonCodegenUtilsTest {
     public void getExplicitConstructorInvocationParameter() {
         final String parameterName = "PARAMETER_NAME";
         final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
-        assertFalse(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isNotPresent();
         explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER")));
-        assertFalse(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isNotPresent();
         explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER"), new NameExpr(parameterName)));
-        assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isPresent();
     }
 
     @Test
     public void getMethodDeclaration() {
         final String methodName = "METHOD_NAME";
         final ClassOrInterfaceDeclaration classOrInterfaceDeclaration = new ClassOrInterfaceDeclaration();
-        assertFalse(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
+        assertThat(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName)).isNotPresent();
         classOrInterfaceDeclaration.addMethod("NOT_METHOD");
-        assertFalse(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
+        assertThat(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName)).isNotPresent();
         classOrInterfaceDeclaration.addMethod(methodName);
-        assertTrue(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
+        assertThat(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName)).isPresent();
     }
 
     @Test
@@ -438,75 +434,75 @@ public class CommonCodegenUtilsTest {
         methodTemplate.setBody(body);
         final String methodName = "METHOD_NAME";
         final ClassOrInterfaceDeclaration classOrInterfaceDeclaration = new ClassOrInterfaceDeclaration();
-        assertTrue(classOrInterfaceDeclaration.getMethodsByName(methodName).isEmpty());
+        assertThat(classOrInterfaceDeclaration.getMethodsByName(methodName)).isEmpty();
         CommonCodegenUtils.addMethod(methodTemplate, classOrInterfaceDeclaration, methodName);
-        assertEquals(1, classOrInterfaceDeclaration.getMethodsByName(methodName).size());
-        assertEquals(body, classOrInterfaceDeclaration.getMethodsByName(methodName).get(0).getBody().get());
+        assertThat(classOrInterfaceDeclaration.getMethodsByName(methodName)).hasSize(1);
+        assertThat(classOrInterfaceDeclaration.getMethodsByName(methodName).get(0).getBody().get()).isEqualTo(body);
     }
 
     @Test
     public void getVariableDeclarator() {
         final String variableName = "variableName";
         final BlockStmt body = new BlockStmt();
-        assertFalse(CommonCodegenUtils.getVariableDeclarator(body, variableName).isPresent());
+        assertThat(CommonCodegenUtils.getVariableDeclarator(body, variableName)).isNotPresent();
         final VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(parseClassOrInterfaceType("String"), variableName);
         body.addStatement(variableDeclarationExpr);
         Optional<VariableDeclarator> retrieved =  CommonCodegenUtils.getVariableDeclarator(body, variableName);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved).isPresent();
         VariableDeclarator variableDeclarator = retrieved.get();
-        assertEquals(variableName, variableDeclarator.getName().asString());
+        assertThat(variableDeclarator.getName().asString()).isEqualTo(variableName);
     }
 
     @Test
     public void getExpressionForObject() {
         String string = "string";
         Expression retrieved = CommonCodegenUtils.getExpressionForObject(string);
-        assertTrue(retrieved instanceof  StringLiteralExpr);
-        assertEquals("\"string\"", retrieved.toString());
+        assertThat(retrieved).isInstanceOf(StringLiteralExpr.class);
+        assertThat(retrieved.toString()).isEqualTo("\"string\"");
         int i = 1;
         retrieved = CommonCodegenUtils.getExpressionForObject(i);
-        assertTrue(retrieved instanceof  IntegerLiteralExpr);
-        assertEquals(i, ((IntegerLiteralExpr)retrieved).asInt());
+        assertThat(retrieved).isInstanceOf(IntegerLiteralExpr.class);
+        assertThat(((IntegerLiteralExpr)retrieved).asInt()).isEqualTo(i);
         Integer j = 3;
         retrieved = CommonCodegenUtils.getExpressionForObject(j);
-        assertTrue(retrieved instanceof  IntegerLiteralExpr);
-        assertEquals(j.intValue(), ((IntegerLiteralExpr)retrieved).asInt());
+        assertThat(retrieved).isInstanceOf(IntegerLiteralExpr.class);
+        assertThat(((IntegerLiteralExpr)retrieved).asInt()).isEqualTo(j.intValue());
         double x = 1.12;
         retrieved = CommonCodegenUtils.getExpressionForObject(x);
-        assertTrue(retrieved instanceof  DoubleLiteralExpr);
-        assertEquals(x, ((DoubleLiteralExpr)retrieved).asDouble(), 0.001);
+        assertThat(retrieved).isInstanceOf(DoubleLiteralExpr.class);
+        assertThat(((DoubleLiteralExpr)retrieved).asDouble()).isCloseTo(x, Offset.offset(0.001));
         Double y = 3.12;
         retrieved = CommonCodegenUtils.getExpressionForObject(y);
-        assertTrue(retrieved instanceof  DoubleLiteralExpr);
-        assertEquals(y, ((DoubleLiteralExpr)retrieved).asDouble(), 0.001);
+        assertThat(retrieved).isInstanceOf(DoubleLiteralExpr.class);
+        assertThat(((DoubleLiteralExpr)retrieved).asDouble()).isCloseTo(y, Offset.offset(0.001));
         float k = 1.12f;
         retrieved = CommonCodegenUtils.getExpressionForObject(k);
-        assertTrue(retrieved instanceof  DoubleLiteralExpr);
-        assertEquals(1.12, ((DoubleLiteralExpr)retrieved).asDouble(), 0.001);
+        assertThat(retrieved).isInstanceOf(DoubleLiteralExpr.class);
+        assertThat(((DoubleLiteralExpr)retrieved).asDouble()).isCloseTo(1.12, Offset.offset(0.001));
         Float z = 3.12f;
         retrieved = CommonCodegenUtils.getExpressionForObject(z);
-        assertTrue(retrieved instanceof  DoubleLiteralExpr);
-        assertEquals(z.doubleValue(), ((DoubleLiteralExpr)retrieved).asDouble(), 0.001);
+        assertThat(retrieved).isInstanceOf(DoubleLiteralExpr.class);
+        assertThat(((DoubleLiteralExpr)retrieved).asDouble()).isCloseTo(z.doubleValue(), Offset.offset(0.001));
         boolean b = true;
         retrieved = CommonCodegenUtils.getExpressionForObject(b);
-        assertTrue(retrieved instanceof BooleanLiteralExpr);
-        assertEquals(b, ((BooleanLiteralExpr)retrieved).getValue());
+        assertThat(retrieved).isInstanceOf(BooleanLiteralExpr.class);
+        assertThat(((BooleanLiteralExpr)retrieved).getValue()).isEqualTo(b);
         Boolean c = false;
         retrieved = CommonCodegenUtils.getExpressionForObject(c);
-        assertTrue(retrieved instanceof BooleanLiteralExpr);
-        assertEquals(c, ((BooleanLiteralExpr)retrieved).getValue());
+        assertThat(retrieved).isInstanceOf(BooleanLiteralExpr.class);
+        assertThat(((BooleanLiteralExpr)retrieved).getValue()).isEqualTo(c);
     }
 
     @Test
     public void getNameExprsFromBlock() {
         BlockStmt toRead = new BlockStmt();
         List<NameExpr> retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isEmpty());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEmpty();
         toRead = getBlockStmt();
         retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
-        assertNotNull(retrieved);
-        assertEquals(2, retrieved.size());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).hasSize(2);
     }
 
     @Test
@@ -531,27 +527,27 @@ public class CommonCodegenUtilsTest {
         inputMap.put(DATA_TYPE.DATE_TIME_SECONDS_SINCE_1980, "90");
 
         for (Map.Entry<DATA_TYPE, String> input : inputMap.entrySet()) {
-            assertTrue(literalExprFrom(input.getKey(), null) instanceof NullLiteralExpr);
+            assertThat(literalExprFrom(input.getKey(), null)).isInstanceOf(NullLiteralExpr.class);
 
             Expression output = literalExprFrom(input.getKey(), input.getValue());
             switch (input.getKey()) {
                 case STRING:
-                    assertTrue(output instanceof StringLiteralExpr);
+                    assertThat(output).isInstanceOf(StringLiteralExpr.class);
                     break;
                 case INTEGER:
-                    assertTrue(output instanceof IntegerLiteralExpr);
+                    assertThat(output).isInstanceOf(IntegerLiteralExpr.class);
                     break;
                 case DOUBLE:
                 case FLOAT:
-                    assertTrue(output instanceof DoubleLiteralExpr);
+                    assertThat(output).isInstanceOf(DoubleLiteralExpr.class);
                     break;
                 case BOOLEAN:
-                    assertTrue(output instanceof BooleanLiteralExpr);
+                    assertThat(output).isInstanceOf(BooleanLiteralExpr.class);
                     break;
                 case DATE:
                 case TIME:
                 case DATE_TIME:
-                    assertTrue(output instanceof MethodCallExpr);
+                    assertThat(output).isInstanceOf(MethodCallExpr.class);
                     break;
                 case DATE_DAYS_SINCE_0:
                 case DATE_DAYS_SINCE_1960:
@@ -562,25 +558,25 @@ public class CommonCodegenUtilsTest {
                 case DATE_TIME_SECONDS_SINCE_1960:
                 case DATE_TIME_SECONDS_SINCE_1970:
                 case DATE_TIME_SECONDS_SINCE_1980:
-                    assertTrue(output instanceof LongLiteralExpr);
+                    assertThat(output).isInstanceOf(LongLiteralExpr.class);
             }
         }
 
-        assertThrows(IllegalArgumentException.class, () -> literalExprFrom(null, null));
-        assertThrows(IllegalArgumentException.class, () -> literalExprFrom(null, "test"));
+        assertThatIllegalArgumentException().isThrownBy(() -> literalExprFrom(null, null));
+        assertThatIllegalArgumentException().isThrownBy(() -> literalExprFrom(null, "test"));
     }
 
     @Test
     public void replaceNodesInBlock() {
         final BlockStmt toRead = getBlockStmt();
         final List<NameExpr> retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
-        assertEquals(2, retrieved.size());
+        assertThat(retrieved).hasSize(2);
         final List<NullLiteralExpr> nullExprs =  toRead.stream()
                 .filter(node -> node instanceof NullLiteralExpr)
                 .map(NullLiteralExpr.class::cast)
                 .collect(Collectors.toList());
-        assertNotNull(nullExprs);
-        assertTrue(nullExprs.isEmpty());
+        assertThat(nullExprs).isNotNull();
+        assertThat(nullExprs).isEmpty();
 
         final List<CommonCodegenUtils.ReplacementTupla> replacementTuplas =
                 retrieved.stream()
@@ -592,15 +588,15 @@ public class CommonCodegenUtilsTest {
                 .collect(Collectors.toList());
         CommonCodegenUtils.replaceNodesInStatement(toRead, replacementTuplas);
         final List<NameExpr> newRetrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
-        assertTrue(newRetrieved.isEmpty());
+        assertThat(newRetrieved).isEmpty();
 
         final List<NullLiteralExpr> retrievedNullExprs =  toRead.stream()
                 .filter(node -> node instanceof NullLiteralExpr)
                 .map(NullLiteralExpr.class::cast)
                 .collect(Collectors.toList());
-        assertNotNull(nullExprs);
-        assertEquals(nullExprs.size(), retrievedNullExprs.size());
-        nullExprs.forEach(nullExpr -> assertTrue(retrievedNullExprs.contains(nullExpr)));
+        assertThat(nullExprs).isNotNull();
+        assertThat(retrievedNullExprs).hasSameSizeAs(nullExprs);
+        nullExprs.forEach(nullExpr -> assertThat(retrievedNullExprs).contains(nullExpr));
     }
 
     private BlockStmt getBlockStmt() {
@@ -619,17 +615,17 @@ public class CommonCodegenUtilsTest {
     }
 
     private void commonValidateMethodDeclaration(MethodDeclaration toValidate, String methodName) {
-        assertNotNull(toValidate);
-        assertEquals(methodName, toValidate.getName().asString());
+        assertThat(toValidate).isNotNull();
+        assertThat(toValidate.getName().asString()).isEqualTo(methodName);
     }
 
     private void commonValidateMethodDeclarationParams(MethodDeclaration toValidate, Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
         final NodeList<Parameter> retrieved = toValidate.getParameters();
-        assertNotNull(retrieved);
-        assertEquals(parameterNameTypeMap.size(), retrieved.size());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).hasSize(parameterNameTypeMap.size());
         for (Parameter parameter : retrieved) {
-            assertTrue(parameterNameTypeMap.containsKey(parameter.getNameAsString()));
-            assertEquals(parameterNameTypeMap.get(parameter.getNameAsString()), parameter.getType());
+            assertThat(parameterNameTypeMap).containsKey(parameter.getNameAsString());
+            assertThat(parameter.getType()).isEqualTo(parameterNameTypeMap.get(parameter.getNameAsString()));
         }
     }
 

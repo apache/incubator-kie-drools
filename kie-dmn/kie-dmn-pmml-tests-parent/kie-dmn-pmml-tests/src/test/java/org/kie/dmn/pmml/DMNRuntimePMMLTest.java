@@ -53,14 +53,8 @@ import org.kie.internal.services.KieAssemblersImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 public abstract class DMNRuntimePMMLTest {
 
@@ -100,34 +94,34 @@ public abstract class DMNRuntimePMMLTest {
 
     static void runDMNModelInvokingPMML(final DMNRuntime runtime) {
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f", "KiePMMLScoreCard");
-        assertThat( dmnModel, notNullValue() );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext emptyContext = DMNFactory.newContext();
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("my decision"), is(new BigDecimal("41.345")));
+        assertThat(result.get("my decision")).isEqualTo(new BigDecimal("41.345"));
         
         // additional import info.
         Map<String, DMNImportPMMLInfo> pmmlImportInfo = ((DMNModelImpl) dmnModel).getPmmlImportInfo();
-        assertThat(pmmlImportInfo.keySet(), hasSize(1));
+        assertThat(pmmlImportInfo.keySet()).hasSize(1);
         DMNImportPMMLInfo p0 = pmmlImportInfo.values().iterator().next();
-        assertThat(p0.getImportName(), is("iris"));
-        assertThat(p0.getModels(), hasSize(1));
+        assertThat(p0.getImportName()).isEqualTo("iris");
+        assertThat(p0.getModels()).hasSize(1);
         DMNPMMLModelInfo m0 = p0.getModels().iterator().next();
-        assertThat(m0.getName(), is("Sample Score"));
-        assertThat(m0.getInputFields(), hasEntry(is("age"), anything()));
-        assertThat(m0.getInputFields(), hasEntry(is("occupation"), anything()));
-        assertThat(m0.getInputFields(), hasEntry(is("residenceState"), anything()));
-        assertThat(m0.getInputFields(), hasEntry(is("validLicense"), anything()));
-        assertThat(m0.getInputFields(), not(hasEntry(is("overallScore"), anything())));
-        assertThat(m0.getInputFields(), not(hasEntry(is("calculatedScore"), anything())));
+        assertThat(m0.getName()).isEqualTo("Sample Score");
+        assertThat(m0.getInputFields()).containsKey("age");
+        assertThat(m0.getInputFields()).containsKey("occupation");
+        assertThat(m0.getInputFields()).containsKey("residenceState");
+        assertThat(m0.getInputFields()).containsKey("validLicense");
+        assertThat(m0.getInputFields()).doesNotContainKey("overallScore");
+        assertThat(m0.getInputFields()).doesNotContainKey("calculatedScore");
 
-        assertThat(m0.getOutputFields(), hasEntry(is("calculatedScore"), anything()));
+        assertThat(m0.getOutputFields()).containsKey("calculatedScore");
     }
 
     /**
@@ -144,12 +138,12 @@ public abstract class DMNRuntimePMMLTest {
 
         kfs.write("src/main/resources/org/acme/test_scorecard.pmml", ks.getResources().newClassPathResource("test_scorecard.pmml", DMNRuntimePMMLTest.class));
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
-        assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR)).hasSize(0);
 
         kfs.write("src/main/resources/org/acme/KiePMMLScoreCard.dmn", ks.getResources().newClassPathResource("KiePMMLScoreCard.dmn", DMNRuntimePMMLTest.class));
         IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/org/acme/KiePMMLScoreCard.dmn").build();
-        assertEquals(0, addResults.getAddedMessages().size());
-        assertEquals(0, addResults.getRemovedMessages().size());
+        assertThat(addResults.getAddedMessages()).hasSize(0);
+        assertThat(addResults.getRemovedMessages()).hasSize(0);
 
         KieRepository kr = ks.getRepository();
         KieContainer kieContainer = ks.newKieContainer(kr.getDefaultReleaseId());
@@ -165,8 +159,8 @@ public abstract class DMNRuntimePMMLTest {
                                                                                        DMNRuntimePMMLTest.class,
                                                                                        "test_regression_clax.pmml");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f", "KiePMMLRegressionClax");
-        assertThat( dmnModel, notNullValue() );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext dmnContext = DMNFactory.newContext();
         dmnContext.set("fld1", 1.0);
@@ -175,61 +169,61 @@ public abstract class DMNRuntimePMMLTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext resultContext = dmnResult.getContext();
         final Map<String, Object> result = (Map<String, Object>) resultContext.get("my decision");
-        assertEquals("catD", (String)result.get("RegOut"));
-        assertEquals(0.8279559384018024, ((BigDecimal)result.get("RegProb")).doubleValue(), COMPARISON_DELTA);
-        assertEquals(0.0022681396056233208, ((BigDecimal)result.get("RegProbA")).doubleValue(), COMPARISON_DELTA);
+        assertThat((String) result.get("RegOut")).isEqualTo("catD");
+        assertThat(((BigDecimal) result.get("RegProb")).doubleValue()).isCloseTo(0.8279559384018024, within(COMPARISON_DELTA));
+        assertThat(((BigDecimal) result.get("RegProbA")).doubleValue()).isCloseTo(0.0022681396056233208, within(COMPARISON_DELTA));
 
         DMNType dmnFEELNumber = ((DMNModelImpl) dmnModel).getTypeRegistry().resolveType(dmnModel.getDefinitions().getURIFEEL(), BuiltInType.NUMBER.getName());
         DMNType dmnFEELString = ((DMNModelImpl) dmnModel).getTypeRegistry().resolveType(dmnModel.getDefinitions().getURIFEEL(), BuiltInType.STRING.getName());
 
         // additional import info.
         Map<String, DMNImportPMMLInfo> pmmlImportInfo = ((DMNModelImpl) dmnModel).getPmmlImportInfo();
-        assertThat(pmmlImportInfo.keySet(), hasSize(1));
+        assertThat(pmmlImportInfo.keySet()).hasSize(1);
         DMNImportPMMLInfo p0 = pmmlImportInfo.values().iterator().next();
-        assertThat(p0.getImportName(), is("test_regression_clax"));
-        assertThat(p0.getModels(), hasSize(1));
+        assertThat(p0.getImportName()).isEqualTo("test_regression_clax");
+        assertThat(p0.getModels()).hasSize(1);
         DMNPMMLModelInfo m0 = p0.getModels().iterator().next();
-        assertThat(m0.getName(), is("LinReg"));
+        assertThat(m0.getName()).isEqualTo("LinReg");
 
         Map<String, DMNType> inputFields = m0.getInputFields();
         SimpleTypeImpl fld1 = (SimpleTypeImpl)inputFields.get("fld1");
-        assertEquals("test_regression_clax", fld1.getNamespace());
-        assertEquals(BuiltInType.NUMBER, fld1.getFeelType());
-        assertEquals(dmnFEELNumber, fld1.getBaseType());
+        assertThat(fld1.getNamespace()).isEqualTo("test_regression_clax");
+        assertThat(fld1.getFeelType()).isEqualTo(BuiltInType.NUMBER);
+        assertThat(fld1.getBaseType()).isEqualTo(dmnFEELNumber);
 
         SimpleTypeImpl fld2 = (SimpleTypeImpl)inputFields.get("fld2");
-        assertEquals("test_regression_clax", fld2.getNamespace());
-        assertEquals(BuiltInType.NUMBER, fld2.getFeelType());
-        assertEquals(dmnFEELNumber, fld2.getBaseType());
+        assertThat(fld2.getNamespace()).isEqualTo("test_regression_clax");
+        assertThat(fld2.getFeelType()).isEqualTo(BuiltInType.NUMBER);
+        assertThat(fld2.getBaseType()).isEqualTo(dmnFEELNumber);
 
         SimpleTypeImpl fld3 = (SimpleTypeImpl)inputFields.get("fld3");
-        assertEquals("test_regression_clax", fld3.getNamespace());
-        assertEquals(BuiltInType.STRING, fld3.getFeelType());
-        assertEquals(dmnFEELString, fld3.getBaseType());
+        assertThat(fld3.getNamespace()).isEqualTo("test_regression_clax");
+        assertThat(fld3.getFeelType()).isEqualTo(BuiltInType.STRING);
+        assertThat(fld3.getBaseType()).isEqualTo(dmnFEELString);
 
         Map<String, DMNType> outputFields = m0.getOutputFields();
         CompositeTypeImpl output = (CompositeTypeImpl)outputFields.get("LinReg");
-        assertEquals("test_regression_clax", output.getNamespace());
+        assertThat(output.getNamespace()).isEqualTo("test_regression_clax");
 
         Map<String, DMNType> fields = output.getFields();
         SimpleTypeImpl regOut = (SimpleTypeImpl)fields.get("RegOut");
 
-        assertEquals("test_regression_clax", regOut.getNamespace());
-        assertEquals(BuiltInType.STRING, regOut.getFeelType());
-        assertEquals(dmnFEELString, regOut.getBaseType());
+        assertThat(regOut.getNamespace()).isEqualTo("test_regression_clax");
+        assertThat(regOut.getFeelType()).isEqualTo(BuiltInType.STRING);
+        assertThat(regOut.getBaseType()).isEqualTo(dmnFEELString);
 
         SimpleTypeImpl regProb = (SimpleTypeImpl)fields.get("RegProb");
-        assertEquals("test_regression_clax", regProb.getNamespace());
-        assertEquals(BuiltInType.NUMBER, regProb.getFeelType());
-        assertEquals(dmnFEELNumber, regProb.getBaseType());
+        assertThat(regProb.getNamespace()).isEqualTo("test_regression_clax");
+        assertThat(regProb.getFeelType()).isEqualTo(BuiltInType.NUMBER);
+        assertThat(regProb.getBaseType()).isEqualTo(dmnFEELNumber);
 
         SimpleTypeImpl regProbA = (SimpleTypeImpl)fields.get("RegProbA");
-        assertEquals("test_regression_clax", regProbA.getNamespace());
-        assertEquals(BuiltInType.NUMBER, regProbA.getFeelType());
-        assertEquals(dmnFEELNumber, regProbA.getBaseType());
+        assertThat(regProbA.getNamespace()).isEqualTo("test_regression_clax");
+        assertThat(regProbA.getFeelType()).isEqualTo(BuiltInType.NUMBER);
+        assertThat(regProbA.getBaseType()).isEqualTo(dmnFEELNumber);
     }
 }

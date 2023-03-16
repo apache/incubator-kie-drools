@@ -23,7 +23,6 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.KieProject;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -40,9 +39,7 @@ import org.kie.dmn.core.util.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
@@ -67,8 +64,8 @@ public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
         final KieContainer kieContainer = ks.newKieContainer(v100);
         final KieSession kieSession = kieContainer.newKieSession();
         final DMNRuntime runtime = kieSession.getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
-        assertThat(runtime.getModels(), hasSize(2));
+        assertThat(runtime).isNotNull();
+        assertThat(runtime.getModels()).hasSize(2);
 
         checkApp(runtime);
 
@@ -77,8 +74,8 @@ public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
         final KieContainer kieContainer2 = new KieContainerImpl(kieProject, ks.getRepository(), v100);
         final KieSession kieSession2 = kieContainer2.newKieSession(); // exhibit the issue.
         final DMNRuntime runtime2 = kieSession2.getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime2);
-        assertThat(runtime2.getModels(), hasSize(2));
+        assertThat(runtime2).isNotNull();
+        assertThat(runtime2.getModels()).hasSize(2);
 
         checkApp(runtime2);
     }
@@ -91,10 +88,10 @@ public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("the shortest distance"), is(new BigDecimal("5")));
+        assertThat(result.get("the shortest distance")).isEqualTo(new BigDecimal("5"));
     }
     
     @Test
@@ -108,8 +105,8 @@ public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
 
         final KieContainer kieContainer = ks.newKieContainer(v100);
         final DMNRuntime runtime = KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
-        assertThat(runtime.getModels(), hasSize(1));
+        assertThat(runtime).isNotNull();
+        assertThat(runtime.getModels()).hasSize(1);
 
         check_nowGT1970(runtime);
 
@@ -117,8 +114,8 @@ public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
         final KieProject kieProject = new KieModuleKieProject((InternalKieModule) kieModule, null);
         final KieContainer kieContainer2 = new KieContainerImpl(kieProject, ks.getRepository(), v100);
         final DMNRuntime runtime2 = KieRuntimeFactory.of(kieContainer2.getKieBase()).get(DMNRuntime.class);
-        Assert.assertNotNull(runtime2);
-        assertThat(runtime2.getModels(), hasSize(1));
+        assertThat(runtime2).isNotNull();
+        assertThat(runtime2.getModels()).hasSize(1);
 
         check_nowGT1970(runtime2);
     }
@@ -129,9 +126,9 @@ public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decision-1"), is(true));
+        assertThat(result.get("Decision-1")).isEqualTo(Boolean.TRUE);
     }
 }

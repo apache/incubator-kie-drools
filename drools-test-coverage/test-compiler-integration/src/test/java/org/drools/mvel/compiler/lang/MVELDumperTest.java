@@ -28,8 +28,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MVELDumperTest {
 
@@ -52,8 +51,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -64,8 +62,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -76,8 +73,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -88,8 +84,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -100,8 +95,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -112,8 +106,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -124,8 +117,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -136,8 +128,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test @Ignore
@@ -148,8 +139,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -160,8 +150,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -174,15 +163,11 @@ public class MVELDumperTest {
         String result = dumper.dump( descr,
                                      ctx );
 
-        assertEquals( expected,
-                      result );
-        assertEquals( 1,
-                      ctx.getBindings().size() );
+        assertThat(result).isEqualTo(expected);
+        assertThat(ctx.getBindings().size()).isEqualTo(1);
         BindingDescr bind = ctx.getBindings().get( 0 );
-        assertEquals( "$x",
-                      bind.getVariable() );
-        assertEquals( "property",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$x");
+        assertThat(bind.getExpression()).isEqualTo("property");
     }
 
     @Test
@@ -195,25 +180,17 @@ public class MVELDumperTest {
         String result = dumper.dump( descr,
                                      ctx );
 
-        assertEquals( expected,
-                      result );
-        assertEquals( 3,
-                      ctx.getBindings().size() );
+        assertThat(result).isEqualTo(expected);
+        assertThat(ctx.getBindings().size()).isEqualTo(3);
         BindingDescr bind = ctx.getBindings().get( 0 );
-        assertEquals( "$a",
-                      bind.getVariable() );
-        assertEquals( "a",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$a");
+        assertThat(bind.getExpression()).isEqualTo("a");
         bind = ctx.getBindings().get( 1 );
-        assertEquals( "$b",
-                      bind.getVariable() );
-        assertEquals( "b[10].prop",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$b");
+        assertThat(bind.getExpression()).isEqualTo("b[10].prop");
         bind = ctx.getBindings().get( 2 );
-        assertEquals( "$x",
-                      bind.getVariable() );
-        assertEquals( "someMethod(10)",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$x");
+        assertThat(bind.getExpression()).isEqualTo("someMethod(10)");
     }
 
     @Test
@@ -224,8 +201,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -236,8 +212,7 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
 
-        assertEquals( expected,
-                      result );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -250,15 +225,11 @@ public class MVELDumperTest {
         String result = dumper.dump( descr,
                                      ctx );
 
-        assertEquals( expected,
-                      result );
-        assertEquals( 1,
-                      ctx.getBindings().size() );
+        assertThat(result).isEqualTo(expected);
+        assertThat(ctx.getBindings().size()).isEqualTo(1);
         BindingDescr bind = ctx.getBindings().get( 0 );
-        assertEquals( "$x",
-                      bind.getVariable() );
-        assertEquals( "age",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$x");
+        assertThat(bind.getExpression()).isEqualTo("age");
     }
 
     @Test
@@ -271,15 +242,11 @@ public class MVELDumperTest {
         String result = dumper.dump( descr,
                                      ctx );
 
-        assertEquals( expected,
-                      result );
-        assertEquals( 1,
-                      ctx.getBindings().size() );
+        assertThat(result).isEqualTo(expected);
+        assertThat(ctx.getBindings().size()).isEqualTo(1);
         BindingDescr bind = ctx.getBindings().get( 0 );
-        assertEquals( "$x",
-                      bind.getVariable() );
-        assertEquals( "age",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$x");
+        assertThat(bind.getExpression()).isEqualTo("age");
     }
 
     @Test
@@ -292,15 +259,11 @@ public class MVELDumperTest {
         String result = dumper.dump( descr,
                                      ctx );
 
-        assertEquals( expected,
-                      result );
-        assertEquals( 1,
-                      ctx.getBindings().size() );
+        assertThat(result).isEqualTo(expected);
+        assertThat(ctx.getBindings().size()).isEqualTo(1);
         BindingDescr bind = ctx.getBindings().get( 0 );
-        assertEquals( "$x",
-                      bind.getVariable() );
-        assertEquals( "age",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$x");
+        assertThat(bind.getExpression()).isEqualTo("age");
     }
 
     @Test
@@ -312,9 +275,9 @@ public class MVELDumperTest {
         ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr( );
         ccd.addDescr( atomicExpr );
         String[] instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null);
-        assertEquals( 2, ccd.getDescrs().size() );
-        assertEquals( expectedInstanceof, ccd.getDescrs().get( 0 ).toString() );
-        assertEquals(expectedcasted, atomicExpr.getRewrittenExpression());
+        assertThat(ccd.getDescrs().size()).isEqualTo(2);
+        assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedInstanceof);
+        assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedcasted);
 
         expr = "field1#Class1.field2#Class2.field3";
         String expectedInstanceof1 = "field1 instanceof Class1";
@@ -323,10 +286,10 @@ public class MVELDumperTest {
         atomicExpr = new AtomicExprDescr(expr);
         ccd = new ConstraintConnectiveDescr( );
         instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null);
-        assertEquals( expectedInstanceof1, ccd.getDescrs().get( 0 ).toString() );
-        assertEquals( expectedInstanceof2, ccd.getDescrs().get( 1 ).toString() );
-        assertEquals(expectedcasted, instanceofAndCastedExpr[1]);
-        assertEquals(expectedcasted, atomicExpr.getRewrittenExpression());
+        assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedInstanceof1);
+        assertThat(ccd.getDescrs().get(1).toString()).isEqualTo(expectedInstanceof2);
+        assertThat(instanceofAndCastedExpr[1]).isEqualTo(expectedcasted);
+        assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedcasted);
     }
 
     @Test
@@ -337,9 +300,9 @@ public class MVELDumperTest {
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
         ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr( );
         String[] nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
-        assertEquals( expectedNullCheck, ccd.getDescrs().get( 0 ).toString() );
-        assertEquals(expectedExpr, nullCheckAndExpr[1]);
-        assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
+        assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedNullCheck);
+        assertThat(nullCheckAndExpr[1]).isEqualTo(expectedExpr);
+        assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedExpr);
 
         expr = "field1!.field2!.field3";
         String expectedNullCheck1 = "field1 != null";
@@ -348,10 +311,10 @@ public class MVELDumperTest {
         atomicExpr = new AtomicExprDescr(expr);
         ccd = new ConstraintConnectiveDescr( );
         nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
-        assertEquals( expectedNullCheck1, ccd.getDescrs().get( 0 ).toString() );
-        assertEquals( expectedNullCheck2, ccd.getDescrs().get( 1 ).toString() );
-        assertEquals(expectedExpr, nullCheckAndExpr[1]);
-        assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
+        assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedNullCheck1);
+        assertThat(ccd.getDescrs().get(1).toString()).isEqualTo(expectedNullCheck2);
+        assertThat(nullCheckAndExpr[1]).isEqualTo(expectedExpr);
+        assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedExpr);
     }
 
     @Test
@@ -362,9 +325,9 @@ public class MVELDumperTest {
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
         ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr( );
         String[] constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
-        assertEquals( expectedConstraints, ccd.getDescrs().get( 0 ).toString() );
-        assertEquals(expectedExpr, constraintsAndExpr[1]);
-        assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
+        assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedConstraints);
+        assertThat(constraintsAndExpr[1]).isEqualTo(expectedExpr);
+        assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedExpr);
 
         expr = "field1!.field2#Class.field3";
         String expectedConstraints1 = "field1 != null";
@@ -373,10 +336,10 @@ public class MVELDumperTest {
         atomicExpr = new AtomicExprDescr(expr);
         ccd = new ConstraintConnectiveDescr( );
         constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
-        assertEquals( expectedConstraints1, ccd.getDescrs().get( 0 ).toString() );
-        assertEquals( expectedConstraints2, ccd.getDescrs().get( 1 ).toString() );
-        assertEquals(expectedExpr, constraintsAndExpr[1]);
-        assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
+        assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedConstraints1);
+        assertThat(ccd.getDescrs().get(1).toString()).isEqualTo(expectedConstraints2);
+        assertThat(constraintsAndExpr[1]).isEqualTo(expectedExpr);
+        assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedExpr);
 
         expr = "field1#Class.field2!.field3";
         expectedConstraints1 = "field1 instanceof Class";
@@ -385,17 +348,16 @@ public class MVELDumperTest {
         atomicExpr = new AtomicExprDescr(expr);
         ccd = new ConstraintConnectiveDescr( );
         constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
-        assertEquals( expectedConstraints1, ccd.getDescrs().get( 0 ).toString() );
-        assertEquals( expectedConstraints2, ccd.getDescrs().get( 1 ).toString() );
-        assertEquals(expectedExpr, constraintsAndExpr[1]);
-        assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
+        assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedConstraints1);
+        assertThat(ccd.getDescrs().get(1).toString()).isEqualTo(expectedConstraints2);
+        assertThat(constraintsAndExpr[1]).isEqualTo(expectedExpr);
+        assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedExpr);
     }
 
     public ConstraintConnectiveDescr parse( final String constraint ) {
         DrlExprParser parser = new DrlExprParser(LanguageLevelOption.DRL6);
         ConstraintConnectiveDescr result = parser.parse( constraint );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         return result;
     }

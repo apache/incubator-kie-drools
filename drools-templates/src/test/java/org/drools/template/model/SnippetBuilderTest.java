@@ -18,8 +18,7 @@ package org.drools.template.model;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SnippetBuilderTest {
 
@@ -29,10 +28,9 @@ public class SnippetBuilderTest {
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String cellValue = "$42";
         final String result = snip.build(cellValue);
-        assertNotNull(result);
+        assertThat(result).isNotNull();
 
-        assertEquals("something.param.getAnother().equals($42);",
-                     result);
+        assertThat(result).isEqualTo("something.param.getAnother().equals($42);");
     }
 
     @Test
@@ -42,8 +40,7 @@ public class SnippetBuilderTest {
         final String cellValue = "this is ignored...";
         final String result = snip.build(cellValue);
 
-        assertEquals(snippet,
-                     result);
+        assertThat(result).isEqualTo(snippet);
     }
 
     @Test
@@ -52,10 +49,9 @@ public class SnippetBuilderTest {
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String cellValue = "42";
         final String result = snip.build(cellValue);
-        assertNotNull(result);
+        assertThat(result).isNotNull();
 
-        assertEquals("something.param.getAnother(42).equals(42);",
-                     result);
+        assertThat(result).isEqualTo("something.param.getAnother(42).equals(42);");
 
     }
 
@@ -64,8 +60,7 @@ public class SnippetBuilderTest {
         final String snippet = "something.getAnother($1,$2).equals($2, '$2');";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x, y");
-        assertEquals("something.getAnother(x,y).equals(y, 'y');",
-                     result);
+        assertThat(result).isEqualTo("something.getAnother(x,y).equals(y, 'y');");
 
     }
 
@@ -74,8 +69,7 @@ public class SnippetBuilderTest {
         final String snippet = "something.getAnother($1).equals($1);";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x");
-        assertEquals("something.getAnother(x).equals(x);",
-                     result);
+        assertThat(result).isEqualTo("something.getAnother(x).equals(x);");
 
     }
 
@@ -84,8 +78,7 @@ public class SnippetBuilderTest {
         final String snippet = "$1 goo $2";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x, y");
-        assertEquals("x goo y",
-                     result);
+        assertThat(result).isEqualTo("x goo y");
 
     }
 
@@ -94,8 +87,7 @@ public class SnippetBuilderTest {
         final String snippet = "rulesOutputRouting.set( $1, $2, $3, $4, $5 );";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("\"80\",\"Department Manager\",toa.getPersonExpense().getEntityCode(\"Part Of\",\"Office\"),10004,30");
-        assertEquals("rulesOutputRouting.set( \"80\", \"Department Manager\", toa.getPersonExpense().getEntityCode(\"Part Of\",\"Office\"), 10004, 30 );",
-                     result);
+        assertThat(result).isEqualTo("rulesOutputRouting.set( \"80\", \"Department Manager\", toa.getPersonExpense().getEntityCode(\"Part Of\",\"Office\"), 10004, 30 );");
 
     }
 
@@ -104,7 +96,7 @@ public class SnippetBuilderTest {
         final String snippet = "forall(&&){something == $}";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x");
-        assertEquals("something == x", result);
+        assertThat(result).isEqualTo("something == x");
     }
 
     @Test
@@ -112,7 +104,7 @@ public class SnippetBuilderTest {
         final String snippet = "forall(&&){something == $}";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x, y");
-        assertEquals("something == x && something == y", result);
+        assertThat(result).isEqualTo("something == x && something == y");
     }
 
     @Test
@@ -120,7 +112,7 @@ public class SnippetBuilderTest {
         final String snippet = "forall(&&){something == $}";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("");
-        assertEquals("forall(&&){something == $}", result);
+        assertThat(result).isEqualTo("forall(&&){something == $}");
     }
 
     @Test
@@ -128,9 +120,7 @@ public class SnippetBuilderTest {
         final String snippet = "forall(&&){something == $ || something == $}";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x, y");
-        assertEquals(
-                "something == x || something == x && something == y || something == y",
-                result);
+        assertThat(result).isEqualTo("something == x || something == x && something == y || something == y");
     }
 
     @Test
@@ -138,7 +128,7 @@ public class SnippetBuilderTest {
         final String snippet = "forall(||){something == $}";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x");
-        assertEquals("something == x", result);
+        assertThat(result).isEqualTo("something == x");
     }
 
     @Test
@@ -146,9 +136,7 @@ public class SnippetBuilderTest {
         final String snippet = "forall(||){something == $} && forall(||){something < $}";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x, y");
-        assertEquals(
-                "something == x || something == y && something < x || something < y",
-                result);
+        assertThat(result).isEqualTo("something == x || something == y && something < x || something < y");
     }
 
     @Test
@@ -156,8 +144,6 @@ public class SnippetBuilderTest {
         final String snippet = "something == this && forall(||){something == $} && forall(&&){something < $}";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x, y");
-        assertEquals(
-                "something == this && something == x || something == y && something < x && something < y",
-                result);
+        assertThat(result).isEqualTo("something == this && something == x || something == y && something < x && something < y");
     }
 }

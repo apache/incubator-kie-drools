@@ -16,12 +16,12 @@
 
 package org.drools.verifier;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 
 import org.drools.verifier.components.SubPattern;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.junit.Test;
@@ -58,7 +58,6 @@ public class PatternSolverDRLTest extends TestBaseOld {
             }
         }
 
-        assertEquals( 3,
-                      patternCount );
+        assertThat(patternCount).isEqualTo(3);
     }
 }

@@ -32,10 +32,8 @@ import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class KnowledgePackageMetaDataTest {
@@ -94,44 +92,44 @@ public class KnowledgePackageMetaDataTest {
         KieBase kBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KiePackage pack = kBase.getKiePackage( "org.drools.mvel.compiler.test.definitions" );
 
-        assertNotNull( pack );
+        assertThat(pack).isNotNull();
 
         if (!kieBaseTestConfiguration.isExecutableModel()) {
             // With executable model functions becomes plain static methods and then now longer distinguishable from any other static method
-            assertEquals(2, pack.getFunctionNames().size());
-            assertTrue(pack.getFunctionNames().contains("fun1"));
-            assertTrue(pack.getFunctionNames().contains("fun2"));
+            assertThat(pack.getFunctionNames().size()).isEqualTo(2);
+            assertThat(pack.getFunctionNames().contains("fun1")).isTrue();
+            assertThat(pack.getFunctionNames().contains("fun2")).isTrue();
         }
 
-        assertEquals( 2, pack.getGlobalVariables().size() );
+        assertThat(pack.getGlobalVariables().size()).isEqualTo(2);
         GlobalImpl g1 = new GlobalImpl( "N", "java.lang.Integer" );
         GlobalImpl g2 = new GlobalImpl( "list", "java.util.List" );
-        assertTrue( pack.getGlobalVariables().contains( g1 ) );
-        assertTrue( pack.getGlobalVariables().contains( g2 ) );
+        assertThat(pack.getGlobalVariables().contains(g1)).isTrue();
+        assertThat(pack.getGlobalVariables().contains(g2)).isTrue();
 
-        assertEquals( 2, pack.getFactTypes().size() );
+        assertThat(pack.getFactTypes().size()).isEqualTo(2);
         FactType type;
         for ( int j = 0; j < 2; j++ ) {
             type = pack.getFactTypes().iterator().next();
             if ( type.getName().equals( "org.drools.mvel.compiler.test.definitions.Person" ) ) {
-                assertEquals( 2, type.getFields().size() );
+                assertThat(type.getFields().size()).isEqualTo(2);
             } else if (type.getName().equals( "org.drools.mvel.compiler.test.definitions.Foo" ) ) {
-                assertEquals( "org.drools.mvel.compiler.test.definitions.Person", type.getSuperClass() );
+                assertThat(type.getSuperClass()).isEqualTo("org.drools.mvel.compiler.test.definitions.Person");
 
                 FactField fld = type.getField( "bar" );
-                assertEquals( 2, fld.getIndex() );
-                assertEquals( String.class, fld.getType() );
+                assertThat(fld.getIndex()).isEqualTo(2);
+                assertThat(fld.getType()).isEqualTo(String.class);
             } else {
                 fail("Unexpected fact type " + type);
             }
         }
 
-        assertEquals( 2, pack.getQueries().size() );
+        assertThat(pack.getQueries().size()).isEqualTo(2);
         for ( Query q : pack.getQueries() ) {
-            assertTrue( q.getName().equals( "qry1" ) || q.getName().equals( "qry2" ) );
+            assertThat(q.getName().equals("qry1") || q.getName().equals("qry2")).isTrue();
         }
 
-        assertEquals( 4, pack.getRules().size() );
-        assertTrue( pack.getRules().containsAll( pack.getQueries() ) );
+        assertThat(pack.getRules().size()).isEqualTo(4);
+        assertThat(pack.getRules().containsAll(pack.getQueries())).isTrue();
     }
 }

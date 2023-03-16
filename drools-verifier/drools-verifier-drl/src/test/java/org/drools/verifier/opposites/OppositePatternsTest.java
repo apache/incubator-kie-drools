@@ -16,23 +16,27 @@
 
 package org.drools.verifier.opposites;
 
-import org.drools.core.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.TestBaseOld;
-import org.drools.verifier.VerifierComponentMockFactory;
-import org.drools.verifier.components.*;
-import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.Opposites;
-import org.junit.Test;
-import org.kie.api.runtime.KieSession;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.drools.core.base.RuleNameMatchesAgendaFilter;
+import org.drools.verifier.TestBaseOld;
+import org.drools.verifier.VerifierComponentMockFactory;
+import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.Restriction;
+import org.drools.verifier.components.SubPattern;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.report.components.Cause;
+import org.drools.verifier.report.components.Opposites;
+import org.junit.Test;
+import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class OppositePatternsTest extends OppositesBase {
 
@@ -124,11 +128,11 @@ public class OppositePatternsTest extends OppositesBase {
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.SUB_PATTERN,
                                                         (Iterator<Object>)session.getObjects().iterator());
 
-        assertTrue((TestBaseOld.causeMapContains(map,
-                                                 pp1,
-                                                 pp2) ^ TestBaseOld.causeMapContains(map,
-                                                                                     pp2,
-                                                                                     pp1)));
+        assertThat((TestBaseOld.causeMapContains(map,
+                pp1,
+                pp2) ^ TestBaseOld.causeMapContains(map,
+                pp2,
+                pp1))).isTrue();
 
         if (!map.isEmpty()) {
             fail("More opposites than was expected.");

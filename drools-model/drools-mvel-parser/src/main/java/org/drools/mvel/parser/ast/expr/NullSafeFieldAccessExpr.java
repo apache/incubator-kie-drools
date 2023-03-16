@@ -107,7 +107,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NullSafeFieldAccessExpr setName(final SimpleName name) {
-        assertNotNull(name);
+    	assertNotNull(name);
         if (name == this.name) {
             return (NullSafeFieldAccessExpr) this;
         }
@@ -158,7 +158,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
      */
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NullSafeFieldAccessExpr setScope(final Expression scope) {
-        assertNotNull(scope);
+    	assertNotNull(scope);
         if (scope == this.scope) {
             return (NullSafeFieldAccessExpr) this;
         }

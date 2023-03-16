@@ -22,7 +22,7 @@ import java.util.List;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DroolsContextTest extends BaseModelTest {
 
@@ -51,7 +51,7 @@ public class DroolsContextTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class DroolsContextTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -94,8 +94,8 @@ public class DroolsContextTest extends BaseModelTest {
         ksession.setGlobal("list", list);
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals("this kcontext shoudln't be replaced", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("this kcontext shoudln't be replaced");
     }
 
     @Test
@@ -117,8 +117,8 @@ public class DroolsContextTest extends BaseModelTest {
         ksession.insert(new FactWithRuleContext());
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals("R", list.iterator().next());
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.iterator().next()).isEqualTo("R");
     }
 
     public static class FactWithRuleContext {

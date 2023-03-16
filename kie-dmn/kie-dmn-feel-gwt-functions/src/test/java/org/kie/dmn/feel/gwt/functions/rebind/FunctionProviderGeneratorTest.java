@@ -25,8 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -72,7 +71,7 @@ public class FunctionProviderGeneratorTest {
         final String actualGenerate = generator.generate(logger, context, requestedClass);
 
         verify(fileCreator).write();
-        assertEquals(expectedGenerate, actualGenerate);
+        assertThat(actualGenerate).isEqualTo(expectedGenerate);
     }
 
     @Test
@@ -85,6 +84,6 @@ public class FunctionProviderGeneratorTest {
         final String actualGenerate = generator.generate(logger, context, requestedClass);
 
         verify(fileCreator, never()).write();
-        assertNull(actualGenerate);
+        assertThat(actualGenerate).isNull();
     }
 }

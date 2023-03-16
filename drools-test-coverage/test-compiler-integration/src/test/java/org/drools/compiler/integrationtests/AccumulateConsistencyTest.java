@@ -36,7 +36,7 @@ import org.kie.api.runtime.conf.AccumulateNullPropagationOption;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AccumulateConsistencyTest {
@@ -81,9 +81,9 @@ public class AccumulateConsistencyTest {
         try {
             kieSession.insert(new Person("Paul", 20));
             if (accumulateNullPropagation) {
-                assertEquals(1, kieSession.fireAllRules());
+                assertThat(kieSession.fireAllRules()).isEqualTo(1);
             } else {
-                assertEquals(0, kieSession.fireAllRules()); // don't propagate null
+                assertThat(kieSession.fireAllRules()).isEqualTo(0); // don't propagate null
             }
         } finally {
             kieSession.dispose();
@@ -111,9 +111,9 @@ public class AccumulateConsistencyTest {
         try {
             kieSession.insert(new Person("Paul", 20));
             if (accumulateNullPropagation) {
-                assertEquals(1, kieSession.fireAllRules());
+                assertThat(kieSession.fireAllRules()).isEqualTo(1);
             } else {
-                assertEquals(0, kieSession.fireAllRules()); // don't propagate null
+                assertThat(kieSession.fireAllRules()).isEqualTo(0); // don't propagate null
             }
         } finally {
             kieSession.dispose();
@@ -141,9 +141,9 @@ public class AccumulateConsistencyTest {
         try {
             kieSession.insert(new Person("Paul", 20));
             if (accumulateNullPropagation) {
-                assertEquals(1, kieSession.fireAllRules());
+                assertThat(kieSession.fireAllRules()).isEqualTo(1);
             } else {
-                assertEquals(0, kieSession.fireAllRules()); // don't propagate null
+                assertThat(kieSession.fireAllRules()).isEqualTo(0); // don't propagate null
             }
         } finally {
             kieSession.dispose();
@@ -170,7 +170,7 @@ public class AccumulateConsistencyTest {
 
         try {
             kieSession.insert(new Person("Paul", 20));
-            assertEquals(1, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(1);
         } finally {
             kieSession.dispose();
         }
@@ -196,7 +196,7 @@ public class AccumulateConsistencyTest {
 
         try {
             kieSession.insert(new Person("Paul", 20));
-            assertEquals(1, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(1);
         } finally {
             kieSession.dispose();
         }
@@ -223,7 +223,7 @@ public class AccumulateConsistencyTest {
 
         try {
             kieSession.insert(new Person("Paul", 20));
-            assertEquals(1, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(1);
         } finally {
             kieSession.dispose();
         }
@@ -258,9 +258,9 @@ public class AccumulateConsistencyTest {
             kieSession.insert(new Person(0, "John", 20));
             kieSession.insert(new Person(1, "John", 60));
 
-            assertEquals(1, kieSession.fireAllRules());
-            assertEquals(20, result.get("min").intValue());
-            assertEquals(60, result.get("max").intValue());
+            assertThat(kieSession.fireAllRules()).isEqualTo(1);
+            assertThat(result.get("min").intValue()).isEqualTo(20);
+            assertThat(result.get("max").intValue()).isEqualTo(60);
         } finally {
             kieSession.dispose();
         }
@@ -288,9 +288,9 @@ public class AccumulateConsistencyTest {
         try {
             kieSession.insert(new Person("Paul", 20));
             if (accumulateNullPropagation) {
-                assertEquals(1, kieSession.fireAllRules());
+                assertThat(kieSession.fireAllRules()).isEqualTo(1);
             } else {
-                assertEquals(0, kieSession.fireAllRules()); // don't propagate null
+                assertThat(kieSession.fireAllRules()).isEqualTo(0); // don't propagate null
             }
         } finally {
             kieSession.dispose();
@@ -321,7 +321,7 @@ public class AccumulateConsistencyTest {
         try {
             kieSession.insert(new Person("John", 20));
             kieSession.insert(new MyFact("A", 20));
-            assertEquals(1, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(1);
         } finally {
             kieSession.dispose();
         }
@@ -351,9 +351,9 @@ public class AccumulateConsistencyTest {
             kieSession.insert(new Person("Paul", 20));
             kieSession.insert(new MyFact("A", null));
             if (accumulateNullPropagation) {
-                assertEquals(1, kieSession.fireAllRules());
+                assertThat(kieSession.fireAllRules()).isEqualTo(1);
             } else {
-                assertEquals(0, kieSession.fireAllRules()); // don't propagate null
+                assertThat(kieSession.fireAllRules()).isEqualTo(0); // don't propagate null
             }
         } finally {
             kieSession.dispose();
@@ -384,7 +384,7 @@ public class AccumulateConsistencyTest {
             kieSession.insert(new Person(1, "John", 19));
             final QueryResults results = kieSession.getQueryResults("getResults", "John", Variable.v);
             List<Person> persons = (List<Person>)results.iterator().next().get("$persons");
-            assertEquals(2, persons.size());
+            assertThat(persons.size()).isEqualTo(2);
         } finally {
             kieSession.dispose();
         }

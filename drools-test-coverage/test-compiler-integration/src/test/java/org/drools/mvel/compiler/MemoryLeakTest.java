@@ -56,10 +56,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MemoryLeakTest {
@@ -114,12 +111,12 @@ public class MemoryLeakTest {
             }
         }
 
-        assertNotNull( joinNode );
+        assertThat(joinNode).isNotNull();
         InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
         BetaMemory memory = (BetaMemory) wm.getNodeMemory( joinNode );
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
-        assertNull( stagedRightTuples.getDeleteFirst() );
-        assertNull( stagedRightTuples.getInsertFirst() );
+        assertThat(stagedRightTuples.getDeleteFirst()).isNull();
+        assertThat(stagedRightTuples.getInsertFirst()).isNull();
     }
 
     @Test
@@ -153,12 +150,12 @@ public class MemoryLeakTest {
             }
         }
 
-        assertNotNull( liaNode );
+        assertThat(liaNode).isNotNull();
         InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
         LeftInputAdapterNode.LiaNodeMemory memory = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemory( liaNode );
         TupleSets<LeftTuple> stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
-        assertNull( stagedLeftTuples.getDeleteFirst() );
-        assertNull( stagedLeftTuples.getInsertFirst() );
+        assertThat(stagedLeftTuples.getDeleteFirst()).isNull();
+        assertThat(stagedLeftTuples.getInsertFirst()).isNull();
     }
 
     @Test
@@ -200,10 +197,10 @@ public class MemoryLeakTest {
                 LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
                 if ( segmentMemory.getRootNode() instanceof JoinNode ) {
                     BetaMemory bm = (BetaMemory) segmentMemory.getNodeMemories().getFirst();
-                    assertEquals( 0, bm.getLeftTupleMemory().size() );
+                    assertThat(bm.getLeftTupleMemory().size()).isEqualTo(0);
                 }
                 System.out.println( deleteFirst );
-                assertNull( deleteFirst );
+                assertThat(deleteFirst).isNull();
             }
         }
     }
@@ -243,7 +240,7 @@ public class MemoryLeakTest {
 
     private static void checkReachability( Object root, Predicate<Object> condition, boolean reachable ) {
         Collection<Object> results = checkObject(root, condition);
-        assertTrue( reachable ^ results.isEmpty() );
+        assertThat(reachable ^ results.isEmpty()).isTrue();
     }
 
     private static Collection<Object> checkObject(final Object object, final Predicate<Object> condition) {

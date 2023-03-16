@@ -34,9 +34,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.internal.command.CommandFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MoreBatchExecutionTest {
@@ -77,19 +75,19 @@ public class MoreBatchExecutionTest {
         commands.add(CommandFactory.newFireAllRules("fired"));
         Command<?> cmds = CommandFactory.newBatchExecution(commands);
         ExecutionResults result = (ExecutionResults) ksession.execute(cmds);
-        assertNotNull("Batch execution result is null!", result);
+        assertThat(result).as("Batch execution result is null!").isNotNull();
 
         Object firedObject = result.getValue("fired");
-        assertTrue("Retrieved object is null or incorrect!", firedObject != null && firedObject instanceof Integer);
-        assertEquals(4, firedObject);
+        assertThat(firedObject != null && firedObject instanceof Integer).as("Retrieved object is null or incorrect!").isTrue();
+        assertThat(firedObject).isEqualTo(4);
 
         list = (List<?>) ksession.getGlobal("list");
-        assertEquals(4, list.size());
+        assertThat(list.size()).isEqualTo(4);
 
-        assertEquals("rule1", list.get(0));
-        assertEquals("rule2", list.get(1));
-        assertEquals("rule3", list.get(2));
-        assertEquals("rule4", list.get(3));
+        assertThat(list.get(0)).isEqualTo("rule1");
+        assertThat(list.get(1)).isEqualTo("rule2");
+        assertThat(list.get(2)).isEqualTo("rule3");
+        assertThat(list.get(3)).isEqualTo("rule4");
     }
 
     @Test
@@ -104,11 +102,11 @@ public class MoreBatchExecutionTest {
         commands.add(CommandFactory.newQuery("numStinkyCheeses", "simple query"));
         Command<?> cmds = CommandFactory.newBatchExecution(commands);
         ExecutionResults result = (ExecutionResults) ksession.execute(cmds);
-        assertNotNull("Batch execution result is null!", result);
+        assertThat(result).as("Batch execution result is null!").isNotNull();
 
         Object queryResultsObject = result.getValue("numStinkyCheeses");
-        assertTrue("Retrieved object is null or incorrect!", queryResultsObject != null && queryResultsObject instanceof QueryResults);
-        
-        assertEquals( 1, ((QueryResults) queryResultsObject).size() );
+        assertThat(queryResultsObject != null && queryResultsObject instanceof QueryResults).as("Retrieved object is null or incorrect!").isTrue();
+
+        assertThat(((QueryResults) queryResultsObject).size()).isEqualTo(1);
     }
 }

@@ -59,8 +59,7 @@ import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateAssignExpr;
@@ -113,7 +112,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         CompilationUnit retrieved =
                 KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit(droolsCompilationDTO, TEMPLATE_SOURCE,
                                                                               TEMPLATE_CLASS_NAME);
-        assertEquals(droolsCompilationDTO.getPackageName(), retrieved.getPackageDeclaration().get().getNameAsString());
+        assertThat(retrieved.getPackageDeclaration().get().getNameAsString()).isEqualTo(droolsCompilationDTO.getPackageName());
         ConstructorDeclaration constructorDeclaration =
                 retrieved.getClassByName(modelName).get().getDefaultConstructor().get();
         MINING_FUNCTION miningFunction = MINING_FUNCTION.CLASSIFICATION;
@@ -125,7 +124,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
         String expectedKModulePackageName = getSanitizedPackageName(packageName + "." + modelName);
         assignExpressionMap.put("kModulePackageName", new StringLiteralExpr(expectedKModulePackageName));
-        assertTrue(commonEvaluateAssignExpr(constructorDeclaration.getBody(), assignExpressionMap));
+        assertThat(commonEvaluateAssignExpr(constructorDeclaration.getBody(), assignExpressionMap)).isTrue();
         int expectedMethodCallExprs = assignExpressionMap.size() + fieldTypeMap.size() + 1; // The last "1" is for
         // the super invocation
         commonEvaluateFieldTypeMap(constructorDeclaration.getBody(), fieldTypeMap, expectedMethodCallExprs);
@@ -150,9 +149,9 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
                                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
         assignExpressionMap.put("kModulePackageName", new StringLiteralExpr(kModulePackageName));
-        assertTrue(commonEvaluateConstructor(constructorDeclaration, tableName.asString(),
+        assertThat(commonEvaluateConstructor(constructorDeclaration, tableName.asString(),
                                              superInvocationExpressionsMap,
-                                             assignExpressionMap));
+                                             assignExpressionMap)).isTrue();
     }
 
     @Test
@@ -175,9 +174,9 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         List<MethodCallExpr> retrieved = getMethodCallExprList(blockStmt, expectedMethodCallSize, "fieldTypeMap",
                                                                "put");
         for (Map.Entry<String, KiePMMLOriginalTypeGeneratedType> entry : fieldTypeMap.entrySet()) {
-            assertTrue(retrieved.stream()
+            assertThat(retrieved.stream()
                                .map(MethodCallExpr::getArguments)
-                               .anyMatch(arguments -> evaluateFieldTypeMapPopulation(entry, arguments)));
+                               .anyMatch(arguments -> evaluateFieldTypeMapPopulation(entry, arguments))).isTrue();
         }
     }
 
@@ -233,7 +232,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
 
     private Stream<Statement> getStatementStream(BlockStmt blockStmt, int expectedSize) {
         final NodeList<Statement> statements = blockStmt.getStatements();
-        assertEquals(expectedSize, statements.size());
+        assertThat(statements).hasSize(expectedSize);
         return StreamSupport.stream(
                 Spliterators.spliteratorUnknownSize(
                         statements.iterator(),

@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.kie.internal.pmml.PMMLCommandExecutor;
 import org.kie.pmml.evaluator.assembler.command.PMMLCommandExecutorImpl;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PMMLCommandExecutorFactoryImplTest {
 
@@ -28,7 +28,7 @@ public class PMMLCommandExecutorFactoryImplTest {
     public void newPMMLCommandExecutor() {
         PMMLCommandExecutorFactoryImpl factory = new PMMLCommandExecutorFactoryImpl();
         PMMLCommandExecutor retrieved = factory.newPMMLCommandExecutor();
-        assertNotNull(retrieved);
-        assertTrue(retrieved instanceof PMMLCommandExecutorImpl);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(PMMLCommandExecutorImpl.class);
     }
 }

@@ -21,7 +21,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CloneTest extends AbstractMetricTest {
 
@@ -40,6 +40,6 @@ public class CloneTest extends AbstractMetricTest {
 
         kieSession.insert(42);
         kieSession.insert("test");
-        assertEquals(1, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 }

@@ -31,7 +31,6 @@ import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class SimpleScorecardTest extends AbstractPMMLTest {
@@ -101,7 +100,7 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
         inputData.put("input1", String.valueOf(input1));
         inputData.put("input2", String.valueOf(input2));
         inputData.put("input3", "34.1");
-        assertNotNull(evaluate(pmmlRuntime, inputData, MODEL_NAME));
+        assertThat(evaluate(pmmlRuntime, inputData, MODEL_NAME)).isNotNull();
     }
 
     @Test(expected = KiePMMLException.class)

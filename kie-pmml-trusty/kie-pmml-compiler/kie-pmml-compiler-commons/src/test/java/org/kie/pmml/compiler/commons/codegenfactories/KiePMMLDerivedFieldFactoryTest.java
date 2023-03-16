@@ -37,7 +37,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getDATA_TYPEString;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getOP_TYPEString;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
@@ -73,7 +73,7 @@ public class KiePMMLDerivedFieldFactoryTest {
                                           derivedField.getName().getValue(),
                                           dataType,
                                           opType));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
                                                KiePMMLDerivedField.class,
                                                Collections.class);
@@ -100,7 +100,7 @@ public class KiePMMLDerivedFieldFactoryTest {
                                           derivedField.getName().getValue(),
                                           dataType,
                                           opType));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class,
                                                KiePMMLDerivedField.class,
                                                Collections.class);
@@ -136,7 +136,7 @@ public class KiePMMLDerivedFieldFactoryTest {
                                           derivedField.getName().getValue(),
                                           dataType,
                                           opType));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
                                                KiePMMLFieldRef.class,
                                                KiePMMLApply.class,

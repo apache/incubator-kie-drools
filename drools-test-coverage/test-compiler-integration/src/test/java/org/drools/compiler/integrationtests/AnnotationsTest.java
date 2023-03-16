@@ -39,10 +39,7 @@ import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class AnnotationsTest {
@@ -139,78 +136,58 @@ public class AnnotationsTest {
 
         final Class clazz = kbase.getFactType("org.drools.compiler.test",
                                               "AnnotatedBean").getFactClass();
-        assertNotNull(clazz);
+        assertThat(clazz).isNotNull();
         try {
             final Field fld = clazz.getDeclaredField("name");
-            assertEquals(3,
-                         fld.getAnnotations().length);
-            assertNotNull(fld.getAnnotation(Deprecated.class));
-            assertNotNull(fld.getAnnotation(Position.class));
-            assertNotNull(fld.getAnnotation(Key.class));
+            assertThat(fld.getAnnotations().length).isEqualTo(3);
+            assertThat(fld.getAnnotation(Deprecated.class)).isNotNull();
+            assertThat(fld.getAnnotation(Position.class)).isNotNull();
+            assertThat(fld.getAnnotation(Key.class)).isNotNull();
 
             final Position pos = fld.getAnnotation(Position.class);
-            assertEquals(0,
-                         pos.value());
+            assertThat(pos.value()).isEqualTo(0);
         } catch (final NoSuchFieldException nsfe) {
             fail("field name has not been generated correctly : " + nsfe.getMessage());
         }
 
         final Annotation[] anns = clazz.getAnnotations();
-        assertEquals(3,
-                     anns.length);
-        assertNotNull(clazz.getAnnotation(Deprecated.class));
-        assertNotNull(clazz.getAnnotation(Annot.class));
-        assertNotNull(clazz.getAnnotation(Role.class));
+        assertThat(anns.length).isEqualTo(3);
+        assertThat(clazz.getAnnotation(Deprecated.class)).isNotNull();
+        assertThat(clazz.getAnnotation(Annot.class)).isNotNull();
+        assertThat(clazz.getAnnotation(Role.class)).isNotNull();
 
         final Annot ann = (Annot) clazz.getAnnotation(Annot.class);
-        assertEquals(7,
-                     ann.intProp());
-        assertEquals(String.class,
-                     ann.typeProp());
-        assertEquals("hello world",
-                     ann.strProp());
-        assertEquals(AnnPropEnum.THREE,
-                     ann.enumProp());
-        assertArrayEquals(new double[]{1.0, 2.0},
-                          ann.dblArrProp(),
-                          1e-16);
-        assertArrayEquals(new Class[]{String.class, AnnotationsTest.class},
-                          ann.typeArrProp());
-        assertArrayEquals(new String[]{"x1", "x2"},
-                          ann.strArrProp());
-        assertArrayEquals(new AnnPropEnum[]{AnnPropEnum.ONE, AnnPropEnum.THREE},
-                          ann.enumArrProp());
+        assertThat(ann.intProp()).isEqualTo(7);
+        assertThat(ann.typeProp()).isEqualTo(String.class);
+        assertThat(ann.strProp()).isEqualTo("hello world");
+        assertThat(ann.enumProp()).isEqualTo(AnnPropEnum.THREE);
+        assertThat(ann.dblArrProp()).isEqualTo(new double[]{1.0, 2.0});
+        assertThat(ann.typeArrProp()).isEqualTo(new Class[]{String.class, AnnotationsTest.class});
+        assertThat(ann.strArrProp()).isEqualTo(new String[]{"x1", "x2"});
+        assertThat(ann.enumArrProp()).isEqualTo(new AnnPropEnum[]{AnnPropEnum.ONE, AnnPropEnum.THREE});
 
         final Class clazz2 = kbase.getFactType("org.drools.compiler.test",
                                                "SecondBean").getFactClass();
-        assertNotNull(clazz2);
+        assertThat(clazz2).isNotNull();
         final Annotation[] anns2 = clazz2.getAnnotations();
-        assertEquals(0,
-                     anns2.length);
+        assertThat(anns2.length).isEqualTo(0);
 
         Annot ann2 = null;
         try {
             final Field fld2 = clazz2.getDeclaredField("field");
-            assertNotNull(fld2.getAnnotation(Annot.class));
+            assertThat(fld2.getAnnotation(Annot.class)).isNotNull();
             ann2 = fld2.getAnnotation(Annot.class);
         } catch (final NoSuchFieldException nsfe) {
             fail("field name has not been generated correctly : " + nsfe.getMessage());
         }
 
-        assertNotNull(ann2);
-        assertEquals(0,
-                     ann2.intProp());
-        assertEquals("foo",
-                     ann2.strProp());
-        assertEquals(AnnPropEnum.ONE,
-                     ann2.enumProp());
-        assertArrayEquals(new double[]{0.4, 0.5},
-                          ann2.dblArrProp(),
-                          1e-16);
-        assertArrayEquals(new String[]{"a", "b", "c"},
-                          ann2.strArrProp());
-        assertArrayEquals(new AnnPropEnum[]{AnnPropEnum.TWO, AnnPropEnum.THREE},
-                          ann2.enumArrProp());
+        assertThat(ann2).isNotNull();
+        assertThat(ann2.intProp()).isEqualTo(0);
+        assertThat(ann2.strProp()).isEqualTo("foo");
+        assertThat(ann2.enumProp()).isEqualTo(AnnPropEnum.ONE);
+        assertThat(ann2.dblArrProp()).isEqualTo(new double[]{0.4, 0.5});
+        assertThat(ann2.strArrProp()).isEqualTo(new String[]{"a", "b", "c"});
+        assertThat(ann2.enumArrProp()).isEqualTo(new AnnPropEnum[]{AnnPropEnum.TWO, AnnPropEnum.THREE});
     }
 
     @Test
@@ -264,9 +241,9 @@ public class AnnotationsTest {
         try {
             final Object o = ft.newInstance();
             final Annot a = o.getClass().getDeclaredField("id").getAnnotation(Annot.class);
-            assertEquals(3, a.intProp());
-            assertEquals(String.class, a.typeProp());
-            assertEquals(0, a.typeArrProp().length);
+            assertThat(a.intProp()).isEqualTo(3);
+            assertThat(a.typeProp()).isEqualTo(String.class);
+            assertThat(a.typeArrProp().length).isEqualTo(0);
         } catch (final Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -291,7 +268,7 @@ public class AnnotationsTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("annotations-test", kieBaseTestConfiguration, drl);
         final FactType ft = kbase.getFactType("org.drools.test", "Annot");
-        assertNotNull(ft);
+        assertThat(ft).isNotNull();
     }
 
     public @interface Simple {

@@ -25,7 +25,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Reproducer for BZ 1264525.

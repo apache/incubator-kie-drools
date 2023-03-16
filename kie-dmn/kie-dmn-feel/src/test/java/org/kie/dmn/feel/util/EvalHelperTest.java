@@ -22,8 +22,7 @@ import java.math.BigDecimal;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.FEELProperty;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
 import static org.kie.dmn.feel.util.EvalHelper.normalizeVariableName;
 
@@ -31,48 +30,44 @@ public class EvalHelperTest {
 
     @Test
     public void testNormalizeSpace() {
-        assertNull(normalizeVariableName(null));
-        assertEquals("", normalizeVariableName(""));
-        assertEquals("", normalizeVariableName(" "));
-        assertEquals("", normalizeVariableName("\t"));
-        assertEquals("", normalizeVariableName("\n"));
-        assertEquals("", normalizeVariableName("\u0009"));
-        assertEquals("", normalizeVariableName("\u000B"));
-        assertEquals("", normalizeVariableName("\u000C"));
-        assertEquals("", normalizeVariableName("\u001C"));
-        assertEquals("", normalizeVariableName("\u001D"));
-        assertEquals("", normalizeVariableName("\u001E"));
-        assertEquals("", normalizeVariableName("\u001F"));
-        assertEquals("", normalizeVariableName("\f"));
-        assertEquals("", normalizeVariableName("\r"));
-        assertEquals("a", normalizeVariableName("  a  "));
-        assertEquals("a b c", normalizeVariableName("  a  b   c  "));
-        assertEquals("a b c", normalizeVariableName("a\t\f\r  b\u000B   c\n"));
-        assertEquals("a b c", normalizeVariableName("a\t\f\r  \u00A0\u00A0b\u000B   c\n"));
-        assertEquals("b", normalizeVariableName(" b"));
-        assertEquals("b", normalizeVariableName("b "));
-        assertEquals("ab c", normalizeVariableName("ab c  "));
-        assertEquals("a b", normalizeVariableName("a\u00A0b"));
+        assertThat(normalizeVariableName(null)).isNull();
+        assertThat(normalizeVariableName("")).isEqualTo("");
+        assertThat(normalizeVariableName(" ")).isEqualTo("");
+        assertThat(normalizeVariableName("\t")).isEqualTo("");
+        assertThat(normalizeVariableName("\n")).isEqualTo("");
+        assertThat(normalizeVariableName("\u0009")).isEqualTo("");
+        assertThat(normalizeVariableName("\u000B")).isEqualTo("");
+        assertThat(normalizeVariableName("\u000C")).isEqualTo("");
+        assertThat(normalizeVariableName("\u001C")).isEqualTo("");
+        assertThat(normalizeVariableName("\u001D")).isEqualTo("");
+        assertThat(normalizeVariableName("\u001E")).isEqualTo("");
+        assertThat(normalizeVariableName("\u001F")).isEqualTo("");
+        assertThat(normalizeVariableName("\f")).isEqualTo("");
+        assertThat(normalizeVariableName("\r")).isEqualTo("");
+        assertThat(normalizeVariableName("  a  ")).isEqualTo("a");
+        assertThat(normalizeVariableName("  a  b   c  ")).isEqualTo("a b c");
+        assertThat(normalizeVariableName("a\t\f\r  b\u000B   c\n")).isEqualTo("a b c");
+        assertThat(normalizeVariableName("a\t\f\r  \u00A0\u00A0b\u000B   c\n")).isEqualTo("a b c");
+        assertThat(normalizeVariableName(" b")).isEqualTo("b");
+        assertThat(normalizeVariableName("b ")).isEqualTo("b");
+        assertThat(normalizeVariableName("ab c  ")).isEqualTo("ab c");
+        assertThat(normalizeVariableName("a\u00A0b")).isEqualTo("a b");
     }
 
     @Test
     public void testGetBigDecimalOrNull() {
-        assertEquals(new BigDecimal("10"), getBigDecimalOrNull(10d));
-        assertEquals(new BigDecimal("10"), getBigDecimalOrNull(10.00000000D));
-        assertEquals(new BigDecimal("10000000000.5"), getBigDecimalOrNull(10000000000.5D));
+        assertThat(getBigDecimalOrNull(10d)).isEqualTo(new BigDecimal("10"));
+        assertThat(getBigDecimalOrNull(10.00000000D)).isEqualTo(new BigDecimal("10"));
+        assertThat(getBigDecimalOrNull(10000000000.5D)).isEqualTo(new BigDecimal("10000000000.5"));
     }
 
     @Test
     public void testGetGenericAccessor() throws NoSuchMethodException {
         Method expectedAccessor = TestPojo.class.getMethod("getAProperty");
 
-        assertEquals("getGenericAccessor should work on Java bean accessors.",
-                     expectedAccessor,
-                     EvalHelper.getGenericAccessor(TestPojo.class, "aProperty"));
+        assertThat(EvalHelper.getGenericAccessor(TestPojo.class, "aProperty")).as("getGenericAccessor should work on Java bean accessors.").isEqualTo(expectedAccessor);
 
-        assertEquals("getGenericAccessor should work for methods annotated with '@FEELProperty'.",
-                     expectedAccessor,
-                     EvalHelper.getGenericAccessor(TestPojo.class, "feelPropertyIdentifier"));
+        assertThat(EvalHelper.getGenericAccessor(TestPojo.class, "feelPropertyIdentifier")).as("getGenericAccessor should work for methods annotated with '@FEELProperty'.").isEqualTo(expectedAccessor);
     }
 
     private static class TestPojo {

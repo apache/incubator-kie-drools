@@ -28,8 +28,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.xls2dmn.cli.TestUtils.getRuntime;
 
 import picocli.CommandLine;
@@ -48,7 +47,7 @@ public class ChineseLunarYearsTest {
         dmnContext.set("Date", LocalDate.of(2021, 4, 1));
         DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, dmnContext);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("Chinese Year").getResult(), is("Golden Ox"));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Chinese Year").getResult()).isEqualTo("Golden Ox");
     }
 }

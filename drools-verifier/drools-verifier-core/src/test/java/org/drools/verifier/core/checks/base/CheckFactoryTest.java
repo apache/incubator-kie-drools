@@ -20,8 +20,7 @@ import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.configuration.CheckConfiguration;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class CheckFactoryTest {
@@ -32,11 +31,11 @@ public class CheckFactoryTest {
 
         final AnalyzerConfigurationMock configuration = new AnalyzerConfigurationMock(CheckConfiguration.newEmpty());
 
-        assertTrue(new CheckFactory(configuration).makeSingleChecks(mock(RuleInspector.class))
-                           .isEmpty());
-        assertFalse(new CheckFactory(configuration).makePairRowCheck(mock(RuleInspector.class),
-                                                                     mock(RuleInspector.class))
-                            .isPresent());
+        assertThat(new CheckFactory(configuration).makeSingleChecks(mock(RuleInspector.class))
+                .isEmpty()).isTrue();
+        assertThat(new CheckFactory(configuration).makePairRowCheck(mock(RuleInspector.class),
+                mock(RuleInspector.class))
+                .isPresent()).isFalse();
     }
 
     @Test
@@ -45,10 +44,10 @@ public class CheckFactoryTest {
 
         final AnalyzerConfigurationMock configuration = new AnalyzerConfigurationMock(CheckConfiguration.newDefault());
 
-        assertFalse(new CheckFactory(configuration).makeSingleChecks(mock(RuleInspector.class))
-                            .isEmpty());
-        assertTrue(new CheckFactory(configuration).makePairRowCheck(mock(RuleInspector.class),
-                                                                    mock(RuleInspector.class))
-                           .isPresent());
+        assertThat(new CheckFactory(configuration).makeSingleChecks(mock(RuleInspector.class))
+                .isEmpty()).isFalse();
+        assertThat(new CheckFactory(configuration).makePairRowCheck(mock(RuleInspector.class),
+                mock(RuleInspector.class))
+                .isPresent()).isTrue();
     }
 }

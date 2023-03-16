@@ -30,8 +30,7 @@ import org.drools.verifier.core.maps.util.HasKeys;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KeyTreeMapMultiValueKeyTest {
 
@@ -94,23 +93,20 @@ public class KeyTreeMapMultiValueKeyTest {
     public void testFindByAreaCode() throws
             Exception {
         final MultiMap<Value, Country, List<Country>> areaCode = map.get(AREA_CODE);
-        assertEquals(1,
-                     areaCode.get(new Value(48100))
-                             .size());
-        assertTrue(areaCode.get(new Value(48100))
-                           .contains(finland));
-        assertEquals(1,
-                     areaCode.get(new Value(12345))
-                             .size());
-        assertTrue(areaCode.get(new Value(12345))
-                           .contains(sweden));
-        assertEquals(2,
-                     areaCode.get(new Value(51000))
-                             .size());
-        assertTrue(areaCode.get(new Value(51000))
-                           .contains(sweden));
-        assertTrue(areaCode.get(new Value(51000))
-                           .contains(norway));
+        assertThat(areaCode.get(new Value(48100))
+                .size()).isEqualTo(1);
+        assertThat(areaCode.get(new Value(48100))
+                .contains(finland)).isTrue();
+        assertThat(areaCode.get(new Value(12345))
+                .size()).isEqualTo(1);
+        assertThat(areaCode.get(new Value(12345))
+                .contains(sweden)).isTrue();
+        assertThat(areaCode.get(new Value(51000))
+                .size()).isEqualTo(2);
+        assertThat(areaCode.get(new Value(51000))
+                .contains(sweden)).isTrue();
+        assertThat(areaCode.get(new Value(51000))
+                .contains(norway)).isTrue();
     }
 
     class Country

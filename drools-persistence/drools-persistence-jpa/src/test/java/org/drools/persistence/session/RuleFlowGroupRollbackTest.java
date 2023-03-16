@@ -46,12 +46,12 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class RuleFlowGroupRollbackTest {
@@ -94,7 +94,7 @@ public class RuleFlowGroupRollbackTest {
 		
 		ksession.insert(list);
 		ksession.execute(new ActivateRuleFlowCommand("ruleflow-group"));
-		assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 		
 		try {
 			ksession.execute(new ExceptionCommand());
@@ -105,7 +105,7 @@ public class RuleFlowGroupRollbackTest {
 		
 		ksession.insert(list);
 		ksession.execute(new ActivateRuleFlowCommand("ruleflow-group"));
-		assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 		
 	}
 	

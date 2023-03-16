@@ -18,7 +18,7 @@ import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.CommandFactory;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class EnableAuditLogCommandTest {
@@ -70,7 +70,7 @@ public class EnableAuditLogCommandTest {
 
         File file = new File( auditFileDir + File.separator + auditFileName + ".log" );
 
-        assertTrue( file.exists() );
+        assertThat(file.exists()).isTrue();
 
     }
 }

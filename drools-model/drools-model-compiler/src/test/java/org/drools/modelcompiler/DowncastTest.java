@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DowncastTest extends BaseModelTest {
 
@@ -38,8 +38,8 @@ public class DowncastTest extends BaseModelTest {
         ksession.insert(cashProposal);
         ksession.insert(loanProposal);
 
-        assertEquals( 1, ksession.fireAllRules() );
-        assertEquals( "FULL_PROPOSAL", loanProposal.getOrderType() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(loanProposal.getOrderType()).isEqualTo("FULL_PROPOSAL");
     }
 
     public static class Product {

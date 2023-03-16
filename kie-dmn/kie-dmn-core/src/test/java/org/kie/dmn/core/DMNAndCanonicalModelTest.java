@@ -16,7 +16,6 @@
 
 package org.kie.dmn.core;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -29,9 +28,7 @@ import org.kie.dmn.core.util.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNAndCanonicalModelTest extends BaseInterpretedVsCompiledTestCanonicalKieModule {
 
@@ -53,14 +50,14 @@ public class DMNAndCanonicalModelTest extends BaseInterpretedVsCompiledTestCanon
                                                                                                                                        this.getClass())));
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
-        assertThat(runtime.getModels(), hasSize(1));
+        assertThat(runtime).isNotNull();
+        assertThat(runtime.getModels()).hasSize(1);
 
         final DMNContext dmnContext = runtime.newContext();
         dmnContext.set("Full Name", "John Doe");
         final DMNResult evaluateAll = runtime.evaluateAll(runtime.getModels().get(0), dmnContext);
         LOG.debug("{}", evaluateAll);
-        assertThat(evaluateAll.getDecisionResultByName("Greeting Message").getResult(), is("Hello John Doe"));
+        assertThat(evaluateAll.getDecisionResultByName("Greeting Message").getResult()).isEqualTo("Hello John Doe");
     }
 
     @Test
@@ -75,8 +72,8 @@ public class DMNAndCanonicalModelTest extends BaseInterpretedVsCompiledTestCanon
                                                                                                                                        this.getClass())));
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
-        assertThat(runtime.getModels(), hasSize(1));
+        assertThat(runtime).isNotNull();
+        assertThat(runtime.getModels()).hasSize(1);
 
         final DMNContext dmnContext = DMNFactory.newContext();
         dmnContext.set("Age", 18);
@@ -84,6 +81,6 @@ public class DMNAndCanonicalModelTest extends BaseInterpretedVsCompiledTestCanon
         dmnContext.set("isAffordable", true);
         final DMNResult evaluateAll = runtime.evaluateAll(runtime.getModels().get(0), dmnContext);
         LOG.debug("{}", evaluateAll);
-        assertThat(evaluateAll.getDecisionResultByName("Approval Status").getResult(), is("Approved"));
+        assertThat(evaluateAll.getDecisionResultByName("Approval Status").getResult()).isEqualTo("Approved");
     }
 }

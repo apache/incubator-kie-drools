@@ -18,11 +18,7 @@ package org.drools.scenariosimulation.api.model;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SettingsTest {
 
@@ -56,33 +52,33 @@ public class SettingsTest {
     @Test
     public void cloneEmptySettings() {
         final Settings cloneSettings = new Settings().cloneSettings();
-        assertNull(cloneSettings.getDmoSession());
-        assertNull(cloneSettings.getDmnFilePath());
-        assertNull(cloneSettings.getDmnName());
-        assertNull(cloneSettings.getDmnNamespace());
-        assertNull(cloneSettings.getRuleFlowGroup());
-        assertNull(cloneSettings.getType());
-        assertFalse(cloneSettings.isStateless());
-        assertFalse(cloneSettings.isSkipFromBuild());
-        assertNull(cloneSettings.getFileName());
-        assertNull(cloneSettings.getKieBase());
-        assertNull(cloneSettings.getKieSession());
+        assertThat(cloneSettings.getDmoSession()).isNull();
+        assertThat(cloneSettings.getDmnFilePath()).isNull();
+        assertThat(cloneSettings.getDmnName()).isNull();
+        assertThat(cloneSettings.getDmnNamespace()).isNull();
+        assertThat(cloneSettings.getRuleFlowGroup()).isNull();
+        assertThat(cloneSettings.getType()).isNull();
+        assertThat(cloneSettings.isStateless()).isFalse();
+        assertThat(cloneSettings.isSkipFromBuild()).isFalse();
+        assertThat(cloneSettings.getFileName()).isNull();
+        assertThat(cloneSettings.getKieBase()).isNull();
+        assertThat(cloneSettings.getKieSession()).isNull();
     }
 
     @Test
     public void cloneSettings() {
         final Settings cloneSettings = settings.cloneSettings();
-        assertEquals(DMO_SESSION, cloneSettings.getDmoSession());
-        assertEquals(DMN_PATH, cloneSettings.getDmnFilePath());
-        assertEquals(DMN_NAME, cloneSettings.getDmnName());
-        assertEquals(DMN_NAMESPACE, cloneSettings.getDmnNamespace());
-        assertEquals(RULE_FLOW_GROUP, cloneSettings.getRuleFlowGroup());
-        assertEquals(ScenarioSimulationModel.Type.RULE, cloneSettings.getType());
-        assertTrue(cloneSettings.isStateless());
-        assertTrue(cloneSettings.isSkipFromBuild());
-        assertEquals(FILENAME, cloneSettings.getFileName());
-        assertEquals(KIE_BASE, cloneSettings.getKieBase());
-        assertEquals(KIE_SESSION, cloneSettings.getKieSession());
+        assertThat(cloneSettings.getDmoSession()).isEqualTo(DMO_SESSION);
+        assertThat(cloneSettings.getDmnFilePath()).isEqualTo(DMN_PATH);
+        assertThat(cloneSettings.getDmnName()).isEqualTo(DMN_NAME);
+        assertThat(cloneSettings.getDmnNamespace()).isEqualTo(DMN_NAMESPACE);
+        assertThat(cloneSettings.getRuleFlowGroup()).isEqualTo(RULE_FLOW_GROUP);
+        assertThat(cloneSettings.getType()).isEqualTo(ScenarioSimulationModel.Type.RULE);
+        assertThat(cloneSettings.isStateless()).isTrue();
+        assertThat(cloneSettings.isSkipFromBuild()).isTrue();
+        assertThat(cloneSettings.getFileName()).isEqualTo(FILENAME);
+        assertThat(cloneSettings.getKieBase()).isEqualTo(KIE_BASE);
+        assertThat(cloneSettings.getKieSession()).isEqualTo(KIE_SESSION);
     }
 
     @Test
@@ -99,16 +95,16 @@ public class SettingsTest {
         settings.setFileName("cl" + FILENAME);
         settings.setKieBase("cl" + KIE_BASE);
         settings.setKieSession("cl" + KIE_SESSION);
-        assertNotEquals(settings.getDmoSession(), cloneSettings.getDmoSession());
-        assertNotEquals(settings.getDmnFilePath(), cloneSettings.getDmnFilePath());
-        assertNotEquals(settings.getDmnName(), cloneSettings.getDmnName());
-        assertNotEquals(settings.getDmnNamespace(), cloneSettings.getDmnNamespace());
-        assertNotEquals(settings.getRuleFlowGroup(), cloneSettings.getRuleFlowGroup());
-        assertNotEquals(settings.getType(), cloneSettings.getType());
-        assertNotEquals(settings.isStateless(), cloneSettings.isStateless());
-        assertNotEquals(settings.isSkipFromBuild(), cloneSettings.isSkipFromBuild());
-        assertNotEquals(settings.getFileName(), cloneSettings.getFileName());
-        assertNotEquals(settings.getKieBase(), cloneSettings.getKieBase());
-        assertNotEquals(settings.getKieSession(), cloneSettings.getKieSession());
+        assertThat(cloneSettings.getDmoSession()).isNotEqualTo(settings.getDmoSession());
+        assertThat(cloneSettings.getDmnFilePath()).isNotEqualTo(settings.getDmnFilePath());
+        assertThat(cloneSettings.getDmnName()).isNotEqualTo(settings.getDmnName());
+        assertThat(cloneSettings.getDmnNamespace()).isNotEqualTo(settings.getDmnNamespace());
+        assertThat(cloneSettings.getRuleFlowGroup()).isNotEqualTo(settings.getRuleFlowGroup());
+        assertThat(cloneSettings.getType()).isNotEqualTo(settings.getType());
+        assertThat(cloneSettings.isStateless()).isNotEqualTo(settings.isStateless());
+        assertThat(cloneSettings.isSkipFromBuild()).isNotEqualTo(settings.isSkipFromBuild());
+        assertThat(cloneSettings.getFileName()).isNotEqualTo(settings.getFileName());
+        assertThat(cloneSettings.getKieBase()).isNotEqualTo(settings.getKieBase());
+        assertThat(cloneSettings.getKieSession()).isNotEqualTo(settings.getKieSession());
     }
 }

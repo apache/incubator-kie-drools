@@ -42,8 +42,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests DRL's with foreign characters.
@@ -82,10 +81,10 @@ public class I18nTest {
         ksession.insert(i18nPerson);
         ksession.fireAllRules();
 
-        assertTrue(list.contains("garçon"));
-        assertTrue(list.contains("élève"));
-        assertTrue(list.contains("имя"));
-        assertTrue(list.contains("名称"));
+        assertThat(list.contains("garçon")).isTrue();
+        assertThat(list.contains("élève")).isTrue();
+        assertThat(list.contains("имя")).isTrue();
+        assertThat(list.contains("名称")).isTrue();
         ksession.dispose();
     }
 
@@ -106,7 +105,7 @@ public class I18nTest {
         ksession.insert(i18nPerson);
         ksession.fireAllRules();
 
-        assertTrue(list.contains("garçon"));
+        assertThat(list.contains("garçon")).isTrue();
 //        assertTrue(list.contains("élève"));
         ksession.dispose();
     }
@@ -155,7 +154,7 @@ public class I18nTest {
         ksession.insert(person);
         ksession.fireAllRules();
 
-        assertTrue(messages.contains("メッセージ　ルールにヒットしました"));
+        assertThat(messages.contains("メッセージ　ルールにヒットしました")).isTrue();
 
         ksession.dispose();
     }
@@ -174,7 +173,7 @@ public class I18nTest {
         ksession.insert(i18nPerson);
         ksession.fireAllRules();
 
-        assertTrue(list.contains("名称は山田花子です"));
+        assertThat(list.contains("名称は山田花子です")).isTrue();
 
         ksession.dispose();
     }
@@ -195,7 +194,7 @@ public class I18nTest {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, true);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
 
         ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
         final KieContainer kieContainer = ks.newKieContainer(releaseId);
@@ -209,7 +208,7 @@ public class I18nTest {
         ksession.insert(i18nPerson);
         ksession.fireAllRules();
 
-        assertTrue(list.contains("名称は山田花子です"));
+        assertThat(list.contains("名称は山田花子です")).isTrue();
 
         ksession.dispose();
     }
@@ -241,7 +240,7 @@ public class I18nTest {
         ksession.insert(i18nPerson);
         ksession.fireAllRules();
 
-        assertTrue(list.contains("名称は山田花子です"));
+        assertThat(list.contains("名称は山田花子です")).isTrue();
 
         ksession.dispose();
     }
@@ -272,7 +271,7 @@ public class I18nTest {
         ksession.insert(p2);
         int fired = ksession.fireAllRules();
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
 
         ksession.dispose();
     }

@@ -32,7 +32,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AccumulateCepEqualityModeTest {
@@ -68,27 +68,27 @@ public class AccumulateCepEqualityModeTest {
             // the same number
             ksession.insert(new Integer(20));
             ksession.fireAllRules();
-            assertEquals(asList(1, 1), list);
+            assertThat(list).isEqualTo(asList(1, 1));
 
             ksession.insert(new Integer(20));
             ksession.fireAllRules();
-            assertEquals(asList(1, 1), list);
+            assertThat(list).isEqualTo(asList(1, 1));
 
             ksession.insert(new Integer(20));
             ksession.fireAllRules();
-            assertEquals(asList(1, 1), list);
+            assertThat(list).isEqualTo(asList(1, 1));
 
             ksession.insert(new Integer(2));
             ksession.fireAllRules();
-            assertEquals(asList(1, 2), list);
+            assertThat(list).isEqualTo(asList(1, 2));
 
             ksession.insert(new Integer(2));
             ksession.fireAllRules();
-            assertEquals(asList(1, 2), list);
+            assertThat(list).isEqualTo(asList(1, 2));
 
             ksession.insert(new Integer(2));
             ksession.fireAllRules();
-            assertEquals(asList(1, 2), list);
+            assertThat(list).isEqualTo(asList(1, 2));
         } finally {
             ksession.dispose();
         }

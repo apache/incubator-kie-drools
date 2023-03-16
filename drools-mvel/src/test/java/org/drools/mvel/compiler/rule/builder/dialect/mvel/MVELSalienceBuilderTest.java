@@ -54,7 +54,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MVELSalienceBuilderTest {
     private RuleBuildContext context;
@@ -130,12 +130,7 @@ public class MVELSalienceBuilderTest {
         rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
         AgendaItem item = new AgendaItemImpl(0, tuple, 0, null, rtn, null);
 
-
-        assertEquals( 25,
-                      context.getRule().getSalience().getValue( new DefaultKnowledgeHelper( item, ksession ),
-                                                                context.getRule(),
-                                                                ksession ) );
-
+        assertThat(context.getRule().getSalience().getValue( new DefaultKnowledgeHelper( item, ksession ), context.getRule(), ksession ) ).isEqualTo(25);
     }
 
     @Test
@@ -169,9 +164,7 @@ public class MVELSalienceBuilderTest {
                 errors++;
             }
         }
-        assertEquals( "There shouldn't be any threads in error: ",
-                      0,
-                      errors );
+        assertThat(errors).as("There shouldn't be any threads in error: ").isEqualTo(0);
 
     }
 
@@ -224,10 +217,7 @@ public class MVELSalienceBuilderTest {
             try {
                 Thread.sleep( 1000 );
                 for ( int i = 0; i < iterations && !halt; i++ ) {
-                    assertEquals( result,
-                                  salience.getValue( new DefaultKnowledgeHelper( item, wm ),
-                                                     rule,
-                                                     wm ) );
+                    assertThat(salience.getValue( new DefaultKnowledgeHelper( item, wm ), rule, wm)).isEqualTo(result);
                     Thread.currentThread().yield();
                 }
             } catch ( Throwable e ) {

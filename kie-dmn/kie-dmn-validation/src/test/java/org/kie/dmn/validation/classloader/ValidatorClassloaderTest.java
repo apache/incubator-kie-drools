@@ -40,9 +40,7 @@ import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -67,7 +65,7 @@ public class ValidatorClassloaderTest extends AbstractValidatorTest {
         kfs.generateAndWritePomXML(kjarReleaseId);
 
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
         final KieContainer container = ks.newKieContainer(kjarReleaseId);
         final DMNRuntime runtime = KieRuntimeFactory.of(container.getKieBase()).get(DMNRuntime.class);
@@ -75,7 +73,7 @@ public class ValidatorClassloaderTest extends AbstractValidatorTest {
 
         DMNResult evaluateAll = runtime.evaluateAll(dmnModel, runtime.newContext());
         LOG.debug("{}", evaluateAll);
-        assertThat(evaluateAll.getDecisionResultByName("Decision-1").getResult(), is("Hello World"));
+        assertThat(evaluateAll.getDecisionResultByName("Decision-1").getResult()).isEqualTo("Hello World");
 
         final ClassLoader kieProjectCL = container.getClassLoader();
 
@@ -85,6 +83,6 @@ public class ValidatorClassloaderTest extends AbstractValidatorTest {
                                                                         VALIDATE_MODEL,
                                                                         VALIDATE_COMPILATION)
                                                          .theseModels(getReader("DummyInvocation.dmn"));
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(0);
     }
 }

@@ -33,7 +33,7 @@ import org.kie.dmn.model.v1_1.TItemDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ItemDefinitionDependenciesGeneratedTest {
@@ -197,10 +197,8 @@ public class ItemDefinitionDependenciesGeneratedTest {
         for (final ItemDefinition dependency : itemDefinition.getItemComponent()) {
             final String dependencyName = dependency.getTypeRef().getLocalPart();
             final int indexOfDependency = indexOfItemDefinitionByName(dependencyName, orderedList);
-            assertTrue("Cannot find dependency " + dependencyName + " in the ordered list!",
-                       indexOfDependency > -1);
-            assertTrue("Index of " + itemDefinition.getName() + " < " + dependency.getTypeRef().getLocalPart(),
-                       orderedList.indexOf(itemDefinition) > indexOfDependency);
+            assertThat(indexOfDependency > -1).as("Cannot find dependency " + dependencyName + " in the ordered list!").isTrue();
+            assertThat(orderedList.indexOf(itemDefinition) > indexOfDependency).as("Index of " + itemDefinition.getName() + " < " + dependency.getTypeRef().getLocalPart()).isTrue();
             if (dependency.getItemComponent() != null && !dependency.getItemComponent().isEmpty()) {
                 assertOrdering(dependency, orderedList);
             }

@@ -38,8 +38,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * DROOLS-5803 RHDM-851
@@ -91,7 +91,7 @@ public class DroolsJaxbHelperXSDInKJARTest {
         }
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
-        assertNotNull(ksession);
+        assertThat(ksession).isNotNull();
     }
 
 }

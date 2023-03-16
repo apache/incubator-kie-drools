@@ -37,7 +37,6 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -60,11 +59,8 @@ import org.drools.ruleunit.RuleUnitExecutor;
 import org.drools.ruleunit.UnitVar;
 
 import static java.util.Arrays.asList;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.ClassUtils.getCanonicalSimpleName;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class RuleUnitTest {
@@ -109,9 +105,9 @@ public class RuleUnitTest {
                                                                       new Person("Marilena", 44),
                                                                       new Person("Sofia", 4));
             // explicitly create unit
-            assertEquals(2, executor.run(new AdultUnit(persons)));
+            assertThat(executor.run(new AdultUnit(persons))).isEqualTo(2);
             // let RuleUnitExecutor internally create and wire the unit instance
-            assertEquals(1, executor.run(NotAdultUnit.class));
+            assertThat(executor.run(NotAdultUnit.class)).isEqualTo(1);
         } finally {
             executor.dispose();
         }
@@ -142,9 +138,9 @@ public class RuleUnitTest {
                                                                  new Person("Sofia", 4));
             executor.bindVariable("persons", persons);
             // explicitly create unit
-            assertEquals(2, executor.run(AdultUnit.class));
+            assertThat(executor.run(AdultUnit.class)).isEqualTo(2);
             // let RuleUnitExecutor internally create and wire the unit instance
-            assertEquals(1, executor.run(NotAdultUnit.class));
+            assertThat(executor.run(NotAdultUnit.class)).isEqualTo(1);
         } finally {
             executor.dispose();
         }
@@ -175,9 +171,9 @@ public class RuleUnitTest {
                                                                  new Person("Marilena", 44),
                                                                  new Person("Sofia", 4));
             // explicitly create unit
-            assertEquals(2, executor.run(new AdultUnit(persons)));
+            assertThat(executor.run(new AdultUnit(persons))).isEqualTo(2);
             // let RuleUnitExecutor internally create and wire the unit instance
-            assertEquals(1, executor.run(new NotAdultUnit(persons)));
+            assertThat(executor.run(new NotAdultUnit(persons))).isEqualTo(1);
         } finally {
             executor.dispose();
         }
@@ -275,7 +271,7 @@ public class RuleUnitTest {
             final List<String> log = new ArrayList<>();
             executor.bindVariable("log", log);
 
-            assertEquals(4, executor.run(NotAdultUnit.class));
+            assertThat(executor.run(NotAdultUnit.class)).isEqualTo(4);
 
             final List<String> expectedLogs = asList(RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit started.",
                                                      RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit yielded to org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit",
@@ -283,7 +279,7 @@ public class RuleUnitTest {
                                                      RuleUnitTest.class.getCanonicalName() + "$AdultUnit ended.",
                                                      RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit started.",
                                                      RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit ended.");
-            assertEquals(expectedLogs, log);
+            assertThat(log).isEqualTo(expectedLogs);
         } finally {
             executor.dispose();
         }
@@ -317,7 +313,7 @@ public class RuleUnitTest {
             final List<String> log = new ArrayList<>();
             executor.bindVariable("log", log);
 
-            assertEquals(4, executor.run(NotAdultUnit.class));
+            assertThat(executor.run(NotAdultUnit.class)).isEqualTo(4);
 
             final List<String> expectedLogs = asList(RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit started.",
                                                      RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit yielded to org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit",
@@ -329,7 +325,7 @@ public class RuleUnitTest {
                                                      RuleUnitTest.class.getCanonicalName() + "$AdultUnit ended.",
                                                      RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit started.",
                                                      RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit ended.");
-            assertEquals(expectedLogs, log);
+            assertThat(log).isEqualTo(expectedLogs);
         } finally {
             executor.dispose();
         }
@@ -364,9 +360,9 @@ public class RuleUnitTest {
             final List<String> results = new ArrayList<>();
             executor.bindVariable("results", results);
 
-            assertEquals(4, executor.run(AdultUnit.class));
-            assertEquals(3, results.size());
-            assertTrue(results.containsAll(asList("Mario", "Marilena", "Sofia")));
+            assertThat(executor.run(AdultUnit.class)).isEqualTo(4);
+            assertThat(results.size()).isEqualTo(3);
+            assertThat(results.containsAll(asList("Mario", "Marilena", "Sofia"))).isTrue();
         } finally {
             executor.dispose();
         }
@@ -510,18 +506,18 @@ public class RuleUnitTest {
             final DataSource<Person> persons = executor.newDataSource("persons", new Person("Mario", 42));
 
             final ReactiveAdultUnit adultUnit = new ReactiveAdultUnit(persons, null);
-            assertEquals(1, executor.run(adultUnit));
+            assertThat(executor.run(adultUnit)).isEqualTo(1);
 
             final ReactiveNotAdultUnit notAdultUnit = new ReactiveNotAdultUnit(persons);
-            assertEquals(0, executor.run(notAdultUnit));
+            assertThat(executor.run(notAdultUnit)).isEqualTo(0);
 
             persons.insert(new Person("Sofia", 4));
-            assertEquals(0, executor.run(adultUnit));
-            assertEquals(1, executor.run(notAdultUnit));
+            assertThat(executor.run(adultUnit)).isEqualTo(0);
+            assertThat(executor.run(notAdultUnit)).isEqualTo(1);
 
             persons.insert(new Person("Marilena", 44));
-            assertEquals(1, executor.run(adultUnit));
-            assertEquals(0, executor.run(notAdultUnit));
+            assertThat(executor.run(adultUnit)).isEqualTo(1);
+            assertThat(executor.run(notAdultUnit)).isEqualTo(0);
         } finally {
             executor.dispose();
         }
@@ -607,8 +603,8 @@ public class RuleUnitTest {
 
             ready.acquire();
 
-            Assert.assertEquals(1, list.size());
-            Assert.assertEquals("Mario", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("Mario");
             list.clear();
 
             list.onItemAdded = (l -> ready.release());
@@ -618,8 +614,8 @@ public class RuleUnitTest {
 
             ready.acquire();
 
-            Assert.assertEquals(1, list.size());
-            Assert.assertEquals("Marilena", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("Marilena");
         } finally {
             executor.halt();
             executor.dispose();
@@ -675,13 +671,13 @@ public class RuleUnitTest {
             final RuleUnit ruleUnit = new RuleUnitFactory().bindVariable("persons", persons)
                     .getOrCreateRuleUnit((( InternalRuleUnitExecutor ) executor), "org.kie.test.MyRuleUnit", kcontainer.getClassLoader());
 
-            assertEquals(1, executor.run(ruleUnit));
+            assertThat(executor.run(ruleUnit)).isEqualTo(1);
 
             persons.insert(new Person("Sofia", 4));
-            assertEquals(0, executor.run(ruleUnit));
+            assertThat(executor.run(ruleUnit)).isEqualTo(0);
 
             persons.insert(new Person("Marilena", 44));
-            assertEquals(1, executor.run(ruleUnit));
+            assertThat(executor.run(ruleUnit)).isEqualTo(1);
         } finally {
             executor.dispose();
         }
@@ -707,7 +703,7 @@ public class RuleUnitTest {
                                                                       new Person("Sofia", 4));
 
             final RuleUnit adultUnit = new AdultUnit(persons);
-            assertEquals(2, executor.run(adultUnit));
+            assertThat(executor.run(adultUnit)).isEqualTo(2);
         } finally {
             executor.dispose();
         }
@@ -733,7 +729,7 @@ public class RuleUnitTest {
                                                                       new Person("Sofia", 4));
 
             final RuleUnit adultUnit = new AdultUnit(persons);
-            assertEquals(1, executor.run(adultUnit));
+            assertThat(executor.run(adultUnit)).isEqualTo(1);
         } finally {
             executor.dispose();
         }
@@ -759,7 +755,7 @@ public class RuleUnitTest {
                                                                       new Person("Sofia", 18));
 
             final RuleUnit adultUnit = new AdultUnit(persons);
-            assertEquals(0, executor.run(adultUnit));
+            assertThat(executor.run(adultUnit)).isEqualTo(0);
         } finally {
             executor.dispose();
         }
@@ -784,7 +780,7 @@ public class RuleUnitTest {
                                    new Person("Marilena", 44),
                                    new Person("Sofia", 4));
             executor = executor.bindVariable("adultAge", 18);
-            assertEquals(2, executor.run(AdultUnit.class));
+            assertThat(executor.run(AdultUnit.class)).isEqualTo(2);
         } finally {
             executor.dispose();
         }
@@ -826,7 +822,7 @@ public class RuleUnitTest {
             executor.bindVariable("log", log)
                     .bindVariable("adultAge", 18);
 
-            assertEquals(4, executor.run(NotAdultUnit.class));
+            assertThat(executor.run(NotAdultUnit.class)).isEqualTo(4);
 
             final List<String> expectedLogs = asList(RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit started.",
                                                      RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit yielded to org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit",
@@ -834,7 +830,7 @@ public class RuleUnitTest {
                                                      RuleUnitTest.class.getCanonicalName() + "$AdultUnit ended.",
                                                      RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit started.",
                                                      RuleUnitTest.class.getCanonicalName() + "$NotAdultUnit ended.");
-            assertEquals(expectedLogs, log);
+            assertThat(log).isEqualTo(expectedLogs);
         } finally {
             executor.dispose();
         }
@@ -860,7 +856,7 @@ public class RuleUnitTest {
                                    new Person("Sofia", 4));
             executor.bindVariable("minAge", 18);
 
-            assertEquals(2, executor.run(NamedVarsUnit.class));
+            assertThat(executor.run(NamedVarsUnit.class)).isEqualTo(2);
         } finally {
             executor.dispose();
         }
@@ -934,15 +930,15 @@ public class RuleUnitTest {
             persons.insert(new Person("Mario", 40));
             executor.run(BoxOfficeUnit.class); // fire BoxOfficeIsOpen -> run TicketIssuerUnit -> fire RegisterAdultTicket
 
-            assertEquals(1, list.size());
-            assertEquals("Mario", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("Mario");
             list.clear();
 
             persons.insert(new Person("Matteo", 30));
             executor.run(BoxOfficeUnit.class); // fire RegisterAdultTicket
 
-            assertEquals(1, list.size());
-            assertEquals("Matteo", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("Matteo");
             list.clear();
 
             // close one box office, the other is still open
@@ -951,8 +947,8 @@ public class RuleUnitTest {
             persons.insert(new Person("Mark", 35));
             executor.run(BoxOfficeUnit.class);
 
-            assertEquals(1, list.size());
-            assertEquals("Mark", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("Mark");
             list.clear();
 
             // all box offices, are now closed
@@ -961,7 +957,7 @@ public class RuleUnitTest {
             persons.insert(new Person("Edson", 35));
             executor.run(BoxOfficeUnit.class); // no fire
 
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
         } finally {
             executor.dispose();
         }
@@ -1039,7 +1035,7 @@ public class RuleUnitTest {
             request.addParameter("likesBeets", false, Boolean.class);
 
             executor.newDataSource("requestData", request);
-            assertEquals(5, executor.run(ComplexDataUnit.class));
+            assertThat(executor.run(ComplexDataUnit.class)).isEqualTo(5);
         } finally {
             executor.dispose();
         }
@@ -1458,32 +1454,32 @@ public class RuleUnitTest {
 
             ds.insert(1);
             executor.run(Unit0.class);
-            assertEquals(0, list.size()); // all units are inactive
+            assertThat(list.size()).isEqualTo(0); // all units are inactive
 
             final FactHandle guardA = ds.insert(true);
             executor.run(Unit0.class);
-            assertEquals(0, list.size()); // UnitB still inactive
+            assertThat(list.size()).isEqualTo(0); // UnitB still inactive
 
             ds.insert("test");
             executor.run(Unit0.class);
-            assertEquals(1, list.size()); // all units are active
-            assertEquals(1, (int) list.get(0)); // all units are active
+            assertThat(list.size()).isEqualTo(1); // all units are active
+            assertThat((int) list.get(0)).isEqualTo(1); // all units are active
             list.clear();
 
             ds.insert(2);
             executor.run(Unit0.class);
-            assertEquals(1, list.size()); // all units are inactive
-            assertEquals(2, (int) list.get(0)); // all units are active
+            assertThat(list.size()).isEqualTo(1); // all units are inactive
+            assertThat((int) list.get(0)).isEqualTo(2); // all units are active
             list.clear();
 
             ds.delete(guardA); // retracting guard A deactivate unitA and in cascade unit B
             ds.insert(3);
             executor.run(Unit0.class);
-            assertEquals(0, list.size()); // all units are inactive
+            assertThat(list.size()).isEqualTo(0); // all units are inactive
 
             ds.insert(true); // activating guard A reactivate unitA and in cascade unit B
             executor.run(Unit0.class);
-            assertEquals(1, list.size()); // all units are active
+            assertThat(list.size()).isEqualTo(1); // all units are active
             list.clear();
         } finally {
             executor.dispose();
@@ -1569,14 +1565,14 @@ public class RuleUnitTest {
                 ds.insert(4);
                 executor.run(Unit0.class);
 
-                assertEquals(3, list.size());
-                assertTrue(list.containsAll(asList("Mario>4", "Mario>3", "Sofia>3")));
+                assertThat(list.size()).isEqualTo(3);
+                assertThat(list.containsAll(asList("Mario>4", "Mario>3", "Sofia>3"))).isTrue();
 
                 list.clear();
                 ds.insert("xxx");
                 ds.insert("yyyy");
                 executor.run(Unit0.class);
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
             } finally {
                 executor.dispose();
             }
@@ -1650,16 +1646,16 @@ public class RuleUnitTest {
 
             executor.run(AdultUnit.class);
 
-            assertTrue(sofia.isHappy());
-            assertFalse(mario.isHappy());
+            assertThat(sofia.isHappy()).isTrue();
+            assertThat(mario.isHappy()).isFalse();
 
             sofia.setAge(5);
             persons.update(sofiaFh, sofia, "age");
-            assertEquals(1, executor.run(AdultUnit.class));
+            assertThat(executor.run(AdultUnit.class)).isEqualTo(1);
 
             sofia.setHair("Brown");
             persons.update(sofiaFh, sofia, "hair");
-            assertEquals(0, executor.run(AdultUnit.class));
+            assertThat(executor.run(AdultUnit.class)).isEqualTo(0);
         } finally {
             executor.dispose();
         }
@@ -1695,7 +1691,7 @@ public class RuleUnitTest {
             mark.setAddresses(Collections.singletonList(new LongAddress("street", "suburb", "zipCode", "uk")));
             executor.newDataSource("persons", mario, mark);
 
-            assertEquals(1, executor.run(AdultUnit.class));
+            assertThat(executor.run(AdultUnit.class)).isEqualTo(1);
         } finally {
             executor.dispose();
         }
@@ -1732,7 +1728,7 @@ public class RuleUnitTest {
 
             executor.newDataSource("persons", mario, mark);
 
-            assertEquals(1, executor.run(AdultUnit.class));
+            assertThat(executor.run(AdultUnit.class)).isEqualTo(1);
         } finally {
             executor.dispose();
         }
@@ -1759,7 +1755,7 @@ public class RuleUnitTest {
                                                 new Person("Sofia", 4));
 
             final RuleUnit adultUnit = new AdultUnitWithList(persons);
-            assertEquals(2, executor.run(adultUnit));
+            assertThat(executor.run(adultUnit)).isEqualTo(2);
         } finally {
             executor.dispose();
         }
@@ -1805,7 +1801,7 @@ public class RuleUnitTest {
             final RuleUnit adultUnit = new AdultUnitWithArray(new Person("Mario", 42),
                                                               new Person("Marilena", 44),
                                                               new Person("Sofia", 4));
-            assertEquals(2, executor.run(adultUnit));
+            assertThat(executor.run(adultUnit)).isEqualTo(2);
         } finally {
             executor.dispose();
         }
@@ -1849,7 +1845,7 @@ public class RuleUnitTest {
         final RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
         try {
             final RuleUnit adultUnit = new AdultUnitWithSingleItem(new Person("Mario", 42));
-            assertEquals(1, executor.run(adultUnit));
+            assertThat(executor.run(adultUnit)).isEqualTo(1);
         } finally {
             executor.dispose();
         }
@@ -1906,8 +1902,8 @@ public class RuleUnitTest {
 
             ready.acquire();
 
-            Assert.assertEquals(1, list.size());
-            Assert.assertEquals("Mario", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("Mario");
             list.clear();
 
             list.onItemAdded = (l -> ready.release());
@@ -1917,8 +1913,8 @@ public class RuleUnitTest {
 
             ready.acquire();
 
-            Assert.assertEquals(1, list.size());
-            Assert.assertEquals("Marilena", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("Marilena");
         } finally {
             executor.halt();
             executor.dispose();
@@ -1965,9 +1961,9 @@ public class RuleUnitTest {
                                                                           drl);
         final RuleUnitExecutor executor = RuleUnitExecutor.newRuleUnitExecutor( kieContainer );
         try {
-            assertTrue(executor.getKieSession().getSessionClock() instanceof SessionPseudoClock);
+            assertThat(executor.getKieSession().getSessionClock() instanceof SessionPseudoClock).isTrue();
             final RuleUnit adultUnit = new AdultUnitWithSingleItem(new Person("Mario", 42));
-            assertEquals(1, executor.run(adultUnit));
+            assertThat(executor.run(adultUnit)).isEqualTo(1);
         } finally {
             executor.dispose();
         }
@@ -2010,8 +2006,8 @@ public class RuleUnitTest {
             executor.newDataSource("persons",
                                    new Person("Mario", 42),
                                    new Person("Sofia", 4));
-            assertEquals(3, executor.run(FlowUnit.class));
-            assertEquals(list, asList("Sofia is NOT adult", "Mario is adult"));
+            assertThat(executor.run(FlowUnit.class)).isEqualTo(3);
+            assertThat(asList("Sofia is NOT adult", "Mario is adult")).isEqualTo(list);
         } finally {
             executor.dispose();
         }
@@ -2041,9 +2037,9 @@ public class RuleUnitTest {
                                    new Person("Marilena", 44),
                                    new Person("Sofia", 4));
 
-            assertEquals(1, executor.run(AdultUnit.class));
-            assertEquals(1, list.size());
-            assertEquals(86, (int) list.get(0));
+            assertThat(executor.run(AdultUnit.class)).isEqualTo(1);
+            assertThat(list.size()).isEqualTo(1);
+            assertThat((int) list.get(0)).isEqualTo(86);
         } finally {
             executor.dispose();
         }
@@ -2066,7 +2062,7 @@ public class RuleUnitTest {
         final RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
         try {
             executor.getKieSession().insert(new Person("Sofia", 4));
-            assertEquals(1, executor.run(AdultUnit.class));
+            assertThat(executor.run(AdultUnit.class)).isEqualTo(1);
         } finally {
             executor.dispose();
         }
@@ -2089,7 +2085,7 @@ public class RuleUnitTest {
         final RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
         try {
             executor.getKieSession().insert(new Person("Sofia", 4));
-            assertEquals(1, executor.run(AdultUnit.class));
+            assertThat(executor.run(AdultUnit.class)).isEqualTo(1);
         } finally {
             executor.dispose();
         }
@@ -2129,7 +2125,7 @@ public class RuleUnitTest {
                                    new Person("Marilena", 44),
                                    new Person("Sofia", 4));
 
-            assertEquals(4, executor.run(FlowUnit.class));
+            assertThat(executor.run(FlowUnit.class)).isEqualTo(4);
         } finally {
             executor.dispose();
         }
@@ -2170,9 +2166,9 @@ public class RuleUnitTest {
             final List<String> results = new ArrayList<>();
             executor.bindVariable("results", results);
 
-            assertEquals(3, executor.run(FlowUnit.class));
-            assertEquals(1, results.size());
-            assertEquals("Mario", results.get(0));
+            assertThat(executor.run(FlowUnit.class)).isEqualTo(3);
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.get(0)).isEqualTo("Mario");
         } finally {
             executor.dispose();
         }

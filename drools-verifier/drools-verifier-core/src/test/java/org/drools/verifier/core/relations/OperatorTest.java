@@ -18,25 +18,25 @@ package org.drools.verifier.core.relations;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OperatorTest {
 
     @Test
     public void testOperators() throws Exception {
-        assertEquals( Operator.EQUALS, Operator.resolve( "==" ) );
-        assertEquals( Operator.GREATER_THAN, Operator.resolve( ">" ) );
-        assertEquals( Operator.LESS_THAN, Operator.resolve( "<" ) );
-        assertEquals( Operator.GREATER_OR_EQUAL, Operator.resolve( ">=" ) );
-        assertEquals( Operator.LESS_OR_EQUAL, Operator.resolve( "<=" ) );
-        assertEquals( Operator.NOT_EQUALS, Operator.resolve( "!=" ) );
-        assertEquals( Operator.IN, Operator.resolve( "in" ) );
-        assertEquals( Operator.NOT_IN, Operator.resolve( "not in" ) );
-        assertEquals( Operator.AFTER, Operator.resolve( "after" ) );
-        assertEquals( Operator.BEFORE, Operator.resolve( "before" ) );
-        assertEquals( Operator.COINCIDES, Operator.resolve( "coincides" ) );
-        assertEquals( Operator.MATCHES, Operator.resolve( "matches" ) );
-        assertEquals( Operator.SOUNDSLIKE, Operator.resolve( "soundslike" ) );
+        assertThat(Operator.resolve("==")).isEqualTo(Operator.EQUALS);
+        assertThat(Operator.resolve(">")).isEqualTo(Operator.GREATER_THAN);
+        assertThat(Operator.resolve("<")).isEqualTo(Operator.LESS_THAN);
+        assertThat(Operator.resolve(">=")).isEqualTo(Operator.GREATER_OR_EQUAL);
+        assertThat(Operator.resolve("<=")).isEqualTo(Operator.LESS_OR_EQUAL);
+        assertThat(Operator.resolve("!=")).isEqualTo(Operator.NOT_EQUALS);
+        assertThat(Operator.resolve("in")).isEqualTo(Operator.IN);
+        assertThat(Operator.resolve("not in")).isEqualTo(Operator.NOT_IN);
+        assertThat(Operator.resolve("after")).isEqualTo(Operator.AFTER);
+        assertThat(Operator.resolve("before")).isEqualTo(Operator.BEFORE);
+        assertThat(Operator.resolve("coincides")).isEqualTo(Operator.COINCIDES);
+        assertThat(Operator.resolve("matches")).isEqualTo(Operator.MATCHES);
+        assertThat(Operator.resolve("soundslike")).isEqualTo(Operator.SOUNDSLIKE);
 
     }
 }

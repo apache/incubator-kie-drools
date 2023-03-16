@@ -21,7 +21,6 @@ import java.io.StringReader;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -35,8 +34,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class UnmarshallingTest {
 
@@ -86,8 +85,7 @@ public class UnmarshallingTest {
             fail( t.getClass().getSimpleName() + " thrown when trying to unmarshall (see stack trace in output)." );
         }
         int rules = ksession.fireAllRules();
-        Assert.assertEquals( 2,
-                             rules );
+        assertThat(rules).isEqualTo(2);
     }
 
     private KieBase initializeKnowledgeBase( String rule ) {
@@ -145,7 +143,7 @@ public class UnmarshallingTest {
 
         KieSession ksession = kBase.newKieSession();
         ksession.insert( "test" );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         Marshaller marshaller = KieServices.get().getMarshallers().newMarshaller(kBase);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -155,6 +153,6 @@ public class UnmarshallingTest {
 
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
         ksession = marshaller.unmarshall( bais );
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 }

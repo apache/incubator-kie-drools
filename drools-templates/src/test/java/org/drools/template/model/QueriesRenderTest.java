@@ -18,7 +18,7 @@ package org.drools.template.model;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class QueriesRenderTest {
 
@@ -29,15 +29,13 @@ public class QueriesRenderTest {
         DRLOutput out = new DRLOutput();
         queries.renderDRL(out);
 
-        assertEquals("",
-                     out.toString());
+        assertThat(out.toString()).isEqualTo("");
 
         queries.setQueriesListing("query myQuery(String value) Person() end");
         out = new DRLOutput();
         queries.renderDRL(out);
         final String s = out.toString();
-        assertEquals("query myQuery(String value) Person() end\n",
-                     s);
+        assertThat(s).isEqualTo("query myQuery(String value) Person() end\n");
     }
 
 }

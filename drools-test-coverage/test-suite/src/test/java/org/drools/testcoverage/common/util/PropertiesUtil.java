@@ -16,17 +16,16 @@
 
 package org.drools.testcoverage.common.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Provides utility methods to obtain relevant properties and directories for a test.
@@ -56,9 +55,9 @@ public class PropertiesUtil {
     public static synchronized File getBasedir() {
         if (basedir == null) {
             String basedirProp = System.getProperty("basedir");
-            assertNotNull("System property for basedir not set!", basedirProp);
+            assertThat(basedirProp).as("System property for basedir not set!").isNotNull();
             basedir = new File(basedirProp);
-            assertTrue("Basedir " + basedir.getAbsolutePath() + " does not exist! Check value of 'basedir' system property.", basedir.exists());
+            assertThat(basedir.exists()).as("Basedir " + basedir.getAbsolutePath() + " does not exist! Check value of 'basedir' system property.").isTrue();
         }
         return basedir;
     }
@@ -135,7 +134,7 @@ public class PropertiesUtil {
     private static synchronized Properties createProperties() {
         // lazy initialization of properties
         File propFile = getPropertiesFile(getBasedir().getAbsoluteFile(), BUILD_PROPS_SEARCH_PARENT_DIR_LIMIT);
-        assertTrue("Couldn't find build.properties at " + propFile.getAbsolutePath(), propFile.exists());
+        assertThat(propFile.exists()).as("Couldn't find build.properties at " + propFile.getAbsolutePath()).isTrue();
         properties = new Properties();
         try (FileInputStream fis = new FileInputStream(propFile)) {
             properties.load(fis);
@@ -149,7 +148,7 @@ public class PropertiesUtil {
 
     private static File getPropertiesFile(final File dir, final int parentDirLimit) {
         LOGGER.debug("Searching for 'build.properties', parent search limit is {}.", parentDirLimit);
-        assertTrue("build.properties file not found before reaching the limit for searching parent directories.", parentDirLimit >= 0 && dir != null);
+        assertThat(parentDirLimit >= 0 && dir != null).as("build.properties file not found before reaching the limit for searching parent directories.").isTrue();
         LOGGER.debug("- searching dir: {}", dir.getAbsolutePath());
 
         final File propFile = new File(dir, "build.properties");

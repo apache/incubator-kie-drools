@@ -31,9 +31,7 @@ import org.drools.core.util.index.TupleList;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FieldIndexEntryTest {
 
@@ -59,7 +57,7 @@ public class FieldIndexEntryTest {
         final TupleList index = new AbstractHashTable.IndexTupleList( singleIndex, new AbstractHashTable.SingleHashEntry("stilton".hashCode(), "stilton") );
 
         // Test initial construction
-        assertNull( index.getFirst() );
+        assertThat(index.getFirst()).isNull();
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -71,20 +69,17 @@ public class FieldIndexEntryTest {
         index.add( h1RightTuple );
 
         final Tuple entry1 = index.getFirst();
-        assertSame( h1,
-                    entry1.getFactHandle() );
-        assertNull( entry1.getNext() );
-        assertSame( entry1,
-                    index.get( h1 ) );
+        assertThat(entry1.getFactHandle()).isSameAs(h1);
+        assertThat(entry1.getNext()).isNull();
+        assertThat(index.get(h1)).isSameAs(entry1);
 
         // test get
         final Tuple entry2 = index.get( new RightTupleImpl( h1, null ) );
-        assertSame( entry1,
-                    entry2 );
+        assertThat(entry2).isSameAs(entry1);
 
         // test remove
         index.remove( h1RightTuple );
-        assertNull( index.getFirst() );
+        assertThat(index.getFirst()).isNull();
     }
 
     @Test
@@ -114,28 +109,22 @@ public class FieldIndexEntryTest {
         // test add
         index.add( h1RightTuple );
         index.add( h2RightTuple );
-        assertEquals( h1,
-                      index.getFirst().getFactHandle() );
-        assertEquals( h2,
-                      ((RightTuple) index.getFirst().getNext()).getFactHandle() );
+        assertThat(index.getFirst().getFactHandle()).isEqualTo(h1);
+        assertThat(((RightTuple) index.getFirst().getNext()).getFactHandle()).isEqualTo(h2);
 
         // test get
-        assertEquals( h1,
-                      index.get( h1 ).getFactHandle() );
-        assertEquals( h2,
-                      index.get( h2 ).getFactHandle() );
+        assertThat(index.get(h1).getFactHandle()).isEqualTo(h1);
+        assertThat(index.get(h2).getFactHandle()).isEqualTo(h2);
 
         // test removal for combinations
         // remove first
         index.remove( h2RightTuple );
-        assertEquals( h1RightTuple.getFactHandle(),
-                      index.getFirst().getFactHandle() );
+        assertThat(index.getFirst().getFactHandle()).isEqualTo(h1RightTuple.getFactHandle());
 
         // remove second
         index.add( h2RightTuple );
         index.remove( h1RightTuple );
-        assertEquals( h2RightTuple.getFactHandle(),
-                      index.getFirst().getFactHandle() );
+        assertThat(index.getFirst().getFactHandle()).isEqualTo(h2RightTuple.getFactHandle());
 
         // check index type does not change, as this fact is removed
         stilton1.setType( "cheddar" );
@@ -174,42 +163,30 @@ public class FieldIndexEntryTest {
         index.add( h1RightTuple );
         index.add( h2RightTuple );
         index.add( h3RightTuple );
-        assertEquals( h1,
-                      index.getFirst().getFactHandle() );
-        assertEquals( h2,
-                      ((RightTuple) index.getFirst().getNext()).getFactHandle() );
-        assertEquals( h3,
-                      ((RightTuple) index.getFirst().getNext().getNext()).getFactHandle() );
+        assertThat(index.getFirst().getFactHandle()).isEqualTo(h1);
+        assertThat(((RightTuple) index.getFirst().getNext()).getFactHandle()).isEqualTo(h2);
+        assertThat(((RightTuple) index.getFirst().getNext().getNext()).getFactHandle()).isEqualTo(h3);
 
         // test get
-        assertEquals( h1,
-                      index.get( h1 ).getFactHandle() );
-        assertEquals( h2,
-                      index.get( h2 ).getFactHandle() );
-        assertEquals( h3,
-                      index.get( h3 ).getFactHandle() );
+        assertThat(index.get(h1).getFactHandle()).isEqualTo(h1);
+        assertThat(index.get(h2).getFactHandle()).isEqualTo(h2);
+        assertThat(index.get(h3).getFactHandle()).isEqualTo(h3);
 
         // test removal for combinations
         //remove first
         index.remove( h3RightTuple );
-        assertEquals( h1,
-                      index.getFirst().getFactHandle() );
-        assertEquals( h2,
-                      ((RightTuple) index.getFirst().getNext()).getFactHandle() );
+        assertThat(index.getFirst().getFactHandle()).isEqualTo(h1);
+        assertThat(((RightTuple) index.getFirst().getNext()).getFactHandle()).isEqualTo(h2);
 
         index.add( h3RightTuple );
         index.remove( h2RightTuple );
-        assertEquals( h1,
-                      index.getFirst().getFactHandle() );
-        assertEquals( h3,
-                      ((RightTuple) index.getFirst().getNext()).getFactHandle() );
+        assertThat(index.getFirst().getFactHandle()).isEqualTo(h1);
+        assertThat(((RightTuple) index.getFirst().getNext()).getFactHandle()).isEqualTo(h3);
 
         index.add( h2RightTuple );
         index.remove( h1RightTuple );
-        assertEquals( h3,
-                      index.getFirst().getFactHandle() );
-        assertEquals( h2,
-                      ((RightTuple) index.getFirst().getNext()).getFactHandle() );
+        assertThat(index.getFirst().getFactHandle()).isEqualTo(h3);
+        assertThat(((RightTuple) index.getFirst().getNext()).getFactHandle()).isEqualTo(h2);
 
         index.remove( index.getFirst() );
         // check index type does not change, as this fact is removed

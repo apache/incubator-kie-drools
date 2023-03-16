@@ -17,8 +17,9 @@ package org.drools.verifier.core.checks;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ComparableWrapperTest {
 
@@ -36,35 +37,35 @@ public class ComparableWrapperTest {
 
         Arrays.sort(unsorted);
 
-        Assert.assertArrayEquals(sorted, unsorted);
+        assertThat(sorted).isEqualTo(unsorted);
     }
 
     @Test
     public void compareTo() {
-        Assert.assertEquals(0, theNull.compareTo(theNull));
-        Assert.assertEquals(0, one.compareTo(one));
-        Assert.assertEquals(0, ten.compareTo(ten));
-        Assert.assertEquals(0, min.compareTo(min));
-        Assert.assertEquals(0, max.compareTo(max));
+        assertThat(theNull.compareTo(theNull)).isEqualTo(0);
+        assertThat(one.compareTo(one)).isEqualTo(0);
+        assertThat(ten.compareTo(ten)).isEqualTo(0);
+        assertThat(min.compareTo(min)).isEqualTo(0);
+        assertThat(max.compareTo(max)).isEqualTo(0);
 
-        Assert.assertTrue(one.compareTo(theNull) > 0);
-        Assert.assertTrue(one.compareTo(ten) < 0);
-        Assert.assertTrue(one.compareTo(min) > 0);
-        Assert.assertTrue(one.compareTo(max) < 0);
+        assertThat(one.compareTo(theNull) > 0).isTrue();
+        assertThat(one.compareTo(ten) < 0).isTrue();
+        assertThat(one.compareTo(min) > 0).isTrue();
+        assertThat(one.compareTo(max) < 0).isTrue();
 
-        Assert.assertTrue(ten.compareTo(theNull) > 0);
-        Assert.assertTrue(ten.compareTo(one) > 0);
-        Assert.assertTrue(ten.compareTo(min) > 0);
-        Assert.assertTrue(ten.compareTo(max) < 0);
+        assertThat(ten.compareTo(theNull) > 0).isTrue();
+        assertThat(ten.compareTo(one) > 0).isTrue();
+        assertThat(ten.compareTo(min) > 0).isTrue();
+        assertThat(ten.compareTo(max) < 0).isTrue();
 
-        Assert.assertTrue(min.compareTo(theNull) < 0);
-        Assert.assertTrue(min.compareTo(one) < 0);
-        Assert.assertTrue(min.compareTo(ten) < 0);
-        Assert.assertTrue(min.compareTo(max) < 0);
+        assertThat(min.compareTo(theNull) < 0).isTrue();
+        assertThat(min.compareTo(one) < 0).isTrue();
+        assertThat(min.compareTo(ten) < 0).isTrue();
+        assertThat(min.compareTo(max) < 0).isTrue();
 
-        Assert.assertTrue(max.compareTo(theNull) > 0);
-        Assert.assertTrue(max.compareTo(one) > 0);
-        Assert.assertTrue(max.compareTo(ten) > 0);
-        Assert.assertTrue(max.compareTo(min) > 0);
+        assertThat(max.compareTo(theNull) > 0).isTrue();
+        assertThat(max.compareTo(one) > 0).isTrue();
+        assertThat(max.compareTo(ten) > 0).isTrue();
+        assertThat(max.compareTo(min) > 0).isTrue();
     }
 }

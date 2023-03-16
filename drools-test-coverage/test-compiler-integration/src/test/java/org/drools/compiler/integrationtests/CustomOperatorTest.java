@@ -43,7 +43,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.EvaluatorOption;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class CustomOperatorTest {
@@ -99,7 +99,7 @@ public class CustomOperatorTest {
                 ksession.insert(alice);
                 ksession.insert(bob);
 
-                assertEquals(1, ksession.fireAllRules());
+                assertThat(ksession.fireAllRules()).isEqualTo(1);
             } finally {
                 ksession.dispose();
             }
@@ -211,7 +211,7 @@ public class CustomOperatorTest {
                 ksession.insert(alice);
                 ksession.insert(bob);
 
-                assertEquals(1, ksession.fireAllRules());
+                assertThat(ksession.fireAllRules()).isEqualTo(1);
             } finally {
                 ksession.dispose();
             }

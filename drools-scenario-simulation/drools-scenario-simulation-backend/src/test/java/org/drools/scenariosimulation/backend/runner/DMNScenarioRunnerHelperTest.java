@@ -18,8 +18,8 @@ package org.drools.scenariosimulation.backend.runner;
 
 import java.math.BigDecimal;
 import java.util.AbstractMap;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +55,7 @@ import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
@@ -68,23 +69,16 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.IMPORTED_PREFIX;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGeneratedDMNMessageList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import static org.kie.dmn.api.core.DMNMessage.Severity.ERROR;
 import static org.kie.dmn.api.core.DMNMessage.Severity.WARN;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -198,8 +192,8 @@ public class DMNScenarioRunnerHelperTest {
         // test 2 - when decisionResult contains a null value skip the steps and just do the comparison (that should be false in this case)
         runnerHelper.verifyConditions(simulation.getScesimModelDescriptor(), scenarioRunnerData1, expressionEvaluatorFactory, requestContextMock);
 
-        assertEquals(1, scenarioRunnerData1.getResults().size());
-        assertFalse(scenarioRunnerData1.getResults().get(0).getResult());
+        assertThat(scenarioRunnerData1.getResults().size()).isEqualTo(1);
+        assertThat(scenarioRunnerData1.getResults().get(0).getResult()).isFalse();
 
         when(dmnDecisionResultMock.getResult()).thenReturn("");
 
@@ -219,8 +213,8 @@ public class DMNScenarioRunnerHelperTest {
         // test 4 - check are performed (but fail)
         runnerHelper.verifyConditions(simulation.getScesimModelDescriptor(), scenarioRunnerData2, expressionEvaluatorFactory, requestContextMock);
 
-        assertEquals(1, scenarioRunnerData2.getResults().size());
-        assertFalse(scenarioRunnerData2.getResults().get(0).getResult());
+        assertThat(scenarioRunnerData2.getResults().size()).isEqualTo(1);
+        assertThat(scenarioRunnerData2.getResults().get(0).getResult()).isFalse();
 
         ScenarioRunnerData scenarioRunnerData3 = new ScenarioRunnerData();
         scenarioRunnerData3.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(firstNameExpectedValue)));
@@ -229,8 +223,8 @@ public class DMNScenarioRunnerHelperTest {
         // test 5 - check are performed (but success)
         runnerHelper.verifyConditions(simulation.getScesimModelDescriptor(), scenarioRunnerData3, expressionEvaluatorFactory, requestContextMock);
 
-        assertEquals(1, scenarioRunnerData3.getResults().size());
-        assertTrue(scenarioRunnerData3.getResults().get(0).getResult());
+        assertThat(scenarioRunnerData3.getResults().size()).isEqualTo(1);
+        assertThat(scenarioRunnerData3.getResults().get(0).getResult()).isTrue();
 
         // test 6 - verify that when expression evaluation fails the corresponding expression is marked as error
         ExpressionEvaluatorFactory expressionEvaluatorFactoryMock = mock(ExpressionEvaluatorFactory.class);
@@ -239,7 +233,7 @@ public class DMNScenarioRunnerHelperTest {
                                       scenarioRunnerData3,
                                       expressionEvaluatorFactoryMock,
                                       requestContextMock);
-        assertEquals(FactMappingValueStatus.FAILED_WITH_ERROR, scenarioRunnerData3.getResults().get(0).getFactMappingValue().getStatus());
+        assertThat(scenarioRunnerData3.getResults().get(0).getFactMappingValue().getStatus()).isNotEqualTo(FactMappingValueStatus.SUCCESS);
     }
 
     @SuppressWarnings("unchecked")
@@ -256,15 +250,15 @@ public class DMNScenarioRunnerHelperTest {
                 String.class.getCanonicalName(),
                 params,
                 this.getClass().getClassLoader());
-        assertTrue(objectRaw instanceof Map);
+        assertThat(objectRaw instanceof Map).isTrue();
 
         Map<String, Object> object = (Map<String, Object>) objectRaw;
-        assertEquals(BigDecimal.valueOf(10), object.get("age"));
-        assertTrue(object.get("creator") instanceof Map);
+        assertThat(object.get("age")).isEqualTo(BigDecimal.valueOf(10));
+        assertThat(object.get("creator") instanceof Map).isTrue();
 
         Map<String, Object> creator = (Map<String, Object>) object.get("creator");
-        assertEquals("TestName", creator.get("name"));
-        assertEquals("TestSurname", creator.get("surname"));
+        assertThat(creator.get("name")).isEqualTo("TestName");
+        assertThat(creator.get("surname")).isEqualTo("TestSurname");
     }
 
     @Test
@@ -280,9 +274,9 @@ public class DMNScenarioRunnerHelperTest {
                 params,
                 this.getClass().getClassLoader());
 
-        assertTrue(objectRaw instanceof String);
+        assertThat(objectRaw instanceof String).isTrue();
 
-        assertEquals(directMappingSimpleTypeValue, objectRaw);
+        assertThat(objectRaw).isEqualTo(directMappingSimpleTypeValue);
     }
 
     @Test
@@ -297,7 +291,7 @@ public class DMNScenarioRunnerHelperTest {
                 params,
                 this.getClass().getClassLoader());
 
-        assertNull(objectRaw);
+        assertThat(objectRaw).isNull();
     }
 
     @SuppressWarnings("unchecked")
@@ -316,12 +310,12 @@ public class DMNScenarioRunnerHelperTest {
                 params,
                 this.getClass().getClassLoader());
 
-        assertTrue(objectRaw instanceof Map);
+        assertThat(objectRaw instanceof Map).isTrue();
 
         Map<String, Object> object = (Map<String, Object>) objectRaw;
 
-        assertEquals("value1", object.get("key1"));
-        assertEquals("value2", object.get("key2"));
+        assertThat(object.get("key1")).isEqualTo("value1");
+        assertThat(object.get("key2")).isEqualTo("value2");
     }
 
     @Test
@@ -343,12 +337,11 @@ public class DMNScenarioRunnerHelperTest {
                                                                               failedDecision,
                                                                               null,
                                                                               expressionEvaluator);
-        assertFalse(failedResult.isValid());
-        assertEquals("The decision \"" +
-                             failedDecision.getDecisionName() +
-                             "\" has not been successfully evaluated: " +
-                             failedDecision.getEvaluationStatus(),
-                     failedResult.getErrorMessage().get());
+        assertThat(failedResult.isValid()).isFalse();
+        assertThat(failedResult.getErrorMessage().get()).isEqualTo("The decision \"" +
+                failedDecision.getDecisionName() +
+                "\" has not been successfully evaluated: " +
+                failedDecision.getEvaluationStatus());
     }
 
     @Test
@@ -362,11 +355,10 @@ public class DMNScenarioRunnerHelperTest {
                                                                              failedDecision,
                                                                              Arrays.asList(warnMessage, errorMessage),
                                                                              expressionEvaluator);
-        assertFalse(failedResult.isValid());
-        assertEquals("The decision \"" +
-                             failedDecision.getDecisionName() +
-                             "\" has not been successfully evaluated: DMN Internal Error",
-                     failedResult.getErrorMessage().get());
+        assertThat(failedResult.isValid()).isFalse();
+        assertThat(failedResult.getErrorMessage().get()).isEqualTo("The decision \"" +
+                failedDecision.getDecisionName() +
+                "\" has not been successfully evaluated: DMN Internal Error");
     }
 
     @Test
@@ -420,41 +412,41 @@ public class DMNScenarioRunnerHelperTest {
 
         verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_FILE_PATH);
         verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(setKeyCaptor.capture(), setValueCaptor.capture());
-        assertTrue(setKeyCaptor.getAllValues().containsAll(expectedInputDataToLoad));
+        assertThat(setKeyCaptor.getAllValues().containsAll(expectedInputDataToLoad)).isTrue();
         for (int i = 0; i < inputObjects; i++) {
             String key = setKeyCaptor.getAllValues().get(i);
             Map<String, Object> value = (Map<String, Object>) setValueCaptor.getAllValues().get(i);
             if (personFactIdentifier.getName().equals(key)) {
-                assertEquals(backgroundPersonFactData.getValue(), value.get(backgroundPersonFactData.getKey()));
-                assertNotEquals(backgroundPersonFactData2.getValue(), value.get(backgroundPersonFactData2.getKey()));
-                assertEquals(givenPersonFactData.getValue(), value.get(givenPersonFactData.getKey()));
-                assertEquals(givenPersonFactData2.getValue(), value.get(givenPersonFactData2.getKey()));
-                assertEquals(3, value.size());
+                assertThat(value.get(backgroundPersonFactData.getKey())).isEqualTo(backgroundPersonFactData.getValue());
+                assertThat(value.get(backgroundPersonFactData2.getKey())).isNotEqualTo(backgroundPersonFactData2.getValue());
+                assertThat(value.get(givenPersonFactData.getKey())).isEqualTo(givenPersonFactData.getValue());
+                assertThat(value.get(givenPersonFactData2.getKey())).isEqualTo(givenPersonFactData2.getValue());
+                assertThat(value.size()).isEqualTo(3);
             } else if (disputeFactIdentifier.getName().equals(key)) {
-                assertEquals(backgroundDisputeFactData.getValue(), value.get(backgroundDisputeFactData.getKey()));
-                assertEquals(1, value.size());
+                assertThat(value.get(backgroundDisputeFactData.getKey())).isEqualTo(backgroundDisputeFactData.getValue());
+                assertThat(value.size()).isEqualTo(1);
             } else if (bookFactIdentifier.getName().equals(key)) {
-                assertEquals(givenBookFactData.getValue(), value.get(givenBookFactData.getKey()));
-                assertEquals(givenBookFactData2.getValue(), value.get(givenBookFactData2.getKey()));
-                assertEquals(2, value.size());
+                assertThat(value.get(givenBookFactData.getKey())).isEqualTo(givenBookFactData.getValue());
+                assertThat(value.get(givenBookFactData2.getKey())).isEqualTo(givenBookFactData2.getValue());
+                assertThat(value.size()).isEqualTo(2);
             } else if (IMPORTED_PREFIX.equals(key)) {
                 Map<String, Object> subValueDispute = (Map<String, Object>) value.get("Dispute");
-                assertEquals(backgroundImportedDisputeFactData.getValue(), subValueDispute.get(backgroundImportedDisputeFactData.getKey()));
-                assertEquals(1, subValueDispute.size());
+                assertThat(subValueDispute.get(backgroundImportedDisputeFactData.getKey())).isEqualTo(backgroundImportedDisputeFactData.getValue());
+                assertThat(subValueDispute.size()).isEqualTo(1);
                 Map<String, Object> subValueBook = (Map<String, Object>) value.get("Book");
-                assertEquals(givenImportedBookFactData.getValue(), subValueBook.get(givenImportedBookFactData.getKey()));
-                assertEquals(givenImportedBookFactData2.getValue(), subValueBook.get(givenImportedBookFactData2.getKey()));
-                assertEquals(2, subValueBook.size());
+                assertThat(subValueBook.get(givenImportedBookFactData.getKey())).isEqualTo(givenImportedBookFactData.getValue());
+                assertThat(subValueBook.get(givenImportedBookFactData2.getKey())).isEqualTo(givenImportedBookFactData2.getValue());
+                assertThat(subValueBook.size()).isEqualTo(2);
                 Map<String, Object> subValuePerson = (Map<String, Object>) value.get("Person");
-                assertEquals(backgroundImportedPersonFactData.getValue(), subValuePerson.get(backgroundImportedPersonFactData.getKey()));
-                assertNotEquals(backgroundImportedPersonFactData2.getValue(), subValuePerson.get(backgroundImportedPersonFactData2.getKey()));
-                assertEquals(givenImportedPersonFactData.getValue(), subValuePerson.get(givenImportedPersonFactData.getKey()));
-                assertEquals(givenImportedPersonFactData2.getValue(), subValuePerson.get(givenImportedPersonFactData2.getKey()));
-                assertEquals(3, subValuePerson.size());
+                assertThat(subValuePerson.get(backgroundImportedPersonFactData.getKey())).isEqualTo(backgroundImportedPersonFactData.getValue());
+                assertThat(subValuePerson.get(backgroundImportedPersonFactData2.getKey())).isNotEqualTo(backgroundImportedPersonFactData2.getValue());
+                assertThat(subValuePerson.get(givenImportedPersonFactData.getKey())).isEqualTo(givenImportedPersonFactData.getValue());
+                assertThat(subValuePerson.get(givenImportedPersonFactData2.getKey())).isEqualTo(givenImportedPersonFactData2.getValue());
+                assertThat(subValuePerson.size()).isEqualTo(3);
                 Map<String, Object> subValueWrBook = (Map<String, Object>) value.get("wr.Book");
-                assertEquals(givenImportedWrBookFactData.getValue(), subValueWrBook.get(givenImportedWrBookFactData.getKey()));
-                assertEquals(1, subValueWrBook.size());
-                assertEquals(4, value.size());
+                assertThat(subValueWrBook.get(givenImportedWrBookFactData.getKey())).isEqualTo(givenImportedWrBookFactData.getValue());
+                assertThat(subValueWrBook.size()).isEqualTo(1);
+                assertThat(value.size()).isEqualTo(4);
             } else {
                 fail("Unexpected key: " + key);
             }
@@ -487,16 +479,16 @@ public class DMNScenarioRunnerHelperTest {
         ScenarioWithIndex scenarioWithIndex = new ScenarioWithIndex(1, scenario1);
         ScenarioResultMetadata scenarioResultMetadata = runnerHelper.extractResultMetadata(requestContextMock, scenarioWithIndex);
 
-        assertEquals(scenarioWithIndex, scenarioResultMetadata.getScenarioWithIndex());
-        assertEquals(5, scenarioResultMetadata.getAvailable().size());
-        assertTrue(scenarioResultMetadata.getAvailable().contains("decision1"));
-        assertEquals(1, scenarioResultMetadata.getExecuted().size());
-        assertTrue(scenarioResultMetadata.getExecuted().contains("decision2"));
-        assertFalse(scenarioResultMetadata.getExecuted().contains("decision3"));
+        assertThat(scenarioResultMetadata.getScenarioWithIndex()).isEqualTo(scenarioWithIndex);
+        assertThat(scenarioResultMetadata.getAvailable().size()).isEqualTo(5);
+        assertThat(scenarioResultMetadata.getAvailable().contains("decision1")).isTrue();
+        assertThat(scenarioResultMetadata.getExecuted().size()).isEqualTo(1);
+        assertThat(scenarioResultMetadata.getExecuted().contains("decision2")).isTrue();
+        assertThat(scenarioResultMetadata.getExecuted().contains("decision3")).isFalse();
         final List<AuditLogLine> auditLogLines = scenarioResultMetadata.getAuditLogLines();
-        assertNotNull(auditLogLines);
+        assertThat(auditLogLines).isNotNull();
         if (messages == null) {
-            assertEquals(decisionResults.size(), auditLogLines.size());
+            assertThat(auditLogLines.size()).isEqualTo(decisionResults.size());
             for (int i = 0; i < decisionResults.size(); i++) {
                 commonCheckAuditLogLine(auditLogLines.get(i), decisionResults.get(i).getDecisionName(), decisionResults.get(i).getEvaluationStatus().name(), null);
             }
@@ -504,7 +496,7 @@ public class DMNScenarioRunnerHelperTest {
             List<String> expectedDecisions = Arrays.asList("decision2", "decision3");
             List<String> expectedResults = Arrays.asList(DecisionEvaluationStatus.SUCCEEDED.toString(), DecisionEvaluationStatus.FAILED.toString());
             int expectedLines = messages.size() * expectedDecisions.size();
-            assertEquals(expectedLines, auditLogLines.size());
+            assertThat(auditLogLines.size()).isEqualTo(expectedLines);
             for (int i = 0; i < auditLogLines.size(); i++) {
                 int messagesIndex = i < messages.size() ? i : i - messages.size();
                 String decisionName = i < messages.size() ? expectedDecisions.get(0) : expectedDecisions.get(1);

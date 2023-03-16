@@ -40,9 +40,9 @@ import javax.management.ObjectName;
 import java.lang.management.ManagementFactory;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
 
 public class MonitoringWithJPAKnowledgeServiceTest {
     private static Logger LOG = LoggerFactory.getLogger(MonitoringWithJPAKnowledgeServiceTest.class);
@@ -105,10 +105,10 @@ public class MonitoringWithJPAKnowledgeServiceTest {
                 mbserver,
                 DroolsManagementAgent.createObjectNameBy(containerId, "org.kie.monitoring.kbase1", KieSessionType.STATEFUL, "persistent"),
                 KieSessionMonitoringMXBean.class);
-        assertEquals(1, statefulKieSessionMonitor.getTotalMatchesFired() );
-        
+        assertThat(statefulKieSessionMonitor.getTotalMatchesFired()).isEqualTo(1);
+
         // There should be 3 mbeans for KieContainer, KieBase and KieSession.
-        assertEquals(3, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(containerId)+",*"), null).size());
+        assertThat(mbserver.queryNames(new ObjectName("org.kie:kcontainerId=" + ObjectName.quote(containerId) + ",*"), null).size()).isEqualTo(3);
         
         // needs to be done separately:
         statefulKieSession.dispose();
@@ -116,9 +116,9 @@ public class MonitoringWithJPAKnowledgeServiceTest {
         StatefulKnowledgeSession deserialized = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionIdentifier, kb, null, createEnvironment(context));
         deserialized.insert("String2");
         deserialized.fireAllRules();
-        
+
         // the mbean does not persist state, but in this case consolidate by grouping the fire of the former session and the deserialized one 
-        assertEquals(2, statefulKieSessionMonitor.getTotalMatchesFired() );
+        assertThat(statefulKieSessionMonitor.getTotalMatchesFired()).isEqualTo(2);
         
         kc.dispose();
     }

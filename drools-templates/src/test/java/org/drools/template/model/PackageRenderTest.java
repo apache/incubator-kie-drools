@@ -18,8 +18,7 @@ package org.drools.template.model;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test rendering and running a whole sample ruleset, from the model classes
@@ -65,14 +64,14 @@ public class PackageRenderTest {
         ruleSet.renderDRL(out);
 
         final String drl = out.getDRL();
-        assertNotNull(drl);
+        assertThat(drl).isNotNull();
         System.out.println(drl);
-        assertTrue(drl.indexOf("rule \"myrule\"") > -1);
-        assertTrue(drl.indexOf("salience 42") > -1);
-        assertTrue(drl.indexOf("//rule comments") > -1);
-        assertTrue(drl.indexOf("my functions") > -1);
-        assertTrue(drl.indexOf("package my_ruleset;") > -1);
-        assertTrue(drl.indexOf("rule \"other rule\"") > drl.indexOf("rule \"myrule\""));
+        assertThat(drl.indexOf("rule \"myrule\"") > -1).isTrue();
+        assertThat(drl.indexOf("salience 42") > -1).isTrue();
+        assertThat(drl.indexOf("//rule comments") > -1).isTrue();
+        assertThat(drl.indexOf("my functions") > -1).isTrue();
+        assertThat(drl.indexOf("package my_ruleset;") > -1).isTrue();
+        assertThat(drl.indexOf("rule \"other rule\"") > drl.indexOf("rule \"myrule\"")).isTrue();
     }
 
     @Test
@@ -85,8 +84,8 @@ public class PackageRenderTest {
         ruleSet.renderDRL(out);
 
         final String drl = out.getDRL();
-        assertTrue(drl.contains("agenda-group \"agroup\""));
-        assertTrue(drl.contains("no-loop true"));
-        assertTrue(drl.contains("salience 100"));
+        assertThat(drl.contains("agenda-group \"agroup\"")).isTrue();
+        assertThat(drl.contains("no-loop true")).isTrue();
+        assertThat(drl.contains("salience 100")).isTrue();
     }
 }

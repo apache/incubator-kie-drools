@@ -20,29 +20,18 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldColumnPair;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.MapValues;
-import org.dmg.pmml.PMML;
-import org.dmg.pmml.Row;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldColumnPair;
-import org.kie.pmml.commons.model.expressions.KiePMMLRow;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
-import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
-import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLFieldColumnPairFactoryTest {
 
@@ -61,7 +50,7 @@ public class KiePMMLFieldColumnPairFactoryTest {
                                                                                                   fieldColumnPair);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, fieldName, column));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected,  retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLFieldColumnPair.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }

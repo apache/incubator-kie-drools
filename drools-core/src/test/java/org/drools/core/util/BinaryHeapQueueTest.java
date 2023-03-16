@@ -15,6 +15,9 @@
 
 package org.drools.core.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
@@ -30,18 +33,11 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.ConflictResolver;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Thes test class uses auxiliary test classes in org.kie.util:
@@ -52,8 +48,8 @@ import static org.junit.Assert.assertTrue;
  * position. Finally, Items are retrieved and the order is checked.
  * 
  * Experience has shown that at least 6 Items are required to demonstrate
- * a certain bug, so don't reduce the max parameter. 
- *
+ * a certain bug, so don't reduce the max parameter.
+ * 
  */
 public class BinaryHeapQueueTest {
 
@@ -117,8 +113,7 @@ public class BinaryHeapQueueTest {
                 sb.append( " " ).append( sal );
                 if ( sal != i ) ok = false;
             }
-            assertTrue( "incorrect order in " + sb.toString(),
-                        ok );
+            assertThat(ok).as("incorrect order in " + sb.toString()).isTrue();
             //      System.out.println( sb.toString() );
         }
     }
@@ -207,43 +202,6 @@ public class BinaryHeapQueueTest {
         }
     }
 
-    public static class IsTuple extends BaseMatcher<List<InternalFactHandle>> {
-        private final InternalFactHandle[] expected;
-
-        public IsTuple(List<InternalFactHandle> tupleAsList) {
-            expected = tupleAsList.toArray( new InternalFactHandle[tupleAsList.size()] );
-        }
-
-        public IsTuple(InternalFactHandle[] tuple) {
-            expected = tuple;
-        }
-
-        public boolean matches(Object arg) {
-            if ( arg == null || !(arg.getClass().isArray() && InternalFactHandle.class.isAssignableFrom( arg.getClass().getComponentType() )) ) {
-                return false;
-            }
-            InternalFactHandle[] actual = (InternalFactHandle[]) arg;
-            return Arrays.equals( expected,
-                                  actual );
-        }
-
-        public void describeTo(Description description) {
-            description.appendValue( expected );
-        }
-
-        /**
-         * Is the value equal to another value, as tested by the
-         * {@link java.lang.Object#equals} invokedMethod?
-         */
-        
-        public static Matcher<List<InternalFactHandle>> isTuple(List<InternalFactHandle> operand) {
-            return new IsTuple( operand );
-        }
-
-        public static Matcher< ? super List<InternalFactHandle>> isTuple(InternalFactHandle... operands) {
-            return new IsTuple( operands );
-        }
-    }
 
     public static class Item<T extends ModedAssertion<T>>
             implements

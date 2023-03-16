@@ -18,17 +18,15 @@ package org.kie.pmml.evaluator.assembler.implementations;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.api.exceptions.KiePMMLException;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class HasKnowledgeBuilderImplTest {
 
@@ -46,9 +44,9 @@ public class HasKnowledgeBuilderImplTest {
     @Test
     public void getClassLoader() {
         ClassLoader retrieved = hasKnowledgeBuilder.getClassLoader();
-        assertNotNull(retrieved);
-        assertEquals(knowledgeBuilder.getRootClassLoader(),retrieved);
-        assertTrue(retrieved instanceof ProjectClassLoader);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(knowledgeBuilder.getRootClassLoader());
+        assertThat(retrieved).isInstanceOf(ProjectClassLoader.class);
     }
 
     @Test
@@ -56,8 +54,8 @@ public class HasKnowledgeBuilderImplTest {
         Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(CLASS_SOURCE_NAME, CLASS_SOURCE);
         Class<?> retrieved = hasKnowledgeBuilder.compileAndLoadClass(sourcesMap, CLASS_SOURCE_NAME);
-        assertNotNull(retrieved);
-        assertEquals(CLASS_SOURCE_NAME, retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getName()).isEqualTo(CLASS_SOURCE_NAME);
     }
 
     @Test

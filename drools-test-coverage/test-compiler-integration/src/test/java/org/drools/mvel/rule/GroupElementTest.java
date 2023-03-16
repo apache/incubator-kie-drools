@@ -14,15 +14,16 @@
 
 package org.drools.mvel.rule;
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.Pattern;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.test.model.Person;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class GroupElementTest {
 
@@ -37,23 +38,17 @@ public class GroupElementTest {
                                      null );
         and1.addChild( pattern2 );
 
-        assertEquals( 2,
-                      and1.getChildren().size() );
-        assertSame( pattern1,
-                    and1.getChildren().get( 0 ) );
-        assertSame( pattern2,
-                    and1.getChildren().get( 1 ) );
+        assertThat(and1.getChildren().size()).isEqualTo(2);
+        assertThat(and1.getChildren().get(0)).isSameAs(pattern1);
+        assertThat(and1.getChildren().get(1)).isSameAs(pattern2);
 
         final GroupElement and2 = GroupElementFactory.newAndInstance();
         and2.addChild( and1 );
 
         and2.pack();
-        assertEquals( 2,
-                      and2.getChildren().size() );
-        assertSame( pattern1,
-                    and2.getChildren().get( 0 ) );
-        assertSame( pattern2,
-                    and2.getChildren().get( 1 ) );
+        assertThat(and2.getChildren().size()).isEqualTo(2);
+        assertThat(and2.getChildren().get(0)).isSameAs(pattern1);
+        assertThat(and2.getChildren().get(1)).isSameAs(pattern2);
     }
     
     @Test
@@ -72,16 +67,13 @@ public class GroupElementTest {
         Declaration x1 = ( Declaration ) and1.getInnerDeclarations().get( "x" );
         Declaration y1 = ( Declaration ) and1.getInnerDeclarations().get( "y" );
         Declaration z1 = ( Declaration ) and1.getInnerDeclarations().get( "z" );
-        assertNotNull( x1 );
-        assertNotNull( y1 );
-        assertNull( z1);
+        assertThat(x1).isNotNull();
+        assertThat(y1).isNotNull();
+        assertThat(z1).isNull();
 
-        assertEquals( 2,
-                      and1.getChildren().size() );
-        assertSame( pattern1,
-                    and1.getChildren().get( 0 ) );
-        assertSame( pattern2,
-                    and1.getChildren().get( 1 ) );
+        assertThat(and1.getChildren().size()).isEqualTo(2);
+        assertThat(and1.getChildren().get(0)).isSameAs(pattern1);
+        assertThat(and1.getChildren().get(1)).isSameAs(pattern2);
 
         final GroupElement and2 = GroupElementFactory.newAndInstance();
         and2.addChild( and1 );
@@ -92,26 +84,22 @@ public class GroupElementTest {
         and2.addChild( pattern3 );
         
         and2.pack();
-        assertEquals( 3,
-                      and2.getChildren().size() );
-        assertSame( pattern1,
-                    and2.getChildren().get( 0 ) );
-        assertSame( pattern2,
-                    and2.getChildren().get( 1 ) );
-        assertSame( pattern3,
-                    and2.getChildren().get( 2 ) );        
+        assertThat(and2.getChildren().size()).isEqualTo(3);
+        assertThat(and2.getChildren().get(0)).isSameAs(pattern1);
+        assertThat(and2.getChildren().get(1)).isSameAs(pattern2);
+        assertThat(and2.getChildren().get(2)).isSameAs(pattern3);        
         
         Declaration x2 = ( Declaration ) and2.getInnerDeclarations().get( "x" );
         Declaration y2 = ( Declaration ) and2.getInnerDeclarations().get( "y" );
         Declaration z2 = ( Declaration ) and2.getInnerDeclarations().get( "z" );
-        assertNotNull( x2 );        
-        assertNotNull( y2 );
-        assertNull( z2);    
+        assertThat(x2).isNotNull();        
+        assertThat(y2).isNotNull();
+        assertThat(z2).isNull();    
         
-        assertNotSame( x1, x2);
-        assertSame( x2, pattern3.getDeclaration() );
-        assertSame( y1, y2);
-        assertSame( z1, z2);
+        assertThat(x2).isNotSameAs(x1);
+        assertThat(pattern3.getDeclaration()).isSameAs(x2);
+        assertThat(y2).isSameAs(y1);
+        assertThat(z2).isSameAs(z1);
     }    
 
     @Test
@@ -125,24 +113,18 @@ public class GroupElementTest {
                                      null );
         or1.addChild( pattern2 );
 
-        assertEquals( 2,
-                      or1.getChildren().size() );
-        assertSame( pattern1,
-                    or1.getChildren().get( 0 ) );
-        assertSame( pattern2,
-                    or1.getChildren().get( 1 ) );
+        assertThat(or1.getChildren().size()).isEqualTo(2);
+        assertThat(or1.getChildren().get(0)).isSameAs(pattern1);
+        assertThat(or1.getChildren().get(1)).isSameAs(pattern2);
 
         final GroupElement or2 = GroupElementFactory.newOrInstance();
         or2.addChild( or1 );
 
         or2.pack();
 
-        assertEquals( 2,
-                      or2.getChildren().size() );
-        assertSame( pattern1,
-                    or2.getChildren().get( 0 ) );
-        assertSame( pattern2,
-                    or2.getChildren().get( 1 ) );
+        assertThat(or2.getChildren().size()).isEqualTo(2);
+        assertThat(or2.getChildren().get(0)).isSameAs(pattern1);
+        assertThat(or2.getChildren().get(1)).isSameAs(pattern2);
     }
 
     @Test
@@ -152,20 +134,16 @@ public class GroupElementTest {
                                      null );
         exists1.addChild( pattern1 );
 
-        assertEquals( 1,
-                      exists1.getChildren().size() );
-        assertSame( pattern1,
-                    exists1.getChildren().get( 0 ) );
+        assertThat(exists1.getChildren().size()).isEqualTo(1);
+        assertThat(exists1.getChildren().get(0)).isSameAs(pattern1);
 
         final GroupElement exists2 = GroupElementFactory.newExistsInstance();
         exists2.addChild( exists1 );
 
         exists2.pack();
 
-        assertEquals( 1,
-                      exists2.getChildren().size() );
-        assertSame( pattern1,
-                    exists2.getChildren().get( 0 ) );
+        assertThat(exists2.getChildren().size()).isEqualTo(1);
+        assertThat(exists2.getChildren().get(0)).isSameAs(pattern1);
     }
 
     @Test
@@ -196,19 +174,15 @@ public class GroupElementTest {
         final Pattern pattern = new Pattern( 0,
                                     null );
         and1.addChild( pattern );
-        assertEquals( 1,
-                      and1.getChildren().size() );
-        assertSame( pattern,
-                    and1.getChildren().get( 0 ) );
+        assertThat(and1.getChildren().size()).isEqualTo(1);
+        assertThat(and1.getChildren().get(0)).isSameAs(pattern);
 
         final GroupElement or1 = GroupElementFactory.newOrInstance();
         or1.addChild( and1 );
 
         or1.pack();
-        assertEquals( 1,
-                      or1.getChildren().size() );
-        assertSame( pattern,
-                    or1.getChildren().get( 0 ) );
+        assertThat(or1.getChildren().size()).isEqualTo(1);
+        assertThat(or1.getChildren().get(0)).isSameAs(pattern);
     }
 
     @Test
@@ -217,19 +191,15 @@ public class GroupElementTest {
         final Pattern pattern = new Pattern( 0,
                                     null );
         or1.addChild( pattern );
-        assertEquals( 1,
-                      or1.getChildren().size() );
-        assertSame( pattern,
-                    or1.getChildren().get( 0 ) );
+        assertThat(or1.getChildren().size()).isEqualTo(1);
+        assertThat(or1.getChildren().get(0)).isSameAs(pattern);
 
         final GroupElement and1 = GroupElementFactory.newAndInstance();
         and1.addChild( or1 );
 
         and1.pack();
-        assertEquals( 1,
-                      and1.getChildren().size() );
-        assertSame( pattern,
-                    and1.getChildren().get( 0 ) );
+        assertThat(and1.getChildren().size()).isEqualTo(1);
+        assertThat(and1.getChildren().get(0)).isSameAs(pattern);
     }
 
     /**
@@ -266,54 +236,40 @@ public class GroupElementTest {
 
         final GroupElement and1 = GroupElementFactory.newAndInstance();
         and1.addChild( or1 );
-        assertEquals( 1,
-                      and1.getChildren().size() );
-        assertSame( or1,
-                    and1.getChildren().get( 0 ) );
+        assertThat(and1.getChildren().size()).isEqualTo(1);
+        assertThat(and1.getChildren().get(0)).isSameAs(or1);
 
-        assertSame( pattern1,
-                    or1.getChildren().get( 0 ) );
-        assertSame( pattern2,
-                    or1.getChildren().get( 1 ) );
+        assertThat(or1.getChildren().get(0)).isSameAs(pattern1);
+        assertThat(or1.getChildren().get(1)).isSameAs(pattern2);
 
         final GroupElement or2 = GroupElementFactory.newOrInstance();
         or2.addChild( and1 );
 
-        assertEquals( 1,
-                      or2.getChildren().size() );
-        assertSame( and1,
-                    or2.getChildren().get( 0 ) );
+        assertThat(or2.getChildren().size()).isEqualTo(1);
+        assertThat(or2.getChildren().get(0)).isSameAs(and1);
 
         final GroupElement or3 = GroupElementFactory.newOrInstance();
         or3.addChild( or2 );
 
-        assertEquals( 1,
-                      or2.getChildren().size() );
-        assertSame( or2,
-                    or3.getChildren().get( 0 ) );
+        assertThat(or2.getChildren().size()).isEqualTo(1);
+        assertThat(or3.getChildren().get(0)).isSameAs(or2);
 
         final GroupElement and2 = GroupElementFactory.newAndInstance();
         and2.addChild( or3 );
 
-        assertEquals( 1,
-                      and2.getChildren().size() );
-        assertSame( or3,
-                    and2.getChildren().get( 0 ) );
+        assertThat(and2.getChildren().size()).isEqualTo(1);
+        assertThat(and2.getChildren().get(0)).isSameAs(or3);
 
         // Now pack the structure
         and2.pack();
 
         // and2 now is in fact transformed into an OR
-        assertEquals( GroupElement.Type.OR,
-                      and2.getType() );
+        assertThat(and2.getType()).isEqualTo(GroupElement.Type.OR);
 
-        assertEquals( 2,
-                      and2.getChildren().size() );
+        assertThat(and2.getChildren().size()).isEqualTo(2);
 
-        assertSame( pattern1,
-                    and2.getChildren().get( 0 ) );
-        assertSame( pattern2,
-                    and2.getChildren().get( 1 ) );
+        assertThat(and2.getChildren().get(0)).isSameAs(pattern1);
+        assertThat(and2.getChildren().get(1)).isSameAs(pattern2);
 
     }
 
@@ -353,31 +309,23 @@ public class GroupElementTest {
 
         final GroupElement and1 = GroupElementFactory.newAndInstance();
         and1.addChild( or1 );
-        assertEquals( 1,
-                      and1.getChildren().size() );
-        assertSame( or1,
-                    and1.getChildren().get( 0 ) );
+        assertThat(and1.getChildren().size()).isEqualTo(1);
+        assertThat(and1.getChildren().get(0)).isSameAs(or1);
 
-        assertSame( pattern1,
-                    or1.getChildren().get( 0 ) );
-        assertSame( pattern2,
-                    or1.getChildren().get( 1 ) );
+        assertThat(or1.getChildren().get(0)).isSameAs(pattern1);
+        assertThat(or1.getChildren().get(1)).isSameAs(pattern2);
 
         final GroupElement or2 = GroupElementFactory.newOrInstance();
         or2.addChild( and1 );
 
-        assertEquals( 1,
-                      or2.getChildren().size() );
-        assertSame( and1,
-                    or2.getChildren().get( 0 ) );
+        assertThat(or2.getChildren().size()).isEqualTo(1);
+        assertThat(or2.getChildren().get(0)).isSameAs(and1);
 
         final GroupElement or3 = GroupElementFactory.newOrInstance();
         or3.addChild( or2 );
 
-        assertEquals( 1,
-                      or2.getChildren().size() );
-        assertSame( or2,
-                    or3.getChildren().get( 0 ) );
+        assertThat(or2.getChildren().size()).isEqualTo(1);
+        assertThat(or3.getChildren().get(0)).isSameAs(or2);
 
         final GroupElement and2 = GroupElementFactory.newAndInstance();
         and2.addChild( or3 );
@@ -386,34 +334,25 @@ public class GroupElementTest {
                                      null );
         and2.addChild( pattern3 );
 
-        assertEquals( 2,
-                      and2.getChildren().size() );
-        assertSame( or3,
-                    and2.getChildren().get( 0 ) );
-        assertSame( pattern3,
-                    and2.getChildren().get( 1 ) );
+        assertThat(and2.getChildren().size()).isEqualTo(2);
+        assertThat(and2.getChildren().get(0)).isSameAs(or3);
+        assertThat(and2.getChildren().get(1)).isSameAs(pattern3);
 
         // Now pack the structure
         and2.pack();
 
         // and2 now is in fact transformed into an OR
-        assertTrue( and2.isAnd() );
+        assertThat(and2.isAnd()).isTrue();
 
-        assertEquals( 2,
-                      and2.getChildren().size() );
+        assertThat(and2.getChildren().size()).isEqualTo(2);
 
         // order must be the same
-        assertSame( or1,
-                    and2.getChildren().get( 0 ) );
-        assertSame( pattern3,
-                    and2.getChildren().get( 1 ) );
+        assertThat(and2.getChildren().get(0)).isSameAs(or1);
+        assertThat(and2.getChildren().get(1)).isSameAs(pattern3);
 
-        assertEquals( 2,
-                      or1.getChildren().size() );
-        assertSame( pattern1,
-                    or1.getChildren().get( 0 ) );
-        assertSame( pattern2,
-                    or1.getChildren().get( 1 ) );
+        assertThat(or1.getChildren().size()).isEqualTo(2);
+        assertThat(or1.getChildren().get(0)).isSameAs(pattern1);
+        assertThat(or1.getChildren().get(1)).isSameAs(pattern2);
 
     }
 

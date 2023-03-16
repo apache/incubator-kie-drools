@@ -41,7 +41,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionPseudoClock;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests inserting events into KIE Session from multiple threads using one and
@@ -112,7 +112,7 @@ public class MTEntryPointsTest {
 
         final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
-        assertEquals(0, builder.getResults().getMessages().size());
+        assertThat(builder.getResults().getMessages().size()).isEqualTo(0);
         ks.getRepository().addKieModule(builder.getKieModule());
 
         this.kieSession = ks.newKieContainer(ks.getRepository()

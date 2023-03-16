@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GraphTest {
 
@@ -54,11 +53,11 @@ public class GraphTest {
         int id = ints[0];
 
         Collection<Integer> adjVert = JunctionTreeBuilder.getAdjacentVertices(adjMatrix, id);
-        assertEquals( ints.length-1, adjVert.size() );
+        assertThat(adjVert.size()).isEqualTo(ints.length - 1);
         for ( int i = 1; i < ints.length; i++ ) {
-            assertTrue( "link was not true " + id + ", " + i, adjMatrix[id][ints[i]] );
-            assertTrue( "link was not true " + i + ", " + id, adjMatrix[ints[i]][id] );
-            assertTrue( "does not contain " + ints[i], adjVert.contains(ints[i]) );
+            assertThat(adjMatrix[id][ints[i]]).as("link was not true " + id + ", " + i).isTrue();
+            assertThat(adjMatrix[ints[i]][id]).as("link was not true " + i + ", " + id).isTrue();
+            assertThat(adjVert.contains(ints[i])).as("does not contain " + ints[i]).isTrue();
         }
 
         return   false;

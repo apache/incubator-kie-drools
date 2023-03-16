@@ -16,6 +16,12 @@
 
 package org.drools.verifier.incoherence;
 
+import java.io.StringReader;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.TestBaseOld;
@@ -30,17 +36,12 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
 
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class IncoherentRestrictionsTest extends TestBaseOld {
 
@@ -49,9 +50,8 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         // Check that the builder works.
-        assertFalse(vBuilder.hasErrors());
-        assertEquals(0,
-                     vBuilder.getErrors().size());
+        assertThat(vBuilder.hasErrors()).isFalse();
+        assertThat(vBuilder.getErrors().size()).isEqualTo(0);
 
         String str = "";
         str += "package mortgages\n";
@@ -68,24 +68,20 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
         verifier.addResourcesToVerify(ResourceFactory.newReaderResource(new StringReader(str)),
                                       ResourceType.DRL);
 
-        assertFalse(verifier.hasErrors());
-        assertEquals(0,
-                     verifier.getErrors().size());
+        assertThat(verifier.hasErrors()).isFalse();
+        assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis(new ScopesAgendaFilter(true,
                                                                      ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE));
 
-        assertTrue(works);
+        assertThat(works).isTrue();
 
         VerifierReport result = verifier.getResult();
-        assertNotNull(result);
+        assertThat(result).isNotNull();
 
-        assertEquals(3,
-                     result.getBySeverity(Severity.ERROR).size());
-        assertEquals(1,
-                     result.getBySeverity(Severity.WARNING).size());
-        assertEquals(0,
-                     result.getBySeverity(Severity.NOTE).size());
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(3);
+        assertThat(result.getBySeverity(Severity.WARNING).size()).isEqualTo(1);
+        assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(0);
 
     }
 
@@ -116,8 +112,8 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent restrictions 1"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent restrictions 2"));
+        assertThat(rulesThatHadErrors.remove("Incoherent restrictions 1")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent restrictions 2")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -153,7 +149,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent restrictions 8"));
+        assertThat(rulesThatHadErrors.remove("Incoherent restrictions 8")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -189,8 +185,8 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent restrictions 9"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent restrictions 11"));
+        assertThat(rulesThatHadErrors.remove("Incoherent restrictions 9")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent restrictions 11")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -226,7 +222,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent restrictions 10"));
+        assertThat(rulesThatHadErrors.remove("Incoherent restrictions 10")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -262,7 +258,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent restrictions 7"));
+        assertThat(rulesThatHadErrors.remove("Incoherent restrictions 7")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -298,9 +294,9 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent restrictions 3"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent restrictions 4"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent restrictions 5"));
+        assertThat(rulesThatHadErrors.remove("Incoherent restrictions 3")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent restrictions 4")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent restrictions 5")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -336,7 +332,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent restrictions 6"));
+        assertThat(rulesThatHadErrors.remove("Incoherent restrictions 6")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {

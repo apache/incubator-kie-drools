@@ -23,8 +23,7 @@ import org.drools.verifier.core.index.model.Pattern;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class PatternInspectorTest {
@@ -56,8 +55,8 @@ public class PatternInspectorTest {
     @Test
     public void testRedundancy01() throws
             Exception {
-        assertTrue(a.isRedundant(b));
-        assertTrue(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isTrue();
+        assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
@@ -70,15 +69,15 @@ public class PatternInspectorTest {
                                                         mock(RuleInspectorUpdater.class),
                                                         mock(AnalyzerConfiguration.class));
 
-        assertFalse(x.isRedundant(b));
-        assertFalse(b.isRedundant(x));
+        assertThat(x.isRedundant(b)).isFalse();
+        assertThat(b.isRedundant(x)).isFalse();
     }
 
     @Test
     public void testSubsumpt01() throws
             Exception {
-        assertTrue(a.subsumes(b));
-        assertTrue(b.subsumes(a));
+        assertThat(a.subsumes(b)).isTrue();
+        assertThat(b.subsumes(a)).isTrue();
     }
 
     @Test
@@ -91,7 +90,7 @@ public class PatternInspectorTest {
                                                         mock(RuleInspectorUpdater.class),
                                                         mock(AnalyzerConfiguration.class));
 
-        assertFalse(x.subsumes(b));
-        assertFalse(b.subsumes(x));
+        assertThat(x.subsumes(b)).isFalse();
+        assertThat(b.subsumes(x)).isFalse();
     }
 }

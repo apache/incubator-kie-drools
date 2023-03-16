@@ -29,7 +29,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BigRuleSetCompilationTest {
 
@@ -49,7 +49,7 @@ public class BigRuleSetCompilationTest {
         KieBuilder kbuilder = kieService.newKieBuilder(kfs);
 
         kbuilder.buildAll( ExecutableModelProject.class );
-        assertTrue( kbuilder.getResults().getMessages().isEmpty() );
+        assertThat(kbuilder.getResults().getMessages().isEmpty()).isTrue();
     }
 
     private Collection<Resource> generateResourcesToBeCompiled( int numberOfResources, int rulesPerResource) {

@@ -26,8 +26,7 @@ import org.junit.Test;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InternalExecutableTest {
 
@@ -37,7 +36,7 @@ public class InternalExecutableTest {
         batch.addCommand(new TransactionalCommandTest());
         batch.addCommand(new NotTransactionalCommandTest());
         final InternalExecutable internalExecutableImplTest = new InternalExecutableImplTest(batch);
-        assertFalse(internalExecutableImplTest.canRunInTransaction());
+        assertThat(internalExecutableImplTest.canRunInTransaction()).isFalse();
     }
 
     @Test
@@ -46,14 +45,14 @@ public class InternalExecutableTest {
         batch.addCommand(new TransactionalCommandTest());
         batch.addCommand(new TransactionalCommandTest());
         final InternalExecutable internalExecutableImplTest = new InternalExecutableImplTest(batch);
-        assertTrue(internalExecutableImplTest.canRunInTransaction());
+        assertThat(internalExecutableImplTest.canRunInTransaction()).isTrue();
     }
 
     @Test
     public void emptyCommandTest() {
         final Batch batch = new BatchImpl();
         final InternalExecutable internalExecutableImplTest = new InternalExecutableImplTest(batch);
-        assertTrue(internalExecutableImplTest.canRunInTransaction());
+        assertThat(internalExecutableImplTest.canRunInTransaction()).isTrue();
     }
 
     class TransactionalCommandTest implements ExecutableCommand<Void> {

@@ -30,8 +30,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
 
@@ -57,13 +56,13 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
 
-        assertEquals( 2, getRuleNames( kieBuilder ).get( "org.kie.scanner" ).size() );
+        assertThat(getRuleNames(kieBuilder).get("org.kie.scanner").size()).isEqualTo(2);
 
         kfs.delete( "src/main/resources/r2.drl" );
 
         IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
-        assertEquals( 1, getRuleNames( kieBuilder ).get( "org.kie.scanner" ).size() );
+        assertThat(getRuleNames(kieBuilder).get("org.kie.scanner").size()).isEqualTo(1);
     }
 
     private HashMap<String, Collection<String>> getRuleNames( KieBuilder kieBuilder ) {
@@ -108,15 +107,14 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
         //Write Rule 1 - No DRL errors, but POM is in error
         kfs.write( "src/main/resources/KBase1/r1.drl", drl1 );
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 1,
-                      kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(1);
 
         //Add file with error - expect 1 "added" error message
         kfs.write( "src/main/resources/KBase1/r2.drl", drl2 );
         IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/KBase1/r2.drl" ).build();
 
-        assertEquals( 1, addResults.getAddedMessages().size() );
-        assertEquals( 0, addResults.getRemovedMessages().size() );
+        assertThat(addResults.getAddedMessages().size()).isEqualTo(1);
+        assertThat(addResults.getRemovedMessages().size()).isEqualTo(0);
     }
 
     @Test
@@ -145,18 +143,17 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
 
         kfs.write( "src/main/resources/org/kie/scanner/rule.drl", rule_1 );
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 0,
-                      kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
 
         kfs.write( "src/main/resources/org/kie/scanner/function.drl", function );
         IncrementalResults addResults1 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/org/kie/scanner/function.drl" ).build();
-        assertEquals( 0, addResults1.getAddedMessages().size() );
-        assertEquals( 0, addResults1.getRemovedMessages().size() );
+        assertThat(addResults1.getAddedMessages().size()).isEqualTo(0);
+        assertThat(addResults1.getRemovedMessages().size()).isEqualTo(0);
 
         kfs.write( "src/main/resources/org/kie/scanner/rule.drl", rule_2 );
         IncrementalResults addResults2 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/org/kie/scanner/rule.drl" ).build();
-        assertEquals( 0, addResults2.getAddedMessages().size() );
-        assertEquals( 0, addResults2.getRemovedMessages().size() );
+        assertThat(addResults2.getAddedMessages().size()).isEqualTo(0);
+        assertThat(addResults2.getRemovedMessages().size()).isEqualTo(0);
     }
 
     @Test
@@ -179,13 +176,12 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
 
         kfs.write( "src/main/resources/org/kie/scanner/rule.drl", rule );
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 1,
-                      kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(1);
 
         kfs.write( "src/main/resources/org/kie/scanner/function.drl", function );
         IncrementalResults addResults1 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/org/kie/scanner/function.drl" ).build();
-        assertEquals( 0, addResults1.getAddedMessages().size() );
-        assertEquals( 1, addResults1.getRemovedMessages().size() );
+        assertThat(addResults1.getAddedMessages().size()).isEqualTo(0);
+        assertThat(addResults1.getRemovedMessages().size()).isEqualTo(1);
     }
 
     @Test
@@ -208,13 +204,12 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
 
         kfs.write( "src/main/resources/org/kie/scanner/function.drl", function );
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 0,
-                      kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
 
         kfs.write( "src/main/resources/org/kie/scanner/rule.drl", rule );
         IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/org/kie/scanner/rule.drl" ).build();
-        assertEquals( 0, addResults.getAddedMessages().size() );
-        assertEquals( 0, addResults.getRemovedMessages().size() );
+        assertThat(addResults.getAddedMessages().size()).isEqualTo(0);
+        assertThat(addResults.getRemovedMessages().size()).isEqualTo(0);
     }
 
     @Test
@@ -237,19 +232,18 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
         kfs.write("src/main/resources/org/kie/scanner/rule.drl",
                   rule);
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        assertEquals(0,
-                     kieBuilder.getResults().getMessages().size());
+        assertThat(kieBuilder.getResults().getMessages().size()).isEqualTo(0);
 
         kfs.write("src/main/resources/org/kie/scanner/invalidRule.drl",
                   invalidRule);
         IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/org/kie/scanner/invalidRule.drl").build();
 
-        assertEquals(2, addResults.getAddedMessages().size());
+        assertThat(addResults.getAddedMessages().size()).isEqualTo(2);
         addResults
                 .getAddedMessages()
                 .stream()
                 .map(m -> (MessageImpl) m )
-                .forEach(m -> assertNotNull(m.getKieBaseName()));
+                .forEach(m -> assertThat(m.getKieBaseName()).isNotNull());
     }
 
     private KieFileSystem createKieFileSystemWithTwoKBases(final KieServices ks) {

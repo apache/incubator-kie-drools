@@ -46,13 +46,10 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.serialization.protobuf.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.drools.serialization.protobuf.SerializationHelper.serializeObject;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class TruthMaintenanceTest extends CommonTestMethodBase {
 
@@ -90,11 +87,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
             // Check logical Insertions where made for c2 and c3        
             list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
-            assertEquals( 2,
-                          list.size() );
-            assertFalse( list.contains( new Person( c1.getType() ) ) );
-            assertTrue( list.contains( new Person( c2.getType() ) ) );
-            assertTrue( list.contains( new Person( c3.getType() ) ) );
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.contains(new Person( c1.getType() ))).isFalse();
+            assertThat(list.contains(new Person( c2.getType() ))).isTrue();
+            assertThat(list.contains(new Person( c3.getType() ))).isTrue();
 
             // this rule will make a logical assertion for c1 too
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -117,17 +113,16 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
             // check all now have just one logical assertion each
             list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
-            assertEquals( 3,
-                          list.size() );
-            assertTrue( list.contains( new Person( c1.getType() ) ) );
-            assertTrue( list.contains( new Person( c2.getType() ) ) );
-            assertTrue( list.contains( new Person( c3.getType() ) ) );
+            assertThat(list.size()).isEqualTo(3);
+            assertThat(list.contains(new Person( c1.getType() ))).isTrue();
+            assertThat(list.contains(new Person( c2.getType() ))).isTrue();
+            assertThat(list.contains(new Person( c3.getType() ))).isTrue();
 
             ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                               true );
 
             // check the packages are correctly populated
-            assertEquals( 3, kbase.getKiePackages().size() );
+            assertThat(kbase.getKiePackages().size()).isEqualTo(3);
             KiePackage test = null, test2 = null;
             // different JVMs return the package list in different order
             for( KiePackage kpkg : kbase.getKiePackages() ) {
@@ -138,12 +133,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                 }
             }
 
-            assertNotNull( test );
-            assertNotNull( test2 );
-            assertEquals( "rule1",
-                          test.getRules().iterator().next().getName() );
-            assertEquals( "rule2",
-                          test2.getRules().iterator().next().getName() );
+            assertThat(test).isNotNull();
+            assertThat(test2).isNotNull();
+            assertThat(test.getRules().iterator().next().getName()).isEqualTo("rule1");
+            assertThat(test2.getRules().iterator().next().getName()).isEqualTo("rule2");
 
             // now remove the first rule
             kbase.removeRule( test.getName(),
@@ -156,27 +149,19 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                     test2 = kpkg;
                 }
             }
-            assertNotNull( test );
-            assertNotNull( test2 );
+            assertThat(test).isNotNull();
+            assertThat(test2).isNotNull();
 
             // Check the rule was correctly remove
-            assertEquals( 0,
-                          test.getRules().size() );
-            assertEquals( 1,
-                          test2.getRules().size() );
-            assertEquals( "rule2",
-                          test2.getRules().iterator().next().getName() );
+            assertThat(test.getRules().size()).isEqualTo(0);
+            assertThat(test2.getRules().size()).isEqualTo(1);
+            assertThat(test2.getRules().iterator().next().getName()).isEqualTo("rule2");
 
             list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
-            assertEquals( "removal of the rule should result in retraction of c3's logical assertion",
-                          2,
-                          list.size() );
-            assertTrue( "c1's logical assertion should not be deleted",
-                        list.contains( new Person( c1.getType() ) ) );
-            assertTrue( "c2's logical assertion should  not be deleted",
-                        list.contains( new Person( c2.getType() ) ) );
-            assertFalse( "c3's logical assertion should be  deleted",
-                         list.contains( new Person( c3.getType() ) ) );
+            assertThat(list.size()).as("removal of the rule should result in retraction of c3's logical assertion").isEqualTo(2);
+            assertThat(list.contains(new Person( c1.getType() ))).as("c1's logical assertion should not be deleted").isTrue();
+            assertThat(list.contains(new Person( c2.getType() ))).as("c2's logical assertion should  not be deleted").isTrue();
+            assertThat(list.contains(new Person( c3.getType() ))).as("c3's logical assertion should be  deleted").isFalse();
 
             c2.setPrice( 3 );
             h = getFactHandle( h, ksession );
@@ -186,13 +171,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                               true );
             list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
-            assertEquals( "c2 now has a higher price, its logical assertion should  be cancelled",
-                          1,
-                          list.size() );
-            assertFalse( "The logical assertion cor c2 should have been deleted",
-                         list.contains( new Person( c2.getType() ) ) );
-            assertTrue( "The logical assertion  for c1 should exist",
-                        list.contains( new Person( c1.getType() ) ) );
+            assertThat(list.size()).as("c2 now has a higher price, its logical assertion should  be cancelled").isEqualTo(1);
+            assertThat(list.contains(new Person( c2.getType() ))).as("The logical assertion cor c2 should have been deleted").isFalse();
+            assertThat(list.contains(new Person( c1.getType() ))).as("The logical assertion  for c1 should exist").isTrue();
 
             // different JVMs return the package list in different order
             for( KiePackage kpkg : kbase.getKiePackages() ) {
@@ -202,8 +183,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                     test2 = kpkg;
                 }
             }
-            assertNotNull( test );
-            assertNotNull( test2 );
+            assertThat(test).isNotNull();
+            assertThat(test2).isNotNull();
 
             kbase.removeRule( test2.getName(),
                               test2.getRules().iterator().next().getName() );
@@ -217,16 +198,13 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                     test2 = kpkg;
                 }
             }
-            assertNotNull( test );
-            assertNotNull( test2 );
+            assertThat(test).isNotNull();
+            assertThat(test2).isNotNull();
 
-            assertEquals( 0,
-                          test.getRules().size() );
-            assertEquals( 0,
-                          test2.getRules().size() );
+            assertThat(test.getRules().size()).isEqualTo(0);
+            assertThat(test2.getRules().size()).isEqualTo(0);
             list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
-            assertEquals( 0,
-                          list.size() );
+            assertThat(list.size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -263,11 +241,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                                                              true );
 
             System.out.println( list );
-            assertEquals( 3,
-                          list.size() );
+            assertThat(list.size()).isEqualTo(3);
 
-            assertEquals( 3,
-                          session.getObjects().size() );
+            assertThat(session.getObjects().size()).isEqualTo(3);
 
             brieHandle = getFactHandle( brieHandle, session );
             session.delete( brieHandle );
@@ -275,15 +251,13 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             session = getSerialisedStatefulKnowledgeSession( session,
                                                              true );
 
-            assertEquals( 2,
-                          session.getObjects().size() );
+            assertThat(session.getObjects().size()).isEqualTo(2);
 
             provoloneHandle = getFactHandle( provoloneHandle, session );
             session.delete( provoloneHandle );
             session.fireAllRules();
 
-            assertEquals(0,
-                         session.getObjects().size());
+            assertThat(session.getObjects().size()).isEqualTo(0);
         } finally {
             session.dispose();
         }
@@ -314,11 +288,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                                                              true );
 
             Collection< ? > list = session.getObjects( new ClassObjectFilter( cheese1.getType().getClass() ) );
-            assertEquals( 1,
-                          list.size() );
+            assertThat(list.size()).isEqualTo(1);
             // probably dangerous, as contains works with equals, not identity
-            assertEquals( cheese1.getType(),
-                          list.iterator().next() );
+            assertThat(list.iterator().next()).isEqualTo(cheese1.getType());
 
             FactHandle h2 = session.insert( cheese2 );
             session.fireAllRules();
@@ -327,13 +299,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                                                              true );
 
             list = session.getObjects( new ClassObjectFilter( cheese1.getType().getClass() ) );
-            assertEquals( 1,
-                          list.size() );
-            assertEquals( cheese1.getType(),
-                          list.iterator().next() );
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.iterator().next()).isEqualTo(cheese1.getType());
 
-            assertEquals( 3,
-                          session.getObjects().size() );
+            assertThat(session.getObjects().size()).isEqualTo(3);
 
             h1 = getFactHandle( h1, session );
             session.delete( h1 );
@@ -343,12 +312,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             session = getSerialisedStatefulKnowledgeSession( session,
                                                              true );
             list = session.getObjects( new ClassObjectFilter( cheese1.getType().getClass() ) );
-            assertEquals( "cheese-type " + cheese1.getType() + " was deleted, but should not. Backed by cheese2 => type.",
-                          1,
-                          list.size() );
-            assertEquals( "cheese-type " + cheese1.getType() + " was deleted, but should not. Backed by cheese2 => type.",
-                          cheese1.getType(),
-                          list.iterator().next() );
+            assertThat(list.size()).as("cheese-type " + cheese1.getType() + " was deleted, but should not. Backed by cheese2 => type.").isEqualTo(1);
+            assertThat(list.iterator().next()).as("cheese-type " + cheese1.getType() + " was deleted, but should not. Backed by cheese2 => type.").isEqualTo(cheese1.getType());
 
             h2 = getFactHandle( h2, session );
             session.delete( h2 );
@@ -358,9 +323,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             session = getSerialisedStatefulKnowledgeSession( session,
                                                              true );
             list = session.getObjects( new ClassObjectFilter( cheese1.getType().getClass() ) );
-            assertEquals( "cheese-type " + cheese1.getType() + " was not deleted, but should have. Neither  cheese1 => type nor cheese2 => type is true.",
-                          0,
-                          list.size() );
+            assertThat(list.size()).as("cheese-type " + cheese1.getType() + " was not deleted, but should have. Neither  cheese1 => type nor cheese2 => type is true.").isEqualTo(0);
         } finally {
             session.dispose();
         }
@@ -375,25 +338,20 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             final Person p = new Person( "person" );
             p.setAge( 2 );
             FactHandle h = ksession.insert( p );
-            assertEquals(1,
-                         ksession.getObjects().size());
+            assertThat(ksession.getObjects().size()).isEqualTo(1);
 
             ksession.fireAllRules();
             ksession = getSerialisedStatefulKnowledgeSession(ksession, false);
-            assertEquals( 2,
-                          ksession.getObjects().size() );
+            assertThat(ksession.getObjects().size()).isEqualTo(2);
 
             Collection l = ksession.getObjects( new ClassObjectFilter( CheeseEqual.class ) );
-            assertEquals( 1,
-                          l.size() );
-            assertEquals( 2,
-                          ((CheeseEqual) l.iterator().next()).getPrice() );
+            assertThat(l.size()).isEqualTo(1);
+            assertThat(((CheeseEqual) l.iterator().next()).getPrice()).isEqualTo(2);
 
             h = getFactHandle( h, ksession );
             ksession.delete( h );
             ksession = getSerialisedStatefulKnowledgeSession(ksession, false);
-            assertEquals( 0,
-                          ksession.getObjects().size() );
+            assertThat(ksession.getObjects().size()).isEqualTo(0);
 
             TruthMaintenanceSystem tms =  ((NamedEntryPoint)ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
 
@@ -401,9 +359,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             field.setAccessible( true );
             final ObjectHashMap m = (ObjectHashMap) field.get( tms );
             field.setAccessible( false );
-            assertEquals( "assertMap should be empty",
-                          0,
-                          m.size() );
+            assertThat(m.size()).as("assertMap should be empty").isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -429,12 +385,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
             Collection list = ksession.getObjects();
 
-            assertEquals( "Only sensor is there",
-                          1,
-                          list.size() );
-            assertEquals( "Only one event",
-                          1,
-                          events.size() );
+            assertThat(list.size()).as("Only sensor is there").isEqualTo(1);
+            assertThat(events.size()).as("Only one event").isEqualTo(1);
 
             // problems should be detected
             sensor.setPressure( 200 );
@@ -448,12 +400,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.fireAllRules();
             list = ksession.getObjects();
 
-            assertEquals( "Only sensor is there",
-                          1,
-                          list.size() );
+            assertThat(list.size()).as("Only sensor is there").isEqualTo(1);
 
             TruthMaintenanceSystem tms =  ((NamedEntryPoint)ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
-            assertTrue(tms.getEqualityKeyMap().isEmpty());
+            assertThat(tms.getEqualityKeyMap().isEmpty()).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -474,12 +424,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.fireAllRules();
             ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             Collection list = ksession.getObjects();
-            assertEquals( "i was not asserted by not a => i.",
-                          1,
-                          list.size() );
-            assertEquals( "i was not asserted by not a => i.",
-                          cheese,
-                          list.iterator().next() );
+            assertThat(list.size()).as("i was not asserted by not a => i.").isEqualTo(1);
+            assertThat(list.iterator().next()).as("i was not asserted by not a => i.").isEqualTo(cheese);
 
             FactHandle h = ksession.insert( a );
 
@@ -490,20 +436,14 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.fireAllRules();
             list = ksession.getObjects();
 
-            assertEquals( "a was not asserted or i not deleted.",
-                          1,
-                          list.size() );
-            assertEquals( "a was asserted.",
-                          a,
-                          list.iterator().next() );
-            assertFalse( "i was not rectracted.",
-                         list.contains( cheese ) );
+            assertThat(list.size()).as("a was not asserted or i not deleted.").isEqualTo(1);
+            assertThat(list.iterator().next()).as("a was asserted.").isEqualTo(a);
+            assertThat(list.contains(cheese)).as("i was not rectracted.").isFalse();
 
             // no rules should fire, but nevertheless...
             // workingMemory.fireAllRules();
-            assertEquals("agenda should be empty.",
-                         0,
-                         ((InternalAgenda)((StatefulKnowledgeSessionImpl) ksession).getAgenda()).agendaSize());
+
+            assertThat(((InternalAgenda)((StatefulKnowledgeSessionImpl) ksession).getAgenda()).agendaSize()).as("agenda should be empty.").isEqualTo(0);
 
             h = getFactHandle( h, ksession );
             ksession.delete( h );
@@ -511,12 +451,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.fireAllRules();
             ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             list = ksession.getObjects();
-            assertEquals( "i was not asserted by not a => i.",
-                          1,
-                          list.size() );
-            assertEquals( "i was not asserted by not a => i.",
-                          cheese,
-                          list.iterator().next() );
+            assertThat(list.size()).as("i was not asserted by not a => i.").isEqualTo(1);
+            assertThat(list.iterator().next()).as("i was not asserted by not a => i.").isEqualTo(cheese);
         } finally {
             ksession.dispose();
         }
@@ -533,18 +469,14 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             final Person p = new Person( "person" );
             p.setAge( 2 );
             FactHandle h = ksession.insert( p );
-            assertEquals(1,
-                         ksession.getObjects().size());
+            assertThat(ksession.getObjects().size()).isEqualTo(1);
 
             ksession.fireAllRules();
             ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
-            assertEquals( 2,
-                          ksession.getObjects().size() );
+            assertThat(ksession.getObjects().size()).isEqualTo(2);
             Collection l = ksession.getObjects( new ClassObjectFilter( CheeseEqual.class ) );
-            assertEquals( 1,
-                          l.size() );
-            assertEquals( 3,
-                          ((CheeseEqual) l.iterator().next()).getPrice() );
+            assertThat(l.size()).isEqualTo(1);
+            assertThat(((CheeseEqual) l.iterator().next()).getPrice()).isEqualTo(3);
 
             h = getFactHandle( h, ksession );
             ksession.delete( h );
@@ -553,15 +485,13 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
             Collection list = ksession.getObjects();
             // CheeseEqual was updated, making it stated, so it wouldn't have been logically deleted
-            assertEquals( 1,
-                          list.size() );
-            assertEquals( new CheeseEqual("person", 3), list.iterator().next());
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.iterator().next()).isEqualTo(new CheeseEqual("person", 3));
             FactHandle fh = ksession.getFactHandle( list.iterator().next() );
             ksession.delete( fh );
 
             list = ksession.getObjects();
-            assertEquals( 0,
-                          list.size() );
+            assertThat(list.size()).isEqualTo(0);
 
             TruthMaintenanceSystem tms =  ((NamedEntryPoint)ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
 
@@ -569,9 +499,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             field.setAccessible( true );
             final ObjectHashMap m = (ObjectHashMap) field.get( tms );
             field.setAccessible( false );
-            assertEquals( "assertMap should be empty",
-                          0,
-                          m.size() );
+            assertThat(m.size()).as("assertMap should be empty").isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -604,8 +532,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
             // all 3 in europe, so, 2 cheese
             Collection cheeseList = ksession.getObjects(new ClassObjectFilter(Cheese.class));
-            assertEquals( 2,
-                          cheeseList.size() );
+            assertThat(cheeseList.size()).isEqualTo(2);
 
             // europe=[ 1, 2 ], america=[ 3 ]
             p3.setStatus( "america" );
@@ -616,8 +543,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.fireAllRules();
             ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             cheeseList = ksession.getObjects(new ClassObjectFilter(Cheese.class));
-            assertEquals( 1,
-                          cheeseList.size() );
+            assertThat(cheeseList.size()).isEqualTo(1);
 
             // europe=[ 1 ], america=[ 2, 3 ]
             p2.setStatus( "america" );
@@ -628,8 +554,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.fireAllRules();
             ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             cheeseList = ksession.getObjects(new ClassObjectFilter(Cheese.class));
-            assertEquals( 1,
-                          cheeseList.size() );
+            assertThat(cheeseList.size()).isEqualTo(1);
 
             // europe=[ ], america=[ 1, 2, 3 ]
             p1.setStatus( "america" );
@@ -640,8 +565,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.fireAllRules();
             ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             cheeseList = ksession.getObjects(new ClassObjectFilter(Cheese.class));
-            assertEquals( 2,
-                          cheeseList.size() );
+            assertThat(cheeseList.size()).isEqualTo(2);
 
             // europe=[ 2 ], america=[ 1, 3 ]
             p2.setStatus( "europe" );
@@ -652,8 +576,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.fireAllRules();
             ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             cheeseList = ksession.getObjects(new ClassObjectFilter(Cheese.class));
-            assertEquals( 1,
-                          cheeseList.size() );
+            assertThat(cheeseList.size()).isEqualTo(1);
 
             // europe=[ 1, 2 ], america=[ 3 ]
             p1.setStatus( "europe" );
@@ -664,8 +587,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.fireAllRules();
             ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             cheeseList = ksession.getObjects(new ClassObjectFilter(Cheese.class));
-            assertEquals( 1,
-                          cheeseList.size() );
+            assertThat(cheeseList.size()).isEqualTo(1);
 
             // europe=[ 1, 2, 3 ], america=[ ]
             p3.setStatus( "europe" );
@@ -676,8 +598,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.fireAllRules();
             ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
             cheeseList = ksession.getObjects(new ClassObjectFilter(Cheese.class));
-            assertEquals( 2,
-                          cheeseList.size() );
+            assertThat(cheeseList.size()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -699,10 +620,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
 
             // alarm must sound
-            assertEquals( 2,
-                          list.size() );
-            assertEquals(2,
-                         ksession.getObjects().size());
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(ksession.getObjects().size()).isEqualTo(2);
 
             // modifying sensor
             sensor.setTemperature( 125 );
@@ -714,10 +633,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
 
             // alarm must continue to sound
-            assertEquals( 3,
-                          list.size() );
-            assertEquals( 2,
-                          ksession.getObjects().size() );
+            assertThat(list.size()).isEqualTo(3);
+            assertThat(ksession.getObjects().size()).isEqualTo(2);
 
             // modifying sensor
             sensor.setTemperature( 80 );
@@ -728,10 +645,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.fireAllRules();
 
             // no alarms anymore
-            assertEquals( 3,
-                          list.size() );
-            assertEquals( 1,
-                          ksession.getObjects().size() );
+            assertThat(list.size()).isEqualTo(3);
+            assertThat(ksession.getObjects().size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -757,17 +672,12 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                                                                                  true);
 
             FactHandle h = ksession.insert( new Integer( 6 ) );
-            assertEquals( 1,
-                          ksession.getObjects().size() );
+            assertThat(ksession.getObjects().size()).isEqualTo(1);
 
             ksession.fireAllRules();
-            ksession = getSerialisedStatefulKnowledgeSession(ksession,
-                                                                                 true);
-            assertEquals( "There should be 2 CheeseEqual in Working Memory, 1 justified, 1 stated",
-                          2,
-                          ksession.getObjects( new ClassObjectFilter( CheeseEqual.class ) ).size() );
-            assertEquals( 6,
-                          ksession.getObjects().size() );
+            ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
+            assertThat(ksession.getObjects(new ClassObjectFilter( CheeseEqual.class )).size()).as("There should be 2 CheeseEqual in Working Memory, 1 justified, 1 stated").isEqualTo(2);
+            assertThat(ksession.getObjects().size()).isEqualTo(6);
 
             h = getFactHandle( h, ksession );
             ksession.delete( h );
@@ -777,14 +687,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                 System.out.println( o );
             }
 
-            ksession = getSerialisedStatefulKnowledgeSession(ksession,
-                                                                                 true);
-            assertEquals( 0,
-                          ksession.getObjects( new ClassObjectFilter( CheeseEqual.class ) ).size() );
-            assertEquals( 0,
-                          ksession.getObjects( new ClassObjectFilter( Short.class ) ).size() );
-            assertEquals( 0,
-                          ksession.getObjects().size() );
+            ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
+            assertThat(ksession.getObjects(new ClassObjectFilter( CheeseEqual.class )).size()).isEqualTo(0);
+            assertThat(ksession.getObjects(new ClassObjectFilter( Short.class )).size()).isEqualTo(0);
+            assertThat(ksession.getObjects().size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -821,10 +727,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                                                              true );
 
             List temperatureList = new ArrayList( session.getObjects( new ClassObjectFilter( Integer.class ) ) );
-            assertTrue( temperatureList.contains( Integer.valueOf( 100 ) ) );
-            assertTrue( temperatureList.contains( Integer.valueOf( 200 ) ) );
-            assertEquals( 2,
-                          temperatureList.size() );
+            assertThat(temperatureList.contains(Integer.valueOf(100))).isTrue();
+            assertThat(temperatureList.contains(Integer.valueOf(200))).isTrue();
+            assertThat(temperatureList.size()).isEqualTo(2);
 
             sensor1.setTemperature( 150 );
             sensor1Handle =  getFactHandle( sensor1Handle, session );
@@ -835,11 +740,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             session.fireAllRules();
 
             temperatureList = new ArrayList( session.getObjects( new ClassObjectFilter( Integer.class ) ) );
-            assertFalse( temperatureList.contains( Integer.valueOf( 100 ) ) );
-            assertTrue( temperatureList.contains( Integer.valueOf( 150 ) ) );
-            assertTrue( temperatureList.contains( Integer.valueOf( 200 ) ) );
-            assertEquals( 2,
-                          temperatureList.size() );
+            assertThat(temperatureList.contains(Integer.valueOf(100))).isFalse();
+            assertThat(temperatureList.contains(Integer.valueOf(150))).isTrue();
+            assertThat(temperatureList.contains(Integer.valueOf(200))).isTrue();
+            assertThat(temperatureList.size()).isEqualTo(2);
         } finally {
             session.dispose();
         }

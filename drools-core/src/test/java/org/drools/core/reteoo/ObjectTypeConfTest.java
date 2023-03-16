@@ -18,16 +18,17 @@ package org.drools.core.reteoo;
 
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ObjectTypeConfTest {
 
     @Test
     public void testGetPackageName() {
-        assertEquals("org.drools.core.reteoo", ClassObjectTypeConf.getPackageName(this.getClass(), null));
+        assertThat(ClassObjectTypeConf.getPackageName(this.getClass(), null)).isEqualTo("org.drools.core.reteoo");
         Package thispkg = this.getClass().getPackage();
-        assertNotNull(thispkg);
-        assertEquals("org.drools.core.reteoo", ClassObjectTypeConf.getPackageName(this.getClass(), thispkg));
+        assertThat(thispkg).isNotNull();
+        assertThat(ClassObjectTypeConf.getPackageName(this.getClass(), thispkg)).isEqualTo("org.drools.core.reteoo");
     }
 
 }

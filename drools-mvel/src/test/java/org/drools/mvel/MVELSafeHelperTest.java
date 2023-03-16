@@ -17,11 +17,13 @@ package org.drools.mvel;
 import java.util.HashMap;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mvel2.PropertyAccessException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @Ignore( "This test causes problems to surefire, so it will be disabled for now. It works when executed by itself.")
 public class MVELSafeHelperTest {
@@ -49,9 +51,9 @@ public class MVELSafeHelperTest {
     public void testUntrustedJavaConsequence() throws Exception {
         try {
             MVELSafeHelper.getEvaluator().eval("System.exit(0);");
-            Assert.fail("Should have raised an exception...");
+            fail("Should have raised an exception...");
         } catch (ShouldHavePrevented e) {
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (PropertyAccessException e) {
             // test succeeded. the policy in place prevented the rule from executing the System.exit().
         }
@@ -64,9 +66,9 @@ public class MVELSafeHelperTest {
                 + "field.setAccessible(true);\n"  
                 + "field.set(null, \"new org.drools.core.util.MVELSafeHelper.RawMVELEvaluator()\");";
         try {
-            Assert.assertEquals( SafeMVELEvaluator.class.getName(), MVELSafeHelper.getEvaluator().getClass().getName() );
+            assertThat(MVELSafeHelper.getEvaluator().getClass().getName()).isEqualTo(SafeMVELEvaluator.class.getName());
             MVELSafeHelper.getEvaluator().eval(setup, new HashMap<String,Object>());
-            Assert.fail("Should have raised an AccessControlException");
+            fail("Should have raised an AccessControlException");
         } catch (PropertyAccessException e) {
             // test succeeded. the policy in place prevented the rule from executing field.setAccessible().
             //e.printStackTrace();

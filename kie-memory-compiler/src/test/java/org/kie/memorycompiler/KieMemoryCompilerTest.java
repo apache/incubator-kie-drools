@@ -21,11 +21,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import static java.util.Collections.singletonMap;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieMemoryCompilerTest {
 
@@ -45,12 +41,12 @@ public class KieMemoryCompilerTest {
         Map<String, Class<?>> compiled = KieMemoryCompiler.compile(source, this.getClass().getClassLoader());
 
         Class<?> exampleClazz = compiled.get("org.kie.memorycompiler.ExampleClass");
-        assertThat(exampleClazz, is(notNullValue()));
+        assertThat(exampleClazz).isNotNull();
 
         Object instance = exampleClazz.getDeclaredConstructors()[0].newInstance();
         Method sumMethod = exampleClazz.getMethod("sum", Integer.class, Integer.class);
         Object result = sumMethod.invoke(instance, 2, 3);
-        assertThat(result, is(5));
+        assertThat(result).isEqualTo(5);
     }
 
     @Test(expected = KieMemoryCompilerException.class)
@@ -84,12 +80,12 @@ public class KieMemoryCompilerTest {
         Map<String, Class<?>> compiled = KieMemoryCompiler.compile(source, this.getClass().getClassLoader());
 
         Class<?> exampleClazz = compiled.get("org.kie.memorycompiler.WarningClass");
-        assertThat(exampleClazz, is(notNullValue()));
+        assertThat(exampleClazz).isNotNull();
 
         Object instance = exampleClazz.getDeclaredConstructors()[0].newInstance();
         Method minusMethod = exampleClazz.getMethod("minus", Integer.class, Integer.class);
         Object result = minusMethod.invoke(instance, 8, 4);
-        assertThat(result, is(4));
+        assertThat(result).isEqualTo(4);
     }
 
     private final static String EXAMPLE_INNER_CLASS =
@@ -109,9 +105,9 @@ public class KieMemoryCompilerTest {
         Map<String, String> source = singletonMap("org.kie.memorycompiler.ExampleClass", EXAMPLE_INNER_CLASS);
         Map<String, Class<?>> compiled = KieMemoryCompiler.compile(source, this.getClass().getClassLoader());
 
-        assertEquals(2, compiled.size());
+        assertThat(compiled.size()).isEqualTo(2);
 
-        assertNotNull(compiled.get("org.kie.memorycompiler.ExampleClass"));
-        assertNotNull(compiled.get("org.kie.memorycompiler.ExampleClass$InnerClass"));
+        assertThat(compiled.get("org.kie.memorycompiler.ExampleClass")).isNotNull();
+        assertThat(compiled.get("org.kie.memorycompiler.ExampleClass$InnerClass")).isNotNull();
     }
 }

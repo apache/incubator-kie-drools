@@ -42,7 +42,7 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTEN
 import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class CDITest {
@@ -107,7 +107,7 @@ public class CDITest {
 
             ksession.fireAllRules();
 
-            assertEquals( 3, list.size() );
+            assertThat(list.size()).isEqualTo(3);
         }
     }
 }

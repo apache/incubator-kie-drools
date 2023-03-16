@@ -21,8 +21,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.appformer.maven.integration.MavenRepository;
 import org.appformer.maven.support.DependencyFilter;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.rule.TypeMetaInfo;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -33,12 +34,11 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.type.Role;
-import org.appformer.maven.integration.MavenRepository;
 
 import static java.util.Arrays.asList;
-import static junit.framework.TestCase.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml;
-import static org.junit.Assert.*;
 
 public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
@@ -47,7 +47,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId( "org.drools", "drools-core", "5.5.0.Final" );
         KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( releaseId );
         checkDroolsCoreDep( kieModuleMetaData );
-        assertTrue( ("" + kieModuleMetaData.getPackages()).contains( "junit" ) );
+        assertThat(("" + kieModuleMetaData.getPackages()).contains("junit")).isTrue();
     }
 
     @Test
@@ -55,7 +55,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId( "org.drools", "drools-core", "5.5.0.Final" );
         KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( releaseId, new DependencyFilter.ExcludeScopeFilter("test") );
         checkDroolsCoreDep( kieModuleMetaData );
-        assertFalse( ( "" + kieModuleMetaData.getPackages() ).contains( "junit" ) );
+        assertThat( "" + kieModuleMetaData.getPackages() ).doesNotContain("junit");
     }
 
     @Test
@@ -63,7 +63,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         // DROOLS-1562
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId( "org.drools", "drools-core", "5.7.0.Final" );
         KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( releaseId );
-        assertEquals( 0, kieModuleMetaData.getPackages().size() );
+        assertThat(kieModuleMetaData.getPackages().size()).isEqualTo(0);
     }
 
     @Test
@@ -99,17 +99,17 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
         final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
         final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
-        assertTrue( messages.isEmpty() );
+        assertThat(messages.isEmpty()).isTrue();
 
         final KieModule kieModule = kieBuilder.getKieModule();
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( kieModule );
 
         //The call to kieModuleMetaData.getClass() assumes a Java file has an explicit package
         final Class<?> beanClass = kieModuleMetaData.getClass( "", "test.Bean" );
-        assertNotNull( beanClass );
+        assertThat(beanClass).isNotNull();
 
         final TypeMetaInfo beanMetaInfo = kieModuleMetaData.getTypeMetaInfo( beanClass );
-        assertNotNull( beanMetaInfo );
+        assertThat(beanMetaInfo).isNotNull();
     }
 
     @Test
@@ -122,13 +122,13 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
         final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
         final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
-        assertTrue( messages.isEmpty() );
+        assertThat(messages.isEmpty()).isTrue();
 
         final KieModule kieModule = kieBuilder.getKieModule();
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( kieModule );
 
-        assertFalse( kieModuleMetaData.getPackages().isEmpty() );
-        assertTrue( kieModuleMetaData.getPackages().contains( "org.test" ) );
+        assertThat(kieModuleMetaData.getPackages()).isNotEmpty();
+        assertThat(kieModuleMetaData.getPackages().contains("org.test")).isTrue();
     }
 
     @Test
@@ -140,7 +140,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
         final KieModule kieModule = ks.newKieBuilder( kfs ).getKieModule();
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( kieModule );
-        assertTrue( ("" + kieModuleMetaData.getPackages()).contains( "junit" ) );
+        assertThat(("" + kieModuleMetaData.getPackages()).contains("junit")).isTrue();
     }
 
     @Test
@@ -152,7 +152,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
         final KieModule kieModule = ks.newKieBuilder( kfs ).getKieModule();
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( kieModule, new DependencyFilter.ExcludeScopeFilter("test") );
-        assertFalse( ( "" + kieModuleMetaData.getPackages() ).contains( "junit" ) );
+        assertThat("" + kieModuleMetaData.getPackages() ).doesNotContain("junit");
     }
 
     private String getPomWithTestDependency() {
@@ -200,14 +200,14 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
         final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
         final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
-        assertTrue( messages.isEmpty() );
+        assertThat(messages.isEmpty()).isTrue();
 
         final KieModule kieModule = kieBuilder.getKieModule();
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( kieModule );
 
         Collection<String> rules = kieModuleMetaData.getRuleNamesInPackage( "org.test" );
-        assertEquals( 3, rules.size() );
-        assertTrue( rules.containsAll( asList( "A", "B", "C" ) ) );
+        assertThat(rules.size()).isEqualTo(3);
+        assertThat(rules.containsAll(asList("A", "B", "C"))).isTrue();
     }
 
     private String createJavaSource() {
@@ -230,21 +230,21 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         checkDroolsCoreDep( kieModuleMetaData );
 
         Collection<String> testClasses = kieModuleMetaData.getClasses( "org.kie.test" );
-        assertEquals( 1, testClasses.size() );
-        assertEquals( "Bean", testClasses.iterator().next() );
+        assertThat(testClasses.size()).isEqualTo(1);
+        assertThat(testClasses.iterator().next()).isEqualTo("Bean");
         Class<?> beanClass = kieModuleMetaData.getClass( "org.kie.test", "Bean" );
-        assertNotNull( beanClass.getMethod( "getValue" ) );
+        assertThat(beanClass.getMethod( "getValue")).isNotNull();
 
         TypeMetaInfo beanTypeInfo = kieModuleMetaData.getTypeMetaInfo( beanClass );
-        assertNotNull( beanTypeInfo );
+        assertThat(beanTypeInfo).isNotNull();
 
-        assertTrue( beanTypeInfo.isEvent() );
+        assertThat(beanTypeInfo.isEvent()).isTrue();
 
         Role role = beanClass.getAnnotation( Role.class );
-        assertNotNull( role );
-        assertEquals( Role.Type.EVENT, role.value() );
+        assertThat(role).isNotNull();
+        assertThat(role.value()).isEqualTo(Role.Type.EVENT);
 
-        assertEquals( useTypeDeclaration, beanTypeInfo.isDeclaredType() );
+        assertThat(beanTypeInfo.isDeclaredType()).isEqualTo(useTypeDeclaration);
     }
 
     private void testKieModuleMetaDataInMemoryUsingPOM( boolean useTypeDeclaration ) throws Exception {
@@ -281,21 +281,21 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         //checkDroolsCoreDep(kieModuleMetaData);
 
         Collection<String> testClasses = kieModuleMetaData.getClasses( "org.kie.test" );
-        assertEquals( 1, testClasses.size() );
-        assertEquals( "Bean", testClasses.iterator().next() );
+        assertThat(testClasses.size()).isEqualTo(1);
+        assertThat(testClasses.iterator().next()).isEqualTo("Bean");
         Class<?> beanClass = kieModuleMetaData.getClass( "org.kie.test", "Bean" );
-        assertNotNull( beanClass.getMethod( "getValue" ) );
+        assertThat(beanClass.getMethod("getValue")).isNotNull();
 
         if ( useTypeDeclaration ) {
-            assertTrue( kieModuleMetaData.getTypeMetaInfo( beanClass ).isEvent() );
+            assertThat(kieModuleMetaData.getTypeMetaInfo(beanClass).isEvent()).isTrue();
         }
     }
 
     private void checkDroolsCoreDep( KieModuleMetaData kieModuleMetaData ) {
-        assertEquals( 17, kieModuleMetaData.getClasses( "org.drools.runtime" ).size() );
+        assertThat(kieModuleMetaData.getClasses("org.drools.runtime").size()).isEqualTo(17);
         Class<?> statefulKnowledgeSessionClass = kieModuleMetaData.getClass( "org.drools.runtime", "StatefulKnowledgeSession" );
-        assertTrue( statefulKnowledgeSessionClass.isInterface() );
-        assertEquals( 2, statefulKnowledgeSessionClass.getDeclaredMethods().length );
+        assertThat(statefulKnowledgeSessionClass.isInterface()).isTrue();
+        assertThat(statefulKnowledgeSessionClass.getDeclaredMethods().length).isEqualTo(2);
     }
 
     private void testKieModuleMetaDataForDependenciesInMemory( boolean useTypeDeclaration ) throws Exception {
@@ -308,19 +308,19 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         checkDroolsCoreDep( kieModuleMetaData );
 
         Collection<String> testClasses = kieModuleMetaData.getClasses( "org.drools" );
-        assertEquals( 55, testClasses.size() );
+        assertThat(testClasses.size()).isEqualTo(55);
         Class<?> beanClass = kieModuleMetaData.getClass( "org.drools", "QueryResult" );
-        assertNotNull( beanClass );
+        assertThat(beanClass).isNotNull();
 
         //Classes in dependencies should have TypeMetaInfo
         TypeMetaInfo beanTypeInfo = kieModuleMetaData.getTypeMetaInfo( beanClass );
-        assertNotNull( beanTypeInfo );
+        assertThat(beanTypeInfo).isNotNull();
 
         if ( useTypeDeclaration ) {
-            assertTrue( beanTypeInfo.isEvent() );
+            assertThat(beanTypeInfo.isEvent()).isTrue();
         }
 
-        assertEquals( useTypeDeclaration, beanTypeInfo.isDeclaredType() );
+        assertThat(beanTypeInfo.isDeclaredType()).isEqualTo(useTypeDeclaration);
     }
 
     @Test
@@ -354,7 +354,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
         final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
         final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
-        assertTrue( messages.isEmpty() );
+        assertThat(messages.isEmpty()).isTrue();
 
         final KieModule kieModule = kieBuilder.getKieModule();
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( kieModule );

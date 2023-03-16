@@ -16,9 +16,6 @@
 
 package org.drools.retediagram;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +39,8 @@ import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleTest extends CommonTestMethodBase {
 	static final Logger LOG = LoggerFactory.getLogger(RuleTest.class);
@@ -82,10 +81,10 @@ public class RuleTest extends CommonTestMethodBase {
         
         LOG.info("Final checks");
 
-	    assertEquals("Size of object in Working Memory is 3", 3, session.getObjects().size());
-	    assertTrue("contains red", check.contains("red"));
-	    assertTrue("contains green", check.contains("green"));
-	    assertTrue("contains blue", check.contains("blue"));
+        assertThat(session.getObjects().size()).as("Size of object in Working Memory is 3").isEqualTo(3);
+        assertThat(check.contains("red")).as("contains red").isTrue();
+        assertThat(check.contains("green")).as("contains green").isTrue();
+        assertThat(check.contains("blue")).as("contains blue").isTrue();
 	    
 	    ReteDumper.dumpRete(session);
 	    System.out.println("---");
@@ -170,7 +169,7 @@ public class RuleTest extends CommonTestMethodBase {
 
         int num = ksession.fireAllRules();
         // only one rule should fire, but the partial propagation of the asserted facts should not cause a runtime NPE
-        assertEquals( 1, num );
+        assertThat(num).isEqualTo(1);
         ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete(ksession);
     }
 
@@ -227,9 +226,9 @@ public class RuleTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( 2, list.get( 0 ).intValue() );
-        assertEquals( 2, list.get( 1 ).intValue() );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0).intValue()).isEqualTo(2);
+        assertThat(list.get(1).intValue()).isEqualTo(2);
         
         ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete((KieSession)ksession);
     }

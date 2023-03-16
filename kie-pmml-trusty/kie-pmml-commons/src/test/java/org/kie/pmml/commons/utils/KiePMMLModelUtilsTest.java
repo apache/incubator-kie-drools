@@ -22,7 +22,7 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLModelUtilsTest {
 
@@ -52,11 +52,11 @@ public class KiePMMLModelUtilsTest {
 
     @Test
     public void getSanitizedPackageName() {
-        packageNameMap.forEach((originalName, expectedName) -> assertEquals(expectedName, KiePMMLModelUtils.getSanitizedPackageName(originalName)));
+        packageNameMap.forEach((originalName, expectedName) -> assertThat(KiePMMLModelUtils.getSanitizedPackageName(originalName)).isEqualTo(expectedName));
     }
 
     @Test
     public void getSanitizedClassName() {
-        classNameMap.forEach((originalName, expectedName) -> assertEquals(expectedName, KiePMMLModelUtils.getSanitizedClassName(originalName)));
+        classNameMap.forEach((originalName, expectedName) -> assertThat(KiePMMLModelUtils.getSanitizedClassName(originalName)).isEqualTo(expectedName));
     }
 }

@@ -16,12 +16,6 @@
 
 package org.drools.verifier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.Collections;
 
 import org.drools.core.io.impl.ClassPathResource;
@@ -33,6 +27,9 @@ import org.drools.verifier.report.components.Severity;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 public class VerifyingScopeTest {
 
     @Test
@@ -43,9 +40,8 @@ public class VerifyingScopeTest {
         VerifierConfiguration vConfiguration = vBuilder.newVerifierConfiguration();
 
         // Check that the builder works.
-        assertFalse( vBuilder.hasErrors() );
-        assertEquals( 0,
-                      vBuilder.getErrors().size() );
+        assertThat(vBuilder.hasErrors()).isFalse();
+        assertThat(vBuilder.getErrors().size()).isEqualTo(0);
 
         vConfiguration.getVerifyingResources().put( new ClassPathResource( "VerifyingScope.drl",
                                                                            Verifier.class ),
@@ -57,9 +53,8 @@ public class VerifyingScopeTest {
                                                               Verifier.class ),
                                        ResourceType.DRL );
 
-        assertFalse( verifier.hasErrors() );
-        assertEquals( 0,
-                      verifier.getErrors().size() );
+        assertThat(verifier.hasErrors()).isFalse();
+        assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis( new ScopesAgendaFilter( true,
                                                                        ScopesAgendaFilter.VERIFYING_SCOPE_SINGLE_RULE ) );
@@ -73,13 +68,10 @@ public class VerifyingScopeTest {
         }
 
         VerifierReport result = verifier.getResult();
-        assertNotNull( result );
-        assertEquals( 0,
-                      result.getBySeverity( Severity.ERROR ).size() );
-        assertEquals( 0,
-                      result.getBySeverity( Severity.WARNING ).size() );
-        assertEquals( 6,
-                      result.getBySeverity( Severity.NOTE ).size() );
+        assertThat(result).isNotNull();
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.WARNING).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(6);
 
     }
 
@@ -91,9 +83,8 @@ public class VerifyingScopeTest {
         VerifierConfiguration vConfiguration = vBuilder.newVerifierConfiguration();
 
         // Check that the builder works.
-        assertFalse( vBuilder.hasErrors() );
-        assertEquals( 0,
-                      vBuilder.getErrors().size() );
+        assertThat(vBuilder.hasErrors()).isFalse();
+        assertThat(vBuilder.getErrors().size()).isEqualTo(0);
 
         vConfiguration.getVerifyingResources().put( new ClassPathResource( "VerifyingScope.drl",
                                                                            Verifier.class ),
@@ -105,23 +96,19 @@ public class VerifyingScopeTest {
                                                               Verifier.class ),
                                        ResourceType.DRL );
 
-        assertFalse( verifier.hasErrors() );
-        assertEquals( 0,
-                      verifier.getErrors().size() );
+        assertThat(verifier.hasErrors()).isFalse();
+        assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis( new ScopesAgendaFilter( true,
                                                                        Collections.EMPTY_LIST));
 
-        assertTrue( works );
+        assertThat(works).isTrue();
 
         VerifierReport result = verifier.getResult();
-        assertNotNull( result );
-        assertEquals( 0,
-                      result.getBySeverity( Severity.ERROR ).size() );
-        assertEquals( 0,
-                      result.getBySeverity( Severity.WARNING ).size() );
-        assertEquals( 2,
-                      result.getBySeverity( Severity.NOTE ).size() );
+        assertThat(result).isNotNull();
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.WARNING).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(2);
 
     }
 
@@ -133,9 +120,8 @@ public class VerifyingScopeTest {
         VerifierConfiguration vConfiguration = vBuilder.newVerifierConfiguration();
 
         // Check that the builder works.
-        assertFalse( vBuilder.hasErrors() );
-        assertEquals( 0,
-                      vBuilder.getErrors().size() );
+        assertThat(vBuilder.hasErrors()).isFalse();
+        assertThat(vBuilder.getErrors().size()).isEqualTo(0);
 
         vConfiguration.getVerifyingResources().put( new ClassPathResource( "VerifyingScope.drl",
                                                                            Verifier.class ),
@@ -147,23 +133,19 @@ public class VerifyingScopeTest {
                                                               Verifier.class ),
                                        ResourceType.DRL );
 
-        assertFalse( verifier.hasErrors() );
-        assertEquals( 0,
-                      verifier.getErrors().size() );
+        assertThat(verifier.hasErrors()).isFalse();
+        assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis( new ScopesAgendaFilter( false,
                                                                        ScopesAgendaFilter.VERIFYING_SCOPE_DECISION_TABLE ) );
 
-        assertTrue( works );
+        assertThat(works).isTrue();
 
         VerifierReport result = verifier.getResult();
-        assertNotNull( result );
-        assertEquals( 0,
-                      result.getBySeverity( Severity.ERROR ).size() );
-        assertEquals( 0,
-                      result.getBySeverity( Severity.WARNING ).size() );
-        assertEquals( 2,
-                      result.getBySeverity( Severity.NOTE ).size() );
+        assertThat(result).isNotNull();
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.WARNING).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(2);
 
     }
 }

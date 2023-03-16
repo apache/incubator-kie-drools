@@ -44,10 +44,8 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
@@ -96,7 +94,7 @@ public class KiePMMLScorecardModelFactoryTest {
                                                                        new HasClassLoaderMock());
         KiePMMLScorecardModel retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(ScorecardCompilationDTO.fromCompilationDTO(source));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -109,10 +107,10 @@ public class KiePMMLScorecardModelFactoryTest {
         ScorecardCompilationDTO compilationDTO = ScorecardCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(compilationDTO);
-        assertNotNull(retrieved);
-        assertEquals(2, retrieved.size());
-        assertTrue(retrieved.containsKey(compilationDTO.getPackageCanonicalClassName()));
-        assertTrue(retrieved.containsKey(compilationDTO.getPackageCanonicalCharacteristicsClassName()));
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).hasSize(2);
+        assertThat(retrieved).containsKey(compilationDTO.getPackageCanonicalClassName());
+        assertThat(retrieved).containsKey(compilationDTO.getPackageCanonicalCharacteristicsClassName());
         try {
             KieMemoryCompiler.compile(retrieved, Thread.currentThread().getContextClassLoader());
         } catch (Exception e) {
@@ -148,6 +146,6 @@ public class KiePMMLScorecardModelFactoryTest {
                                               REASONCODE_ALGORITHM.class.getName() + "." + REASONCODE_ALGORITHM.byName(basicComplexPartialScore.getReasonCodeAlgorithm().value()),
                                               basicComplexPartialScore.getBaselineScore()
                 ));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 }

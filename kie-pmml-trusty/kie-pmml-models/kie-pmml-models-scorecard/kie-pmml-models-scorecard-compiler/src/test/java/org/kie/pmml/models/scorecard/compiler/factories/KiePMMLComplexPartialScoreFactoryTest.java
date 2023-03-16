@@ -34,7 +34,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.scorecard.model.KiePMMLComplexPartialScore;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
@@ -58,7 +58,7 @@ public class KiePMMLComplexPartialScoreFactoryTest {
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, constant.getValue(),
                                                                       variableName));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(retrieved).isEqualTo(expected);
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
                                                KiePMMLComplexPartialScore.class,
                                                Collections.class);
@@ -78,7 +78,7 @@ public class KiePMMLComplexPartialScoreFactoryTest {
         String text = getFileContent(TEST_02_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, fieldRef.getField().getValue(),
                                                                       variableName));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(retrieved).isEqualTo(expected);
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class,
                                                KiePMMLComplexPartialScore.class,
                                                Collections.class);
@@ -107,7 +107,7 @@ public class KiePMMLComplexPartialScoreFactoryTest {
                                                                       apply.getFunction(),
                                                                       apply.getInvalidValueTreatment().value(),
                                                                       variableName));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(retrieved).isEqualTo(expected);
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
                                                KiePMMLFieldRef.class,
                                                KiePMMLApply.class,
