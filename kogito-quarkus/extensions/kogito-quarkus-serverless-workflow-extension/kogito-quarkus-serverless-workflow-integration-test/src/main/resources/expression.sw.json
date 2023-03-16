@@ -84,16 +84,21 @@
       },
       "actions": [
          {
+           "name" : "skippedAction",
+           "functionRef" : "discardedResult",
+           "sleep" : {
+             "before" : "PT0.001S",
+             "after" : "PT0.001S"
+           },
+           "condition": "false"
+         },
+         {
            "name": "costantMessageAction",
-           "functionRef" : {
-             "refName" : "constantMessage"
-            }
+           "functionRef" : "constantMessage"
          },
          {
            "name": "contextMessageAction",
-           "functionRef" : {
-             "refName" : "contextMessage"
-            }
+           "functionRef" : "contextMessage"
          },
          {
           "name": "printAction",
@@ -106,22 +111,14 @@
          },
          {
            "name": "discardedResultAction",
-           "sleep" : {
-             "before" : "PT0.001S"
-           },
-           "functionRef" : {
-             "refName" : "discardedResult"
-            },
-           "sleep" : {
-             "after" : "PT0.001S"
-           },
+           "functionRef" : "discardedResult",
             "actionDataFilter" : {
               "useResults" : false 
             }
-         }  
-      ],
+         }
+       ],
       "end": {
-        "terminate": "true"
+        "terminate": true
       }
     }
   ]

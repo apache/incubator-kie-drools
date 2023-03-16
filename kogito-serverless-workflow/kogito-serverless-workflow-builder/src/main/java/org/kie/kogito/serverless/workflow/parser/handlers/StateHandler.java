@@ -23,6 +23,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.jbpm.compiler.canonical.descriptors.ExpressionReturnValueSupplier;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
@@ -48,6 +49,7 @@ import org.kie.kogito.serverless.workflow.suppliers.CompensationActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.MergeActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ProduceEventActionSupplier;
+import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +76,8 @@ import static org.kie.kogito.serverless.workflow.utils.TimeoutsConfigResolver.re
 public abstract class StateHandler<S extends State> {
 
     private static Logger logger = LoggerFactory.getLogger(StateHandler.class);
+
+    protected static final String XORSPLITDEFAULT = "Default";
 
     protected final S state;
     protected final Workflow workflow;
@@ -521,5 +525,20 @@ public abstract class StateHandler<S extends State> {
 
         default void onEmptyTarget() {
         }
+    }
+
+    protected final <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> addCondition(SplitFactory<T> splitNode, NodeFactory<?, ?> targetNode, String condition, boolean isDefault) {
+        return addCondition(splitNode, targetNode.getNode().getId(), condition, isDefault);
+    }
+
+    protected final <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> addCondition(SplitFactory<T> splitNode, long targetId, String condition, boolean isDefault) {
+        return splitNode.constraint(targetId, concatId(splitNode.getNode().getId(), targetId),
+                "DROOLS_DEFAULT", workflow.getExpressionLang(),
+                new ExpressionReturnValueSupplier(workflow.getExpressionLang(), ExpressionHandlerUtils.replaceExpr(workflow, condition), DEFAULT_WORKFLOW_VAR), 0, isDefault)
+                .metaData(Metadata.VARIABLE, DEFAULT_WORKFLOW_VAR);
+    }
+
+    protected static String concatId(long start, long end) {
+        return start + "_" + end;
     }
 }

@@ -24,8 +24,10 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.AbstractCompositeNodeFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
+import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
+import org.jbpm.workflow.core.node.Join;
 import org.kie.kogito.serverless.workflow.parser.FunctionNamespaceFactory;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
@@ -43,6 +45,8 @@ import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.sleep.Sleep;
 import io.serverlessworkflow.api.workflow.Functions;
 
+import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
+import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.exclusiveSplitNode;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.subprocessNode;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.timerNode;
 
@@ -61,7 +65,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     protected final <T extends AbstractCompositeNodeFactory<?, ?>> T handleActions(T embeddedSubProcess, List<Action> actions) {
-        return handleActions(embeddedSubProcess, actions, getVarName(), true);
+        return handleActions(embeddedSubProcess, actions, null, true);
     }
 
     protected final <T extends AbstractCompositeNodeFactory<?, ?>> T handleActions(T embeddedSubProcess, List<Action> actions, String outputVar, boolean shouldMerge) {
@@ -69,14 +73,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
             NodeFactory<?, ?> startNode = embeddedSubProcess.startNode(parserContext.newId()).name("EmbeddedStart");
             NodeFactory<?, ?> currentNode = startNode;
             for (Action action : actions) {
-                Sleep sleep = action.getSleep();
-                if (sleep != null && isDurationThere(sleep.getBefore())) {
-                    currentNode = connect(currentNode, createTimerNode(embeddedSubProcess, sleep.getBefore()));
-                }
-                currentNode = connect(currentNode, getActionNode(embeddedSubProcess, action, outputVar, shouldMerge));
-                if (sleep != null && isDurationThere(sleep.getAfter())) {
-                    currentNode = connect(currentNode, createTimerNode(embeddedSubProcess, sleep.getAfter()));
-                }
+                currentNode = connect(currentNode, getActionNode(embeddedSubProcess, action, outputVar != null ? outputVar : getVarName(), shouldMerge));
             }
             connect(currentNode, embeddedSubProcess.endNode(parserContext.newId()).name("EmbeddedEnd").terminate(true)).done();
         } else {
@@ -92,6 +89,47 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     protected final MakeNodeResult getActionNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
+            Action action, String collectVar, boolean shouldMerge) {
+        return addActionCondition(embeddedSubProcess, action, addActionSleep(embeddedSubProcess, action, processActionFilter(embeddedSubProcess, action, collectVar, shouldMerge)));
+    }
+
+    private MakeNodeResult addActionCondition(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, Action action, MakeNodeResult actionNode) {
+        String condition = action.getCondition();
+        if (condition == null) {
+            return actionNode;
+        }
+        String actionName = action.getName();
+        SplitFactory<?> start = addCondition(exclusiveSplitNode(embeddedSubProcess.splitNode(parserContext.newId())), actionNode.getIncomingNode(), condition, false);
+        if (actionName != null) {
+            start.name("Split_" + actionName);
+        }
+        connect(start, actionNode.getIncomingNode());
+        NodeFactory<?, ?> end = connect(actionNode.getOutgoingNode(), embeddedSubProcess.joinNode(parserContext.newId()).type(Join.TYPE_OR));
+        if (actionName != null) {
+            end.name("Join_" + actionName);
+        }
+        connect(start, end);
+        start.metaData(XORSPLITDEFAULT, concatId(start.getNode().getId(), end.getNode().getId()));
+        return new MakeNodeResult(start, end);
+    }
+
+    private MakeNodeResult addActionSleep(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
+            Action action, MakeNodeResult actionNode) {
+        Sleep sleep = action.getSleep();
+        if (sleep != null) {
+            if (!isEmpty(sleep.getBefore())) {
+                NodeFactory<?, ?> beforeNode = createTimerNode(embeddedSubProcess, sleep.getBefore());
+                connect(beforeNode, actionNode.getIncomingNode());
+                return !isEmpty(sleep.getAfter()) ? new MakeNodeResult(beforeNode,
+                        connect(actionNode.getOutgoingNode(), createTimerNode(embeddedSubProcess, sleep.getAfter()))) : new MakeNodeResult(beforeNode, actionNode.getOutgoingNode());
+            } else if (!isEmpty(sleep.getAfter())) {
+                return new MakeNodeResult(actionNode.getIncomingNode(), connect(actionNode.getOutgoingNode(), createTimerNode(embeddedSubProcess, sleep.getAfter())));
+            }
+        }
+        return actionNode;
+    }
+
+    private MakeNodeResult processActionFilter(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             Action action, String collectVar, boolean shouldMerge) {
         ActionDataFilter actionFilter = action.getActionDataFilter();
         String fromExpr = null;
@@ -167,9 +205,5 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     private Optional<NodeFactory> fromPredefinedFunction(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             FunctionRef functionRef, VariableInfo varInfo) {
         return FunctionNamespaceFactory.instance().getNamespace(functionRef).map(f -> f.getActionNode(workflow, parserContext, embeddedSubProcess, functionRef, varInfo));
-    }
-
-    private static boolean isDurationThere(String sleepTime) {
-        return sleepTime != null && !sleepTime.isBlank();
     }
 }

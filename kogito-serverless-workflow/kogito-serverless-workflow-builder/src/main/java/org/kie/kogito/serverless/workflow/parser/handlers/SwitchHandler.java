@@ -19,13 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.jbpm.compiler.canonical.descriptors.ExpressionReturnValueSupplier;
-import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
-import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.defaultdef.DefaultConditionDefinition;
@@ -35,7 +32,6 @@ import io.serverlessworkflow.api.switchconditions.DataCondition;
 import io.serverlessworkflow.api.switchconditions.EventCondition;
 import io.serverlessworkflow.api.transitions.Transition;
 
-import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.eventBasedExclusiveSplitNode;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.exclusiveSplitNode;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.timerNode;
@@ -44,8 +40,6 @@ import static org.kie.kogito.serverless.workflow.parser.handlers.validation.Swit
 import static org.kie.kogito.serverless.workflow.utils.TimeoutsConfigResolver.resolveEventTimeout;
 
 public class SwitchHandler extends StateHandler<SwitchState> {
-
-    private static final String XORSPLITDEFAULT = "Default";
 
     private List<Runnable> targetHandlers = new ArrayList<>();
 
@@ -172,15 +166,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
     }
 
     private void addConstraint(NodeFactory<?, ?> startNode, long targetId, DataCondition condition) {
-        ((SplitFactory<?>) startNode).constraint(targetId, concatId(startNode.getNode().getId(), targetId),
-                "DROOLS_DEFAULT", workflow.getExpressionLang(),
-                new ExpressionReturnValueSupplier(workflow.getExpressionLang(), ExpressionHandlerUtils.replaceExpr(workflow, condition.getCondition()), DEFAULT_WORKFLOW_VAR), 0,
-                isDefaultCondition(state, condition))
-                .metaData(Metadata.VARIABLE, DEFAULT_WORKFLOW_VAR);
-    }
-
-    private static String concatId(long start, long end) {
-        return start + "_" + end;
+        addCondition((SplitFactory<?>) startNode, targetId, condition.getCondition(), isDefaultCondition(state, condition));
     }
 
     private static boolean isDefaultCondition(SwitchState switchState, DataCondition condition) {
