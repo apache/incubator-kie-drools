@@ -3,19 +3,44 @@ package org.optaplanner.core.impl.domain.solution.cloner;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-final class ShallowCloningFieldCloner implements FieldCloner {
+import org.optaplanner.core.api.function.TriConsumer;
 
-    private final Field field;
+final class ShallowCloningFieldCloner {
 
-    public ShallowCloningFieldCloner(Field field) {
-        this.field = Objects.requireNonNull(field);
+    public static ShallowCloningFieldCloner of(Field field) {
+        Class<?> fieldType = field.getType();
+        if (fieldType == boolean.class) {
+            return new ShallowCloningFieldCloner(field, FieldCloningUtils::copyBoolean);
+        } else if (fieldType == byte.class) {
+            return new ShallowCloningFieldCloner(field, FieldCloningUtils::copyByte);
+        } else if (fieldType == char.class) {
+            return new ShallowCloningFieldCloner(field, FieldCloningUtils::copyChar);
+        } else if (fieldType == short.class) {
+            return new ShallowCloningFieldCloner(field, FieldCloningUtils::copyShort);
+        } else if (fieldType == int.class) {
+            return new ShallowCloningFieldCloner(field, FieldCloningUtils::copyInt);
+        } else if (fieldType == long.class) {
+            return new ShallowCloningFieldCloner(field, FieldCloningUtils::copyLong);
+        } else if (fieldType == float.class) {
+            return new ShallowCloningFieldCloner(field, FieldCloningUtils::copyFloat);
+        } else if (fieldType == double.class) {
+            return new ShallowCloningFieldCloner(field, FieldCloningUtils::copyDouble);
+        } else {
+            return new ShallowCloningFieldCloner(field, FieldCloningUtils::copyObject);
+        }
+
     }
 
-    @Override
-    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone) {
-        Object originalValue = FieldCloner.getGenericFieldValue(original, field);
-        FieldCloner.setGenericFieldValue(clone, field, originalValue);
-        return null;
+    private final Field field;
+    private final TriConsumer<Field, Object, Object> copyOperation;
+
+    private ShallowCloningFieldCloner(Field field, TriConsumer<Field, Object, Object> copyOperation) {
+        this.field = Objects.requireNonNull(field);
+        this.copyOperation = Objects.requireNonNull(copyOperation);
+    }
+
+    public <C> void clone(C original, C clone) {
+        copyOperation.accept(field, original, clone);
     }
 
 }

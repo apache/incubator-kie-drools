@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @implNote This class is thread-safe.
  */
-final class DeepCloningFieldCloner implements FieldCloner {
+final class DeepCloningFieldCloner {
 
     private final AtomicReference<Metadata> valueDeepCloneDecision = new AtomicReference<>();
     private final AtomicInteger fieldDeepCloneDecision = new AtomicInteger(-1);
@@ -18,13 +18,12 @@ final class DeepCloningFieldCloner implements FieldCloner {
         this.field = Objects.requireNonNull(field);
     }
 
-    @Override
     public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone) {
-        Object originalValue = FieldCloner.getGenericFieldValue(original, field);
+        Object originalValue = FieldCloningUtils.getObjectFieldValue(original, field);
         if (deepClone(deepCloningUtils, original.getClass(), originalValue)) { // Defer filling in the field.
             return new Unprocessed(clone, field, originalValue);
         } else { // Shallow copy.
-            FieldCloner.setGenericFieldValue(clone, field, originalValue);
+            FieldCloningUtils.setObjectFieldValue(clone, field, originalValue);
             return null;
         }
     }

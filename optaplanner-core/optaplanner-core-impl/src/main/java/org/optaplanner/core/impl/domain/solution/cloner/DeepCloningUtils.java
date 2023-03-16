@@ -134,7 +134,7 @@ public final class DeepCloningUtils {
 
     static boolean isImmutable(Class<?> clz) {
         if (clz.isPrimitive() || clz.isEnum()) {
-            return false;
+            return true;
         } else
             return IMMUTABLE_CLASSES.contains(clz);
     }
