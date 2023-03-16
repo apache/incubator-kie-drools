@@ -3,8 +3,8 @@ package org.optaplanner.quarkus;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -31,7 +31,6 @@ import io.restassured.RestAssured;
 class OptaPlannerProcessorOverridePropertiesAtRuntimeTest {
 
     private static final String QUARKUS_VERSION = getRequiredProperty("version.io.quarkus");
-    private static final String PROJECT_VERSION = getRequiredProperty("project.version");
 
     private static String getRequiredProperty(String name) {
         final String v = System.getProperty(name);
@@ -43,10 +42,7 @@ class OptaPlannerProcessorOverridePropertiesAtRuntimeTest {
 
     @RegisterExtension
     static final QuarkusProdModeTest config = new QuarkusProdModeTest()
-            .setForcedDependencies(Arrays.asList(
-                    // TODO: Remove optaplanner-test when https://github.com/kiegroup/optaplanner/pull/1302 is merged?
-                    new AppArtifact("org.optaplanner", "optaplanner-test", PROJECT_VERSION),
-                    new AppArtifact("io.quarkus", "quarkus-resteasy", QUARKUS_VERSION)))
+            .setForcedDependencies(List.of(new AppArtifact("io.quarkus", "quarkus-resteasy", QUARKUS_VERSION)))
             // We want to check if these are overridden at runtime
             .overrideConfigKey("quarkus.optaplanner.solver.termination.best-score-limit", "0")
             .overrideConfigKey("quarkus.optaplanner.solver.move-thread-count", "4")
