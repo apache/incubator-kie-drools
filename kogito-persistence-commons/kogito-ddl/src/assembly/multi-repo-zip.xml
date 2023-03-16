@@ -18,16 +18,16 @@
     <fileSets>
         <fileSet>
             <directory>${project.root.dir}/data-index/data-index-storage/data-index-storage-postgresql/src/main/resources/db/migration</directory>
-            <outputDirectory>postgresql</outputDirectory>
+            <outputDirectory>postgresql/data-index</outputDirectory>
             <includes>
                 <include>*.sql</include>
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.root.dir}/data-index/data-index-storage/data-index-storage-oracle/src/main/resources</directory>
-            <outputDirectory>oracle</outputDirectory>
+            <directory>${project.root.dir}/data-index/data-index-storage/data-index-storage-oracle/src/main/resources/db/migration</directory>
+            <outputDirectory>oracle/data-index</outputDirectory>
             <includes>
-                <include>*_create.sql</include>
+                <include>*.sql</include>
             </includes>
         </fileSet>
         <!-- Job Service DDLs - Flyway scripts -->
@@ -42,7 +42,7 @@
     <files>
         <file>
             <source>${project.root.dir}/persistence-commons/persistence-commons-postgresql/src/main/resources/cache_entity_create.sql</source>
-            <outputDirectory>postgresql</outputDirectory>
+            <outputDirectory>postgresql/trusty</outputDirectory>
             <destName>trusty_service_create.sql</destName>
         </file>
     </files>
