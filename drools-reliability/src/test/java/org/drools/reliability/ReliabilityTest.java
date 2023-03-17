@@ -15,10 +15,6 @@
 
 package org.drools.reliability;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,6 +27,10 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.ReliabilityTestUtils.failover;
@@ -62,7 +62,6 @@ class ReliabilityTest {
     public void tearDown() {
         // We can remove this when we implement ReliableSession.dispose() to call CacheManager.removeCachesBySessionId(id)
         CacheManager.INSTANCE.removeAllSessionCaches();
-        failover();
     }
 
     @ParameterizedTest
@@ -159,40 +158,6 @@ class ReliabilityTest {
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
-    void updateInRHS_insertFireFailoverInsertFire_shouldNotMatchUpdatedFact(PersistedSessionOption.Strategy strategy) {
-        String drl =
-                "import " + Person.class.getCanonicalName() + ";" +
-                "global java.util.List results;" +
-                "rule X when\n" +
-                "  $s: String()\n" +
-                "  $p: Person( getName().startsWith($s) )\n" +
-                "then\n" +
-                "  results.add( $p.getName() );\n" +
-                "  $p.setName(\"-\");\n" +
-                "  update($p); \n" + // updated Person will not match
-               "end";
-
-        createSession(drl, strategy);
-
-		insertString();
-		insertMatchingPersonOne();
-		session.insert(new Person("Nicole", 27));
-
-		assertThat(session.fireAllRules()).isEqualTo(1);
-
-        failover();
-
-        restoreSession(drl, strategy);
-
-		session.insert(new Person("John", 22));
-		session.insert(new Person("Mary", 42));
-
-		assertThat(session.fireAllRules()).isEqualTo(1);
-		assertThat(getResults()).containsExactlyInAnyOrder("Mary");
-    }
-
-    @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
     void updateBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.Strategy strategy) {
 
         createSession(BASIC_RULE, strategy);
@@ -255,8 +220,33 @@ class ReliabilityTest {
         assertThat(session.fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder("Toshiya");
     }
-    
-	private FactHandle insertString() {
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnly")
+    void updateByObjectBeforeFailover_shouldMatchUpdatedFact(PersistedSessionOption.Strategy strategy){
+
+        createSession(BASIC_RULE, strategy);
+
+        session.insert("M");
+        session.insert(new Person("Mark", 37)); //insertMatchingPerson("Mark", 37);
+        FactHandle fhNicole = session.insert(new Person("Nicole", 32)); //insertNonMatchingPerson("Nicole", 32);
+
+        assertThat(session.fireAllRules()).isEqualTo(1);
+
+        session.update(fhNicole, new Person("Mary", 32)); //updateWithMatchingPerson(fhNicole,new Person("Mary", 32));
+
+        failover();
+
+        restoreSession(BASIC_RULE, strategy);
+
+        assertThat(session.fireAllRules()).isEqualTo(1);
+
+        failover();
+
+        assertThat(session.fireAllRules()).isEqualTo(0);
+    }
+
+    private FactHandle insertString() {
 		return session.insert("M");
 	}
 
@@ -281,7 +271,9 @@ class ReliabilityTest {
     }
 
     private KieSession createSession(String drl, PersistedSessionOption.Strategy strategy) {
-        return getKieSession(drl, PersistedSessionOption.newSession(strategy));
+        getKieSession(drl, PersistedSessionOption.newSession(strategy));
+        savedSessionId = session.getIdentifier();
+        return session;
     }
 
     private KieSession restoreSession(String drl, PersistedSessionOption.Strategy strategy) {
@@ -293,7 +285,6 @@ class ReliabilityTest {
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         conf.setOption(option);
         session = kbase.newKieSession(conf, null);
-        savedSessionId = session.getIdentifier();
         List<String> results = new ArrayList<>();
         session.setGlobal("results", results);
         return session;
