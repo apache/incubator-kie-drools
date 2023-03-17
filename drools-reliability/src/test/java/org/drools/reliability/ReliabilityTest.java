@@ -62,7 +62,6 @@ class ReliabilityTest {
     public void tearDown() {
         // We can remove this when we implement ReliableSession.dispose() to call CacheManager.removeCachesBySessionId(id)
         CacheManager.INSTANCE.removeAllSessionCaches();
-        failover();
     }
 
     @ParameterizedTest
@@ -281,7 +280,9 @@ class ReliabilityTest {
     }
 
     private KieSession createSession(String drl, PersistedSessionOption.Strategy strategy) {
-        return getKieSession(drl, PersistedSessionOption.newSession(strategy));
+        getKieSession(drl, PersistedSessionOption.newSession(strategy));
+        savedSessionId = session.getIdentifier();
+        return session;
     }
 
     private KieSession restoreSession(String drl, PersistedSessionOption.Strategy strategy) {
@@ -293,7 +294,6 @@ class ReliabilityTest {
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         conf.setOption(option);
         session = kbase.newKieSession(conf, null);
-        savedSessionId = session.getIdentifier();
         List<String> results = new ArrayList<>();
         session.setGlobal("results", results);
         return session;
