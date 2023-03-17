@@ -39,6 +39,7 @@ import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.rest;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.forEach;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.inject;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.operation;
+import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.parallel;
 import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.arrayNode;
 import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.objectNode;
 import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.workflow;
@@ -110,6 +111,23 @@ class StaticFluentWorkflowApplicationTest {
             Process<JsonNodeModel> process = application.process(workflow);
             assertThat(application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata().get(MESSAGE).asText()).isEqualTo(ODD);
             assertThat(application.execute(process, Collections.singletonMap("input", 7)).getWorkflowdata().get(MESSAGE).asText()).isEqualTo(EVEN);
+        }
+    }
+
+    @Test
+    void testParallel() {
+        final String DOUBLE = "double";
+        final String HALF = "half";
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            Workflow workflow = workflow("ParallelTest").function(expr(DOUBLE, ".input*2")).function(expr(HALF, ".input/2"))
+                    .singleton(parallel()
+                            .newBranch().action(call(DOUBLE).outputFilter(".double")).endBranch()
+                            .newBranch().action(call(HALF).outputFilter(".half")).endBranch());
+
+            Process<JsonNodeModel> process = application.process(workflow);
+            JsonNode result = application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata();
+            assertThat(result.get("double").asInt()).isEqualTo(8);
+            assertThat(result.get("half").asInt()).isEqualTo(2);
         }
     }
 }

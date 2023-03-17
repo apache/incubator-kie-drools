@@ -27,7 +27,8 @@ public class BranchActionBuilder {
     private Branch branch;
     private List<Action> actions = new ArrayList<>();
 
-    public BranchActionBuilder(ParallelStateBuilder builder, Branch branch) {
+    public BranchActionBuilder(ParallelStateBuilder parent, Branch branch) {
+        this.parent = parent;
         this.branch = branch.withActions(actions);
     }
 
@@ -41,7 +42,7 @@ public class BranchActionBuilder {
         return this;
     }
 
-    public ParallelStateBuilder other() {
+    public ParallelStateBuilder endBranch() {
         return parent;
     }
 }

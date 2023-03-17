@@ -38,7 +38,7 @@ public class ActionBuilder {
         return new ActionBuilder(new Action().withFunctionRef(new FunctionRef().withRefName(functionName).withArguments(args)));
     }
 
-    public ActionBuilder subprocess(Process<JsonNodeModel> subprocess) {
+    public static ActionBuilder subprocess(Process<JsonNodeModel> subprocess) {
         return new ActionBuilder(new Action().withSubFlowRef(new SubFlowRef().withWorkflowId(subprocess.id())));
     }
 
