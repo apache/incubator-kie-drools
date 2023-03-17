@@ -36,8 +36,8 @@
         isDataIndexAvailable: {info:isDataIndexAvailable},
         dataIndexUrl: "{config:property('kogito.data-index.url') ?: 'http://localhost:8180'}/graphql",
         page: "Monitoring",
-        devUIUrl: "http://localhost:{config:property('quarkus.http.port') or '8080'}",
-        openApiPath: "/q/openapi.json",
+        devUIUrl: "{#if config:property('kogito.dev-ui.url')}{config:property('kogito.dev-ui.url')}{#else}http://localhost:{config:property('quarkus.http.port') or '8080'}{/if}",
+        openApiPath: "q/openapi.json",
         availablePages: ["Processes", "Monitoring", "CustomDashboard"],
         customLabels: {
             singularProcessLabel: "Workflow",

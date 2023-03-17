@@ -30,7 +30,7 @@
 {#if info:isDataIndexAvailable}
 <script>
     const fillCount = (resourceType) => {
-        fetch("http://localhost:8080/dataindex/" + resourceType + "/count")
+        fetch("{#if config:property('kogito.dev-ui.url')}{config:property('kogito.dev-ui.url')}{#else}http://localhost:{config:property('quarkus.http.port') or '8080'}{/if}/dataindex/" + resourceType + "/count")
                 .then(response => response.text())
                 .then(count => {
                     document.getElementById(resourceType + "Count").innerText = count;
