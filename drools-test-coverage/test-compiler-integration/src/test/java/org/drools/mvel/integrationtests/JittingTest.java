@@ -351,4 +351,24 @@ public class JittingTest {
         kieSession.insert("CX");
         assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
+
+    @Test
+    public void strOperator() {
+        // DROOLS-7366
+        String drl =
+                "package test\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R1 when \n" +
+                "    Person( $name : name, $name str[startsWith] \"M\" )\n" +
+                "then \n" +
+                "end";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        KieSession ksession = kieBase.newKieSession();
+        ksession.insert(new Person("Mario"));
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
 }
