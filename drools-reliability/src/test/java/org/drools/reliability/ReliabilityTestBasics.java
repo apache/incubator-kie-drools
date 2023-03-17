@@ -83,7 +83,9 @@ public abstract class ReliabilityTestBasics {
     }
 
     protected KieSession createSession(String drl, PersistedSessionOption.Strategy strategy) {
-        return getKieSession(drl, PersistedSessionOption.newSession(strategy));
+        getKieSession(drl, PersistedSessionOption.newSession(strategy));
+        savedSessionId = session.getIdentifier();
+        return session;
     }
 
     protected KieSession restoreSession(String drl, PersistedSessionOption.Strategy strategy) {
@@ -95,7 +97,6 @@ public abstract class ReliabilityTestBasics {
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         conf.setOption(option);
         session = kbase.newKieSession(conf, null);
-        savedSessionId = session.getIdentifier();
         List<Object> results = new ArrayList<>();
         session.setGlobal("results", results);
         return session;
