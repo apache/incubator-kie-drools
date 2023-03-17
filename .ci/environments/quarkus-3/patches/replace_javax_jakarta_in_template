@@ -28,3 +28,20 @@ diff --git a/drools-model/drools-model-codegen/src/main/resources/class-template
          this(ruleUnits == null || ruleUnits.isUnsatisfied() ? AbstractRuleUnits.DummyRuleUnits.INSTANCE : ruleUnits.get());
      }
 
+Index: drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java b/drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java
+--- a/drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java	(revision 4766094314288e7d1b4335d789374d7cc05cea74)
++++ b/drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java	(date 1679061647250)
+@@ -23,7 +23,7 @@
+ import org.kie.api.runtime.KieRuntimeBuilder;
+ import org.drools.modelcompiler.KieBaseBuilder;
+
+-@javax.enterprise.context.ApplicationScoped
++@jakarta.enterprise.context.ApplicationScoped
+ public class ProjectRuntime implements KieRuntimeBuilder {
+
+     private static final ProjectModel model = new ProjectModel();
