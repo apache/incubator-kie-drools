@@ -22,6 +22,7 @@
     <module>jobs-service-postgresql</module>
     <module>jobs-service-mongodb</module>
     <module>jobs-service-inmemory</module>
+    <module>kogito-addons-jobs-service</module>
   </modules>
 
   <dependencyManagement>
@@ -50,7 +51,27 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>job-http-recipient-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>job-sink-recipient</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>job-sink-recipient-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-quarkus-jobs-service-embedded</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-quarkus-jobs-service-embedded-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

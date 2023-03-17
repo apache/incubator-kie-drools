@@ -50,4 +50,11 @@ public class RecipientInstance implements Recipient {
     public int hashCode() {
         return Objects.hash(recipient);
     }
+
+    @Override
+    public String toString() {
+        return "RecipientInstance{" +
+                "recipient=" + recipient +
+                '}';
+    }
 }

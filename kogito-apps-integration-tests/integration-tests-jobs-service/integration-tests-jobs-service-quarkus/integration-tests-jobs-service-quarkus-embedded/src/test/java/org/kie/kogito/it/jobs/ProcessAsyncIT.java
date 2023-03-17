@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.index.json;
+package org.kie.kogito.it.jobs;
 
-import javax.enterprise.context.ApplicationScoped;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.restassured.RestAssured;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.quarkus.jackson.ObjectMapperCustomizer;
-
-@ApplicationScoped
-public class ObjectMapperProducer implements ObjectMapperCustomizer {
+@QuarkusIntegrationTest
+class ProcessAsyncIT extends BaseProcessAsyncIT {
 
     @Override
-    public void customize(ObjectMapper objectMapper) {
-        JsonUtils.configure(objectMapper);
+    public String jobServiceUrl() {
+        return RestAssured.baseURI;
     }
 }

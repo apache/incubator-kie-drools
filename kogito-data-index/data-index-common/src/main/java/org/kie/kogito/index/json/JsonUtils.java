@@ -23,18 +23,19 @@ import io.cloudevents.jackson.JsonFormat;
 
 public final class JsonUtils {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
-    static {
-        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        MAPPER.registerModule(JsonFormat.getCloudEventJacksonModule());
-        MAPPER.registerModule(new JavaTimeModule());
-    }
+    private static final ObjectMapper MAPPER = configure(new ObjectMapper());
 
     private JsonUtils() {
     }
 
     public static ObjectMapper getObjectMapper() {
         return MAPPER;
+    }
+
+    public static ObjectMapper configure(ObjectMapper objectMapper) {
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.registerModule(JsonFormat.getCloudEventJacksonModule());
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 }
