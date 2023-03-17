@@ -18,6 +18,7 @@ package org.kie.kogito.jobs.quarkus.common;
 
 import java.util.Optional;
 
+import javax.enterprise.inject.Instance;
 import javax.ws.rs.core.Response;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,10 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CallbackJobsServiceResourceTest {
@@ -75,8 +79,10 @@ class CallbackJobsServiceResourceTest {
     @BeforeEach
     void setUp() {
         resource = new CallbackJobsServiceResource();
-        resource.application = application;
-        resource.processes = processes;
+        resource.application = mock(Instance.class);
+        resource.processes = mock(Instance.class);
+        lenient().when(resource.application.get()).thenReturn(application);
+        lenient().when(resource.processes.get()).thenReturn(processes);
     }
 
     @Test

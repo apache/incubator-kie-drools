@@ -16,6 +16,7 @@
 
 package org.kie.kogito.jobs.quarkus.common;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -44,10 +45,10 @@ import static org.kie.kogito.jobs.api.JobCallbackResourceDef.TIMER_ID;
 public class CallbackJobsServiceResource {
 
     @Inject
-    Processes processes;
+    Instance<Processes> processes;
 
     @Inject
-    Application application;
+    Instance<Application> application;
 
     @POST
     @Path(JOBS_CALLBACK_POST_URI)
@@ -60,12 +61,12 @@ public class CallbackJobsServiceResource {
             return Response.status(Status.BAD_REQUEST).entity("Process id and Process instance id must be given").build();
         }
 
-        Process<?> process = processes.processById(processId);
+        Process<?> process = processes.get().processById(processId);
         if (process == null) {
             return Response.status(Status.NOT_FOUND).entity("Process with id " + processId + " not found").build();
         }
 
-        return new TriggerJobCommand(processInstanceId, timerId, limit, process, application.unitOfWorkManager()).execute()
+        return new TriggerJobCommand(processInstanceId, timerId, limit, process, application.get().unitOfWorkManager()).execute()
                 ? Response.status(Status.OK).build()
                 : Response.status(Status.NOT_FOUND).entity("Process instance with id " + processInstanceId + " not found").build();
 

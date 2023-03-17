@@ -96,10 +96,11 @@ public class VertxJobsService extends RestJobsService {
         LOGGER.debug("Job to be scheduled {} with callback URL {}", description, callback);
         final Job job = buildJob(description, callback);
         client.post(JOBS_PATH).sendJson(job, res -> {
-            if (res.succeeded() && res.result().statusCode() == 200) {
-                LOGGER.debug("Creating of the job {} done with status code {} ", job, res.result().statusCode());
+            int status = res.result() != null ? res.result().statusCode() : 0;
+            if (res.succeeded() && status == 200) {
+                LOGGER.debug("Creating of the job {} done with status code {} ", job, status);
             } else {
-                LOGGER.error("Scheduling of job {} failed with response code {}", job, res.result().statusCode(), res.cause());
+                LOGGER.error("Scheduling of job {} failed with response code {}", job, status, res.cause());
             }
         });
         return job.getId();
