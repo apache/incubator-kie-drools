@@ -219,7 +219,7 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                 }
 
                 matcherTemplateKey.appendReplacement(interpolatedResult,
-                                                     value);
+                                                     Matcher.quoteReplacement( value ));
             }
             matcherTemplateKey.appendTail(interpolatedResult);
             return Optional.of(interpolatedResult);
