@@ -10,6 +10,8 @@ public class Customer {
     private BigDecimal rate;
     private BigInteger value;
 
+    private Long longValue;
+
     public String getCode() {
         return code;
     }
@@ -33,4 +35,13 @@ public class Customer {
     public void setValue( BigInteger value ) {
         this.value = value;
     }
+
+    public Long getLongValue() {
+        return longValue;
+    }
+
+    public void setLongValue(Long longValue) {
+        this.longValue = longValue;
+    }
+
 }
