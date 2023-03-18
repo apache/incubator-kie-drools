@@ -490,7 +490,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
         }
 
         @Override
-        public void execute(ReteEvaluator reteEvaluator) {
+        public void internalExecute(ReteEvaluator reteEvaluator) {
             signalEvent(type, event);
         }
     }

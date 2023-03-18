@@ -114,7 +114,7 @@ public class DefaultSignalManager implements SignalManager {
             }
         }
 
-        public void execute(ReteEvaluator reteEvaluator) {
+        public void internalExecute(ReteEvaluator reteEvaluator) {
             ProcessInstance processInstance = ((InternalKnowledgeRuntime) reteEvaluator).getProcessInstance(processInstanceId);
             if (processInstance != null) {
                 processInstance.signalEvent(type, event);
@@ -174,7 +174,7 @@ public class DefaultSignalManager implements SignalManager {
             }
         }
 
-        public void execute(ReteEvaluator reteEvaluator) {
+        public void internalExecute(ReteEvaluator reteEvaluator) {
             ((DefaultSignalManager) ((InternalProcessRuntime) ((InternalWorkingMemory) reteEvaluator).getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
         }
 
