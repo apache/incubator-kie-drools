@@ -127,7 +127,11 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         identifier = (String) in.readObject();
-        ( (DroolsObjectInputStream) in ).readExtractor( this::setReadAccessor );
+        if (in instanceof DroolsObjectInputStream) {
+            ((DroolsObjectInputStream) in).readExtractor(this::setReadAccessor);
+        } else {
+            readAccessor = (ReadAccessor) in.readObject();
+        }
         pattern = (Pattern) in.readObject();
         internalFact = in.readBoolean();
         bindingName = (String) in.readObject();

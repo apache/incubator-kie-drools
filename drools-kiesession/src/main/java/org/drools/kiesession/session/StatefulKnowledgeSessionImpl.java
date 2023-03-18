@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 import org.drools.core.FlowSessionConfiguration;
 import org.drools.core.QueryResultsImpl;
@@ -242,6 +243,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private NamedEntryPointsManager entryPointsManager;
 
+    private Consumer<PropagationEntry> workingMemoryActionListener;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -256,14 +259,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this(id,
              kBase,
              true,
-             kBase.getSessionConfiguration(),
+             (SessionConfiguration) kBase.getSessionConfiguration(),
              EnvironmentFactory.newEnvironment());
     }
 
     public StatefulKnowledgeSessionImpl(final long id,
                                         final InternalKnowledgeBase kBase,
                                         boolean initInitFactHandle,
-                                        final KieSessionConfiguration config,
+                                        final SessionConfiguration config,
                                         final Environment environment) {
         this(id,
              kBase,
@@ -282,7 +285,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                         final InternalKnowledgeBase kBase,
                                         final FactHandleFactory handleFactory,
                                         final long propagationContext,
-                                        final KieSessionConfiguration config,
+                                        final SessionConfiguration config,
                                         final InternalAgenda agenda,
                                         final Environment environment) {
         this(id,
@@ -304,7 +307,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                          final FactHandleFactory handleFactory,
                                          final boolean initInitFactHandle,
                                          final long propagationContext,
-                                         final KieSessionConfiguration config,
+                                         final SessionConfiguration config,
                                          final Environment environment,
                                          final RuleRuntimeEventSupport workingMemoryEventSupport,
                                          final AgendaEventSupport agendaEventSupport,
@@ -320,16 +323,16 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.propagationIdCounter = new AtomicLong(propagationContext);
         init( config, environment, propagationContext );
 
-        this.entryPointsManager = new NamedEntryPointsManager(this);
-
         this.nodeMemories = new ConcurrentNodeMemories(kBase);
         registerReceiveNodes(kBase.getReceiveNodes());
 
         RuleBaseConfiguration conf = kBase.getRuleBaseConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
 
-        this.agenda = agenda != null ? agenda : RuntimeComponentFactory.get().getAgendaFactory().createAgenda(kBase);
+        this.agenda = agenda != null ? agenda : RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(kBase);
         this.agenda.setWorkingMemory(this);
+
+        this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
 
         this.sequential = conf.isSequential();
 
@@ -458,6 +461,16 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     @Override
     public KieBase getKieBase() {
         return this.kBase;
+    }
+
+    @Override
+    public Consumer<PropagationEntry> getWorkingMemoryActionListener() {
+        return workingMemoryActionListener;
+    }
+
+    @Override
+    public void setWorkingMemoryActionListener(Consumer<PropagationEntry> workingMemoryActionListener) {
+        this.workingMemoryActionListener = workingMemoryActionListener;
     }
 
     StatefulKnowledgeSessionImpl fromPool(StatefulSessionPool pool) {
@@ -749,7 +762,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
             LeftInputAdapterNode lian = factHandle.getFirstLeftTuple().getTupleSource();
             LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
             SegmentMemory lsmem = lmem.getSegmentMemory();
@@ -1236,7 +1249,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public void submit(AtomicAction action) {
         agenda.addPropagation( new PropagationEntry.AbstractPropagationEntry() {
             @Override
-            public void execute( ReteEvaluator reteEvaluator ) {
+            public void internalExecute(ReteEvaluator reteEvaluator ) {
                 action.execute( (KieSession)reteEvaluator );
             }
         } );

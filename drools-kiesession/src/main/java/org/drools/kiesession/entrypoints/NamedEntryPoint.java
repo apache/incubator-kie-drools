@@ -39,6 +39,7 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectStoreWrapper;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
@@ -52,9 +53,8 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.conf.KieBaseMutabilityOption;
@@ -66,16 +66,16 @@ import static java.util.Arrays.asList;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
-public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, PropertyChangeListener  {
+public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, PropertyChangeListener {
 
-    protected static final transient Logger log = LoggerFactory.getLogger(NamedEntryPoint.class);
+    protected static final Logger log = LoggerFactory.getLogger(NamedEntryPoint.class);
 
     protected static final Class<?>[] ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
 
     /** The arguments used when adding/removing a property change listener. */
     protected final Object[] addRemovePropertyChangeListenerArgs = new Object[]{this};
 
-    protected ObjectStore objectStore;
+    private ObjectStore objectStore;
 
     protected transient RuleBase ruleBase;
 
@@ -111,7 +111,13 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         RuleBaseConfiguration conf = this.ruleBase.getRuleBaseConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
         this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(conf.getAssertBehaviour());
-        this.objectStore = isEqualityBehaviour || conf.getOption(KieBaseMutabilityOption.KEY).isMutabilityEnabled() ?
+
+        this.objectStore = createObjectStore(entryPoint, conf, reteEvaluator);
+    }
+
+    protected ObjectStore createObjectStore(EntryPointId entryPoint, RuleBaseConfiguration conf, ReteEvaluator reteEvaluator) {
+        boolean useClassAwareStore = isEqualityBehaviour || conf.getOption(KieBaseMutabilityOption.KEY).isMutabilityEnabled();
+        return useClassAwareStore ?
                 new ClassAwareObjectStore( isEqualityBehaviour, this.lock ) :
                 new IdentityObjectStore();
     }

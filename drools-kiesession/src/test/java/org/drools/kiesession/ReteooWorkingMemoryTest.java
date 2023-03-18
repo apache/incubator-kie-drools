@@ -204,7 +204,7 @@ public class ReteooWorkingMemoryTest {
             implements WorkingMemoryAction {
         // I am using AtomicInteger just as an int wrapper... nothing to do with concurrency here
         public AtomicInteger counter = new AtomicInteger(0);
-        public void execute(ReteEvaluator reteEvaluator) {
+        public void internalExecute(ReteEvaluator reteEvaluator) {
             // the reentrant action must be executed completely
             // before any of the final actions is executed
             assertThat(counter.get()).isEqualTo(0);

@@ -272,8 +272,8 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
         }
 
         @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
-            super.execute( reteEvaluator );
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
+            super.internalExecute( reteEvaluator );
             compositeAgenda.notifyWaitOnRest();
         }
     }

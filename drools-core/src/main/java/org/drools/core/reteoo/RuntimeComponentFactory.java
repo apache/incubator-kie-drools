@@ -41,7 +41,7 @@ public interface RuntimeComponentFactory extends KieService {
 
     String NO_RUNTIME = "Missing runtime. Please add the module org.drools:drools-kiesession to your classpath.";
 
-    AgendaFactory getAgendaFactory();
+    AgendaFactory getAgendaFactory(SessionConfiguration config);
 
     AgendaGroupFactory getAgendaGroupFactory();
 

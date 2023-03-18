@@ -119,7 +119,7 @@ public class AsyncReceiveNode extends LeftTupleSource
         }
 
         @Override
-        public void execute( final ReteEvaluator reteEvaluator ) {
+        public void internalExecute(final ReteEvaluator reteEvaluator ) {
             AsyncReceiveMemory memory = reteEvaluator.getNodeMemory( asyncReceiveNode );
             memory.addMessage( object );
             memory.setNodeDirtyWithoutNotify();

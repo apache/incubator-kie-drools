@@ -36,6 +36,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.KeepReferenceOption;
 import org.kie.api.runtime.conf.KieSessionOption;
 import org.kie.api.runtime.conf.MultiValueKieSessionOption;
+import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.conf.SingleValueKieSessionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.internal.conf.CompositeConfiguration;
@@ -52,6 +53,8 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
 
     private TimerJobFactoryType            timerJobFactoryType;
 
+    private PersistedSessionOption persistedSessionOption;
+
     private ExecutableRunner runner;
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -63,7 +66,7 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
+            ClassNotFoundException {
         super.readExternal(in);
         keepReference = in.readBoolean();
         clockType = (ClockType) in.readObject();
@@ -109,6 +112,10 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
                 setKeepReference(((KeepReferenceOption)option).isKeepReference());
                 break;
             }
+            case PersistedSessionOption.PROPERTY_NAME: {
+                setPersistedSessionOption( (PersistedSessionOption) option );
+                break;
+            }
             default:
                 compConfig.setOption(option);
         }
@@ -125,6 +132,9 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
             }
             case KeepReferenceOption.PROPERTY_NAME: {
                 return (T) (isKeepReference() ? KeepReferenceOption.YES : KeepReferenceOption.NO);
+            }
+            case PersistedSessionOption.PROPERTY_NAME: {
+                return (T) getPersistedSessionOption();
             }
             default:
                 return compConfig.getOption(option);
@@ -192,6 +202,18 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
         return this.keepReference;
     }
 
+    public boolean hasPersistedSessionOption() {
+        return this.persistedSessionOption != null;
+    }
+
+    public PersistedSessionOption getPersistedSessionOption() {
+        return this.persistedSessionOption;
+    }
+
+    private void setPersistedSessionOption(PersistedSessionOption persistedSessionOption){
+        this.persistedSessionOption = persistedSessionOption;
+    }
+
     public ClockType getClockType() {
         return clockType;
     }
@@ -217,7 +239,7 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
     public ExecutableRunner getRunner( KieBase kbase, Environment environment ) {
         if ( this.runner == null ) {
             initCommandService( kbase,
-                                environment );
+                    environment );
         }
         return this.runner;
     }
@@ -238,10 +260,10 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
         if ( clazz != null ) {
             try {
                 this.runner = clazz.getConstructor( KieBase.class,
-                                                    KieSessionConfiguration.class,
-                                                    Environment.class ).newInstance( kbase,
-                                                                                     this,
-                                                                                     environment );
+                        KieSessionConfiguration.class,
+                        Environment.class ).newInstance( kbase,
+                        this,
+                        environment );
             } catch ( Exception e ) {
                 throw new IllegalArgumentException( "Unable to instantiate command service '" + className + "'", e );
             }
@@ -259,7 +281,7 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
 
 
         return getClockType() == that.getClockType() &&
-               getTimerJobFactoryType() == that.getTimerJobFactoryType();
+                getTimerJobFactoryType() == that.getTimerJobFactoryType();
     }
 
     @Override

@@ -69,7 +69,7 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
         return propagationFactory;
     }
 
-    public AgendaFactory getAgendaFactory() {
+    public AgendaFactory getAgendaFactory(SessionConfiguration config) {
         return agendaFactory;
     }
 

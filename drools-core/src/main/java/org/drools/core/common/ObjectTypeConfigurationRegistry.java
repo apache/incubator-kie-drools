@@ -36,7 +36,7 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
 
     private final Map<Object, ObjectTypeConf> typeConfMap = new ConcurrentHashMap<>();
 
-    private final RuleBase ruleBase;
+    private final transient RuleBase ruleBase;
 
     public ObjectTypeConfigurationRegistry(RuleBase ruleBase) {
         this.ruleBase = ruleBase;

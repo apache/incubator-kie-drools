@@ -18,6 +18,7 @@ package org.drools.core.common;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.SessionConfiguration;
@@ -43,6 +44,8 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionClock;
 
 public interface ReteEvaluator {
+
+    long getIdentifier();
 
     ActivationsManager getActivationsManager();
 
@@ -136,4 +139,19 @@ public interface ReteEvaluator {
     int fireAllRules(int max);
     int fireAllRules(AgendaFilter agendaFilter);
     int fireAllRules(AgendaFilter agendaFilter, int max);
+
+    default void setWorkingMemoryActionListener(Consumer<PropagationEntry> listener) {
+        throw new UnsupportedOperationException();
+    }
+
+    default Consumer<PropagationEntry> getWorkingMemoryActionListener() {
+        return null;
+    }
+
+    default void onWorkingMemoryAction(PropagationEntry entry) {
+        Consumer<PropagationEntry> listener = getWorkingMemoryActionListener();
+        if (listener != null) {
+            listener.accept(entry);
+        }
+    }
 }

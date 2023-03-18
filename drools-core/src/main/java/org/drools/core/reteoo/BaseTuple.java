@@ -36,7 +36,7 @@ public abstract class BaseTuple implements Tuple {
     private Tuple   previous;
     private Tuple   next;
 
-    protected Sink  sink;
+    protected Sink sink;
 
     protected Tuple handlePrevious;
     protected Tuple handleNext;

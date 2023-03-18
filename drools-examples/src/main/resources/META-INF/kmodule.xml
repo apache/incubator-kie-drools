@@ -74,8 +74,8 @@
         <ksession name="DecisionTableKS" type="stateless"/>
     </kbase>
 
-    <kbase name="FibonacciKB" packages="org.drools.examples.fibonacci">
-        <ksession name="FibonacciKS"/>
+    <kbase name="FibonacciKB" packages="org.drools.examples.fibonacci" mutability="disabled">
+        <ksession name="FibonacciKS" type="stateful"/>
     </kbase>
 
     <kbase name="GolfingKB" packages="org.drools.examples.golfing">

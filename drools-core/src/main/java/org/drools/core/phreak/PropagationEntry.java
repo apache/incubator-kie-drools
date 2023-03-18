@@ -15,6 +15,7 @@
 
 package org.drools.core.phreak;
 
+import java.io.Serializable;
 import java.util.concurrent.CountDownLatch;
 
 import org.drools.core.base.DroolsQuery;
@@ -45,7 +46,12 @@ import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 
 public interface PropagationEntry {
 
-    void execute(ReteEvaluator reteEvaluator);
+    default void execute(ReteEvaluator reteEvaluator) {
+        internalExecute(reteEvaluator);
+        reteEvaluator.onWorkingMemoryAction(this);
+    }
+
+    void internalExecute(ReteEvaluator reteEvaluator);
 
     PropagationEntry getNext();
     void setNext(PropagationEntry next);
@@ -150,7 +156,7 @@ public interface PropagationEntry {
         }
 
         @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
             QueryTerminalNode[] tnodes = reteEvaluator.getKnowledgeBase().getReteooBuilder().getTerminalNodesForQuery( queryName );
             if ( tnodes == null ) {
                 throw new RuntimeException( "Query '" + queryName + "' does not exist" );
@@ -190,7 +196,7 @@ public interface PropagationEntry {
         }
     }
 
-    class Insert extends AbstractPropagationEntry {
+    class Insert extends AbstractPropagationEntry implements Serializable {
         private static final ObjectTypeNode.ExpireJob job = new ObjectTypeNode.ExpireJob();
 
         private final InternalFactHandle handle;
@@ -228,7 +234,7 @@ public interface PropagationEntry {
             return !handle.hasMatches() && !reteEvaluator.getKnowledgeBase().getKieBaseConfiguration().isMutabilityEnabled();
         }
 
-        public void execute( ReteEvaluator reteEvaluator ) {
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
             propagate( handle, context, reteEvaluator, objectTypeConf );
         }
 
@@ -275,6 +281,10 @@ public interface PropagationEntry {
         public String toString() {
             return "Insert of " + handle.getObject();
         }
+
+        public InternalFactHandle getHandle() {
+            return handle;
+        }
     }
 
     class Update extends AbstractPropagationEntry {
@@ -288,7 +298,7 @@ public interface PropagationEntry {
             this.objectTypeConf = objectTypeConf;
         }
 
-        public void execute(ReteEvaluator reteEvaluator) {
+        public void internalExecute(ReteEvaluator reteEvaluator) {
             execute(handle, context, objectTypeConf, reteEvaluator);
         }
 
@@ -333,7 +343,7 @@ public interface PropagationEntry {
             this.objectTypeConf = objectTypeConf;
         }
 
-        public void execute(ReteEvaluator reteEvaluator) {
+        public void internalExecute(ReteEvaluator reteEvaluator) {
             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.detachLinkedTuplesForPartition(partition) );
             ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
             for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
@@ -368,7 +378,7 @@ public interface PropagationEntry {
             this.objectTypeConf = objectTypeConf;
         }
 
-        public void execute(ReteEvaluator reteEvaluator) {
+        public void internalExecute(ReteEvaluator reteEvaluator) {
             epn.propagateRetract(handle, context, objectTypeConf, reteEvaluator);
         }
 
@@ -400,7 +410,7 @@ public interface PropagationEntry {
             this.objectTypeConf = objectTypeConf;
         }
 
-        public void execute(ReteEvaluator reteEvaluator) {
+        public void internalExecute(ReteEvaluator reteEvaluator) {
             ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
             if ( cachedNodes == null ) {
