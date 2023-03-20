@@ -181,8 +181,7 @@ public class GizmoSolutionClonerImplementor {
                 .setFinal(true)
                 .build();
 
-        DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
-        Set<Class<?>> deepClonedClassSet = deepCloningUtils.getDeepClonedClasses(Collections.emptyList());
+        Set<Class<?>> deepClonedClassSet = GizmoCloningUtils.getDeepClonedClasses(solutionDescriptor, Collections.emptyList());
 
         defineClonerFor(classCreator, solutionDescriptor,
                 Collections.singleton(solutionDescriptor.getSolutionClass()),
@@ -411,8 +410,8 @@ public class GizmoSolutionClonerImplementor {
             writeDeepCloneArrayInstructions(isNotNullBranch, solutionDescriptor, deeplyClonedFieldClass,
                     toClone, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet);
         } else {
-            boolean forceDeepClone = solutionDescriptor.getDeepCloningUtils().isFieldDeepCloned(deeplyClonedField,
-                    deeplyClonedField.getDeclaringClass());
+            boolean forceDeepClone = DeepCloningUtils.isFieldDeepCloned(solutionDescriptor.solutionDescriptor,
+                    deeplyClonedField, deeplyClonedField.getDeclaringClass());
             writeDeepCloneEntityOrFactInstructions(isNotNullBranch, solutionDescriptor, deeplyClonedFieldClass,
                     toClone, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet, forceDeepClone);
         }
@@ -800,7 +799,7 @@ public class GizmoSolutionClonerImplementor {
             SortedSet<Class<?>> deepClonedClassesSortedSet, boolean forceDeepClone) {
         List<Class<?>> deepClonedSubclasses = deepClonedClassesSortedSet.stream()
                 .filter(deeplyClonedFieldClass::isAssignableFrom)
-                .filter(type -> solutionDescriptor.getDeepCloningUtils().isClassDeepCloned(type))
+                .filter(type -> DeepCloningUtils.isClassDeepCloned(solutionDescriptor.getSolutionDescriptor(), type))
                 .collect(Collectors.toList());
         BytecodeCreator currentBranch = bytecodeCreator;
         // If the field holds an instance of one of the field's declared type's subtypes, clone the subtype instead.

@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.domain.solution.cloner;
+package org.optaplanner.core.impl.domain.solution.cloner.gizmo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -20,9 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
-import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerFactory;
-import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
-import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.cloner.AbstractSolutionClonerTest;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -61,8 +59,7 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
 
         Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedSolutionOrEntityDescriptorMap = new HashMap<>();
 
-        DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
-        Set<Class<?>> deepClonedClassSet = deepCloningUtils.getDeepClonedClasses(Collections.emptyList());
+        Set<Class<?>> deepClonedClassSet = GizmoCloningUtils.getDeepClonedClasses(solutionDescriptor, Collections.emptyList());
         Stream.concat(Stream.of(solutionDescriptor.getSolutionClass()),
                 Stream.concat(solutionDescriptor.getEntityClassSet().stream(),
                         deepClonedClassSet.stream()))
@@ -196,7 +193,7 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
     // This test verifies a proper error message is thrown if an extended solution is passed.
     @Override
     @Test
-    void cloneExtendedSolution() {
+    protected void cloneExtendedSolution() {
         SolutionDescriptor solutionDescriptor = TestdataUnannotatedExtendedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataUnannotatedExtendedSolution> cloner = createSolutionCloner(solutionDescriptor);
 

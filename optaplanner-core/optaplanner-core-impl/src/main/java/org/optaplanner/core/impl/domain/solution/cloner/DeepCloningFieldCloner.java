@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+
 /**
  * @implNote This class is thread-safe.
  */
@@ -18,10 +20,22 @@ final class DeepCloningFieldCloner {
         this.field = Objects.requireNonNull(field);
     }
 
-    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone) {
+    public Field getField() {
+        return field;
+    }
+
+    /**
+     *
+     * @param solutionDescriptor never null
+     * @param original never null, source object
+     * @param clone never null, target object
+     * @return null if cloned, the original uncloned value otherwise
+     * @param <C>
+     */
+    public <C> Object clone(SolutionDescriptor<?> solutionDescriptor, C original, C clone) {
         Object originalValue = FieldCloningUtils.getObjectFieldValue(original, field);
-        if (deepClone(deepCloningUtils, original.getClass(), originalValue)) { // Defer filling in the field.
-            return new Unprocessed(clone, field, originalValue);
+        if (deepClone(solutionDescriptor, original.getClass(), originalValue)) { // Defer filling in the field.
+            return originalValue;
         } else { // Shallow copy.
             FieldCloningUtils.setObjectFieldValue(clone, field, originalValue);
             return null;
@@ -33,12 +47,12 @@ final class DeepCloningFieldCloner {
      * This method exists to cache those computations as much as possible,
      * while maintaining thread-safety.
      *
-     * @param deepCloningUtils never null
+     * @param solutionDescriptor never null
      * @param fieldTypeClass never null
      * @param originalValue never null
      * @return true if the value needs to be deep-cloned
      */
-    private boolean deepClone(DeepCloningUtils deepCloningUtils, Class<?> fieldTypeClass, Object originalValue) {
+    private boolean deepClone(SolutionDescriptor<?> solutionDescriptor, Class<?> fieldTypeClass, Object originalValue) {
         if (originalValue == null) {
             return false;
         }
@@ -50,7 +64,7 @@ final class DeepCloningFieldCloner {
         boolean isValueDeepCloned = valueDeepCloneDecision.updateAndGet(old -> {
             Class<?> originalClass = originalValue.getClass();
             if (old == null || old.clz != originalClass) {
-                return new Metadata(originalClass, deepCloningUtils.isClassDeepCloned(originalClass));
+                return new Metadata(originalClass, DeepCloningUtils.isClassDeepCloned(solutionDescriptor, originalClass));
             } else {
                 return old;
             }
@@ -63,7 +77,7 @@ final class DeepCloningFieldCloner {
          * The fieldTypeClass is guaranteed to not change for the particular field.
          */
         if (fieldDeepCloneDecision.get() < 0) {
-            fieldDeepCloneDecision.set(deepCloningUtils.isFieldDeepCloned(field, fieldTypeClass) ? 1 : 0);
+            fieldDeepCloneDecision.set(DeepCloningUtils.isFieldDeepCloned(solutionDescriptor, field, fieldTypeClass) ? 1 : 0);
         }
         return fieldDeepCloneDecision.get() == 1;
     }

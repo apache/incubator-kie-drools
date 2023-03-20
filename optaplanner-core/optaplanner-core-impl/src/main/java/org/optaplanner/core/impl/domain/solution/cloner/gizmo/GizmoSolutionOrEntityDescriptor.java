@@ -17,7 +17,6 @@ public class GizmoSolutionOrEntityDescriptor {
     Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptorMap;
     Set<Field> deepClonedFields;
     Set<Field> shallowlyClonedFields;
-    final DeepCloningUtils deepCloningUtils;
 
     public GizmoSolutionOrEntityDescriptor(SolutionDescriptor<?> solutionDescriptor, Class<?> entityOrSolutionClass) {
         this(solutionDescriptor, entityOrSolutionClass,
@@ -31,9 +30,8 @@ public class GizmoSolutionOrEntityDescriptor {
         deepClonedFields = new HashSet<>();
         shallowlyClonedFields = new HashSet<>();
 
-        deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
         for (Field field : solutionFieldToMemberDescriptorMap.keySet()) {
-            if (deepCloningUtils.getDeepCloneDecision(field, entityOrSolutionClass, field.getType())) {
+            if (DeepCloningUtils.isDeepCloned(solutionDescriptor, field, entityOrSolutionClass, field.getType())) {
                 deepClonedFields.add(field);
             } else {
                 shallowlyClonedFields.add(field);
@@ -72,7 +70,4 @@ public class GizmoSolutionOrEntityDescriptor {
         return solutionFieldToMemberDescriptorMap.get(field);
     }
 
-    public DeepCloningUtils getDeepCloningUtils() {
-        return deepCloningUtils;
-    }
 }

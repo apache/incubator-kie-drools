@@ -154,10 +154,14 @@ public abstract class AbstractSolutionClonerTest {
         assertCode("1", cloneA.getValueList().get(0));
     }
 
+    private boolean isGizmo() {
+        return this.getClass().getSimpleName().contains("Gizmo");
+    }
+
     @Test
     void cloneFieldAnnotatedSolution() {
         // can't check cloner class; it doesn't implement any additional interfaces
-        Assumptions.assumeFalse(this instanceof GizmoSolutionClonerTest,
+        Assumptions.assumeFalse(isGizmo(),
                 "Gizmo cannot use reflection");
 
         SolutionDescriptor<TestdataFieldAnnotatedSolution> solutionDescriptor =
@@ -202,8 +206,7 @@ public abstract class AbstractSolutionClonerTest {
     @Test
     void cloneAccessModifierSolution() {
         // can't check cloner class; it doesn't implement any additional interfaces
-        Assumptions.assumeFalse(this instanceof GizmoSolutionClonerTest,
-                "Gizmo cannot use reflection");
+        Assumptions.assumeFalse(isGizmo(), "Gizmo cannot use reflection");
 
         Object staticObject = new Object();
         TestdataAccessModifierSolution.setStaticField(staticObject);
@@ -259,9 +262,9 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    void cloneExtendedSolution() {
+    protected void cloneExtendedSolution() {
         // can't check cloner class; it doesn't implement any additional interfaces
-        Assumptions.assumeFalse(this instanceof GizmoSolutionClonerTest,
+        Assumptions.assumeFalse(isGizmo(),
                 "Gizmo cannot handle subclasses of the class annotated with @PlanningSolution");
 
         SolutionDescriptor solutionDescriptor = TestdataUnannotatedExtendedSolution.buildSolutionDescriptor();
