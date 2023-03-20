@@ -2944,7 +2944,7 @@ class ConstraintCollectorsTest {
         assertResult(collector, container, asMap(2, 2, 1, 1));
         // Add third value, same as the second. We now have three values, two of which map to the same key.
         Runnable thirdRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, asMap(2, 2, 1, 1));
+        assertResult(collector, container, asMap(2, 2, 1, 2));
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
         assertResult(collector, container, asMap(2, 2, 1, 1));
@@ -3034,7 +3034,7 @@ class ConstraintCollectorsTest {
         assertResult(collector, container, asMap(2, 2, 1, 1));
         // Add third value, same as the second. We now have three values, two of which map to the same key.
         Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
-        assertResult(collector, container, asMap(2, 2, 1, 1));
+        assertResult(collector, container, asMap(2, 2, 1, 2));
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
         assertResult(collector, container, asMap(2, 2, 1, 1));
@@ -3094,7 +3094,7 @@ class ConstraintCollectorsTest {
         assertResult(collector, container, asMap(2, 2, 1, 1));
         // Add third value, same as the second. We now have three values, two of which map to the same key.
         Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
-        assertResult(collector, container, asMap(2, 2, 1, 1));
+        assertResult(collector, container, asMap(2, 2, 1, 2));
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
         assertResult(collector, container, asMap(2, 2, 1, 1));
@@ -3154,7 +3154,7 @@ class ConstraintCollectorsTest {
         assertResult(collector, container, asMap(2, 2, 1, 1));
         // Add third value, same as the second. We now have three values, two of which map to the same key.
         Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
-        assertResult(collector, container, asMap(2, 2, 1, 1));
+        assertResult(collector, container, asMap(2, 2, 1, 2));
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
         assertResult(collector, container, asMap(2, 2, 1, 1));
@@ -3214,7 +3214,7 @@ class ConstraintCollectorsTest {
         assertResult(collector, container, asSortedMap(2, 2, 1, 1));
         // Add third value, same as the second. We now have three values, two of which map to the same key.
         Runnable thirdRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        assertResult(collector, container, asSortedMap(2, 2, 1, 2));
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
         assertResult(collector, container, asSortedMap(2, 2, 1, 1));
@@ -3274,7 +3274,7 @@ class ConstraintCollectorsTest {
         assertResult(collector, container, asSortedMap(2, 2, 1, 1));
         // Add third value, same as the second. We now have three values, two of which map to the same key.
         Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
-        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        assertResult(collector, container, asSortedMap(2, 2, 1, 2));
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
         assertResult(collector, container, asSortedMap(2, 2, 1, 1));
@@ -3334,7 +3334,7 @@ class ConstraintCollectorsTest {
         assertResult(collector, container, asSortedMap(2, 2, 1, 1));
         // Add third value, same as the second. We now have three values, two of which map to the same key.
         Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
-        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        assertResult(collector, container, asSortedMap(2, 2, 1, 2));
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
         assertResult(collector, container, asSortedMap(2, 2, 1, 1));
@@ -3394,7 +3394,7 @@ class ConstraintCollectorsTest {
         assertResult(collector, container, asSortedMap(2, 2, 1, 1));
         // Add third value, same as the second. We now have three values, two of which map to the same key.
         Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
-        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        assertResult(collector, container, asSortedMap(2, 2, 1, 2));
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
         assertResult(collector, container, asSortedMap(2, 2, 1, 1));

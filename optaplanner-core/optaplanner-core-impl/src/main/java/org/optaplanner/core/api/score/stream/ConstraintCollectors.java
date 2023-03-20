@@ -29,6 +29,7 @@ import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.ToLongFunction;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.function.PentaFunction;
@@ -1704,8 +1705,9 @@ public final class ConstraintCollectors {
         public Value merge(BinaryOperator<Value> mergeFunction) {
             // Rebuilding the value from the collection is not incremental.
             // The impact is negligible, assuming there are not too many values for the same key.
-            return counts.keySet()
+            return counts.entrySet()
                     .stream()
+                    .flatMap(e -> Stream.generate(e::getKey).limit(e.getValue()))
                     .reduce(mergeFunction)
                     .orElseThrow(() -> new IllegalStateException("Programming error: Should have had at least one value."));
         }
