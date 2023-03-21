@@ -1471,6 +1471,9 @@
                       <exclude>org.mockito:mockito-all</exclude> <!-- Use mockito-core instead -->
 
                       <!-- Java EE 8 Spec JARs: Use Jakarta EE 8 instead. -->
+                      <!-- cannot be banned because Quarkus 3 needs them -->
+                      <!-- <exclude>javax.inject:javax.inject</exclude> -->
+                      <!-- <exclude>javax.annotation:javax.annotation-api</exclude> -->
                       <exclude>javax.activation:activation</exclude>
                       <exclude>javax.enterprise:cdi-api</exclude>
                       <exclude>javax.interceptor:javax.interceptor-api</exclude>
