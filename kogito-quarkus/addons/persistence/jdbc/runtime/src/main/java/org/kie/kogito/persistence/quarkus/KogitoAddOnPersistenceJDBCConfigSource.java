@@ -22,7 +22,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 public class KogitoAddOnPersistenceJDBCConfigSource implements ConfigSource {
 
-    static final Integer ORDINAL = Integer.MIN_VALUE;
+    static final Integer ORDINAL = 500;
 
     private final Map<String, String> configuration;
 
