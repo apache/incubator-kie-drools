@@ -45,7 +45,7 @@ class KOptListMoveTest {
     void test3Opt() {
         TestdataListEntity e1 = TestdataListEntity.createWithValues("e1", v1, v2, v3, v4, v5, v6);
 
-        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
                 variableDescriptor,
                 e1,
                 List.of(v6, v1,
@@ -72,7 +72,7 @@ class KOptListMoveTest {
     void test3OptLong() {
         TestdataListEntity e1 = TestdataListEntity.createWithValues("e1", v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
 
-        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
                 variableDescriptor,
                 e1,
                 List.of(v10, v1,
@@ -99,7 +99,7 @@ class KOptListMoveTest {
     void test4Opt() {
         TestdataListEntity e1 = TestdataListEntity.createWithValues("e1", v1, v2, v3, v4, v5, v6, v7, v8);
 
-        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
                 variableDescriptor,
                 e1,
                 List.of(
@@ -132,7 +132,7 @@ class KOptListMoveTest {
     void test4OptLong() {
         TestdataListEntity e1 = TestdataListEntity.createWithValues("e1", v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
 
-        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
                 variableDescriptor,
                 e1,
                 List.of(v1, v12,
@@ -165,7 +165,7 @@ class KOptListMoveTest {
         TestdataListEntity e1 = TestdataListEntity.createWithValues("e1", v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
 
         // Note: using only endpoints work (removing v4, v7, v8, v11) from the above list works
-        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
                 variableDescriptor,
                 e1,
                 List.of(
@@ -206,7 +206,7 @@ class KOptListMoveTest {
     void testDoubleBridge4Opt() {
         TestdataListEntity e1 = TestdataListEntity.createWithValues("e1", v1, v2, v3, v4, v5, v6, v7, v8);
 
-        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
                 variableDescriptor,
                 e1,
                 List.of(v8, v1,
@@ -238,7 +238,7 @@ class KOptListMoveTest {
     void testDoubleBridge4OptLong() {
         TestdataListEntity e1 = TestdataListEntity.createWithValues("e1", v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
 
-        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
                 variableDescriptor,
                 e1,
                 List.of(v12, v1,
@@ -272,7 +272,7 @@ class KOptListMoveTest {
     void testIsFeasible() {
         TestdataListEntity e1 = TestdataListEntity.createWithValues("e1", v1, v2, v3, v4, v5, v6, v7, v8);
 
-        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(scoreDirector,
                 variableDescriptor,
                 e1,
                 List.of(
@@ -320,7 +320,7 @@ class KOptListMoveTest {
      * @param addedEdgeList The edges to add. Must contain only endpoints specified in the removedEdgeList.
      * @return A new sequential or non-sequential k-opt move with the specified undirected edges removed and added.
      */
-    private static <Solution_> KOptListMove<Solution_, TestdataListValue> fromRemovedAndAddedEdges(
+    private static <Solution_> KOptListMove<Solution_> fromRemovedAndAddedEdges(
             InnerScoreDirector<Solution_, ?> scoreDirector,
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             Object entity,
@@ -377,7 +377,7 @@ class KOptListMoveTest {
             }
         }
 
-        KOptDescriptor<Solution_, TestdataListValue> descriptor = new KOptDescriptor<>(tourArray,
+        KOptDescriptor<TestdataListValue> descriptor = new KOptDescriptor<>(tourArray,
                 incl,
                 getSuccessorFunction(listVariableDescriptor,
                         ignored -> entity,

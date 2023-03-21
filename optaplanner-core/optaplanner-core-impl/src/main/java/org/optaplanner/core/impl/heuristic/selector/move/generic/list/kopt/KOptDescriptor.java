@@ -11,7 +11,7 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
 
-final class KOptDescriptor<Solution_, Node_> {
+final class KOptDescriptor<Node_> {
 
     /**
      * The number of edges being added
@@ -200,7 +200,7 @@ final class KOptDescriptor<Solution_, Node_> {
      * @param entity
      * @return
      */
-    public KOptListMove<Solution_, Node_> getKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
+    public <Solution_> KOptListMove<Solution_> getKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
             Object entity) {
         if (!isFeasible()) {
@@ -209,7 +209,7 @@ final class KOptDescriptor<Solution_, Node_> {
         }
 
         int entityListSize = listVariableDescriptor.getListSize(entity);
-        List<FlipSublistAction<Solution_>> out = new ArrayList<>();
+        List<FlipSublistAction> out = new ArrayList<>();
         int[] originalToCurrentIndexList = new int[entityListSize];
         for (int index = 0; index < entityListSize; index++) {
             originalToCurrentIndexList[index] = index;
@@ -413,8 +413,8 @@ final class KOptDescriptor<Solution_, Node_> {
      * @param secondEdgeEnd
      * @return
      */
-    private static <Solution_, Node_> FlipSublistAction<Solution_> getListReversalMoveForEdgePair(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
+    private static <Node_> FlipSublistAction getListReversalMoveForEdgePair(
+            ListVariableDescriptor<?> listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
             int[] originalToCurrentIndexList,
             Object entity,
@@ -438,7 +438,7 @@ final class KOptDescriptor<Solution_, Node_> {
 
         KOptUtils.flipSubarray(originalToCurrentIndexList, firstEndpoint, secondEndpoint);
 
-        return new FlipSublistAction<>(listVariableDescriptor, entity,
+        return new FlipSublistAction(listVariableDescriptor, entity,
                 firstEndpoint, secondEndpoint);
     }
 

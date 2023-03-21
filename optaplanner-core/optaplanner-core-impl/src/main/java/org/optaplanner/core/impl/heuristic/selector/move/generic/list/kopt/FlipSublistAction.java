@@ -15,17 +15,15 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
  * the flip is performed on the combined sublists [fromIndexInclusive, size) and [0, toIndexExclusive).
  * For instance, given [0, 1, 2, 3, 4, 5, 6], fromIndexInclusive = 5, toIndexExclusive = 2,
  * the list after the move would be [6, 5, 2, 3, 4, 1, 0] (and not [0, 6, 5, 2, 3, 4, 1]).
- *
- * @param <Solution_>
  */
-final class FlipSublistAction<Solution_> {
+final class FlipSublistAction {
 
-    private final ListVariableDescriptor<Solution_> variableDescriptor;
+    private final ListVariableDescriptor<?> variableDescriptor;
     private final Object entity;
     private final int fromIndexInclusive;
     private final int toIndexExclusive;
 
-    public FlipSublistAction(ListVariableDescriptor<Solution_> variableDescriptor,
+    public FlipSublistAction(ListVariableDescriptor<?> variableDescriptor,
             Object entity,
             int fromIndexInclusive, int toIndexExclusive) {
         this.variableDescriptor = variableDescriptor;
@@ -34,8 +32,8 @@ final class FlipSublistAction<Solution_> {
         this.toIndexExclusive = toIndexExclusive;
     }
 
-    FlipSublistAction<Solution_> createUndoMove() {
-        return new FlipSublistAction<>(variableDescriptor, entity,
+    FlipSublistAction createUndoMove() {
+        return new FlipSublistAction(variableDescriptor, entity,
                 fromIndexInclusive,
                 toIndexExclusive);
     }
@@ -53,8 +51,8 @@ final class FlipSublistAction<Solution_> {
         flipSublist(listVariable, fromIndexInclusive, toIndexExclusive);
     }
 
-    public FlipSublistAction<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
-        return new FlipSublistAction<>(variableDescriptor,
+    public FlipSublistAction rebase(ScoreDirector<?> destinationScoreDirector) {
+        return new FlipSublistAction(variableDescriptor,
                 destinationScoreDirector.lookUpWorkingObject(entity),
                 fromIndexInclusive,
                 toIndexExclusive);

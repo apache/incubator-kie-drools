@@ -37,7 +37,7 @@ public class KOptUtilsTest {
                 v5, v3,
                 v6, v8);
 
-        KOptDescriptor<?, TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
+        KOptDescriptor<TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
                 removedEdges,
                 addedEdges);
 
@@ -60,7 +60,7 @@ public class KOptUtilsTest {
                 v5, v3,
                 v6, v8);
 
-        KOptDescriptor<?, TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
+        KOptDescriptor<TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
                 removedEdges,
                 addedEdges);
 
@@ -83,7 +83,7 @@ public class KOptUtilsTest {
                 v5, v3,
                 v6, v8);
 
-        KOptDescriptor<?, TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
+        KOptDescriptor<TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
                 removedEdges,
                 addedEdges);
         KOptCycle cycle = KOptUtils.getCyclesForPermutation(kOptDescriptor);
@@ -106,7 +106,7 @@ public class KOptUtilsTest {
                 v5, v8,
                 v7, v2);
 
-        KOptDescriptor<?, TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
+        KOptDescriptor<TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
                 removedEdges,
                 addedEdges);
         KOptCycle cycleInfo = KOptUtils.getCyclesForPermutation(kOptDescriptor);
@@ -134,7 +134,7 @@ public class KOptUtilsTest {
                 v8, v10,
                 v11, v9);
 
-        KOptDescriptor<?, TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
+        KOptDescriptor<TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
                 removedEdges,
                 addedEdges);
         KOptCycle cycleInfo = KOptUtils.getCyclesForPermutation(kOptDescriptor);
@@ -202,7 +202,7 @@ public class KOptUtilsTest {
         assertThat(KOptUtils.getPureKOptMoveTypes(8)).isEqualTo(365457L);
     }
 
-    private static <Solution_> KOptDescriptor<Solution_, TestdataListValue> fromRemovedAndAddedEdges(
+    private static KOptDescriptor<TestdataListValue> fromRemovedAndAddedEdges(
             List<TestdataListValue> originalTour,
             List<TestdataListValue> removedEdgeList,
             List<TestdataListValue> addedEdgeList) {
