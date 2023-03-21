@@ -59,7 +59,7 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
     private static final String JOB_DETAILS_COLUMNS = "id, correlation_id, status, last_update, retries, " +
             "execution_counter, scheduled_id, priority, recipient, trigger, fire_time";
 
-    private final PgPool client;
+    private PgPool client;
 
     private final TriggerMarshaller triggerMarshaller;
 

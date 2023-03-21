@@ -60,7 +60,7 @@ class KogitoAddonsQuarkusJobsServiceEmbeddedProcessorTest {
     @Test
     void buildConfiguration() {
         processor.buildConfiguration(systemPropertyBuildItemBuildProducer);
-        verify(systemPropertyBuildItemBuildProducer, times(2)).produce(systemPropertyBuildItemCaptor.capture());
+        verify(systemPropertyBuildItemBuildProducer, times(3)).produce(systemPropertyBuildItemCaptor.capture());
         List<SystemPropertyBuildItem> items = systemPropertyBuildItemCaptor.getAllValues();
         assertThat(items)
                 .anyMatch(item -> JOBS_SERVICE_URL.equals(item.getKey()) && ("${" + SERVICE_URL + "}").equals(item.getValue()))

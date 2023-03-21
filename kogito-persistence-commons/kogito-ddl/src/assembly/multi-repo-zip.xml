@@ -32,7 +32,7 @@
         </fileSet>
         <!-- Job Service DDLs - Flyway scripts -->
         <fileSet>
-            <directory>${project.root.dir}/jobs-service/jobs-service-postgresql/src/main/resources/db/migration</directory>
+            <directory>${project.root.dir}/jobs-service/jobs-service-postgresql/src/main/resources/db/jobs-service</directory>
             <outputDirectory>postgresql/jobs-service</outputDirectory>
             <includes>
                 <include>*.sql</include>
