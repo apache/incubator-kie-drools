@@ -34,13 +34,15 @@ public interface ProtoGenerator {
     String INDEX_COMMENT = "@Field(index = Index.YES, store = Store.YES) @SortableField";
     String KOGITO_JAVA_CLASS_OPTION = "kogito_java_class";
     String KOGITO_SERIALIZABLE = "kogito.Serializable";
+    String ARRAY = "Array";
+    String COLLECTION = "Collection";
 
     Proto protoOfDataClasses(String packageName, String... headers);
 
     Collection<GeneratedFile> generateProtoFiles();
 
     default String applicabilityByType(String type) {
-        if (type.equals("Collection") || type.equals("Array")) {
+        if (type.equals(COLLECTION) || type.equals(ARRAY)) {
             return "repeated";
         }
 

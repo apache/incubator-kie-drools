@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import static java.util.Arrays.asList;
+
 public class Person {
 
     private static final String ADDRESS_SEPARATOR = "; ";
@@ -52,6 +54,10 @@ public class Person {
     private BigDecimal bigDecimal;
     @JsonIgnore
     private Money salary;
+    @JsonIgnore
+    private Money[] earnings;
+    @JsonIgnore
+    private List<Money> expenses;
 
     private transient String ignoreMe;
 
@@ -66,6 +72,8 @@ public class Person {
         this.name = name;
         this.age = age;
         salary = Money.of(BigDecimal.valueOf(100));
+        earnings = new Money[] { Money.of(BigDecimal.valueOf(200)) };
+        expenses = asList(Money.of(BigDecimal.valueOf(50)));
     }
 
     public String getName() {
@@ -233,6 +241,22 @@ public class Person {
     public void setAddressesStr(String addresses) {
         setAddresses(
                 Arrays.stream(addresses.split(ADDRESS_SEPARATOR)).map(a -> Address.of(a)).collect(Collectors.toList()));
+    }
+
+    public Money[] getEarnings() {
+        return earnings;
+    }
+
+    public void setEarnings(Money[] earnings) {
+        this.earnings = earnings;
+    }
+
+    public List<Money> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(List<Money> expenses) {
+        this.expenses = expenses;
     }
 
     @Override

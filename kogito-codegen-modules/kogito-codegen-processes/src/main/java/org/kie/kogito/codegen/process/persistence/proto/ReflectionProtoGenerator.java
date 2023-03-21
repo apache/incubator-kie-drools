@@ -98,11 +98,11 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             Class<?> fieldType = pd.getPropertyType();
             String protoType;
             if (pd.getPropertyType().isArray() && !pd.getPropertyType().getComponentType().isPrimitive()) {
-                fieldTypeString = "Array";
+                fieldTypeString = ARRAY;
                 fieldType = pd.getPropertyType().getComponentType();
                 protoType = protoType(fieldType.getCanonicalName());
             } else if (Collection.class.isAssignableFrom(pd.getPropertyType())) {
-                fieldTypeString = "Collection";
+                fieldTypeString = COLLECTION;
                 Type type = propertyField.getGenericType();
                 if (type instanceof ParameterizedType) {
                     ParameterizedType ptype = (ParameterizedType) type;
@@ -129,7 +129,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             ProtoField protoField = message.addField(applicabilityByType(fieldTypeString), protoType, pd.getName());
             protoField.setComment(completeFieldComment);
             if (KOGITO_SERIALIZABLE.equals(protoType)) {
-                protoField.setOption(format("[(%s) = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, fieldTypeString));
+                protoField.setOption(format("[(%s) = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, pd.getPropertyType().getCanonicalName()));
             }
         }
         message.setComment(messageComment);

@@ -122,11 +122,11 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
             DotName fieldType = pd.type().name();
             String protoType;
             if (isArray(pd)) {
-                fieldTypeString = "Array";
+                fieldTypeString = ARRAY;
                 fieldType = pd.type().asArrayType().component().name();
                 protoType = protoType(fieldType.toString());
             } else if (isCollection(pd)) {
-                fieldTypeString = "Collection";
+                fieldTypeString = COLLECTION;
 
                 List<Type> typeParameters = pd.type().kind() == Kind.CLASS ? emptyList() : pd.type().asParameterizedType().arguments();
                 if (typeParameters.isEmpty()) {
@@ -157,7 +157,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
             ProtoField protoField = message.addField(applicabilityByType(fieldTypeString), protoType, pd.name());
             protoField.setComment(completeFieldComment);
             if (KOGITO_SERIALIZABLE.equals(protoType)) {
-                protoField.setOption(format("[(%s) = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, fieldTypeString));
+                protoField.setOption(format("[(%s) = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, fieldTypeString.equals(ARRAY) ? pd.type().toString() : pd.type().name().toString()));
             }
         }
         message.setComment(messageComment);

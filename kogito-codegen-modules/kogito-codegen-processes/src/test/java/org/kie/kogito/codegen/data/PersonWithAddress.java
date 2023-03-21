@@ -23,6 +23,9 @@ public class PersonWithAddress {
 
     private Address address;
 
+    public PersonWithAddress() {
+    }
+
     public PersonWithAddress(String name, int age) {
         this.name = name;
         this.age = age;

@@ -230,6 +230,16 @@ public abstract class AbstractMarshallerGenerator<T> implements MarshallerGenera
                                 throw new IllegalArgumentException(format("Serializable proto field '%s' is missing value for option %s", field.getName(), KOGITO_JAVA_CLASS_OPTION));
                             } else {
                                 read = new CastExpr().setExpression(new EnclosedExpr(read)).setType(fieldClazz);
+                                int argumentIndex = 1;
+                                MethodCallExpr writeMethod = null;
+                                if (write instanceof MethodCallExpr &&
+                                        (writeMethod = (MethodCallExpr) write).getArguments() != null &&
+                                        writeMethod.getArguments().size() > argumentIndex) {
+                                    Expression argument = writeMethod.getArgument(argumentIndex);
+                                    write = writeMethod.setArgument(
+                                            argumentIndex,
+                                            new CastExpr().setExpression(new EnclosedExpr(argument)).setType(fieldClazz));
+                                }
                             }
                         }
                     }
