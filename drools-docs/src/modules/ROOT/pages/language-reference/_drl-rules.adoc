@@ -2850,6 +2850,25 @@ A function declared in a DRL file cannot be imported to a rule in a different pa
 [NOTE]
 ====
 A function body cannot access globals.
+
+From the RHS of a rule, you can always pass a global as a function parameter when invoking the function, for exmaple:
+
+[source]
+----
+global List names;
+
+rule "Using a function with parameters"
+  when
+    // Empty
+  then
+    addName( names, "James" );
+end
+
+function void addName(List names, String applicantName) {
+  names.add(applicantName);
+}
+----
+
 ====
 
 === Legacy rule attributes
