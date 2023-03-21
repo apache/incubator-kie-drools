@@ -20,6 +20,7 @@
     <module>kie-util-maven-support</module>
     <module>kie-util-maven-integration</module>
     <module>kie-util-xml</module>
+    <module>kie-util-inject</module>
   </modules>
 
 </project>

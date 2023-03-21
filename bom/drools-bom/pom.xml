@@ -930,7 +930,6 @@
 
       <dependency>
         <groupId>org.kie</groupId>
-        <!-- Does this belong in the kie-bom or in the drools-bom ? -->
         <artifactId>kie-ci</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -946,6 +945,11 @@
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-util-inject</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>

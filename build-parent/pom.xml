@@ -1472,9 +1472,7 @@
 
                       <!-- Java EE 8 Spec JARs: Use Jakarta EE 8 instead. -->
                       <exclude>javax.activation:activation</exclude>
-                      <exclude>javax.annotation:javax.annotation-api</exclude>
                       <exclude>javax.enterprise:cdi-api</exclude>
-                      <exclude>javax.inject:javax.inject</exclude>
                       <exclude>javax.interceptor:javax.interceptor-api</exclude>
                       <exclude>javax.jws:jsr181-api</exclude>
                       <exclude>javax.persistence:javax.persistence-api</exclude>
