@@ -66,6 +66,10 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-util-maven-integration</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-util-inject</artifactId>
+    </dependency>
 
    <!-- External dependencies -->
     <dependency>
