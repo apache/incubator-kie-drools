@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.SubProcessNode;
@@ -37,6 +39,7 @@ import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.kie.kogito.serverless.workflow.parser.types.JavaTypeHandler;
 import org.kie.kogito.serverless.workflow.parser.types.RestTypeHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -197,12 +200,22 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
     }
 
     private void registerNeededHandlers(Workflow flow) {
+        Optional<Map<String, Function<?, ?>>> javaFunctions =
+                flow.getExtensions().stream().filter(e -> e.getExtensionId().equals(JavaFunctionExtension.EXTENSION_ID)).map(JavaFunctionExtension.class::cast)
+                        .map(JavaFunctionExtension::functions).findAny();
         if (flow.getFunctions() != null && flow.getFunctions().getFunctionDefs() != null) {
             for (FunctionDefinition functionDef : flow.getFunctions().getFunctionDefs()) {
                 if (functionDef.getType() == Type.CUSTOM) {
                     String type = FunctionTypeHandlerFactory.getTypeFromOperation(functionDef);
                     if (RestTypeHandler.REST_TYPE.equals(type)) {
                         initRestWorkItemHandler();
+                    } else if (JavaTypeHandler.JAVA_TYPE.equals(type)) {
+                        javaFunctions.ifPresent(m -> {
+                            Function<?, ?> function = m.get(functionDef.getName());
+                            if (function != null) {
+                                handlers.add(new StaticFunctionWorkItemHandler<>(functionDef.getName(), function));
+                            }
+                        });
                     }
                 }
             }

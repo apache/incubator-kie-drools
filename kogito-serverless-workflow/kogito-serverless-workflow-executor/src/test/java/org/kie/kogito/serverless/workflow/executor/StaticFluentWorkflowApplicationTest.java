@@ -35,6 +35,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.call;
 import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.expr;
+import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.java;
 import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.rest;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.forEach;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.inject;
@@ -123,6 +124,31 @@ class StaticFluentWorkflowApplicationTest {
                     .singleton(parallel()
                             .newBranch().action(call(DOUBLE).outputFilter(".double")).endBranch()
                             .newBranch().action(call(HALF).outputFilter(".half")).endBranch());
+
+            Process<JsonNodeModel> process = application.process(workflow);
+            JsonNode result = application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata();
+            assertThat(result.get("double").asInt()).isEqualTo(8);
+            assertThat(result.get("half").asInt()).isEqualTo(2);
+        }
+    }
+
+    private int duplicate(int number) {
+        return number * 2;
+    }
+
+    private int half(int number) {
+        return number / 2;
+    }
+
+    @Test
+    void testJava() {
+        final String DOUBLE = "double";
+        final String HALF = "half";
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            Workflow workflow = workflow("Javatest").function(java(DOUBLE, this::duplicate)).function(java(HALF, this::half))
+                    .singleton(parallel()
+                            .newBranch().action(call(DOUBLE, new TextNode(".input")).outputFilter(".double")).endBranch()
+                            .newBranch().action(call(HALF, new TextNode(".input")).outputFilter(".half")).endBranch());
 
             Process<JsonNodeModel> process = application.process(workflow);
             JsonNode result = application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata();

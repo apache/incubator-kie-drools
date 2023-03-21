@@ -17,6 +17,9 @@ package org.kie.kogito.serverless.workflow.fluent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+
+import org.kie.kogito.serverless.workflow.parser.types.JavaTypeHandler;
 
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
@@ -47,6 +50,10 @@ public class FunctionBuilder {
 
     public static FunctionBuilder expr(String name, String expression) {
         return new FunctionBuilder(new FunctionDefinition(name).withType(Type.EXPRESSION).withOperation(expression));
+    }
+
+    public static <T> FunctionBuilder java(String name, Function<T, ?> function) {
+        return new FunctionBuilder(new FunctionDefinitionEx(name).withFunction(function).withType(Type.CUSTOM).withOperation(JavaTypeHandler.JAVA_TYPE));
     }
 
     private FunctionBuilder(FunctionDefinition functionDefinition) {

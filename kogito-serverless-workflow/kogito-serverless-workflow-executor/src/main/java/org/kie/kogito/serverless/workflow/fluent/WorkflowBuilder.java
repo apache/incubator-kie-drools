@@ -18,9 +18,11 @@ package org.kie.kogito.serverless.workflow.fluent;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.serverless.workflow.executor.JavaFunctionExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -49,6 +51,7 @@ public class WorkflowBuilder {
     private Workflow workflow;
     private List<FunctionDefinition> functions = new LinkedList<>();
     private Deque<DefaultState> states = new LinkedList<>();
+    private JavaFunctionExtension javaFunctionExtension;
 
     private WorkflowBuilder(String id, String version) {
         this.workflow = new Workflow().withId(id).withVersion(version);
@@ -91,7 +94,16 @@ public class WorkflowBuilder {
     }
 
     public final WorkflowBuilder function(FunctionBuilder functionBuilder) {
-        functions.add(functionBuilder.build());
+        FunctionDefinition function = functionBuilder.build();
+        functions.add(function);
+        if (function instanceof FunctionDefinitionEx) {
+            Function<?, ?> javaFunction = ((FunctionDefinitionEx) function).getFunction();
+            if (javaFunctionExtension == null) {
+                javaFunctionExtension = new JavaFunctionExtension();
+                workflow.getExtensions().add(javaFunctionExtension);
+            }
+            javaFunctionExtension.functions().put(function.getName(), javaFunction);
+        }
         return this;
     }
 
