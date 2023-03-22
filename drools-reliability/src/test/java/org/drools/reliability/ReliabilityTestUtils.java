@@ -27,7 +27,7 @@ public class ReliabilityTestUtils {
 
     public static void cleanUpCacheFiles() {
         try {
-            Path path = Paths.get(CacheManager.CACHE_DIR);
+            Path path = Paths.get(CacheManager.GLOBAL_STATE_DIR);
             if (Files.exists(path)) {
                 Files.walk(path)
                      .sorted(Comparator.reverseOrder())
