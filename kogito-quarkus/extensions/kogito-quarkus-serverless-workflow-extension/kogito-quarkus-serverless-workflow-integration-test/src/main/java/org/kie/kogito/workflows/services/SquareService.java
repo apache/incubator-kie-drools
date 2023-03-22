@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.workitemparams;
+package org.kie.kogito.workflows.services;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
-public class ObjectResolver extends ExpressionWorkItemResolver<Object> {
+import javax.enterprise.context.ApplicationScoped;
 
-    public ObjectResolver(String exprLang, Object expr, String paramName) {
-        super(exprLang, expr, paramName);
+@ApplicationScoped
+public class SquareService {
+
+    public Collection<Integer> squareAll(Collection<Integer> numbers) {
+        return numbers.stream().map(this::squareOne).collect(Collectors.toList());
     }
 
-    @Override
-    public Object apply(KogitoWorkItem workItem) {
-        return JsonObjectUtils.toJavaValue(evalExpression(workItem));
+    public Integer squareOne(Integer x) {
+        return x * x;
     }
 }

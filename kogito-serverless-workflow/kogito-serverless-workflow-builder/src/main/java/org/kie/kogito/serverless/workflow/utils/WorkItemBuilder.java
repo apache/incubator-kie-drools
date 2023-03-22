@@ -15,11 +15,13 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
@@ -33,6 +35,8 @@ import org.kie.kogito.serverless.workflow.suppliers.ObjectResolverSupplier;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionRef;
@@ -75,11 +79,13 @@ public abstract class WorkItemBuilder {
             functionsToMap(workflow, functionArgs).forEach((key, value) -> processArg(workflow, key, value, workItemFactory, paramName));
         } else {
             Object object = functionReference(workflow, JsonObjectUtils.simpleToJavaValue(functionArgs));
-            if (isExpression(workflow, object)) {
+            boolean isExpr = isExpression(workflow, object);
+            if (isExpr) {
                 workItemFactory.workParameterFactory(new ExpressionParametersFactorySupplier(workflow.getExpressionLang(), object, paramName));
             } else {
                 workItemFactory.workParameter(RestWorkItemHandler.CONTENT_DATA, object);
             }
+            workItemFactory.workParameterDefinition(RestWorkItemHandler.CONTENT_DATA, getDataType(object, isExpr));
         }
     }
 
@@ -111,7 +117,17 @@ public abstract class WorkItemBuilder {
                 .workParameter(key,
                         isExpr ? new ObjectResolverSupplier(workflow.getExpressionLang(), value, paramName) : value)
                 .workParameterDefinition(key,
-                        DataTypeResolver.fromObject(value, isExpr));
+                        getDataType(value, isExpr));
+    }
+
+    DataType getDataType(Object object, boolean isExpr) {
+        if (object instanceof ObjectNode) {
+            return DataTypeResolver.fromClass(Map.class);
+        } else if (object instanceof ArrayNode) {
+            return DataTypeResolver.fromClass(Collection.class);
+        } else {
+            return DataTypeResolver.fromObject(object, isExpr);
+        }
     }
 
     private boolean isExpression(Workflow workflow, Object value) {

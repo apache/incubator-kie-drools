@@ -24,13 +24,18 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class WorkflowWorkItemHandler implements KogitoWorkItemHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowWorkItemHandler.class);
 
     @Override
     public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         Map<String, Object> parameters = new HashMap<>(workItem.getParameters());
         parameters.remove(SWFConstants.MODEL_WORKFLOW_VAR);
+        logger.debug("Workflow workitem {} will be invoked with parameters {}", workItem.getName(), parameters);
         manager.completeWorkItem(workItem.getStringId(), Collections.singletonMap("Result",
                 JsonObjectUtils.fromValue(internalExecute(workItem, parameters))));
     }

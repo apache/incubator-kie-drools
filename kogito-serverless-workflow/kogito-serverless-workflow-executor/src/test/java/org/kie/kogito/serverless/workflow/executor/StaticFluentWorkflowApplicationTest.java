@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.HttpMethod;
@@ -26,12 +27,13 @@ import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 
 import io.serverlessworkflow.api.Workflow;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.call;
 import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.expr;
@@ -56,19 +58,20 @@ class StaticFluentWorkflowApplicationTest {
         }
     }
 
+    @RegisterExtension
+    static WireMockExtension wm = WireMockExtension.newInstance()
+            .options(wireMockConfig().dynamicPort())
+            .build();
+
     @Test
     void restInvocation() {
-        WireMockServer server = new WireMockServer();
         JsonNode expectedOutput = ObjectMapperFactory.get().createObjectNode().put("name", "Javierito");
-        server.stubFor(get("/name").willReturn(aResponse().withStatus(200).withJsonBody(expectedOutput)));
+        wm.stubFor(get("/name").willReturn(aResponse().withStatus(200).withJsonBody(expectedOutput)));
         final String FUNCTION_NAME = "function";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            server.start();
-            Workflow workflow = workflow("HelloRest").function(rest(FUNCTION_NAME, HttpMethod.get, "http://localhost:" + server.getOptions().portNumber() + "/name"))
+            Workflow workflow = workflow("HelloRest").function(rest(FUNCTION_NAME, HttpMethod.get, "http://localhost:" + wm.getPort() + "/name"))
                     .singleton(operation().action(call(FUNCTION_NAME)));
             assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).isEqualTo(expectedOutput);
-        } finally {
-            server.stop();
         }
     }
 

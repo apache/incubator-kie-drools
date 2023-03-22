@@ -16,6 +16,7 @@
 package org.kie.kogito.quarkus.workflows;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -75,6 +76,23 @@ class PojoServiceIT {
     @Test
     void testFilterPojo() throws Exception {
         doIt("pojoServiceFilter");
+    }
+
+    @Test
+    void testSquareService() {
+        Map<String, Object> body = new HashMap<>();
+        body.put("first", 3);
+        body.put("second", 6);
+        body.put("third", 9);
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(body)
+                .post("/squareService")
+                .then()
+                .statusCode(201)
+                .body("id", notNullValue())
+                .body("workflowdata.response", is(Arrays.asList(9, 36, 81)));
     }
 
     @Test

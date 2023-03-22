@@ -92,12 +92,22 @@ public class JsonObjectUtils {
         return new TextNode(value);
     }
 
+    private static Object toJavaValue(ObjectNode node) {
+        Map<String, Object> result = new HashMap<>();
+        node.fields().forEachRemaining(iter -> result.put(iter.getKey(), toJavaValue(iter.getValue())));
+        return result;
+    }
+
+    private static Collection toJavaValue(ArrayNode node) {
+        Collection result = new ArrayList<>();
+        for (JsonNode item : node) {
+            result.add(internalToJavaValue(item, JsonObjectUtils::toJavaValue, JsonObjectUtils::toJavaValue));
+        }
+        return result;
+    }
+
     public static Object toJavaValue(JsonNode jsonNode) {
-        return internalToJavaValue(jsonNode, node -> {
-            Map<String, Object> result = new HashMap<>();
-            node.fields().forEachRemaining(iter -> result.put(iter.getKey(), toJavaValue(iter.getValue())));
-            return result;
-        });
+        return internalToJavaValue(jsonNode, JsonObjectUtils::toJavaValue, JsonObjectUtils::toJavaValue);
     }
 
     public static <T> T convertValue(Object obj, Class<T> returnType) {
@@ -129,10 +139,10 @@ public class JsonObjectUtils {
     }
 
     public static Object simpleToJavaValue(JsonNode jsonNode) {
-        return internalToJavaValue(jsonNode, node -> node);
+        return internalToJavaValue(jsonNode, node -> node, node -> node);
     }
 
-    private static Object internalToJavaValue(JsonNode jsonNode, Function<JsonNode, Object> function) {
+    private static Object internalToJavaValue(JsonNode jsonNode, Function<ObjectNode, Object> objectFunction, Function<ArrayNode, Object> arrayFunction) {
         if (jsonNode.isNull()) {
             return null;
         } else if (jsonNode.isTextual()) {
@@ -146,13 +156,9 @@ public class JsonObjectUtils {
         } else if (jsonNode.isNumber()) {
             return jsonNode.numberValue();
         } else if (jsonNode.isArray()) {
-            Collection result = new ArrayList<>();
-            for (JsonNode item : ((ArrayNode) jsonNode)) {
-                result.add(internalToJavaValue(item, function));
-            }
-            return result;
+            return arrayFunction.apply((ArrayNode) jsonNode);
         } else if (jsonNode.isObject()) {
-            return function.apply(jsonNode);
+            return objectFunction.apply((ObjectNode) jsonNode);
         } else {
             return ObjectMapperFactory.get().convertValue(jsonNode, Object.class);
         }
