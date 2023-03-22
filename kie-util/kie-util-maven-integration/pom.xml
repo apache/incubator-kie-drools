@@ -35,16 +35,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-util-inject</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>jakarta.inject</groupId>
-          <artifactId>jakarta.inject-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
