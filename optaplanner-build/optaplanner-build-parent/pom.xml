@@ -890,7 +890,8 @@
             <executions>
               <execution>
                 <id>build-javadoc-jar</id>
-                <phase>package</phase>
+                <!-- TODO Workaround switch back to "package" phase after fix https://issues.apache.org/jira/browse/MJAVADOC-747 -->
+                <phase>process-classes</phase>
                 <goals>
                   <goal>jar</goal>
                 </goals>
