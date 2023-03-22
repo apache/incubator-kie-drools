@@ -19,7 +19,6 @@ package org.kie.kogito.job.recipient.common.http;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.Response;
@@ -31,6 +30,7 @@ import org.kie.kogito.jobs.service.exception.JobExecutionException;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.timer.impl.IntervalTrigger;
+import org.kie.kogito.timer.impl.SimpleTimerTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,16 +149,22 @@ public abstract class HTTPRequestExecutor<R extends Recipient<?>> {
     }
 
     protected String getLimit(JobDetails job) {
-        return Optional.ofNullable(job.getTrigger())
-                .filter(IntervalTrigger.class::isInstance)
-                .map(limit -> getRepeatableJobCountDown(job))
-                .map(String::valueOf)
-                .orElse(null);
+        if (job.getTrigger() instanceof SimpleTimerTrigger) {
+            return String.valueOf(getRepeatableJobCountDown((SimpleTimerTrigger) job.getTrigger()));
+        }
+        if (job.getTrigger() instanceof IntervalTrigger) {
+            return String.valueOf(getRepeatableJobCountDown((IntervalTrigger) job.getTrigger()));
+        }
+        return "0";
     }
 
-    protected int getRepeatableJobCountDown(JobDetails job) {
-        IntervalTrigger trigger = (IntervalTrigger) job.getTrigger();
+    protected int getRepeatableJobCountDown(IntervalTrigger trigger) {
         return trigger.getRepeatLimit() - trigger.getRepeatCount() - 1;//since the repeatCount is updated only after this call when persisting the job.
+    }
+
+    protected int getRepeatableJobCountDown(SimpleTimerTrigger trigger) {
+        // The SimpleTimerTrigger stops when the (desired repetitions - actual executed repetitions) == 0.
+        return trigger.getRepeatCount() - trigger.getCurrentRepeatCount();
     }
 
     protected static <K, V> Map<K, V> filterEntries(Map<K, V> source) {

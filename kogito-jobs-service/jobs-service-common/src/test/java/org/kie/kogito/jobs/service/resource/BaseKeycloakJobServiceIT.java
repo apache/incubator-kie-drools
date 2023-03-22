@@ -116,6 +116,8 @@ public abstract class BaseKeycloakJobServiceIT {
                 .rootProcessId(ROOT_PROCESS_ID)
                 .rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID)
                 .nodeInstanceId(NODE_INSTANCE_ID)
+                .repeatInterval(0L)
+                .repeatLimit(0)
                 .priority(PRIORITY)
                 .build();
     }

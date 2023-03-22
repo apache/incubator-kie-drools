@@ -19,6 +19,7 @@ import java.util.Map;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
@@ -29,15 +30,19 @@ public class HttpRecipientResourceMock implements QuarkusTestResourceLifecycleMa
     public static final String MOCK_SERVICE_URL = "mock.service.url";
     WireMockServer wireMockServer;
 
+    public static final String RESOURCE_URL = "my-service";
+
+    private static final UrlPattern RESOURCE_URL_PATTERN = WireMock.urlMatching("/" + RESOURCE_URL + "\\?limit=0");
+
     @Override
     public Map<String, String> start() {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
-        stubFor(WireMock.post(WireMock.urlMatching(".*")).willReturn(WireMock.ok("POST")));
-        stubFor(WireMock.get(WireMock.urlMatching(".*")).willReturn(WireMock.ok("GET")));
-        stubFor(WireMock.put(WireMock.urlMatching(".*")).willReturn(WireMock.ok("PUT")));
-        stubFor(WireMock.delete(WireMock.urlMatching(".*")).willReturn(WireMock.ok("DELETE")));
-        stubFor(WireMock.patch(WireMock.urlMatching(".*")).willReturn(WireMock.ok("PATCH")));
+        stubFor(WireMock.post(RESOURCE_URL_PATTERN).willReturn(WireMock.ok("POST")));
+        stubFor(WireMock.get(RESOURCE_URL_PATTERN).willReturn(WireMock.ok("GET")));
+        stubFor(WireMock.put(RESOURCE_URL_PATTERN).willReturn(WireMock.ok("PUT")));
+        stubFor(WireMock.delete(RESOURCE_URL_PATTERN).willReturn(WireMock.ok("DELETE")));
+        stubFor(WireMock.patch(RESOURCE_URL_PATTERN).willReturn(WireMock.ok("PATCH")));
         return Map.of(MOCK_SERVICE_URL, "http://localhost:" + wireMockServer.port());
     }
 

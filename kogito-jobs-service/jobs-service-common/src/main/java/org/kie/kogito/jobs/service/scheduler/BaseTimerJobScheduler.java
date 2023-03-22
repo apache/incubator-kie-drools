@@ -199,6 +199,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
     public PublisherBuilder<JobDetails> handleJobExecutionSuccess(JobDetails futureJob) {
         return ReactiveStreams.of(futureJob)
                 .map(job -> JobDetails.builder().of(job).incrementExecutionCounter().build())
+                //calculate the next programmed fire time if any
                 .peek(job -> job.getTrigger().nextFireTime())
                 .flatMapCompletionStage(jobRepository::save)
                 //check if it is a repeatable job

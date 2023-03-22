@@ -17,15 +17,17 @@
 package org.kie.kogito.job.sink.recipient;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 import org.kie.kogito.job.recipient.common.http.HTTPRequestExecutorTest;
-import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
 import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient;
 import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientJsonPayloadData;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.RecipientInstance;
 import org.kie.kogito.jobs.service.utils.DateUtil;
+import org.kie.kogito.timer.impl.SimpleTimerTrigger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -54,8 +56,9 @@ class SinkJobExecutorTest extends HTTPRequestExecutorTest<SinkRecipient<?>, Sink
     @Override
     protected void assertExecuteConditions() {
         assertThat(queryParamsCaptor.getValue()).isEmpty();
-        assertThat(headersCaptor.getValue()).hasSize(8);
+        assertThat(headersCaptor.getValue()).hasSize(9);
         assertCommonHeaders(headersCaptor.getValue());
+        assertThat(headersCaptor.getValue()).containsEntry("ce-limit", "0");
         assertCommonBuffer();
     }
 
@@ -69,7 +72,7 @@ class SinkJobExecutorTest extends HTTPRequestExecutorTest<SinkRecipient<?>, Sink
         assertThat(queryParamsCaptor.getValue()).isEmpty();
         assertThat(headersCaptor.getValue()).hasSize(9);
         assertCommonHeaders(headersCaptor.getValue());
-        assertThat(headersCaptor.getValue()).containsEntry("ce-limit", "8");
+        assertThat(headersCaptor.getValue()).containsEntry("ce-limit", "10");
         assertCommonBuffer();
     }
 
@@ -104,7 +107,7 @@ class SinkJobExecutorTest extends HTTPRequestExecutorTest<SinkRecipient<?>, Sink
         return JobDetails.builder()
                 .id(JOB_ID)
                 .recipient(new RecipientInstance(recipient))
-                .trigger(ScheduledJobAdapter.intervalTrigger(DateUtil.now(), 10, 1))
+                .trigger(new SimpleTimerTrigger(DateUtil.toDate(OffsetDateTime.now()), 1, ChronoUnit.MILLIS, 10, null))
                 .build();
     }
 

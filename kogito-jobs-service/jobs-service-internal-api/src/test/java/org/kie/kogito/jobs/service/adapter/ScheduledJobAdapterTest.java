@@ -16,6 +16,7 @@
 package org.kie.kogito.jobs.service.adapter;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.impl.IntervalTrigger;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
+import org.kie.kogito.timer.impl.SimpleTimerTrigger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,7 +73,7 @@ class ScheduledJobAdapterTest {
 
         ScheduledJob scheduledJob = ScheduledJobAdapter.of(jobDetails);
         assertScheduledJob(scheduledJob);
-        assertThat(scheduledJob.getRepeatLimit()).isEqualTo(REPEAT_LIMIT + 1);
+        assertThat(scheduledJob.getRepeatLimit()).isEqualTo(REPEAT_LIMIT);
         assertThat(scheduledJob.getRepeatInterval()).isEqualTo(INTERVAL);
     }
 
@@ -82,11 +84,12 @@ class ScheduledJobAdapterTest {
 
         JobDetails jobDetails = ScheduledJobAdapter.to(scheduledJob);
         assertJobDetails(jobDetails);
-        assertThat(jobDetails.getTrigger()).isInstanceOf(IntervalTrigger.class);
-        IntervalTrigger intervalTrigger = (IntervalTrigger) jobDetails.getTrigger();
-        assertThat(intervalTrigger.getNextFireTime()).isEqualTo(DateUtil.toDate(TIME.toOffsetDateTime()));
-        assertThat(intervalTrigger.getRepeatLimit()).isEqualTo(REPEAT_LIMIT);
-        assertThat(intervalTrigger.getPeriod()).isEqualTo(INTERVAL);
+        assertThat(jobDetails.getTrigger()).isInstanceOf(SimpleTimerTrigger.class);
+        SimpleTimerTrigger simpleTimerTrigger = (SimpleTimerTrigger) jobDetails.getTrigger();
+        assertThat(simpleTimerTrigger.getNextFireTime()).isEqualTo(DateUtil.toDate(TIME.toOffsetDateTime()));
+        assertThat(simpleTimerTrigger.getRepeatCount()).isEqualTo(REPEAT_LIMIT - 1);
+        assertThat(simpleTimerTrigger.getPeriod()).isEqualTo(INTERVAL);
+        assertThat(simpleTimerTrigger.getPeriodUnit()).isEqualTo(ChronoUnit.MILLIS);
     }
 
     @Test
@@ -95,9 +98,13 @@ class ScheduledJobAdapterTest {
 
         JobDetails jobDetails = ScheduledJobAdapter.to(scheduledJob);
         assertJobDetails(jobDetails);
-        assertThat(jobDetails.getTrigger()).isInstanceOf(PointInTimeTrigger.class);
-        PointInTimeTrigger trigger = (PointInTimeTrigger) jobDetails.getTrigger();
-        assertThat(trigger.nextFireTime()).isEqualTo(DateUtil.toDate(TIME.toOffsetDateTime()));
+        assertThat(jobDetails.getTrigger()).isInstanceOf(SimpleTimerTrigger.class);
+        SimpleTimerTrigger trigger = (SimpleTimerTrigger) jobDetails.getTrigger();
+        assertThat(trigger.getNextFireTime()).isEqualTo(DateUtil.toDate(TIME.toOffsetDateTime()));
+        assertThat(trigger.getRepeatCount()).isZero();
+        assertThat(trigger.getPeriod()).isZero();
+        assertThat(trigger.getPeriodUnit()).isEqualTo(ChronoUnit.MILLIS);
+        assertThat(trigger.getZoneId()).isEqualTo(TIME.toOffsetDateTime().getOffset().getId());
     }
 
     @Test

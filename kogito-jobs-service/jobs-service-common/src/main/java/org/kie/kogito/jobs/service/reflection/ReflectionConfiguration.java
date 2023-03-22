@@ -31,6 +31,7 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
                 "org.kie.kogito.jobs.service.job.model.ScheduledJobAdapter$ProcessPayload",
                 "org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller$PointInTimeTriggerAccessor",
                 "org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller$IntervalTriggerAccessor",
+                "org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller$SimpleTimerTriggerAccessor",
                 "org.kie.kogito.jobs.api.event.CancelJobRequestEvent$JobId",
                 "org.kie.kogito.jobs.service.api.event.serialization.SpecVersionSerializer",
                 "org.kie.kogito.jobs.service.api.event.serialization.SpecVersionDeserializer",

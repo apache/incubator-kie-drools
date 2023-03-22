@@ -62,7 +62,7 @@ class JobHttpRecipientTest {
         HttpRecipient<?> httpRecipient = HttpRecipient.builder()
                 .forStringPayload()
                 .method(method.name())
-                .url(mockServiceUrl)
+                .url(mockServiceUrl + "/" + HttpRecipientResourceMock.RESOURCE_URL)
                 .build();
         JobDetails job = JobDetails.builder().id("12345").recipient(new RecipientInstance(httpRecipient)).build();
         UniAssertSubscriber<JobExecutionResponse> tester = httpJobExecutor.execute(job)

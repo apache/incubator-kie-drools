@@ -16,6 +16,7 @@
 
 package org.kie.kogito.jobs.service.repository.marshaller;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Random;
 
@@ -23,11 +24,11 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.timer.Trigger;
 import org.kie.kogito.timer.impl.IntervalTrigger;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
+import org.kie.kogito.timer.impl.SimpleTimerTrigger;
 
 import io.vertx.core.json.JsonObject;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class TriggerMarshallerTest {
 
@@ -53,15 +54,14 @@ class TriggerMarshallerTest {
 
         JsonObject jsonObject = marshaller.marshall(trigger);
 
-        assertEquals(new JsonObject()
+        assertThat(jsonObject).isEqualTo(new JsonObject()
                 .put("startTime", startTime.getTime())
                 .put("endTime", endTime.getTime())
                 .put("nextFireTime", nextFireTime.getTime())
                 .put("repeatLimit", repeatLimit)
                 .put("repeatCount", repeatCount)
                 .put("period", period)
-                .put("classType", IntervalTrigger.class.getName()),
-                jsonObject);
+                .put("classType", IntervalTrigger.class.getName()));
     }
 
     @Test
@@ -69,16 +69,40 @@ class TriggerMarshallerTest {
         Date time = new Date();
         PointInTimeTrigger trigger = new PointInTimeTrigger(time.getTime(), null, null);
         JsonObject jsonObject = marshaller.marshall(trigger);
-        assertEquals(new JsonObject()
+        assertThat(jsonObject).isEqualTo(new JsonObject()
                 .put("nextFireTime", time.getTime())
-                .put("classType", PointInTimeTrigger.class.getName()),
-                jsonObject);
+                .put("classType", PointInTimeTrigger.class.getName()));
+    }
+
+    @Test
+    void marshallSimpleTimerTrigger() {
+        Date startTime = new Date();
+        long period = 4;
+        ChronoUnit periodUnit = ChronoUnit.HOURS;
+        int repeatCount = 3;
+        Date endTime = new Date(startTime.getTime() + 10000);
+        String zoneId = "+02:00";
+
+        SimpleTimerTrigger trigger = new SimpleTimerTrigger(startTime, period, periodUnit, repeatCount, endTime, zoneId);
+
+        JsonObject jsonObject = marshaller.marshall(trigger);
+        assertThat(jsonObject).isEqualTo(new JsonObject()
+                .put("startTime", startTime.getTime())
+                .put("period", period)
+                .put("periodUnit", periodUnit.name())
+                .put("repeatCount", repeatCount)
+                .put("endTime", endTime.getTime())
+                .put("zoneId", zoneId)
+                .put("nextFireTime", startTime.getTime())
+                .put("currentRepeatCount", 0)
+                .put("endTimeReached", false)
+                .put("classType", SimpleTimerTrigger.class.getName()));
     }
 
     @Test
     void marshallNull() {
         JsonObject jsonObject = marshaller.marshall(null);
-        assertNull(jsonObject);
+        assertThat(jsonObject).isNull();
     }
 
     @Test
@@ -110,7 +134,7 @@ class TriggerMarshallerTest {
         expected.setNextFireTime(nextFireTime);
         expected.setPeriod(period);
 
-        assertEquals(expected.toString(), trigger.toString());
+        assertThat(trigger).hasToString(expected.toString());
 
     }
 
@@ -121,13 +145,49 @@ class TriggerMarshallerTest {
                 .put("nextFireTime", time.getTime())
                 .put("classType", PointInTimeTrigger.class.getName());
         Trigger trigger = marshaller.unmarshall(jsonObject);
-        assertEquals(new PointInTimeTrigger(time.getTime(), null, null).toString(), trigger.toString());
+        assertThat(trigger).hasToString(new PointInTimeTrigger(time.getTime(), null, null).toString());
+    }
+
+    @Test
+    void unmarshalSimpleTimerTrigger() {
+        Date startTime = new Date();
+        long period = 4;
+        ChronoUnit periodUnit = ChronoUnit.HOURS;
+        int repeatCount = 3;
+        Date endTime = new Date(startTime.getTime() + 10000);
+        String zoneId = "+02:00";
+
+        JsonObject json = new JsonObject()
+                .put("startTime", startTime.getTime())
+                .put("period", period)
+                .put("periodUnit", periodUnit.name())
+                .put("repeatCount", repeatCount)
+                .put("endTime", endTime.getTime())
+                .put("zoneId", zoneId)
+                .put("nextFireTime", startTime.getTime())
+                .put("currentRepeatCount", 0)
+                .put("endTimeReached", false)
+                .put("classType", SimpleTimerTrigger.class.getName());
+
+        Trigger trigger = marshaller.unmarshall(json);
+        assertThat(trigger).isExactlyInstanceOf(SimpleTimerTrigger.class);
+        SimpleTimerTrigger simpleTimerTrigger = (SimpleTimerTrigger) trigger;
+        assertThat(simpleTimerTrigger.getStartTime()).isEqualTo(startTime);
+        assertThat(simpleTimerTrigger.getPeriod()).isEqualTo(period);
+        assertThat(simpleTimerTrigger.getPeriodUnit()).isEqualTo(periodUnit);
+        assertThat(simpleTimerTrigger.getRepeatCount()).isEqualTo(simpleTimerTrigger.getRepeatCount());
+        assertThat(simpleTimerTrigger.getEndTime()).isEqualTo(endTime);
+        assertThat(simpleTimerTrigger.getZoneId()).isEqualTo(zoneId);
+        assertThat(simpleTimerTrigger.getNextFireTime()).isEqualTo(startTime);
+        assertThat(simpleTimerTrigger.hasNextFireTime()).isEqualTo(startTime);
+        assertThat(simpleTimerTrigger.getCurrentRepeatCount()).isZero();
+        assertThat(simpleTimerTrigger.isEndTimeReached()).isFalse();
     }
 
     @Test
     void unmarshallNull() {
         Trigger trigger = marshaller.unmarshall(null);
-        assertNull(trigger);
+        assertThat(trigger).isNull();
     }
 
     @Test
@@ -135,6 +195,6 @@ class TriggerMarshallerTest {
         Date time = new Date();
         JsonObject jsonObject = new JsonObject().put("nextFireTime", time.getTime());
         Trigger trigger = marshaller.unmarshall(jsonObject);
-        assertNull(trigger);
+        assertThat(trigger).isNull();
     }
 }

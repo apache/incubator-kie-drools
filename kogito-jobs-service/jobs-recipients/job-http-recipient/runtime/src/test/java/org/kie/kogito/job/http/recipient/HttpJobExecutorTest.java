@@ -15,13 +15,16 @@
  */
 package org.kie.kogito.job.http.recipient;
 
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+
 import org.kie.kogito.job.recipient.common.http.HTTPRequestExecutorTest;
-import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientStringPayloadData;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.RecipientInstance;
 import org.kie.kogito.jobs.service.utils.DateUtil;
+import org.kie.kogito.timer.impl.SimpleTimerTrigger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,7 +41,9 @@ class HttpJobExecutorTest extends HTTPRequestExecutorTest<HttpRecipient<?>, Http
 
     @Override
     protected void assertExecuteConditions() {
-        assertThat(queryParamsCaptor.getValue()).isEmpty();
+        assertThat(queryParamsCaptor.getValue())
+                .hasSize(1)
+                .containsEntry("limit", "0");
         assertCommonBuffer();
     }
 
@@ -49,7 +54,9 @@ class HttpJobExecutorTest extends HTTPRequestExecutorTest<HttpRecipient<?>, Http
 
     @Override
     protected void assertExecutePeriodicConditions() {
-        assertThat(queryParamsCaptor.getValue()).hasSize(1).containsEntry("limit", "8");//repeatCount is init in 1
+        assertThat(queryParamsCaptor.getValue())
+                .hasSize(1)
+                .containsEntry("limit", "10");
         assertCommonBuffer();
     }
 
@@ -79,7 +86,7 @@ class HttpJobExecutorTest extends HTTPRequestExecutorTest<HttpRecipient<?>, Http
         return JobDetails.builder()
                 .id(JOB_ID)
                 .recipient(new RecipientInstance(recipient))
-                .trigger(ScheduledJobAdapter.intervalTrigger(DateUtil.now(), 10, 1))
+                .trigger(new SimpleTimerTrigger(DateUtil.toDate(OffsetDateTime.now()), 1, ChronoUnit.MILLIS, 10, null))
                 .build();
     }
 }

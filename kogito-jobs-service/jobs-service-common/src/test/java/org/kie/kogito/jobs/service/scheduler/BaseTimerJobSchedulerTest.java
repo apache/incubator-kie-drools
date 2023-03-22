@@ -15,7 +15,9 @@
  */
 package org.kie.kogito.jobs.service.scheduler;
 
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -27,7 +29,6 @@ import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
 import org.kie.kogito.jobs.service.executor.JobExecutor;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
@@ -37,6 +38,7 @@ import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.Trigger;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
+import org.kie.kogito.timer.impl.SimpleTimerTrigger;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -231,7 +233,7 @@ public abstract class BaseTimerJobSchedulerTest {
     private JobDetails createPeriodicJob() {
         return JobDetails.builder()
                 .id(JOB_ID)
-                .trigger(ScheduledJobAdapter.intervalTrigger(expirationTime, 10, 2))
+                .trigger(new SimpleTimerTrigger(DateUtil.toDate(expirationTime.toOffsetDateTime()), 1, ChronoUnit.MILLIS, 10, null))
                 .status(SCHEDULED)
                 .build();
     }
@@ -361,7 +363,7 @@ public abstract class BaseTimerJobSchedulerTest {
 
         scheduledJob = JobDetails.builder()
                 .of(scheduledJob)
-                .trigger(ScheduledJobAdapter.intervalTrigger(DateUtil.now().minusHours(1), 1, 1))
+                .trigger(new SimpleTimerTrigger(DateUtil.toDate(OffsetDateTime.now().minusHours(1)), 1, ChronoUnit.MILLIS, 0, null))
                 .build();
 
         //testing with forcing disabled

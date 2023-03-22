@@ -15,6 +15,10 @@
  */
 package org.kie.kogito.jobs.service.adapter;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.Objects;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -22,6 +26,7 @@ import org.kie.kogito.jobs.service.api.Job;
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.api.Retry;
 import org.kie.kogito.jobs.service.api.Schedule;
+import org.kie.kogito.jobs.service.api.TemporalUnit;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
@@ -32,6 +37,7 @@ import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.Trigger;
 import org.kie.kogito.timer.impl.IntervalTrigger;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
+import org.kie.kogito.timer.impl.SimpleTimerTrigger;
 
 public class JobDetailsAdapter {
 
@@ -90,33 +96,60 @@ public class JobDetailsAdapter {
         }
 
         public static Schedule toSchedule(Trigger trigger) {
-
+            if (trigger instanceof SimpleTimerTrigger) {
+                SimpleTimerTrigger simpleTimerTrigger = (SimpleTimerTrigger) trigger;
+                return TimerSchedule.builder()
+                        .startTime(fromFireTime(simpleTimerTrigger.getStartTime(), simpleTimerTrigger.getZoneId()))
+                        .repeatCount(simpleTimerTrigger.getRepeatCount())
+                        .delay(simpleTimerTrigger.getPeriod())
+                        .delayUnit(TemporalUnitAdapter.fromChronoUnit(simpleTimerTrigger.getPeriodUnit()))
+                        .build();
+            }
             if (trigger instanceof IntervalTrigger) {
                 IntervalTrigger intervalTrigger = (IntervalTrigger) trigger;
                 return TimerSchedule.builder()
-                        .startTime(DateUtil.dateToOffsetDateTime(intervalTrigger.hasNextFireTime()))
-                        .repeatCount(intervalTrigger.getRepeatLimit())
+                        .startTime(fromFireTime(intervalTrigger.hasNextFireTime()))
+                        // repeatLimit = N, means repeatCount = N -1
+                        .repeatCount(intervalTrigger.getRepeatLimit() - 1)
                         .delay(intervalTrigger.getPeriod())
+                        .delayUnit(TemporalUnit.MILLIS)
                         .build();
             }
             if (trigger instanceof PointInTimeTrigger) {
                 return TimerSchedule.builder()
-                        .startTime(DateUtil.dateToOffsetDateTime(trigger.hasNextFireTime()))
+                        .startTime(fromFireTime(trigger.hasNextFireTime()))
                         .build();
             }
-
-            throw new NotImplementedException("Only IntervalTrigger and PointInTimeTrigger are supported");
+            throw new NotImplementedException("Only SimpleTimerTrigger, IntervalTrigger and PointInTimeTrigger are supported");
         }
 
         public static Trigger from(Schedule schedule) {
             if (schedule instanceof TimerSchedule) {
-                TimerSchedule timerSchedule = (TimerSchedule) schedule;
-                if (timerSchedule.getRepeatCount() != null && timerSchedule.getRepeatCount() > 0) {
-                    return new IntervalTrigger(0, DateUtil.toDate(timerSchedule.getStartTime()), null, timerSchedule.getRepeatCount(), 0, timerSchedule.getDelay(), null, null);
-                }
-                return new PointInTimeTrigger(timerSchedule.getStartTime().toInstant().toEpochMilli(), null, null);
+                return simpleTimerTrigger((TimerSchedule) schedule);
             }
             throw new NotImplementedException("Only TimeSchedule is supported");
+        }
+
+        private static OffsetDateTime fromFireTime(Date fireTime) {
+            return fromFireTime(fireTime, null);
+        }
+
+        private static OffsetDateTime fromFireTime(Date fireTime, String zoneId) {
+            if (fireTime == null) {
+                return null;
+            }
+            if (zoneId != null) {
+                return OffsetDateTime.ofInstant(fireTime.toInstant(), ZoneId.of(zoneId));
+            }
+            return DateUtil.dateToOffsetDateTime(fireTime);
+        }
+
+        private static SimpleTimerTrigger simpleTimerTrigger(TimerSchedule schedule) {
+            return new SimpleTimerTrigger(DateUtil.toDate(schedule.getStartTime()),
+                    schedule.getDelay() != null ? schedule.getDelay() : 0,
+                    schedule.getDelayUnit() != null ? TemporalUnitAdapter.toChronoUnit(schedule.getDelayUnit()) : ChronoUnit.MILLIS,
+                    schedule.getRepeatCount() != null ? schedule.getRepeatCount() : 0,
+                    schedule.getStartTime().getOffset().getId());
         }
     }
 
@@ -175,5 +208,45 @@ public class JobDetailsAdapter {
                 .recipient(RecipientAdapter.toRecipient(jobDetails))
                 .retry(RetryAdapter.toRetry(jobDetails))
                 .build();
+    }
+
+    public static class TemporalUnitAdapter {
+
+        private TemporalUnitAdapter() {
+        }
+
+        public static ChronoUnit toChronoUnit(TemporalUnit temporalUnit) {
+            switch (temporalUnit) {
+                case MILLIS:
+                    return ChronoUnit.MILLIS;
+                case SECONDS:
+                    return ChronoUnit.SECONDS;
+                case MINUTES:
+                    return ChronoUnit.MINUTES;
+                case HOURS:
+                    return ChronoUnit.HOURS;
+                case DAYS:
+                    return ChronoUnit.DAYS;
+                default:
+                    throw new IllegalArgumentException("TemporalUnit: " + temporalUnit + " cannot be converted to a ChronoUnit");
+            }
+        }
+
+        public static TemporalUnit fromChronoUnit(ChronoUnit chronoUnit) {
+            switch (chronoUnit) {
+                case MILLIS:
+                    return TemporalUnit.MILLIS;
+                case SECONDS:
+                    return TemporalUnit.SECONDS;
+                case MINUTES:
+                    return TemporalUnit.MINUTES;
+                case HOURS:
+                    return TemporalUnit.HOURS;
+                case DAYS:
+                    return TemporalUnit.DAYS;
+                default:
+                    throw new IllegalArgumentException("ChronoUnit: " + chronoUnit + " cannot be converted to a TemporalUnit");
+            }
+        }
     }
 }

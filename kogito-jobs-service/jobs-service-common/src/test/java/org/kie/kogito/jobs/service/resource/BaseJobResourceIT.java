@@ -97,7 +97,7 @@ public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
     }
 
     private Job buildJob(String id, ZonedDateTime expirationTime) {
-        return buildJob(id, expirationTime, null, null);
+        return buildJob(id, expirationTime, 0, 0L);
     }
 
     @Test
