@@ -17,6 +17,7 @@ package org.kie.kogito.jobs.management;
 
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -122,6 +123,6 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
                 .isNotNull()
                 .isInstanceOf(TimerSchedule.class);
         TimerSchedule timerSchedule = (TimerSchedule) job.getSchedule();
-        assertThat(timerSchedule.getStartTime()).isEqualTo(EXPIRATION_TIME.toOffsetDateTime());
+        assertThat(timerSchedule.getStartTime()).isEqualTo(EXPIRATION_TIME.toOffsetDateTime().truncatedTo(ChronoUnit.MILLIS));
     }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.kogito.jobs.api;
 
+import java.time.temporal.ChronoUnit;
+
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.service.api.TemporalUnit;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
@@ -84,10 +86,23 @@ public class JobCallbackResourceDef {
 
     private static TimerSchedule buildSchedule(ProcessInstanceJobDescription description) {
         return TimerSchedule.builder()
-                .startTime(description.expirationTime().get().toOffsetDateTime())
-                .repeatCount(description.expirationTime().repeatLimit())
+                .startTime(description.expirationTime().get().toOffsetDateTime().truncatedTo(ChronoUnit.MILLIS))
+                .repeatCount(translateLimit(description.expirationTime().repeatLimit()))
                 .delay(description.expirationTime().repeatInterval())
                 .delayUnit(TemporalUnit.MILLIS)
                 .build();
+    }
+
+    /**
+     * Translate the repeatLimit coming from the process format into repetitions in the public API TimerSchedule.
+     */
+    private static int translateLimit(int repeatLimit) {
+        if (repeatLimit < 0) {
+            throw new IllegalArgumentException("The repeatLimit must be greater or equal han zero, but is: " + repeatLimit);
+        }
+        if (repeatLimit >= 1) {
+            return repeatLimit - 1;
+        }
+        return repeatLimit;
     }
 }
