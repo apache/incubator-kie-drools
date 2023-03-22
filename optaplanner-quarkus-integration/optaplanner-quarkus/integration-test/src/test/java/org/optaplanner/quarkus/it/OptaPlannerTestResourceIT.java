@@ -1,11 +1,11 @@
 package org.optaplanner.quarkus.it;
 
-import io.quarkus.test.junit.NativeImageTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 /**
  * Test various OptaPlanner operations running in native mode
  */
-@NativeImageTest
+@QuarkusIntegrationTest
 public class OptaPlannerTestResourceIT extends OptaPlannerTestResourceTest {
 
 }
