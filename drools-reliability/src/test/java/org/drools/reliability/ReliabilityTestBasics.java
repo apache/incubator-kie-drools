@@ -53,13 +53,11 @@ public abstract class ReliabilityTestBasics {
     }
 
     protected FactHandle insertString(String str) {
-        session.insert(str);
-        return null;
+        return session.insert(str);
     }
 
     protected FactHandle insertInteger(Integer number) {
-        session.insert(number);
-        return null;
+        return session.insert(number);
     }
 
     protected FactHandle insertMatchingPerson(String name, Integer age) {
