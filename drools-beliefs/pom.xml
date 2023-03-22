@@ -64,12 +64,6 @@
       <artifactId>kie-util-xml</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>jakarta.inject</groupId>
-      <artifactId>jakarta.inject-api</artifactId>
-      <scope>provided</scope> <!-- HACK for OSGi: should be <optional>true</optional> instead-->
-    </dependency>
-
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
