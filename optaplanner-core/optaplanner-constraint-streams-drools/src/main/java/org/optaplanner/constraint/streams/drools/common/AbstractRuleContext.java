@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.drools.core.common.AgendaItem;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.model.Drools;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.view.ViewItem;
@@ -41,8 +41,8 @@ abstract class AbstractRuleContext {
     }
 
     private static void addUndo(Drools drools, UndoScoreImpacter undoImpact) {
-        AgendaItem agendaItem = (AgendaItem) ((RuleContext) drools).getMatch();
-        agendaItem.setCallback(undoImpact);
+        InternalMatch match = (InternalMatch) ((RuleContext) drools).getMatch();
+        match.setCallback(undoImpact);
     }
 
     private static RuntimeException createExceptionOnImpact(DroolsConstraint<?> constraint, Exception cause) {
