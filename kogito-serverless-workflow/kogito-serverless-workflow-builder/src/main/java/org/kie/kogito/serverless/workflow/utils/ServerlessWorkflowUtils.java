@@ -18,6 +18,7 @@ package org.kie.kogito.serverless.workflow.utils;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.io.Writer;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Optional;
@@ -42,6 +43,7 @@ import org.kie.kogito.serverless.workflow.suppliers.ConfigWorkItemSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.expr.Expression;
 
 import io.serverlessworkflow.api.Workflow;
@@ -52,6 +54,7 @@ import io.serverlessworkflow.api.interfaces.Extension;
 import io.serverlessworkflow.api.mapper.BaseObjectMapper;
 import io.serverlessworkflow.api.mapper.JsonObjectMapper;
 import io.serverlessworkflow.api.mapper.YamlObjectMapper;
+import io.serverlessworkflow.api.serializers.ExtensionSerializer;
 
 public class ServerlessWorkflowUtils {
 
@@ -64,8 +67,6 @@ public class ServerlessWorkflowUtils {
     public static final String PASSWORD_PROP = "password";
     public static final String OPERATION_SEPARATOR = "#";
 
-    public static final String DEFAULT_WORKFLOW_FORMAT = "json";
-    public static final String ALTERNATE_WORKFLOW_FORMAT = "yml";
     public static final String APP_PROPERTIES_BASE = "kogito.sw.";
     private static final String OPEN_API_PROPERTIES_BASE = "org.kogito.openapi.client.";
 
@@ -74,24 +75,59 @@ public class ServerlessWorkflowUtils {
 
     private static final String REGEX_NO_EXT = "[.][^.]+$";
 
+    private static final BaseObjectMapper yamlReaderMapper = deserializer(new YamlObjectMapper());
+    private static final BaseObjectMapper jsonReaderMapper = deserializer(new JsonObjectMapper());
+
+    private static final BaseObjectMapper yamlWriterMapper = serializer(new YamlObjectMapper());
+    private static final BaseObjectMapper jsonWriterMapper = serializer(new JsonObjectMapper());
+
     private ServerlessWorkflowUtils() {
     }
 
-    public static BaseObjectMapper getObjectMapper(String workflowFormat) {
-        return ALTERNATE_WORKFLOW_FORMAT.equals(workflowFormat) ? new YamlObjectMapper() : new JsonObjectMapper();
+    /**
+     * Read a workflow.
+     * 
+     * @param reader Reader instance holding workflow data
+     * @param workflowFormat Format of the data, json or yaml.
+     * @return Workflow instance
+     * @throws IOException
+     */
+    public static Workflow getWorkflow(Reader reader, WorkflowFormat workflowFormat) throws IOException {
+        BaseObjectMapper objectMapper = workflowFormat == WorkflowFormat.YAML ? yamlReaderMapper : jsonReaderMapper;
+        return objectMapper.readValue(reader, Workflow.class);
     }
 
-    private static String getFunctionPrefix(FunctionDefinition function) {
-        return APP_PROPERTIES_FUNCTIONS_BASE + function.getName();
+    /**
+     * Write a workflow
+     * 
+     * @param workflow Workflow definition
+     * @param writer Target output reader
+     * @param workflowFormat Format of the data, json or yaml.
+     * @throws IOException
+     */
+    public static void writeWorkflow(Workflow workflow, Writer writer, WorkflowFormat workflowFormat) throws IOException {
+        ObjectMapper objectMapper = workflowFormat == WorkflowFormat.YAML ? yamlWriterMapper : jsonWriterMapper;
+        objectMapper.writeValue(writer, workflow);
     }
 
-    public static Workflow getWorkflow(Reader workflowFile, String workflowFormat) throws IOException {
-        BaseObjectMapper objectMapper = getObjectMapper(workflowFormat);
+    private static BaseObjectMapper deserializer(BaseObjectMapper objectMapper) {
         ExtensionDeserializer deserializer = objectMapper.getWorkflowModule().getExtensionDeserializer();
         deserializer.addExtension(URIDefinitions.URI_DEFINITIONS, URIDefinitions.class);
         deserializer.addExtension(FunctionNamespaces.FUNCTION_NAMESPACES, FunctionNamespaces.class);
         deserializer.addExtension(OutputSchema.OUTPUT_SCHEMA, OutputSchema.class);
-        return objectMapper.readValue(workflowFile, Workflow.class);
+        return objectMapper;
+    }
+
+    private static BaseObjectMapper serializer(BaseObjectMapper objectMapper) {
+        ExtensionSerializer serializer = objectMapper.getWorkflowModule().getExtensionSerializer();
+        serializer.addExtension(URIDefinitions.URI_DEFINITIONS, URIDefinitions.class);
+        serializer.addExtension(FunctionNamespaces.FUNCTION_NAMESPACES, FunctionNamespaces.class);
+        serializer.addExtension(OutputSchema.OUTPUT_SCHEMA, OutputSchema.class);
+        return objectMapper;
+    }
+
+    private static String getFunctionPrefix(FunctionDefinition function) {
+        return APP_PROPERTIES_FUNCTIONS_BASE + function.getName();
     }
 
     private static String getOpenApiPrefix(String serviceName) {

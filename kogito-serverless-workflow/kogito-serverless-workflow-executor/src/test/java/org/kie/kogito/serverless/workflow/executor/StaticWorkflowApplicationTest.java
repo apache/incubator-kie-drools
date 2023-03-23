@@ -15,11 +15,15 @@
  */
 package org.kie.kogito.serverless.workflow.executor;
 
+import java.io.CharArrayReader;
+import java.io.CharArrayWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -39,19 +43,38 @@ import io.serverlessworkflow.api.workflow.Functions;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.getWorkflow;
+import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.writeWorkflow;
 
 class StaticWorkflowApplicationTest {
 
+    private static final String GREETING_STRING = "Hello World!!!";
+    private static final String START_STATE = "start";
+
     @Test
     void helloWorld() {
-        final String START_STATE = "start";
-        final String GREETING_STRING = "Hello World!!!";
+        Workflow workflow = helloWorldDef();
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            Workflow workflow = new Workflow("HelloWorld", "Hello World", "1.0", Arrays.asList(
-                    new InjectState(START_STATE, Type.INJECT).withData(new TextNode(GREETING_STRING)).withEnd(new End())))
-                            .withStart(new Start().withStateName(START_STATE));
             assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).contains(new TextNode(GREETING_STRING));
         }
+    }
+
+    @Test
+    void helloWorldFile() throws IOException {
+        Workflow workflow = helloWorldDef();
+        CharArrayWriter writer = new CharArrayWriter();
+        writeWorkflow(workflow, writer, WorkflowFormat.JSON);
+        CharArrayReader reader = new CharArrayReader(writer.toCharArray());
+        workflow = getWorkflow(reader, WorkflowFormat.JSON);
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).contains(new TextNode(GREETING_STRING));
+        }
+    }
+
+    private Workflow helloWorldDef() {
+        return new Workflow("HelloWorld", "Hello World", "1.0", Arrays.asList(
+                new InjectState(START_STATE, Type.INJECT).withData(new TextNode(GREETING_STRING)).withEnd(new End())))
+                        .withStart(new Start().withStateName(START_STATE));
     }
 
     @Test

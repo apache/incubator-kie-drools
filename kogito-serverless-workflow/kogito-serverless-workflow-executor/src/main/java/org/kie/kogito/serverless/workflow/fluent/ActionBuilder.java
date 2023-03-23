@@ -51,6 +51,11 @@ public class ActionBuilder {
         return this;
     }
 
+    public ActionBuilder condition(String expr) {
+        action.withCondition(expr);
+        return this;
+    }
+
     public Action build() {
         return action;
     }

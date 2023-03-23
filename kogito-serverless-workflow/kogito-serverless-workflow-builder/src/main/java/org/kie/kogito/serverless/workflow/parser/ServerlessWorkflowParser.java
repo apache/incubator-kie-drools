@@ -41,6 +41,7 @@ import org.kie.kogito.serverless.workflow.parser.handlers.StateHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.handlers.validation.WorkflowValidator;
 import org.kie.kogito.serverless.workflow.suppliers.JsonSchemaValidatorSupplier;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -68,7 +69,7 @@ public class ServerlessWorkflowParser {
     private GeneratedInfo<KogitoWorkflowProcess> processInfo;
     private KogitoBuildContext context;
 
-    public static ServerlessWorkflowParser of(Reader workflowFile, String workflowFormat, KogitoBuildContext context) throws IOException {
+    public static ServerlessWorkflowParser of(Reader workflowFile, WorkflowFormat workflowFormat, KogitoBuildContext context) throws IOException {
         return of(ServerlessWorkflowUtils.getWorkflow(workflowFile, workflowFormat), context);
     }
 

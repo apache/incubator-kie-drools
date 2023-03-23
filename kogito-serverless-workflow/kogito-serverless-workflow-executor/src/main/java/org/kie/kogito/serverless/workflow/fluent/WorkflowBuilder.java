@@ -16,8 +16,10 @@
 package org.kie.kogito.serverless.workflow.fluent;
 
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
@@ -41,11 +43,11 @@ public class WorkflowBuilder {
     private static ObjectMapper mapper = ObjectMapperFactory.get();
 
     public static WorkflowBuilder workflow(String id) {
-        return workflow(id, "1_0");
+        return workflow(id, id, "1_0");
     }
 
-    public static WorkflowBuilder workflow(String id, String version) {
-        return new WorkflowBuilder(id, version);
+    public static WorkflowBuilder workflow(String id, String name, String version) {
+        return new WorkflowBuilder(id, name, version);
     }
 
     private Workflow workflow;
@@ -53,13 +55,8 @@ public class WorkflowBuilder {
     private Deque<DefaultState> states = new LinkedList<>();
     private JavaFunctionExtension javaFunctionExtension;
 
-    private WorkflowBuilder(String id, String version) {
-        this.workflow = new Workflow().withId(id).withVersion(version);
-    }
-
-    public WorkflowBuilder name(String name) {
-        workflow.withName(name);
-        return this;
+    private WorkflowBuilder(String id, String name, String version) {
+        this.workflow = new Workflow().withId(id).withName(name).withVersion(version);
     }
 
     public WorkflowBuilder constant(String name, Object value) {
@@ -69,6 +66,16 @@ public class WorkflowBuilder {
             workflow.setConstants(constants);
         }
         ((ObjectNode) constants.getConstantsDef()).set(name, JsonObjectUtils.fromValue(value));
+        return this;
+    }
+
+    public WorkflowBuilder metadata(String name, String value) {
+        Map<String, String> metadata = workflow.getMetadata();
+        if (metadata == null) {
+            metadata = new HashMap<>();
+            workflow.setMetadata(metadata);
+        }
+        metadata.put(name, value);
         return this;
     }
 

@@ -63,6 +63,7 @@ import org.kie.kogito.process.validation.ValidationContext;
 import org.kie.kogito.process.validation.ValidationException;
 import org.kie.kogito.process.validation.ValidationLogDecorator;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -92,7 +93,7 @@ public class ProcessCodegen extends AbstractGenerator {
     private static final String YAML_PARSER = "yml";
     private static final String JSON_PARSER = "json";
     public static final String SVG_EXPORT_NAME_EXPRESION = "%s-svg.svg";
-    public static final Map<String, String> SUPPORTED_SW_EXTENSIONS;
+    public static final Map<String, WorkflowFormat> SUPPORTED_SW_EXTENSIONS;
 
     private static final String GLOBAL_OPERATIONAL_DASHBOARD_TEMPLATE = "/grafana-dashboard-template/processes/global-operational-dashboard-template.json";
     private static final String PROCESS_OPERATIONAL_DASHBOARD_TEMPLATE = "/grafana-dashboard-template/processes/process-operational-dashboard-template.json";
@@ -102,11 +103,10 @@ public class ProcessCodegen extends AbstractGenerator {
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNExtensionsSemanticModule());
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNDISemanticModule());
 
-        Map<String, String> extMap = new HashMap<>();
-        extMap.put(".sw.yml", YAML_PARSER);
-        extMap.put(".sw.yaml", YAML_PARSER);
-        extMap.put(".sw.json", JSON_PARSER);
-        SUPPORTED_SW_EXTENSIONS = Collections.unmodifiableMap(extMap);
+        SUPPORTED_SW_EXTENSIONS = Map.of(
+                ".sw.yml", WorkflowFormat.YAML,
+                ".sw.yaml", WorkflowFormat.YAML,
+                ".sw.json", WorkflowFormat.JSON);
     }
 
     private final List<ProcessGenerator> processGenerators = new ArrayList<>();
@@ -228,9 +228,9 @@ public class ProcessCodegen extends AbstractGenerator {
         return new ProcessCodegen(context, processes);
     }
 
-    protected static GeneratedInfo<KogitoWorkflowProcess> parseWorkflowFile(Resource r, String parser, KogitoBuildContext context) {
+    protected static GeneratedInfo<KogitoWorkflowProcess> parseWorkflowFile(Resource r, WorkflowFormat format, KogitoBuildContext context) {
         try (Reader reader = r.getReader()) {
-            return ServerlessWorkflowParser.of(reader, parser, context).getProcessInfo();
+            return ServerlessWorkflowParser.of(reader, format, context).getProcessInfo();
         } catch (IOException | RuntimeException e) {
             throw new ProcessParsingException("Could not parse file " + r.getSourcePath(), e);
         }

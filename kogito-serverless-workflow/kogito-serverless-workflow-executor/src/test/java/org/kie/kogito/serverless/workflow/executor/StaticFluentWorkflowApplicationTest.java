@@ -159,4 +159,34 @@ class StaticFluentWorkflowApplicationTest {
             assertThat(result.get("half").asInt()).isEqualTo(2);
         }
     }
+
+    @Test
+    void testInterpolation() {
+        final String INTERPOLATION = "interpolation";
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            Workflow workflow = workflow("PlayingWithExpression").function(expr(INTERPOLATION, "\"My name is \\(.name)\""))
+                    .singleton(operation().action(call(INTERPOLATION)));
+            assertThat(application.execute(workflow, Collections.singletonMap("name", "Javierito")).getWorkflowdata().get("response").asText()).isEqualTo("My name is Javierito");
+        }
+    }
+
+    @Test
+    void testConstantConcatenation() {
+        final String INTERPOLATION = "interpolation";
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            Workflow workflow = workflow("PlayingWithExpression").constant("name", "Javierito").function(expr(INTERPOLATION, "\"My name is \"+$CONST.name"))
+                    .singleton(operation().action(call(INTERPOLATION)));
+            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata().get("response").asText()).isEqualTo("My name is Javierito");
+        }
+    }
+
+    @Test
+    void testConstantInterpolation() {
+        final String INTERPOLATION = "interpolation";
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            Workflow workflow = workflow("PlayingWithExpression").constant("name", "Javierito").function(expr(INTERPOLATION, "\"My name is \\($CONST.name)\""))
+                    .singleton(operation().action(call(INTERPOLATION)));
+            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata().get("response").asText()).isEqualTo("My name is Javierito");
+        }
+    }
 }

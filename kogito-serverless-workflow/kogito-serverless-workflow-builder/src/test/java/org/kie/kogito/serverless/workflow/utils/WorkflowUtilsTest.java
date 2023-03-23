@@ -24,9 +24,6 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 
 import io.serverlessworkflow.api.functions.FunctionDefinition;
-import io.serverlessworkflow.api.mapper.BaseObjectMapper;
-import io.serverlessworkflow.api.mapper.JsonObjectMapper;
-import io.serverlessworkflow.api.mapper.YamlObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.getOpenApiProperty;
@@ -44,15 +41,6 @@ public class WorkflowUtilsTest {
                 .withApplicationProperties(new File(TEST_RESOURCES))
                 .withPackageName(this.getClass().getPackage().getName())
                 .build();
-    }
-
-    @Test
-    public void testGetObjectMapper() {
-        BaseObjectMapper objectMapper = ServerlessWorkflowUtils.getObjectMapper("json");
-        assertThat(objectMapper).isNotNull().isInstanceOf(JsonObjectMapper.class);
-
-        objectMapper = ServerlessWorkflowUtils.getObjectMapper("yml");
-        assertThat(objectMapper).isNotNull().isInstanceOf(YamlObjectMapper.class);
     }
 
     @Test

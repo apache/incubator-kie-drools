@@ -18,6 +18,7 @@ package org.kie.kogito.serverless.workflow;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Objects;
 
 import org.junit.jupiter.api.AfterAll;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.kie.api.definition.process.Process;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 
 public abstract class AbstractServerlessWorkflowParsingTest {
 
@@ -39,12 +41,14 @@ public abstract class AbstractServerlessWorkflowParsingTest {
     }
 
     protected Process getWorkflowParser(String workflowLocation) throws IOException {
-        String format = workflowLocation.endsWith(".sw.json") ? "json" : "yml";
-        ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(
-                new InputStreamReader(Objects.requireNonNull(this.getClass().getResourceAsStream(workflowLocation),
-                        "Required resource was no found: " + workflowLocation)),
-                format,
-                JavaKogitoBuildContext.builder().build());
-        return parser.getProcessInfo().info();
+        WorkflowFormat format = workflowLocation.endsWith(".sw.json") ? WorkflowFormat.JSON : WorkflowFormat.YAML;
+        try (Reader reader = new InputStreamReader(Objects.requireNonNull(this.getClass().getResourceAsStream(workflowLocation),
+                "Required resource was no found: " + workflowLocation))) {
+            ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(
+                    reader,
+                    format,
+                    JavaKogitoBuildContext.builder().build());
+            return parser.getProcessInfo().info();
+        }
     }
 }

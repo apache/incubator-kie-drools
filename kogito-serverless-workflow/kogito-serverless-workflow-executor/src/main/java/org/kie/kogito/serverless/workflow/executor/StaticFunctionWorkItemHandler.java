@@ -19,7 +19,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import static org.kogito.workitem.rest.RestWorkItemHandler.CONTENT_DATA;
 
@@ -40,7 +44,13 @@ public class StaticFunctionWorkItemHandler<V, T> extends WorkflowWorkItemHandler
 
     @Override
     protected Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters) {
-        return parameters.size() == 1 && parameters.containsKey(CONTENT_DATA) ? function.apply((V) parameters.get(CONTENT_DATA))
-                : function.apply((V) parameters);
+        int size = parameters.size();
+        if (size == 0) {
+            return function.apply((V) JsonObjectUtils.toJavaValue((JsonNode) workItem.getParameter(SWFConstants.MODEL_WORKFLOW_VAR)));
+        } else if (size == 1 && parameters.containsKey(CONTENT_DATA)) {
+            return function.apply((V) parameters.get(CONTENT_DATA));
+        } else {
+            return function.apply((V) parameters);
+        }
     }
 }
