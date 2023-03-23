@@ -1093,6 +1093,30 @@ public class PropertyReactivityTest extends BaseModelTest {
     }
 
     @Test
+    public void testExternalFunctionWithBindVariable() {
+        // DROOLS-7372
+        final String str =
+                "import " + Fact.class.getCanonicalName() + ";\n" +
+                           "import static " + PropertyReactivityTest.class.getCanonicalName() + ".*;\n" +
+                           "\n" +
+                           "rule R1 when\n" +
+                           "    $fact: Fact($id : a == 99999, convertToString($id) == \"BIG\")\n" +
+                           "then\n" +
+                           "    modify($fact) { setResult(\"OK\") };\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Fact fact = new Fact();
+        fact.setA(99999);
+        fact.setResult("NG");
+
+        ksession.insert(fact);
+        assertThat(ksession.fireAllRules(3)).isEqualTo(1);
+        assertThat(fact.getResult()).isEqualTo("OK");
+    }
+
+    @Test
     public void testUnwatch() {
         // RHDM-1553
         final String str =
