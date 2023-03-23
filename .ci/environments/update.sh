@@ -5,6 +5,16 @@ script_dir_path=$(cd `dirname "${BASH_SOURCE[0]}"`; pwd -P)
 
 environment=$1
 
+if [[ "$#" -eq 2 ]]; then
+   echo "Rewrite parameter set";
+   rewrite=$2
+else
+   echo "Rewrite parameter not set";
+   rewrite="none"
+fi
+
+echo "rewrite "${rewrite}
+
 if [ -z "${environment}" ]; then
     echo "No environment given as first argument"
     exit 1
@@ -19,8 +29,8 @@ fi
 echo "Update project for environment '${environment}'"
 
 # If update script is present, apply it
-if [ -f "${env_path}/before.sh" ]; then
-    echo "Run before script"
+if [ -f "${env_path}/before.sh" ] && [ "rewrite" == ${rewrite} ]; then
+    echo "Run before script for rewrite operation"
     ${env_path}/before.sh
 fi
 
