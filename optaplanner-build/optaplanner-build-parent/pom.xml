@@ -46,7 +46,7 @@
 
     <!-- Plugin version properties -->
 
-    <version.asciidoctor.plugin>2.2.2</version.asciidoctor.plugin>
+    <version.asciidoctor.plugin>2.2.3</version.asciidoctor.plugin>
     <version.assembly.plugin>3.4.2</version.assembly.plugin>
     <!-- jboss suffixed version from jboss-parent which cannot be downloaded due to SNAPSHOT only policy for plugins from JBoss -->
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
