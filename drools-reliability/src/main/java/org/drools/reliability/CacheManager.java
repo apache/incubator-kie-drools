@@ -25,6 +25,7 @@ import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
+import org.infinispan.globalstate.ConfigurationStorage;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.transaction.TransactionMode;
 import org.kie.api.runtime.conf.PersistedSessionOption;
@@ -39,7 +40,8 @@ public enum CacheManager implements AutoCloseable {
     private DefaultCacheManager cacheManager;
     private Configuration cacheConfiguration;
 
-    public static final String CACHE_DIR = "tmp/cache";
+    public static final String GLOBAL_STATE_DIR = "global/state";
+    public static final String CACHE_DIR = "cache";
 
     CacheManager() {
         initCacheManager();
@@ -54,6 +56,10 @@ public enum CacheManager implements AutoCloseable {
                 .addRegexps("org.kie.*") // TODO: need to be configurable
                 .addRegexps("org.drools.*") // TODO: need to be configurable
                 .addRegexps("java.*"); // TODO: why is this necessary?
+        global.globalState()
+                .enable()
+                .persistentLocation(GLOBAL_STATE_DIR)
+                .configurationStorage(ConfigurationStorage.OVERLAY);
 
         // Initialize the default Cache Manager.
         cacheManager = new DefaultCacheManager(global.build());
@@ -73,8 +79,7 @@ public enum CacheManager implements AutoCloseable {
 
     public <k, V> Cache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
         String cacheId = SESSION_CACHE_PREFIX + getSessionIdentifier(reteEvaluator) + DELIMITER + cacheName;
-        // Obtain a volatile cache.
-        return cacheManager.administration().withFlags(CacheContainerAdmin.AdminFlag.VOLATILE).getOrCreateCache(cacheId, cacheConfiguration);
+        return cacheManager.administration().getOrCreateCache(cacheId, cacheConfiguration);
     }
 
     private long getSessionIdentifier(ReteEvaluator reteEvaluator) {
