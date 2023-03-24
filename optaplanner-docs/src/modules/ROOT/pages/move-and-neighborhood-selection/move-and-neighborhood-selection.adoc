@@ -134,6 +134,10 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 |Swap 2 list variable subLists between 2 entities
 |`+{Vehicle-5[1..3]} <-> {Vehicle-1[1..6]}+`
 
+|<<kOptListMoveSelector,k-opt move>>
+|Select an entity, remove k edges from its list variable, add k new edges from the removed endpoints
+|`+2-Opt(entity=Vehicle-3, removed=[(Customer-23 -> Customer-20), (Customer-19 -> Customer-18)], added=[(Customer-23 -> Customer-19), (Customer-20 -> Customer-18)])+`
+
 |<<tailChainSwapMoveSelector,Tail chain swap move>>
 |Swap 2 tails chains
 |`+Visit-A5 {Visit-A4} <-tailChainSwap-> Visit-B3 {Visit-B2}+`

@@ -247,7 +247,7 @@ final class TwoOptListMove<Solution_> extends AbstractMove<Solution_> {
                 entity +
                 ", removed=[(" +
                 firstEdgeStartpoint + " -> " + firstEdgeEndpoint + "), (" +
-                secondEdgeStartpoint + "-> " + secondEdgeEndpoint + ")]" +
+                secondEdgeStartpoint + " -> " + secondEdgeEndpoint + ")]" +
                 ", added=[(" +
                 firstEdgeStartpoint + " -> " + secondEdgeStartpoint + "), (" +
                 firstEdgeEndpoint + " -> " + secondEdgeEndpoint + ")]" +
