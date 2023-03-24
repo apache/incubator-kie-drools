@@ -17,6 +17,7 @@ package org.kie.kogito.serverless.workflow.fluent;
 
 import org.kie.kogito.process.Process;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
+import org.kie.kogito.serverless.workflow.parser.types.SysOutTypeHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -25,6 +26,8 @@ import io.serverlessworkflow.api.actions.Action;
 import io.serverlessworkflow.api.filters.ActionDataFilter;
 import io.serverlessworkflow.api.functions.FunctionRef;
 import io.serverlessworkflow.api.functions.SubFlowRef;
+
+import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.objectNode;
 
 public class ActionBuilder {
 
@@ -36,6 +39,11 @@ public class ActionBuilder {
 
     public static ActionBuilder call(String functionName, JsonNode args) {
         return new ActionBuilder(new Action().withFunctionRef(new FunctionRef().withRefName(functionName).withArguments(args)));
+    }
+
+    public static ActionBuilder log(String functionName, String message) {
+        return new ActionBuilder(new Action().withFunctionRef(new FunctionRef().withRefName(functionName).withArguments(
+                objectNode().put(SysOutTypeHandler.SYSOUT_TYPE_PARAM, message))));
     }
 
     public static ActionBuilder subprocess(Process<JsonNodeModel> subprocess) {

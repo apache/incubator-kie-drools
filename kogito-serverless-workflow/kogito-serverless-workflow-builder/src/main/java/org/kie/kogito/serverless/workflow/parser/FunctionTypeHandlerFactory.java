@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import java.util.function.BiFunction;
 
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
@@ -30,7 +29,7 @@ public class FunctionTypeHandlerFactory {
     }
 
     private static final FunctionTypeHandlerFactory INSTANCE = new FunctionTypeHandlerFactory();
-    private static final String CUSTOM_TYPE_SEPARATOR = ":";
+    public static final String CUSTOM_TYPE_SEPARATOR = ":";
 
     // we need two maps to avoid clashing
     private final Map<String, FunctionTypeHandler> typeMap = new HashMap<>();
@@ -51,25 +50,15 @@ public class FunctionTypeHandlerFactory {
     }
 
     public static String getTypeFromOperation(FunctionDefinition functionDef) {
-        return trimString(functionDef, FunctionTypeHandlerFactory::trimStart);
-    }
-
-    private static String trimStart(String operation, int indexOf) {
-        return operation.substring(0, indexOf);
-    }
-
-    private static String trimEnd(String operation, int indexOf) {
-        return operation.substring(indexOf + 1);
-    }
-
-    private static String trimString(FunctionDefinition functionDef, BiFunction<String, Integer, String> function) {
         String operation = functionDef.getOperation();
         int indexOf = operation.indexOf(CUSTOM_TYPE_SEPARATOR);
-        return indexOf == -1 ? operation : function.apply(operation, indexOf);
+        return indexOf == -1 ? operation : operation.substring(0, indexOf);
     }
 
     public static String trimCustomOperation(FunctionDefinition functionDef) {
-        return trimString(functionDef, FunctionTypeHandlerFactory::trimEnd);
+        String operation = functionDef.getOperation();
+        int indexOf = operation.indexOf(CUSTOM_TYPE_SEPARATOR);
+        return indexOf == -1 ? "" : operation.substring(indexOf + 1);
     }
 
     private FunctionTypeHandlerFactory() {

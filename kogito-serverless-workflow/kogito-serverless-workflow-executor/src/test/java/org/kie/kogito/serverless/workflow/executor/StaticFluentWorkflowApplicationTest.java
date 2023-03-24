@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
 import org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.HttpMethod;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 
@@ -36,8 +37,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.call;
+import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.log;
 import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.expr;
 import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.java;
+import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.log;
 import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.rest;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.forEach;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.inject;
@@ -107,11 +110,14 @@ class StaticFluentWorkflowApplicationTest {
         final String EVEN = "Event result";
         final String ODD = "Event result";
         final String MESSAGE = "message";
+        final String LOG_INFO = "logInfo";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            Workflow workflow = workflow("SwitchTest").function(expr(DOUBLE, ".input*=2")).function(expr(SQUARE, ".input*=.input")).function(expr(HALF, ".input/=2"))
-                    .start(operation().action(call(DOUBLE)).action(call(SQUARE)).action(call(HALF)))
-                    .when(".input%2==0").end(inject(objectNode().put(MESSAGE, EVEN)))
-                    .or().end(inject(objectNode().put(MESSAGE, ODD))).build();
+            Workflow workflow =
+                    workflow("SwitchTest").function(log(LOG_INFO, WorkflowLogLevel.INFO)).function(expr(DOUBLE, ".input*=2")).function(expr(SQUARE, ".input*=.input")).function(expr(HALF, ".input/=2"))
+                            .start(operation().action(call(DOUBLE)).action(call(SQUARE)).action(call(HALF)))
+                            .next(operation().action(log(LOG_INFO, "\"Input is \\(.input)\"")))
+                            .when(".input%2==0").end(inject(objectNode().put(MESSAGE, EVEN)))
+                            .or().end(inject(objectNode().put(MESSAGE, ODD))).build();
             Process<JsonNodeModel> process = application.process(workflow);
             assertThat(application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata().get(MESSAGE).asText()).isEqualTo(ODD);
             assertThat(application.execute(process, Collections.singletonMap("input", 7)).getWorkflowdata().get(MESSAGE).asText()).isEqualTo(EVEN);

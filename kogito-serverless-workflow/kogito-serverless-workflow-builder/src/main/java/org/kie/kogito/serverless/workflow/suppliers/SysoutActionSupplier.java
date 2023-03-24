@@ -28,9 +28,9 @@ public class SysoutActionSupplier extends SysoutAction implements ExpressionSupp
 
     private final ObjectCreationExpr expression;
 
-    public SysoutActionSupplier(String lang, String expr, String inputVar) {
-        super(lang, expr, inputVar);
-        this.expression = ExpressionUtils.getObjectCreationExpr(SysoutAction.class, lang, expr, inputVar);
+    public SysoutActionSupplier(String lang, String expr, String inputVar, String logLevel) {
+        super(lang, expr, inputVar, logLevel);
+        this.expression = ExpressionUtils.getObjectCreationExpr(SysoutAction.class, lang, expr, inputVar, logLevel);
     }
 
     @Override

@@ -19,10 +19,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
+import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.types.JavaTypeHandler;
 
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
+
+import static org.kie.kogito.serverless.workflow.parser.types.SysOutTypeHandler.SYSOUT_TYPE;
 
 public class FunctionBuilder {
 
@@ -54,6 +58,10 @@ public class FunctionBuilder {
 
     public static <T> FunctionBuilder java(String name, Function<T, ?> function) {
         return new FunctionBuilder(new FunctionDefinitionEx(name).withFunction(function).withType(Type.CUSTOM).withOperation(JavaTypeHandler.JAVA_TYPE));
+    }
+
+    public static FunctionBuilder log(String name, WorkflowLogLevel level) {
+        return new FunctionBuilder(new FunctionDefinition(name).withType(Type.CUSTOM).withOperation(SYSOUT_TYPE + FunctionTypeHandlerFactory.CUSTOM_TYPE_SEPARATOR + level));
     }
 
     private FunctionBuilder(FunctionDefinition functionDefinition) {

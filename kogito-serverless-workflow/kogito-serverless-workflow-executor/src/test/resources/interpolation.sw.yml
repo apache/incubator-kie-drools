@@ -1,0 +1,19 @@
+---
+id: interpolation
+name: Interpolation
+description: Sample interpolation
+version: 1.0
+start: Hello State
+functions:
+- name: logInfo
+  operation: sysout:INFO
+  type: custom
+states:
+- actions:
+  - functionRef:
+      refName: logInfo
+      arguments:
+        message: '"Model is \(.)"'
+  name: Hello State
+  type: operation
+  end: true
