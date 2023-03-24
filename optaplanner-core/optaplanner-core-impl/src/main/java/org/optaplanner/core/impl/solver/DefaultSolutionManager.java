@@ -1,5 +1,6 @@
 package org.optaplanner.core.impl.solver;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -68,14 +69,13 @@ public final class DefaultSolutionManager<Solution_, Score_ extends Score<Score_
     private <Result_> Result_ callScoreDirector(Solution_ solution,
             SolutionUpdatePolicy solutionUpdatePolicy, Function<InnerScoreDirector<Solution_, Score_>, Result_> function,
             boolean enableConstraintMatch) {
+        Solution_ nonNullSolution = Objects.requireNonNull(solution);
         try (InnerScoreDirector<Solution_, Score_> scoreDirector =
                 scoreDirectorFactory.buildScoreDirector(false, enableConstraintMatch)) {
-            boolean constraintMatchEnabled = scoreDirector.isConstraintMatchEnabled();
-            if (enableConstraintMatch && !constraintMatchEnabled) {
-                throw new IllegalStateException("When constraintMatchEnabled (" + constraintMatchEnabled
-                        + ") is disabled, this method should not be called.");
+            scoreDirector.setWorkingSolution(nonNullSolution); // Init the ScoreDirector first, else NPEs may be thrown.
+            if (enableConstraintMatch && !scoreDirector.isConstraintMatchEnabled()) {
+                throw new IllegalStateException("When constraintMatchEnabled is disabled, this method should not be called.");
             }
-            scoreDirector.setWorkingSolution(solution); // Init the ScoreDirector first, else NPEs may be thrown.
             if (solutionUpdatePolicy.isShadowVariableUpdateEnabled()) {
                 scoreDirector.forceTriggerVariableListeners();
             }
