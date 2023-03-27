@@ -10,9 +10,6 @@ git:
     main_branch: true
     seed:
       branch: main
-  - name: 8.34.x
-    seed:
-      branch: seed-drools-8.34.x
   - name: 8.35.x
     seed:
       branch: seed-drools-8.35.x
