@@ -17,6 +17,7 @@ package org.kie.kogito.jobs.service.repository.infinispan.marshaller;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import org.kie.kogito.jobs.service.model.JobDetails;
@@ -60,6 +61,8 @@ public class JobDetailsMarshaller extends BaseMarshaller<JobDetails> {
         writer.writeString("scheduledId", job.getScheduledId());
         writer.writeString("recipient", Optional.ofNullable(job.getRecipient()).map(r -> recipientMarshaller.marshall(r).encode()).orElse(null));
         writer.writeObject("trigger", job.getTrigger(), getInterface(job.getTrigger()));
+        writer.writeLong("executionTimeout", job.getExecutionTimeout());
+        writer.writeString("executionTimeoutUnit", job.getExecutionTimeoutUnit() != null ? job.getExecutionTimeoutUnit().name() : null);
     }
 
     public Class<?> getInterface(Object object) {
@@ -82,6 +85,8 @@ public class JobDetailsMarshaller extends BaseMarshaller<JobDetails> {
         String scheduledId = reader.readString("scheduledId");
         Recipient recipient = Optional.ofNullable(reader.readString("recipient")).map(r -> recipientMarshaller.unmarshall(new JsonObject(r))).orElse(null);
         Trigger trigger = reader.readObject("trigger", Trigger.class);
+        Long executionTimeout = reader.readLong("executionTimeout");
+        String executionTimeoutUnit = reader.readString("executionTimeoutUnit");
 
         return JobDetails.builder()
                 .id(id)
@@ -94,6 +99,8 @@ public class JobDetailsMarshaller extends BaseMarshaller<JobDetails> {
                 .scheduledId(scheduledId)
                 .recipient(recipient)
                 .trigger(trigger)
+                .executionTimeout(executionTimeout)
+                .executionTimeoutUnit(executionTimeoutUnit != null ? ChronoUnit.valueOf(executionTimeoutUnit) : null)
                 .build();
     }
 }

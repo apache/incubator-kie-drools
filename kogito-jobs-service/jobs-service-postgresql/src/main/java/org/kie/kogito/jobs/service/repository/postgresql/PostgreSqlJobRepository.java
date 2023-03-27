@@ -17,6 +17,7 @@
 package org.kie.kogito.jobs.service.repository.postgresql;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -57,7 +58,7 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
     private static final String JOB_DETAILS_TABLE = "job_details";
 
     private static final String JOB_DETAILS_COLUMNS = "id, correlation_id, status, last_update, retries, " +
-            "execution_counter, scheduled_id, priority, recipient, trigger, fire_time";
+            "execution_counter, scheduled_id, priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit";
 
     private PgPool client;
 
@@ -81,11 +82,11 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
     @Override
     public CompletionStage<JobDetails> doSave(JobDetails job) {
         return client.preparedQuery("INSERT INTO " + JOB_DETAILS_TABLE + " (" + JOB_DETAILS_COLUMNS +
-                ") VALUES ($1, $2, $3, now(), $4, $5, $6, $7, $8, $9, $10) " +
+                ") VALUES ($1, $2, $3, now(), $4, $5, $6, $7, $8, $9, $10, $11, $12) " +
                 "ON CONFLICT (id) DO " +
                 "UPDATE SET correlation_id = $2, status = $3, last_update = now(), retries = $4, " +
                 "execution_counter = $5, scheduled_id = $6, priority = $7, " +
-                "recipient = $8, trigger = $9, fire_time = $10 " +
+                "recipient = $8, trigger = $9, fire_time = $10, execution_timeout = $11, execution_timeout_unit = $12 " +
                 "RETURNING " + JOB_DETAILS_COLUMNS)
                 .execute(Tuple.tuple(Stream.of(
                         job.getId(),
@@ -97,7 +98,9 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
                         job.getPriority(),
                         recipientMarshaller.marshall(job.getRecipient()),
                         triggerMarshaller.marshall(job.getTrigger()),
-                        Optional.ofNullable(job.getTrigger()).map(Trigger::hasNextFireTime).map(DateUtil::dateToOffsetDateTime).orElse(null))
+                        Optional.ofNullable(job.getTrigger()).map(Trigger::hasNextFireTime).map(DateUtil::dateToOffsetDateTime).orElse(null),
+                        job.getExecutionTimeout(),
+                        Optional.ofNullable(job.getExecutionTimeoutUnit()).map(Enum::name).orElse(null))
                         .collect(toList())))
                 .onItem().transform(RowSet::iterator)
                 .onItem().transform(iterator -> iterator.hasNext() ? from(iterator.next()) : null)
@@ -183,6 +186,8 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
                 .priority(row.getInteger("priority"))
                 .recipient(recipientMarshaller.unmarshall(row.get(JsonObject.class, "recipient")))
                 .trigger(triggerMarshaller.unmarshall(row.get(JsonObject.class, "trigger")))
+                .executionTimeout(row.getLong("execution_timeout"))
+                .executionTimeoutUnit(Optional.ofNullable(row.getString("execution_timeout_unit")).map(ChronoUnit::valueOf).orElse(null))
                 .build();
     }
 }

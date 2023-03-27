@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.job.http.recipient;
+
+package org.kie.kogito.job.sink.recipient;
 
 import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
 
-@ConfigRoot(name = "kogito.job.recipient.http", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
-public class JobHttpRecipientConfiguration {
+@ConfigRoot(prefix = "kogito", name = "job.recipient.sink", phase = ConfigPhase.RUN_TIME)
+public class JobSinkRecipientRuntimeConfiguration {
 
     /**
-     * Default timeout to execute HTTP requests for the Recipient
+     * Default timeout to execute HTTP requests for the SinkRecipient when the Job's timeout is not configured.
      */
     @ConfigItem(name = "timeout-in-millis", defaultValue = "5000")
     long timeoutInMillis;
+
+    /**
+     * Max accepted timeout to execute HTTP requests for the SinkRecipient when the Job's timeout is configured.
+     * Attempts to surpass this value will result in a validation error at Job creation time.
+     */
+    @ConfigItem(name = "max-timeout-in-millis", defaultValue = "60000")
+    long maxTimeoutInMillis;
 }

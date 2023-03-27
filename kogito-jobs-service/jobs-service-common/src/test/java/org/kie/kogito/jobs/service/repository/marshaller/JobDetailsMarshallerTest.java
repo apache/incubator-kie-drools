@@ -16,6 +16,7 @@
 package org.kie.kogito.jobs.service.repository.marshaller;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -59,6 +60,8 @@ class JobDetailsMarshallerTest {
         String payload = "test";
         Recipient recipient = new RecipientInstance(HttpRecipient.builder().forStringPayload().url("url").payload(HttpRecipientStringPayloadData.from(payload)).build());
         Trigger trigger = new PointInTimeTrigger(new Date().toInstant().toEpochMilli(), null, null);
+        Long executionTimeout = 10L;
+        ChronoUnit executionTimeoutUnit = ChronoUnit.SECONDS;
 
         jobDetails = JobDetails.builder()
                 .id(id)
@@ -71,6 +74,8 @@ class JobDetailsMarshallerTest {
                 .priority(priority)
                 .recipient(recipient)
                 .trigger(trigger)
+                .executionTimeout(executionTimeout)
+                .executionTimeoutUnit(executionTimeoutUnit)
                 .build();
 
         jsonObject = new JsonObject()
@@ -87,7 +92,9 @@ class JobDetailsMarshallerTest {
                         .put("classType", HttpRecipient.class.getName()))
                 .put("trigger", new JsonObject()
                         .put("nextFireTime", trigger.hasNextFireTime().getTime())
-                        .put("classType", PointInTimeTrigger.class.getName()));
+                        .put("classType", PointInTimeTrigger.class.getName()))
+                .put("executionTimeout", executionTimeout)
+                .put("executionTimeoutUnit", executionTimeoutUnit.name());
     }
 
     @Test

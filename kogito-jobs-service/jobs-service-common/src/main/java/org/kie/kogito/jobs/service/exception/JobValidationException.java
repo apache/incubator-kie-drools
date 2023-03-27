@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jobs.service.validator;
+package org.kie.kogito.jobs.service.exception;
 
-public class ValidationException extends RuntimeException {
+public class JobValidationException extends RuntimeException {
 
-    public ValidationException(String message) {
+    public JobValidationException(String message) {
         super(message);
     }
 
-    public ValidationException(String message, Throwable cause) {
+    public JobValidationException(String message, Throwable cause) {
         super(message, cause);
     }
 }

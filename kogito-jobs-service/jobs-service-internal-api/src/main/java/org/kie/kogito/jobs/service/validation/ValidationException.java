@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.job.sink.recipient;
+package org.kie.kogito.jobs.service.validation;
 
-import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
+public class ValidationException extends RuntimeException {
 
-@ConfigRoot(name = "kogito.job.recipient.sink", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
-public class JobSinkRecipientConfiguration {
+    public ValidationException(String message) {
+        super(message);
+    }
 
-    /**
-     * Default timeout to execute HTTP requests for the Recipient
-     */
-    @ConfigItem(name = "timeout-in-millis", defaultValue = "5000")
-    long timeoutInMillis;
+    public ValidationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

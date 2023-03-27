@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.jobs.service.validator;
+package org.kie.kogito.jobs.service.validation;
 
 import java.util.Objects;
 
@@ -21,12 +21,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.kie.kogito.jobs.service.exception.JobValidationException;
 import org.kie.kogito.jobs.service.model.JobDetails;
 
 @ApplicationScoped
 public class JobDetailsValidator {
 
-    private RecipientInstanceValidator recipientValidator;
+    private final RecipientInstanceValidator recipientValidator;
 
     @Inject
     public JobDetailsValidator(RecipientInstanceValidator recipientValidator) {
@@ -34,13 +35,20 @@ public class JobDetailsValidator {
     }
 
     public JobDetails validateToCreate(JobDetails job) {
-        if (StringUtils.isEmpty(job.getId())
-                || StringUtils.isEmpty(job.getCorrelationId())
-                || Objects.isNull(job.getTrigger())
-                || Objects.isNull(job.getRecipient())
-                || !recipientValidator.validate(job.getRecipient())) {
-            throw new IllegalArgumentException("Invalid Job Attributes. " + job);
+        if (StringUtils.isEmpty(job.getId())) {
+            throw new JobValidationException("A non empty id must be provided to create a Job.");
         }
+        if (StringUtils.isEmpty(job.getCorrelationId())) {
+            throw new JobValidationException("A non empty correlationId id must be provided to create a Job.");
+        }
+        if (job.getTrigger() == null) {
+            throw new JobValidationException("A non null trigger must be provided to create a Job, please verify that" +
+                    " the Schedule configuration was provided.");
+        }
+        if (job.getRecipient() == null || job.getRecipient().getRecipient() == null) {
+            throw new JobValidationException("A non null Recipient configuration must be provided to create a Job.");
+        }
+        recipientValidator.validate(job.getRecipient());
         return job;
     }
 
@@ -53,7 +61,7 @@ public class JobDetailsValidator {
                 || (Objects.nonNull(job.getRetries()) && job.getRetries() > 0)
                 || Objects.nonNull(job.getRecipient())
                 || Objects.nonNull(job.getStatus())) {
-            throw new IllegalArgumentException("Merge can only be applied to the Job scheduling trigger attributes for Job. " + job);
+            throw new JobValidationException("Merge can only be applied to the Job scheduling trigger attributes for Job. " + job);
         }
         return job;
     }

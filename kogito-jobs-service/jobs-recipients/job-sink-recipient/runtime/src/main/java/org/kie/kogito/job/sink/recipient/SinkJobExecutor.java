@@ -55,7 +55,7 @@ public class SinkJobExecutor extends HTTPRequestExecutor<SinkRecipient<?>> imple
     static final String CE_DATASCHEMA_HEADER_V03 = "ce-schemaurl";
 
     @Inject
-    public SinkJobExecutor(@ConfigProperty(name = "quarkus.kogito.job.recipient.sink.timeout-in-millis", defaultValue = "5000") long timeout,
+    public SinkJobExecutor(@ConfigProperty(name = "kogito.job.recipient.sink.timeout-in-millis") long timeout,
             Vertx vertx,
             ObjectMapper objectMapper) {
         super(timeout, vertx, objectMapper);

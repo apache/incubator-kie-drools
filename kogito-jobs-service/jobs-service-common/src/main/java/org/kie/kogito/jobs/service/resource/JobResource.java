@@ -36,7 +36,7 @@ import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.model.ScheduledJob.ScheduledJobBuilder;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.scheduler.impl.TimerDelegateJobScheduler;
-import org.kie.kogito.jobs.service.validator.JobDetailsValidator;
+import org.kie.kogito.jobs.service.validation.JobDetailsValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

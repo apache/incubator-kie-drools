@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.jobs.service.validator;
+package org.kie.kogito.jobs.service.validation;
 
 import org.kie.kogito.jobs.service.api.Recipient;
 
 public interface RecipientValidator {
     boolean accept(Recipient<?> recipient);
 
-    boolean validate(Recipient<?> recipient);
+    void validate(Recipient<?> recipient, ValidatorContext context);
 }

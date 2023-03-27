@@ -16,6 +16,7 @@
 package org.kie.kogito.jobs.service.model;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -36,10 +37,13 @@ public class JobDetails {
     private String scheduledId;//the execution control on the scheduler (id on vertx.setTimer, quartzId...)
     private Recipient recipient;//http callback, event topic
     private Trigger trigger;//when/how it should be executed
+    private Long executionTimeout;
+    private ChronoUnit executionTimeoutUnit;
 
     @SuppressWarnings("java:S107")
     protected JobDetails(String id, String correlationId, JobStatus status, ZonedDateTime lastUpdate, Integer retries,
-            Integer executionCounter, String scheduledId, Recipient recipient, Trigger trigger, Integer priority) {
+            Integer executionCounter, String scheduledId, Recipient recipient, Trigger trigger, Integer priority,
+            Long executionTimeout, ChronoUnit executionTimeoutUnit) {
         this.id = id;
         this.correlationId = correlationId;
         this.status = status;
@@ -50,6 +54,8 @@ public class JobDetails {
         this.recipient = recipient;
         this.trigger = trigger;
         this.priority = priority;
+        this.executionTimeout = executionTimeout;
+        this.executionTimeoutUnit = executionTimeoutUnit;
     }
 
     public String getId() {
@@ -92,6 +98,14 @@ public class JobDetails {
         return priority;
     }
 
+    public Long getExecutionTimeout() {
+        return executionTimeout;
+    }
+
+    public ChronoUnit getExecutionTimeoutUnit() {
+        return executionTimeoutUnit;
+    }
+
     public static JobDetailsBuilder builder() {
         return new JobDetailsBuilder();
     }
@@ -113,12 +127,15 @@ public class JobDetails {
                 Objects.equals(getExecutionCounter(), that.getExecutionCounter()) &&
                 Objects.equals(getScheduledId(), that.getScheduledId()) &&
                 Objects.equals(getRecipient(), that.getRecipient()) &&
-                Objects.equals(getTrigger().hasNextFireTime(), that.getTrigger().hasNextFireTime());
+                Objects.equals(getTrigger().hasNextFireTime(), that.getTrigger().hasNextFireTime()) &&
+                Objects.equals(getExecutionTimeout(), that.getExecutionTimeout()) &&
+                Objects.equals(getExecutionTimeoutUnit(), that.getExecutionTimeoutUnit());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getCorrelationId(), getStatus(), getRetries(), getExecutionCounter(), getScheduledId(), getRecipient(), getTrigger());
+        return Objects.hash(getId(), getCorrelationId(), getStatus(), getRetries(), getExecutionCounter(),
+                getScheduledId(), getRecipient(), getTrigger(), getExecutionTimeout(), getExecutionTimeoutUnit());
     }
 
     @Override
@@ -133,6 +150,8 @@ public class JobDetails {
                 .add("scheduledId='" + scheduledId + "'")
                 .add("recipient=" + recipient)
                 .add("trigger=" + trigger)
+                .add("executionTimeout=" + executionTimeout)
+                .add("executionTimeoutUnit=" + executionTimeoutUnit)
                 .toString();
     }
 }

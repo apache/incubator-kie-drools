@@ -16,7 +16,6 @@
 
 package org.kie.kogito.job.sink.recipient.deployment;
 
-import org.kie.kogito.job.sink.recipient.JobSinkRecipientConfiguration;
 import org.kie.kogito.job.sink.recipient.SinkJobExecutor;
 import org.kie.kogito.job.sink.recipient.SinkRecipientValidator;
 import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient;
@@ -35,11 +34,6 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 class JobSinkRecipientProcessor {
 
     private static final String FEATURE = "job-sink-recipient";
-
-    /**
-     * Sink Recipient configuration
-     */
-    JobSinkRecipientConfiguration configuration;
 
     @BuildStep
     FeatureBuildItem feature() {

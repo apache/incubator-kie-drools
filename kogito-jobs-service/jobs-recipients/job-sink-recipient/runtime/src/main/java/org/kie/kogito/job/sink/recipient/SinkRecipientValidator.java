@@ -23,14 +23,23 @@ import java.util.Objects;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient;
 import org.kie.kogito.jobs.service.api.utils.EventUtils;
-import org.kie.kogito.jobs.service.validator.RecipientValidator;
-import org.kie.kogito.jobs.service.validator.ValidationException;
+import org.kie.kogito.jobs.service.utils.ModelUtil;
+import org.kie.kogito.jobs.service.validation.RecipientValidator;
+import org.kie.kogito.jobs.service.validation.ValidationException;
+import org.kie.kogito.jobs.service.validation.ValidatorContext;
 
 @ApplicationScoped
 public class SinkRecipientValidator implements RecipientValidator {
+
+    private long maxTimeoutInMillis;
+
+    public SinkRecipientValidator(@ConfigProperty(name = "kogito.job.recipient.sink.max-timeout-in-millis") long maxTimeoutInMillis) {
+        this.maxTimeoutInMillis = maxTimeoutInMillis;
+    }
 
     @Override
     public boolean accept(Recipient<?> recipient) {
@@ -38,9 +47,9 @@ public class SinkRecipientValidator implements RecipientValidator {
     }
 
     @Override
-    public boolean validate(Recipient<?> recipient) {
+    public void validate(Recipient<?> recipient, ValidatorContext context) {
         if (!(recipient instanceof SinkRecipient)) {
-            throw new ValidationException("Recipient must be a non-null instance of: " + SinkRecipient.class);
+            throw new ValidationException("Recipient must be a non-null instance of: " + SinkRecipient.class + ".");
         }
         SinkRecipient<?> sinkRecipient = (SinkRecipient<?>) recipient;
         if (StringUtils.isBlank(sinkRecipient.getSinkUrl())) {
@@ -65,7 +74,12 @@ public class SinkRecipientValidator implements RecipientValidator {
         }
         sinkRecipient.getCeExtensions().keySet()
                 .forEach(EventUtils::validateExtensionName);
-
-        return true;
+        if (context.getJob() != null) {
+            Long timeoutInMillis = ModelUtil.getExecutionTimeoutInMillis(context.getJob());
+            if (timeoutInMillis != null && timeoutInMillis > maxTimeoutInMillis) {
+                throw new ValidationException("Job executionTimeout configuration can not exceed the SinkRecipient max-timeout-in-millis: "
+                        + maxTimeoutInMillis + ", but is: " + timeoutInMillis + ".");
+            }
+        }
     }
 }

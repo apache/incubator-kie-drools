@@ -17,7 +17,6 @@ package org.kie.kogito.job.http.recipient.deployment;
 
 import org.kie.kogito.job.http.recipient.HttpJobExecutor;
 import org.kie.kogito.job.http.recipient.HttpRecipientValidator;
-import org.kie.kogito.job.http.recipient.JobHttpRecipientConfiguration;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
@@ -35,11 +34,6 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 class JobHttpRecipientProcessor {
 
     private static final String FEATURE = "job-http-recipient";
-
-    /**
-     * Http Recipient configuration
-     */
-    JobHttpRecipientConfiguration configuration;
 
     @BuildStep
     FeatureBuildItem feature() {

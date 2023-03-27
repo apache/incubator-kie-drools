@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.service.api.Job;
+import org.kie.kogito.jobs.service.api.TemporalUnit;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
@@ -52,11 +53,15 @@ public abstract class BaseHttpRecipientPayloadTypesIT implements ExternalResourc
 
     public static final String EXTERNAL_RESOURCE_FOR_BINARY_PAYLOAD = "/external-resource/http-recipient-binary-payload-data";
 
+    public static final String EXTERNAL_RESOURCE_FOR_CUSTOM_TIMEOUT = "/external-resource/http-recipient-custom-timeout";
+
     public static final String HTTP_JSON_JOB_ID = "HTTP_JSON_JOB_ID";
 
     public static final String HTTP_STRING_JOB_ID = "HTTP_STRING_JOB_ID";
 
     public static final String HTTP_BINARY_JOB_ID = "HTTP_BINARY_JOB_ID";
+
+    public static final String HTTP_JOB_WITH_CUSTOM_TIMEOUT_ID = "HTTP_JOB_WITH_CUSTOM_TIMEOUT_ID";
 
     public static final String HTTP_HEADER_1 = "HTTP_HEADER_1";
 
@@ -77,6 +82,10 @@ public abstract class BaseHttpRecipientPayloadTypesIT implements ExternalResourc
     public static final String HTTP_TEXT_PLAIN_VALUE = "Plain text sent to the recipient";
 
     public static final byte[] HTTP_BINARY_VALUE = "Arbitrary bytes sent to the http recipient".getBytes();
+
+    public static final Long EXECUTION_TIMEOUT = 2L;
+
+    public static final TemporalUnit EXECUTION_TIMEOUT_UNIT = TemporalUnit.SECONDS;
 
     protected WireMockServer externalResourcesServer;
 
@@ -158,10 +167,35 @@ public abstract class BaseHttpRecipientPayloadTypesIT implements ExternalResourc
         executeHttpRecipientJob(job);
     }
 
-    private void executeHttpRecipientJob(Job job) throws Exception {
+    @Test
+    void httpRecipientWithCustomTimeout() throws Exception {
+        HttpRecipient<HttpRecipientStringPayloadData> httpRecipient = HttpRecipient.builder()
+                .forStringPayload()
+                .payload(HttpRecipientStringPayloadData.from(HTTP_TEXT_PLAIN_VALUE))
+                .header(CONTENT_TYPE, TEXT_PLAIN)
+                .url(externalResourcesServerURL + EXTERNAL_RESOURCE_FOR_CUSTOM_TIMEOUT)
+                .build();
+        applyCommonValues(httpRecipient);
+        Job job = Job.builder()
+                .id(HTTP_JOB_WITH_CUSTOM_TIMEOUT_ID)
+                .correlationId(HTTP_JOB_WITH_CUSTOM_TIMEOUT_ID)
+                .recipient(httpRecipient)
+                .schedule(TimerSchedule.builder()
+                        .startTime(OffsetDateTime.now().plusSeconds(3))
+                        .build())
+                .executionTimeout(EXECUTION_TIMEOUT)
+                .executionTimeoutUnit(EXECUTION_TIMEOUT_UNIT)
+                .build();
+        Job createdJob = executeHttpRecipientJob(job);
+        assertThat(createdJob.getExecutionTimeout()).isEqualTo(EXECUTION_TIMEOUT);
+        assertThat(createdJob.getExecutionTimeoutUnit()).isEqualTo(EXECUTION_TIMEOUT_UNIT);
+    }
+
+    private Job executeHttpRecipientJob(Job job) throws Exception {
         Job createdJob = createJobV2(job);
         assertThat(createdJob).isNotNull();
         assertJobHasFinishedV2(job.getId(), 60);
+        return job;
     }
 
     private static void applyCommonValues(HttpRecipient<?> recipient) {

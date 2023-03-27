@@ -34,7 +34,7 @@ import io.vertx.mutiny.core.Vertx;
 public class HttpJobExecutor extends HTTPRequestExecutor<HttpRecipient<?>> implements JobExecutor {
 
     @Inject
-    public HttpJobExecutor(@ConfigProperty(name = "quarkus.kogito.job.recipient.http.timeout-in-millis", defaultValue = "5000") long timeout,
+    public HttpJobExecutor(@ConfigProperty(name = "kogito.job.recipient.http.timeout-in-millis") long timeout,
             Vertx vertx,
             ObjectMapper objectMapper) {
         super(timeout, vertx, objectMapper);

@@ -135,6 +135,15 @@ public class ExternalResourcesMock implements QuarkusTestResourceLifecycleManage
                 .willReturn(aResponse()
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                         .withBody("{}")));
+
+        // job with custom timeout
+        stubFor(post(new UrlPathPattern(equalTo(BaseHttpRecipientPayloadTypesIT.EXTERNAL_RESOURCE_FOR_CUSTOM_TIMEOUT), false))
+                .withHeader(CONTENT_TYPE, equalTo(TEXT_PLAIN))
+                .withQueryParam(LIMIT_QUERY_PARAM, equalTo(LIMIT_QUERY_PARAM_VALUE))
+                .withRequestBody(equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_TEXT_PLAIN_VALUE))
+                .willReturn(aResponse()
+                        .withHeader(CONTENT_TYPE, APPLICATION_JSON)
+                        .withBody("{}")));
     }
 
     /**

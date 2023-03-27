@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,39 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.jobs.service.validator;
 
-import java.util.Objects;
+package org.kie.kogito.jobs.service.validation;
+
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.kie.kogito.jobs.service.model.Recipient;
-
 @ApplicationScoped
-public class RecipientInstanceValidator {
-
-    private Instance<RecipientValidator> validators;
+public class RecipientValidatorProvider {
+    private final List<RecipientValidator> validators;
 
     @Inject
-    public RecipientInstanceValidator(Instance<RecipientValidator> validators) {
-        this.validators = validators;
+    public RecipientValidatorProvider(Instance<RecipientValidator> validators) {
+        this.validators = Stream.ofNullable(validators)
+                .flatMap(Instance::stream)
+                .collect(Collectors.toList());
     }
 
     public Optional<RecipientValidator> getValidator(org.kie.kogito.jobs.service.api.Recipient<?> recipient) {
-        return Stream.ofNullable(validators)
-                .flatMap(Instance::stream)
+        return validators.stream()
                 .filter(validator -> validator.accept(recipient))
                 .findFirst();
-    }
-
-    public boolean validate(Recipient recipient) {
-        return Objects.nonNull(recipient) && Objects.nonNull(recipient.getRecipient())
-                && getValidator(recipient.getRecipient())
-                        .map(validator -> validator.validate(recipient.getRecipient()))
-                        .orElse(true);
     }
 }

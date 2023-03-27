@@ -196,6 +196,8 @@ public class JobDetailsAdapter {
                 .status(StatusAdapter.from(job.getState()))
                 .trigger(ScheduleAdapter.from(job.getSchedule()))
                 .recipient(RecipientAdapter.from(job.getRecipient()))
+                .executionTimeout(job.getExecutionTimeout())
+                .executionTimeoutUnit(job.getExecutionTimeoutUnit() != null ? TemporalUnitAdapter.toChronoUnit(job.getExecutionTimeoutUnit()) : null)
                 .build();
     }
 
@@ -207,6 +209,8 @@ public class JobDetailsAdapter {
                 .schedule(ScheduleAdapter.toSchedule(jobDetails.getTrigger()))
                 .recipient(RecipientAdapter.toRecipient(jobDetails))
                 .retry(RetryAdapter.toRetry(jobDetails))
+                .executionTimeout(jobDetails.getExecutionTimeout())
+                .executionTimeoutUnit(jobDetails.getExecutionTimeoutUnit() != null ? TemporalUnitAdapter.fromChronoUnit(jobDetails.getExecutionTimeoutUnit()) : null)
                 .build();
     }
 

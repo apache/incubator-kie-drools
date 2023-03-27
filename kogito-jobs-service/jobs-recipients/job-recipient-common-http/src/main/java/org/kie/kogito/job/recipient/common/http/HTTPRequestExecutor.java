@@ -17,6 +17,7 @@
 package org.kie.kogito.job.recipient.common.http;
 
 import java.net.URI;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -81,7 +82,10 @@ public abstract class HTTPRequestExecutor<R extends Recipient<?>> {
                     final R recipient = getRecipient(job);
                     final String limit = getLimit(job);
                     final HTTPRequest request = buildRequest(recipient, limit);
-                    return executeRequest(request)
+                    final long requestTimeout = getTimeoutInMillis(job);
+                    return executeRequest(request, requestTimeout)
+                            .onFailure().transform(unexpected -> new JobExecutionException(job.getId(),
+                                    "Unexpected error when executing HTTP request for job: " + jobDetails.getId() + ". " + unexpected.getMessage()))
                             .onItem().transform(response -> JobExecutionResponse.builder()
                                     .message(response.bodyAsString())
                                     .code(String.valueOf(response.statusCode()))
@@ -96,7 +100,7 @@ public abstract class HTTPRequestExecutor<R extends Recipient<?>> {
 
     protected abstract HTTPRequest buildRequest(R recipient, String limit);
 
-    protected Uni<HttpResponse<Buffer>> executeRequest(HTTPRequest request) {
+    protected Uni<HttpResponse<Buffer>> executeRequest(HTTPRequest request, long timeout) {
         LOGGER.debug("Executing request {}", request);
         final URI uri = URIBuilder.toURI(request.getUrl());
         final HttpRequest<Buffer> clientRequest = client.request(HttpConverters.convertHttpMethod(request.getMethod()),
@@ -156,6 +160,14 @@ public abstract class HTTPRequestExecutor<R extends Recipient<?>> {
             return String.valueOf(getRepeatableJobCountDown((IntervalTrigger) job.getTrigger()));
         }
         return "0";
+    }
+
+    protected long getTimeoutInMillis(JobDetails job) {
+        if (job.getExecutionTimeout() == null) {
+            return timeout;
+        }
+        ChronoUnit timeoutUnit = job.getExecutionTimeoutUnit() != null ? job.getExecutionTimeoutUnit() : ChronoUnit.MILLIS;
+        return timeoutUnit == ChronoUnit.MILLIS ? job.getExecutionTimeout() : timeoutUnit.getDuration().multipliedBy(job.getExecutionTimeout()).toMillis();
     }
 
     protected int getRepeatableJobCountDown(IntervalTrigger trigger) {

@@ -16,6 +16,7 @@
 package org.kie.kogito.jobs.service.model;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import org.kie.kogito.timer.Trigger;
@@ -32,6 +33,8 @@ public class JobDetailsBuilder {
     private Recipient recipient;
     private Trigger trigger;
     private Integer priority;
+    private Long executionTimeout;
+    private ChronoUnit executionTimeoutUnit;
 
     public JobDetailsBuilder id(String id) {
         this.id = id;
@@ -83,8 +86,19 @@ public class JobDetailsBuilder {
         return this;
     }
 
+    public JobDetailsBuilder executionTimeout(Long executionTimeout) {
+        this.executionTimeout = executionTimeout;
+        return this;
+    }
+
+    public JobDetailsBuilder executionTimeoutUnit(ChronoUnit executionTimeoutUnit) {
+        this.executionTimeoutUnit = executionTimeoutUnit;
+        return this;
+    }
+
     public JobDetails build() {
-        return new JobDetails(id, correlationId, status, lastUpdate, retries, executionCounter, scheduledId, recipient, trigger, priority);
+        return new JobDetails(id, correlationId, status, lastUpdate, retries, executionCounter, scheduledId,
+                recipient, trigger, priority, executionTimeout, executionTimeoutUnit);
     }
 
     public JobDetailsBuilder of(JobDetails jobDetails) {
@@ -97,7 +111,9 @@ public class JobDetailsBuilder {
                 .scheduledId(jobDetails.getScheduledId())
                 .recipient(jobDetails.getRecipient())
                 .trigger(jobDetails.getTrigger())
-                .priority(jobDetails.getPriority());
+                .priority(jobDetails.getPriority())
+                .executionTimeout(jobDetails.getExecutionTimeout())
+                .executionTimeoutUnit(jobDetails.getExecutionTimeoutUnit());
     }
 
     public JobDetailsBuilder incrementRetries() {
@@ -120,6 +136,8 @@ public class JobDetailsBuilder {
                 .recipient(j.map(JobDetails::getRecipient).orElse(recipient))
                 .correlationId(j.map(JobDetails::getCorrelationId).orElse(correlationId))
                 .priority(j.map(JobDetails::getPriority).orElse(priority))
-                .executionCounter(j.map(JobDetails::getExecutionCounter).orElse(executionCounter));
+                .executionCounter(j.map(JobDetails::getExecutionCounter).orElse(executionCounter))
+                .executionTimeout(j.map(JobDetails::getExecutionTimeout).orElse(executionTimeout))
+                .executionTimeoutUnit(j.map(JobDetails::getExecutionTimeoutUnit).orElse(executionTimeoutUnit));
     }
 }

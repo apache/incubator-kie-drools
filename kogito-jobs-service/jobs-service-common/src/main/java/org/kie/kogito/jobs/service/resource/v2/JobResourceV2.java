@@ -33,7 +33,7 @@ import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.resource.RestApiConstants;
 import org.kie.kogito.jobs.service.scheduler.impl.TimerDelegateJobScheduler;
-import org.kie.kogito.jobs.service.validator.JobDetailsValidator;
+import org.kie.kogito.jobs.service.validation.JobValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,14 +52,15 @@ public class JobResourceV2 {
     ReactiveJobRepository jobRepository;
 
     @Inject
-    JobDetailsValidator jobDetailsValidator;
+    JobValidator jobValidator;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Uni<Job> create(Job job) {
         LOGGER.debug("REST create {}", job);
-        JobDetails jobDetails = jobDetailsValidator.validateToCreate(JobDetailsAdapter.from(job));
+        jobValidator.validateToCreate(job);
+        JobDetails jobDetails = JobDetailsAdapter.from(job);
         return Uni.createFrom().publisher(scheduler.schedule(jobDetails))
                 .onItem().ifNull().failWith(new RuntimeException("Failed to schedule job " + job))
                 .onItem().transform(JobDetailsAdapter::toJob);
