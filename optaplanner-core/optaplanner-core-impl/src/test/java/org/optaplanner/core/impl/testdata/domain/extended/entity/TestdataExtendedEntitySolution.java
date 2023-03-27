@@ -1,5 +1,6 @@
 package org.optaplanner.core.impl.testdata.domain.extended.entity;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -53,12 +54,15 @@ public class TestdataExtendedEntitySolution extends TestdataSolution {
                 .mapToObj(i -> "subEntity" + i + "-R")
                 .map(TestdataUnannotatedExtendedEntity::new)
                 .collect(Collectors.toList()));
+
+        solution.setObjectEntityList(Collections.emptyList());
         return solution;
     }
 
     private TestdataEntity entity;
     private TestdataUnannotatedExtendedEntity subEntity;
     private List<TestdataUnannotatedExtendedEntity> subEntityList;
+    private List<Object> objectEntityList;
     private List rawEntityList;
 
     public TestdataExtendedEntitySolution() {
@@ -96,6 +100,15 @@ public class TestdataExtendedEntitySolution extends TestdataSolution {
     }
 
     @PlanningEntityCollectionProperty
+    public List<Object> getObjectEntityList() {
+        return objectEntityList;
+    }
+
+    public void setObjectEntityList(List<Object> rawEntityList) {
+        this.objectEntityList = rawEntityList;
+    }
+
+    @PlanningEntityCollectionProperty
     public List getRawEntityList() {
         return rawEntityList;
     }
@@ -103,4 +116,5 @@ public class TestdataExtendedEntitySolution extends TestdataSolution {
     public void setRawEntityList(List rawEntityList) {
         this.rawEntityList = rawEntityList;
     }
+
 }

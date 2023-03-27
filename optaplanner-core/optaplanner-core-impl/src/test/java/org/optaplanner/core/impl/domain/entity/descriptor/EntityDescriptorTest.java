@@ -118,9 +118,14 @@ class EntityDescriptorTest {
         TestdataUnannotatedExtendedEntity r2 = new TestdataUnannotatedExtendedEntity("subEntity2-R");
         solution.setRawEntityList(List.of(r1, r2));
 
+        TestdataEntity e3 = new TestdataEntity("entity3");
+        TestdataEntity e4 = new TestdataEntity("entity4");
+        String randomData = "randomData";
+        solution.setObjectEntityList(List.of(e3, e4, randomData));
+
         EntityDescriptor<TestdataExtendedEntitySolution> entityDescriptor =
                 TestdataExtendedEntitySolution.buildEntityDescriptor();
         assertThat(entityDescriptor.extractEntities(solution))
-                .containsExactlyInAnyOrder(entity, subEntity, e1, e2, s1, s2, s3, r1, r2);
+                .containsExactlyInAnyOrder(entity, subEntity, e1, e2, e3, e4, s1, s2, s3, r1, r2);
     }
 }

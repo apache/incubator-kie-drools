@@ -888,11 +888,9 @@ public class SolutionDescriptor<Solution_> {
 
     public void visitEntitiesByEntityClass(Solution_ solution, Class<?> entityClass, Consumer<Object> visitor) {
         for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
-            if (entityClass.isAssignableFrom(entityMemberAccessor.getType())) {
-                Object entity = extractMemberObject(entityMemberAccessor, solution);
-                if (entity != null) {
-                    visitor.accept(entity);
-                }
+            Object entity = extractMemberObject(entityMemberAccessor, solution);
+            if (entityClass.isInstance(entity)) {
+                visitor.accept(entity);
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
@@ -902,24 +900,33 @@ public class SolutionDescriptor<Solution_> {
                     entityCollectionMemberAccessor.getGenericType(),
                     null,
                     entityCollectionMemberAccessor.getName());
-            if (optionalTypeParameter.isPresent()) {
-                // In a typical case, typeParameter is specified, so we can skip the collection if typeParam
-                // is not assignable to entityClass.
-                Class<?> typeParameter = optionalTypeParameter.get();
-                if (entityClass.isAssignableFrom(typeParameter)) {
-                    Collection<Object> entityCollection =
-                            extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution, false);
-                    entityCollection.forEach(visitor);
-                }
-            } else {
-                // If the collection is raw, we have to visit its elements and check if each element
-                // is an instance of entityClass.
+            boolean collectionGuaranteedToContainOnlyGivenEntityType = optionalTypeParameter
+                    .map(entityClass::isAssignableFrom)
+                    .orElse(false);
+            if (collectionGuaranteedToContainOnlyGivenEntityType) {
+                /*
+                 * In a typical case typeParameter is specified and it is the expected entity or its superclass.
+                 * Therefore we can simply apply the visitor on each element.
+                 */
                 Collection<Object> entityCollection =
                         extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution, false);
-                for (Object entity : entityCollection) {
-                    if (entityClass.isInstance(entity)) {
-                        visitor.accept(entity);
-                    }
+                entityCollection.forEach(visitor);
+                continue;
+            }
+            // The collection now is either raw, or it is not of an entity type, such as perhaps a parent interface.
+            boolean collectionCouldPossiblyContainGivenEntityType = optionalTypeParameter
+                    .map(e -> e.isAssignableFrom(entityClass))
+                    .orElse(true);
+            if (!collectionCouldPossiblyContainGivenEntityType) {
+                // There is no way how this collection could possibly contain entities of the given type.
+                continue;
+            }
+            // We need to go over every collection member and check if it is an entity of the given type.
+            Collection<Object> entityCollection =
+                    extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution, false);
+            for (Object entity : entityCollection) {
+                if (entityClass.isInstance(entity)) {
+                    visitor.accept(entity);
                 }
             }
         }
