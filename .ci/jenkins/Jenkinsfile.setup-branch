@@ -62,8 +62,10 @@ pipeline {
                 script {
                     maven.mvnVersionsSet(getMavenCommand(getRepoName()).withProperty('full'), getKogitoVersion(), true)
                     maven.mvnSetVersionProperty(getMavenCommand(getRepoName()), 'version.org.kie', getDroolsVersion())
-                    def path = "${getRepoName()}/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment/pom.xml"
-                    sh "sed -i -r 's|<(data-index-ephemeral\\.image)>(.*):.*|<\\1>\\2:${getMajorMinorKogitoVersion()}</\\1>|' $path"
+                    if (!isMainBranch()) {
+                        def path = "${getRepoName()}/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment/pom.xml"
+                        sh "sed -i -r 's|<(data-index-ephemeral\\.image)>(.*):.*|<\\1>\\2:${getMajorMinorKogitoVersion()}</\\1>|' $path"
+                    }
                 }
             }
         }
@@ -175,4 +177,8 @@ void runMavenDeploy(String directory) {
 String getMajorMinorKogitoVersion() {
     def parsed = getKogitoVersion().split('\\.')
     return parsed[0] + '.' + parsed[1]
+}
+
+boolean isMainBranch() {
+    return env.IS_MAIN_BRANCH?.toBoolean()
 }
