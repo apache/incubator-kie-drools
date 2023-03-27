@@ -2132,6 +2132,8 @@ rule "Average profit"
 end
 ----
 
+NOTE: Built-in accumulate functions' return types may vary depend on parameter types. `min` and `max` can take `Comparable` parameters even if they are not numeric types, for example, `LocalDateTime`. In this case, the return type would be `Comparable`, so you may need to cast the bind variable of the return value in the rule.
+
 To use custom, domain-specific functions in `accumulate` conditions, create a Java class that implements the `org.kie.api.runtime.rule.AccumulateFunction` interface. For example, the following Java class defines a custom implementation of an `AverageData` function:
 
 .Example Java class with custom implementation of `average` function
