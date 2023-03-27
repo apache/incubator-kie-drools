@@ -62,7 +62,7 @@
     <version.jaxb2.plugin>2.5.0</version.jaxb2.plugin>
     <version.pitest.plugin>1.11.7</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
-    <version.sniffer.plugin>1.22</version.sniffer.plugin>
+    <version.sniffer.plugin>1.23</version.sniffer.plugin>
     <version.surefire.plugin>3.0.0-M8</version.surefire.plugin>
     <version.versions.plugin>2.15.0</version.versions.plugin>
 
