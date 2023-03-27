@@ -24,7 +24,7 @@ environments:
     - quarkus
   quarkus-3:
     env_vars:
-      QUARKUS_VERSION: '3.0.0.Alpha5'
+      QUARKUS_VERSION: 3.0.0.Alpha5
       ADDITIONAL_TIMEOUT: 720
       BUILD_MVN_OPTS: -Denforcer.skip
     ids:
@@ -33,7 +33,6 @@ environments:
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '2.16'
-      # Due to https://github.com/quarkusio/quarkus/pull/30860
       QUARKUS_VERSION: 2.16.999-SNAPSHOT
     ids:
     - quarkus
