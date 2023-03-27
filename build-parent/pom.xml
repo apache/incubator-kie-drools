@@ -367,6 +367,12 @@
       </dependency>
 
       <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+      </dependency>
+
+      <dependency>
         <groupId>info.picocli</groupId>
         <artifactId>picocli</artifactId>
         <version>${version.info.picocli}</version>
@@ -1360,6 +1366,8 @@
                 <rules>
                   <banDuplicateClasses>
                     <ignoreClasses>
+                      <!-- Duplication of javax.inject classes is necessary to also support migration to jakarta namespace. -->
+                      <ignoreClass>javax.inject.*</ignoreClass>
                       <!-- Duplicated by XStream's transitive deps, with very little chance to get properly fixed -->
                       <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
                       <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
@@ -1470,11 +1478,13 @@
                       <exclude>org.jboss.weld.se:weld-se</exclude> <!-- Use weld-se-core instead -->
                       <exclude>org.mockito:mockito-all</exclude> <!-- Use mockito-core instead -->
 
+                      <!-- cannot be banned because Quarkus 3 needs them -->
+                      <!-- <exclude>javax.annotation:javax.annotation-api</exclude> -->
+                      <!-- <exclude>javax.inject:javax.inject</exclude> -->
+
                       <!-- Java EE 8 Spec JARs: Use Jakarta EE 8 instead. -->
                       <exclude>javax.activation:activation</exclude>
-                      <exclude>javax.annotation:javax.annotation-api</exclude>
                       <exclude>javax.enterprise:cdi-api</exclude>
-                      <exclude>javax.inject:javax.inject</exclude>
                       <exclude>javax.interceptor:javax.interceptor-api</exclude>
                       <exclude>javax.jws:jsr181-api</exclude>
                       <exclude>javax.persistence:javax.persistence-api</exclude>

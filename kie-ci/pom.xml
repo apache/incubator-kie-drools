@@ -77,6 +77,12 @@
       <artifactId>maven-compat</artifactId>
     </dependency>
 
+    <!-- This dependency is necessary to workaround maven-core incompatibility with jakarta namespace -->
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
