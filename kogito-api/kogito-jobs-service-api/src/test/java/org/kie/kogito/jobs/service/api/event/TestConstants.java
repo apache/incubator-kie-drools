@@ -58,6 +58,8 @@ public class TestConstants {
     public static final String RECIPIENT_QUERY_PARAM_1_VALUE = "value1";
     public static final String RECIPIENT_QUERY_PARAM_2 = "param2";
     public static final String RECIPIENT_QUERY_PARAM_2_VALUE = "value2";
+    public static final Long EXECUTION_TIMEOUT = 1000L;
+    public static final TemporalUnit EXECUTION_TIMEOUT_UNIT = TemporalUnit.MILLIS;
 
     public static Job buildJob() {
         return Job.builder()
@@ -84,6 +86,8 @@ public class TestConstants {
                         .queryParam(RECIPIENT_QUERY_PARAM_1, RECIPIENT_QUERY_PARAM_1_VALUE)
                         .queryParam(RECIPIENT_QUERY_PARAM_2, RECIPIENT_QUERY_PARAM_2_VALUE)
                         .build())
+                .executionTimeout(EXECUTION_TIMEOUT)
+                .executionTimeoutUnit(EXECUTION_TIMEOUT_UNIT)
                 .build();
     }
 }

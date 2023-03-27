@@ -21,6 +21,8 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import static org.kie.kogito.jobs.service.api.Job.CORRELATION_ID_PROPERTY;
+import static org.kie.kogito.jobs.service.api.Job.EXECUTION_TIMEOUT_PROPERTY;
+import static org.kie.kogito.jobs.service.api.Job.EXECUTION_TIMEOUT_UNIT_PROPERTY;
 import static org.kie.kogito.jobs.service.api.Job.ID_PROPERTY;
 import static org.kie.kogito.jobs.service.api.Job.RECIPIENT_PROPERTY;
 import static org.kie.kogito.jobs.service.api.Job.RETRY_PROPERTY;
@@ -29,7 +31,8 @@ import static org.kie.kogito.jobs.service.api.Job.STATE_PROPERTY;
 
 @Schema(name = "JobV2", description = "Defines a job that can be managed by the jobs service.",
         requiredProperties = { SCHEDULE_PROPERTY, RETRY_PROPERTY, RECIPIENT_PROPERTY })
-@JsonPropertyOrder({ ID_PROPERTY, CORRELATION_ID_PROPERTY, STATE_PROPERTY, SCHEDULE_PROPERTY, RETRY_PROPERTY, RECIPIENT_PROPERTY })
+@JsonPropertyOrder({ ID_PROPERTY, CORRELATION_ID_PROPERTY, STATE_PROPERTY, SCHEDULE_PROPERTY, RETRY_PROPERTY,
+        RECIPIENT_PROPERTY, EXECUTION_TIMEOUT_PROPERTY, EXECUTION_TIMEOUT_UNIT_PROPERTY })
 public class Job {
 
     static final String ID_PROPERTY = "id";
@@ -38,6 +41,8 @@ public class Job {
     static final String SCHEDULE_PROPERTY = "schedule";
     static final String RETRY_PROPERTY = "retry";
     static final String RECIPIENT_PROPERTY = "recipient";
+    static final String EXECUTION_TIMEOUT_PROPERTY = "executionTimeout";
+    static final String EXECUTION_TIMEOUT_UNIT_PROPERTY = "executionTimeoutUnit";
 
     @Schema(description = "Available states for a Job.")
     public enum State {
@@ -71,6 +76,15 @@ public class Job {
     private Schedule schedule;
     private Retry retry;
     private Recipient<?> recipient;
+    @Schema(description = "Optional configuration that establishes the time limit for the current Job execution attempt to finish." +
+            " When this timeout is exceeded the execution attempt is considered as failed, and depending on the Job retry " +
+            " configuration, the execution can be retried or the Job will be marked as ERROR." +
+            " Every Recipient type has a default timeout configuration that will apply automatically if this value is not set," +
+            " and a maximum timeout configuration that can not be exceeded by current value.")
+    private Long executionTimeout;
+    @Schema(description = "The unit for the executionTimeout. If the executionTimeout is set and the unit is left empty MILLISECONDS are assumed." +
+            " If the unit is set and the executionTimeout is left empty this value is ignored.")
+    private TemporalUnit executionTimeoutUnit;
 
     public Job() {
         // Marshalling constructor.
@@ -124,6 +138,22 @@ public class Job {
         this.recipient = recipient;
     }
 
+    public Long getExecutionTimeout() {
+        return executionTimeout;
+    }
+
+    public void setExecutionTimeout(Long executionTimeout) {
+        this.executionTimeout = executionTimeout;
+    }
+
+    public TemporalUnit getExecutionTimeoutUnit() {
+        return executionTimeoutUnit;
+    }
+
+    public void setExecutionTimeoutUnit(TemporalUnit executionTimeoutUnit) {
+        this.executionTimeoutUnit = executionTimeoutUnit;
+    }
+
     @Override
     public String toString() {
         return "Job{" +
@@ -133,6 +163,8 @@ public class Job {
                 ", schedule=" + schedule +
                 ", retry=" + retry +
                 ", recipient=" + recipient +
+                ", executionTimeout=" + executionTimeout +
+                ", executionTimeoutUnit=" + executionTimeoutUnit +
                 '}';
     }
 
@@ -175,6 +207,16 @@ public class Job {
 
         public Builder recipient(Recipient<?> recipient) {
             job.setRecipient(recipient);
+            return this;
+        }
+
+        public Builder executionTimeout(Long executionTimeout) {
+            job.setExecutionTimeout(executionTimeout);
+            return this;
+        }
+
+        public Builder executionTimeoutUnit(TemporalUnit timeoutUnit) {
+            job.setExecutionTimeoutUnit(timeoutUnit);
             return this;
         }
 

@@ -42,6 +42,8 @@ import io.cloudevents.core.builder.CloudEventBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.kogito.jobs.service.api.event.TestConstants.CORRELATION_ID;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.EXECUTION_TIMEOUT;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.EXECUTION_TIMEOUT_UNIT;
 import static org.kie.kogito.jobs.service.api.event.TestConstants.ID;
 import static org.kie.kogito.jobs.service.api.event.TestConstants.JOB_ID;
 import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_HEADER_1;
@@ -175,6 +177,8 @@ class JobCloudEventDeserializerTest {
                 .hasSize(2)
                 .containsEntry(RECIPIENT_QUERY_PARAM_1, RECIPIENT_QUERY_PARAM_1_VALUE)
                 .containsEntry(RECIPIENT_QUERY_PARAM_2, RECIPIENT_QUERY_PARAM_2_VALUE);
+        assertThat(job.getExecutionTimeout()).isEqualTo(EXECUTION_TIMEOUT);
+        assertThat(job.getExecutionTimeoutUnit()).isEqualTo(EXECUTION_TIMEOUT_UNIT);
     }
 
     private static void assertDeleteJobEvent(JobCloudEvent<?> result) {

@@ -29,6 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.jobs.service.api.event.TestConstants.CORRELATION_ID;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.EXECUTION_TIMEOUT;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.EXECUTION_TIMEOUT_UNIT;
 import static org.kie.kogito.jobs.service.api.event.TestConstants.ID;
 import static org.kie.kogito.jobs.service.api.event.TestConstants.JOB_ID;
 import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_HEADER_1;
@@ -81,10 +83,12 @@ class JobCloudEventSerializerTest {
 
         JsonNode dataJsonNode = jsonNode.get("data");
         assertThat(dataJsonNode).isNotNull();
-        assertHasTotalFields(dataJsonNode, 6);
+        assertHasTotalFields(dataJsonNode, 8);
         assertHasFieldWithValue(dataJsonNode, "id", null);
         assertHasFieldWithValue(dataJsonNode, "correlationId", CORRELATION_ID);
         assertHasFieldWithValue(dataJsonNode, "state", null);
+        assertHasFieldWithValue(dataJsonNode, "executionTimeout", EXECUTION_TIMEOUT.toString());
+        assertHasFieldWithValue(dataJsonNode, "executionTimeoutUnit", EXECUTION_TIMEOUT_UNIT.name());
 
         JsonNode scheduleJsonNode = dataJsonNode.get("schedule");
         assertThat(scheduleJsonNode).isNotNull();

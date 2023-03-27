@@ -38,6 +38,8 @@
         "type": "binary",
         "data": "PHVzZXI+PG5hbWU+TWljaGFlbDwvbmFtZT48c3VybmFtZT5KYWNrc29uPC9zdXJuYW1lPjwvdXNlcj4="
       }
-    }
+    },
+    "executionTimeout": 1000,
+    "executionTimeoutUnit": "MILLIS"
   }
 }
