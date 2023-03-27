@@ -41,6 +41,7 @@ import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.parser.types.JavaTypeHandler;
 import org.kie.kogito.serverless.workflow.parser.types.RestTypeHandler;
+import org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -70,6 +71,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
     private final StaticWorkflowProcesses processes = new StaticWorkflowProcesses();
     private Collection<KogitoWorkItemHandler> handlers = new ArrayList<>();
     private StaticRestWorkItemHandler restWorkItemHandler;
+    private StaticServiceWorkItemHandler serviceWorkItemHandler;
     private Vertx vertx;
 
     public static StaticWorkflowApplication create() {
@@ -216,6 +218,8 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
                                 handlers.add(new StaticFunctionWorkItemHandler<>(functionDef.getName(), function));
                             }
                         });
+                    } else if (ServiceTypeHandler.SERVICE_TYPE.equals(type)) {
+                        initServiceWorkItemHandler();
                     }
                 }
             }
@@ -233,6 +237,13 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
         if (restWorkItemHandler == null) {
             restWorkItemHandler = new StaticRestWorkItemHandler(initVertx());
             handlers.add(restWorkItemHandler);
+        }
+    }
+
+    private void initServiceWorkItemHandler() {
+        if (serviceWorkItemHandler == null) {
+            serviceWorkItemHandler = new StaticServiceWorkItemHandler();
+            handlers.add(serviceWorkItemHandler);
         }
     }
 }

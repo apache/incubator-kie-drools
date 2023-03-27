@@ -20,12 +20,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
-import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.types.JavaTypeHandler;
+import org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler;
 
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 
+import static org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory.CUSTOM_TYPE_SEPARATOR;
 import static org.kie.kogito.serverless.workflow.parser.types.SysOutTypeHandler.SYSOUT_TYPE;
 
 public class FunctionBuilder {
@@ -60,8 +61,13 @@ public class FunctionBuilder {
         return new FunctionBuilder(new FunctionDefinitionEx(name).withFunction(function).withType(Type.CUSTOM).withOperation(JavaTypeHandler.JAVA_TYPE));
     }
 
+    public static <T> FunctionBuilder java(String name, String className, String methodName) {
+        return new FunctionBuilder(new FunctionDefinition(name).withType(Type.CUSTOM)
+                .withOperation(ServiceTypeHandler.SERVICE_TYPE + CUSTOM_TYPE_SEPARATOR + className + ServiceTypeHandler.INTFC_SEPARATOR + methodName));
+    }
+
     public static FunctionBuilder log(String name, WorkflowLogLevel level) {
-        return new FunctionBuilder(new FunctionDefinition(name).withType(Type.CUSTOM).withOperation(SYSOUT_TYPE + FunctionTypeHandlerFactory.CUSTOM_TYPE_SEPARATOR + level));
+        return new FunctionBuilder(new FunctionDefinition(name).withType(Type.CUSTOM).withOperation(SYSOUT_TYPE + CUSTOM_TYPE_SEPARATOR + level));
     }
 
     private FunctionBuilder(FunctionDefinition functionDefinition) {

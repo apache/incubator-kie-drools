@@ -31,7 +31,6 @@ public class JavaTypeHandler extends WorkItemTypeHandler {
             ParserContext context,
             WorkItemNodeFactory<T> node,
             FunctionDefinition functionDef) {
-
         return node.workName(functionDef.getName());
     }
 
