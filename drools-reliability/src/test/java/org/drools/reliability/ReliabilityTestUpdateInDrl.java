@@ -44,7 +44,6 @@ public class ReliabilityTestUpdateInDrl extends ReliabilityTestBasics {
                     "  update($p);\n" +
                     "end";
 
-    @Disabled("fails in the 2nd assertion, will run successfully after PR#5093 is merged ")
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
     void updateInRHS_insertFireFailoverFire_shouldMatchUpdatesFromFirstSession(PersistedSessionOption.Strategy strategy){
