@@ -18,3 +18,6 @@ dependencies:
         default:
           - source: main
             target: development
+  - project: jboss-integration/rhbop-optaplanner
+    dependencies:
+      - project: kiegroup/optaplanner-quickstarts

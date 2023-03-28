@@ -7,10 +7,10 @@ pipeline {
     tools {
         maven 'kie-maven-3.8.7'
         jdk 'kie-jdk11'
+        nodejs 'nodejs-16.2.0'
     }
     parameters {
         string(description: 'The deployment URL', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL')
-        booleanParam(description: 'Skip Tests? True as default', name: 'SKIP_TESTS', defaultValue: true)
         string(description: 'The UMB message version', name: 'UMB_VERSION', defaultValue: 'main')
         string(description: 'The product version, if not provided the optaplanner main branch one will be used', name: 'PRODUCT_VERSION')
         string(description: 'The drools product version, if not provided the drools main branch one will be used', name: 'DROOLS_PRODUCT_VERSION')
@@ -34,34 +34,43 @@ pipeline {
                 sh 'printenv'
             }
         }
+        stage('Install build-chain tool') {
+            steps {
+                script {
+                    println "[INFO] Installing build-chain tool"
+                    sh "npm install -g @kie/build-chain-action${env.NPM_REGISTRY_URL ? " -registry=${NPM_REGISTRY_URL}" : ''}"
+
+                    sh "npm list -g | grep build-chain"
+                }
+            }
+        }
         stage('Clone build configuration repo') {
             steps {
                 script {
-                    def currentBranch = env.CONFIG_BRANCH ?: env.DEFAULT_CONFIG_BRANCH ?: env.BRANCH_NAME ?: env.GIT_BRANCH
+                    def currentBranch = getBuildConfigBranch()
                     println "Checking out ${env.BUILD_CONFIGURATION_REPO_URL}:${currentBranch} into build_config folder"
                     sh "git clone -b ${currentBranch} --single-branch ${env.BUILD_CONFIGURATION_REPO_URL} build_config"
+
+                    // export PME parameters and build scripts from nightly build config
+                    def buildConfigAdditionalVariables = [
+                        'productVersion': env.PRODUCT_VERSION,
+                        'droolsProductVersion': env.DROOLS_PRODUCT_VERSION
+                    ]
+                    pmebuild.parseBuildConfig("$WORKSPACE/build_config/rhbop/nightly", buildConfigAdditionalVariables)
                 }
             }
         }
         stage('Build Nightly projects') {
             steps {
-                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE')
-                {
-                    script {
-                        def pipelineHelper = new PipelineHelper(this)
-                        pipelineHelper.retry(
-                        {
-                            def SETTINGS_XML_ID = '5d9884a1-178a-4d67-a3ac-9735d2df2cef'
-                            def projectCollection = ['drools', 'optaplanner', 'optaplanner-quickstarts', 'jboss-integration/rhbop-optaplanner']
-                            def projectVariableMap = ['kiegroup_optaplanner': 'optaplannerVersion', 'kiegroup_drools': 'droolsProductVersion']
-                            def additionalVariables = [
-                                'productVersion': env.PRODUCT_VERSION,
-                                'droolsProductVersion': env.DROOLS_PRODUCT_VERSION,
-                                'drools-scmRevision': getCurrentBranch(),
-                                'optaplanner-quickstarts-scmRevision': getOptaPlannerQuickstartsBranch()
-                            ]
-                            pmebuild.buildProjects(projectCollection, "${SETTINGS_XML_ID}", "$WORKSPACE/build_config/rhbop/nightly", "${env.PME_CLI_PATH}", projectVariableMap, additionalVariables, [:])
-                        }, 2, 180*60)
+                script {
+                    withCredentials([string(credentialsId: "kie-ci1-token", variable: 'GITHUB_TOKEN')]) {
+                        def SETTINGS_XML_ID = '5d9884a1-178a-4d67-a3ac-9735d2df2cef'
+                        def buildBranch = getBuildBranch()
+                        def definitionFile = "https://raw.githubusercontent.com/\${GROUP:kiegroup}/optaplanner/${getDefinitionFileBranch()}/.ci/nightly-build-config.yaml"
+
+                        configFileProvider([configFile(fileId: "${SETTINGS_XML_ID}", variable: 'PME_MAVEN_SETTINGS_XML')]) {
+                            sh "build-chain build branch --token=${GITHUB_TOKEN} -f ${definitionFile} -b ${buildBranch} -o bc -p kiegroup/optaplanner --fullProjectDependencyTree --skipParallelCheckout"
+                        }
                     }
                 }
             }
@@ -82,23 +91,32 @@ pipeline {
         stage('Upload optaplanner sources') {
             steps {
                 script {
-                    if(env.ALREADY_BUILT_PROJECTS?.trim()) {
-                        echo "[INFO] Start uploading sources zip files.."
+                    echo "[INFO] Start uploading sources zip files.."
 
-                        def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
-                        def folder="${env.RCM_GUEST_FOLDER}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly"
+                    def folder="${env.RCM_GUEST_FOLDER}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly"
 
-                        // zip source directories
-                        dir("${env.WORKSPACE}/deployDirectory/org/kie/rhbop/rhbop/${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}") {
-                            def optaplannerSourcesFilename = computeSourcesFilename("optaplanner", PME_BUILD_VARIABLES['datetimeSuffix'])
-                            uploadSources(optaplannerSourcesFilename, folder)
+                    // zip source directories
+                    dir("${env.WORKSPACE}/deployDirectory/org/kie/rhbop/rhbop/${PRODUCT_VERSION}.redhat-${env.DATE_TIME_SUFFIX}") {
+                        def optaplannerSourcesFilename = computeSourcesFilename("optaplanner", env.DATE_TIME_SUFFIX)
+                        uploadSources(optaplannerSourcesFilename, folder)
 
-                            def quickstartsSourcesFilename = computeSourcesFilename("optaplanner-quickstarts", PME_BUILD_VARIABLES['datetimeSuffix'])
-                            uploadSources(quickstartsSourcesFilename, folder)
+                        def quickstartsSourcesFilename = computeSourcesFilename("optaplanner-quickstarts", env.DATE_TIME_SUFFIX)
+                        uploadSources(quickstartsSourcesFilename, folder)
+                    }
+                }
+            }
+        }
+        stage ('Extract Git Information') {
+            steps {
+                script {
+                    def projectFolders = sh(returnStdout: true, script: "ls ${env.WORKSPACE}/bc").trim().split("\n")
+                    for (f in projectFolders) {
+                        dir("${env.WORKSPACE}/bc/${f}") {
+                            def projectName = f.replace("_", "/")
+                            // extract git infos
+                            util.storeGitInformation(projectName)
+                            env.ALREADY_BUILT_PROJECTS = "${env.ALREADY_BUILT_PROJECTS ?: ''}${projectName};"
                         }
-
-                    } else {
-                        println "[WARNING] No sources to upload. None project has been built."
                     }
                 }
             }
@@ -106,43 +124,37 @@ pipeline {
         stage ('Send UMB Message to QE.') {
             steps {
                 script {
-                    if(env.ALREADY_BUILT_PROJECTS?.trim()) {
-                        echo '[INFO] Sending RHBOP UMB message to QE.'
-                        def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
+                    echo '[INFO] Sending RHBOP UMB message to QE.'
+                    def optaplannerArchiveUrl = "https://${env.LOCAL_NEXUS_IP}:8443/nexus/content/groups/rhbop-${calculateArchiveRepoBranch()}-nightly/"
+                    def optaplannerSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${env.DATE_TIME_SUFFIX}-optaplanner-sources.zip"
+                    def optaplannerQuickstartsSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${env.DATE_TIME_SUFFIX}-optaplanner-quickstarts-sources.zip"
 
-                        def optaplannerArchiveUrl = "https://${env.LOCAL_NEXUS_IP}:8443/nexus/content/groups/rhbop-${calculateArchiveRepoBranch()}-nightly/"
-                        def optaplannerSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}-optaplanner-sources.zip"
-                        def optaplannerQuickstartsSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}-optaplanner-quickstarts-sources.zip"
+                    def topic = "VirtualTopic.qe.ci.ba.rhbop.${env.UMB_VERSION}.nightly.trigger"
+                    def eventType = "rhbop-${env.UMB_VERSION}-nightly-qe-trigger"
+                    def messageBody = getMessageBody(
+                        optaplannerArchiveUrl,
+                        optaplannerSourcesFileUrl,
+                        optaplannerQuickstartsSourcesFileUrl,
+                        env.ALREADY_BUILT_PROJECTS,
+                        [
+                            'rhbop': env.OPTAPLANNER_VERSION,
+                            'optaplanner': env.OPTAPLANNER_VERSION,
+                            'drools': env.DROOLS_VERSION,
+                            'quarkus.bom': env.DROOLS_VERSION,
+                            'platform.quarkus.bom': env.DROOLS_VERSION
+                        ],
+                        gitHashesToCollection(env.GIT_INFORMATION_HASHES)
+                    )
 
-                        def topic = "VirtualTopic.qe.ci.ba.rhbop.${env.UMB_VERSION}.nightly.trigger"
-                        def eventType = "rhbop-${env.UMB_VERSION}-nightly-qe-trigger"
-                        def messageBody = getMessageBody(
-                            optaplannerArchiveUrl,
-                            optaplannerSourcesFileUrl,
-                            optaplannerQuickstartsSourcesFileUrl,
-                            env.ALREADY_BUILT_PROJECTS,
-                            [
-                                'rhbop': PME_BUILD_VARIABLES['optaplannerVersion'],
-                                'optaplanner': PME_BUILD_VARIABLES['optaplannerVersion'],
-                                'drools': PME_BUILD_VARIABLES['droolsProductVersion'],
-                                'quarkus.bom': PME_BUILD_VARIABLES['quarkusVersion']?.replaceAll("\\{\\{.*\\}\\}", PME_BUILD_VARIABLES['quarkusVersionCommunity'] ?: ''),
-                                'platform.quarkus.bom': PME_BUILD_VARIABLES['quarkusPlatformVersion']?.replaceAll("\\{\\{.*\\}\\}", PME_BUILD_VARIABLES['quarkusVersionCommunity'] ?: '')
-                            ],
-                            gitHashesToCollection(env.GIT_INFORMATION_HASHES)
-                        )
-
-                        echo "[INFO] Message Body: ${messageBody}"
-                        echo "[INFO] Topic: ${topic}"
-                        echo "[INFO] Event Type: ${eventType}"
-                        build job: env.SEND_UMB_MESSAGE_JOB_PATH, parameters: [
-                                [$class: 'StringParameterValue', name: 'MESSAGE_BODY', value: messageBody],
-                                [$class: 'StringParameterValue', name: 'TOPIC', value: topic],
-                                [$class: 'StringParameterValue', name: 'EVENT_TYPE', value: eventType]
-                        ]
-                        echo '[SUCCESS] Message was successfully sent.'
-                    } else {
-                        println "[WARNING] No artifacts to upload. None project has been built."
-                    }
+                    echo "[INFO] Message Body: ${messageBody}"
+                    echo "[INFO] Topic: ${topic}"
+                    echo "[INFO] Event Type: ${eventType}"
+                    build job: env.SEND_UMB_MESSAGE_JOB_PATH, parameters: [
+                            [$class: 'StringParameterValue', name: 'MESSAGE_BODY', value: messageBody],
+                            [$class: 'StringParameterValue', name: 'TOPIC', value: topic],
+                            [$class: 'StringParameterValue', name: 'EVENT_TYPE', value: eventType]
+                    ]
+                    echo '[SUCCESS] Message was successfully sent.'
                 }
             }
         }
@@ -179,6 +191,20 @@ pipeline {
             cleanWs()
         }
     }
+}
+
+String getBuildConfigBranch() {
+  return env.CONFIG_BRANCH ?: env.DEFAULT_CONFIG_BRANCH ?: env.BRANCH_NAME ?: env.GIT_BRANCH
+}
+
+String getBuildBranch() {
+  // Fallback to main if none exist
+  return env.BRANCH_NAME ?: env.GIT_BRANCH ?: 'main'
+}
+
+String getDefinitionFileBranch() {
+  // Fallback to getBuildBranch if DEFINITION_FILE_BRANCH not set
+  return env.DEFINITION_FILE_BRANCH ?: getBuildBranch()
 }
 
 def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, String optaplannerQuickstartsSourcesUrl, String alreadyBuiltProjects, Map<String, String> versions, Map<String, String> scmHashes) {
