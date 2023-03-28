@@ -15,30 +15,16 @@
  */
 package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
-import java.time.Duration;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.vertx.core.json.JsonObject;
-import io.vertx.mutiny.core.Vertx;
-import io.vertx.mutiny.core.buffer.Buffer;
-import io.vertx.mutiny.ext.web.client.HttpRequest;
-import io.vertx.mutiny.ext.web.client.HttpResponse;
-import io.vertx.mutiny.ext.web.client.WebClient;
+import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeWorkItemHandler.OPERATION_PROPERTY_NAME;
 
 /**
  * Implementation of a Serverless Workflow custom function to invoke Knative services.
@@ -48,74 +34,31 @@ import io.vertx.mutiny.ext.web.client.WebClient;
 @ApplicationScoped
 final class KnativeServerlessWorkflowCustomFunction {
 
-    private static final Logger logger = LoggerFactory.getLogger(KnativeServerlessWorkflowCustomFunction.class);
+    static final String CLOUD_EVENT_PROPERTY_NAME = "asCloudEvent";
 
-    static final String REQUEST_TIMEOUT_PROPERTY_NAME = "kogito.addon.knative-serving.request-timeout";
-
-    private static final long DEFAULT_REQUEST_TIMEOUT_VALUE = 10_000L;
-
-    private final WebClient webClient;
+    static final String PATH_PROPERTY_NAME = "path";
 
     private final KnativeServiceRegistry knativeServiceRegistry;
 
-    private final Duration requestTimeout;
+    private final KnativeServiceRequestClientResolver knativeServiceRequestClientResolver;
 
     @Inject
-    KnativeServerlessWorkflowCustomFunction(Vertx vertx, KnativeServiceRegistry knativeServiceRegistry,
-            @ConfigProperty(name = REQUEST_TIMEOUT_PROPERTY_NAME) Optional<Long> requestTimeout) {
-        this.webClient = WebClient.create(vertx);
+    KnativeServerlessWorkflowCustomFunction(KnativeServiceRegistry knativeServiceRegistry,
+            KnativeServiceRequestClientResolver knativeServiceRequestClientResolver) {
         this.knativeServiceRegistry = knativeServiceRegistry;
-        this.requestTimeout = Duration.ofMillis(requestTimeout.orElse(DEFAULT_REQUEST_TIMEOUT_VALUE));
+        this.knativeServiceRequestClientResolver = knativeServiceRequestClientResolver;
+
     }
 
-    @PreDestroy
-    void preDestroy() {
-        webClient.close();
-    }
+    JsonNode execute(String processInstanceId, Map<String, Object> metadata, Map<String, Object> arguments) {
+        KnativeServiceAddress serviceAddress = getServiceAddress((String) metadata.get(OPERATION_PROPERTY_NAME));
+        String path = metadata.getOrDefault(PATH_PROPERTY_NAME, "/").toString();
 
-    /**
-     * Invokes a Knative service using the specified payload.
-     * 
-     * @param knativeServiceName name of the Knative service
-     * @param path resource path
-     * @param payload the payload
-     * @return a {@link JsonNode} that represents the response payload
-     */
-    JsonNode execute(String knativeServiceName, String path, Map<String, Object> payload) {
-        Objects.requireNonNull(knativeServiceName, "knativeServiceName is a mandatory parameter");
-        Objects.requireNonNull(path, "path is a mandatory parameter");
-
-        KnativeServiceAddress serviceAddress = getServiceAddress(knativeServiceName);
-
-        return sendRequest(serviceAddress, path, payload);
-    }
-
-    private JsonNode sendRequest(KnativeServiceAddress serviceAddress, String path, Map<String, Object> payload) {
-        HttpRequest<Buffer> request = webClient.post(serviceAddress.getPort(), serviceAddress.getHost(), path)
-                .ssl(serviceAddress.isSsl());
-
-        HttpResponse<Buffer> response;
-
-        if (payload.isEmpty()) {
-            logger.debug("Sending request with empty body - host: {}, port: {}, path: {}", serviceAddress.getHost(), serviceAddress.getPort(), path);
-            response = request.send().await().atMost(requestTimeout);
-        } else {
-            JsonObject body = new JsonObject(payload);
-            logger.debug("Sending request with body - host: {}, port: {}, path: {}, body: {}", serviceAddress.getHost(), serviceAddress.getPort(), path, body);
-            response = request.sendJsonObject(body).await().atMost(requestTimeout);
-        }
-
-        JsonObject responseBody = response.bodyAsJsonObject();
-
-        logger.debug("Response - status code: {}, body: {}", response.statusCode(), responseBody);
-
-        if (response.statusCode() < 200 || response.statusCode() >= 300) {
-            throw new WorkItemExecutionException(Integer.toString(response.statusCode()), response.statusMessage());
-        } else {
-            ObjectNode jsonNode = JsonNodeFactory.instance.objectNode();
-            responseBody.fieldNames().forEach(fieldName -> jsonNode.put(fieldName, responseBody.getString(fieldName)));
-            return jsonNode;
-        }
+        return knativeServiceRequestClientResolver.resolve(metadata).execute(
+                processInstanceId,
+                serviceAddress,
+                path,
+                arguments);
     }
 
     private KnativeServiceAddress getServiceAddress(String knativeServiceName) {

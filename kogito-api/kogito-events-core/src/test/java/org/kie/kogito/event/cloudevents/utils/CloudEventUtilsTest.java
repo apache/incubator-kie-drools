@@ -20,6 +20,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -37,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.core.provider.ExtensionProvider;
+import io.cloudevents.core.v1.CloudEventV1;
 import io.cloudevents.jackson.JsonCloudEventData;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -234,5 +237,26 @@ class CloudEventUtilsTest {
         assertThat(data.get("name").asText()).isEqualTo("Javierito");
         assertThat(deserialized.get("type").asText()).isEqualTo("type");
         assertThat(deserialized.get("pepe").asText()).isEqualTo("pepa");
+    }
+
+    @Test
+    void testGetMissingAttributes() {
+        Map<String, Object> cloudEvent = Map.of(
+                CloudEventV1.SPECVERSION, "1.0",
+                CloudEventV1.TYPE, "test");
+
+        List<String> missingAttributes = CloudEventUtils.getMissingAttributes(cloudEvent);
+
+        assertThat(missingAttributes).containsExactlyInAnyOrder("id", "source");
+    }
+
+    @Test
+    void testGetMissingAttributesDefaultVersion() {
+        Map<String, Object> cloudEvent = Map.of(
+                CloudEventV1.TYPE, "test");
+
+        List<String> missingAttributes = CloudEventUtils.getMissingAttributes(cloudEvent);
+
+        assertThat(missingAttributes).containsExactlyInAnyOrder("specversion", "id", "source");
     }
 }

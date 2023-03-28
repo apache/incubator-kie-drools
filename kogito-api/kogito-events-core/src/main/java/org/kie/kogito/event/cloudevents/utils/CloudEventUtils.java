@@ -21,7 +21,10 @@ import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,15 +44,18 @@ import io.cloudevents.CloudEvent;
 import io.cloudevents.CloudEventContext;
 import io.cloudevents.CloudEventData;
 import io.cloudevents.CloudEventExtension;
+import io.cloudevents.SpecVersion;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.core.data.PojoCloudEventData;
 import io.cloudevents.core.data.PojoCloudEventData.ToBytes;
+import io.cloudevents.core.v1.CloudEventV1;
 import io.cloudevents.jackson.JsonCloudEventData;
 import io.cloudevents.jackson.JsonFormat;
 import io.cloudevents.jackson.PojoCloudEventDataMapper;
 import io.cloudevents.rw.CloudEventRWException;
 
 import static io.cloudevents.core.CloudEventUtils.mapData;
+import static java.util.function.Predicate.not;
 
 public final class CloudEventUtils {
 
@@ -260,5 +266,15 @@ public final class CloudEventUtils {
 
     public static boolean safeBoolean(Boolean bool) {
         return bool != null && bool.booleanValue();
+    }
+
+    public static List<String> getMissingAttributes(Map<String, Object> cloudEventInfo) {
+        String specVersion = cloudEventInfo.getOrDefault(CloudEventV1.SPECVERSION, "1.0").toString();
+
+        Set<String> mandatoryAttributes = SpecVersion.parse(specVersion).getMandatoryAttributes();
+
+        return mandatoryAttributes.stream()
+                .filter(not(cloudEventInfo::containsKey))
+                .collect(Collectors.toList());
     }
 }

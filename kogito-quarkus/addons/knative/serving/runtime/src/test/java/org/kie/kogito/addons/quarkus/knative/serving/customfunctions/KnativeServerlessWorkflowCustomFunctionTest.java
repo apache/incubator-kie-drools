@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
+import java.time.Instant;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -31,6 +32,8 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
+import io.cloudevents.SpecVersion;
+import io.cloudevents.core.v1.CloudEventV1;
 import io.fabric8.knative.client.KnativeClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
@@ -38,15 +41,30 @@ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 import io.smallrye.mutiny.TimeoutException;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeServerlessWorkflowCustomFunction.REQUEST_TIMEOUT_PROPERTY_NAME;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeServerlessWorkflowCustomFunction.CLOUD_EVENT_PROPERTY_NAME;
+import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeServerlessWorkflowCustomFunction.PATH_PROPERTY_NAME;
 import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeServiceDiscoveryTestUtil.createServiceIfNotExists;
+import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeServiceRequestClient.APPLICATION_CLOUDEVENTS_JSON_CHARSET_UTF_8;
+import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeServiceRequestClient.REQUEST_TIMEOUT_PROPERTY_NAME;
+import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeWorkItemHandler.OPERATION_PROPERTY_NAME;
+import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.PlainJsonKnativeServiceRequestClient.CLOUDEVENT_SENT_AS_PLAIN_JSON_ERROR_MESSAGE;
 
 @QuarkusTest
 @WithKubernetesTestServer
 class KnativeServerlessWorkflowCustomFunctionTest {
 
+    public static final String UNUSED = "unused";
     private static String remoteServiceUrl;
 
     @KubernetesTestServer
@@ -119,7 +137,22 @@ class KnativeServerlessWorkflowCustomFunctionTest {
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withJsonBody(JsonNodeFactory.instance.objectNode()
-                                .put("message", "Kogito is awesome!"))));
+                                .put("message", "Kogito is awesome!")
+                                .set("object", JsonNodeFactory.instance.objectNode()
+                                        .put("long", 42L)
+                                        .put("String", "Knowledge is everything")))));
+    }
+
+    private void mockExecuteCloudEventWithParametersEndpoint() {
+        wireMockServer.stubFor(post(urlEqualTo("/cloud-event"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", APPLICATION_CLOUDEVENTS_JSON_CHARSET_UTF_8)
+                        .withJsonBody(JsonNodeFactory.instance.objectNode()
+                                .put("message", "CloudEvents are awesome!")
+                                .set("object", JsonNodeFactory.instance.objectNode()
+                                        .put("long", 42L)
+                                        .put("String", "Knowledge is everything")))));
     }
 
     private void mockExecuteWithEmptyParametersEndpoint() {
@@ -136,7 +169,9 @@ class KnativeServerlessWorkflowCustomFunctionTest {
     void executeWithEmptyParameters() {
         mockExecuteWithEmptyParametersEndpoint();
 
-        JsonNode output = knativeServerlessWorkflowCustomFunction.execute("serverless-workflow-greeting-quarkus", "/", Map.of());
+        Map<String, Object> metadata = createMetadata(false, "serverless-workflow-greeting-quarkus", "/");
+
+        JsonNode output = knativeServerlessWorkflowCustomFunction.execute("unused", metadata, Map.of());
 
         JsonNode expected = JsonNodeFactory.instance.objectNode()
                 .put("org", "Acme")
@@ -153,12 +188,158 @@ class KnativeServerlessWorkflowCustomFunctionTest {
                 "org", "Acme",
                 "project", "Kogito");
 
-        JsonNode output = knativeServerlessWorkflowCustomFunction.execute("serverless-workflow-greeting-quarkus", "/", parameters);
+        Map<String, Object> metadata = createMetadata(false, "serverless-workflow-greeting-quarkus", "/");
+
+        JsonNode output = knativeServerlessWorkflowCustomFunction.execute(UNUSED, metadata, parameters);
 
         JsonNode expected = JsonNodeFactory.instance.objectNode()
-                .put("message", "Kogito is awesome!");
+                .put("message", "Kogito is awesome!")
+                .set("object", JsonNodeFactory.instance.objectNode()
+                        .put("long", 42L)
+                        .put("String", "Knowledge is everything"));
 
-        assertThat(output).isEqualTo(expected);
+        assertThat(output).hasToString(expected.toString());
+    }
+
+    @Test
+    void executeWithCloudEventWithIdAsPlainJson() {
+        mockExecuteWithParametersEndpoint();
+
+        Map<String, Object> cloudEvent = Map.of(
+                CloudEventV1.SPECVERSION, 1.0, // KnativeWorkItemHandler receives this attribute as a double
+                "id", 42, // KnativeWorkItemHandler receivers this attribute as an Integer
+                "source", "https://localhost:8080",
+                "type", "org.kie.kogito.test",
+                "data", Map.of(
+                        "org", "Acme",
+                        "project", "Kogito"));
+
+        Map<String, Object> metadata = createMetadata(false, "serverless-workflow-greeting-quarkus", "/");
+
+        String processInstanceId = Instant.now().toString();
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> knativeServerlessWorkflowCustomFunction.execute(processInstanceId, metadata, cloudEvent))
+                .withMessage(CLOUDEVENT_SENT_AS_PLAIN_JSON_ERROR_MESSAGE);
+    }
+
+    @Test
+    void executeWithCloudEventWithoutIdAsPlainJson() {
+        mockExecuteWithParametersEndpoint();
+
+        Map<String, Object> cloudEvent = Map.of(
+                CloudEventV1.SPECVERSION, 1.0, // KnativeWorkItemHandler receives this attribute as a double
+                "source", "https://localhost:8080",
+                "type", "org.kie.kogito.test",
+                "data", Map.of(
+                        "org", "Acme",
+                        "project", "Kogito"));
+
+        Map<String, Object> metadata = createMetadata(false, "serverless-workflow-greeting-quarkus", "/");
+
+        String processInstanceId = Instant.now().toString();
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> knativeServerlessWorkflowCustomFunction.execute(processInstanceId, metadata, cloudEvent))
+                .withMessage(CLOUDEVENT_SENT_AS_PLAIN_JSON_ERROR_MESSAGE);
+    }
+
+    @Test
+    void executeWithCloudEventThatHasOnlyIdMissingAsPlainJson() {
+        mockExecuteWithParametersEndpoint();
+
+        Map<String, Object> cloudEvent = Map.of(
+                CloudEventV1.SPECVERSION, 1.0, // KnativeWorkItemHandler receives this attribute as a double
+                "source", "https://localhost:8080",
+                "type", "org.kie.kogito.test",
+                "data", Map.of(
+                        "org", "Acme",
+                        "project", "Kogito"));
+
+        Map<String, Object> metadata = createMetadata(false, "serverless-workflow-greeting-quarkus", "/");
+
+        String processInstanceId = Instant.now().toString();
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> knativeServerlessWorkflowCustomFunction.execute(processInstanceId, metadata, cloudEvent))
+                .withMessage(CLOUDEVENT_SENT_AS_PLAIN_JSON_ERROR_MESSAGE);
+    }
+
+    @Test
+    void executeCloudEvent() {
+        mockExecuteCloudEventWithParametersEndpoint();
+
+        String source = "https://localhost:8080";
+
+        Map<String, Object> cloudEvent = Map.of(
+                CloudEventV1.SPECVERSION, 1.0, // KnativeWorkItemHandler receives this attribute as a double
+                "id", 42, // KnativeWorkItemHandler receivers this attribute as an Integer
+                "source", source,
+                "type", "org.kie.kogito.test",
+                "data", Map.of(
+                        "org", "Acme",
+                        "project", "Kogito"));
+
+        Map<String, Object> metadata = createMetadata(true, "serverless-workflow-greeting-quarkus", "/cloud-event");
+
+        String processInstanceId = Instant.now().toString();
+
+        JsonNode output = knativeServerlessWorkflowCustomFunction.execute(processInstanceId, metadata, cloudEvent);
+
+        JsonNode expected = JsonNodeFactory.instance.objectNode()
+                .put("message", "CloudEvents are awesome!")
+                .set("object", JsonNodeFactory.instance.objectNode()
+                        .put("long", 42L)
+                        .put("String", "Knowledge is everything"));
+
+        assertThat(output).hasToString(expected.toString());
+
+        wireMockServer.verify(postRequestedFor(urlEqualTo("/cloud-event"))
+                .withRequestBody(matchingJsonPath("$.id", equalTo(source + "_" + processInstanceId)))
+                .withHeader("Content-Type", equalTo(APPLICATION_CLOUDEVENTS_JSON_CHARSET_UTF_8)));
+    }
+
+    @Test
+    void executeCloudEventWithMissingIdShouldNotThrowException() {
+        mockExecuteCloudEventWithParametersEndpoint();
+
+        String source = "https://localhost:8080";
+
+        Map<String, Object> cloudEvent = Map.of(
+                CloudEventV1.SPECVERSION, 1.0, // KnativeWorkItemHandler receives this attribute as a double
+                "source", source,
+                "type", "org.kie.kogito.test",
+                "data", Map.of(
+                        "org", "Acme",
+                        "project", "Kogito"));
+
+        Map<String, Object> metadata = createMetadata(true, "serverless-workflow-greeting-quarkus", "/cloud-event");
+
+        assertThatNoException()
+                .isThrownBy(() -> knativeServerlessWorkflowCustomFunction.execute(UNUSED, metadata, cloudEvent));
+    }
+
+    private static Map<String, Object> createMetadata(boolean isCloudEvent, String knativeServiceName, String path) {
+        return Map.of(
+                CLOUD_EVENT_PROPERTY_NAME, isCloudEvent,
+                OPERATION_PROPERTY_NAME, knativeServiceName,
+                PATH_PROPERTY_NAME, path);
+    }
+
+    @Test
+    void executeWithInvalidCloudEvent() {
+        Map<String, Object> cloudEvent = Map.of(
+                CloudEventV1.SPECVERSION, SpecVersion.V1.toString(),
+                "type", "org.kie.kogito.test",
+                "data", Map.of(
+                        "org", "Acme",
+                        "project", "Kogito"));
+
+        Map<String, Object> metadata = createMetadata(true, "serverless-workflow-greeting-quarkus", "/cloud-event");
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> knativeServerlessWorkflowCustomFunction.execute(UNUSED, metadata, cloudEvent))
+                .withMessage("Invalid CloudEvent. The following mandatory attributes are missing: source");
     }
 
     @Test
@@ -167,7 +348,9 @@ class KnativeServerlessWorkflowCustomFunctionTest {
 
         Map<String, Object> parameters = Map.of();
 
-        JsonNode output = knativeServerlessWorkflowCustomFunction.execute("serverless-workflow-greeting-quarkus", "/hello", parameters);
+        Map<String, Object> metadata = createMetadata(false, "serverless-workflow-greeting-quarkus", "/hello");
+
+        JsonNode output = knativeServerlessWorkflowCustomFunction.execute(UNUSED, metadata, parameters);
 
         JsonNode expected = JsonNodeFactory.instance.objectNode()
                 .put("message", "Hello Kogito");
@@ -180,7 +363,10 @@ class KnativeServerlessWorkflowCustomFunctionTest {
         mockExecute404Endpoint();
 
         Map<String, Object> parameters = Map.of();
-        assertThatCode(() -> knativeServerlessWorkflowCustomFunction.execute("serverless-workflow-greeting-quarkus", "/non_existing_path", parameters))
+
+        Map<String, Object> metadata = createMetadata(false, "serverless-workflow-greeting-quarkus", "/non_existing_path");
+
+        assertThatCode(() -> knativeServerlessWorkflowCustomFunction.execute(UNUSED, metadata, parameters))
                 .isInstanceOf(WorkItemExecutionException.class)
                 .extracting("errorCode")
                 .isEqualTo("404");
@@ -192,7 +378,9 @@ class KnativeServerlessWorkflowCustomFunctionTest {
 
         Map<String, Object> payload = Map.of();
 
+        Map<String, Object> metadata = createMetadata(false, "serverless-workflow-greeting-quarkus", "/timeout");
+
         assertThatExceptionOfType(TimeoutException.class)
-                .isThrownBy(() -> knativeServerlessWorkflowCustomFunction.execute("serverless-workflow-greeting-quarkus", "/timeout", payload));
+                .isThrownBy(() -> knativeServerlessWorkflowCustomFunction.execute(UNUSED, metadata, payload));
     }
 }
