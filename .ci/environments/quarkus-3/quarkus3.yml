@@ -668,6 +668,21 @@ recipeList:
       groupId: org.hibernate
       artifactId: hibernate-core
 
+  # Update infinispan libs to jakarta one
+  - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId:
+      oldGroupId: org.infinispan
+      oldArtifactId: infinispan-core
+      newGroupId: org.infinispan
+      newArtifactId: infinispan-core-jakarta
+  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
+      oldGroupId: org.infinispan
+      oldArtifactId: infinispan-core
+      newGroupId: org.infinispan
+      newArtifactId: infinispan-core-jakarta
+  - org.openrewrite.maven.ExcludeDependency:
+      groupId: org.infinispan
+      artifactId: infinispan-core
+
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.java.migrate.JavaxResourceToJakartaResource
