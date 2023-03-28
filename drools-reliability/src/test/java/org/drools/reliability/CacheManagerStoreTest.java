@@ -47,7 +47,7 @@ class CacheManagerStoreTest extends ReliabilityTestBasics {
 
         failover();
 
-        assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactly(SESSION_CACHE_PREFIX + "0_epDEFAULT"); // CacheManager knows cache names even after failover
+        assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactlyInAnyOrder(SESSION_CACHE_PREFIX + "0_epDEFAULT", SESSION_CACHE_PREFIX + "0_globals"); // CacheManager knows cache names even after failover
 
         CacheManager.INSTANCE.removeAllSessionCaches(); // must remove all session caches
 
