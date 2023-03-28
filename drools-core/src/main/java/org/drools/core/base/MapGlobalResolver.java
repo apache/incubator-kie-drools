@@ -43,7 +43,7 @@ public class MapGlobalResolver
     private Globals delegate;
 
     public MapGlobalResolver() {
-        this.map = new ConcurrentHashMap<>();
+        this( new ConcurrentHashMap<>() );
     }
 
     public MapGlobalResolver(Map<String, Object> map) {

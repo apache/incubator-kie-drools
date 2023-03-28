@@ -46,7 +46,6 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.CalendarsImpl;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.InternalViewChangedEventListener;
-import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
@@ -118,7 +117,6 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieRuntimeFactory;
@@ -321,7 +319,16 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.ruleEventListenerSupport = ruleEventListenerSupport;
 
         this.propagationIdCounter = new AtomicLong(propagationContext);
-        init( config, environment, propagationContext );
+        this.config = config;
+        this.ruleSessionConfig = config.as(RuleSessionConfiguration.KEY);
+        this.environment = environment;
+
+        this.propagationIdCounter = new AtomicLong( propagationContext);
+
+        this.kieBaseEventListeners = new ArrayList<>();
+        this.lock = new ReentrantLock();
+
+        this.lastIdleTimestamp = new AtomicLong(-1);
 
         this.nodeMemories = new ConcurrentNodeMemories(kBase);
         registerReceiveNodes(kBase.getReceiveNodes());
@@ -336,6 +343,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.sequential = conf.isSequential();
 
+        this.globalResolver = RuntimeComponentFactory.get().createGlobalResolver(this, this.environment);
+
         if (initInitFactHandle) {
             this.initialFactHandle = initInitialFact(null);
         }
@@ -344,34 +353,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public StatefulKnowledgeSessionImpl setStateless( boolean stateless ) {
         this.stateless = stateless;
         return this;
-    }
-
-    public void init(KieSessionConfiguration config, Environment environment) {
-        init( config, environment, 1 );
-    }
-
-    private void init( final KieSessionConfiguration config, Environment environment, long propagationContext ) {
-        this.config = config;
-        this.ruleSessionConfig = config.as(RuleSessionConfiguration.KEY);
-        this.environment = environment;
-
-        this.propagationIdCounter = new AtomicLong( propagationContext);
-
-        Globals globals = (Globals) this.environment.get( EnvironmentName.GLOBALS );
-        if (globals != null) {
-            if (!(globals instanceof GlobalResolver )) {
-                this.globalResolver = new GlobalsAdapter( globals );
-            } else {
-                this.globalResolver = (GlobalResolver) globals;
-            }
-        } else {
-            this.globalResolver = new MapGlobalResolver();
-        }
-
-        this.kieBaseEventListeners = new ArrayList<>();
-        this.lock = new ReentrantLock();
-
-        this.lastIdleTimestamp = new AtomicLong(-1);
     }
 
     private void registerReceiveNodes( List<AsyncReceiveNode> nodes ) {
