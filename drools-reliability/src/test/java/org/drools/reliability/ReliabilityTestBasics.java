@@ -48,8 +48,9 @@ public abstract class ReliabilityTestBasics {
 
     @AfterEach
     public void tearDown() {
-        // We can remove this when we implement ReliableSession.dispose() to call CacheManager.removeCachesBySessionId(id)
-        CacheManager.INSTANCE.removeAllSessionCaches();
+        // Completely clean up the environment so that test methods can be isolated
+        CacheManager.INSTANCE.restartWithRemovingGlobalStateAndFileStore();
+        ReliableRuntimeComponentFactoryImpl.resetCounter();
     }
 
     protected FactHandle insertString(String str) {
