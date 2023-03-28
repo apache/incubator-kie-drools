@@ -66,7 +66,7 @@ pipeline {
                     withCredentials([string(credentialsId: "kie-ci1-token", variable: 'GITHUB_TOKEN')]) {
                         def SETTINGS_XML_ID = '5d9884a1-178a-4d67-a3ac-9735d2df2cef'
                         def buildBranch = getBuildBranch()
-                        def definitionFile = "https://raw.githubusercontent.com/\${GROUP:kiegroup}/optaplanner/${getDefinitionFileBranch()}/.ci/nightly-build-config.yaml"
+                        def definitionFile = "https://raw.githubusercontent.com/\\\${GROUP:kiegroup}/optaplanner/${getDefinitionFileBranch()}/.ci/nightly-build-config.yaml"
 
                         configFileProvider([configFile(fileId: "${SETTINGS_XML_ID}", variable: 'PME_MAVEN_SETTINGS_XML')]) {
                             sh "build-chain build branch --token=${GITHUB_TOKEN} -f ${definitionFile} -b ${buildBranch} -o bc -p kiegroup/optaplanner --fullProjectDependencyTree --skipParallelCheckout"
