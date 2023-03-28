@@ -89,4 +89,7 @@ public class FunctionBuilder {
         return functionDefinition;
     }
 
+    String getName() {
+        return functionDefinition.getName();
+    }
 }

@@ -15,7 +15,10 @@
  */
 package org.kie.kogito.serverless.workflow.fluent;
 
+import java.util.Optional;
+
 import org.kie.kogito.process.Process;
+import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 import org.kie.kogito.serverless.workflow.parser.types.SysOutTypeHandler;
 
@@ -32,9 +35,24 @@ import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.objectNo
 public class ActionBuilder {
 
     private Action action;
+    private Optional<FunctionBuilder> functionDefinition = Optional.empty();
+
+    final Optional<FunctionBuilder> getFunction() {
+        return functionDefinition;
+    }
 
     public static ActionBuilder call(String functionName) {
         return call(functionName, NullNode.instance);
+    }
+
+    public static ActionBuilder call(FunctionBuilder functionBuilder) {
+        return call(functionBuilder, NullNode.instance);
+    }
+
+    public static ActionBuilder call(FunctionBuilder functionBuilder, JsonNode args) {
+        ActionBuilder actionBuilder = call(functionBuilder.getName(), args);
+        actionBuilder.functionDefinition = Optional.of(functionBuilder);
+        return actionBuilder;
     }
 
     public static ActionBuilder call(String functionName, JsonNode args) {
@@ -42,8 +60,15 @@ public class ActionBuilder {
     }
 
     public static ActionBuilder log(String functionName, String message) {
-        return new ActionBuilder(new Action().withFunctionRef(new FunctionRef().withRefName(functionName).withArguments(
-                objectNode().put(SysOutTypeHandler.SYSOUT_TYPE_PARAM, message))));
+        return call(functionName, logArgs(message));
+    }
+
+    public static ActionBuilder log(WorkflowLogLevel logLevel, String message) {
+        return call(FunctionBuilder.log("log-" + logLevel, logLevel), logArgs(message));
+    }
+
+    private static JsonNode logArgs(String message) {
+        return objectNode().put(SysOutTypeHandler.SYSOUT_TYPE_PARAM, message);
     }
 
     public static ActionBuilder subprocess(Process<JsonNodeModel> subprocess) {

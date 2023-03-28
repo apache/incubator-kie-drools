@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.serverless.workflow.fluent;
 
-import java.util.Deque;
-
 import io.serverlessworkflow.api.states.DefaultState;
 import io.serverlessworkflow.api.switchconditions.DataCondition;
 import io.serverlessworkflow.api.transitions.Transition;
@@ -25,8 +23,8 @@ public class ConditionTransitionBuilder<T> extends TransitionBuilder<TransitionB
 
     private DataCondition condition;
 
-    protected ConditionTransitionBuilder(TransitionBuilder<T> container, Deque<DefaultState> states, DataCondition condition) {
-        super(container, states);
+    protected ConditionTransitionBuilder(TransitionBuilder<T> container, WorkflowBuilder workflow, DataCondition condition) {
+        super(container, workflow);
         this.condition = condition;
     }
 

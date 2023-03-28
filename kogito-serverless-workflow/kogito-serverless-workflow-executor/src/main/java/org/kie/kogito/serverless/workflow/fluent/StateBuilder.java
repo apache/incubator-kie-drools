@@ -15,6 +15,9 @@
  */
 package org.kie.kogito.serverless.workflow.fluent;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.serverlessworkflow.api.end.End;
@@ -40,6 +43,11 @@ public abstract class StateBuilder<T extends StateBuilder<T, S>, S extends Defau
     }
 
     protected final S state;
+    protected final Collection<FunctionBuilder> functionDefinitions = new ArrayList<>();
+
+    Collection<FunctionBuilder> getFunctions() {
+        return functionDefinitions;
+    }
 
     protected StateBuilder(S state) {
         this.state = state;

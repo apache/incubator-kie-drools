@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.serverless.workflow.fluent;
 
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -80,13 +81,15 @@ public class WorkflowBuilder {
     }
 
     public Workflow singleton(StateBuilder<?, ?> stateBuilder) {
+        addFunctions(stateBuilder.getFunctions());
         startState(stateBuilder.build(new End()));
         return build();
     }
 
     public TransitionBuilder<WorkflowBuilder> start(StateBuilder<?, ?> stateBuilder) {
+        addFunctions(stateBuilder.getFunctions());
         startState(stateBuilder.build());
-        return new TransitionBuilder<>(this, states);
+        return new TransitionBuilder<>(this, this);
     }
 
     private void startState(DefaultState state) {
@@ -122,4 +125,15 @@ public class WorkflowBuilder {
         return mapper.createArrayNode();
     }
 
+    void addState(DefaultState state) {
+        states.add(state);
+    }
+
+    DefaultState getLastState() {
+        return states.getLast();
+    }
+
+    void addFunctions(Collection<FunctionBuilder> functions) {
+        functions.forEach(this::function);
+    }
 }
