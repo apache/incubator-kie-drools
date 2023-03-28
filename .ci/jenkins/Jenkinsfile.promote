@@ -83,6 +83,9 @@ pipeline {
 
                         maven.mvnVersionsSet(getMavenCommand(), getSnapshotVersion(), true)
                         maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie', getDroolsSnapshotVersion())
+                        
+                        // Need artifacts available locally
+                        getMavenCommand().withProperty('quickly').run('clean install')
                         maven.mvnSetVersionProperty(getMavenCommand(getWorkflowCommonDeploymentRelativePath()), "data-index-ephemeral.image", "${getCurrentNightlyImage()}" )
                         maven.mvnSetVersionProperty(getMavenCommand(getIntegrationTestHotReloadRelativePath()), "data-index-ephemeral.image.test", "use-default-image" )
 
