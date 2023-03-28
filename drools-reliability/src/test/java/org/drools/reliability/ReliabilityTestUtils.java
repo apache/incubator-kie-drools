@@ -25,20 +25,6 @@ import java.util.Comparator;
 
 public class ReliabilityTestUtils {
 
-    public static void cleanUpCacheFiles() {
-        try {
-            Path path = Paths.get(CacheManager.GLOBAL_STATE_DIR);
-            if (Files.exists(path)) {
-                Files.walk(path)
-                     .sorted(Comparator.reverseOrder())
-                     .map(Path::toFile)
-                     .forEach(File::delete);
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
     public static void failover() {
         CacheManager.INSTANCE.restart();
         ReliableRuntimeComponentFactoryImpl.resetCounter();

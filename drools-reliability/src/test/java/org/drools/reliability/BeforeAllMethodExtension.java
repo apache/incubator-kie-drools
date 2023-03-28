@@ -33,6 +33,6 @@ public class BeforeAllMethodExtension implements BeforeAllCallback {
             return;
         }
         initialized = true;
-        ReliabilityTestUtils.cleanUpCacheFiles();
+        CacheManager.cleanUpGlobalStateAndFileStore();
     }
 }

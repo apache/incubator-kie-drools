@@ -15,11 +15,18 @@
 
 package org.drools.reliability;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.drools.core.common.ReteEvaluator;
 import org.infinispan.Cache;
-import org.infinispan.commons.api.CacheContainerAdmin;
 import org.infinispan.commons.marshall.JavaSerializationMarshaller;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.Configuration;
@@ -27,7 +34,6 @@ import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.globalstate.ConfigurationStorage;
 import org.infinispan.manager.DefaultCacheManager;
-import org.infinispan.transaction.TransactionMode;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
 public enum CacheManager implements AutoCloseable {
@@ -107,6 +113,36 @@ public enum CacheManager implements AutoCloseable {
         initCacheManager();
     }
 
+    // test purpose to clean up environment
+    void restartWithRemovingGlobalStateAndFileStore() {
+        // JVM down
+        cacheManager.stop();
+        cacheManager = null;
+        cacheConfiguration = null;
+
+        // Remove GlobalState and FileStore
+        cleanUpGlobalStateAndFileStore();
+
+        // Reboot
+        initCacheManager();
+    }
+
+    // test purpose to remove GlobalState and FileStore
+    static void cleanUpGlobalStateAndFileStore() {
+        try {
+            Path path = Paths.get(GLOBAL_STATE_DIR);
+            if (Files.exists(path)) {
+                try (Stream<Path> walk = Files.walk(path)) {
+                    walk.sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+                }
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     // test purpose to inject fake cacheManager
     void setCacheManager(DefaultCacheManager cacheManager) {
         if (this.cacheManager != null) {
@@ -115,7 +151,7 @@ public enum CacheManager implements AutoCloseable {
         this.cacheManager = cacheManager;
     }
 
-    public void removeCache(String cacheName){
+    public void removeCache(String cacheName) {
         if (cacheManager.cacheExists(cacheName)) {
             cacheManager.removeCache(cacheName);
         }
