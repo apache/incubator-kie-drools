@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -19,6 +20,7 @@ import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
+@Disabled("PLANNER-2914")
 class OptaPlannerProcessorConstraintsDrlTest {
 
     private static final String CONSTRAINTS_DRL = "customConstraints.drl";

@@ -1,6 +1,21 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+[[releaseNotes-8.37.0.Final]]
+=== OptaPlanner 8.37.0.Final
+
+==== AbstractScoreHibernateType and its subtypes become deprecated
+
+The `AbstractScoreHibernateType` as well as all its subtypes have been deprecated. The parallel OptaPlanner 9
+releases are going to introduce Hibernate 6, which unfortunately breaks backward compatibility
+of the `CompositeUserType` that the `AbstractScoreHibernateType` depends on.
+
+The `AbstractScoreHibernateType` and its subtypes remain available in the OptaPlanner 8 releases to provide
+integration with Hibernate 5 but have been removed from the equivalent OptaPlanner 9.x release.
+
+To integrate the `PlanningScore` of your choice with Hibernate 6, either use the score converters available in the
+`org.optaplanner.persistence.jpa.api.score.buildin` package or https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#embeddable-mapping-custom[implement the `CompositeUserType`] yourself.
+
 [[releaseNotes-8.36.0.Final]]
 === OptaPlanner 8.36.0.Final
 

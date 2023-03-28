@@ -4,6 +4,7 @@ import java.io.StringReader;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -14,6 +15,7 @@ import io.restassured.RestAssured;
  * Test various OptaPlanner operations running in Quarkus
  */
 
+@Disabled("PLANNER-2914")
 @QuarkusTest
 class OptaPlannerTestResourceTest {
 

@@ -1,7 +1,7 @@
 package org.optaplanner.quarkus.bean;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
-import javax.inject.Singleton;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -31,14 +31,14 @@ import io.quarkus.arc.DefaultBean;
 public class UnavailableOptaPlannerBeanProvider {
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolverFactory<Solution_> solverFactory() {
         throw createException(SolverFactory.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> solverManager() {
         throw createException(SolverManager.class);
@@ -46,7 +46,7 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, SimpleScore> scoreManager_workaroundSimpleScore() {
         throw createException(ScoreManager.class);
@@ -54,7 +54,7 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, SimpleLongScore> scoreManager_workaroundSimpleLongScore() {
         throw createException(ScoreManager.class);
@@ -62,7 +62,7 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, SimpleBigDecimalScore> scoreManager_workaroundSimpleBigDecimalScore() {
         throw createException(ScoreManager.class);
@@ -70,7 +70,7 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, HardSoftScore> scoreManager_workaroundHardSoftScore() {
         throw createException(ScoreManager.class);
@@ -78,7 +78,7 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, HardSoftLongScore> scoreManager_workaroundHardSoftLongScore() {
         throw createException(ScoreManager.class);
@@ -86,7 +86,7 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, HardSoftBigDecimalScore> scoreManager_workaroundHardSoftBigDecimalScore() {
         throw createException(ScoreManager.class);
@@ -94,7 +94,7 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, HardMediumSoftScore> scoreManager_workaroundHardMediumSoftScore() {
         throw createException(ScoreManager.class);
@@ -102,7 +102,7 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, HardMediumSoftLongScore> scoreManager_workaroundHardMediumSoftLongScore() {
         throw createException(ScoreManager.class);
@@ -110,7 +110,7 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, HardMediumSoftBigDecimalScore>
             scoreManager_workaroundHardMediumSoftBigDecimalScore() {
@@ -119,7 +119,7 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, BendableScore> scoreManager_workaroundBendableScore() {
         throw createException(ScoreManager.class);
@@ -127,7 +127,7 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, BendableLongScore> scoreManager_workaroundBendableLongScore() {
         throw createException(ScoreManager.class);
@@ -135,70 +135,70 @@ public class UnavailableOptaPlannerBeanProvider {
 
     @Deprecated(forRemoval = true)
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> ScoreManager<Solution_, BendableBigDecimalScore> scoreManager_workaroundBendableBigDecimalScore() {
         throw createException(ScoreManager.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, SimpleScore> solutionManager_workaroundSimpleScore() {
         throw createException(SolutionManager.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, SimpleLongScore> solutionManager_workaroundSimpleLongScore() {
         throw createException(SolutionManager.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, SimpleBigDecimalScore> solutionManager_workaroundSimpleBigDecimalScore() {
         throw createException(SolutionManager.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, HardSoftScore> solutionManager_workaroundHardSoftScore() {
         throw createException(SolutionManager.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, HardSoftLongScore> solutionManager_workaroundHardSoftLongScore() {
         throw createException(SolutionManager.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, HardSoftBigDecimalScore> solutionManager_workaroundHardSoftBigDecimalScore() {
         throw createException(SolutionManager.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, HardMediumSoftScore> solutionManager_workaroundHardMediumSoftScore() {
         throw createException(SolutionManager.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, HardMediumSoftLongScore> solutionManager_workaroundHardMediumSoftLongScore() {
         throw createException(SolutionManager.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, HardMediumSoftBigDecimalScore>
             solutionManager_workaroundHardMediumSoftBigDecimalScore() {
@@ -206,21 +206,21 @@ public class UnavailableOptaPlannerBeanProvider {
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, BendableScore> solutionManager_workaroundBendableScore() {
         throw createException(SolutionManager.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, BendableLongScore> solutionManager_workaroundBendableLongScore() {
         throw createException(SolutionManager.class);
     }
 
     @DefaultBean
-    @Singleton
+    @Dependent
     @Produces
     <Solution_> SolutionManager<Solution_, BendableBigDecimalScore> solutionManager_workaroundBendableBigDecimalScore() {
         throw createException(SolutionManager.class);

@@ -41,112 +41,29 @@ public class Talk {...}
 ----
 ====
 
-Add a dependency to the `optaplanner-persistence-jpa` jar to take advantage of these extra integration features:
-
-
 [[jpaAndHibernatePersistingAScore]]
 ==== JPA and Hibernate: persisting a `Score`
 
-When a `Score` is persisted into a relational database, JPA and Hibernate will default to Java serializing it to a `BLOB` column.
-This has several disadvantages:
-
-* The Java serialization format of `Score` classes is currently not backwards compatible. Upgrading to a newer OptaPlanner version can break reading an existing database.
-* The score is not easily readable for a query executed in the database console. This is annoying during development.
-* The score cannot be used in a SQL or JPA-QL query to efficiently filter the results: for example to query all infeasible schedules.
-
-To avoid these issues, configure it to instead use INTEGER (or other) columns, by using the appropriate `*ScoreHibernateType` for your `Score` type, for example for a ``HardSoftScore``:
+The `optaplanner-persistence-jpa` jar provides a JPA score converter for every built-in score type.
 
 [source,java,options="nowrap"]
 ----
 @PlanningSolution
 @Entity
-@TypeDef(defaultForType = HardSoftScore.class, typeClass = HardSoftScoreHibernateType.class)
 public class CloudBalance {
 
     @PlanningScore
-    @Columns(columns = {@Column(name = "initScore"), @Column(name = "hardScore"), @Column(name = "softScore")})
+    @Convert(converter = HardSoftScoreConverter.class)
     protected HardSoftScore score;
 
     ...
 }
 ----
 
-[NOTE]
-====
-Configure the same number of `@Column` annotations as the number of score levels in the score plus one (for the ``initScore``), otherwise Hibernate will fail fast because a property mapping has the wrong number of columns.
-====
+Please note that the converters make JPA and Hibernate serialize the score in a single `VARCHAR` column.
+This has the disadvantage that the score cannot be used in a SQL or JPA-QL query to efficiently filter the results, for example to query all infeasible schedules.
 
-In this case, the DDL will look like this:
-
-[source,sql]
-----
-CREATE TABLE CloudBalance(
-    ...
-    initScore INTEGER,
-    hardScore INTEGER,
-    softScore INTEGER
-);
-----
-
-When using a `BigDecimal` based ``Score``, specify the precision and scale of the columns to avoid silent rounding:
-
-[source,java,options="nowrap"]
-----
-@PlanningSolution
-@Entity
-@TypeDef(defaultForType = HardSoftBigDecimalScore.class, typeClass = HardSoftBigDecimalScoreHibernateType.class)
-public class CloudBalance{
-
-    @PlanningScore
-    @Columns(columns = {
-            @Column(name = "initScore")
-            @Column(name = "hardScore", precision = 10, scale = 5),
-            @Column(name = "softScore", precision = 10, scale = 5)})
-    protected HardSoftBigDecimalScore score;
-
-    ...
-}
-----
-
-In this case, the DDL will look like this:
-
-[source,sql]
-----
-CREATE TABLE CloudBalance(
-    ...
-    initScore INTEGER,
-    hardScore DECIMAL(10, 5),
-    softScore DECIMAL(10, 5)
-);
-----
-
-When using any type of bendable ``Score``, specify the hard and soft level sizes as parameters:
-
-[source,java,options="nowrap"]
-----
-@PlanningSolution
-@Entity
-@TypeDef(defaultForType = BendableScore.class, typeClass = BendableScoreHibernateType.class, parameters = {
-        @Parameter(name = "hardLevelsSize", value = "3"),
-        @Parameter(name = "softLevelsSize", value = "2")})
-public class Schedule {
-
-    @PlanningScore
-    @Columns(columns = {
-            @Column(name = "initScore")
-            @Column(name = "hard0Score"),
-            @Column(name = "hard1Score"),
-            @Column(name = "hard2Score"),
-            @Column(name = "soft0Score"),
-            @Column(name = "soft1Score")})
-    protected BendableScore score;
-
-    ...
-}
-----
-
-All this support is Hibernate specific because currently JPA 2.1's converters do not support converting to multiple columns.
-
+To avoid this limitation, https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#embeddable-mapping-custom[implement the `CompositeUserType`] to persist each score level into a separate database table column.
 
 [[jpaAndHibernatePlanningCloning]]
 ==== JPA and Hibernate: planning cloning
