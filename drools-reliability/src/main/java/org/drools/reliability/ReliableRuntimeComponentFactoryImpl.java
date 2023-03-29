@@ -25,6 +25,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
+import org.drools.kiesession.factory.WorkingMemoryFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.conf.PersistedSessionOption;
@@ -35,6 +36,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
 
     private static final AtomicLong RELIABLE_SESSIONS_COUNTER = new AtomicLong(0);
 
+    private final WorkingMemoryFactory wmFactory = ReliablePhreakWorkingMemoryFactory.getInstance();
     private final AgendaFactory agendaFactory = ReliableAgendaFactory.getInstance();
 
     @Override
@@ -68,11 +70,17 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         return initReliableSession(sessionConfig, session);
     }
 
+    @Override
     public AgendaFactory getAgendaFactory(SessionConfiguration sessionConfig) {
         if (!sessionConfig.hasPersistedSessionOption() || sessionConfig.getPersistedSessionOption().getStrategy() == PersistedSessionOption.Strategy.STORES_ONLY) {
             return super.getAgendaFactory(sessionConfig);
         }
         return agendaFactory;
+    }
+
+    @Override
+    protected WorkingMemoryFactory getWorkingMemoryFactory() {
+        return wmFactory;
     }
 
     // test purpose to simulate fail-over

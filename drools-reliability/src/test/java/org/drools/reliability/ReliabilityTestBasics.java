@@ -97,6 +97,10 @@ public abstract class ReliabilityTestBasics {
         return getKieSession(drl, PersistedSessionOption.fromSession(savedSessionId, strategy));
     }
 
+    protected void disposeSession() {
+        session.dispose();
+    }
+
     protected KieSession getKieSession(String drl, PersistedSessionOption option) {
         KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();

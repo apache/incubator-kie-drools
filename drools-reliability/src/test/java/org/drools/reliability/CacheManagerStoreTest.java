@@ -21,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.conf.PersistedSessionOption;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.CacheManager.SESSION_CACHE_PREFIX;
@@ -55,5 +56,18 @@ class CacheManagerStoreTest extends ReliabilityTestBasics {
 
         Optional<Person> toshiya = getPersonByName(session, "Toshiya");
         assertThat(toshiya).isEmpty(); // So cannot recover the fact
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnly")
+    void ksessionDispose_shouldRemoveCache(PersistedSessionOption.Strategy strategy){
+
+        createSession(EMPTY_RULE, strategy); // sessionId = 0. This creates session_0_epDEFAULT and session_0_globals
+
+        insertNonMatchingPerson("Toshiya", 10);
+
+        disposeSession(); // This should clean up session's cache
+
+        assertThat(CacheManager.INSTANCE.getCacheNames()).isEmpty();
     }
 }

@@ -45,6 +45,18 @@ class CacheManagerTest {
         assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactly("METADATA_0");
     }
 
+    @Test
+    void removeCachesBySessionId_shouldRemoveSpecifiedCacheOnly() {
+        CacheManager.INSTANCE.setCacheManager(new FakeCacheManager());
+
+        assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactlyInAnyOrder(
+                SESSION_CACHE_PREFIX + "0_" + "epDefault", SESSION_CACHE_PREFIX + "1_" + "epDefault", "METADATA_0");
+
+        CacheManager.INSTANCE.removeCachesBySessionId("1");
+
+        assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactlyInAnyOrder(SESSION_CACHE_PREFIX + "0_" + "epDefault", "METADATA_0");
+    }
+
     public static class FakeCacheManager extends DefaultCacheManager {
 
         private Map<String, Object> cacheMap = new ConcurrentHashMap<>();
