@@ -213,7 +213,7 @@ void commitAndCreatePR() {
         githubscm.findAndStageNotIgnoredFiles('antora.yml')
     })
     githubscm.pushObject('origin', getPRBranch(), getGitAuthorCredsID())
-    deployProperties["${getRepoName()}.pr.link"] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getGitAuthorCredsID())
+    deployProperties["${getRepoName()}.pr.link"] = githubscm.createPRWithLabels(commitMsg, prBody, getBuildBranch(), ['skip-ci'] as String[], getGitAuthorCredsID())
 }
 
 void sendNotification() {
