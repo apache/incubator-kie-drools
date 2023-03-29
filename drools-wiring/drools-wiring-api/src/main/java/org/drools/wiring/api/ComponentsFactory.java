@@ -46,10 +46,6 @@ public class ComponentsFactory {
         return getComponentsSupplier().createConsequenceExceptionHandler(className, classLoader);
     }
 
-    public static Object createTimerService( String className ) {
-        return getComponentsSupplier().createTimerService( className );
-    }
-
     public static void addPackageFromXSD( KnowledgeBuilder kBuilder, Resource resource, ResourceConfiguration configuration) throws IOException {
         getComponentsSupplier().addPackageFromXSD(kBuilder, resource, configuration);
     }

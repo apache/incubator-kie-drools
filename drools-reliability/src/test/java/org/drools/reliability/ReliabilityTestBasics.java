@@ -22,13 +22,17 @@ import java.util.stream.Stream;
 
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.reliability.domain.Person;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.conf.KieBaseOption;
+import org.kie.api.conf.Option;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.KieSessionOption;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
@@ -87,24 +91,26 @@ public abstract class ReliabilityTestBasics {
         ((ReliableGlobalResolver) ((InternalWorkingMemory) session).getGlobalResolver()).updateCache();
     }
 
-    protected KieSession createSession(String drl, PersistedSessionOption.Strategy strategy) {
-        getKieSession(drl, PersistedSessionOption.newSession(strategy));
+    protected KieSession createSession(String drl, PersistedSessionOption.Strategy strategy, Option... options) {
+        getKieSession(drl, PersistedSessionOption.newSession(strategy), options);
         savedSessionId = session.getIdentifier();
         return session;
     }
 
-    protected KieSession restoreSession(String drl, PersistedSessionOption.Strategy strategy) {
-        return getKieSession(drl, PersistedSessionOption.fromSession(savedSessionId, strategy));
+    protected KieSession restoreSession(String drl, PersistedSessionOption.Strategy strategy, Option... options) {
+        return getKieSession(drl, PersistedSessionOption.fromSession(savedSessionId, strategy), options);
     }
 
     protected void disposeSession() {
         session.dispose();
     }
 
-    protected KieSession getKieSession(String drl, PersistedSessionOption option) {
-        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+    protected KieSession getKieSession(String drl, PersistedSessionOption option, Option... options) {
+        OptionsFilter optionsFilter = new OptionsFilter(options);
+        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build(optionsFilter.getKieBaseOptions());
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         conf.setOption(option);
+        Stream.of(optionsFilter.getKieSessionOption()).forEach(conf::setOption);
         session = kbase.newKieSession(conf, null);
         if (option.isNewSession()) {
             List<Object> results = new ArrayList<>();
@@ -118,5 +124,21 @@ public abstract class ReliabilityTestBasics {
                 .stream()
                 .map(Person.class::cast)
                 .filter(p -> p.getName().equals(name) ).findFirst();
+    }
+
+    private static class OptionsFilter {
+        private final Option[] options;
+
+        OptionsFilter(Option[] options) {
+            this.options = options;
+        }
+
+        KieBaseOption[] getKieBaseOptions() {
+            return options == null ? new KieBaseOption[0] : Stream.of(options).filter(KieBaseOption.class::isInstance).toArray(KieBaseOption[]::new);
+        }
+
+        KieSessionOption[] getKieSessionOption() {
+            return options == null ? new KieSessionOption[0] : Stream.of(options).filter(KieSessionOption.class::isInstance).toArray(KieSessionOption[]::new);
+        }
     }
 }

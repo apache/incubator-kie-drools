@@ -67,7 +67,6 @@ import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.time.TimerService;
-import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.consequence.StatefulKnowledgeSessionForRHS;
@@ -126,7 +125,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
         this.activationsManager = new ActivationsManagerImpl(this);
         this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
-        this.timerService = TimerServiceFactory.getTimerService( sessionConfiguration );
+        this.timerService = sessionConfiguration.createTimerService();
 
         initInitialFact(ruleBase);
     }

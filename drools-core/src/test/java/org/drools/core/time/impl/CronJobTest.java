@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
 import org.junit.Test;
@@ -33,7 +32,7 @@ public class CronJobTest {
     public void testCronTriggerJob() throws Exception {
         SessionConfiguration config = RuleBaseFactory.newKnowledgeSessionConfiguration().as(SessionConfiguration.KEY);
         config.setClockType(ClockType.PSEUDO_CLOCK);
-        PseudoClockScheduler timeService = (PseudoClockScheduler) TimerServiceFactory.getTimerService( config );
+        PseudoClockScheduler timeService = (PseudoClockScheduler) config.createTimerService();
 
         timeService.advanceTime( 0,
                                  TimeUnit.MILLISECONDS );

@@ -37,7 +37,6 @@ import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
-import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.time.Trigger;
 import org.junit.Test;
 
@@ -49,7 +48,7 @@ public class JDKTimerServiceTest {
     public void testSingleExecutionJob() throws Exception {
         SessionConfiguration config = RuleBaseFactory.newKnowledgeSessionConfiguration().as(SessionConfiguration.KEY);
         config.setClockType(ClockType.REALTIME_CLOCK);
-        TimerService timeService = TimerServiceFactory.getTimerService( config );
+        TimerService timeService = config.createTimerService();
         Trigger trigger = new DelayedTrigger( 100 );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
@@ -62,7 +61,7 @@ public class JDKTimerServiceTest {
     public void testRepeatedExecutionJob() throws Exception {
         SessionConfiguration config = RuleBaseFactory.newKnowledgeSessionConfiguration().as(SessionConfiguration.KEY);
         config.setClockType(ClockType.REALTIME_CLOCK);
-        TimerService timeService = TimerServiceFactory.getTimerService( config );
+        TimerService timeService = config.createTimerService();
         Trigger trigger = new DelayedTrigger(  new long[] { 100, 100, 100} );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
@@ -76,7 +75,7 @@ public class JDKTimerServiceTest {
     public void testRepeatedExecutionJobWithRemove() throws Exception {
         SessionConfiguration config = RuleBaseFactory.newKnowledgeSessionConfiguration().as(SessionConfiguration.KEY);
         config.setClockType(ClockType.REALTIME_CLOCK);
-        TimerService timeService = TimerServiceFactory.getTimerService( config );
+        TimerService timeService = config.createTimerService();
         Trigger trigger = new DelayedTrigger(  new long[] {100, 100, 100, 100, 100, 100, 100, 100} ); 
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         ctx.setLimit( 3 );

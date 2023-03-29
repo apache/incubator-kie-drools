@@ -23,6 +23,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.phreak.PropagationEntry;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
@@ -48,7 +49,7 @@ public class ReliableSessionInitializer {
         InternalWorkingMemory init(InternalWorkingMemory session, PersistedSessionOption persistedSessionOption);
     }
 
-    private static class StoresOnlySessionInitializer implements SessionInitializer {
+    static class StoresOnlySessionInitializer implements SessionInitializer {
 
         @Override
         public InternalWorkingMemory init(InternalWorkingMemory session, PersistedSessionOption persistedSessionOption) {
@@ -68,19 +69,19 @@ public class ReliableSessionInitializer {
             if (entry instanceof PropagationEntry.Insert) {
                 InternalFactHandle fh = ((PropagationEntry.Insert) entry).getHandle();
                 WorkingMemoryEntryPoint ep = fh.getEntryPoint(session);
-                ((SimpleReliableObjectStore) ep.getObjectStore()).putIntoPersistedCache(fh.getObject(), true);
+                ((SimpleReliableObjectStore) ep.getObjectStore()).putIntoPersistedCache(fh, true);
             }
         }
 
         private void populateSessionFromCache(InternalWorkingMemory session) {
-            Map<EntryPoint, List<Object>> notPropagatedByEntryPoint = new HashMap<>();
+            Map<InternalWorkingMemoryEntryPoint, List<StoredObject>> notPropagatedByEntryPoint = new HashMap<>();
 
             for (EntryPoint ep : session.getEntryPoints()) {
                 SimpleReliableObjectStore store = (SimpleReliableObjectStore) ((WorkingMemoryEntryPoint) ep).getObjectStore();
-                notPropagatedByEntryPoint.put(ep, store.reInit(session, ep));
+                notPropagatedByEntryPoint.put((InternalWorkingMemoryEntryPoint) ep, store.reInit(session, (InternalWorkingMemoryEntryPoint) ep));
             }
 
-            notPropagatedByEntryPoint.forEach((ep, objects) -> objects.forEach(ep::insert));
+            notPropagatedByEntryPoint.forEach((ep, objects) -> objects.forEach(obj -> obj.repropagate(ep)));
         }
 
         static class SimpleStoreRuntimeEventListener implements RuleRuntimeEventListener {
@@ -98,13 +99,14 @@ public class ReliableSessionInitializer {
             }
 
             public void objectUpdated(ObjectUpdatedEvent ev) {
-                SimpleReliableObjectStore store = (SimpleReliableObjectStore) ((InternalFactHandle) ev.getFactHandle()).getEntryPoint(session).getObjectStore();
-                store.putIntoPersistedCache(ev.getObject(), false);
+                InternalFactHandle fh = (InternalFactHandle) ev.getFactHandle();
+                SimpleReliableObjectStore store = (SimpleReliableObjectStore) fh.getEntryPoint(session).getObjectStore();
+                store.putIntoPersistedCache(fh, false);
             }
         }
     }
 
-    private static class FullReliableSessionInitializer implements SessionInitializer {
+    static class FullReliableSessionInitializer implements SessionInitializer {
 
         @Override
         public InternalWorkingMemory init(InternalWorkingMemory session, PersistedSessionOption persistedSessionOption) {

@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.util.StringUtils;
 import org.kie.api.KieBase;
@@ -270,6 +271,12 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
         } else {
             throw new IllegalArgumentException( "Command service '" + className + "' not found" );
         }
+    }
+
+    public TimerService createTimerService() {
+        TimerService service = getClockType().createInstance();
+        service.setTimerJobFactoryManager(getTimerJobFactoryManager());
+        return service;
     }
 
     @Override

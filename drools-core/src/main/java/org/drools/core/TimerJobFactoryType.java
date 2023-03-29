@@ -28,7 +28,7 @@ public abstract class TimerJobFactoryType implements Serializable {
 
     public static final TimerJobFactoryType DEFAULT = new TimerJobFactoryType("default") {
         public TimerJobFactoryManager createInstance() {
-            return DefaultTimerJobFactoryManager.instance;
+            return DefaultTimerJobFactoryManager.INSTANCE;
         }
     };
 

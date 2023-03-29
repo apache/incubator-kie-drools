@@ -55,15 +55,6 @@ public class StaticComponentsSupplier implements ComponentsSupplier {
         return new StaticConsequenceExceptionHandler();
     }
 
-    @Override
-    public Object createTimerService(String className) {
-        try {
-            return Class.forName("org.drools.core.time.impl.JDKTimerService").getConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static class StaticConsequenceExceptionHandler implements ConsequenceExceptionHandler, Externalizable {
 
         @Override

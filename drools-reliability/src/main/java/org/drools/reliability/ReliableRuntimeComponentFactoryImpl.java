@@ -24,6 +24,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.accessor.GlobalResolver;
+import org.drools.core.time.TimerService;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 import org.drools.kiesession.factory.WorkingMemoryFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -61,6 +62,10 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
     @Override
     public GlobalResolver createGlobalResolver(ReteEvaluator reteEvaluator, Environment environment) {
         return new ReliableGlobalResolver(CacheManager.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "globals"));
+    }
+
+    public TimerService createTimerService(ReteEvaluator reteEvaluator) {
+        return new ReliablePseudoClockScheduler(CacheManager.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "timer"));
     }
 
     private InternalWorkingMemory internalInitSession(InternalKnowledgeBase kbase, SessionConfiguration sessionConfig, InternalWorkingMemory session) {

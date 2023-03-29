@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.drools.reliability;
+package org.drools.reliability.domain;
 
 import java.io.Serializable;
 

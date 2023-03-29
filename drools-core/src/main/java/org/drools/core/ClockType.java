@@ -16,9 +16,9 @@
 
 package org.drools.core;
 
+import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.JDKTimerService;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.kie.api.time.SessionClock;
 
 /**
  * This enum represents all engine supported clocks
@@ -41,7 +41,7 @@ public enum ClockType {
         }
     };
 
-    public abstract SessionClock createInstance();
+    public abstract TimerService createInstance();
     
     private String string;
     ClockType( String string ) {

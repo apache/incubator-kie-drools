@@ -49,7 +49,7 @@ public class JDKTimerService
 
     protected ScheduledThreadPoolExecutor   scheduler;
 
-    protected TimerJobFactoryManager        jobFactoryManager = DefaultTimerJobFactoryManager.instance;
+    protected TimerJobFactoryManager        jobFactoryManager = DefaultTimerJobFactoryManager.INSTANCE;
 
     public JDKTimerService() {
         this(1);

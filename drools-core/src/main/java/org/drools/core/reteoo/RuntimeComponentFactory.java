@@ -30,6 +30,7 @@ import org.drools.core.marshalling.SerializablePlaceholderResolverStrategy;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.core.time.TimerService;
 import org.kie.api.internal.utils.KieService;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
@@ -67,6 +68,8 @@ public interface RuntimeComponentFactory extends KieService {
     GenericKieSessionMonitoringImpl createStatelessSessionMonitor(DroolsManagementAgent.CBSKey cbsKey);
 
     GlobalResolver createGlobalResolver(ReteEvaluator reteEvaluator, Environment environment);
+
+    TimerService createTimerService(ReteEvaluator reteEvaluator);
 
     class Holder {
         private static final RuntimeComponentFactory INSTANCE = createInstance();

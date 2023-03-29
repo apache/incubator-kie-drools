@@ -78,10 +78,6 @@ public class DynamicComponentsSupplier implements ComponentsSupplier {
         return ClassUtils.instantiateObject(className, classLoader);
     }
 
-    @Override
-    public Object createTimerService(String className) {
-        return ClassUtils.instantiateObject(className);
-    }
 
     private static class JaxbMethodHolder {
         private static final Method jaxbMethod = findJaxbMethod();
