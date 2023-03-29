@@ -18,6 +18,7 @@ package org.kie.kogito.resource.exceptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
 import org.kie.kogito.process.NodeInstanceNotFoundException;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
@@ -121,6 +122,12 @@ class BaseExceptionHandlerTest {
     @Test
     void testMapProcessInstanceNotFoundException() {
         Object response = tested.mapException(new ProcessInstanceNotFoundException("processInstanceId"));
+        assertThat(response).isEqualTo(notFoundResponse);
+    }
+
+    @Test
+    void testMapWorkItemNotFoundException() {
+        Object response = tested.mapException(new WorkItemNotFoundException("workItemId"));
         assertThat(response).isEqualTo(notFoundResponse);
     }
 

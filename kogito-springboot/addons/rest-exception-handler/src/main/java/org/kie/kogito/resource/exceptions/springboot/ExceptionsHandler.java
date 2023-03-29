@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.resource.exceptions.springboot;
 
+import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
 import org.kie.kogito.process.NodeInstanceNotFoundException;
 import org.kie.kogito.process.NodeNotFoundException;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
@@ -111,6 +112,11 @@ public class ExceptionsHandler extends BaseExceptionsHandler<ResponseEntity> {
 
     @ExceptionHandler(ProcessInstanceNotFoundException.class)
     public ResponseEntity toResponse(ProcessInstanceNotFoundException exception) {
+        return mapException(exception);
+    }
+
+    @ExceptionHandler(WorkItemNotFoundException.class)
+    public ResponseEntity toResponse(WorkItemNotFoundException exception) {
         return mapException(exception);
     }
 

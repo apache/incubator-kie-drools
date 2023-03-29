@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
 import org.kie.kogito.process.NodeInstanceNotFoundException;
 import org.kie.kogito.process.NodeNotFoundException;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
@@ -34,6 +35,7 @@ public abstract class BaseExceptionsHandler<T> {
 
     public static final String MESSAGE = "message";
     public static final String PROCESS_INSTANCE_ID = "processInstanceId";
+    private static final String TASK_ID = "taskId";
     public static final String VARIABLE = "variable";
     public static final String NODE_INSTANCE_ID = "nodeInstanceId";
     public static final String NODE_ID = "nodeId";
@@ -119,6 +121,11 @@ public abstract class BaseExceptionsHandler<T> {
                     response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
                     return response;
                 }, BaseExceptionsHandler.this::notFound));
+
+        mapper.put(WorkItemNotFoundException.class, new FunctionHolder<>(ex -> {
+            WorkItemNotFoundException exception = (WorkItemNotFoundException) ex;
+            return Map.of(MESSAGE, exception.getMessage(), TASK_ID, exception.getWorkItemId());
+        }, BaseExceptionsHandler.this::notFound));
 
         mapper.put(VariableViolationException.class, new FunctionHolder<>(
                 ex -> {
