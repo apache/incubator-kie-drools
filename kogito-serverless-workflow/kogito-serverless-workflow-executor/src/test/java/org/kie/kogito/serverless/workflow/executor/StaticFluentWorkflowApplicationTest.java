@@ -47,8 +47,8 @@ import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.forEach;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.inject;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.operation;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.parallel;
-import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.arrayNode;
-import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.objectNode;
+import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.jsonArray;
+import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.jsonObject;
 import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.workflow;
 
 public class StaticFluentWorkflowApplicationTest {
@@ -99,7 +99,7 @@ public class StaticFluentWorkflowApplicationTest {
             Workflow workflow = workflow("ForEachTest").function(expr(SQUARE, ".input*.input"))
                     .singleton(forEach(".numbers").loopVar("input").outputCollection(".result").action(call(SQUARE)));
             assertThat(application.execute(workflow, Collections.singletonMap("numbers", Arrays.asList(1, 2, 3, 4))).getWorkflowdata().get("result"))
-                    .isEqualTo(arrayNode().add(1).add(4).add(9).add(16));
+                    .isEqualTo(jsonArray().add(1).add(4).add(9).add(16));
         }
     }
 
@@ -117,8 +117,8 @@ public class StaticFluentWorkflowApplicationTest {
                     workflow("SwitchTest").function(log(LOG_INFO, WorkflowLogLevel.INFO)).function(expr(DOUBLE, ".input*=2")).function(expr(SQUARE, ".input*=.input")).function(expr(HALF, ".input/=2"))
                             .start(operation().action(call(DOUBLE)).action(call(SQUARE)).action(call(HALF)))
                             .next(operation().action(log(LOG_INFO, "\"Input is \\(.input)\"")))
-                            .when(".input%2==0").end(inject(objectNode().put(MESSAGE, EVEN)))
-                            .or().end(inject(objectNode().put(MESSAGE, ODD))).build();
+                            .when(".input%2==0").end(inject(jsonObject().put(MESSAGE, EVEN)))
+                            .or().end(inject(jsonObject().put(MESSAGE, ODD))).build();
             Process<JsonNodeModel> process = application.process(workflow);
             assertThat(application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata().get(MESSAGE).asText()).isEqualTo(ODD);
             assertThat(application.execute(process, Collections.singletonMap("input", 7)).getWorkflowdata().get(MESSAGE).asText()).isEqualTo(EVEN);
@@ -162,8 +162,8 @@ public class StaticFluentWorkflowApplicationTest {
             Workflow workflow = workflow("ServiceTest").function(java(DOUBLE, StaticFluentWorkflowApplicationTest.class.getName(), "duplicate"))
                     .function(java(PRODUCT, StaticFluentWorkflowApplicationTest.class.getName(), "multiply"))
                     .singleton(parallel()
-                            .newBranch().action(call(DOUBLE, new TextNode(".one")).outputFilter(".double")).endBranch()
-                            .newBranch().action(call(PRODUCT, objectNode().put("one", ".one").put("two", ".two")).outputFilter(".product")).endBranch());
+                            .newBranch().action(call(DOUBLE, ".one").outputFilter(".double")).endBranch()
+                            .newBranch().action(call(PRODUCT, jsonObject().put("one", ".one").put("two", ".two")).outputFilter(".product")).endBranch());
             Process<JsonNodeModel> process = application.process(workflow);
             JsonNode result = application.execute(process, Map.of("one", 4, "two", 8)).getWorkflowdata();
             assertThat(result.get("double").asInt()).isEqualTo(8);

@@ -17,6 +17,7 @@ package org.kie.kogito.serverless.workflow.fluent;
 
 import java.util.Optional;
 
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
@@ -30,7 +31,7 @@ import io.serverlessworkflow.api.filters.ActionDataFilter;
 import io.serverlessworkflow.api.functions.FunctionRef;
 import io.serverlessworkflow.api.functions.SubFlowRef;
 
-import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.objectNode;
+import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.jsonObject;
 
 public class ActionBuilder {
 
@@ -49,10 +50,18 @@ public class ActionBuilder {
         return call(functionBuilder, NullNode.instance);
     }
 
+    public static ActionBuilder call(String functionName, Object args) {
+        return call(functionName, JsonObjectUtils.fromValue(args));
+    }
+
     public static ActionBuilder call(FunctionBuilder functionBuilder, JsonNode args) {
         ActionBuilder actionBuilder = call(functionBuilder.getName(), args);
         actionBuilder.functionDefinition = Optional.of(functionBuilder);
         return actionBuilder;
+    }
+
+    public static ActionBuilder call(FunctionBuilder functionBuilder, Object args) {
+        return call(functionBuilder, JsonObjectUtils.fromValue(args));
     }
 
     public static ActionBuilder call(String functionName, JsonNode args) {
@@ -68,7 +77,7 @@ public class ActionBuilder {
     }
 
     private static JsonNode logArgs(String message) {
-        return objectNode().put(SysOutTypeHandler.SYSOUT_TYPE_PARAM, message);
+        return jsonObject().put(SysOutTypeHandler.SYSOUT_TYPE_PARAM, message);
     }
 
     public static ActionBuilder subprocess(Process<JsonNodeModel> subprocess) {

@@ -117,11 +117,11 @@ public class WorkflowBuilder {
         return this;
     }
 
-    public static ObjectNode objectNode() {
+    public static ObjectNode jsonObject() {
         return mapper.createObjectNode();
     }
 
-    public static ArrayNode arrayNode() {
+    public static ArrayNode jsonArray() {
         return mapper.createArrayNode();
     }
 
