@@ -1093,17 +1093,7 @@ class JPMMLVisitorTest {
                 .isTrue();
         classTested = "package com.yourorg;\n" +
                 "import java.util.List;\n" +
-                "import org.jpmml.model.cells.InputCell;\n" +
-                "class FooBar {\n" +
-                "};";
-        toTest = getImportsFromClassSource(classTested);
-        assertThat(jpmmlVisitor.toMigrate(toTest))
-                .isTrue();
-
-        classTested = "package com.yourorg;\n" +
-                "import java.util.List;\n" +
-                "import org.jpmml.model.cells.InputCell;\n" +
-                "import org.jpmml.model.cells.InputCell;\n" +
+                "import org.jpmml.model.inlinetable.InputCell;\n" +
                 "class FooBar {\n" +
                 "};";
         toTest = getImportsFromClassSource(classTested);

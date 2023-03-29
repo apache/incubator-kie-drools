@@ -18,6 +18,7 @@ package org.kie.openrewrite.recipe.jpmml;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Tree;
 import org.openrewrite.java.ChangeType;
+import org.openrewrite.java.JavaParser;
 import org.openrewrite.java.JavaTemplate;
 import org.openrewrite.java.JavaVisitor;
 import org.openrewrite.java.tree.*;
@@ -25,9 +26,14 @@ import org.openrewrite.marker.Markers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.*;
 
 public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
+
+    public static final String NEW_JPMML_PATH = String.format("META-INF%1$srewrite%1$spmml-model-1.6.4.jar", File.separator);
 
     private static final Logger logger = LoggerFactory.getLogger(JPMMLVisitor.class);
     static final String JPMML_MODEL_PACKAGE_BASE = "org.jpmml.model";
@@ -37,6 +43,8 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
 
     private static final String FIELD_NAME_FQDN = "org.dmg.pmml.FieldName";
     private static final String MODEL_NAME_FQDN = "org.dmg.pmml.Model";
+    private static final String MINING_FUNCTION_NAME_FQDN = "org.dmg.pmml.MiningFunction";
+    private static final String MINING_SCHEMA_NAME_FQDN = "org.dmg.pmml.MiningSchema";
 
     private static final String NUMERIC_PREDICTOR_FQDN = "org.dmg.pmml.regression.NumericPredictor";
 
@@ -60,11 +68,14 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
 
     private static final JavaType.Parameterized LIST_GENERIC_JAVA_TYPE = new JavaType.Parameterized(null, (JavaType.FullyQualified) LIST_JAVA_TYPE, List.of(JavaType.GenericTypeVariable.Primitive.String));
 
+    private static final JavaParser NewJpmmlModelJavaParser = getNewJPMMLJavaParser();
+
     private final JavaTemplate requireMiningFunctionTemplate = JavaTemplate.builder(this::getCursor,
                     "@Override\n" +
                             "    public MiningFunction requireMiningFunction() {\n" +
                             "        return null;\n" +
                             "    }\n")
+            .javaParser(() -> NewJpmmlModelJavaParser)
             .build();
 
     private final JavaTemplate requireMiningSchemaTemplate = JavaTemplate.builder(this::getCursor,
@@ -72,6 +83,7 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
                             "    public MiningSchema requireMiningSchema() {\n" +
                             "        return null;\n" +
                             "    }\n")
+            .javaParser(() -> NewJpmmlModelJavaParser)
             .build();
 
 
@@ -94,9 +106,7 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
 
     @Override
     public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext executionContext) {
-        if (classDecl.getType() != null &&
-                classDecl.getType().getSupertype() != null &&
-                MODEL_NAME_FQDN.equals(classDecl.getType().getSupertype().getFullyQualifiedName())) {
+        if (extendsModel(classDecl)) {
             classDecl = addMissingMethod(classDecl, "requireMiningFunction", requireMiningFunctionTemplate);
             classDecl = addMissingMethod(classDecl, "requireMiningSchema", requireMiningSchemaTemplate);
         }
@@ -117,6 +127,8 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
         try {
             cu = (J.CompilationUnit) super.visitCompilationUnit(cu, executionContext);
             maybeAddImport(targetInstantiatedType.toString());
+            maybeAddImport(MINING_FUNCTION_NAME_FQDN);
+            maybeAddImport(MINING_SCHEMA_NAME_FQDN);
             cu = (J.CompilationUnit) new ChangeType(FIELD_NAME_FQDN, String.class.getCanonicalName(), false)
                     .getVisitor()
                     .visitCompilationUnit(cu, executionContext);
@@ -210,7 +222,17 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
         } else {
             return cu;
         }
+    }
 
+    /**
+     * Return <code>true</code> if the given <code>J.ClassDeclaration</code> extends it extends <code>org.dmg.pmml.Model</code>
+     * @param classDecl
+     * @return
+     */
+    protected boolean extendsModel(J.ClassDeclaration classDecl) {
+        return classDecl.getType() != null &&
+                classDecl.getType().getSupertype() != null &&
+                MODEL_NAME_FQDN.equals(classDecl.getType().getSupertype().getFullyQualifiedName());
     }
 
     /**
@@ -232,7 +254,18 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
      * @return
      */
     protected boolean isFieldNameImport(J.Import toCheck) {
-        return (toCheck.getQualid().getType() instanceof JavaType.Class) && ((JavaType.Class) toCheck.getQualid().getType()).getFullyQualifiedName().equals(FIELD_NAME_FQDN);
+        return isSpecificImport(toCheck, FIELD_NAME_FQDN);
+    }
+
+    /**
+     * Return <code>true</code> if the given <code>J.Import</code> is fqdn,
+     * <code>false</code> otherwise
+     *
+     * @param toCheck
+     * @return
+     */
+    protected boolean isSpecificImport(J.Import toCheck, String fqdn) {
+        return (toCheck.getQualid().getType() instanceof JavaType.Class) && ((JavaType.Class) toCheck.getQualid().getType()).getFullyQualifiedName().equals(fqdn);
     }
 
     /**
@@ -466,6 +499,19 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
                     .withSelect(noArgClass)
                     .withArguments(Collections.singletonList(toArrayInvocation));
         }
+    }
+
+    private static JavaParser getNewJPMMLJavaParser() {
+        List<Path> paths = JavaParser.runtimeClasspath();
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(NEW_JPMML_PATH);
+       if (resource == null) {
+           throw new RuntimeException("Failed to find " + NEW_JPMML_PATH);
+       }
+        Path newJpmmlModel = Path.of(resource.getPath());
+        paths.add(newJpmmlModel);
+        return JavaParser.fromJavaVersion()
+                .classpath(paths)
+                .logCompilationWarningsAndErrors(true).build();
     }
 
 }

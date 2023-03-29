@@ -11,7 +11,7 @@ import org.openrewrite.test.RewriteTest;
 import java.nio.file.Path;
 import java.util.List;
 
-public class JPMMLCodeRecipeTest implements RewriteTest {
+class JPMMLCodeRecipeTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
@@ -24,7 +24,7 @@ public class JPMMLCodeRecipeTest implements RewriteTest {
     }
 
     @Test
-    public void removeFieldNameCreate() {
+    void removeFieldNameCreate() {
         @Language("java")
         String before = "package com.yourorg;\n" +
                 "import org.dmg.pmml.FieldName;\n" +
