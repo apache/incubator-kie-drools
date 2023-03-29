@@ -58,10 +58,10 @@ public class FunctionBuilder {
     }
 
     public static <T> FunctionBuilder java(String name, Function<T, ?> function) {
-        return new FunctionBuilder(new FunctionDefinitionEx(name).withFunction(function).withType(Type.CUSTOM).withOperation(JavaTypeHandler.JAVA_TYPE));
+        return new FunctionBuilder(new FunctionDefinitionEx<T>(name).withFunction(function).withType(Type.CUSTOM).withOperation(JavaTypeHandler.JAVA_TYPE));
     }
 
-    public static <T> FunctionBuilder java(String name, String className, String methodName) {
+    public static FunctionBuilder java(String name, String className, String methodName) {
         return new FunctionBuilder(new FunctionDefinition(name).withType(Type.CUSTOM)
                 .withOperation(ServiceTypeHandler.SERVICE_TYPE + CUSTOM_TYPE_SEPARATOR + className + ServiceTypeHandler.INTFC_SEPARATOR + methodName));
     }
