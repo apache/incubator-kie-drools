@@ -66,13 +66,13 @@ public class TransitionBuilder<T> {
         return new DefaultConditionTransitionBuilder<>(container, workflow, condition);
     }
 
-    public T end(StateBuilder<?, ?> stateBuilder) {
-        return end(stateBuilder, new End());
+    public T end() {
+        return end(new End());
     }
 
-    public T end(StateBuilder<?, ?> stateBuilder, End end) {
-        workflow.addFunctions(stateBuilder.getFunctions());
-        next(stateBuilder.build(end));
+    public T end(End end) {
+        DefaultState prevState = workflow.getLastState();
+        prevState.withEnd(end);
         return container;
     }
 

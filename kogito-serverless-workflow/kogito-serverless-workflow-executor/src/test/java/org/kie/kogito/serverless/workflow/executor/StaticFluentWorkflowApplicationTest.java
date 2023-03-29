@@ -57,7 +57,7 @@ public class StaticFluentWorkflowApplicationTest {
     void helloWorld() {
         final String GREETING_STRING = "Hello World!!!";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            Workflow workflow = workflow("HelloWorld").singleton(inject(new TextNode(GREETING_STRING)));
+            Workflow workflow = workflow("HelloWorld").start(inject(new TextNode(GREETING_STRING))).end().build();
             assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).contains(new TextNode(GREETING_STRING));
         }
     }
@@ -74,7 +74,7 @@ public class StaticFluentWorkflowApplicationTest {
         final String FUNCTION_NAME = "function";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("HelloRest").function(rest(FUNCTION_NAME, HttpMethod.get, "http://localhost:" + wm.getPort() + "/name"))
-                    .singleton(operation().action(call(FUNCTION_NAME)));
+                    .start(operation().action(call(FUNCTION_NAME))).end().build();
             assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).isEqualTo(expectedOutput);
         }
     }
@@ -87,7 +87,7 @@ public class StaticFluentWorkflowApplicationTest {
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("PlayingWithExpression")
                     .start(operation().action(call(expr(DOUBLE, ".input*=2"))).action(call(expr(SQUARE, ".input*=.input"))).action(call(expr(HALF, ".input/=2"))))
-                    .end(operation().action(log(WorkflowLogLevel.DEBUG, "Here we are!!!")).outputFilter("{result:.input}")).build();
+                    .next(operation().action(log(WorkflowLogLevel.DEBUG, "Here we are!!!")).outputFilter("{result:.input}")).end().build();
             assertThat(application.execute(workflow, Collections.singletonMap("input", 4)).getWorkflowdata().get("result").asInt()).isEqualTo(32);
         }
     }
@@ -97,7 +97,7 @@ public class StaticFluentWorkflowApplicationTest {
         final String SQUARE = "square";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("ForEachTest").function(expr(SQUARE, ".input*.input"))
-                    .singleton(forEach(".numbers").loopVar("input").outputCollection(".result").action(call(SQUARE)));
+                    .start(forEach(".numbers").loopVar("input").outputCollection(".result").action(call(SQUARE))).end().build();
             assertThat(application.execute(workflow, Collections.singletonMap("numbers", Arrays.asList(1, 2, 3, 4))).getWorkflowdata().get("result"))
                     .isEqualTo(jsonArray().add(1).add(4).add(9).add(16));
         }
@@ -117,8 +117,8 @@ public class StaticFluentWorkflowApplicationTest {
                     workflow("SwitchTest").function(log(LOG_INFO, WorkflowLogLevel.INFO)).function(expr(DOUBLE, ".input*=2")).function(expr(SQUARE, ".input*=.input")).function(expr(HALF, ".input/=2"))
                             .start(operation().action(call(DOUBLE)).action(call(SQUARE)).action(call(HALF)))
                             .next(operation().action(log(LOG_INFO, "\"Input is \\(.input)\"")))
-                            .when(".input%2==0").end(inject(jsonObject().put(MESSAGE, EVEN)))
-                            .or().end(inject(jsonObject().put(MESSAGE, ODD))).build();
+                            .when(".input%2==0").next(inject(jsonObject().put(MESSAGE, EVEN))).end()
+                            .or().next(inject(jsonObject().put(MESSAGE, ODD))).end().build();
             Process<JsonNodeModel> process = application.process(workflow);
             assertThat(application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata().get(MESSAGE).asText()).isEqualTo(ODD);
             assertThat(application.execute(process, Collections.singletonMap("input", 7)).getWorkflowdata().get(MESSAGE).asText()).isEqualTo(EVEN);
@@ -131,9 +131,10 @@ public class StaticFluentWorkflowApplicationTest {
         final String HALF = "half";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("ParallelTest").function(expr(DOUBLE, ".input*2")).function(expr(HALF, ".input/2"))
-                    .singleton(parallel()
+                    .start(parallel()
                             .newBranch().action(call(DOUBLE).outputFilter(".double")).endBranch()
-                            .newBranch().action(call(HALF).outputFilter(".half")).endBranch());
+                            .newBranch().action(call(HALF).outputFilter(".half")).endBranch())
+                    .end().build();
 
             Process<JsonNodeModel> process = application.process(workflow);
             JsonNode result = application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata();
@@ -161,9 +162,10 @@ public class StaticFluentWorkflowApplicationTest {
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("ServiceTest").function(java(DOUBLE, StaticFluentWorkflowApplicationTest.class.getName(), "duplicate"))
                     .function(java(PRODUCT, StaticFluentWorkflowApplicationTest.class.getName(), "multiply"))
-                    .singleton(parallel()
+                    .start(parallel()
                             .newBranch().action(call(DOUBLE, ".one").outputFilter(".double")).endBranch()
-                            .newBranch().action(call(PRODUCT, jsonObject().put("one", ".one").put("two", ".two")).outputFilter(".product")).endBranch());
+                            .newBranch().action(call(PRODUCT, jsonObject().put("one", ".one").put("two", ".two")).outputFilter(".product")).endBranch())
+                    .end().build();
             Process<JsonNodeModel> process = application.process(workflow);
             JsonNode result = application.execute(process, Map.of("one", 4, "two", 8)).getWorkflowdata();
             assertThat(result.get("double").asInt()).isEqualTo(8);
@@ -177,9 +179,10 @@ public class StaticFluentWorkflowApplicationTest {
         final String HALF = "half";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("Javatest").function(java(DOUBLE, this::duplicate))
-                    .singleton(parallel()
+                    .start(parallel()
                             .newBranch().action(call(DOUBLE, new TextNode(".input")).outputFilter(".double")).endBranch()
-                            .newBranch().action(call(java(HALF, this::half), new TextNode(".input")).outputFilter(".half")).endBranch());
+                            .newBranch().action(call(java(HALF, this::half), new TextNode(".input")).outputFilter(".half")).endBranch())
+                    .end().build();
             Process<JsonNodeModel> process = application.process(workflow);
             JsonNode result = application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata();
             assertThat(result.get("double").asInt()).isEqualTo(8);
@@ -192,7 +195,7 @@ public class StaticFluentWorkflowApplicationTest {
         final String INTERPOLATION = "interpolation";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("PlayingWithExpression").function(expr(INTERPOLATION, "\"My name is \\(.name)\""))
-                    .singleton(operation().action(call(INTERPOLATION)));
+                    .start(operation().action(call(INTERPOLATION))).end().build();
             assertThat(application.execute(workflow, Collections.singletonMap("name", "Javierito")).getWorkflowdata().get("response").asText()).isEqualTo("My name is Javierito");
         }
     }
@@ -202,7 +205,7 @@ public class StaticFluentWorkflowApplicationTest {
         final String INTERPOLATION = "interpolation";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("PlayingWithExpression").constant("name", "Javierito").function(expr(INTERPOLATION, "\"My name is \"+$CONST.name"))
-                    .singleton(operation().action(call(INTERPOLATION)));
+                    .start(operation().action(call(INTERPOLATION))).end().build();
             assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata().get("response").asText()).isEqualTo("My name is Javierito");
         }
     }
@@ -212,7 +215,7 @@ public class StaticFluentWorkflowApplicationTest {
         final String INTERPOLATION = "interpolation";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("PlayingWithExpression").constant("name", "Javierito").function(expr(INTERPOLATION, "\"My name is \\($CONST.name)\""))
-                    .singleton(operation().action(call(INTERPOLATION)));
+                    .start(operation().action(call(INTERPOLATION))).end().build();
             assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata().get("response").asText()).isEqualTo("My name is Javierito");
         }
     }

@@ -32,7 +32,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.serverlessworkflow.api.Workflow;
-import io.serverlessworkflow.api.end.End;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.start.Start;
 import io.serverlessworkflow.api.states.DefaultState;
@@ -78,12 +77,6 @@ public class WorkflowBuilder {
         }
         metadata.put(name, value);
         return this;
-    }
-
-    public Workflow singleton(StateBuilder<?, ?> stateBuilder) {
-        addFunctions(stateBuilder.getFunctions());
-        startState(stateBuilder.build(new End()));
-        return build();
     }
 
     public TransitionBuilder<WorkflowBuilder> start(StateBuilder<?, ?> stateBuilder) {
