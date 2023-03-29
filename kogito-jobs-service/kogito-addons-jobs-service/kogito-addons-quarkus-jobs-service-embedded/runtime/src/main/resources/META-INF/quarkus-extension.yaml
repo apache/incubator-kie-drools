@@ -3,7 +3,7 @@ description: Run Jobs Service embedded with the application.
 metadata:
   keywords:
     - kogito-addons-quarkus-jobs-service-embedded
-  guide:
+  guide: https://quarkus.io/guides/kogito
   categories:
     - "miscellaneous"
   status: "preview"
