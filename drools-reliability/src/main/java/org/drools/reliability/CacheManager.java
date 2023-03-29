@@ -157,6 +157,13 @@ public enum CacheManager implements AutoCloseable {
         }
     }
 
+    public void removeCachesBySessionId(String sessionId) {
+        cacheManager.getCacheNames()
+                .stream()
+                .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX + sessionId + DELIMITER))
+                .forEach(this::removeCache);
+    }
+
     public void removeAllSessionCaches() {
         cacheManager.getCacheNames()
                 .stream()
