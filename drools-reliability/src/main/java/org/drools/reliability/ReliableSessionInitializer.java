@@ -30,6 +30,8 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.Match;
+import org.kie.internal.event.rule.RuleEventListener;
 
 public class ReliableSessionInitializer {
 
@@ -57,6 +59,7 @@ public class ReliableSessionInitializer {
 
             session.setWorkingMemoryActionListener(entry -> onWorkingMemoryAction(session, entry));
             session.getRuleRuntimeEventSupport().addEventListener(new SimpleStoreRuntimeEventListener(session));
+            session.getRuleEventSupport().addEventListener(new ReliableSessionRuleEventListener(session));
 
             return session;
         }
@@ -105,7 +108,21 @@ public class ReliableSessionInitializer {
 
         @Override
         public InternalWorkingMemory init(InternalWorkingMemory session, PersistedSessionOption persistedSessionOption) {
+            session.getRuleEventSupport().addEventListener(new ReliableSessionRuleEventListener(session));
             return session;
+        }
+    }
+
+    private static class ReliableSessionRuleEventListener implements RuleEventListener {
+        private final InternalWorkingMemory session;
+
+        private ReliableSessionRuleEventListener(InternalWorkingMemory session) {
+            this.session = session;
+        }
+
+        @Override
+        public void onAfterMatchFire(Match match) {
+            ((ReliableGlobalResolver) session.getGlobalResolver()).updateCache();
         }
     }
 }

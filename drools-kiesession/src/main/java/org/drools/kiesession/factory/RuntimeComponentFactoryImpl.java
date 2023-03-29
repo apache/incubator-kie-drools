@@ -19,6 +19,7 @@ package org.drools.kiesession.factory;
 import java.io.Serializable;
 
 import org.drools.core.SessionConfiguration;
+import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.EntryPointFactory;
@@ -33,6 +34,7 @@ import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.accessor.FactHandleFactory;
+import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.kiesession.agenda.DefaultAgendaFactory;
 import org.drools.kiesession.entrypoints.NamedEntryPointFactory;
@@ -43,6 +45,8 @@ import org.drools.kiesession.session.KieSessionsPoolImpl;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
@@ -93,6 +97,14 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
             return internalInitSession( kbase, sessionConfig, session );
         }
         return (InternalWorkingMemory) kbase.getSessionPool().newKieSession( sessionConfig );
+    }
+
+    public GlobalResolver createGlobalResolver(ReteEvaluator reteEvaluator, Environment environment) {
+        Globals globals = (Globals) environment.get( EnvironmentName.GLOBALS );
+        if (globals != null) {
+            return globals instanceof GlobalResolver ? (GlobalResolver) globals : new StatefulKnowledgeSessionImpl.GlobalsAdapter( globals );
+        }
+        return new MapGlobalResolver();
     }
 
     private StatefulKnowledgeSessionImpl internalInitSession( InternalKnowledgeBase kbase, SessionConfiguration sessionConfig, StatefulKnowledgeSessionImpl session ) {

@@ -21,7 +21,9 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
+import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.runtime.Environment;
@@ -52,6 +54,11 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
             return internalInitSession(kbase, sessionConfig, session);
         }
         return (InternalWorkingMemory) kbase.getSessionPool().newKieSession(sessionConfig);
+    }
+
+    @Override
+    public GlobalResolver createGlobalResolver(ReteEvaluator reteEvaluator, Environment environment) {
+        return new ReliableGlobalResolver(CacheManager.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "globals"));
     }
 
     private InternalWorkingMemory internalInitSession(InternalKnowledgeBase kbase, SessionConfiguration sessionConfig, InternalWorkingMemory session) {

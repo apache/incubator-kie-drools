@@ -15,7 +15,13 @@
 
 package org.drools.reliability;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.drools.core.ClassObjectFilter;
+import org.drools.core.common.InternalWorkingMemory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.KieBase;
@@ -26,11 +32,6 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 public abstract class ReliabilityTestBasics {
@@ -81,6 +82,11 @@ public abstract class ReliabilityTestBasics {
         return (List<Object>) session.getGlobal("results");
     }
 
+    protected void clearResults() {
+        ((List<Object>) session.getGlobal("results")).clear();
+        ((ReliableGlobalResolver) ((InternalWorkingMemory) session).getGlobalResolver()).updateCache();
+    }
+
     protected KieSession createSession(String drl, PersistedSessionOption.Strategy strategy) {
         getKieSession(drl, PersistedSessionOption.newSession(strategy));
         savedSessionId = session.getIdentifier();
@@ -96,8 +102,10 @@ public abstract class ReliabilityTestBasics {
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         conf.setOption(option);
         session = kbase.newKieSession(conf, null);
-        List<Object> results = new ArrayList<>();
-        session.setGlobal("results", results);
+        if (option.isNewSession()) {
+            List<Object> results = new ArrayList<>();
+            session.setGlobal("results", results);
+        }
         return session;
     }
 

@@ -15,7 +15,6 @@
 
 package org.drools.reliability;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -61,6 +60,7 @@ public class ReliabilityTestUpdateInDrl extends ReliabilityTestBasics {
         failover();
 
         restoreSession(RULE_UPDATE, strategy);
+        clearResults();
 
         insertString("E"); // NonMatchingPerson will match rule X
 
@@ -70,6 +70,7 @@ public class ReliabilityTestUpdateInDrl extends ReliabilityTestBasics {
         failover();
 
         restoreSession(RULE_UPDATE, strategy);
+        clearResults();
 
         assertThat(session.fireAllRules()).isEqualTo(0);
         assertThat(getResults()).isEmpty();

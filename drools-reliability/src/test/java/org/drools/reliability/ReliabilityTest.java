@@ -98,6 +98,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
         failover();
 
         restoreSession(BASIC_RULE, strategy);
+        clearResults();
 
         insertNonMatchingPerson("Toshiya", 35);
         insertMatchingPerson("Matching Person Three", 41);
@@ -126,7 +127,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
 		session.fireAllRules();
 
-		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person Two");
+		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
     }
 
     @ParameterizedTest
@@ -153,10 +154,11 @@ class ReliabilityTest extends ReliabilityTestBasics {
         restoreSession(BASIC_RULE, strategy);
 
         assertThat(session.fireAllRules()).isEqualTo(1);
-        assertThat(getResults()).containsExactlyInAnyOrder("MegaToshiya");
+        assertThat(getResults()).containsExactlyInAnyOrder("Mario", "MegaToshiya");
 
         failover();
         restoreSession(BASIC_RULE, strategy);
+        clearResults();
 
         assertThat(session.fireAllRules()).isEqualTo(0);
         assertThat(getResults()).isEmpty();
@@ -179,6 +181,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         failover();
         restoreSession(BASIC_RULE, strategy);
+        clearResults();
 
         insertMatchingPerson("Matching Person Two",40);
 
