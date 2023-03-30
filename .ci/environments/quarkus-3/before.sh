@@ -9,6 +9,14 @@ quarkus_version=${QUARKUS_VERSION:-3.0.0.Alpha5}
 quarkus_file="${script_dir_path}/quarkus3.yml"
 project_version='quarkus-3-SNAPSHOT'
 
+rewrite=${1:-'none'}
+echo "rewrite "${rewrite}
+
+if [ "rewrite" != ${rewrite} ]; then
+    echo "No rewrite to be done. Exited"
+    exit 0
+fi
+
 export MAVEN_OPTS="-Xmx16192m"
 
 echo "Update project with Quarkus version ${quarkus_version}"
