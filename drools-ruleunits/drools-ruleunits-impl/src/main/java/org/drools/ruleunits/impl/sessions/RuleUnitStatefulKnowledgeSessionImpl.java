@@ -22,15 +22,14 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.ruleunits.api.RuleUnits;
 import org.drools.ruleunits.impl.facthandles.RuleUnitDefaultFactHandle;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.rule.FactHandle;
-import org.drools.ruleunits.api.RuleUnits;
 
 public class RuleUnitStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl {
 
@@ -50,11 +49,6 @@ public class RuleUnitStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
     public RuleUnitStatefulKnowledgeSessionImpl(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda,
                                                 Environment environment) {
         super(id, kBase, handleFactory, propagationContext, config, agenda, environment);
-    }
-
-    @Override
-    protected TimerService createTimerService() {
-        return RuleUnitTimerServiceFactory.getTimerService(this.config.as(SessionConfiguration.KEY));
     }
 
     @Override

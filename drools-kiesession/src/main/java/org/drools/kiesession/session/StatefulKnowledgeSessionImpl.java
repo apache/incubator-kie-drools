@@ -98,7 +98,6 @@ import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.runtime.rule.impl.LiveQueryImpl;
 import org.drools.core.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
 import org.drools.core.time.TimerService;
-import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.entrypoints.NamedEntryPointsManager;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -1460,7 +1459,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     protected TimerService createTimerService() {
-        return TimerServiceFactory.getTimerService( this.config.as(SessionConfiguration.KEY) );
+        return RuntimeComponentFactory.get().createTimerService(this);
     }
 
     public SessionClock getSessionClock() {

@@ -31,6 +31,8 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
 
     PropagationContextFactory getPctxFactory();
 
+    void insert(InternalFactHandle handle);
+
     FactHandle insert( Object object,
                        boolean dynamic,
                        RuleImpl rule,

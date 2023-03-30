@@ -36,6 +36,7 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.core.time.TimerService;
 import org.drools.kiesession.agenda.DefaultAgendaFactory;
 import org.drools.kiesession.entrypoints.NamedEntryPointFactory;
 import org.drools.kiesession.management.KieSessionMonitoringImpl;
@@ -105,6 +106,10 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
             return globals instanceof GlobalResolver ? (GlobalResolver) globals : new StatefulKnowledgeSessionImpl.GlobalsAdapter( globals );
         }
         return new MapGlobalResolver();
+    }
+
+    public TimerService createTimerService(ReteEvaluator reteEvaluator) {
+        return reteEvaluator.getSessionConfiguration().createTimerService();
     }
 
     private StatefulKnowledgeSessionImpl internalInitSession( InternalKnowledgeBase kbase, SessionConfiguration sessionConfig, StatefulKnowledgeSessionImpl session ) {

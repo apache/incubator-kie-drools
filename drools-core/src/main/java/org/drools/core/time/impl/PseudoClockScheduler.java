@@ -27,8 +27,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -50,25 +48,15 @@ public class PseudoClockScheduler
     Externalizable,
     InternalSchedulerService {
     
-    private Logger logger = LoggerFactory.getLogger( PseudoClockScheduler.class ); 
+    private final Logger logger = LoggerFactory.getLogger( PseudoClockScheduler.class );
 
-    private AtomicLong timer;
-    private PriorityQueue<DefaultTimerJobInstance> queue;
-    private transient InternalWorkingMemory session;
+    protected AtomicLong timer = new AtomicLong(0);
 
-    private TimerJobFactoryManager jobFactoryManager = DefaultTimerJobFactoryManager.instance;
+    protected PriorityQueue<DefaultTimerJobInstance> queue = new PriorityQueue<>();
 
-    private AtomicLong idCounter = new AtomicLong();
+    private TimerJobFactoryManager jobFactoryManager = DefaultTimerJobFactoryManager.INSTANCE;
 
-    public PseudoClockScheduler() {
-        this( null );
-    }
-
-    public PseudoClockScheduler(InternalWorkingMemory session) {
-        this.timer = new AtomicLong(0);
-        this.queue = new PriorityQueue<>();
-        this.session = session;
-    }
+    protected AtomicLong idCounter = new AtomicLong(0);
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -78,7 +66,6 @@ public class PseudoClockScheduler
         if ( tmp != null ) {
             queue = tmp;
         }
-        session = ((DroolsObjectInputStream) in).getWorkingMemory();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -88,32 +75,23 @@ public class PseudoClockScheduler
         out.writeObject( queue.isEmpty() ? null : queue );
     }
 
+    @Override
     public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
         this.jobFactoryManager = timerJobFactoryManager;
     }
-    
+
+    @Override
     public TimerJobFactoryManager getTimerJobFactoryManager() {
         return this.jobFactoryManager;
-    }    
+    }
 
-    /**
-     * @inheritDoc
-     * 
-     * @see org.kie.api.time.SessionClock#getCurrentTime()
-     */
+    @Override
     public long getCurrentTime() {
         return this.timer.get();
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @see org.drools.core.time.TimerService#scheduleJob(Job, JobContext, Trigger)
-     */
-    public JobHandle scheduleJob(Job job,
-                                 JobContext ctx,
-                                 Trigger trigger) {
-
+    @Override
+    public JobHandle scheduleJob(Job job, JobContext ctx, Trigger trigger) {
         Date date = trigger.hasNextFireTime();
         if ( date == null ){
             return null;
@@ -126,6 +104,7 @@ public class PseudoClockScheduler
         return jobHandle;
     }
 
+    @Override
     public void internalSchedule(TimerJobInstance timerJobInstance) {
         jobFactoryManager.addTimerJobInstance(timerJobInstance);
         synchronized (this) {
@@ -133,40 +112,20 @@ public class PseudoClockScheduler
         }
     }
 
-    /**
-     * @inheritDoc
-     * @see org.drools.core.time.TimerService#removeJob(JobHandle)
-     */
+    @Override
     public synchronized boolean removeJob(JobHandle jobHandle) {
         jobHandle.setCancel(true);
         jobFactoryManager.removeTimerJobInstance(((DefaultJobHandle) jobHandle).getTimerJobInstance());
         return this.queue.remove((DefaultTimerJobInstance) ((DefaultJobHandle) jobHandle).getTimerJobInstance());
     }
 
-    /**
-     * @inheritDoc
-     */
-    public long advanceTime(long amount,
-                            TimeUnit unit) {
+    @Override
+    public long advanceTime(long amount, TimeUnit unit) {
         return this.runCallBacksAndIncreaseTimer( unit.toMillis( amount ) );
     }
 
     public void setStartupTime(long i) {
         this.timer.set( i );
-    }
-
-    /**
-     * @return the session
-     */
-    public synchronized InternalWorkingMemory getSession() {
-        return session;
-    }
-
-    /**
-     * @param session the session to set
-     */
-    public synchronized void setSession(InternalWorkingMemory session) {
-        this.session = session;
     }
 
     @Override
@@ -208,11 +167,13 @@ public class PseudoClockScheduler
         return this.timer.get();
     }
 
+    @Override
     public synchronized long getTimeToNextJob() {
         TimerJobInstance item = queue.peek();
         return (item != null) ? item.getTrigger().hasNextFireTime().getTime() - this.timer.get() : -1;
     }
 
+    @Override
     public Collection<TimerJobInstance> getTimerJobInstances(long id) {
         return jobFactoryManager.getTimerJobInstances();
     }

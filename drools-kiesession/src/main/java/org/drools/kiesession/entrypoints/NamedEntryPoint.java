@@ -225,12 +225,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
                     addPropertyChangeListener( handle, dynamic );
                 }
 
-                insert( handle,
-                        object,
-                        rule,
-                        typeConf,
-                        propagationContext );
-
+                insert( handle, object, rule, typeConf, propagationContext );
             } finally {
                 unlock();
             }
@@ -239,6 +234,12 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
             this.reteEvaluator.endOperation();
         }
 
+    }
+
+    public void insert(InternalFactHandle handle) {
+        Object object = handle.getObject();
+        ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( this.entryPoint, object );
+        insert( handle, object, null, null, typeConf );
     }
 
     public void insert(InternalFactHandle handle,

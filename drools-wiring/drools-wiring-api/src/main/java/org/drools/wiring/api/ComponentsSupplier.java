@@ -37,7 +37,5 @@ public interface ComponentsSupplier extends KieService {
 
     Object createConsequenceExceptionHandler(String className, ClassLoader classLoader);
 
-    Object createTimerService( String className );
-
     default void addPackageFromXSD(KnowledgeBuilder kBuilder, Resource resource, ResourceConfiguration configuration) throws IOException { }
 }
