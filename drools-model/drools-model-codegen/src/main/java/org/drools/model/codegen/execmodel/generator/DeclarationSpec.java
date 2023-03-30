@@ -46,7 +46,7 @@ public class DeclarationSpec {
     private String boundVariable;
     private MethodCallExpr bindingExpr;
     private boolean boxed = false;
-    private Optional<PatternDescr> belongingPatternDescr;
+    private Optional<PatternDescr> belongingPatternDescr = Optional.empty();
 
     public DeclarationSpec(String bindingId, Type declarationType) {
         this(bindingId, declarationType, Optional.empty(), Optional.empty(), Optional.empty(), false);
