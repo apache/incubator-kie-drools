@@ -1094,6 +1094,31 @@ public class PropertyReactivityTest extends BaseModelTest {
     }
 
     @Test
+    public void externalFunctionWithBindVariable_shouldNotCauseInfiniteLoop() {
+        // DROOLS-7372
+        final String str = "import " + Fact.class.getCanonicalName() + ";\n" +
+                           "import static " + PropertyReactivityTest.class.getCanonicalName() + ".*;\n" +
+                           "\n" +
+                           "rule R1 when\n" +
+                           "    $fact: Fact($id : a == 99999, convertToString($id) == \"BIG\")\n" +
+                           "then\n" +
+                           "    modify($fact) { setResult(\"OK\") };\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Fact bigString = new Fact();
+        bigString.setA(99999);
+        bigString.setResult("NG");
+
+        ksession.insert(bigString);
+        assertThat(ksession.fireAllRules(3))
+                .as("'$id' is resolved as property 'a'. Hence, no class reactive, so the rule shouldn't loop")
+                .isEqualTo(1);
+        assertThat(bigString.getResult()).isEqualTo("OK");
+    }
+
+    @Test
     public void testUnwatch() {
         // RHDM-1553
         final String str =

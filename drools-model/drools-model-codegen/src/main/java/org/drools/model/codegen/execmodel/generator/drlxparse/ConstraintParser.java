@@ -176,6 +176,8 @@ public class ConstraintParser {
         DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getLeftExprTypeBeforeCoercion() );
         if (drlx.getExpr() instanceof NameExpr) {
             decl.setBoundVariable( PrintUtil.printNode(drlx.getExpr()) );
+        } else if (drlx.getExpr() instanceof BinaryExpr) {
+            decl.setBoundVariable(PrintUtil.printNode(drlx.getExpr().asBinaryExpr().getLeft()));
         }
         decl.setBelongingPatternDescr(context.getCurrentPatternDescr());
         singleResult.setExprBinding( bindId );

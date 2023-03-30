@@ -626,6 +626,14 @@ public class ExpressionTyper {
                     return;
                 }
             }
+        } else if (arg instanceof NameExpr) {
+            String name = ((NameExpr) arg).getNameAsString();
+            ruleContext.getDeclarationById(name)
+                       .filter(decl -> decl.getBelongingPatternDescr().isPresent())
+                       .filter(decl -> decl.getBelongingPatternDescr().equals(ruleContext.getCurrentPatternDescr()))
+                       .flatMap(decl -> decl.getBoundVariable())
+                       .ifPresent(context::addReactOnProperties);
+            return;
         }
 
         for (Node child : arg.getChildNodes()) {
