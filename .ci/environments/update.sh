@@ -40,7 +40,7 @@ if [ -d ${patches_path} ]; then
     for patch_file in "${patches_path}"/*
     do
         echo "Apply git patch ${patch_file}"
-        git apply ${patch_file}
+        git apply ${patch_file} --whitespace=fix
     done
 else
     echo 'No patch to apply'
