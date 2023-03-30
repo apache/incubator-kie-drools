@@ -45,6 +45,8 @@ import org.kie.api.time.SessionClock;
 
 public interface ReteEvaluator {
 
+    enum InternalOperationType{ FIRE, INSERT, UPDATE, DELETE, SET_GLOBAL }
+
     long getIdentifier();
 
     ActivationsManager getActivationsManager();
@@ -88,11 +90,7 @@ public interface ReteEvaluator {
         return timerService != null ? timerService.getTimerJobInstances(id) : Collections.emptyList();
     }
 
-    default void addPropagation(PropagationEntry propagationEntry) {
-        addPropagation(propagationEntry, false);
-    }
-
-    void addPropagation(PropagationEntry propagationEntry, boolean register);
+    void addPropagation(PropagationEntry propagationEntry);
 
     long getNextPropagationIdCounter();
 
@@ -122,8 +120,8 @@ public interface ReteEvaluator {
         return getKnowledgeBase().getRuleBaseConfiguration().isSequential();
     }
 
-    default void startOperation() { }
-    default void endOperation() { }
+    default void startOperation(InternalOperationType operationType) { }
+    default void endOperation(InternalOperationType operationType) { }
 
     default KnowledgeHelper createKnowledgeHelper() {
         return RuntimeComponentFactory.get().createKnowledgeHelper(this);

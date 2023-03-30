@@ -80,8 +80,6 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
 
     private long                            expirationOffset = -1;
 
-    private boolean queryNode;
-
     /* always dirty after serialisation */
     private transient volatile boolean dirty;
 
@@ -117,10 +115,6 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         idGenerator = new IdGenerator(id);
 
         setObjectMemoryEnabled(context.isObjectTypeNodeMemoryEnabled());
-
-        if (ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom(objectType)) {
-            queryNode = true;
-        }
 
         this.dirty = true;
 
@@ -526,7 +520,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         @Override
         public void execute(JobContext ctx) {
             ExpireJobContext context = (ExpireJobContext) ctx;
-            context.reteEvaluator.addPropagation(context.expireAction, true);
+            context.reteEvaluator.addPropagation(context.expireAction);
             context.getExpireAction().getFactHandle().removeJob( context.getJobHandle());
         }
     }

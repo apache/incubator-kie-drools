@@ -72,26 +72,6 @@ public interface InternalWorkingMemory
     void endBatchExecution();
     
     /**
-     * This method must be called before starting any new work in the engine,
-     * like inserting a new fact or firing a new rule. It will reset the engine
-     * idle time counter.
-     * 
-     * This method must be extremely light to avoid contentions when called by 
-     * multiple threads/entry-points
-     */
-    void startOperation();
-
-    /**
-     * This method must be called after finishing any work in the engine,
-     * like inserting a new fact or firing a new rule. It will reset the engine
-     * idle time counter.
-     * 
-     * This method must be extremely light to avoid contentions when called by 
-     * multiple threads/entry-points
-     */
-    void endOperation();
-    
-    /**
      * Returns the number of time units (usually ms) that the engine is idle
      * according to the session clock or -1 if it is not idle.
      * 
@@ -111,19 +91,6 @@ public interface InternalWorkingMemory
     long getTimeToNextJob();
     
     void updateEntryPointsCache();
-    
-    /**
-     * This method is called by the agenda before firing a new activation
-     * to ensure the working memory is in a safe state to fire the activation.
-     */
-    void prepareToFireActivation();
-    
-    /**
-     * This method is called by the agenda right after an activation was fired
-     * to allow the working memory to resume any activities blocked during 
-     * activation firing. 
-     */
-    void activationFired();
     
     /**
      * Returns the total number of facts in the working memory, i.e., counting

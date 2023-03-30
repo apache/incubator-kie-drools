@@ -23,10 +23,6 @@ public interface InternalKnowledgeRuntime extends KieRuntime {
 
     TimerService getTimerService();
 
-    void startOperation();
-
-    void endOperation();
-
     InternalProcessRuntime getProcessRuntime();
 
     void setIdentifier(long id);

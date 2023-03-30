@@ -238,10 +238,6 @@ public class StatefulKnowledgeSessionForRHS
         return delegate.getProcessInstance(correlationKey);
     }
 
-    public long getLastIdleTimestamp() {
-        return delegate.getLastIdleTimestamp();
-    }
-
     public int hashCode() {
         return delegate.hashCode();
     }
@@ -557,8 +553,8 @@ public class StatefulKnowledgeSessionForRHS
         delegate.endBatchExecution();
     }
 
-    public void startOperation() {
-        delegate.startOperation();
+    public void startOperation(InternalOperationType operationType) {
+        delegate.startOperation(operationType);
     }
 
     public InternalFactHandle getFactHandle(Object object) {
@@ -569,8 +565,8 @@ public class StatefulKnowledgeSessionForRHS
         return delegate.iterateObjects();
     }
 
-    public void endOperation() {
-        delegate.endOperation();
+    public void endOperation(InternalOperationType operationType) {
+        delegate.endOperation(operationType);
     }
 
     public Iterator<?> iterateObjects(ObjectFilter filter) {
@@ -605,20 +601,12 @@ public class StatefulKnowledgeSessionForRHS
         delegate.updateEntryPointsCache();
     }
 
-    public void prepareToFireActivation() {
-        delegate.prepareToFireActivation();
-    }
-
     public Iterator<InternalFactHandle> iterateFactHandles(ObjectFilter filter) {
         return delegate.iterateFactHandles(filter);
     }
 
     public long getFactCount() {
         return delegate.getFactCount();
-    }
-
-    public void activationFired() {
-        delegate.activationFired();
     }
 
     public long getTotalFactCount() {
@@ -641,8 +629,8 @@ public class StatefulKnowledgeSessionForRHS
         delegate.closeLiveQuery(factHandle);
     }
 
-    public void addPropagation(PropagationEntry propagationEntry, boolean register) {
-        delegate.addPropagation(propagationEntry, register);
+    public void addPropagation(PropagationEntry propagationEntry) {
+        delegate.addPropagation(propagationEntry);
     }
 
     public void flushPropagations() {

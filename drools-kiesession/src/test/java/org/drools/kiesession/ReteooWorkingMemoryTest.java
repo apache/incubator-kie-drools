@@ -152,7 +152,7 @@ public class ReteooWorkingMemoryTest {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
         final ReentrantAction action = new ReentrantAction();
-        ksession.addPropagation( action, true );
+        ksession.addPropagation( action );
         ksession.flushPropagations();
         assertThat(action.counter.get()).isEqualTo(2);
     }

@@ -199,17 +199,8 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     }
 
     @Override
-    public void addPropagation(PropagationEntry propagationEntry, boolean register) {
-        try {
-            if (register) {
-                startOperation();
-            }
-            activationsManager.addPropagation( propagationEntry );
-        } finally {
-            if (register) {
-                endOperation();
-            }
-        }
+    public void addPropagation(PropagationEntry propagationEntry) {
+        activationsManager.addPropagation( propagationEntry );
     }
 
     @Override
@@ -273,10 +264,10 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     @Override
     public int fireAllRules(final AgendaFilter agendaFilter, int fireLimit) {
         try {
-            startOperation();
+            startOperation(InternalOperationType.FIRE);
             return this.activationsManager.fireAllRules( agendaFilter, fireLimit );
         } finally {
-            endOperation();
+            endOperation(InternalOperationType.FIRE);
         }
     }
 

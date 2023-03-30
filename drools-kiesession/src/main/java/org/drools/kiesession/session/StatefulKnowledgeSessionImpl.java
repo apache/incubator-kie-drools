@@ -618,7 +618,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         try {
             if (!calledFromRHS) {
-                startOperation();
                 this.lock.lock();
             }
 
@@ -665,7 +664,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         } finally {
             if (!calledFromRHS) {
                 this.lock.unlock();
-                endOperation();
             }
         }
     }
@@ -685,7 +683,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                    final ViewChangedEventListener listener) {
 
         try {
-            startOperation();
             this.lock.lock();
 
             this.kBase.executeQueuedActions();
@@ -709,7 +706,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                       handle );
         } finally {
             this.lock.unlock();
-            endOperation();
         }
     }
 
@@ -722,14 +718,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public void closeLiveQuery(final InternalFactHandle factHandle) {
 
         try {
-            startOperation();
             this.lock.lock();
             ExecuteCloseLiveQuery query = new ExecuteCloseLiveQuery( factHandle );
             addPropagation( query );
             query.getResult();
         } finally {
             this.lock.unlock();
-            endOperation();
         }
     }
 
@@ -964,7 +958,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         try {
             this.kBase.readLock();
-            startOperation();
+            startOperation(InternalOperationType.SET_GLOBAL);
             // Make sure the global has been declared in the RuleBase
             Type type = this.kBase.getGlobals().get( identifier );
             if ( (type == null) ) {
@@ -973,11 +967,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 throw new RuntimeException( "Illegal class for global. " + "Expected [" + type.getTypeName() + "], " + "found [" + value.getClass().getName() + "]." );
 
             } else {
-                this.globalResolver.setGlobal( identifier,
-                                               value );
+                this.globalResolver.setGlobal( identifier, value );
             }
         } finally {
-            endOperation();
+            endOperation(InternalOperationType.SET_GLOBAL);
             this.kBase.readUnlock();
         }
     }
@@ -1084,10 +1077,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                             int fireLimit) {
         checkAlive();
         try {
-            startOperation();
+            startOperation(InternalOperationType.FIRE);
             return internalFireAllRules(agendaFilter, fireLimit);
         } finally {
-            endOperation();
+            endOperation(InternalOperationType.FIRE);
         }
     }
 
@@ -1132,10 +1125,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         try {
-            startOperation();
+            startOperation(InternalOperationType.FIRE);
             agenda.fireUntilHalt( agendaFilter );
         } finally {
-            endOperation();
+            endOperation(InternalOperationType.FIRE);
         }
     }
 
@@ -1512,7 +1505,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * This method must be extremely light to avoid contentions when called by
      * multiple threads/entry-points
      */
-    public void startOperation() {
+    @Override
+    public void startOperation(InternalOperationType operationType) {
         if (getRuleSessionConfiguration().isThreadSafe() && this.opCounter.getAndIncrement() == 0 ) {
             // means the engine was idle, reset the timestamp
             this.lastIdleTimestamp.set(-1);
@@ -1533,7 +1527,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * This method must be extremely light to avoid contentions when called by
      * multiple threads/entry-points
      */
-    public void endOperation() {
+    @Override
+    public void endOperation(InternalOperationType operationType) {
         if (getRuleSessionConfiguration().isThreadSafe() && this.opCounter.decrementAndGet() == 0 ) {
             // means the engine is idle, so, set the timestamp
             if (this.timerService != null) {
@@ -1560,12 +1555,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.lastIdleTimestamp.get();
     }
 
-    public void prepareToFireActivation() {
-    }
-
-    public void activationFired() {
-    }
-
     /**
      * Returns the number of time units (usually ms) to
      * the next scheduled job
@@ -1578,17 +1567,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     @Override
-    public void addPropagation(PropagationEntry propagationEntry, boolean register) {
-        try {
-            if (register) {
-                startOperation();
-            }
-            agenda.addPropagation( propagationEntry );
-        } finally {
-            if (register) {
-                endOperation();
-            }
-        }
+    public void addPropagation(PropagationEntry propagationEntry) {
+        agenda.addPropagation( propagationEntry );
     }
 
     public void flushPropagations() {

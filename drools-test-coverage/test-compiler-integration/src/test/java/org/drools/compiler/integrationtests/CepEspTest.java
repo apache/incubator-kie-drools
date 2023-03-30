@@ -1277,10 +1277,6 @@ public class CepEspTest extends AbstractCepEspTest {
 
                 // advance clock and assert new data
                 clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
-                // advancing clock time will cause events to expire
-                assertThat(wm.getIdleTime()).isEqualTo(0);
-                // next job is in 10 seconds: expire another event
-                //assertEquals( 10000, iwm.getTimeToNextJob());
 
                 wm.insert(new OrderEvent("4", "customer A", 25));
                 wm.fireAllRules();

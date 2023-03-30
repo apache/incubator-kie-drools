@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.drools.core.ClassObjectFilter;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reliability.domain.Person;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -88,7 +87,6 @@ public abstract class ReliabilityTestBasics {
 
     protected void clearResults() {
         ((List<Object>) session.getGlobal("results")).clear();
-        ((ReliableGlobalResolver) ((InternalWorkingMemory) session).getGlobalResolver()).updateCache();
     }
 
     protected KieSession createSession(String drl, PersistedSessionOption.Strategy strategy, Option... options) {
