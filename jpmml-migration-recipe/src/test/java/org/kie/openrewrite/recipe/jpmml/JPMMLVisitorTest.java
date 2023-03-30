@@ -584,39 +584,6 @@ class JPMMLVisitorTest {
     }
 
     @Test
-    public void removeFieldNameImport_removed() {
-        String classTested = "package com.yourorg;\n" +
-                "import org.dmg.pmml.FieldName;\n" +
-                "import java.util.List;\n" +
-                "class FooBar {\n" +
-                "};";
-        J.CompilationUnit toTest = getCompilationUnitFromClassSource(classTested);
-        J.CompilationUnit retrieved = jpmmlVisitor.removeFieldNameImport(toTest);
-        assertThat(retrieved)
-                .isEqualTo(toTest);
-        assertThat(retrieved.getImports())
-                .isNotEqualTo(toTest.getImports());
-        assertThat(retrieved.getImports()).hasSize(toTest.getImports().size() -1);
-        assertThat(jpmmlVisitor.hasFieldNameImport(retrieved))
-                .isFalse();
-    }
-
-    @Test
-    public void removeFieldNameImport_notRemoved() {
-        String classTested = "package com.yourorg;\n" +
-                "import java.util.List;\n" +
-                "import org.dmg.pmml.DataField;\n" +
-                "class FooBar {\n" +
-                "};";
-        J.CompilationUnit toTest = getCompilationUnitFromClassSource(classTested);
-        J.CompilationUnit retrieved = jpmmlVisitor.removeFieldNameImport(toTest);
-        assertThat(retrieved)
-                .isEqualTo(toTest);
-        assertThat(retrieved.getImports())
-                .isEqualTo(toTest.getImports());
-    }
-
-    @Test
     public void hasFieldNameImport_true() {
         String classTested = "package com.yourorg;\n" +
                 "import org.dmg.pmml.FieldName;\n" +

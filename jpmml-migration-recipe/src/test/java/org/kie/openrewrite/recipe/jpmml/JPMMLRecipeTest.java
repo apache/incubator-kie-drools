@@ -33,10 +33,9 @@ public class JPMMLRecipeTest implements RewriteTest {
             assert inputStream != null;
             spec.recipe(inputStream, JPMML_RECIPE_NAME);
             spec.parser(Java11Parser.builder()
-
                     .classpath(paths)
                     .logCompilationWarningsAndErrors(true)
-                    );
+            );
         } catch (Exception e) {
             e.printStackTrace();
         }

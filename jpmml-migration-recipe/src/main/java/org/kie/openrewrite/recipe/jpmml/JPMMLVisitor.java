@@ -33,7 +33,11 @@ import java.util.*;
 
 public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
 
-    public static final String NEW_JPMML_PATH = String.format("META-INF%1$srewrite%1$spmml-model-1.6.4.jar", File.separator);
+    public static final String NEW_JPMML_MODEL = "pmml-model-1.6.4.jar";
+
+    public static final String NEW_JPMML_PATH = String.format("META-INF%1$srewrite%1$s%2$s", File.separator, NEW_JPMML_MODEL);
+
+    public static final String NEW_JPMML_MAVEN_PATH = String.format("%1$s%2$s.m2%2$srepository%2$sorg%2$sjpmml%2$spmml-model%2$s1.6.4%2$s%3$s", System.getProperty("user.home"), File.separator, NEW_JPMML_MODEL);
 
     private static final Logger logger = LoggerFactory.getLogger(JPMMLVisitor.class);
     static final String JPMML_MODEL_PACKAGE_BASE = "org.jpmml.model";
@@ -68,14 +72,14 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
 
     private static final JavaType.Parameterized LIST_GENERIC_JAVA_TYPE = new JavaType.Parameterized(null, (JavaType.FullyQualified) LIST_JAVA_TYPE, List.of(JavaType.GenericTypeVariable.Primitive.String));
 
-    private static final JavaParser NewJpmmlModelJavaParser = getNewJPMMLJavaParser();
+    private static final JavaParser NEW_JPMMLMODEL_JAVAPARSER = getNewJPMMLJavaParser();
 
     private final JavaTemplate requireMiningFunctionTemplate = JavaTemplate.builder(this::getCursor,
                     "@Override\n" +
                             "    public MiningFunction requireMiningFunction() {\n" +
                             "        return null;\n" +
                             "    }\n")
-            .javaParser(() -> NewJpmmlModelJavaParser)
+            .javaParser(() -> NEW_JPMMLMODEL_JAVAPARSER)
             .build();
 
     private final JavaTemplate requireMiningSchemaTemplate = JavaTemplate.builder(this::getCursor,
@@ -83,7 +87,7 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
                             "    public MiningSchema requireMiningSchema() {\n" +
                             "        return null;\n" +
                             "    }\n")
-            .javaParser(() -> NewJpmmlModelJavaParser)
+            .javaParser(() -> NEW_JPMMLMODEL_JAVAPARSER)
             .build();
 
 
@@ -129,10 +133,10 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
             maybeAddImport(targetInstantiatedType.toString());
             maybeAddImport(MINING_FUNCTION_NAME_FQDN);
             maybeAddImport(MINING_SCHEMA_NAME_FQDN);
+            maybeRemoveImport(FIELD_NAME_FQDN);
             cu = (J.CompilationUnit) new ChangeType(FIELD_NAME_FQDN, String.class.getCanonicalName(), false)
                     .getVisitor()
                     .visitCompilationUnit(cu, executionContext);
-            removeFieldNameImport(cu);
             return cu;
         } catch (Throwable t) {
             logger.error("Failed to visit {}", cu, t);
@@ -203,29 +207,9 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
         return multiVariable;
     }
 
-
-    /**
-     * Remove the {@see #FIELD_NAME_FQDN} import from the given <code>J.CompilationUnit</code>, if present
-     *
-     * @param cu
-     * @return
-     */
-    protected J.CompilationUnit removeFieldNameImport(J.CompilationUnit cu) {
-        if (hasFieldNameImport(cu)) {
-            List<J.Import> cleanedImports = new ArrayList<>();
-            for (J.Import imported : cu.getImports()) {
-                if (!isFieldNameImport(imported)) {
-                    cleanedImports.add(imported);
-                }
-            }
-            return cu.withImports(cleanedImports);
-        } else {
-            return cu;
-        }
-    }
-
     /**
      * Return <code>true</code> if the given <code>J.ClassDeclaration</code> extends it extends <code>org.dmg.pmml.Model</code>
+     *
      * @param classDecl
      * @return
      */
@@ -503,15 +487,36 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
 
     private static JavaParser getNewJPMMLJavaParser() {
         List<Path> paths = JavaParser.runtimeClasspath();
-        URL resource = Thread.currentThread().getContextClassLoader().getResource(NEW_JPMML_PATH);
-       if (resource == null) {
-           throw new RuntimeException("Failed to find " + NEW_JPMML_PATH);
-       }
-        Path newJpmmlModel = Path.of(resource.getPath());
+        Path newJpmmlModel = getNewJPMMLModelPath();
         paths.add(newJpmmlModel);
         return JavaParser.fromJavaVersion()
                 .classpath(paths)
                 .logCompilationWarningsAndErrors(true).build();
+    }
+
+    private static Path getNewJPMMLModelPath() {
+        Path toReturn = getNewJPMMLModelPathFromThread();
+        if (toReturn == null) {
+            toReturn = getNewJPMMLModelPathFromJar();
+        }
+        if (toReturn == null) {
+            throw new RuntimeException("Failed to find " + NEW_JPMML_MODEL);
+        }
+        return toReturn;
+    }
+
+    private static Path getNewJPMMLModelPathFromThread() {
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(NEW_JPMML_PATH);
+        return resource != null ? Path.of(resource.getPath()) : null;
+    }
+
+    private static Path getNewJPMMLModelPathFromJar() {
+        // Hardcoded
+        File defaultTarget = new File(NEW_JPMML_MAVEN_PATH);
+        if (!defaultTarget.exists()) {
+            throw new RuntimeException("Failed to find " + NEW_JPMML_MAVEN_PATH);
+        }
+        return defaultTarget.toPath();
     }
 
 }
