@@ -15,6 +15,14 @@
  */
 package org.kie.kogito.addon.source.files.deployment;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.kie.kogito.addon.source.files.SourceFilesProviderProducer;
 import org.kie.kogito.addon.source.files.SourceFilesRecorder;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -27,6 +35,10 @@ import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+
+import static org.kie.kogito.codegen.process.ProcessCodegen.SUPPORTED_BPMN_EXTENSIONS;
+import static org.kie.kogito.codegen.process.ProcessCodegen.SUPPORTED_SW_EXTENSIONS;
 
 class KogitoAddOnSourceFilesProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
@@ -62,5 +74,31 @@ class KogitoAddOnSourceFilesProcessor extends OneOfCapabilityKogitoAddOnProcesso
 
         kogitoBuildContext.getSourceFileCodegenBindNotifier()
                 .ifPresent(notifier -> notifier.addListeners(processListener, serverlessWorkflowListener));
+    }
+
+    @BuildStep
+    NativeImageResourceBuildItem nativeImageResourceBuildItem(KogitoBuildContextBuildItem ctxBuildItem) throws IOException {
+        return new NativeImageResourceBuildItem(getSourceFiles(ctxBuildItem.getKogitoBuildContext().getAppPaths().getResourceFiles()));
+    }
+
+    private List<String> getSourceFiles(File[] resourcePaths) throws IOException {
+        List<String> sourceFiles = new ArrayList<>();
+
+        for (File resourceFile : resourcePaths) {
+            Path resourcePath = resourceFile.toPath();
+            try (Stream<Path> walkedPaths = Files.walk(resourcePath)) {
+                walkedPaths.filter(this::isSourceFile)
+                        .map(resourcePath::relativize)
+                        .map(Path::toString)
+                        .forEach(sourceFiles::add);
+            }
+        }
+
+        return sourceFiles;
+    }
+
+    private boolean isSourceFile(Path file) {
+        return SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(extension -> file.toString().endsWith(extension))
+                || SUPPORTED_SW_EXTENSIONS.keySet().stream().anyMatch(extension -> file.toString().endsWith(extension));
     }
 }
