@@ -66,12 +66,20 @@ public class ServerlessWorkflowUtils {
     public static final String USER_PROP = "username";
     public static final String PASSWORD_PROP = "password";
     public static final String OPERATION_SEPARATOR = "#";
-
+    /**
+     * @deprecated Replaced by WorkflowFormat enum
+     */
+    @Deprecated
+    public static final String DEFAULT_WORKFLOW_FORMAT = "json";
+    /**
+     * @deprecated Replaced by WorkflowFormat enum
+     */
+    @Deprecated
+    public static final String ALTERNATE_WORKFLOW_FORMAT = "yml";
     public static final String APP_PROPERTIES_BASE = "kogito.sw.";
     private static final String OPEN_API_PROPERTIES_BASE = "org.kogito.openapi.client.";
 
     public static final String APP_PROPERTIES_FUNCTIONS_BASE = APP_PROPERTIES_BASE + "functions.";
-    private static final String APP_PROPERTIES_STATES_BASE = "states.";
 
     private static final String REGEX_NO_EXT = "[.][^.]+$";
 
@@ -95,6 +103,16 @@ public class ServerlessWorkflowUtils {
     public static Workflow getWorkflow(Reader reader, WorkflowFormat workflowFormat) throws IOException {
         BaseObjectMapper objectMapper = workflowFormat == WorkflowFormat.YAML ? yamlReaderMapper : jsonReaderMapper;
         return objectMapper.readValue(reader, Workflow.class);
+    }
+
+    /**
+     * Kept for backward compatibility purposes
+     * 
+     * @deprecated Rather than the string for format use WorkflowFormat enumeration to indicate if the flow is yaml or json.
+     */
+    @Deprecated
+    public static Workflow getWorkflow(Reader reader, String workflowFormat) throws IOException {
+        return getWorkflow(reader, ALTERNATE_WORKFLOW_FORMAT.equals(workflowFormat) ? WorkflowFormat.YAML : WorkflowFormat.JSON);
     }
 
     /**
@@ -193,10 +211,6 @@ public class ServerlessWorkflowUtils {
      */
     public static boolean isOpenApiOperation(FunctionDefinition function) {
         return function.getType() == Type.REST && function.getOperation() != null && function.getOperation().contains(OPERATION_SEPARATOR);
-    }
-
-    public static String getForEachVarName(KogitoBuildContext context) {
-        return context.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_STATES_BASE + "foreach.outputVarName").orElse("_swf_eval_temp");
     }
 
     public static Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr) {

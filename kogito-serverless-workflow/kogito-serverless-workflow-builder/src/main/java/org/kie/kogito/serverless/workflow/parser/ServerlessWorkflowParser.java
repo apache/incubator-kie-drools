@@ -73,6 +73,14 @@ public class ServerlessWorkflowParser {
         return of(ServerlessWorkflowUtils.getWorkflow(workflowFile, workflowFormat), context);
     }
 
+    /**
+     * @deprecated use method that accepts WorkflowFormat enumeration
+     */
+    @Deprecated
+    public static ServerlessWorkflowParser of(Reader workflowFile, String workflowFormat, KogitoBuildContext context) throws IOException {
+        return of(ServerlessWorkflowUtils.getWorkflow(workflowFile, workflowFormat), context);
+    }
+
     public static ServerlessWorkflowParser of(Workflow workflow, KogitoBuildContext context) {
         return new ServerlessWorkflowParser(workflow, context);
     }

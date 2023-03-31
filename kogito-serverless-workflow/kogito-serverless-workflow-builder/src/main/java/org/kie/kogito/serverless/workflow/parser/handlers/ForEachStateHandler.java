@@ -19,40 +19,36 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.ForEachNodeFactory;
-import org.jbpm.workflow.instance.node.ForEachNodeInstance;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
-import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.suppliers.CollectorActionSupplier;
-import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.states.ForEachState;
 
+import static org.jbpm.workflow.instance.node.ForEachNodeInstance.TEMP_OUTPUT_VAR;
 import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
+import static org.kie.kogito.serverless.workflow.utils.KogitoProcessContextResolver.FOR_EACH_OUTPUT_VARIABLE;
 
 public class ForEachStateHandler extends CompositeContextNodeHandler<ForEachState> {
 
-    private final String outputVarName;
-
     protected ForEachStateHandler(ForEachState state, Workflow workflow, ParserContext parserContext) {
         super(state, workflow, parserContext);
-        outputVarName = ServerlessWorkflowUtils.getForEachVarName(parserContext.getContext());
     }
 
     @Override
     protected MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
         ForEachNodeFactory<?> result =
                 factory.forEachNode(parserContext.newId()).sequential(false).waitForCompletion(true).expressionLanguage(workflow.getExpressionLang()).collectionExpression(state.getInputCollection())
-                        .outputVariable(outputVarName, new ObjectDataType())
-                        .metaData(Metadata.VARIABLE, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR)
-                        .tempVariable(ForEachNodeInstance.TEMP_OUTPUT_VAR, new ObjectDataType());
+                        .outputVariable(FOR_EACH_OUTPUT_VARIABLE, new ObjectDataType())
+                        .metaData(Metadata.VARIABLE, DEFAULT_WORKFLOW_VAR)
+                        .tempVariable(TEMP_OUTPUT_VAR, new ObjectDataType());
         if (state.getIterationParam() != null) {
             result.variable(state.getIterationParam(), new ObjectDataType());
         }
         if (state.getOutputCollection() != null) {
-            result.completionAction(new CollectorActionSupplier(workflow.getExpressionLang(), state.getOutputCollection(), DEFAULT_WORKFLOW_VAR, ForEachNodeInstance.TEMP_OUTPUT_VAR));
+            result.completionAction(new CollectorActionSupplier(workflow.getExpressionLang(), state.getOutputCollection(), DEFAULT_WORKFLOW_VAR, TEMP_OUTPUT_VAR));
         }
-        handleActions(result, state.getActions(), outputVarName, false);
+        handleActions(result, state.getActions(), FOR_EACH_OUTPUT_VARIABLE, false);
         return new MakeNodeResult(result);
     }
 

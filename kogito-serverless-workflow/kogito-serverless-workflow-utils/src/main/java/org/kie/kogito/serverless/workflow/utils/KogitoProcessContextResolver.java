@@ -24,6 +24,9 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public class KogitoProcessContextResolver {
 
+    public static final String FOR_EACH_OUTPUT_VARIABLE = "_foreach_out_eval";
+    public static final String FOR_EACH_PREV_ACTION_RESULT = "prevActionResult";
+
     private static KogitoProcessContextResolver instance = new KogitoProcessContextResolver();
 
     public static KogitoProcessContextResolver get() {
@@ -38,6 +41,7 @@ public class KogitoProcessContextResolver {
         methods.put("id", k -> k.getProcessInstance().getProcessId());
         methods.put("name", k -> k.getProcessInstance().getProcessName());
         methods.put("headers", k -> k.getHeaders().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().stream().collect(Collectors.joining()))));
+        methods.put(FOR_EACH_PREV_ACTION_RESULT, k -> k.getVariable(FOR_EACH_OUTPUT_VARIABLE));
     }
 
     public Object readKey(KogitoProcessContext context, String key) {

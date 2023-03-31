@@ -60,11 +60,8 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
 
     public ForEachNodeFactory<T> variable(String varRef, String variableName, DataType dataType) {
         getForEachNode().setInputRef(variableName);
-        Variable variable = getForEachNode().addContextVariable(varRef, variableName, dataType);
-        variable.setMetaData(Metadata.EVAL_VARIABLE, true);
-        variable.setMetaData(Variable.VARIABLE_TAGS, Variable.INTERNAL_TAG);
         getForEachNode().getMultiInstanceSpecification().setInputDataItem(new DataDefinition(varRef, variableName, dataType.getStringType()));
-        return this;
+        return addVariable(varRef, variableName, dataType, true);
     }
 
     public ForEachNodeFactory<T> outputCollectionExpression(String collectionExpression) {
@@ -90,17 +87,21 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
     public ForEachNodeFactory<T> outputVariable(String varRef, String variableName, DataType dataType) {
         getForEachNode().setOutputRef(variableName);
         getForEachNode().getMultiInstanceSpecification().setOutputDataItem(new DataDefinition(varRef, variableName, dataType.getStringType()));
-        return this;
+        return addVariable(varRef, variableName, dataType, true);
     }
 
     public ForEachNodeFactory<T> tempVariable(String variableName, DataType dataType) {
-        Variable variable = getForEachNode().addContextVariable(variableName, variableName, dataType);
-        variable.setMetaData(Variable.VARIABLE_TAGS, Variable.INTERNAL_TAG);
-        return this;
+        return tempVariable(variableName, variableName, dataType);
     }
 
     public ForEachNodeFactory<T> tempVariable(String varRef, String variableName, DataType dataType) {
-        getForEachNode().addContextVariable(varRef, variableName, dataType);
+        return addVariable(varRef, variableName, dataType, false);
+    }
+
+    private ForEachNodeFactory<T> addVariable(String varRef, String variableName, DataType dataType, boolean eval) {
+        Variable variable = getForEachNode().addContextVariable(varRef, variableName, dataType);
+        variable.setMetaData(Metadata.EVAL_VARIABLE, eval);
+        variable.setMetaData(Variable.VARIABLE_TAGS, Variable.INTERNAL_TAG);
         return this;
     }
 
