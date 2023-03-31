@@ -16,6 +16,7 @@ environments:
     ids:
     - native
     - prod
+    enabled: false
   quarkus-main:
     enabled: false
     env_vars:
@@ -30,6 +31,7 @@ environments:
     ids:
     - quarkus
     - quarkus3
+    enabled: false
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '2.16'
@@ -46,9 +48,9 @@ environments:
     - lts
     - prod
     enabled: false
-productized_branch: false
+productized_branch: true
 disable:
-  triggers: false
+  triggers: true
 repositories:
 - name: drools
   branch: 8.36.x
