@@ -9,12 +9,10 @@ import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.kie.openrewrite.recipe.jpmml.JPMMLVisitor.NEW_JPMML_PATH;
+import static org.kie.openrewrite.recipe.jpmml.JPMMLVisitor.getNewJPMMLModelPath;
 
 
 public class JPMMLRecipeTest implements RewriteTest {
@@ -24,12 +22,9 @@ public class JPMMLRecipeTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
         List<Path> paths = JavaParser.runtimeClasspath();
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        URL resource = contextClassLoader.getResource(NEW_JPMML_PATH);
-        assertNotNull(resource);
-        Path newJpmmlModel = Path.of(resource.getPath());
+        Path newJpmmlModel = getNewJPMMLModelPath();
         paths.add(newJpmmlModel);
-        try (InputStream inputStream = contextClassLoader.getResourceAsStream("META-INF/rewrite/rewrite.yml")) {
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/rewrite/rewrite.yml")) {
             assert inputStream != null;
             spec.recipe(inputStream, JPMML_RECIPE_NAME);
             spec.parser(Java11Parser.builder()

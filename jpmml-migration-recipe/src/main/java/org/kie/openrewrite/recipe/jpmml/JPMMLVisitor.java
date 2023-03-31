@@ -27,15 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
 
 public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
 
     public static final String NEW_JPMML_MODEL = "pmml-model-1.6.4.jar";
-
-    public static final String NEW_JPMML_PATH = String.format("META-INF%1$srewrite%1$s%2$s", File.separator, NEW_JPMML_MODEL);
 
     public static final String NEW_JPMML_MAVEN_PATH = String.format("%1$s%2$s.m2%2$srepository%2$sorg%2$sjpmml%2$spmml-model%2$s1.6.4%2$s%3$s", System.getProperty("user.home"), File.separator, NEW_JPMML_MODEL);
 
@@ -494,24 +491,8 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
                 .logCompilationWarningsAndErrors(true).build();
     }
 
-    private static Path getNewJPMMLModelPath() {
-        Path toReturn = getNewJPMMLModelPathFromThread();
-        if (toReturn == null) {
-            toReturn = getNewJPMMLModelPathFromJar();
-        }
-        if (toReturn == null) {
-            throw new RuntimeException("Failed to find " + NEW_JPMML_MODEL);
-        }
-        return toReturn;
-    }
-
-    private static Path getNewJPMMLModelPathFromThread() {
-        URL resource = Thread.currentThread().getContextClassLoader().getResource(NEW_JPMML_PATH);
-        return resource != null ? Path.of(resource.getPath()) : null;
-    }
-
-    private static Path getNewJPMMLModelPathFromJar() {
-        // Hardcoded
+    public static Path getNewJPMMLModelPath() {
+        // The new version is expected to have been downloaded by maven plugin at validate phase
         File defaultTarget = new File(NEW_JPMML_MAVEN_PATH);
         if (!defaultTarget.exists()) {
             throw new RuntimeException("Failed to find " + NEW_JPMML_MAVEN_PATH);

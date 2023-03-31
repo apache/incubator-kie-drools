@@ -150,6 +150,27 @@
           </dependency>
         </dependencies>
       </plugin>
+      <!-- This is needed to always download the new version in the .m2 repository, and have it available for tests/migration
+      together with the old one -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>download_new_pmml</id>
+            <goals>
+              <goal>get</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <groupId>org.jpmml</groupId>
+              <artifactId>pmml-model</artifactId>
+              <version>1.6.4</version>
+              <transitive>false</transitive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
