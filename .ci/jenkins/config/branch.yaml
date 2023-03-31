@@ -53,10 +53,8 @@ disable:
   triggers: true
 repositories:
 - name: drools
-  branch: 8.36.x
+  branch: 8.36.x-prod
   is_branch_config_repo: true
-- name: drools-website
-  branch: 8.36.x
 git:
   author:
     name: kiegroup
