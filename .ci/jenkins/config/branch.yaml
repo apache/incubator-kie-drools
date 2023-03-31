@@ -23,6 +23,7 @@ environments:
     ids:
     - quarkus
   quarkus-3:
+    pull_request_default_check: true
     env_vars:
       QUARKUS_VERSION: '3.0.0.Alpha5'
       ADDITIONAL_TIMEOUT: 720
