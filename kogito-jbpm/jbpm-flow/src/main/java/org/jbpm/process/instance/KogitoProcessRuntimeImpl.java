@@ -155,21 +155,15 @@ public class KogitoProcessRuntimeImpl implements KogitoProcessRuntime {
     }
 
     public KogitoProcessInstance startProcessInstance(String processInstanceId, String trigger, AgendaFilter agendaFilter) {
-        try {
-            delegate.getInternalKieRuntime().startOperation();
+        KogitoProcessInstance processInstance = getProcessInstance(processInstanceId);
+        org.jbpm.process.instance.ProcessInstance jbpmProcessInstance = (org.jbpm.process.instance.ProcessInstance) processInstance;
 
-            KogitoProcessInstance processInstance = getProcessInstance(processInstanceId);
-            org.jbpm.process.instance.ProcessInstance jbpmProcessInstance = (org.jbpm.process.instance.ProcessInstance) processInstance;
-
-            jbpmProcessInstance.configureTimers();
-            delegate.getProcessEventSupport().fireBeforeProcessStarted(processInstance, delegate.getInternalKieRuntime());
-            jbpmProcessInstance.setAgendaFilter(agendaFilter);
-            jbpmProcessInstance.start(trigger);
-            delegate.getProcessEventSupport().fireAfterProcessStarted(processInstance, delegate.getInternalKieRuntime());
-            return jbpmProcessInstance;
-        } finally {
-            delegate.getInternalKieRuntime().endOperation();
-        }
+        jbpmProcessInstance.configureTimers();
+        delegate.getProcessEventSupport().fireBeforeProcessStarted(processInstance, delegate.getInternalKieRuntime());
+        jbpmProcessInstance.setAgendaFilter(agendaFilter);
+        jbpmProcessInstance.start(trigger);
+        delegate.getProcessEventSupport().fireAfterProcessStarted(processInstance, delegate.getInternalKieRuntime());
+        return jbpmProcessInstance;
     }
 
     @Override

@@ -186,17 +186,11 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
 
     @Override
     public KogitoProcessInstance createProcessInstance(String processId, CorrelationKey correlationKey, Map<String, Object> parameters) {
-        try {
-            kruntime.startOperation();
-
-            final Process process = kruntime.getKieBase().getProcess(processId);
-            if (process == null) {
-                throw new IllegalArgumentException("Unknown process ID: " + processId);
-            }
-            return startProcess(process, correlationKey, parameters);
-        } finally {
-            kruntime.endOperation();
+        final Process process = kruntime.getKieBase().getProcess(processId);
+        if (process == null) {
+            throw new IllegalArgumentException("Unknown process ID: " + processId);
         }
+        return startProcess(process, correlationKey, parameters);
     }
 
     @Override
@@ -328,13 +322,13 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
                         String eventType = ruleName.substring(0,
                                 index);
 
-                        ((ReteEvaluator) kruntime).addPropagation(new SignalManagerSignalAction(eventType, event), true);
+                        ((ReteEvaluator) kruntime).addPropagation(new SignalManagerSignalAction(eventType, event));
                     } else if (ruleName.startsWith("RuleFlowStateEventSubProcess-")
                             || ruleName.startsWith("RuleFlowStateEvent-")
                             || ruleName.startsWith("RuleFlow-Milestone-")
                             || ruleName.startsWith("RuleFlow-AdHocComplete-")
                             || ruleName.startsWith("RuleFlow-AdHocActivate-")) {
-                        ((ReteEvaluator) kruntime).addPropagation(new SignalManagerSignalAction(ruleName, event), true);
+                        ((ReteEvaluator) kruntime).addPropagation(new SignalManagerSignalAction(ruleName, event));
                     }
                 } else {
                     String ruleName = event.getMatch().getRule().getName();
