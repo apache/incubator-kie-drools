@@ -112,31 +112,32 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // Setup full build if not prod profile
                     BUILD_MVN_OPTS_CURRENT: EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod') ? '' : '-Dfull',
                 ]
-            ], [
-                id: 'kogito-runtimes',
-                repository: 'kogito-runtimes'
-            ], [
-                id: 'kogito-apps',
-                repository: 'kogito-apps',
-            ], [
-                id: 'kogito-quarkus-examples',
-                repository: 'kogito-examples',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
-                ],
-            ], [
-                id: 'kogito-springboot-examples',
-                repository: 'kogito-examples',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
-                ],
-            ], [
-                id: 'serverless-workflow-examples',
-                repository: 'kogito-examples',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
-                ],
             ]
+            // , [
+            //     id: 'kogito-runtimes',
+            //     repository: 'kogito-runtimes'
+            // ], [
+            //     id: 'kogito-apps',
+            //     repository: 'kogito-apps',
+            // ], [
+            //     id: 'kogito-quarkus-examples',
+            //     repository: 'kogito-examples',
+            //     env : [
+            //         KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
+            //     ],
+            // ], [
+            //     id: 'kogito-springboot-examples',
+            //     repository: 'kogito-examples',
+            //     env : [
+            //         KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
+            //     ],
+            // ], [
+            //     id: 'serverless-workflow-examples',
+            //     repository: 'kogito-examples',
+            //     env : [
+            //         KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
+            //     ],
+            // ]
         ]
     ]
     return jobConfig
