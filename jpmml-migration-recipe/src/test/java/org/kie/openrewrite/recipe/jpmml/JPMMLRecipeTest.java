@@ -9,22 +9,33 @@ import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.kie.openrewrite.recipe.jpmml.JPMMLVisitor.NEW_JPMML_PATH;
 
-class JPMMLRecipeTest implements RewriteTest {
+
+public class JPMMLRecipeTest implements RewriteTest {
 
     private static final String JPMML_RECIPE_NAME = "org.kie.openrewrite.recipe.jpmml.JPMMLRecipe";
 
     @Override
     public void defaults(RecipeSpec spec) {
-        List<Path> paths =JavaParser.runtimeClasspath();
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/rewrite/rewrite.yml")) {
+        List<Path> paths = JavaParser.runtimeClasspath();
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        URL resource = contextClassLoader.getResource(NEW_JPMML_PATH);
+        assertNotNull(resource);
+        Path newJpmmlModel = Path.of(resource.getPath());
+        paths.add(newJpmmlModel);
+        try (InputStream inputStream = contextClassLoader.getResourceAsStream("META-INF/rewrite/rewrite.yml")) {
+            assert inputStream != null;
             spec.recipe(inputStream, JPMML_RECIPE_NAME);
             spec.parser(Java11Parser.builder()
                     .classpath(paths)
-                    .logCompilationWarningsAndErrors(true));
+                    .logCompilationWarningsAndErrors(true)
+            );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,7 +68,7 @@ class JPMMLRecipeTest implements RewriteTest {
                 "public class Stub {\n" +
                 "\n" +
                 "    public String hello(List<DataField> dataFields) {\n" +
-                "        new DataDictionary().addStrings(dataFields.toArray(new String[0]));\n" +
+                "        new DataDictionary().addDataFields(dataFields.toArray(new org.dmg.pmml.DataField[0]));\n" +
                 "        return \"Hello from com.yourorg.FooLol!\";\n" +
                 "    }\n" +
                 "\n" +
@@ -72,17 +83,177 @@ class JPMMLRecipeTest implements RewriteTest {
         @Language("java")
         String before = "package com.yourorg;\n" +
                 "\n" +
+                "import org.dmg.pmml.LocalTransformations;\n" +
+                "import org.dmg.pmml.MathContext;\n" +
+                "import org.dmg.pmml.MiningFunction;\n" +
+                "import org.dmg.pmml.MiningSchema;\n" +
                 "import org.dmg.pmml.Model;\n" +
+                "import org.dmg.pmml.Visitor;\n" +
+                "import org.dmg.pmml.VisitorAction;\n" +
                 "\n" +
-                "public class Stub extends Model {\n" +
+                "public class SubModel extends Model {\n" +
+                "    @Override\n" +
+                "    public String getModelName() {\n" +
+                "        return null;\n" +
+                "    }\n" +
                 "\n" +
-                "}";
+                "    @Override\n" +
+                "    public Model setModelName(String modelName) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public MiningFunction getMiningFunction() {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setMiningFunction(MiningFunction miningFunction) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public String getAlgorithmName() {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setAlgorithmName(String algorithmName) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public boolean isScorable() {\n" +
+                "        return false;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setScorable(Boolean scorable) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public MathContext getMathContext() {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setMathContext(MathContext mathContext) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public MiningSchema getMiningSchema() {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setMiningSchema(MiningSchema miningSchema) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public LocalTransformations getLocalTransformations() {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setLocalTransformations(LocalTransformations localTransformations) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public VisitorAction accept(Visitor visitor) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "}\n";
         @Language("java")
         String after = "package com.yourorg;\n" +
                 "\n" +
+                "import org.dmg.pmml.LocalTransformations;\n" +
+                "import org.dmg.pmml.MathContext;\n" +
+                "import org.dmg.pmml.MiningFunction;\n" +
+                "import org.dmg.pmml.MiningSchema;\n" +
                 "import org.dmg.pmml.Model;\n" +
+                "import org.dmg.pmml.Visitor;\n" +
+                "import org.dmg.pmml.VisitorAction;\n" +
                 "\n" +
-                "public class Stub extends Model {\n" +
+                "public class SubModel extends Model {\n" +
+                "    @Override\n" +
+                "    public String getModelName() {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setModelName(String modelName) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public MiningFunction getMiningFunction() {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setMiningFunction(MiningFunction miningFunction) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public String getAlgorithmName() {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setAlgorithmName(String algorithmName) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public boolean isScorable() {\n" +
+                "        return false;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setScorable(Boolean scorable) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public MathContext getMathContext() {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setMathContext(MathContext mathContext) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public MiningSchema getMiningSchema() {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setMiningSchema(MiningSchema miningSchema) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public LocalTransformations getLocalTransformations() {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public Model setLocalTransformations(LocalTransformations localTransformations) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public VisitorAction accept(Visitor visitor) {\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "\n" +
                 "    @Override\n" +
                 "    public MiningFunction requireMiningFunction() {\n" +
                 "        return null;\n" +
@@ -92,8 +263,7 @@ class JPMMLRecipeTest implements RewriteTest {
                 "    public MiningSchema requireMiningSchema() {\n" +
                 "        return null;\n" +
                 "    }\n" +
-                "\n" +
-                "}";
+                "}\n";
         rewriteRun(
                 Assertions.java(before, after)
         );
@@ -136,10 +306,9 @@ class JPMMLRecipeTest implements RewriteTest {
                 "}";
         @Language("java")
         String after = "package com.yourorg;\n" +
-                "import org.dmg.pmml.FieldName;\n" +
                 "class FooBar {\n" +
                 "static public void method() {\n" +
-                " String fieldName =  String.valueOf(\"OUTPUT_\");\n" +
+                " String fieldName =\"OUTPUT_\";\n" +
                 "}\n" +
                 "}";
         rewriteRun(
@@ -159,7 +328,6 @@ class JPMMLRecipeTest implements RewriteTest {
                 "}";
         @Language("java")
         String after = "package com.yourorg;\n" +
-                "import org.dmg.pmml.FieldName;\n" +
                 "class FooBar {\n" +
                 "static public void method() {\n" +
                 " String fieldName = null;\n" +
@@ -182,10 +350,9 @@ class JPMMLRecipeTest implements RewriteTest {
                 "}";
         @Language("java")
         String after = "package com.yourorg;\n" +
-                "import org.dmg.pmml.FieldName;\n" +
                 "class FooBar {\n" +
                 "static public void method() {\n" +
-                "System.out.println( String.valueOf(\"OUTPUT_\"));\n" +
+                "System.out.println(\"OUTPUT_\");\n" +
                 "}\n" +
                 "}";
         rewriteRun(

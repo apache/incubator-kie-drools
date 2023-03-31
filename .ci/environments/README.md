@@ -18,6 +18,10 @@ The process of define the migration changes is split in two parts
 1. rewrite execution: this is done manually, since rewrite execution take a lot of time; after successfully execution, the changes must be saved as *patches*
 2. patches apply: this is done automatically, and all *patches* found in the `${environment}/patches` are applied
 3. if executed, rewrite runs ***BEFORE*** the patch apply
+4. the `0001_before_sh.patch` is generated executing the `before.sh` script; it then contains all the `openrewrite` migration and the synchronization of libraries with quarkus ones
+5. all other patches have been made manually
+6. if some other modifications are needed, they should be created as `patch`, following numerations
+7. if some patch does not apply anymore, it has to be recreated manually; in case of the first one, it means to execute the `before.sh` script again
 
 To execute migration in the *quarkus-3* ***WITHOUT*** rewrite
 
