@@ -139,6 +139,12 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
             ]
         ]
     ]
+
+    // For Quarkus 3, run only drools PR check... for now
+    if (EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3')) {
+        jobConfig.jobs.retainAll { it.id == 'drools' }
+    }
+
     return jobConfig
 }
 
