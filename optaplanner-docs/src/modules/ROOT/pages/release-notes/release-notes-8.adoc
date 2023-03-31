@@ -4,6 +4,10 @@
 [[releaseNotes-8.37.0.Final]]
 === OptaPlanner 8.37.0.Final
 
+==== `PlanningListVariable` supports nearby selection
+
+xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#nearbySelection[Nearby selection] is now available for planning domains using a planning list variable.
+
 ==== AbstractScoreHibernateType and its subtypes become deprecated
 
 The `AbstractScoreHibernateType` as well as all its subtypes have been deprecated. The parallel OptaPlanner 9

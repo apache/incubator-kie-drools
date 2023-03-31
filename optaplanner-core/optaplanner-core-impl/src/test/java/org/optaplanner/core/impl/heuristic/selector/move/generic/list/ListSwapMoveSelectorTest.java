@@ -9,6 +9,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScore
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
@@ -28,10 +29,11 @@ class ListSwapMoveSelectorTest {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
+
         ListSwapMoveSelector<TestdataListSolution> moveSelector = new ListSwapMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                mockEntityIndependentValueSelector(v3, v1, v2),
-                mockEntityIndependentValueSelector(v3, v1, v2),
+                mockEntityIndependentValueSelector(listVariableDescriptor, v3, v1, v2),
+                mockEntityIndependentValueSelector(listVariableDescriptor, v3, v1, v2),
                 false);
 
         solvingStarted(moveSelector, scoreDirector);
@@ -68,12 +70,13 @@ class ListSwapMoveSelectorTest {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
+
         ListSwapMoveSelector<TestdataListSolution> moveSelector = new ListSwapMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
                 // Value selectors are longer than the number of expected codes because they're expected
                 // to be never ending, so they must not be exhausted after the last asserted code.
-                mockEntityIndependentValueSelector(v2, v3, v2, v3, v2, v3, v1, v1, v1, v1),
-                mockEntityIndependentValueSelector(v1, v2, v3, v1, v2, v3, v1, v2, v3, v1),
+                mockEntityIndependentValueSelector(listVariableDescriptor, v2, v3, v2, v3, v2, v3, v1, v1, v1, v1),
+                mockEntityIndependentValueSelector(listVariableDescriptor, v1, v2, v3, v1, v2, v3, v1, v2, v3, v1),
                 true);
 
         solvingStarted(moveSelector, scoreDirector);

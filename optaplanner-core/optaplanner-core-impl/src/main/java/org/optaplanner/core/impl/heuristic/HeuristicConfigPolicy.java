@@ -11,6 +11,8 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
+import org.optaplanner.core.impl.heuristic.selector.list.SubListSelector;
+import org.optaplanner.core.impl.heuristic.selector.list.mimic.SubListMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -36,6 +38,7 @@ public class HeuristicConfigPolicy<Solution_> {
     private final boolean unassignedValuesAllowed;
 
     private final Map<String, EntityMimicRecorder<Solution_>> entityMimicRecorderMap = new HashMap<>();
+    private final Map<String, SubListMimicRecorder<Solution_>> subListMimicRecorderMap = new HashMap<>();
     private final Map<String, ValueMimicRecorder<Solution_>> valueMimicRecorderMap = new HashMap<>();
 
     private HeuristicConfigPolicy(Builder<Solution_> builder) {
@@ -139,6 +142,18 @@ public class HeuristicConfigPolicy<Solution_> {
 
     public EntityMimicRecorder<Solution_> getEntityMimicRecorder(String id) {
         return entityMimicRecorderMap.get(id);
+    }
+
+    public void addSubListMimicRecorder(String id, SubListMimicRecorder<Solution_> mimicRecordingSubListSelector) {
+        SubListMimicRecorder<Solution_> put = subListMimicRecorderMap.put(id, mimicRecordingSubListSelector);
+        if (put != null) {
+            throw new IllegalStateException("Multiple " + SubListMimicRecorder.class.getSimpleName() + "s (usually "
+                    + SubListSelector.class.getSimpleName() + "s) have the same id (" + id + ").");
+        }
+    }
+
+    public SubListMimicRecorder<Solution_> getSubListMimicRecorder(String id) {
+        return subListMimicRecorderMap.get(id);
     }
 
     public void addValueMimicRecorder(String id, ValueMimicRecorder<Solution_> mimicRecordingValueSelector) {

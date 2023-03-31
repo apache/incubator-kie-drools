@@ -56,9 +56,11 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
                     + ") which is not a superclass of the originEntitySelector's entityClass ("
                     + originEntitySelector.getEntityDescriptor().getEntityClass() + ").");
         }
-        this.nearbyDistanceMatrixDemand =
-                new NearbyDistanceMatrixDemand<>(nearbyDistanceMeter, childEntitySelector, replayingOriginEntitySelector,
-                        origin -> computeDestinationSize(childEntitySelector.getSize()));
+        this.nearbyDistanceMatrixDemand = new NearbyDistanceMatrixDemand<>(
+                nearbyDistanceMeter,
+                childEntitySelector,
+                replayingOriginEntitySelector,
+                origin -> computeDestinationSize(childEntitySelector.getSize()));
 
         phaseLifecycleSupport.addEventListener(childEntitySelector);
         phaseLifecycleSupport.addEventListener(originEntitySelector);
@@ -238,7 +240,8 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
         if (other == null || getClass() != other.getClass())
             return false;
         NearEntityNearbyEntitySelector<?> that = (NearEntityNearbyEntitySelector<?>) other;
-        return randomSelection == that.randomSelection && Objects.equals(childEntitySelector, that.childEntitySelector)
+        return randomSelection == that.randomSelection
+                && Objects.equals(childEntitySelector, that.childEntitySelector)
                 && Objects.equals(replayingOriginEntitySelector, that.replayingOriginEntitySelector)
                 && Objects.equals(nearbyDistanceMeter, that.nearbyDistanceMeter)
                 && Objects.equals(nearbyRandom, that.nearbyRandom);
@@ -250,4 +253,8 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
                 randomSelection);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + replayingOriginEntitySelector + ", " + childEntitySelector + ")";
+    }
 }

@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+package org.optaplanner.core.impl.heuristic.selector.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.phaseStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.stepStarted;
-import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangularNumbers.nthTriangle;
+import static org.optaplanner.core.impl.heuristic.selector.list.TriangularNumbers.nthTriangle;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.listSize;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
@@ -14,10 +14,10 @@ import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.m
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEmptyNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -27,7 +27,6 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
-import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
 class RandomSubListSelectorTest {
@@ -42,7 +41,7 @@ class RandomSubListSelectorTest {
         TestdataListEntity b = TestdataListEntity.createWithValues("B");
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
@@ -52,9 +51,8 @@ class RandomSubListSelectorTest {
         assertThat(subListCount).isEqualTo(nthTriangle(listSize(a)) + nthTriangle(listSize(b)));
 
         RandomSubListSelector<TestdataListSolution> selector = new RandomSubListSelector<>(
-                getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a, b),
-                mockNeverEndingEntityIndependentValueSelector(v1),
+                mockNeverEndingEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v1),
                 minimumSubListSize,
                 maximumSubListSize);
 
@@ -82,16 +80,15 @@ class RandomSubListSelectorTest {
         TestdataListEntity b = TestdataListEntity.createWithValues("B");
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 2;
         int maximumSubListSize = 3;
         int subListCount = 15 - 5 - 3;
 
         RandomSubListSelector<TestdataListSolution> selector = new RandomSubListSelector<>(
-                getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a, b),
-                mockNeverEndingEntityIndependentValueSelector(v1),
+                mockNeverEndingEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v1),
                 minimumSubListSize,
                 maximumSubListSize);
 
@@ -114,15 +111,14 @@ class RandomSubListSelectorTest {
         TestdataListEntity a = TestdataListEntity.createWithValues("A", v1, v2, v3);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 4;
         int maximumSubListSize = Integer.MAX_VALUE;
 
         RandomSubListSelector<TestdataListSolution> selector = new RandomSubListSelector<>(
-                getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a),
-                mockNeverEndingEntityIndependentValueSelector(),
+                mockNeverEndingEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector)),
                 minimumSubListSize,
                 maximumSubListSize);
 
@@ -134,16 +130,16 @@ class RandomSubListSelectorTest {
     @Test
     void phaseLifecycle() {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector();
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector();
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockNeverEndingEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector));
 
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
 
         RandomSubListSelector<TestdataListSolution> selector = new RandomSubListSelector<>(
-                getListVariableDescriptor(scoreDirector),
                 entitySelector,
                 valueSelector,
                 minimumSubListSize,
@@ -167,18 +163,17 @@ class RandomSubListSelectorTest {
 
     @Test
     void validateConstructorArguments() {
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector();
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector();
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockNeverEndingEntityIndependentValueSelector(TestdataListEntity.buildVariableDescriptorForValueList());
 
         assertThatIllegalArgumentException().isThrownBy(() -> new RandomSubListSelector<>(
-                listVariableDescriptor, entitySelector, valueSelector, 0, 5))
+                entitySelector, valueSelector, 0, 5))
                 .withMessageContaining("greater than 0");
         assertThatIllegalArgumentException().isThrownBy(() -> new RandomSubListSelector<>(
-                listVariableDescriptor, entitySelector, valueSelector, 2, 1))
+                entitySelector, valueSelector, 2, 1))
                 .withMessageContaining("less than or equal to the maximum");
         assertThatNoException().isThrownBy(() -> new RandomSubListSelector<>(
-                listVariableDescriptor, entitySelector, valueSelector, 1, 1));
+                entitySelector, valueSelector, 1, 1));
     }
 }

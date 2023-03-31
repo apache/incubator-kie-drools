@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Vehicle extends AbstractPersistable {
+public class Vehicle extends AbstractPersistable implements LocationAware {
 
     protected int capacity;
     protected Depot depot;
@@ -59,6 +59,7 @@ public class Vehicle extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @Override
     @JsonIgnore
     public Location getLocation() {
         return depot.getLocation();

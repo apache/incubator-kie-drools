@@ -18,6 +18,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
+import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
+import org.optaplanner.core.config.heuristic.selector.list.SubListSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -26,6 +28,7 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.AssignedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.FilteringValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
@@ -257,6 +260,21 @@ class ValueSelectorFactoryTest {
                 () -> ValueSelectorFactory.create(valueSelectorConfig)
                         .buildMimicReplaying(mock(HeuristicConfigPolicy.class)))
                 .withMessageContaining("has another property");
+    }
+
+    @Test
+    void failFast_ifNearbyDoesNotHaveOriginEntityOrValueSelector() {
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withNearbySelectionConfig(new NearbySelectionConfig()
+                        .withOriginSubListSelectorConfig(new SubListSelectorConfig().withMimicSelectorRef("x"))
+                        .withNearbyDistanceMeterClass(mock(NearbyDistanceMeter.class).getClass()));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ValueSelectorFactory.<TestdataListSolution> create(valueSelectorConfig)
+                        .buildValueSelector(buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor()),
+                                TestdataListEntity.buildEntityDescriptor(),
+                                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM))
+                .withMessageContaining("requires an originEntitySelector or an originValueSelector");
     }
 
     static Stream<Arguments> applyListValueFiltering() {

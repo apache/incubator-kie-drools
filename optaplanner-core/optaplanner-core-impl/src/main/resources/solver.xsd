@@ -411,6 +411,10 @@
                     
           <xs:element minOccurs="0" name="originEntitySelector" type="tns:entitySelectorConfig"/>
                     
+          <xs:element minOccurs="0" name="originSubListSelector" type="tns:subListSelectorConfig"/>
+                    
+          <xs:element minOccurs="0" name="originValueSelector" type="tns:valueSelectorConfig"/>
+                    
           <xs:element minOccurs="0" name="nearbyDistanceMeterClass" type="xs:string"/>
                     
           <xs:element minOccurs="0" name="nearbySelectionDistributionType" type="tns:nearbySelectionDistributionType"/>
@@ -439,6 +443,80 @@
       
   </xs:complexType>
     
+  <xs:complexType name="subListSelectorConfig">
+        
+    <xs:complexContent>
+            
+      <xs:extension base="tns:selectorConfig">
+                
+        <xs:sequence>
+                    
+          <xs:element minOccurs="0" name="valueSelector" type="tns:valueSelectorConfig"/>
+                    
+          <xs:element minOccurs="0" name="nearbySelection" type="tns:nearbySelectionConfig"/>
+                    
+          <xs:element minOccurs="0" name="minimumSubListSize" type="xs:int"/>
+                    
+          <xs:element minOccurs="0" name="maximumSubListSize" type="xs:int"/>
+                  
+        </xs:sequence>
+                
+        <xs:attribute name="id" type="xs:string"/>
+                
+        <xs:attribute name="mimicSelectorRef" type="xs:string"/>
+              
+      </xs:extension>
+          
+    </xs:complexContent>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="valueSelectorConfig">
+        
+    <xs:complexContent>
+            
+      <xs:extension base="tns:selectorConfig">
+                
+        <xs:sequence>
+                    
+          <xs:element minOccurs="0" name="downcastEntityClass" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="cacheType" type="tns:selectionCacheType"/>
+                    
+          <xs:element minOccurs="0" name="selectionOrder" type="tns:selectionOrder"/>
+                    
+          <xs:element minOccurs="0" name="nearbySelection" type="tns:nearbySelectionConfig"/>
+                    
+          <xs:element minOccurs="0" name="filterClass" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="sorterManner" type="tns:valueSorterManner"/>
+                    
+          <xs:element minOccurs="0" name="sorterComparatorClass" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="sorterWeightFactoryClass" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="sorterOrder" type="tns:selectionSorterOrder"/>
+                    
+          <xs:element minOccurs="0" name="sorterClass" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="probabilityWeightFactoryClass" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="selectedCountLimit" type="xs:long"/>
+                  
+        </xs:sequence>
+                
+        <xs:attribute name="id" type="xs:string"/>
+                
+        <xs:attribute name="mimicSelectorRef" type="xs:string"/>
+                
+        <xs:attribute name="variableName" type="xs:string"/>
+              
+      </xs:extension>
+          
+    </xs:complexContent>
+      
+  </xs:complexType>
+    
   <xs:complexType name="cartesianProductMoveSelectorConfig">
         
     <xs:complexContent>
@@ -454,6 +532,10 @@
             <xs:element name="changeMoveSelector" type="tns:changeMoveSelectorConfig"/>
                         
             <xs:element name="kOptListMoveSelector" type="tns:kOptListMoveSelectorConfig"/>
+                        
+            <xs:element name="listChangeMoveSelector" type="tns:listChangeMoveSelectorConfig"/>
+                        
+            <xs:element name="listSwapMoveSelector" type="tns:listSwapMoveSelectorConfig"/>
                         
             <xs:element name="moveIteratorFactory" type="tns:moveIteratorFactoryConfig"/>
                         
@@ -545,52 +627,6 @@
       
   </xs:complexType>
     
-  <xs:complexType name="valueSelectorConfig">
-        
-    <xs:complexContent>
-            
-      <xs:extension base="tns:selectorConfig">
-                
-        <xs:sequence>
-                    
-          <xs:element minOccurs="0" name="downcastEntityClass" type="xs:string"/>
-                    
-          <xs:element minOccurs="0" name="cacheType" type="tns:selectionCacheType"/>
-                    
-          <xs:element minOccurs="0" name="selectionOrder" type="tns:selectionOrder"/>
-                    
-          <xs:element minOccurs="0" name="nearbySelection" type="tns:nearbySelectionConfig"/>
-                    
-          <xs:element minOccurs="0" name="filterClass" type="xs:string"/>
-                    
-          <xs:element minOccurs="0" name="sorterManner" type="tns:valueSorterManner"/>
-                    
-          <xs:element minOccurs="0" name="sorterComparatorClass" type="xs:string"/>
-                    
-          <xs:element minOccurs="0" name="sorterWeightFactoryClass" type="xs:string"/>
-                    
-          <xs:element minOccurs="0" name="sorterOrder" type="tns:selectionSorterOrder"/>
-                    
-          <xs:element minOccurs="0" name="sorterClass" type="xs:string"/>
-                    
-          <xs:element minOccurs="0" name="probabilityWeightFactoryClass" type="xs:string"/>
-                    
-          <xs:element minOccurs="0" name="selectedCountLimit" type="xs:long"/>
-                  
-        </xs:sequence>
-                
-        <xs:attribute name="id" type="xs:string"/>
-                
-        <xs:attribute name="mimicSelectorRef" type="xs:string"/>
-                
-        <xs:attribute name="variableName" type="xs:string"/>
-              
-      </xs:extension>
-          
-    </xs:complexContent>
-      
-  </xs:complexType>
-    
   <xs:complexType name="kOptListMoveSelectorConfig">
         
     <xs:complexContent>
@@ -602,6 +638,68 @@
           <xs:element minOccurs="0" name="minimumK" type="xs:int"/>
                     
           <xs:element minOccurs="0" name="maximumK" type="xs:int"/>
+                  
+        </xs:sequence>
+              
+      </xs:extension>
+          
+    </xs:complexContent>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="listChangeMoveSelectorConfig">
+        
+    <xs:complexContent>
+            
+      <xs:extension base="tns:moveSelectorConfig">
+                
+        <xs:sequence>
+                    
+          <xs:element minOccurs="0" name="valueSelector" type="tns:valueSelectorConfig"/>
+                    
+          <xs:element minOccurs="0" name="destinationSelector" type="tns:destinationSelectorConfig"/>
+                  
+        </xs:sequence>
+              
+      </xs:extension>
+          
+    </xs:complexContent>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="destinationSelectorConfig">
+        
+    <xs:complexContent>
+            
+      <xs:extension base="tns:selectorConfig">
+                
+        <xs:sequence>
+                    
+          <xs:element minOccurs="0" name="entitySelector" type="tns:entitySelectorConfig"/>
+                    
+          <xs:element minOccurs="0" name="valueSelector" type="tns:valueSelectorConfig"/>
+                    
+          <xs:element minOccurs="0" name="nearbySelection" type="tns:nearbySelectionConfig"/>
+                  
+        </xs:sequence>
+              
+      </xs:extension>
+          
+    </xs:complexContent>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="listSwapMoveSelectorConfig">
+        
+    <xs:complexContent>
+            
+      <xs:extension base="tns:moveSelectorConfig">
+                
+        <xs:sequence>
+                    
+          <xs:element minOccurs="0" name="valueSelector" type="tns:valueSelectorConfig"/>
+                    
+          <xs:element minOccurs="0" name="secondaryValueSelector" type="tns:valueSelectorConfig"/>
                   
         </xs:sequence>
               
@@ -828,6 +926,10 @@
           <xs:element minOccurs="0" name="maximumSubListSize" type="xs:int"/>
                     
           <xs:element minOccurs="0" name="selectReversingMoveToo" type="xs:boolean"/>
+                    
+          <xs:element minOccurs="0" name="subListSelector" type="tns:subListSelectorConfig"/>
+                    
+          <xs:element minOccurs="0" name="destinationSelector" type="tns:destinationSelectorConfig"/>
                   
         </xs:sequence>
               
@@ -850,6 +952,10 @@
           <xs:element minOccurs="0" name="maximumSubListSize" type="xs:int"/>
                     
           <xs:element minOccurs="0" name="selectReversingMoveToo" type="xs:boolean"/>
+                    
+          <xs:element minOccurs="0" name="subListSelector" type="tns:subListSelectorConfig"/>
+                    
+          <xs:element minOccurs="0" name="secondarySubListSelector" type="tns:subListSelectorConfig"/>
                   
         </xs:sequence>
               
@@ -928,6 +1034,10 @@
             <xs:element name="changeMoveSelector" type="tns:changeMoveSelectorConfig"/>
                         
             <xs:element name="kOptListMoveSelector" type="tns:kOptListMoveSelectorConfig"/>
+                        
+            <xs:element name="listChangeMoveSelector" type="tns:listChangeMoveSelectorConfig"/>
+                        
+            <xs:element name="listSwapMoveSelector" type="tns:listSwapMoveSelectorConfig"/>
                         
             <xs:element name="moveIteratorFactory" type="tns:moveIteratorFactoryConfig"/>
                         
@@ -1157,6 +1267,10 @@
                         
             <xs:element name="changeMoveSelector" type="tns:changeMoveSelectorConfig"/>
                         
+            <xs:element name="listChangeMoveSelector" type="tns:listChangeMoveSelectorConfig"/>
+                        
+            <xs:element name="listSwapMoveSelector" type="tns:listSwapMoveSelectorConfig"/>
+                        
             <xs:element name="moveIteratorFactory" type="tns:moveIteratorFactoryConfig"/>
                         
             <xs:element name="moveListFactory" type="tns:moveListFactoryConfig"/>
@@ -1168,6 +1282,10 @@
             <xs:element name="subChainChangeMoveSelector" type="tns:subChainChangeMoveSelectorConfig"/>
                         
             <xs:element name="subChainSwapMoveSelector" type="tns:subChainSwapMoveSelectorConfig"/>
+                        
+            <xs:element name="subListChangeMoveSelector" type="tns:subListChangeMoveSelectorConfig"/>
+                        
+            <xs:element name="subListSwapMoveSelector" type="tns:subListSwapMoveSelectorConfig"/>
                         
             <xs:element name="swapMoveSelector" type="tns:swapMoveSelectorConfig"/>
                         
@@ -1545,6 +1663,18 @@
       
   </xs:simpleType>
     
+  <xs:simpleType name="selectionSorterOrder">
+        
+    <xs:restriction base="xs:string">
+            
+      <xs:enumeration value="ASCENDING"/>
+            
+      <xs:enumeration value="DESCENDING"/>
+          
+    </xs:restriction>
+      
+  </xs:simpleType>
+    
   <xs:simpleType name="nearbySelectionDistributionType">
         
     <xs:restriction base="xs:string">
@@ -1556,18 +1686,6 @@
       <xs:enumeration value="PARABOLIC_DISTRIBUTION"/>
             
       <xs:enumeration value="BETA_DISTRIBUTION"/>
-          
-    </xs:restriction>
-      
-  </xs:simpleType>
-    
-  <xs:simpleType name="selectionSorterOrder">
-        
-    <xs:restriction base="xs:string">
-            
-      <xs:enumeration value="ASCENDING"/>
-            
-      <xs:enumeration value="DESCENDING"/>
           
     </xs:restriction>
       

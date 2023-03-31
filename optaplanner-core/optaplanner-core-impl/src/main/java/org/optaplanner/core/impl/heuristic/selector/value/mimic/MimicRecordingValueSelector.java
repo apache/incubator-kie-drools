@@ -24,8 +24,8 @@ public class MimicRecordingValueSelector<Solution_> extends AbstractValueSelecto
     }
 
     @Override
-    public void addMimicReplayingValueSelector(MimicReplayingValueSelector<Solution_> replayingEntitySelector) {
-        replayingValueSelectorList.add(replayingEntitySelector);
+    public void addMimicReplayingValueSelector(MimicReplayingValueSelector<Solution_> replayingValueSelector) {
+        replayingValueSelectorList.add(replayingValueSelector);
     }
 
     // ************************************************************************

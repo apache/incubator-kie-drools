@@ -9,11 +9,13 @@ import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.m
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEmptyNeverEndingMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.list.RandomSubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -22,7 +24,6 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
-import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
 class RandomSubListSwapMoveSelectorTest {
@@ -36,25 +37,22 @@ class RandomSubListSwapMoveSelectorTest {
         TestdataListEntity a = TestdataListEntity.createWithValues("A", v1, v2, v3, v4);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
         int subListCount = 10;
 
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(a);
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector(v1);
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockNeverEndingEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v1);
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
-                listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
                         valueSelector,
                         minimumSubListSize,
                         maximumSubListSize),
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
                         valueSelector,
                         minimumSubListSize,
@@ -122,7 +120,7 @@ class RandomSubListSwapMoveSelectorTest {
         TestdataListEntity b = TestdataListEntity.createWithValues("B", v5, v6);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
@@ -131,17 +129,14 @@ class RandomSubListSwapMoveSelectorTest {
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(a, b);
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
-                listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
-                        mockNeverEndingEntityIndependentValueSelector(v1),
+                        mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor, v1),
                         minimumSubListSize,
                         maximumSubListSize),
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
-                        mockNeverEndingEntityIndependentValueSelector(v5),
+                        mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor, v5),
                         minimumSubListSize,
                         maximumSubListSize),
                 true);
@@ -177,25 +172,22 @@ class RandomSubListSwapMoveSelectorTest {
         TestdataListEntity a = TestdataListEntity.createWithValues("A", v1, v2, v3, v4);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 2;
         int maximumSubListSize = 3;
         int subListCount = 5;
 
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(a);
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector(v1);
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockNeverEndingEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v1);
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
-                listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
                         valueSelector,
                         minimumSubListSize,
                         maximumSubListSize),
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
                         valueSelector,
                         minimumSubListSize,
@@ -240,24 +232,21 @@ class RandomSubListSwapMoveSelectorTest {
         TestdataListEntity a = TestdataListEntity.createWithValues("A", v1, v2, v3);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 100;
         int maximumSubListSize = Integer.MAX_VALUE;
 
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(a);
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector(v1);
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockNeverEndingEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v1);
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
-                listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
                         valueSelector,
                         minimumSubListSize,
                         maximumSubListSize),
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
                         valueSelector,
                         minimumSubListSize,
@@ -280,7 +269,7 @@ class RandomSubListSwapMoveSelectorTest {
         TestdataListEntity c = TestdataListEntity.createWithValues("C", v4);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 2;
         int maximumSubListSize = 2;
@@ -289,17 +278,14 @@ class RandomSubListSwapMoveSelectorTest {
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(a, b, c);
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
-                listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
-                        mockNeverEndingEntityIndependentValueSelector(v1, v4),
+                        mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor, v1, v4),
                         minimumSubListSize,
                         maximumSubListSize),
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
-                        mockNeverEndingEntityIndependentValueSelector(v4, v1),
+                        mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor, v4, v1),
                         minimumSubListSize,
                         maximumSubListSize),
                 false);
@@ -337,26 +323,23 @@ class RandomSubListSwapMoveSelectorTest {
         TestdataListEntity c = TestdataListEntity.createWithValues("C", v4);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
         int subListCount = 6 + 1;
 
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         // The entity selector must be complete; it affects subList calculation and the move selector size.
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(a, b, c);
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector(v1);
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockNeverEndingEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v1);
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
-                listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
                         valueSelector,
                         minimumSubListSize,
                         maximumSubListSize),
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
                         valueSelector,
                         minimumSubListSize,
@@ -392,25 +375,23 @@ class RandomSubListSwapMoveSelectorTest {
         TestdataListEntity d = TestdataListEntity.createWithValues("D", v21, v22, v23, v24);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 3;
         int maximumSubListSize = 5;
         int subListCount = 12 + 1 + 3;
 
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         // The entity selector must be complete; it affects subList calculation and the move selector size.
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(a, b, c, d);
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector(v1);
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockNeverEndingEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v1);
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
-                listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
                         valueSelector,
                         minimumSubListSize,
                         maximumSubListSize),
-                new RandomSubListSelector<>(listVariableDescriptor,
+                new RandomSubListSelector<>(
                         entitySelector,
                         valueSelector,
                         minimumSubListSize,
@@ -427,27 +408,25 @@ class RandomSubListSwapMoveSelectorTest {
     @Test
     void phaseLifecycle() {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
 
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector();
         EntityIndependentValueSelector<TestdataListSolution> leftValueSelector =
-                mockNeverEndingEntityIndependentValueSelector();
+                mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor);
         EntityIndependentValueSelector<TestdataListSolution> rightValueSelector =
-                mockNeverEndingEntityIndependentValueSelector();
+                mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor);
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
 
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
-                listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
                         leftValueSelector,
                         minimumSubListSize,
                         maximumSubListSize),
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         entitySelector,
                         rightValueSelector,
                         minimumSubListSize,

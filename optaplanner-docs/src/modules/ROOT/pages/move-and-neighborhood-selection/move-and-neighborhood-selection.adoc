@@ -126,12 +126,20 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 |Swap 2 sets of entities with the same values
 |`+[Process-A, Process-B, Process-C] {Computer-1} <-> [Process-E, Process-F] {Computer-2}+`
 
+|<<listChangeMoveSelector,List change move>>
+|Move a list element to a different index or to another entity's list variable
+|`+Customer-3 {Vehicle-4[3] -> Vehicle-4[2]}+`
+
+|<<listSwapMoveSelector,List swap move>>
+|Swap 2 list elements
+|`+Customer-3 {Vehicle-3[2]} <-> Customer-10 {Vehicle-0[2]}+`
+
 |<<subListChangeMoveSelector,SubList change move>>
-|Move a list variable subList from one entity to another
+|Move a subList from one position to another
 |`+\|2\| {Vehicle-2[1..3] -> Vehicle-4[1]}+`
 
 |<<subListSwapMoveSelector,SubList swap move>>
-|Swap 2 list variable subLists between 2 entities
+|Swap 2 subLists
 |`+{Vehicle-5[1..3]} <-> {Vehicle-1[1..6]}+`
 
 |<<kOptListMoveSelector,k-opt move>>
@@ -409,14 +417,79 @@ An advanced configuration looks like this:
 
 In this case, the entity being operated on need not be `Comparable`. The given `subPillarSequenceComparatorClass` is used to establish the sequence instead. Also, the size of the sub pillars is limited in length of up to 1000 entities.
 
-[[subListMoveSelectors]]
+[[listMoveSelectors]]
 === Move selectors for list variables
 
-A _subList_ is a sequence of elements in a specific entity's list variable between `fromIndex` and `toIndex`.
+[[listChangeMoveSelector]]
+==== `ListChangeMoveSelector`
+
+The `ListChangeMoveSelector` selects an element from a list variable's value range and moves it from its current position to a new one.
+
+Simplest configuration:
+
+[source,xml]
+----
+    <listChangeMoveSelector/>
+----
+
+Advanced configuration:
+
+[source,xml]
+----
+    <listChangeMoveSelector>
+      ... <!-- Normal selector properties -->
+      <valueSelector id="valueSelector1">
+        ...
+      </valueSelector>
+      <destinationSelector>
+        <entitySelector>
+          ...
+        </entitySelector>
+        <valueSelector>
+          ...
+        </valueSelector>
+        <nearbySelection>
+          <originValueSelector mimicSelectorRef="valueSelector1"/>
+          ... <!-- Normal nearby selection properties -->
+        </nearbySelection>
+      </destinationSelector>
+    </listChangeMoveSelector>
+----
+
+[[listSwapMoveSelector]]
+==== `ListSwapMoveSelector`
+
+The `ListSwapMoveSelector` selects two elements from the same list variable value range and swaps their positions.
+
+Simplest configuration:
+
+[source,xml]
+----
+    <listSwapMoveSelector/>
+----
+
+Advanced configuration:
+
+[source,xml]
+----
+    <listSwapMoveSelector>
+      ... <!-- Normal selector properties -->
+      <valueSelector id="valueSelector1">
+        ...
+      </valueSelector>
+      <secondaryValueSelector>
+        <nearbySelection>
+          <originValueSelector mimicSelectorRef="valueSelector1"/>
+          ... <!-- Normal nearby selection properties -->
+        </nearbySelection>
+      </secondaryValueSelector>
+    </listSwapMoveSelector>
+----
 
 [[subListChangeMoveSelector]]
 ==== `SubListChangeMoveSelector`
 
+A _subList_ is a sequence of elements in a specific entity's list variable between `fromIndex` and `toIndex`.
 The `SubListChangeMoveSelector` selects a source subList by selecting a source entity and the source subList's `fromIndex` and `toIndex`.
 Then it selects a destination entity and a `destinationIndex` in the destination entity's list variable.
 Selecting these parameters results in a `SubListChangeMove` that removes the source subList elements from the source entity and adds them to the destination entity's list variable at the `destinationIndex`.
@@ -434,15 +507,33 @@ Advanced configuration:
 ----
     <subListChangeMoveSelector>
       ... <!-- Normal selector properties -->
-      <minimumSubListSize>2</minimumSubListSize>
-      <maximumSubListSize>40</maximumSubListSize>
       <selectReversingMoveToo>true</selectReversingMoveToo>
+      <subListSelector id="subListSelector1">
+        <valueSelector>
+          ...
+        </valueSelector>
+        <minimumSubListSize>2</minimumSubListSize>
+        <maximumSubListSize>6</maximumSubListSize>
+      </subListSelector>
+      <destinationSelector>
+        <entitySelector>
+          ...
+        </entitySelector>
+        <valueSelector>
+          ...
+        </valueSelector>
+        <nearbySelection>
+          <originSubListSelector mimicSelectorRef="subListSelector1"/>
+          ... <!-- Normal nearby selection properties -->
+        </nearbySelection>
+      </destinationSelector>
     </subListChangeMoveSelector>
 ----
 
 [[subListSwapMoveSelector]]
 ==== `SubListSwapMoveSelector`
 
+A _subList_ is a sequence of elements in a specific entity's list variable between `fromIndex` and `toIndex`.
 The `SubListSwapMoveSelector` selects a left subList by selecting a left entity and the left subList's `fromIndex` and `toIndex`.
 Then it selects a right subList by selecting a right entity and the right subList's `fromIndex` and `toIndex`.
 Selecting these parameters results in a `SubListSwapMove` that swaps the right and left subLists between right and left entities.
@@ -460,9 +551,25 @@ Advanced configuration:
 ----
     <subListSwapMoveSelector>
       ... <!-- Normal selector properties -->
-      <minimumSubListSize>2</minimumSubListSize>
-      <maximumSubListSize>40</maximumSubListSize>
       <selectReversingMoveToo>true</selectReversingMoveToo>
+      <subListSelector id="subListSelector1">
+        <valueSelector>
+          ...
+        </valueSelector>
+        <minimumSubListSize>2</minimumSubListSize>
+        <maximumSubListSize>6</maximumSubListSize>
+      </subListSelector>
+      <secondarySubListSelector>
+        <valueSelector>
+          ...
+        </valueSelector>
+        <nearbySelection>
+          <originSubListSelector mimicSelectorRef="subListSelector1"/>
+          ... <!-- Normal nearby selection properties -->
+        </nearbySelection>
+        <minimumSubListSize>3</minimumSubListSize>
+        <maximumSubListSize>5</maximumSubListSize>
+      </secondarySubListSelector>
     </subListSwapMoveSelector>
 ----
 
@@ -1439,8 +1546,62 @@ public class CustomerNearbyDistanceMeter implements NearbyDistanceMeter<Customer
 The solver may choose to reuse them in different contexts.
 ====
 
+==== Nearby selection with a list variable
 
-To configure nearby selection, add a `nearbySelection` element in the `entitySelector` or `valueSelector`
+To configure nearby selection with a planning list variable, add a `nearbySelection` element in the `destinationSelector`, `valueSelector` or `subListSelector`
+and use <<mimicSelection,mimic selection>> to specify which destination, value, or subList should be near by the selection.
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      <listChangeMoveSelector>
+        <valueSelector id="valueSelector1"/>
+        <destinationSelector>
+          <nearbySelection>
+            <originValueSelector mimicSelectorRef="valueSelector1"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </destinationSelector>
+      </listChangeMoveSelector>
+      <listSwapMoveSelector>
+        <valueSelector id="valueSelector2"/>
+        <secondaryValueSelector>
+          <nearbySelection>
+            <originValueSelector mimicSelectorRef="valueSelector2"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </secondaryValueSelector>
+      </listSwapMoveSelector>
+      <subListChangeMoveSelector>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
+        <subListSelector id="subListSelector3"/>
+        <destinationSelector>
+          <nearbySelection>
+            <originSubListSelector mimicSelectorRef="subListSelector3"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </destinationSelector>
+      </subListChangeMoveSelector>
+      <subListSwapMoveSelector>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
+        <subListSelector id="subListSelector4"/>
+        <secondarySubListSelector>
+          <nearbySelection>
+            <originSubListSelector mimicSelectorRef="subListSelector4"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </secondarySubListSelector>
+      </subListSwapMoveSelector>
+    </unionMoveSelector>
+----
+
+==== Nearby selection with a chained variable
+
+To configure nearby selection with a chained planning variable, add a `nearbySelection` element in the `entitySelector` or `valueSelector`
 and use <<mimicSelection,mimic selection>> to specify which entity should be near by the selection.
 
 [source,xml,options="nowrap"]

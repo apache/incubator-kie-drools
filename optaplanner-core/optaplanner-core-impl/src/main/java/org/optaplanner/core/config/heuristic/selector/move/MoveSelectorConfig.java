@@ -22,6 +22,8 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelec
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.kopt.KOptListMoveSelectorConfig;
@@ -39,6 +41,8 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
         CartesianProductMoveSelectorConfig.class,
         ChangeMoveSelectorConfig.class,
         KOptListMoveSelectorConfig.class,
+        ListChangeMoveSelectorConfig.class,
+        ListSwapMoveSelectorConfig.class,
         MoveIteratorFactoryConfig.class,
         MoveListFactoryConfig.class,
         PillarChangeMoveSelectorConfig.class,
@@ -243,7 +247,7 @@ public abstract class MoveSelectorConfig<Config_ extends MoveSelectorConfig<Conf
      *
      * @param foldedConfig never null
      */
-    public void inheritFolded(MoveSelectorConfig<Config_> foldedConfig) {
+    public void inheritFolded(MoveSelectorConfig<?> foldedConfig) {
         inheritCommon(foldedConfig);
     }
 
@@ -255,7 +259,7 @@ public abstract class MoveSelectorConfig<Config_ extends MoveSelectorConfig<Conf
         classVisitor.accept(probabilityWeightFactoryClass);
     }
 
-    private void inheritCommon(MoveSelectorConfig<Config_> inheritedConfig) {
+    private void inheritCommon(MoveSelectorConfig<?> inheritedConfig) {
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         filterClass = ConfigUtils.inheritOverwritableProperty(filterClass, inheritedConfig.getFilterClass());

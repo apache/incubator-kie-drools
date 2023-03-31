@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+package org.optaplanner.core.impl.heuristic.selector.list;
 
 import java.util.Iterator;
 
@@ -6,18 +6,16 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
-import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_>
-        implements IterableSelector<Solution_, SubList> {
+public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_> implements SubListSelector<Solution_> {
 
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
     private final EntityIndependentValueSelector<Solution_> valueSelector;
+    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final int minimumSubListSize;
     private final int maximumSubListSize;
 
@@ -25,13 +23,12 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
     private SingletonInverseVariableSupply inverseVariableSupply;
 
     public RandomSubListSelector(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
             EntityIndependentValueSelector<Solution_> valueSelector,
             int minimumSubListSize, int maximumSubListSize) {
-        this.listVariableDescriptor = listVariableDescriptor;
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
+        this.listVariableDescriptor = (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor();
         if (minimumSubListSize < 1) {
             throw new IllegalArgumentException(
                     "The minimumSubListSize (" + minimumSubListSize + ") must be greater than 0.");
@@ -62,6 +59,11 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
     }
 
     @Override
+    public ListVariableDescriptor<Solution_> getVariableDescriptor() {
+        return listVariableDescriptor;
+    }
+
+    @Override
     public boolean isCountable() {
         return true;
     }
@@ -86,6 +88,17 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
             }
         }
         return subListCount;
+    }
+
+    @Override
+    public Iterator<Object> endingValueIterator() {
+        // Child value selector is entity independent, so passing null entity is OK.
+        return valueSelector.endingIterator(null);
+    }
+
+    @Override
+    public long getValueCount() {
+        return valueSelector.getSize();
     }
 
     @Override
@@ -119,7 +132,6 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
             Object sourceEntity = null;
             int listSize = 0;
 
-            // TODO What if MIN is 500? We could burn thousands of cycles before we hit a listSize >= 500!
             while (listSize < minimumSubListSize) {
                 if (!valueIterator.hasNext()) {
                     throw new IllegalStateException("The valueIterator (" + valueIterator + ") should never end.");

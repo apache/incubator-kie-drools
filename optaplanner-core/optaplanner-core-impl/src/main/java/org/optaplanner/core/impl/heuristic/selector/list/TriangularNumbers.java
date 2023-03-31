@@ -1,6 +1,6 @@
-package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+package org.optaplanner.core.impl.heuristic.selector.list;
 
-final class TriangularNumbers {
+public final class TriangularNumbers {
 
     /**
      * This is the highest <em>n</em> for which the <em>n</em>th triangular number can be calculated using int arithmetic.
@@ -17,7 +17,7 @@ final class TriangularNumbers {
      * @return <em>n</em>th triangular number
      * @throws ArithmeticException if {@code n} is higher than {@link #HIGHEST_SAFE_N}
      */
-    static int nthTriangle(int n) throws ArithmeticException {
+    public static int nthTriangle(int n) throws ArithmeticException {
         return Math.multiplyExact(n, n + 1) / 2;
     }
 

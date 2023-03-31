@@ -9,26 +9,24 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.heuristic.selector.list.DestinationSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntityIndependentValueSelector<Solution_> sourceValueSelector;
-    private final ElementDestinationSelector<Solution_> destinationSelector;
+    private final DestinationSelector<Solution_> destinationSelector;
     private final boolean randomSelection;
 
     private SingletonInverseVariableSupply inverseVariableSupply;
     private IndexVariableSupply indexVariableSupply;
 
     public ListChangeMoveSelector(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntityIndependentValueSelector<Solution_> sourceValueSelector,
-            ElementDestinationSelector<Solution_> destinationSelector,
+            DestinationSelector<Solution_> destinationSelector,
             boolean randomSelection) {
-        this.listVariableDescriptor = listVariableDescriptor;
         this.sourceValueSelector = sourceValueSelector;
         this.destinationSelector = destinationSelector;
         this.randomSelection = randomSelection;
@@ -40,6 +38,8 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
+        ListVariableDescriptor<Solution_> listVariableDescriptor =
+                (ListVariableDescriptor<Solution_>) sourceValueSelector.getVariableDescriptor();
         SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
         inverseVariableSupply = supplyManager.demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor));
         indexVariableSupply = supplyManager.demand(new IndexVariableDemand<>(listVariableDescriptor));
@@ -61,14 +61,12 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     public Iterator<Move<Solution_>> iterator() {
         if (randomSelection) {
             return new RandomListChangeIterator<>(
-                    listVariableDescriptor,
                     inverseVariableSupply,
                     indexVariableSupply,
                     sourceValueSelector,
                     destinationSelector);
         } else {
             return new OriginalListChangeIterator<>(
-                    listVariableDescriptor,
                     inverseVariableSupply,
                     indexVariableSupply,
                     sourceValueSelector,

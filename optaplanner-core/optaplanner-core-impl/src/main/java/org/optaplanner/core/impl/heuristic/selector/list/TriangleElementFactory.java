@@ -1,7 +1,7 @@
-package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+package org.optaplanner.core.impl.heuristic.selector.list;
 
-import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangularNumbers.nthTriangle;
-import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangularNumbers.triangularRoot;
+import static org.optaplanner.core.impl.heuristic.selector.list.TriangularNumbers.nthTriangle;
+import static org.optaplanner.core.impl.heuristic.selector.list.TriangularNumbers.triangularRoot;
 
 import java.util.Random;
 

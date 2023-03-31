@@ -5,13 +5,13 @@ import java.util.Objects;
 
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.heuristic.selector.list.ElementRef;
+import org.optaplanner.core.impl.heuristic.selector.list.SubList;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ElementRef;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListAssignMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubList;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListSwapMove;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;

@@ -18,7 +18,7 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -158,15 +158,15 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         ValueSelectorConfig mimicReplayingValueSelectorConfig = new ValueSelectorConfig()
                 .withMimicSelectorRef(mimicSelectorId);
 
-        // ChangeMoveSelector uses the replaying ValueSelector.
-        ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig()
+        // ListChangeMoveSelector uses the replaying ValueSelector.
+        ListChangeMoveSelectorConfig listChangeMoveSelectorConfig = new ListChangeMoveSelectorConfig()
                 .withValueSelectorConfig(mimicReplayingValueSelectorConfig);
 
-        // Finally, QueuedValuePlacer uses the recording ValueSelector and a ChangeMoveSelector.
-        // The ChangeMoveSelector's replaying ValueSelector mimics the QueuedValuePlacer's recording ValueSelector.
+        // Finally, QueuedValuePlacer uses the recording ValueSelector and a ListChangeMoveSelector.
+        // The ListChangeMoveSelector's replaying ValueSelector mimics the QueuedValuePlacer's recording ValueSelector.
         return new QueuedValuePlacerConfig()
                 .withValueSelectorConfig(mimicRecordingValueSelectorConfig)
-                .withMoveSelectorConfig(changeMoveSelectorConfig);
+                .withMoveSelectorConfig(listChangeMoveSelectorConfig);
     }
 
     private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,

@@ -15,7 +15,6 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntityIndependentValueSelector<Solution_> leftValueSelector;
     private final EntityIndependentValueSelector<Solution_> rightValueSelector;
     private final boolean randomSelection;
@@ -24,11 +23,9 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
     private IndexVariableSupply indexVariableSupply;
 
     public ListSwapMoveSelector(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntityIndependentValueSelector<Solution_> leftValueSelector,
             EntityIndependentValueSelector<Solution_> rightValueSelector,
             boolean randomSelection) {
-        this.listVariableDescriptor = listVariableDescriptor;
         // TODO require not same
         this.leftValueSelector = leftValueSelector;
         this.rightValueSelector = rightValueSelector;
@@ -42,6 +39,8 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
+        ListVariableDescriptor<Solution_> listVariableDescriptor =
+                (ListVariableDescriptor<Solution_>) leftValueSelector.getVariableDescriptor();
         SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
         inverseVariableSupply = supplyManager.demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor));
         indexVariableSupply = supplyManager.demand(new IndexVariableDemand<>(listVariableDescriptor));
@@ -58,14 +57,12 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
     public Iterator<Move<Solution_>> iterator() {
         if (randomSelection) {
             return new RandomListSwapIterator<>(
-                    listVariableDescriptor,
                     inverseVariableSupply,
                     indexVariableSupply,
                     leftValueSelector,
                     rightValueSelector);
         } else {
             return new OriginalListSwapIterator<>(
-                    listVariableDescriptor,
                     inverseVariableSupply,
                     indexVariableSupply,
                     leftValueSelector,

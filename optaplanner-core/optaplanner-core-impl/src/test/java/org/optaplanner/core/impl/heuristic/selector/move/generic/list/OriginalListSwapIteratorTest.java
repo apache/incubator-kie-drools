@@ -38,11 +38,10 @@ class OriginalListSwapIteratorTest {
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         OriginalListSwapIterator<TestdataListSolution> listSwapIterator = new OriginalListSwapIterator<>(
-                listVariableDescriptor,
                 scoreDirector.getSupplyManager().demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor)),
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(listVariableDescriptor)),
-                mockEntityIndependentValueSelector(leftValues.toArray()),
-                mockEntityIndependentValueSelector(rightValues.toArray()));
+                mockEntityIndependentValueSelector(listVariableDescriptor, leftValues.toArray()),
+                mockEntityIndependentValueSelector(listVariableDescriptor, rightValues.toArray()));
 
         assertThat(listSwapIterator).isExhausted();
     }

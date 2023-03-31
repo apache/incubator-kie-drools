@@ -144,14 +144,15 @@
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
+          <listChangeMoveSelector/>
+          <listSwapMoveSelector/>
           <subListChangeMoveSelector>
             <selectReversingMoveToo>true</selectReversingMoveToo>
           </subListChangeMoveSelector>
           <subListSwapMoveSelector>
             <selectReversingMoveToo>true</selectReversingMoveToo>
           </subListSwapMoveSelector>
+          <kOptListMoveSelector/>
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>9</entityTabuSize>
@@ -162,6 +163,7 @@
       </localSearch>
     </solver>
   </solverBenchmark>
+
   <solverBenchmark>
     <name>Late Acceptance</name>
     <solver>
@@ -169,15 +171,16 @@
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
+          <listChangeMoveSelector>
+          </listChangeMoveSelector>
+          <listSwapMoveSelector/>
           <subListChangeMoveSelector>
             <selectReversingMoveToo>true</selectReversingMoveToo>
           </subListChangeMoveSelector>
           <subListSwapMoveSelector>
             <selectReversingMoveToo>true</selectReversingMoveToo>
           </subListSwapMoveSelector>
-          <kOptListMoveSelector />
+          <kOptListMoveSelector/>
         </unionMoveSelector>
         <acceptor>
           <lateAcceptanceSize>200</lateAcceptanceSize>
@@ -189,101 +192,105 @@
     </solver>
   </solverBenchmark>
 
-  <!-- FIXME Nearby selection for a list variable not yet supported: https://issues.redhat.com/browse/PLANNER-2814-->
-  <!--<solverBenchmark>-->
-  <!--  <name>Tabu Search Nearby</name>-->
-  <!--  <solver>-->
-  <!--    <constructionHeuristic>-->
-  <!--    </constructionHeuristic>-->
-  <!--    <localSearch>-->
-  <!--      <unionMoveSelector>-->
-  <!--        <changeMoveSelector>-->
-  <!--          <entitySelector id="entitySelector1"/>-->
-  <!--          <valueSelector>-->
-  <!--            <nearbySelection>-->
-  <!--              <originEntitySelector mimicSelectorRef="entitySelector1"/>-->
-  <!--              <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>-->
-  <!--              <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>-->
-  <!--            </nearbySelection>-->
-  <!--          </valueSelector>-->
-  <!--        </changeMoveSelector>-->
-  <!--        <swapMoveSelector>-->
-  <!--          <entitySelector id="entitySelector2"/>-->
-  <!--          <secondaryEntitySelector>-->
-  <!--            <nearbySelection>-->
-  <!--              <originEntitySelector mimicSelectorRef="entitySelector2"/>-->
-  <!--              <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>-->
-  <!--              <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>-->
-  <!--            </nearbySelection>-->
-  <!--          </secondaryEntitySelector>-->
-  <!--        </swapMoveSelector>-->
-  <!--        <tailChainSwapMoveSelector>-->
-  <!--          <entitySelector id="entitySelector3"/>-->
-  <!--          <valueSelector>-->
-  <!--            <nearbySelection>-->
-  <!--              <originEntitySelector mimicSelectorRef="entitySelector3"/>-->
-  <!--              <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>-->
-  <!--              <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>-->
-  <!--            </nearbySelection>-->
-  <!--          </valueSelector>-->
-  <!--        </tailChainSwapMoveSelector>-->
-  <!--        <kOptListMoveSelector />-->
-  <!--      </unionMoveSelector>-->
-  <!--      <acceptor>-->
-  <!--        <entityTabuSize>9</entityTabuSize>-->
-  <!--      </acceptor>-->
-  <!--      <forager>-->
-  <!--        <acceptedCountLimit>2000</acceptedCountLimit>-->
-  <!--      </forager>-->
-  <!--    </localSearch>-->
-  <!--  </solver>-->
-  <!--</solverBenchmark>-->
-  <!--<solverBenchmark>-->
-  <!--  <name>Late Acceptance Nearby</name>-->
-  <!--  <solver>-->
-  <!--    <constructionHeuristic>-->
-  <!--    </constructionHeuristic>-->
-  <!--    <localSearch>-->
-  <!--      <unionMoveSelector>-->
-  <!--        <changeMoveSelector>-->
-  <!--          <entitySelector id="entitySelector1"/>-->
-  <!--          <valueSelector>-->
-  <!--            <nearbySelection>-->
-  <!--              <originEntitySelector mimicSelectorRef="entitySelector1"/>-->
-  <!--              <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>-->
-  <!--              <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>-->
-  <!--            </nearbySelection>-->
-  <!--          </valueSelector>-->
-  <!--        </changeMoveSelector>-->
-  <!--        <swapMoveSelector>-->
-  <!--          <entitySelector id="entitySelector2"/>-->
-  <!--          <secondaryEntitySelector>-->
-  <!--            <nearbySelection>-->
-  <!--              <originEntitySelector mimicSelectorRef="entitySelector2"/>-->
-  <!--              <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>-->
-  <!--              <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>-->
-  <!--            </nearbySelection>-->
-  <!--          </secondaryEntitySelector>-->
-  <!--        </swapMoveSelector>-->
-  <!--        <tailChainSwapMoveSelector>-->
-  <!--          <entitySelector id="entitySelector3"/>-->
-  <!--          <valueSelector>-->
-  <!--            <nearbySelection>-->
-  <!--              <originEntitySelector mimicSelectorRef="entitySelector3"/>-->
-  <!--              <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>-->
-  <!--              <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>-->
-  <!--            </nearbySelection>-->
-  <!--          </valueSelector>-->
-  <!--        </tailChainSwapMoveSelector>-->
-  <!--        <kOptListMoveSelector />-->
-  <!--      </unionMoveSelector>-->
-  <!--      <acceptor>-->
-  <!--        <lateAcceptanceSize>200</lateAcceptanceSize>-->
-  <!--      </acceptor>-->
-  <!--      <forager>-->
-  <!--        <acceptedCountLimit>1</acceptedCountLimit>-->
-  <!--      </forager>-->
-  <!--    </localSearch>-->
-  <!--  </solver>-->
-  <!--</solverBenchmark>-->
+  <solverBenchmark>
+    <name>Tabu Search Nearby</name>
+    <solver>
+      <constructionHeuristic>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <listChangeMoveSelector>
+            <valueSelector id="valueSelector1"/>
+            <destinationSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="valueSelector1"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </destinationSelector>
+          </listChangeMoveSelector>
+          <listSwapMoveSelector>
+            <valueSelector id="valueSelector2"/>
+            <secondaryValueSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="valueSelector2"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </secondaryValueSelector>
+          </listSwapMoveSelector>
+          <!--<tailChainSwapMoveSelector>-->
+          <!--  <entitySelector id="entitySelector3"/>-->
+          <!--  <valueSelector>-->
+          <!--    <nearbySelection>-->
+          <!--      <originEntitySelector mimicSelectorRef="entitySelector3"/>-->
+          <!--      <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>-->
+          <!--      <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>-->
+          <!--    </nearbySelection>-->
+          <!--  </valueSelector>-->
+          <!--</tailChainSwapMoveSelector>-->
+          <kOptListMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>9</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>2000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+
+  <solverBenchmark>
+    <name>Late Acceptance Nearby</name>
+    <solver>
+      <constructionHeuristic>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <listChangeMoveSelector>
+            <valueSelector id="valueSelector1"/>
+            <destinationSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="valueSelector1"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </destinationSelector>
+          </listChangeMoveSelector>
+          <listSwapMoveSelector>
+            <valueSelector id="valueSelector2"/>
+            <secondaryValueSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="valueSelector2"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </secondaryValueSelector>
+          </listSwapMoveSelector>
+          <!--<tailChainSwapMoveSelector>-->
+          <!--  <entitySelector id="entitySelector3"/>-->
+          <!--  <valueSelector>-->
+          <!--    <nearbySelection>-->
+          <!--      <originEntitySelector mimicSelectorRef="entitySelector3"/>-->
+          <!--      <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>-->
+          <!--      <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>-->
+          <!--    </nearbySelection>-->
+          <!--  </valueSelector>-->
+          <!--</tailChainSwapMoveSelector>-->
+          <kOptListMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>200</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>1</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
 </plannerBenchmark>

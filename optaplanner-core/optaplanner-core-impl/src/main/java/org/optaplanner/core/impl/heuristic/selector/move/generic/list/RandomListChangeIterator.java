@@ -8,6 +8,8 @@ import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
+import org.optaplanner.core.impl.heuristic.selector.list.DestinationSelector;
+import org.optaplanner.core.impl.heuristic.selector.list.ElementRef;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
 /**
@@ -15,21 +17,20 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
  */
 public class RandomListChangeIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final SingletonInverseVariableSupply inverseVariableSupply;
     private final IndexVariableSupply indexVariableSupply;
+    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final Iterator<Object> valueIterator;
     private final Iterator<ElementRef> destinationIterator;
 
     public RandomListChangeIterator(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply,
             EntityIndependentValueSelector<Solution_> valueSelector,
-            ElementDestinationSelector<Solution_> destinationSelector) {
-        this.listVariableDescriptor = listVariableDescriptor;
+            DestinationSelector<Solution_> destinationSelector) {
         this.inverseVariableSupply = inverseVariableSupply;
         this.indexVariableSupply = indexVariableSupply;
+        this.listVariableDescriptor = (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor();
         this.valueIterator = valueSelector.iterator();
         this.destinationIterator = destinationSelector.iterator();
     }

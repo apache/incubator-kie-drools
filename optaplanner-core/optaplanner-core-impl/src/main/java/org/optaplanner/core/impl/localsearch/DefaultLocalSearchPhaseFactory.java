@@ -191,6 +191,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
             defaultSelectionOrder = SelectionOrder.RANDOM;
         }
         if (phaseConfig.getMoveSelectorConfig() == null) {
+            // TODO default to list move selectors if list variable?
             // Default to changeMoveSelector and swapMoveSelector
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig().withMoveSelectors(
                     new ChangeMoveSelectorConfig(),

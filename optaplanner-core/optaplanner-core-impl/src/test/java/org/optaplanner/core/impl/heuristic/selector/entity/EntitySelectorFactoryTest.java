@@ -11,11 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
+import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ProbabilityEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ShufflingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SortingEntitySelector;
@@ -195,6 +198,19 @@ class EntitySelectorFactoryTest {
                 () -> EntitySelectorFactory.create(entitySelectorConfig)
                         .buildMimicReplaying(mock(HeuristicConfigPolicy.class)))
                 .withMessageContaining("has another property");
+    }
+
+    @Test
+    void failFast_ifNearbyDoesNotHaveOriginEntitySelector() {
+        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig()
+                .withNearbySelectionConfig(new NearbySelectionConfig()
+                        .withOriginValueSelectorConfig(new ValueSelectorConfig().withMimicSelectorRef("x"))
+                        .withNearbyDistanceMeterClass(NearbyDistanceMeter.class));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig).buildEntitySelector(
+                        buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM))
+                .withMessageContaining("requires an originEntitySelector");
     }
 
     public static class DummySelectionProbabilityWeightFactory

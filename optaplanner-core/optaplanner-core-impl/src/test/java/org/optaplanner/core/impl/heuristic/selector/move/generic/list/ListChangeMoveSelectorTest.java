@@ -1,7 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
-import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.ElementRef.elementRef;
+import static org.optaplanner.core.impl.heuristic.selector.list.ElementRef.elementRef;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockDestinationSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
@@ -9,6 +9,7 @@ import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.m
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockNeverEndingEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -16,7 +17,6 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
-import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 class ListChangeMoveSelectorTest {
 
@@ -30,11 +30,10 @@ class ListChangeMoveSelectorTest {
         TestdataListEntity c = TestdataListEntity.createWithValues("C", v3);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         ListChangeMoveSelector<TestdataListSolution> moveSelector = new ListChangeMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                mockEntityIndependentValueSelector(v3, v1, v2),
+                mockEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v3, v1, v2),
                 mockDestinationSelector(
                         elementRef(a, 0),
                         elementRef(b, 0),
@@ -87,11 +86,10 @@ class ListChangeMoveSelectorTest {
         TestdataListEntity c = TestdataListEntity.createWithValues("C", v3);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         ListChangeMoveSelector<TestdataListSolution> moveSelector = new ListChangeMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                mockNeverEndingEntityIndependentValueSelector(v2, v1, v3, v3, v3),
+                mockNeverEndingEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v2, v1, v3, v3, v3),
                 mockNeverEndingDestinationSelector(
                         elementRef(b, 0),
                         elementRef(a, 2),
@@ -130,11 +128,10 @@ class ListChangeMoveSelectorTest {
         TestdataListEntity c = TestdataListEntity.createWithValues("C", v5);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         ListChangeMoveSelector<TestdataListSolution> moveSelector = new ListChangeMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                mockEntityIndependentValueSelector(v3, v1, v4, v2, v5),
+                mockEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v3, v1, v4, v2, v5),
                 mockDestinationSelector(
                         elementRef(a, 0),
                         elementRef(b, 0),

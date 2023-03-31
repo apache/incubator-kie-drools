@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+package org.optaplanner.core.impl.heuristic.selector.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangleElementFactory.TriangleElement;
+import org.optaplanner.core.impl.heuristic.selector.list.TriangleElementFactory.TriangleElement;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
 class TriangleElementFactoryTest {

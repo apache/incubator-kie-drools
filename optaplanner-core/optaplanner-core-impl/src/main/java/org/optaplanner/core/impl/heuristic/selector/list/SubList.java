@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+package org.optaplanner.core.impl.heuristic.selector.list;
 
 import java.util.Objects;
 
@@ -10,7 +10,7 @@ public final class SubList {
     private final int fromIndex;
     private final int length;
 
-    SubList(Object entity, int fromIndex, int length) {
+    public SubList(Object entity, int fromIndex, int length) {
         this.entity = entity;
         this.fromIndex = fromIndex;
         this.length = length;

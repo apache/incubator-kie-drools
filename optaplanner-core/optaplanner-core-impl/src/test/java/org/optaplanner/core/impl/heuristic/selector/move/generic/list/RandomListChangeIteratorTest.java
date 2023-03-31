@@ -13,6 +13,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.list.ElementDestinationSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
@@ -36,14 +37,13 @@ class RandomListChangeIteratorTest {
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         // Iterates over values in this given order.
         EntityIndependentValueSelector<TestdataListSolution> sourceValueSelector =
-                mockEntityIndependentValueSelector(v1, v2, v3);
+                mockEntityIndependentValueSelector(listVariableDescriptor, v1, v2, v3);
         EntityIndependentValueSelector<TestdataListSolution> destinationValueSelector =
-                mockEntityIndependentValueSelector(v2, v3);
+                mockEntityIndependentValueSelector(listVariableDescriptor, v2, v3);
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(b, a, c);
         ElementDestinationSelector<TestdataListSolution> destinationSelector =
-                new ElementDestinationSelector<>(listVariableDescriptor, entitySelector, destinationValueSelector, true);
+                new ElementDestinationSelector<>(entitySelector, destinationValueSelector, true);
         RandomListChangeIterator<TestdataListSolution> randomListChangeIterator = new RandomListChangeIterator<>(
-                listVariableDescriptor,
                 scoreDirector.getSupplyManager().demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor)),
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(listVariableDescriptor)),
                 sourceValueSelector,
@@ -64,5 +64,4 @@ class RandomListChangeIteratorTest {
 
         random.assertIntBoundJustRequested((int) destinationRange);
     }
-
 }

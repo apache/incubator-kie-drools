@@ -27,7 +27,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
     private final boolean discardNearbyIndexZero;
     private final NearbyDistanceMatrixDemand<Solution_, ?, ?> nearbyDistanceMatrixDemand;
 
-    private MemoizingSupply<NearbyDistanceMatrix> nearbyDistanceMatrixSupply = null;
+    private MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply = null;
 
     public NearEntityNearbyValueSelector(ValueSelector<Solution_> childValueSelector,
             EntitySelector<Solution_> originEntitySelector, NearbyDistanceMeter<?, ?> nearbyDistanceMeter,
@@ -48,9 +48,12 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
         }
         this.discardNearbyIndexZero = childValueSelector.getVariableDescriptor().getVariablePropertyType().isAssignableFrom(
                 originEntitySelector.getEntityDescriptor().getEntityClass());
-        this.nearbyDistanceMatrixDemand =
-                new NearbyDistanceMatrixDemand<>(nearbyDistanceMeter, childValueSelector, replayingOriginEntitySelector,
-                        this::computeDestinationSize);
+        this.nearbyDistanceMatrixDemand = new NearbyDistanceMatrixDemand<>(
+                nearbyDistanceMeter,
+                childValueSelector,
+                replayingOriginEntitySelector,
+                this::computeDestinationSize);
+
         phaseLifecycleSupport.addEventListener(childValueSelector);
         phaseLifecycleSupport.addEventListener(originEntitySelector);
     }
@@ -83,8 +86,8 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
     private int computeDestinationSize(Object origin) {
         long childSize = childValueSelector.getSize(origin);
         if (childSize > Integer.MAX_VALUE) {
-            throw new IllegalStateException("The childEntitySelector (" + childValueSelector
-                    + ") has an entitySize (" + childSize
+            throw new IllegalStateException("The childValueSelector (" + childValueSelector
+                    + ") has a valueSize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         int destinationSize = (int) childSize;
@@ -202,7 +205,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
             this.replayingOriginEntityIterator = replayingOriginEntityIterator;
             if (childSize > Integer.MAX_VALUE) {
                 throw new IllegalStateException("The valueSelector (" + this
-                        + ") has an entitySize (" + childSize
+                        + ") has a valueSize (" + childSize
                         + ") which is higher than Integer.MAX_VALUE.");
             }
             nearbySize = (int) childSize - (discardNearbyIndexZero ? 1 : 0);
@@ -239,7 +242,8 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
         if (other == null || getClass() != other.getClass())
             return false;
         NearEntityNearbyValueSelector<?> that = (NearEntityNearbyValueSelector<?>) other;
-        return Objects.equals(childValueSelector, that.childValueSelector)
+        return randomSelection == that.randomSelection
+                && Objects.equals(childValueSelector, that.childValueSelector)
                 && Objects.equals(replayingOriginEntitySelector, that.replayingOriginEntitySelector)
                 && Objects.equals(nearbyDistanceMeter, that.nearbyDistanceMeter)
                 && Objects.equals(nearbyRandom, that.nearbyRandom);
@@ -247,12 +251,12 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
 
     @Override
     public int hashCode() {
-        return Objects.hash(childValueSelector, replayingOriginEntitySelector, nearbyDistanceMeter, nearbyRandom);
+        return Objects.hash(childValueSelector, replayingOriginEntitySelector, nearbyDistanceMeter, nearbyRandom,
+                randomSelection);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + replayingOriginEntitySelector + ", " + childValueSelector + ")";
     }
-
 }

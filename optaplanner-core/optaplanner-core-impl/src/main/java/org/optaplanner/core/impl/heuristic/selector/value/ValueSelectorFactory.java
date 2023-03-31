@@ -45,6 +45,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicRecordingVa
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearEntityNearbyValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearValueNearbyValueSelector;
 import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class ValueSelectorFactory<Solution_>
@@ -117,7 +118,7 @@ public class ValueSelectorFactory<Solution_>
 
         if (config.getNearbySelectionConfig() != null) {
             // TODO Static filtering (such as movableEntitySelectionFilter) should affect nearbySelection too
-            valueSelector = applyNearbySelection(configPolicy, config.getNearbySelectionConfig(), minimumCacheType,
+            valueSelector = applyNearbySelection(configPolicy, entityDescriptor, minimumCacheType,
                     resolvedSelectionOrder, valueSelector);
         }
         ClassInstanceCache instanceCache = configPolicy.getClassInstanceCache();
@@ -452,20 +453,47 @@ public class ValueSelectorFactory<Solution_>
     }
 
     private ValueSelector<Solution_> applyNearbySelection(HeuristicConfigPolicy<Solution_> configPolicy,
-            NearbySelectionConfig nearbySelectionConfig, SelectionCacheType minimumCacheType,
+            EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
             SelectionOrder resolvedSelectionOrder, ValueSelector<Solution_> valueSelector) {
+        NearbySelectionConfig nearbySelectionConfig = config.getNearbySelectionConfig();
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
-        EntitySelectorFactory<Solution_> entitySelectorFactory =
-                EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig());
-        EntitySelector<Solution_> originEntitySelector =
-                entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder);
         NearbyDistanceMeter<?, ?> nearbyDistanceMeter = configPolicy.getClassInstanceCache().newInstance(nearbySelectionConfig,
                 "nearbyDistanceMeterClass", nearbySelectionConfig.getNearbyDistanceMeterClass());
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
-        NearbyRandom nearbyRandom =
-                NearbyRandomFactory.create(config.getNearbySelectionConfig()).buildNearbyRandom(randomSelection);
-        return new NearEntityNearbyValueSelector<>(valueSelector, originEntitySelector, nearbyDistanceMeter,
-                nearbyRandom, randomSelection);
+        NearbyRandom nearbyRandom = NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(randomSelection);
+        if (nearbySelectionConfig.getOriginEntitySelectorConfig() != null) {
+            EntitySelector<Solution_> originEntitySelector = EntitySelectorFactory
+                    .<Solution_> create(nearbySelectionConfig.getOriginEntitySelectorConfig())
+                    .buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder);
+            return new NearEntityNearbyValueSelector<>(valueSelector, originEntitySelector, nearbyDistanceMeter,
+                    nearbyRandom, randomSelection);
+        } else if (nearbySelectionConfig.getOriginValueSelectorConfig() != null) {
+            ValueSelector<Solution_> originValueSelector = ValueSelectorFactory
+                    .<Solution_> create(nearbySelectionConfig.getOriginValueSelectorConfig())
+                    .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, resolvedSelectionOrder);
+            if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+                throw new IllegalArgumentException(
+                        "The valueSelectorConfig (" + config
+                                + ") needs to be based on an "
+                                + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
+                                + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
+            }
+            if (!(originValueSelector instanceof EntityIndependentValueSelector)) {
+                throw new IllegalArgumentException(
+                        "The originValueSelectorConfig (" + nearbySelectionConfig.getOriginValueSelectorConfig()
+                                + ") needs to be based on an "
+                                + EntityIndependentValueSelector.class.getSimpleName() + " (" + originValueSelector + ")."
+                                + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
+            }
+            return new NearValueNearbyValueSelector<>(
+                    (EntityIndependentValueSelector<Solution_>) valueSelector,
+                    (EntityIndependentValueSelector<Solution_>) originValueSelector,
+                    nearbyDistanceMeter, nearbyRandom, randomSelection);
+        } else {
+            throw new IllegalArgumentException("The valueSelector (" + config
+                    + ")'s nearbySelectionConfig (" + nearbySelectionConfig
+                    + ") requires an originEntitySelector or an originValueSelector.");
+        }
     }
 
     private ValueSelector<Solution_> applyMimicRecording(HeuristicConfigPolicy<Solution_> configPolicy,

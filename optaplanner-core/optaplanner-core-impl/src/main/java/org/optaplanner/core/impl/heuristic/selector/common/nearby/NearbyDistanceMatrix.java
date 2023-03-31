@@ -8,9 +8,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-
 public final class NearbyDistanceMatrix<Origin, Destination> {
 
     private final NearbyDistanceMeter<Origin, Destination> nearbyDistanceMeter;
@@ -18,24 +15,12 @@ public final class NearbyDistanceMatrix<Origin, Destination> {
     private final Function<Origin, Iterator<Destination>> destinationIteratorProvider;
     private final ToIntFunction<Origin> destinationSizeFunction;
 
-    public <Solution_> NearbyDistanceMatrix(NearbyDistanceMeter<Origin, Destination> nearbyDistanceMeter, int originSize,
-            ValueSelector<Solution_> destinationSelector, ToIntFunction<Origin> destinationSizeFunction) {
-        this(nearbyDistanceMeter, originSize, origin -> (Iterator<Destination>) destinationSelector.endingIterator(origin),
-                destinationSizeFunction);
-    }
-
-    public <Solution_> NearbyDistanceMatrix(NearbyDistanceMeter<Origin, Destination> nearbyDistanceMeter, int originSize,
-            EntitySelector<Solution_> destinationSelector, ToIntFunction<Origin> destinationSizeFunction) {
-        this(nearbyDistanceMeter, originSize, origin -> (Iterator<Destination>) destinationSelector.endingIterator(),
-                destinationSizeFunction);
-    }
-
     NearbyDistanceMatrix(NearbyDistanceMeter<Origin, Destination> nearbyDistanceMeter, int originSize,
             List<Destination> destinationSelector, ToIntFunction<Origin> destinationSizeFunction) {
         this(nearbyDistanceMeter, originSize, origin -> destinationSelector.iterator(), destinationSizeFunction);
     }
 
-    private NearbyDistanceMatrix(NearbyDistanceMeter<Origin, Destination> nearbyDistanceMeter, int originSize,
+    public NearbyDistanceMatrix(NearbyDistanceMeter<Origin, Destination> nearbyDistanceMeter, int originSize,
             Function<Origin, Iterator<Destination>> destinationIteratorProvider,
             ToIntFunction<Origin> destinationSizeFunction) {
         this.nearbyDistanceMeter = nearbyDistanceMeter;

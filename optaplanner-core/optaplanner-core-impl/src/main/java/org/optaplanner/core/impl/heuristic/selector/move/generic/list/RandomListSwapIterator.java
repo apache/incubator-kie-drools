@@ -15,21 +15,20 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
  */
 public class RandomListSwapIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final SingletonInverseVariableSupply inverseVariableSupply;
     private final IndexVariableSupply indexVariableSupply;
+    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final Iterator<Object> leftValueIterator;
     private final Iterator<Object> rightValueIterator;
 
     public RandomListSwapIterator(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply,
             EntityIndependentValueSelector<Solution_> leftValueSelector,
             EntityIndependentValueSelector<Solution_> rightValueSelector) {
-        this.listVariableDescriptor = listVariableDescriptor;
         this.inverseVariableSupply = inverseVariableSupply;
         this.indexVariableSupply = indexVariableSupply;
+        this.listVariableDescriptor = (ListVariableDescriptor<Solution_>) leftValueSelector.getVariableDescriptor();
         this.leftValueIterator = leftValueSelector.iterator();
         this.rightValueIterator = rightValueSelector.iterator();
     }

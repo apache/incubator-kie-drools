@@ -16,11 +16,12 @@ class NearbyDistanceMatrixTest {
         final MatrixTestdataObject b = new MatrixTestdataObject("b", 1, new double[] { 4.0, 0.0, 5.0, 10.0 });
         final MatrixTestdataObject c = new MatrixTestdataObject("c", 2, new double[] { 2.0, 5.0, 0.0, 7.0 });
         final MatrixTestdataObject d = new MatrixTestdataObject("d", 3, new double[] { 6.0, 10.0, 7.0, 0.0 });
-        List<Object> entityList = Arrays.asList(a, b, c, d);
-        NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter = (origin,
-                destination) -> origin.distances[destination.index];
+        List<MatrixTestdataObject> entityList = Arrays.asList(a, b, c, d);
+        NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter =
+                (origin, destination) -> origin.distances[destination.index];
 
-        NearbyDistanceMatrix nearbyDistanceMatrix = new NearbyDistanceMatrix(meter, 4, entityList, origin -> 4);
+        NearbyDistanceMatrix<MatrixTestdataObject, MatrixTestdataObject> nearbyDistanceMatrix =
+                new NearbyDistanceMatrix<>(meter, 4, entityList, origin -> 4);
         nearbyDistanceMatrix.addAllDestinations(a);
         nearbyDistanceMatrix.addAllDestinations(b);
         nearbyDistanceMatrix.addAllDestinations(c);
@@ -50,11 +51,12 @@ class NearbyDistanceMatrixTest {
         final MatrixTestdataObject b = new MatrixTestdataObject("b", 1, new double[] { 1.0, 0.0, 2.0, 1.0 });
         final MatrixTestdataObject c = new MatrixTestdataObject("c", 2, new double[] { 1.0, 2.0, 0.0, 3.0 });
         final MatrixTestdataObject d = new MatrixTestdataObject("d", 3, new double[] { 1.0, 1.0, 3.0, 0.0 });
-        List<Object> entityList = Arrays.asList(a, b, c, d);
-        NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter = (origin,
-                destination) -> origin.distances[destination.index];
+        List<MatrixTestdataObject> entityList = Arrays.asList(a, b, c, d);
+        NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter =
+                (origin, destination) -> origin.distances[destination.index];
 
-        NearbyDistanceMatrix nearbyDistanceMatrix = new NearbyDistanceMatrix(meter, 4, entityList, origin -> 4);
+        NearbyDistanceMatrix<MatrixTestdataObject, MatrixTestdataObject> nearbyDistanceMatrix =
+                new NearbyDistanceMatrix<>(meter, 4, entityList, origin -> 4);
         nearbyDistanceMatrix.addAllDestinations(a);
         nearbyDistanceMatrix.addAllDestinations(b);
         nearbyDistanceMatrix.addAllDestinations(c);
@@ -85,11 +87,12 @@ class NearbyDistanceMatrixTest {
 
         final MatrixTestdataObject destination1 = new MatrixTestdataObject("1", 0, new double[] {});
         final MatrixTestdataObject destination2 = new MatrixTestdataObject("2", 0, new double[] {});
-        List<Object> valueList = Arrays.asList(destination1, destination2);
+        List<MatrixTestdataObject> valueList = Arrays.asList(destination1, destination2);
 
         NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter =
                 (origin, destination) -> origin.distances[destination.index];
-        NearbyDistanceMatrix nearbyDistanceMatrix = new NearbyDistanceMatrix(meter, 1, valueList, origin -> valueList.size());
+        NearbyDistanceMatrix<MatrixTestdataObject, MatrixTestdataObject> nearbyDistanceMatrix =
+                new NearbyDistanceMatrix<>(meter, 1, valueList, origin -> valueList.size());
 
         // Add destinations for a. Destinations of b will be added when nearbyDistanceMatrix.getDestination() is called.
         nearbyDistanceMatrix.addAllDestinations(a);
@@ -101,8 +104,8 @@ class NearbyDistanceMatrixTest {
     }
 
     private static class MatrixTestdataObject extends TestdataObject {
-        private int index;
-        private double[] distances;
+        private final int index;
+        private final double[] distances;
 
         public MatrixTestdataObject(String code, int index, double[] distances) {
             super(code);

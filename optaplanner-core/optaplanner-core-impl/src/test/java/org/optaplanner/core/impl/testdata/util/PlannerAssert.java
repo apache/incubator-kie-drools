@@ -404,6 +404,18 @@ public final class PlannerAssert {
         }
     }
 
+    public static void assertCodesOfNeverEndingValueSelectorForEntity(ValueSelector<?> valueSelector, Object entity, long size,
+            String... codes) {
+        Iterator<?> iterator = valueSelector.iterator(entity);
+        assertCodesOfNeverEndingIterator(iterator, codes);
+        assertThat(iterator).hasNext();
+        assertThat(valueSelector.isCountable()).isTrue();
+        assertThat(valueSelector.isNeverEnding()).isTrue();
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertThat(valueSelector.getSize(entity)).isEqualTo(size);
+        }
+    }
+
     // ************************************************************************
     // Testdata methods
     // ************************************************************************

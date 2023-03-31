@@ -15,6 +15,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
+import org.optaplanner.core.impl.heuristic.selector.list.ElementDestinationSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
@@ -38,14 +39,12 @@ class OriginalListChangeIteratorTest {
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         EntityIndependentValueSelector<TestdataListSolution> valueSelector =
-                mockEntityIndependentValueSelector(values.toArray());
+                mockEntityIndependentValueSelector(listVariableDescriptor, values.toArray());
         OriginalListChangeIterator<TestdataListSolution> listChangeIterator = new OriginalListChangeIterator<>(
-                listVariableDescriptor,
                 scoreDirector.getSupplyManager().demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor)),
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(listVariableDescriptor)),
                 valueSelector,
                 new ElementDestinationSelector<>(
-                        listVariableDescriptor,
                         mockEntitySelector(entities.toArray()),
                         valueSelector,
                         false));

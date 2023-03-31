@@ -31,13 +31,13 @@
           "ignore": true,
           "code": "java.method.removed",
           "old": "method boolean java.lang.Object::equals(java.lang.Object) @ org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
-          "justification": "equals/hashCode now overriden in order to support consistent pillar cache."
+          "justification": "equals/hashCode now overridden in order to support consistent pillar cache."
         },
         {
           "ignore": true,
           "code": "java.method.removed",
           "old": "method int java.lang.Object::hashCode() @ org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
-          "justification": "equals/hashCode now overriden in order to support consistent pillar cache."
+          "justification": "equals/hashCode now overridden in order to support consistent pillar cache."
         },
         {
           "ignore": true,
@@ -1010,6 +1010,41 @@
           "old": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
           "new": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
           "justification": "Mention ListKOptListMoveSelectorConfig since it is a new selector that can be configured."
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "annotationType": "javax.xml.bind.annotation.XmlSeeAlso",
+          "attribute": "value",
+          "justification": "Introduce ListChangeMoveSelectorConfig and ListSwapMoveSelectorConfig."
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "attribute": "propOrder",
+          "justification": "Add new origin selector attributes to support nearby selection for list move selectors."
+        }, {
+          "ignore": true,
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "attribute": "propOrder",
+          "justification": "Added new configuration elements to enable nearby selection."
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "attribute": "propOrder",
+          "justification": "Added new configuration elements to enable nearby selection."
         }
       ]
     }

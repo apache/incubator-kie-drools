@@ -2,10 +2,12 @@ package org.optaplanner.core.impl.heuristic.selector.value.nearby;
 
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockEntitySelector;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockReplayingEntitySelector;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.phaseStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.stepStarted;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfValueSelectorForEntity;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingValueSelectorForEntity;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
@@ -28,8 +30,89 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
+import org.optaplanner.core.impl.testutil.TestNearbyRandom;
+import org.optaplanner.core.impl.testutil.TestRandom;
 
 class NearEntityNearbyValueSelectorTest {
+
+    @Test
+    void randomSelection() {
+        final TestdataEntity africa = new TestdataEntity("Africa");
+        final TestdataEntity europe = new TestdataEntity("Europe");
+        final TestdataEntity oceania = new TestdataEntity("Oceania");
+        final TestdataValue morocco = new TestdataValue("Morocco");
+        final TestdataValue spain = new TestdataValue("Spain");
+        final TestdataValue australia = new TestdataValue("Australia");
+        final TestdataValue brazil = new TestdataValue("Brazil");
+
+        GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+        EntityIndependentValueSelector<TestdataSolution> childValueSelector = mockEntityIndependentValueSelector(
+                variableDescriptor,
+                morocco, spain, australia, brazil);
+        NearbyDistanceMeter<TestdataEntity, TestdataValue> meter = (origin, destination) -> {
+            if (origin == africa) {
+                if (destination == morocco) {
+                    return 0.0;
+                } else if (destination == spain) {
+                    return 1.0;
+                } else if (destination == australia) {
+                    return 100.0;
+                } else if (destination == brazil) {
+                    return 50.0;
+                } else {
+                    throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
+                }
+            } else if (origin == europe) {
+                if (destination == morocco) {
+                    return 1.0;
+                } else if (destination == spain) {
+                    return 0.0;
+                } else if (destination == australia) {
+                    return 101.0;
+                } else if (destination == brazil) {
+                    return 51.0;
+                } else {
+                    throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
+                }
+            } else if (origin == oceania) {
+                if (destination == morocco) {
+                    return 100.0;
+                } else if (destination == spain) {
+                    return 101.0;
+                } else if (destination == australia) {
+                    return 0.0;
+                } else if (destination == brazil) {
+                    return 60.0;
+                } else {
+                    throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
+                }
+            } else {
+                throw new IllegalStateException("The origin (" + origin + ") is not implemented.");
+            }
+        };
+
+        MimicReplayingEntitySelector<TestdataSolution> mimicReplayingEntitySelector =
+                // The last entity (oceania) is not used, it just makes the selector appear never ending.
+                mockReplayingEntitySelector(TestdataEntity.buildEntityDescriptor(), europe, europe, europe, europe, oceania);
+
+        NearEntityNearbyValueSelector<TestdataSolution> valueSelector = new NearEntityNearbyValueSelector<>(
+                childValueSelector, mimicReplayingEntitySelector, meter, new TestNearbyRandom(), true);
+
+        TestRandom workingRandom = new TestRandom(3, 0, 2, 1);
+
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
+        SolverScope<TestdataSolution> solverScope = solvingStarted(valueSelector, scoreDirector, workingRandom);
+        AbstractPhaseScope<TestdataSolution> phaseScopeA = phaseStarted(valueSelector, solverScope);
+        AbstractStepScope<TestdataSolution> stepScopeA1 = stepStarted(valueSelector, phaseScopeA);
+        assertCodesOfNeverEndingValueSelectorForEntity(valueSelector, europe, childValueSelector.getSize(europe),
+                "Australia", "Spain", "Brazil", "Morocco");
+        valueSelector.stepEnded(stepScopeA1);
+        valueSelector.phaseEnded(phaseScopeA);
+        valueSelector.solvingEnded(solverScope);
+
+        verifyPhaseLifecycle(childValueSelector, 1, 1, 1);
+    }
 
     @Test
     void originalSelection() {

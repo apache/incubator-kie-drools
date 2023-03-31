@@ -90,6 +90,13 @@ public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_
         return null;
     }
 
+    protected static void checkUnfolded(String configPropertyName, Object configProperty) {
+        if (configProperty == null) {
+            throw new IllegalStateException("The " + configPropertyName + " (" + configProperty
+                    + ") should haven been initialized during unfolding.");
+        }
+    }
+
     private void validateResolvedCacheType(SelectionCacheType resolvedCacheType, MoveSelector<Solution_> moveSelector) {
         if (!moveSelector.supportsPhaseAndSolverCaching() && resolvedCacheType.compareTo(SelectionCacheType.PHASE) >= 0) {
             throw new IllegalArgumentException("The moveSelectorConfig (" + config

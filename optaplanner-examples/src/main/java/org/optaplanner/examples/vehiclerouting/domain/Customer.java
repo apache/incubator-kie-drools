@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Customer extends AbstractPersistable {
+public class Customer extends AbstractPersistable implements LocationAware {
 
     protected Location location;
     protected int demand;
@@ -42,6 +42,7 @@ public class Customer extends AbstractPersistable {
         this.demand = demand;
     }
 
+    @Override
     public Location getLocation() {
         return location;
     }

@@ -1,7 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ElementDestinationSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ElementRef;
+import org.optaplanner.core.impl.heuristic.selector.list.ElementDestinationSelector;
+import org.optaplanner.core.impl.heuristic.selector.list.ElementRef;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
 /**
