@@ -178,7 +178,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         }
 
         try {
-            this.reteEvaluator.startOperation();
+            this.reteEvaluator.startOperation(ReteEvaluator.InternalOperationType.INSERT);
 
             ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( this.entryPoint, object );
 
@@ -231,7 +231,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
             }
             return handle;
         } finally {
-            this.reteEvaluator.endOperation();
+            this.reteEvaluator.endOperation(ReteEvaluator.InternalOperationType.INSERT);
         }
 
     }
@@ -329,7 +329,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
                                      final InternalMatch internalMatch) {
         lock();
         try {
-            this.reteEvaluator.startOperation();
+            this.reteEvaluator.startOperation(ReteEvaluator.InternalOperationType.UPDATE);
             try {
                 this.ruleBase.executeQueuedActions();
 
@@ -379,7 +379,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
                 update(handle, object, originalObject, typeConf, propagationContext);
             } finally {
-                this.reteEvaluator.endOperation();
+                this.reteEvaluator.endOperation(ReteEvaluator.InternalOperationType.UPDATE);
             }
         } finally {
             unlock();
@@ -423,7 +423,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
         lock();
         try {
-            this.reteEvaluator.startOperation();
+            this.reteEvaluator.startOperation(ReteEvaluator.InternalOperationType.DELETE);
             try {
                 this.ruleBase.executeQueuedActions();
 
@@ -455,7 +455,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
                     deleteLogical(key);
                 }
             } finally {
-                this.reteEvaluator.endOperation();
+                this.reteEvaluator.endOperation(ReteEvaluator.InternalOperationType.DELETE);
             }
         } finally {
             unlock();

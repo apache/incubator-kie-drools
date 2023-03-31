@@ -50,4 +50,21 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
         super.dispose();
         CacheManager.INSTANCE.removeCachesBySessionId(String.valueOf(this.id));
     }
+
+    @Override
+    public void startOperation(InternalOperationType operationType) {
+        super.startOperation(operationType);
+        if (operationType == InternalOperationType.FIRE) {
+            ((ReliableGlobalResolver) getGlobalResolver()).updateCache();
+        }
+
+    }
+
+    @Override
+    public void endOperation(InternalOperationType operationType) {
+        super.endOperation(operationType);
+        if (operationType == InternalOperationType.FIRE) {
+            ((ReliableGlobalResolver) getGlobalResolver()).updateCache();
+        }
+    }
 }

@@ -30,18 +30,16 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.ConsequenceException;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.Queue;
 import org.drools.core.util.QueueFactory;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.rule.AgendaFilter;
-import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,7 +97,7 @@ public class RuleExecutor {
                 if (cancelAndContinue(reteEvaluator, rtn, rule, tuple, filter)) {
                     directFirings--;
                 } else {
-                    innerFireActivation(reteEvaluator, activationsManager, (InternalMatch) tuple, ((InternalMatch) tuple).getConsequence());
+                    fireActivationEvent(reteEvaluator, activationsManager, (InternalMatch) tuple, ((InternalMatch) tuple).getConsequence());
                 }
                 removeLeftTuple( tuple );
             }
@@ -353,44 +351,39 @@ public class RuleExecutor {
         // We do this first as if a node modifies a fact that causes a recursion
         // on an empty pattern
         // we need to make sure it re-activates
-        reteEvaluator.startOperation();
+        BeforeMatchFiredEvent beforeMatchFiredEvent = activationsManager.getAgendaEventSupport().fireBeforeActivationFired(internalMatch, reteEvaluator);
+
+        if (internalMatch.getActivationGroupNode() != null ) {
+            // We know that this rule will cancel all other activations in the group
+            // so lets remove the information now, before the consequence fires
+            final InternalActivationGroup activationGroup = internalMatch.getActivationGroupNode().getActivationGroup();
+            activationGroup.removeActivation(internalMatch);
+            activationsManager.clearAndCancelActivationGroup( activationGroup );
+        }
+        internalMatch.setQueued(false);
+
         try {
-            BeforeMatchFiredEvent beforeMatchFiredEvent = activationsManager.getAgendaEventSupport().fireBeforeActivationFired(internalMatch, reteEvaluator);
+            fireActivationEvent(reteEvaluator, activationsManager, internalMatch, internalMatch.getConsequence());
+        } finally {
+            // if the tuple contains expired events
+            for (Tuple tuple = internalMatch.getTuple().skipEmptyHandles(); tuple != null; tuple = tuple.getParent() ) {
+                if ( tuple.getFactHandle().isEvent() ) {
+                    // can be null for eval, not and exists that have no right input
 
-            if (internalMatch.getActivationGroupNode() != null ) {
-                // We know that this rule will cancel all other activations in the group
-                // so lets remove the information now, before the consequence fires
-                final InternalActivationGroup activationGroup = internalMatch.getActivationGroupNode().getActivationGroup();
-                activationGroup.removeActivation(internalMatch);
-                activationsManager.clearAndCancelActivationGroup( activationGroup );
-            }
-            internalMatch.setQueued(false);
-
-            try {
-                innerFireActivation(reteEvaluator, activationsManager, internalMatch, internalMatch.getConsequence());
-            } finally {
-                // if the tuple contains expired events
-                for (Tuple tuple = internalMatch.getTuple().skipEmptyHandles(); tuple != null; tuple = tuple.getParent() ) {
-                    if ( tuple.getFactHandle().isEvent() ) {
-                        // can be null for eval, not and exists that have no right input
-
-                        EventFactHandle handle = ( EventFactHandle ) tuple.getFactHandle();
-                        // decrease the activation count for the event
-                        handle.decreaseActivationsCount();
-                        // handles "expire" only in stream mode.
-                        if ( handle.expirePartition() && handle.isExpired() &&
-                             handle.getFirstRightTuple() == null && handle.getActivationsCount() <= 0 ) {
-                            // and if no more activations, retract the handle
-                            handle.getEntryPoint( reteEvaluator ).delete( handle );
-                        }
+                    EventFactHandle handle = ( EventFactHandle ) tuple.getFactHandle();
+                    // decrease the activation count for the event
+                    handle.decreaseActivationsCount();
+                    // handles "expire" only in stream mode.
+                    if ( handle.expirePartition() && handle.isExpired() &&
+                         handle.getFirstRightTuple() == null && handle.getActivationsCount() <= 0 ) {
+                        // and if no more activations, retract the handle
+                        handle.getEntryPoint( reteEvaluator ).delete( handle );
                     }
                 }
             }
-
-            activationsManager.getAgendaEventSupport().fireAfterActivationFired(internalMatch, reteEvaluator, beforeMatchFiredEvent);
-        } finally {
-            reteEvaluator.endOperation();
         }
+
+        activationsManager.getAgendaEventSupport().fireAfterActivationFired(internalMatch, reteEvaluator, beforeMatchFiredEvent);
     }
 
     public void fireConsequenceEvent(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, InternalMatch internalMatch, String consequenceName) {
@@ -400,16 +393,7 @@ public class RuleExecutor {
         }
     }
 
-    private void fireActivationEvent(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, InternalMatch internalMatch, Consequence consequence) throws ConsequenceException {
-        reteEvaluator.startOperation();
-        try {
-            innerFireActivation(reteEvaluator, activationsManager, internalMatch, consequence);
-        } finally {
-            reteEvaluator.endOperation();
-        }
-    }
-
-    private void innerFireActivation(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, InternalMatch internalMatch, Consequence consequence) {
+    private void fireActivationEvent(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, InternalMatch internalMatch, Consequence consequence) {
         KnowledgeHelper knowledgeHelper = activationsManager.getKnowledgeHelper();
         try {
             knowledgeHelper.setActivation(internalMatch);
