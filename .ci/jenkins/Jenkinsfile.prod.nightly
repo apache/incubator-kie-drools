@@ -30,8 +30,6 @@ pipeline {
                     env.PRODUCT_VERSION = "${PRODUCT_VERSION ?: parseVersionFromPom('kiegroup/optaplanner')}"
                     env.DROOLS_PRODUCT_VERSION = "${DROOLS_PRODUCT_VERSION ?: parseVersionFromPom('kiegroup/drools')}"
                 }
-
-                sh 'printenv'
             }
         }
         stage('Install build-chain tool') {
@@ -44,7 +42,7 @@ pipeline {
                 }
             }
         }
-        stage('Clone build configuration repo') {
+        stage('Clone and parse build configuration repo') {
             steps {
                 script {
                     def currentBranch = getBuildConfigBranch()
@@ -57,6 +55,11 @@ pipeline {
                         'droolsProductVersion': env.DROOLS_PRODUCT_VERSION
                     ]
                     pmebuild.parseBuildConfig("$WORKSPACE/build_config/rhbop/nightly", buildConfigAdditionalVariables)
+
+                    // export Quarkus community version as QUARKUS_VERSION_COMMUNITY
+                    def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
+                    env.QUARKUS_VERSION_COMMUNITY = PME_BUILD_VARIABLES['quarkusVersionCommunity']
+                    env.QUARKUS_VERSION = PME_BUILD_VARIABLES['quarkusVersion'].replaceAll("\\{\\{.*\\}\\}", env.QUARKUS_VERSION_COMMUNITY)
                 }
             }
         }
@@ -116,8 +119,12 @@ pipeline {
                             // extract git infos
                             util.storeGitInformation(projectName)
                             env.ALREADY_BUILT_PROJECTS = "${env.ALREADY_BUILT_PROJECTS ?: ''}${projectName};"
+
+                            env["VERSION_${f}"] = maven.mvnGetVersionProperty('project.version')
                         }
                     }
+                    
+                    sh 'printenv'
                 }
             }
         }
@@ -137,11 +144,11 @@ pipeline {
                         optaplannerQuickstartsSourcesFileUrl,
                         env.ALREADY_BUILT_PROJECTS,
                         [
-                            'rhbop': env.OPTAPLANNER_VERSION,
-                            'optaplanner': env.OPTAPLANNER_VERSION,
-                            'drools': env.DROOLS_VERSION,
-                            'quarkus.bom': env.DROOLS_VERSION,
-                            'platform.quarkus.bom': env.DROOLS_VERSION
+                            'rhbop': env['VERSION_kiegroup_optaplanner'],
+                            'optaplanner': env['VERSION_kiegroup_optaplanner'],
+                            'drools': env['VERSION_kiegroup_drools'],
+                            'quarkus.bom': env['QUARKUS_VERSION'],
+                            'platform.quarkus.bom': env['QUARKUS_VERSION']
                         ],
                         gitHashesToCollection(env.GIT_INFORMATION_HASHES)
                     )
