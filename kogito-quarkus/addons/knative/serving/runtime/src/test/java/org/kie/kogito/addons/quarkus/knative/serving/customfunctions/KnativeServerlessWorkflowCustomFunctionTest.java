@@ -34,7 +34,6 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
 import io.cloudevents.SpecVersion;
 import io.cloudevents.core.v1.CloudEventV1;
-import io.fabric8.knative.client.KnativeClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
@@ -76,8 +75,6 @@ class KnativeServerlessWorkflowCustomFunctionTest {
     @Inject
     KnativeServerlessWorkflowCustomFunction knativeServerlessWorkflowCustomFunction;
 
-    private static KnativeClient knativeClient;
-
     private static WireMockServer wireMockServer;
 
     @BeforeAll
@@ -87,8 +84,7 @@ class KnativeServerlessWorkflowCustomFunctionTest {
 
     @BeforeEach
     void beforeEach() {
-        createServiceIfNotExists(mockServer, remoteServiceUrl, "knative/quarkus-greeting.yaml", "test", "serverless-workflow-greeting-quarkus")
-                .ifPresent(newKnativeClient -> knativeClient = newKnativeClient);
+        createServiceIfNotExists(mockServer, remoteServiceUrl, "knative/quarkus-greeting.yaml", "test", "serverless-workflow-greeting-quarkus");
     }
 
     @AfterAll
@@ -96,7 +92,6 @@ class KnativeServerlessWorkflowCustomFunctionTest {
         if (wireMockServer != null) {
             wireMockServer.stop();
         }
-        knativeClient.close();
     }
 
     private static void createWiremockServer() {

@@ -16,7 +16,6 @@
 package org.kie.kogito.addons.quarkus.k8s.test.utils;
 
 import java.io.InputStream;
-import java.util.Optional;
 
 import io.fabric8.knative.client.KnativeClient;
 import io.fabric8.knative.serving.v1.Service;
@@ -27,24 +26,20 @@ public final class KnativeResourceDiscoveryTestUtil {
     private KnativeResourceDiscoveryTestUtil() {
     }
 
-    public static Optional<KnativeClient> createServiceIfNotExists(KubernetesServer k8sServer, String remoteServiceUrl, String knativeYaml, String namespace, String serviceName) {
-        if (k8sServer.getClient().services().inNamespace("test").withName(serviceName).get() != null) {
-            return Optional.empty();
+    public static void createServiceIfNotExists(KubernetesServer k8sServer, String remoteServiceUrl, String knativeYaml, String namespace, String serviceName) {
+        if (k8sServer.getClient().services().inNamespace("test").withName(serviceName).get() == null) {
+            KnativeClient knativeClient = k8sServer.getClient().adapt(KnativeClient.class);
+
+            Service service = knativeClient.services()
+                    .inNamespace(namespace)
+                    .load(getResourceAsStream(knativeYaml))
+                    .get();
+
+            service.getStatus().setUrl(remoteServiceUrl);
+
+            // ItemWritableOperation#create is deprecated. However, we can't use the new method while Quarkus LTS is not greater than 2.16.
+            knativeClient.services().inNamespace(namespace).create(service);
         }
-
-        KnativeClient knativeClient = k8sServer.getClient().adapt(KnativeClient.class);
-
-        Service service = knativeClient.services()
-                .inNamespace(namespace)
-                .load(getResourceAsStream(knativeYaml))
-                .get();
-
-        service.getStatus().setUrl(remoteServiceUrl);
-
-        // ItemWritableOperation#create is deprecated. However, we can't use the new method while Quarkus LTS is not greater than 2.16.
-        knativeClient.services().inNamespace(namespace).create(service);
-
-        return Optional.of(knativeClient);
     }
 
     private static InputStream getResourceAsStream(String knativeYaml) {
