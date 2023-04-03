@@ -19,7 +19,7 @@ import org.kie.jenkins.jobdsl.Utils
 jenkins_path = '.ci/jenkins'
 
 Map getMultijobPRConfig(JenkinsFolder jobFolder) {
-    return [
+    def jobConfig = [
         parallel: true,
         buildchain: true,
         jobs : [
@@ -60,6 +60,13 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
             ]
         ],
     ]
+
+    // For Quarkus 3, run only runtimes PR check... for now
+    if (EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3')) {
+        jobConfig.jobs.retainAll { it.id == 'kogito-runtimes' }
+    }
+
+    return jobConfig
 }
 
 List getRuntimesBuildMvnOptions(JenkinsFolder jobFolder) {
@@ -87,7 +94,7 @@ setupNightlyQuarkusIntegrationJob('quarkus-branch')
 setupNightlyQuarkusIntegrationJob('quarkus-lts')
 setupNightlyQuarkusIntegrationJob('native-lts')
 
-setupNightlyQuarkusIntegrationJob('quarkus-3')
+// setupNightlyQuarkusIntegrationJob('quarkus-3')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
