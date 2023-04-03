@@ -31,10 +31,10 @@ tags:
 recipeList:
   - org.openrewrite.maven.ChangePropertyValue:
       key: quarkus.platform.version
-      newValue: 3.0.0.Alpha6
+      newValue: 3.0.0.CR1
   - org.openrewrite.maven.ChangePropertyValue:
       key: quarkus.version
-      newValue: 3.0.0.Alpha6
+      newValue: 3.0.0.CR1
   - org.openrewrite.java.migrate.jakarta.JavaxActivationMigrationToJakartaActivation
   - org.openrewrite.java.migrate.jakarta.JavaxAnnotationMigrationToJakartaAnnotation
   - org.openrewrite.java.migrate.jakarta.ChangeJavaxAnnotationToJakarta

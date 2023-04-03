@@ -14,7 +14,7 @@ recipeList:
       configuration: <skip>true</skip>
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.io.quarkus
-      newValue: 3.0.0.Alpha6
+      newValue: 3.0.0.CR1
   - org.openrewrite.maven.RemoveDependency:
       groupId: org.hibernate
       artifactId: hibernate-core
@@ -44,10 +44,10 @@ tags:
 recipeList:
   - org.openrewrite.maven.ChangePropertyValue:
       key: quarkus.platform.version
-      newValue: 3.0.0.Alpha6
+      newValue: 3.0.0.CR1
   - org.openrewrite.maven.ChangePropertyValue:
       key: quarkus.version
-      newValue: 3.0.0.Alpha6
+      newValue: 3.0.0.CR1
   - org.openrewrite.java.migrate.JavaxMigrationToJakarta
 ---
 type: specs.openrewrite.org/v1beta/recipe
