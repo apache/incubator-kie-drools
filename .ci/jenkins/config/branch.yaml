@@ -2,6 +2,7 @@ environments:
   native:
     env_vars:
       NATIVE: true
+      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
       BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
       ADDITIONAL_TIMEOUT: 720
     ids:
@@ -34,6 +35,7 @@ environments:
     enabled: false
   quarkus-branch:
     env_vars:
+      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
       QUARKUS_BRANCH: '2.13'
     ids:
     - quarkus
