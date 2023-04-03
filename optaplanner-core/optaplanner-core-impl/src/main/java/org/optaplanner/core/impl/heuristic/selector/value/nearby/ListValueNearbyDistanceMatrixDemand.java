@@ -10,6 +10,7 @@ import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.solver.ClassInstanceCache;
@@ -34,16 +35,19 @@ public final class ListValueNearbyDistanceMatrixDemand<Solution_, Origin_, Desti
         implements Demand<MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>> {
 
     private final NearbyDistanceMeter<Origin_, Destination_> meter;
+    private final NearbyRandom random;
     private final EntityIndependentValueSelector<Solution_> childValueSelector;
     private final MimicReplayingValueSelector<Solution_> replayingOriginValueSelector;
     private final ToIntFunction<Origin_> destinationSizeFunction;
 
     public ListValueNearbyDistanceMatrixDemand(
             NearbyDistanceMeter<Origin_, Destination_> meter,
+            NearbyRandom random,
             EntityIndependentValueSelector<Solution_> childValueSelector,
             MimicReplayingValueSelector<Solution_> replayingOriginValueSelector,
             ToIntFunction<Origin_> destinationSizeFunction) {
         this.meter = meter;
+        this.random = random;
         this.childValueSelector = childValueSelector;
         this.replayingOriginValueSelector = replayingOriginValueSelector;
         this.destinationSizeFunction = destinationSizeFunction;
@@ -101,12 +105,13 @@ public final class ListValueNearbyDistanceMatrixDemand<Solution_, Origin_, Desti
         }
         ListValueNearbyDistanceMatrixDemand<?, ?, ?> that = (ListValueNearbyDistanceMatrixDemand<?, ?, ?>) o;
         return Objects.equals(meter, that.meter)
+                && Objects.equals(random, that.random)
                 && Objects.equals(childValueSelector, that.childValueSelector)
                 && Objects.equals(replayingOriginValueSelector, that.replayingOriginValueSelector);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(meter, childValueSelector, replayingOriginValueSelector);
+        return Objects.hash(meter, random, childValueSelector, replayingOriginValueSelector);
     }
 }

@@ -10,6 +10,7 @@ import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.list.ElementDestinationSelector;
 import org.optaplanner.core.impl.heuristic.selector.list.mimic.MimicReplayingSubListSelector;
 import org.optaplanner.core.impl.solver.ClassInstanceCache;
@@ -35,16 +36,19 @@ public final class SubListNearbyDistanceMatrixDemand<Solution_, Origin_, Destina
         implements Demand<MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>> {
 
     private final NearbyDistanceMeter<Origin_, Destination_> meter;
+    private final NearbyRandom random;
     private final ElementDestinationSelector<Solution_> childDestinationSelector;
     private final MimicReplayingSubListSelector<Solution_> replayingOriginSubListSelector;
     private final ToIntFunction<Origin_> destinationSizeFunction;
 
     public SubListNearbyDistanceMatrixDemand(
             NearbyDistanceMeter<Origin_, Destination_> meter,
+            NearbyRandom random,
             ElementDestinationSelector<Solution_> childDestinationSelector,
             MimicReplayingSubListSelector<Solution_> replayingOriginSubListSelector,
             ToIntFunction<Origin_> destinationSizeFunction) {
         this.meter = meter;
+        this.random = random;
         this.childDestinationSelector = childDestinationSelector;
         this.replayingOriginSubListSelector = replayingOriginSubListSelector;
         this.destinationSizeFunction = destinationSizeFunction;
@@ -104,12 +108,13 @@ public final class SubListNearbyDistanceMatrixDemand<Solution_, Origin_, Destina
         }
         SubListNearbyDistanceMatrixDemand<?, ?, ?> that = (SubListNearbyDistanceMatrixDemand<?, ?, ?>) o;
         return Objects.equals(meter, that.meter)
+                && Objects.equals(random, that.random)
                 && Objects.equals(childDestinationSelector, that.childDestinationSelector)
                 && Objects.equals(replayingOriginSubListSelector, that.replayingOriginSubListSelector);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(meter, childDestinationSelector, replayingOriginSubListSelector);
+        return Objects.hash(meter, random, childDestinationSelector, replayingOriginSubListSelector);
     }
 }

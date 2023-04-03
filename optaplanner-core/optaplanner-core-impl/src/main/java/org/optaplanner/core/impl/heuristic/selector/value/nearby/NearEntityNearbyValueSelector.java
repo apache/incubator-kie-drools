@@ -50,6 +50,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
                 originEntitySelector.getEntityDescriptor().getEntityClass());
         this.nearbyDistanceMatrixDemand = new NearbyDistanceMatrixDemand<>(
                 nearbyDistanceMeter,
+                nearbyRandom,
                 childValueSelector,
                 replayingOriginEntitySelector,
                 this::computeDestinationSize);
@@ -74,6 +75,10 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
          */
         nearbyDistanceMatrixSupply = (MemoizingSupply) solverScope.getScoreDirector().getSupplyManager()
                 .demand(nearbyDistanceMatrixDemand);
+    }
+
+    NearbyDistanceMatrixDemand<Solution_, ?, ?> getNearbyDistanceMatrixDemand() {
+        return nearbyDistanceMatrixDemand;
     }
 
     @Override

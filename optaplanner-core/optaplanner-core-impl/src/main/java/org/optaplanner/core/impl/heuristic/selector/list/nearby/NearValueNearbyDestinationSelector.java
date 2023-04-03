@@ -58,6 +58,7 @@ public final class NearValueNearbyDestinationSelector<Solution_> extends Abstrac
         }
         this.nearbyDistanceMatrixDemand = new ListNearbyDistanceMatrixDemand<>(
                 nearbyDistanceMeter,
+                nearbyRandom,
                 childDestinationSelector,
                 replayingOriginValueSelector,
                 this::computeDestinationSize);

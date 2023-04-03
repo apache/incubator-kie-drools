@@ -58,6 +58,7 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
         }
         this.nearbyDistanceMatrixDemand = new NearbyDistanceMatrixDemand<>(
                 nearbyDistanceMeter,
+                nearbyRandom,
                 childEntitySelector,
                 replayingOriginEntitySelector,
                 origin -> computeDestinationSize(childEntitySelector.getSize()));

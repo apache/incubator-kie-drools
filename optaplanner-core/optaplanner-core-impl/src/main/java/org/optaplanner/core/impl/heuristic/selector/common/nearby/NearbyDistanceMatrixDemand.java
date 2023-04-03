@@ -33,13 +33,16 @@ public final class NearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
         implements Demand<MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>> {
 
     private final NearbyDistanceMeter<Origin_, Destination_> meter;
+    private final NearbyRandom random;
     private final Selector<Solution_> childSelector;
     private final EntitySelector<Solution_> replayingOriginEntitySelector;
     private final ToIntFunction<Origin_> destinationSizeFunction;
 
-    public NearbyDistanceMatrixDemand(NearbyDistanceMeter<Origin_, Destination_> meter, Selector<Solution_> childSelector,
-            EntitySelector<Solution_> replayingOriginEntitySelector, ToIntFunction<Origin_> destinationSizeFunction) {
+    public NearbyDistanceMatrixDemand(NearbyDistanceMeter<Origin_, Destination_> meter, NearbyRandom random,
+            Selector<Solution_> childSelector, EntitySelector<Solution_> replayingOriginEntitySelector,
+            ToIntFunction<Origin_> destinationSizeFunction) {
         this.meter = meter;
+        this.random = random;
         this.childSelector = childSelector;
         this.replayingOriginEntitySelector = replayingOriginEntitySelector;
         this.destinationSizeFunction = destinationSizeFunction;
@@ -97,12 +100,13 @@ public final class NearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
             return false;
         NearbyDistanceMatrixDemand<?, ?, ?> that = (NearbyDistanceMatrixDemand<?, ?, ?>) o;
         return Objects.equals(meter, that.meter)
+                && Objects.equals(random, that.random)
                 && Objects.equals(childSelector, that.childSelector)
                 && Objects.equals(replayingOriginEntitySelector, that.replayingOriginEntitySelector);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(meter, childSelector, replayingOriginEntitySelector);
+        return Objects.hash(meter, random, childSelector, replayingOriginEntitySelector);
     }
 }

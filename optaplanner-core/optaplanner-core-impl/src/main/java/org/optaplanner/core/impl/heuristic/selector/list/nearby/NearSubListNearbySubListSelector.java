@@ -55,6 +55,7 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
         }
         this.nearbyDistanceMatrixDemand = new SubListNearbySubListMatrixDemand<>(
                 nearbyDistanceMeter,
+                nearbyRandom,
                 childSubListSelector,
                 replayingOriginSubListSelector,
                 this::computeDestinationSize);

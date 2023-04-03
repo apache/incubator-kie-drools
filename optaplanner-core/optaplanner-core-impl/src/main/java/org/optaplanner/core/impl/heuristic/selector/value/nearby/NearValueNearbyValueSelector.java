@@ -48,6 +48,7 @@ public final class NearValueNearbyValueSelector<Solution_> extends AbstractValue
         }
         this.nearbyDistanceMatrixDemand = new ListValueNearbyDistanceMatrixDemand<>(
                 nearbyDistanceMeter,
+                nearbyRandom,
                 childValueSelector,
                 replayingOriginValueSelector,
                 this::computeDestinationSize);

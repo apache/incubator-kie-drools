@@ -59,6 +59,7 @@ public final class NearSubListNearbyDestinationSelector<Solution_> extends Abstr
         }
         this.nearbyDistanceMatrixDemand = new SubListNearbyDistanceMatrixDemand<>(
                 nearbyDistanceMeter,
+                nearbyRandom,
                 childDestinationSelector,
                 replayingOriginSubListSelector,
                 this::computeDestinationSize);

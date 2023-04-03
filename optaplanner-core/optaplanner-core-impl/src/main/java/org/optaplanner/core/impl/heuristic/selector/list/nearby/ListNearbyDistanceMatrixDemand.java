@@ -10,6 +10,7 @@ import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.list.ElementDestinationSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.solver.ClassInstanceCache;
@@ -35,16 +36,18 @@ public final class ListNearbyDistanceMatrixDemand<Solution_, Origin_, Destinatio
         implements Demand<MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>> {
 
     private final NearbyDistanceMeter<Origin_, Destination_> meter;
+    private final NearbyRandom random;
     private final ElementDestinationSelector<Solution_> childDestinationSelector;
     private final MimicReplayingValueSelector<Solution_> replayingOriginValueSelector;
     private final ToIntFunction<Origin_> destinationSizeFunction;
 
-    public ListNearbyDistanceMatrixDemand(
-            NearbyDistanceMeter<Origin_, Destination_> meter,
+    public ListNearbyDistanceMatrixDemand(NearbyDistanceMeter<Origin_, Destination_> meter,
+            NearbyRandom random,
             ElementDestinationSelector<Solution_> childDestinationSelector,
             MimicReplayingValueSelector<Solution_> replayingOriginValueSelector,
             ToIntFunction<Origin_> destinationSizeFunction) {
         this.meter = meter;
+        this.random = random;
         this.childDestinationSelector = childDestinationSelector;
         this.replayingOriginValueSelector = replayingOriginValueSelector;
         this.destinationSizeFunction = destinationSizeFunction;
@@ -106,12 +109,13 @@ public final class ListNearbyDistanceMatrixDemand<Solution_, Origin_, Destinatio
         }
         ListNearbyDistanceMatrixDemand<?, ?, ?> that = (ListNearbyDistanceMatrixDemand<?, ?, ?>) o;
         return Objects.equals(meter, that.meter)
+                && Objects.equals(random, that.random)
                 && Objects.equals(childDestinationSelector, that.childDestinationSelector)
                 && Objects.equals(replayingOriginValueSelector, that.replayingOriginValueSelector);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(meter, childDestinationSelector, replayingOriginValueSelector);
+        return Objects.hash(meter, random, childDestinationSelector, replayingOriginValueSelector);
     }
 }
