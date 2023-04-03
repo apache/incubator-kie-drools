@@ -46,6 +46,11 @@
             <artifactId>quarkus-test-kubernetes-client</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-addons-quarkus-kubernetes-test-utils</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- this is used implicitly by Maven parallel builds so let's make Maven aware of it -->
         <dependency>
             <groupId>org.kie.kogito</groupId>

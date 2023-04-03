@@ -20,7 +20,9 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.quarkus.k8s.KubeConstants;
-import org.kie.kogito.addons.quarkus.k8s.parser.KubeURI;
+import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceUri;
+import org.kie.kogito.addons.quarkus.k8s.discovery.utils.PortUtils;
+import org.kie.kogito.addons.quarkus.k8s.discovery.utils.ServiceUtils;
 
 import io.fabric8.kubernetes.api.model.IntOrString;
 import io.fabric8.kubernetes.api.model.Service;
@@ -37,7 +39,7 @@ public class ServiceUtilsTest {
     @Test
     public void testExternalNameServiceKind() {
         String externalName = "kourier-internal.kourier-system.svc.cluster.local";
-        KubeURI kubeURI = new KubeURI("knative:v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
         Service service = new ServiceBuilder()
                 .withNewMetadata().withName("my-service").endMetadata()
                 .withNewSpec()
@@ -53,7 +55,7 @@ public class ServiceUtilsTest {
 
     @Test
     public void testClusterIPServiceKind() {
-        KubeURI kubeURI = new KubeURI("knative:v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
         Service service = new ServiceBuilder()
                 .withNewMetadata().withName("my-service").endMetadata()
                 .withNewSpec()
@@ -69,7 +71,7 @@ public class ServiceUtilsTest {
 
     @Test
     public void testClusterIPServiceKindWithSSL() {
-        KubeURI kubeURI = new KubeURI("knative:v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
         Service service = new ServiceBuilder()
                 .withNewMetadata().withName("my-service").endMetadata()
                 .withNewSpec()
@@ -86,7 +88,7 @@ public class ServiceUtilsTest {
 
     @Test
     public void testClusterIPServiceKindWithWebNamedPort() {
-        KubeURI kubeURI = new KubeURI("knative:v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
         Service service = new ServiceBuilder()
                 .withNewMetadata().withName("my-service").endMetadata()
                 .withNewSpec()
@@ -103,7 +105,7 @@ public class ServiceUtilsTest {
 
     @Test
     public void testClusterIPServiceKindWithAleatoryNamePort() {
-        KubeURI kubeURI = new KubeURI("knative:v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
         Service service = new ServiceBuilder()
                 .withNewMetadata().withName("my-service").endMetadata()
                 .withNewSpec()
@@ -119,7 +121,7 @@ public class ServiceUtilsTest {
 
     @Test
     public void testNodePortServiceKind() {
-        KubeURI kubeURI = new KubeURI("knative:v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
         Service service = new ServiceBuilder()
                 .withNewMetadata().withName("my-service").endMetadata()
                 .withNewSpec()
@@ -135,7 +137,7 @@ public class ServiceUtilsTest {
 
     @Test
     public void testClusterIPServiceKindWithCustomPortName() {
-        KubeURI kubeURI = new KubeURI("knative:v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli?port-name=my-custom-port");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli?port-name=my-custom-port");
         Service service = new ServiceBuilder()
                 .withNewMetadata().withName("my-service").endMetadata()
                 .withNewSpec()
@@ -153,7 +155,7 @@ public class ServiceUtilsTest {
 
     @Test
     public void testLoadBalancerServiceKind() {
-        KubeURI kubeURI = new KubeURI("knative:v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
         Service service = new ServiceBuilder()
                 .withNewMetadata().withName("my-service").endMetadata()
                 .withNewSpec()

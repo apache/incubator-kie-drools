@@ -34,7 +34,6 @@ import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.api.model.ServicePort;
 import io.fabric8.kubernetes.api.model.ServiceSpec;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
@@ -50,8 +49,6 @@ public class KubernetesServiceEndpointDiscoveryTest {
 
     @KubernetesTestServer
     KubernetesServer mockServer;
-    @Inject
-    KubernetesClient kubernetesClient;
 
     @Named("default")
     @Inject

@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.addons.quarkus.k8s.config;
 
-import org.kie.kogito.addons.quarkus.k8s.KubeDiscoveryConfigSourceInterceptor;
-
 import io.quarkus.runtime.configuration.ConfigBuilder;
 import io.smallrye.config.SmallRyeConfigBuilder;
 

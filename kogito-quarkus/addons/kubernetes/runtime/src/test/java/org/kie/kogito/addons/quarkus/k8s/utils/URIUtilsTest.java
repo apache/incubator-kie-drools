@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.addons.quarkus.k8s.discovery.utils.URIUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 
@@ -48,7 +49,7 @@ abstract class KnativeServiceRequestClient {
      * @param payload the payload
      * @return a {@link JsonNode} that represents the response payload
      */
-    JsonNode execute(String processInstanceId, KnativeServiceAddress serviceAddress, String path, Map<String, Object> payload) {
+    JsonNode execute(String processInstanceId, URI serviceAddress, String path, Map<String, Object> payload) {
         Objects.requireNonNull(serviceAddress, "serviceAddress is a mandatory parameter");
         Objects.requireNonNull(path, "path is a mandatory parameter");
 
@@ -67,6 +68,6 @@ abstract class KnativeServiceRequestClient {
         }
     }
 
-    protected abstract JsonNode sendRequest(String processInstanceId, KnativeServiceAddress serviceAddress, String path,
+    protected abstract JsonNode sendRequest(String processInstanceId, URI serviceAddress, String path,
             Map<String, Object> payload);
 }

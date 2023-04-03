@@ -15,12 +15,17 @@
  */
 package org.kie.kogito.addons.quarkus.k8s.utils;
 
+import java.net.URI;
 import java.util.Optional;
+
+import javax.inject.Inject;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.addons.quarkus.k8s.KubeResourceDiscovery;
-import org.kie.kogito.addons.quarkus.k8s.parser.KubeURI;
+import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
+import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceUri;
+import org.kie.kogito.addons.quarkus.k8s.discovery.utils.PodUtils;
+import org.kie.kogito.addons.quarkus.k8s.discovery.utils.ServiceUtils;
 
 import io.fabric8.kubernetes.api.model.ContainerPortBuilder;
 import io.fabric8.kubernetes.api.model.IntOrString;
@@ -46,7 +51,10 @@ public class StatefulSetUtilsTest {
 
     @KubernetesTestServer
     KubernetesServer mockServer;
-    KubeResourceDiscovery kubeResourceDiscovery;
+
+    @Inject
+    VanillaKubernetesResourceDiscovery discovery;
+
     private final String namespace = "serverless-workflow-greeting-quarkus";
 
     @BeforeEach
@@ -57,19 +65,17 @@ public class StatefulSetUtilsTest {
 
     @Test
     public void testNotFoundStatefulSet() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
         statefulSet.getMetadata().setName("test");
         mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
         assertEquals(Optional.empty(),
-                kubeResourceDiscovery.query(new KubeURI("kubernetes:apps/v1/statefulset/" + namespace + "/invalid")));
+                discovery.query(VanillaKubernetesResourceUri.parse("apps/v1/statefulset/" + namespace + "/invalid")));
     }
 
     @Test
     public void testStatefulSetWithService() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:apps/v1/statefulset/" + namespace + "/example-statefulset-with-service");
+        var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/" + namespace + "/example-statefulset-with-service");
 
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset.yaml")).get();
@@ -79,14 +85,13 @@ public class StatefulSetUtilsTest {
                 .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-service.yaml")).get();
         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://10.10.10.11:80", url.get());
     }
 
     @Test
     public void testStatefulSetWithServiceWithCustomPortName() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:apps/v1/statefulset/" + namespace + "/custom-port-statefulset?port-name=my-custom-port-stateful");
+        var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/" + namespace + "/custom-port-statefulset?port-name=my-custom-port-stateful");
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset.yaml")).get();
         statefulSet.getMetadata().setName("custom-port-statefulset");
@@ -107,14 +112,13 @@ public class StatefulSetUtilsTest {
         service.getSpec().getSelector().remove("app");
         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://10.10.10.11:4009", url.get());
     }
 
     @Test
     public void testStatefulSetNoService() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:apps/v1/statefulset/" + namespace + "/process-quarkus-example-statefulset-no-service");
+        var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/" + namespace + "/process-quarkus-example-statefulset-no-service");
 
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
@@ -126,14 +130,13 @@ public class StatefulSetUtilsTest {
         pod.getMetadata().getOwnerReferences().get(0).setUid(createdDeployment.getMetadata().getUid());
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://172.17.0.11:8080", url.get());
     }
 
     @Test
     public void testStatefulSetNoService2Replicas() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:apps/v1/statefulset/" + namespace + "/example-statefulset-no-service-2-replicas");
+        var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/" + namespace + "/example-statefulset-no-service-2-replicas");
 
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
@@ -147,14 +150,13 @@ public class StatefulSetUtilsTest {
         pod.getMetadata().getOwnerReferences().get(0).setUid(createdstatefulSet.getMetadata().getUid());
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertTrue(url.isEmpty());
     }
 
     @Test
     public void testStatefulSetNoServiceCustomPortName() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:apps/v1/statefulset/" + namespace + "/custom-port-statefulset-1?port-name=my-custom-port");
+        var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/" + namespace + "/custom-port-statefulset-1?port-name=my-custom-port");
 
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
@@ -172,7 +174,7 @@ public class StatefulSetUtilsTest {
                         .withContainerPort(4010).build());
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://172.17.0.11:4010", url.get());
     }
 }

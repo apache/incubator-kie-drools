@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.addons.quarkus.k8s;
 
-import java.util.List;
-
 public final class KubeConstants {
 
     private KubeConstants() {
@@ -29,30 +27,15 @@ public final class KubeConstants {
     public static final String LOAD_BALANCER_TYPE = "LoadBalancer";
 
     // Networking
-    public static final String DEFAULT_SVC_DOMAIN = "svc.cluster.local";
     public static final String SECURE_HTTP_PROTOCOL = "https";
     public static final String NONSECURE_HTTP_PROTOCOL = "http";
     public static final String WEB_PORT_NAME = "web";
 
     public static final int NON_SECURE_PORT = 80;
-    public static final int APP_NON_SECURE_PORT = 8080;
     public static final int SECURE_PORT = 443;
     public static final int APP_SECURE_PORT = 8443;
 
     // Custom Query params
     public static final String CUSTOM_PORT_NAME_PROPERTY = "port-name";
     public static final String CUSTOM_RESOURCE_LABEL_PROPERTY = "labels";
-
-    // Supported GVKs
-    public static final String KIND_SERVICE = "v1/service";
-    public static final String KIND_KNATIVE_SERVICE = "serving.knative.dev/v1/service";
-    public static final String KIND_POD = "v1/pod";
-    public static final String KIND_DEPLOYMENT = "apps/v1/deployment";
-    public static final String KIND_DEPLOYMENT_CONFIG = "apps.openshift.io/v1/deploymentconfig";
-    public static final String KIND_STATEFUL_SET = "apps/v1/statefulset";
-    public static final String KIND_ROUTE = "route.openshift.io/v1/route";
-    public static final String KIND_INGRESS = "networking.k8s.io/v1/ingress";
-
-    // Supported protocols
-    public static final List<String> SUPPORTED_PROTOCOLS = List.of("openshift", "kubernetes", "knative");
 }

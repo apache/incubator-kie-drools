@@ -15,11 +15,16 @@
  */
 package org.kie.kogito.addons.quarkus.k8s.utils;
 
+import java.net.URI;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.addons.quarkus.k8s.KubeResourceDiscovery;
-import org.kie.kogito.addons.quarkus.k8s.parser.KubeURI;
+import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
+import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceUri;
+import org.kie.kogito.addons.quarkus.k8s.discovery.utils.PodUtils;
+import org.kie.kogito.addons.quarkus.k8s.discovery.utils.ServiceUtils;
 
 import io.fabric8.kubernetes.api.model.ContainerPortBuilder;
 import io.fabric8.kubernetes.api.model.IntOrString;
@@ -46,24 +51,25 @@ public class DeploymentUtilsTest {
 
     @KubernetesTestServer
     KubernetesServer mockServer;
-    KubeResourceDiscovery kubeResourceDiscovery;
+
+    @Inject
+    VanillaKubernetesResourceDiscovery discovery;
+
     private final String namespace = "serverless-workflow-greeting-quarkus";
 
     @Test
     public void testNotFoundDeployment() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).get();
         deployment.getMetadata().setName("test");
         mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
         assertEquals(Optional.empty(),
-                kubeResourceDiscovery.query(new KubeURI("kubernetes:apps/v1/deployment/" + namespace + "/invalid")));
+                discovery.query(VanillaKubernetesResourceUri.parse("apps/v1/deployment/" + namespace + "/invalid")));
     }
 
     @Test
     public void testDeploymentWithService() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:apps/v1/deployment/" + namespace + "/example-deployment-with-service");
+        var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/deployment/" + namespace + "/example-deployment-with-service");
 
         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).get();
@@ -73,14 +79,13 @@ public class DeploymentUtilsTest {
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-service.yaml")).get();
         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://10.10.10.11:80", url.get());
     }
 
     @Test
     public void testDeploymentWithServiceWithCustomPortName() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:apps/v1/deployment/" + namespace + "/custom-port-deployment?port-name=my-custom-port");
+        var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/deployment/" + namespace + "/custom-port-deployment?port-name=my-custom-port");
 
         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).get();
@@ -98,14 +103,13 @@ public class DeploymentUtilsTest {
                 .withPort(4009).build());
         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://10.10.10.11:4009", url.get());
     }
 
     @Test
     public void testDeploymentNoService() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:apps/v1/deployment/" + namespace + "/example-deployment-no-service");
+        var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/deployment/" + namespace + "/example-deployment-no-service");
 
         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-no-service.yaml")).get();
@@ -122,14 +126,13 @@ public class DeploymentUtilsTest {
         pod.getMetadata().getOwnerReferences().get(0).setUid(createdRs.getMetadata().getUid());
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://172.17.0.11:8080", url.get());
     }
 
     @Test
     public void testDeploymentNoService2Replicas() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:apps/v1/deployment/" + namespace + "/example-deployment-no-service-2-replicas");
+        var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/deployment/" + namespace + "/example-deployment-no-service-2-replicas");
 
         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-no-service.yaml")).get();
@@ -150,14 +153,13 @@ public class DeploymentUtilsTest {
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
         ;
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertTrue(url.isEmpty());
     }
 
     @Test
     public void testDeploymentNoServiceCustomPortName() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:apps/v1/deployment/" + namespace + "/custom-port-deployment-1?port-name=my-custom-port");
+        var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/deployment/" + namespace + "/custom-port-deployment-1?port-name=my-custom-port");
 
         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-no-service.yaml")).get();
@@ -181,7 +183,7 @@ public class DeploymentUtilsTest {
                         .withContainerPort(4009).build());
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://172.17.0.11:4009", url.get());
     }
 }

@@ -15,12 +15,16 @@
  */
 package org.kie.kogito.addons.quarkus.k8s.utils;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.addons.quarkus.k8s.KubeResourceDiscovery;
-import org.kie.kogito.addons.quarkus.k8s.parser.KubeURI;
+import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
+import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceUri;
+import org.kie.kogito.addons.quarkus.k8s.discovery.utils.ServiceUtils;
 
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.Service;
@@ -40,50 +44,49 @@ public class PodUtilsTest {
 
     @KubernetesTestServer
     KubernetesServer mockServer;
-    KubeResourceDiscovery kubeResourceDiscovery;
+
+    @Inject
+    VanillaKubernetesResourceDiscovery discovery;
+
     private final String namespace = "serverless-workflow-greeting-quarkus";
 
     @Test
     public void testPodNotFound() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
         pod.getMetadata().setName("test-pod");
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
         assertEquals(Optional.empty(),
-                kubeResourceDiscovery.query(new KubeURI("kubernetes:v1/pod/" + namespace + "/hello")));
+                discovery.query(VanillaKubernetesResourceUri.parse("v1/pod/" + namespace + "/hello")));
     }
 
     @Test
     public void testPodWithNoService() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:v1/pod/" + namespace + "/process-quarkus-example-pod-no-service");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/pod/" + namespace + "/process-quarkus-example-pod-no-service");
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://172.17.0.21:8080", url.get());
     }
 
     @Test
     public void testPodWithNoServiceCustomPortName() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:v1/pod/" + namespace + "/pod-no-service-custom-port?port-name=my-custom-port");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/pod/" + namespace + "/pod-no-service-custom-port?port-name=my-custom-port");
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service-custom-port-name.yaml")).get();
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://172.17.0.22:52485", url.get());
     }
 
     @Test
     public void testPodWithService() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:v1/pod/" + namespace + "/test-pod-with-service");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/pod/" + namespace + "/test-pod-with-service");
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
@@ -95,14 +98,13 @@ public class PodUtilsTest {
 
         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://10.10.10.10:80", url.get());
     }
 
     @Test
     public void testPodWithServiceWithCustomLabel() {
-        kubeResourceDiscovery = new KubeResourceDiscovery(mockServer.getClient());
-        KubeURI kubeURI = new KubeURI("kubernetes:v1/pod/" + namespace + "/test-pod-with-service-custom-label?labels=label-name=test-label;other-label=other-value");
+        var kubeURI = VanillaKubernetesResourceUri.parse("v1/pod/" + namespace + "/test-pod-with-service-custom-label?labels=label-name=test-label;other-label=other-value");
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
@@ -123,7 +125,7 @@ public class PodUtilsTest {
         service1.getSpec().setClusterIP("20.20.20.20");
         mockServer.getClient().resource(service1).inNamespace(namespace).createOrReplace();
 
-        Optional<String> url = kubeResourceDiscovery.query(kubeURI);
+        Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://20.20.20.20:80", url.get());
     }
 }

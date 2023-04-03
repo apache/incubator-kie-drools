@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
+import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -57,10 +58,15 @@ class PlainJsonKnativeServiceRequestClient extends KnativeServiceRequestClient {
     }
 
     @Override
-    protected JsonNode sendRequest(String processInstanceId, KnativeServiceAddress serviceAddress, String path,
+    protected JsonNode sendRequest(String processInstanceId, URI serviceAddress, String path,
             Map<String, Object> payload) {
-        HttpRequest<Buffer> request = webClient.post(serviceAddress.getPort(), serviceAddress.getHost(), path)
-                .ssl(serviceAddress.isSsl());
+        HttpRequest<Buffer> request;
+        if (serviceAddress.getPort() >= 0) {
+            request = webClient.post(serviceAddress.getPort(), serviceAddress.getHost(), path);
+        } else {
+            request = webClient.post(serviceAddress.getHost(), path);
+        }
+        request.ssl("https".equals(serviceAddress.getScheme()));
 
         HttpResponse<Buffer> response;
 

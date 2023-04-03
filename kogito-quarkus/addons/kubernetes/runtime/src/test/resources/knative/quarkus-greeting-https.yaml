@@ -6,7 +6,7 @@ metadata:
     serving.knative.dev/lastModifier: minikube-user
   creationTimestamp: '2022-08-17T13:58:53Z'
   generation: 1
-  name: serverless-workflow-greeting-quarkus
+  name: serverless-workflow-greeting-quarkus-https
   resourceVersion: '43817'
   uid: 98530cb6-3274-4d0c-b654-a82645cda058
 spec:
@@ -25,7 +25,7 @@ spec:
             successThreshold: 1
             tcpSocket:
               port: 0
-          resources: { }
+          resources: {}
       enableServiceLinks: false
       timeoutSeconds: 300
   traffic:
@@ -51,4 +51,4 @@ status:
     - latestRevision: true
       percent: 100
       revisionName: serverless-workflow-greeting-quarkus-00001
-  url: http://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io
+  url: https://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io

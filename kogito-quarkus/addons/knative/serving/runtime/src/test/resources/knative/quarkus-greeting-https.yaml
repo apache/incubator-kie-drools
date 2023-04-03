@@ -25,7 +25,7 @@ spec:
             successThreshold: 1
             tcpSocket:
               port: 0
-          resources: {}
+          resources: { }
       enableServiceLinks: false
       timeoutSeconds: 300
   traffic:

@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
+import java.net.URI;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -56,12 +57,17 @@ class CloudEventKnativeServiceRequestClient extends KnativeServiceRequestClient 
     }
 
     @Override
-    protected JsonNode sendRequest(String processInstanceId, KnativeServiceAddress serviceAddress, String path, Map<String, Object> cloudEvent) {
+    protected JsonNode sendRequest(String processInstanceId, URI serviceAddress, String path, Map<String, Object> cloudEvent) {
         validateCloudEvent(cloudEvent);
 
-        HttpRequest<Buffer> request = webClient.post(serviceAddress.getPort(), serviceAddress.getHost(), path)
-                .putHeader("Content-Type", APPLICATION_CLOUDEVENTS_JSON_CHARSET_UTF_8)
-                .ssl(serviceAddress.isSsl());
+        HttpRequest<Buffer> request;
+        if (serviceAddress.getPort() >= 0) {
+            request = webClient.post(serviceAddress.getPort(), serviceAddress.getHost(), path);
+        } else {
+            request = webClient.post(serviceAddress.getHost(), path);
+        }
+        request.putHeader("Content-Type", APPLICATION_CLOUDEVENTS_JSON_CHARSET_UTF_8)
+                .ssl("https".equals(serviceAddress.getScheme()));
 
         JsonObject body = new JsonObject(createCloudEventWithGeneratedId(cloudEvent, processInstanceId));
 

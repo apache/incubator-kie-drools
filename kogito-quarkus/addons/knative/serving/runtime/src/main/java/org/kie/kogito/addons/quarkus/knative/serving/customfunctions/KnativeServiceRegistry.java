@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,10 +23,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceDiscovery;
+import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceUri;
+
 @ApplicationScoped
 final class KnativeServiceRegistry {
 
-    private final Map<String, KnativeServiceAddress> services = new ConcurrentHashMap<>();
+    private final Map<String, URI> services = new ConcurrentHashMap<>();
 
     private final KnativeServiceDiscovery knativeServiceDiscovery;
 
@@ -34,17 +38,7 @@ final class KnativeServiceRegistry {
         this.knativeServiceDiscovery = knativeServiceDiscovery;
     }
 
-    private Optional<KnativeServiceAddress> addService(String serviceName) {
-        Optional<KnativeServiceAddress> serviceAddress = knativeServiceDiscovery.discover(serviceName);
-        services.put(serviceName, serviceAddress.orElse(null));
-        return serviceAddress;
-    }
-
-    Optional<KnativeServiceAddress> getServiceAddress(String serviceName) {
-        if (services.containsKey(serviceName)) {
-            return Optional.ofNullable(services.get(serviceName));
-        } else {
-            return addService(serviceName);
-        }
+    Optional<URI> getServiceAddress(String serviceName) {
+        return Optional.ofNullable(services.computeIfAbsent(serviceName, k -> knativeServiceDiscovery.query(KnativeServiceUri.parse(k)).orElse(null)));
     }
 }
