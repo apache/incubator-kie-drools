@@ -21,13 +21,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.infinispan.Cache;
+import org.infinispan.commons.api.BasicCache;
 
 public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
 
-    private final Cache<String, Object> cache;
+    private final BasicCache<String, Object> cache;
 
-    public ReliablePseudoClockScheduler(Cache<String, Object> cache) {
+    public ReliablePseudoClockScheduler(BasicCache<String, Object> cache) {
         this.cache = cache;
         this.timer = new AtomicLong( (Long) cache.getOrDefault("timer", 0L) );
         this.idCounter = new AtomicLong( (Long) cache.getOrDefault("idCounter", 0L) );

@@ -15,26 +15,12 @@
 
 package org.drools.reliability;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.drools.core.common.ReteEvaluator;
-import org.infinispan.Cache;
-import org.infinispan.commons.marshall.JavaSerializationMarshaller;
-import org.infinispan.configuration.cache.CacheMode;
-import org.infinispan.configuration.cache.Configuration;
-import org.infinispan.configuration.cache.ConfigurationBuilder;
-import org.infinispan.configuration.global.GlobalConfigurationBuilder;
-import org.infinispan.globalstate.ConfigurationStorage;
+import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.commons.api.BasicCache;
 import org.infinispan.manager.DefaultCacheManager;
-import org.kie.api.runtime.conf.PersistedSessionOption;
 
 public enum CacheManager implements AutoCloseable {
 
@@ -43,135 +29,79 @@ public enum CacheManager implements AutoCloseable {
     public static final String SESSION_CACHE_PREFIX = "session_";
     public static final String DELIMITER = "_";
 
-    private DefaultCacheManager cacheManager;
-    private Configuration cacheConfiguration;
+    public static final String CACHE_MANAGER_MODE_PROPERTY = "drools.reliability.cache.manager.mode";
+    public static final String CACHE_MANAGER_REMOTE_HOST = "drools.reliability.cache.manager.remote.host";
+    public static final String CACHE_MANAGER_REMOTE_PORT = "drools.reliability.cache.manager.remote.port";
+    public static final String CACHE_MANAGER_REMOTE_USER = "drools.reliability.cache.manager.remote.user";
+    public static final String CACHE_MANAGER_REMOTE_PASS = "drools.reliability.cache.manager.remote.pass";
 
-    public static final String GLOBAL_STATE_DIR = "global/state";
-    public static final String CACHE_DIR = "cache";
+    private final CacheManagerDelegate delegate;
 
     CacheManager() {
+        String modeValue = System.getProperty(CACHE_MANAGER_MODE_PROPERTY, "EMBEDDED");
+        if (modeValue.equalsIgnoreCase("REMOTE")) {
+            delegate = RemoteCacheManagerDelegate.INSTANCE;
+        } else {
+            delegate = EmbeddedCacheManagerDelegate.INSTANCE;
+        }
+
         initCacheManager();
     }
 
     private void initCacheManager() {
-        // Set up a clustered Cache Manager.
-        GlobalConfigurationBuilder global = new GlobalConfigurationBuilder();
-        global.serialization()
-                .marshaller(new JavaSerializationMarshaller())
-                .allowList()
-                .addRegexps("org.kie.*") // TODO: need to be configurable
-                .addRegexps("org.drools.*") // TODO: need to be configurable
-                .addRegexps("java.*"); // TODO: why is this necessary?
-        global.globalState()
-                .enable()
-                .persistentLocation(GLOBAL_STATE_DIR)
-                .configurationStorage(ConfigurationStorage.OVERLAY);
-
-        // Initialize the default Cache Manager.
-        cacheManager = new DefaultCacheManager(global.build());
-
-        // Create a distributed cache with synchronous replication.
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.persistence().passivation(false)
-                .addSoftIndexFileStore()
-                .shared(false)
-                .dataLocation(CACHE_DIR + "/data")
-                .indexLocation(CACHE_DIR + "/index");
-        builder.clustering()
-                .cacheMode(CacheMode.LOCAL)
-                .hash().numOwners(1);
-        cacheConfiguration = builder.build();
+        delegate.initCacheManager();
     }
 
-    public <k, V> Cache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
-        String cacheId = SESSION_CACHE_PREFIX + getSessionIdentifier(reteEvaluator) + DELIMITER + cacheName;
-        return cacheManager.administration().getOrCreateCache(cacheId, cacheConfiguration);
-    }
-
-    private long getSessionIdentifier(ReteEvaluator reteEvaluator) {
-        PersistedSessionOption persistedSessionOption = reteEvaluator.getSessionConfiguration().getPersistedSessionOption();
-        if (persistedSessionOption != null) {
-            return persistedSessionOption.isNewSession() ? reteEvaluator.getIdentifier() : persistedSessionOption.getSessionId();
-        } else {
-            throw new ReliabilityConfigurationException("PersistedSessionOption has to be configured when drools-reliability is used");
-        }
+    public <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
+        return delegate.getOrCreateCacheForSession(reteEvaluator, cacheName);
     }
 
     @Override
     public void close() {
-        cacheManager.stop();
+        delegate.close();
+    }
+
+    public boolean isRemote() {
+        return delegate instanceof RemoteCacheManagerDelegate;
+    }
+
+    public void setRemoteCacheManager(RemoteCacheManager remoteCacheManager) {
+        delegate.setRemoteCacheManager(remoteCacheManager);
     }
 
     // test purpose to simulate fail-over
     void restart() {
-        // JVM crashed
-        cacheManager.stop();
-        cacheManager = null;
-        cacheConfiguration = null;
-
-        // Reboot
-        initCacheManager();
+        delegate.restart();
     }
 
     // test purpose to clean up environment
-    void restartWithRemovingGlobalStateAndFileStore() {
-        // JVM down
-        cacheManager.stop();
-        cacheManager = null;
-        cacheConfiguration = null;
-
-        // Remove GlobalState and FileStore
-        cleanUpGlobalStateAndFileStore();
-
-        // Reboot
-        initCacheManager();
-    }
-
-    // test purpose to remove GlobalState and FileStore
-    static void cleanUpGlobalStateAndFileStore() {
-        try {
-            Path path = Paths.get(GLOBAL_STATE_DIR);
-            if (Files.exists(path)) {
-                try (Stream<Path> walk = Files.walk(path)) {
-                    walk.sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
-                }
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    void restartWithCleanUp() {
+        delegate.restartWithCleanUp();
     }
 
     // test purpose to inject fake cacheManager
-    void setCacheManager(DefaultCacheManager cacheManager) {
-        if (this.cacheManager != null) {
-            this.cacheManager.stop();
-        }
-        this.cacheManager = cacheManager;
+    void setEmbeddedCacheManager(DefaultCacheManager cacheManager) {
+        delegate.setEmbeddedCacheManager(cacheManager);
+    }
+
+    // test purpose
+    org.infinispan.client.hotrod.configuration.ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder() {
+        return delegate.provideAdditionalRemoteConfigurationBuilder();
     }
 
     public void removeCache(String cacheName) {
-        if (cacheManager.cacheExists(cacheName)) {
-            cacheManager.removeCache(cacheName);
-        }
+        delegate.removeCache(cacheName);
     }
 
     public void removeCachesBySessionId(String sessionId) {
-        cacheManager.getCacheNames()
-                .stream()
-                .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX + sessionId + DELIMITER))
-                .forEach(this::removeCache);
+        delegate.removeCachesBySessionId(sessionId);
     }
 
     public void removeAllSessionCaches() {
-        cacheManager.getCacheNames()
-                .stream()
-                .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX))
-                .forEach(this::removeCache);
+        delegate.removeAllSessionCaches();
     }
 
     public Set<String> getCacheNames() {
-        return cacheManager.getCacheNames();
+        return delegate.getCacheNames();
     }
 }

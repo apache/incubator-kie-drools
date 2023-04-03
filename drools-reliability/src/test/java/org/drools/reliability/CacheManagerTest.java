@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.infinispan.manager.DefaultCacheManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.CacheManager.SESSION_CACHE_PREFIX;
@@ -33,9 +34,14 @@ class CacheManagerTest {
         CacheManager.INSTANCE.restart(); // make sure that FakeCacheManager is removed
     }
 
+    private boolean isRemote() {
+        return CacheManager.INSTANCE.isRemote();
+    }
+
+    @DisabledIf("isRemote")
     @Test
     void removeAllSessionCaches_shouldLeaveNonSessionCache() {
-        CacheManager.INSTANCE.setCacheManager(new FakeCacheManager());
+        CacheManager.INSTANCE.setEmbeddedCacheManager(new FakeCacheManager());
 
         assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactlyInAnyOrder(
                 SESSION_CACHE_PREFIX + "0_" + "epDefault", SESSION_CACHE_PREFIX + "1_" + "epDefault", "METADATA_0");
@@ -45,9 +51,10 @@ class CacheManagerTest {
         assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactly("METADATA_0");
     }
 
+    @DisabledIf("isRemote")
     @Test
     void removeCachesBySessionId_shouldRemoveSpecifiedCacheOnly() {
-        CacheManager.INSTANCE.setCacheManager(new FakeCacheManager());
+        CacheManager.INSTANCE.setEmbeddedCacheManager(new FakeCacheManager());
 
         assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactlyInAnyOrder(
                 SESSION_CACHE_PREFIX + "0_" + "epDefault", SESSION_CACHE_PREFIX + "1_" + "epDefault", "METADATA_0");

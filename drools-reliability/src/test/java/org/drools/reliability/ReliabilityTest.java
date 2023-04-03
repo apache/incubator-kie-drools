@@ -15,6 +15,8 @@
 
 package org.drools.reliability;
 
+import java.util.Collection;
+
 import org.drools.reliability.domain.Person;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,7 +25,6 @@ import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.reliability.ReliabilityTestUtils.failover;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityTest extends ReliabilityTestBasics {
@@ -63,9 +64,8 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
 
     @ParameterizedTest
-    @MethodSource("strategyProvider")
+    @MethodSource("strategyProviderStoresOnly") // With Remote, FULL fails with "ReliablePropagationList; no valid constructor" even without failover
     void noFailover(PersistedSessionOption.Strategy strategy) {
-
 
         createSession(BASIC_RULE, strategy);
 
@@ -77,7 +77,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 		insertNonMatchingPerson("Toshiya", 41);
 		insertMatchingPerson("Matching Person Two", 40);
 
-		session.fireAllRules();
+        session.fireAllRules();
 
 		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
     }

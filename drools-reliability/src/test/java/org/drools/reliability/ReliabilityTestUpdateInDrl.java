@@ -22,7 +22,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.reliability.ReliabilityTestUtils.failover;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 public class ReliabilityTestUpdateInDrl extends ReliabilityTestBasics {

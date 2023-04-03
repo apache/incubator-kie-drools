@@ -27,7 +27,6 @@ import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.time.SessionPseudoClock;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.reliability.ReliabilityTestUtils.failover;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityCepTest extends ReliabilityTestBasics {

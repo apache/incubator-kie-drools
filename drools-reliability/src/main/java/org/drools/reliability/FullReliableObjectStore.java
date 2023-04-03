@@ -17,11 +17,11 @@ package org.drools.reliability;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.MapObjectStore;
-import org.infinispan.Cache;
+import org.infinispan.commons.api.BasicCache;
 
 public class FullReliableObjectStore extends MapObjectStore {
 
-    public FullReliableObjectStore(Cache<Object, InternalFactHandle> fhCache) {
+    public FullReliableObjectStore(BasicCache<Object, InternalFactHandle> fhCache) {
         super(fhCache);
     }
 }
