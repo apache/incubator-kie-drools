@@ -42,7 +42,7 @@ jobs:
       - name: Build Chain
         uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
         env:
-          BUILD_MVN_OPTS_CURRENT: -Dfull
+          BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/drools/${BRANCH:main}/.ci/buildchain-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
