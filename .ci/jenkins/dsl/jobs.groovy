@@ -109,8 +109,6 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
                     ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
-                    // Setup full build if not prod profile
-                    BUILD_MVN_OPTS_CURRENT: EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod') ? '' : '-Dfull',
                 ]
             ]
             // , [
@@ -156,17 +154,17 @@ Closure addFullProfileJobParamsGetter = { script ->
     return jobParams
 }
 
-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, addFullProfileJobParamsGetter)
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
 
 // Environment nightlies
-setupSpecificBuildChainNightlyJob('native', addFullProfileJobParamsGetter)
+setupSpecificBuildChainNightlyJob('native')
 
 // Jobs with integration branch
-setupQuarkusIntegrationJob('quarkus-main', addFullProfileJobParamsGetter)
-setupQuarkusIntegrationJob('quarkus-branch', addFullProfileJobParamsGetter)
+setupQuarkusIntegrationJob('quarkus-main')
+setupQuarkusIntegrationJob('quarkus-branch')
 setupQuarkusIntegrationJob('quarkus-lts')
 setupQuarkusIntegrationJob('native-lts')
-setupQuarkusIntegrationJob('quarkus-3', addFullProfileJobParamsGetter)
+setupQuarkusIntegrationJob('quarkus-3')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
