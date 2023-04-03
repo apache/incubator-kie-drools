@@ -66,7 +66,7 @@ pipeline {
                     dir(quickstartsRepository) {
                         checkoutTag(quickstartsRepository, getGitTag(), stableBranchName)
                         removeJbossNexusFromMavenAndGradle()
-                        commitAndForcePushProtectedBranch(quickstartsRepository, stableBranchName)
+                        commitAndForcePushBranch(quickstartsRepository, stableBranchName)
                     }
                 }
             }
@@ -219,13 +219,13 @@ String commitAndCreatePR(String commitMsg, Closure precommit, String localBranch
     return githubscm.createPR(commitMsg, prBody, targetBranch, getGitAuthorCredsID())
 }
 
-void commitAndForcePushProtectedBranch(String repo, String branch) {
+void commitAndForcePushBranch(String repo, String branch) {
     githubscm.commitChanges("[${getBuildBranch()}] Update ${branch} to ${getProjectVersion()}", {
         githubscm.findAndStageNotIgnoredFiles('pom.xml')
         githubscm.findAndStageNotIgnoredFiles('build.gradle')
     })
     try {
-        forcePushProtectedBranch(repo, branch)
+        forcePushBranch(branch)
     }
     catch (exception) {
         println "[ERROR] Force push branch: ${branch} from repo : ${repo} failed with exception: ${exception}"
@@ -277,103 +277,13 @@ void removeJbossNexusFromMavenAndGradle() {
             'cat', returnStdout: true)
 }
 
-String getGhCredsID() {
-    return env.GITHUB_TOKEN_CREDS_ID
-}
-
-//maps git branch protection response json into update request body to rewrite branch protection
-String getProtectionMapScript() {
-    return "if .restrictions == null then . + {\"restrictions_used\":null}  " + //upd user set restrictions if not empty
-            "else . + {\"restrictions_used\":{\"users\":[.restrictions.users[].login], \"team\":[.restrictions.users[].slug]}} end |" +
-            ' {' +
-                "\"required_status_checks\": .required_status_checks," +
-                "\"required_pull_request_reviews\": .required_pull_request_reviews," +
-                "\"enforce_admins\":(.enforce_admins.enabled)," +
-                " \"restrictions\":.restrictions_used" +
-            '}'
-}
-
-def enableForcePushes(String repo, String protectedBranch) {
-    if (isBranchProtected(repo, protectedBranch)) {
-        setAllowForcePushes(repo, protectedBranch, 'true')
-    }
-}
-
-def disableForcePushes(String repo, String protectedBranch) {
-    if (isBranchProtected(repo, protectedBranch)) {
-        setAllowForcePushes(repo, protectedBranch, 'false')
-    }
-}
-
-boolean isBranchProtected(String repo, String protectedBranch, String ghPath = '../gh') {
-    assertGithubCLI(ghPath)
-    boolean isProtected = true // Suppose it is protected by default
-    withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
-        // get current branch protection
-        int status = sh (script: "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection'", returnStatus: true)
-        isProtected = status == 0
-    }
-    return isProtected
-}
-
-def setAllowForcePushes(String repo, String protectedBranch, String enabled, String ghPath = '../gh') {
-    assertGithubCLI(ghPath)
-    //Use separate admin token credentials
-    withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
-        //get current branch protection and remove allow force push
-        sh "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | " +
-                "jq 'del(.allow_force_pushes)' > protectionBefore.json"
-
-        //create new json based on current protection mapped as parameters
-        sh "jq \"${getProtectionMapScript()}\" protectionBefore.json | " +
-                "jq \". + {\"allow_force_pushes\":${enabled}}\" > protectionParameters.json"
-
-        //update protection on git
-        def allowForcePushEnabled = sh(script:
-                "${ghPath} api -XPUT 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' " +
-                        '--input protectionParameters.json |' +
-                        " jq '.allow_force_pushes.enabled'", returnStdout: true).trim()
-        assert allowForcePushEnabled == enabled
-
-        //check that protection didn't changed except for allow_force_pushes
-        sh "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | " +
-                "jq 'del(.allow_force_pushes)' > protectionAfter.json"
-        def differences = sh(script: 'diff protectionBefore.json protectionAfter.json | cat', returnStdout: true)
-        if (differences) {
-            error 'Protection settings lost' +
-                    '\nBefore: ' +
-                    "\n${readFile 'protectionBefore.json'} " +
-                    '\nAfter: ' +
-                    "\n${readFile 'protectionAfter.json'} " +
-                    '\nDifferences: ' +
-                    "\n${differences} " +
-                    '\nProtection parameters: ' +
-                    "\n${readFile 'protectionParameters.json'} " +
-                    'Please rollback to Before state and update getProtectionMapScript'
-        }
-        //cleanup workspace
-        sh 'rm -f protectionParameters.json protectionBefore.json protectionAfter.json'
-    }
-}
-
-def forcePushProtectedBranch(String repo, String protectedBranch) {
-    enableForcePushes(repo, protectedBranch)
+def forcePushBranch(String branch) {
     withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
         // Please leave the double-quote here. They are mandatory for the shell command to work correctly.
         sh """
             git config --local credential.helper \"!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f\"
-            git push origin ${protectedBranch} --force
+            git push origin ${branch} --force
         """
-    }
-    disableForcePushes(repo, protectedBranch)
-}
-
-void assertGithubCLI(String ghPath) {
-    if (fileExists(ghPath)) {
-        echo "[INFO] gh found at $ghPath"
-    }
-    else {
-        error "gh not found at $ghPath"
     }
 }
 
