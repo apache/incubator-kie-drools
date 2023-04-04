@@ -84,8 +84,7 @@ class EmbeddedCacheManager implements CacheManager {
                .dataLocation(CACHE_DIR + "/data")
                .indexLocation(CACHE_DIR + "/index");
         builder.clustering()
-               .cacheMode(CacheMode.LOCAL)
-               .hash().numOwners(1);
+               .cacheMode(CacheMode.LOCAL);
         cacheConfiguration = builder.build();
     }
 
