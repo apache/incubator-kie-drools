@@ -60,38 +60,38 @@ public abstract class ReliabilityTestBasics {
 
     @BeforeEach
     public void setUp() {
-        if (CacheManagerFactory.INSTANCE.isRemote()) {
+        if (CacheManagerFactory.INSTANCE.getCacheManager().isRemote()) {
             LOG.info("Starting InfinispanContainer");
             container = new InfinispanContainer();
             container.start();
             LOG.info("InfinispanContainer started"); // takes about 10 seconds
-            RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(CacheManagerFactory.INSTANCE.provideAdditionalRemoteConfigurationBuilder());
-            CacheManagerFactory.INSTANCE.setRemoteCacheManager(remoteCacheManager);
+            RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(CacheManagerFactory.INSTANCE.getCacheManager().provideAdditionalRemoteConfigurationBuilder());
+            CacheManagerFactory.INSTANCE.getCacheManager().setRemoteCacheManager(remoteCacheManager);
         }
     }
 
     @AfterEach
     public void tearDown() {
-        if (CacheManagerFactory.INSTANCE.isRemote()) {
-            CacheManagerFactory.INSTANCE.close(); // close remoteCacheManager
+        if (CacheManagerFactory.INSTANCE.getCacheManager().isRemote()) {
+            CacheManagerFactory.INSTANCE.getCacheManager().close(); // close remoteCacheManager
             container.stop(); // stop remote infinispan
         } else {
             // clean up embedded Infinispan including GlobalState and FireStore so that test methods can be isolated
-            CacheManagerFactory.INSTANCE.restartWithCleanUp();
+            CacheManagerFactory.INSTANCE.getCacheManager().restartWithCleanUp();
         }
 
         ReliableRuntimeComponentFactoryImpl.resetCounter();
     }
 
     public void failover() {
-        if (CacheManagerFactory.INSTANCE.isRemote()) {
+        if (CacheManagerFactory.INSTANCE.getCacheManager().isRemote()) {
             // fail-over means restarting Drools instance. Assuming remote infinispan keeps alive
-            CacheManagerFactory.INSTANCE.close(); // close remoteCacheManager
+            CacheManagerFactory.INSTANCE.getCacheManager().close(); // close remoteCacheManager
             // Reclaim RemoteCacheManager
-            RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(CacheManagerFactory.INSTANCE.provideAdditionalRemoteConfigurationBuilder());
-            CacheManagerFactory.INSTANCE.setRemoteCacheManager(remoteCacheManager);
+            RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(CacheManagerFactory.INSTANCE.getCacheManager().provideAdditionalRemoteConfigurationBuilder());
+            CacheManagerFactory.INSTANCE.getCacheManager().setRemoteCacheManager(remoteCacheManager);
         } else {
-            CacheManagerFactory.INSTANCE.restart(); // restart embedded infinispan cacheManager. GlobalState and FireStore are kept
+            CacheManagerFactory.INSTANCE.getCacheManager().restart(); // restart embedded infinispan cacheManager. GlobalState and FireStore are kept
         }
         ReliableRuntimeComponentFactoryImpl.resetCounter();
     }

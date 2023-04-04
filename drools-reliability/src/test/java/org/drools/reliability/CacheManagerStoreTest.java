@@ -47,9 +47,9 @@ class CacheManagerStoreTest extends ReliabilityTestBasics {
 
         failover();
 
-        assertThat(CacheManagerFactory.INSTANCE.getCacheNames()).contains(SESSION_CACHE_PREFIX + "0_epDEFAULT", SESSION_CACHE_PREFIX + "0_globals"); // CacheManager knows cache names even after failover
+        assertThat(CacheManagerFactory.INSTANCE.getCacheManager().getCacheNames()).contains(SESSION_CACHE_PREFIX + "0_epDEFAULT", SESSION_CACHE_PREFIX + "0_globals"); // CacheManager knows cache names even after failover
 
-        CacheManagerFactory.INSTANCE.removeAllSessionCaches(); // must remove all session caches
+        CacheManagerFactory.INSTANCE.getCacheManager().removeAllSessionCaches(); // must remove all session caches
 
         restoreSession(EMPTY_RULE, strategy); // restored but no objects in the cache
 
@@ -67,6 +67,6 @@ class CacheManagerStoreTest extends ReliabilityTestBasics {
 
         disposeSession(); // This should clean up session's cache
 
-        assertThat(CacheManagerFactory.INSTANCE.getCacheNames()).allMatch(name -> !name.startsWith(SESSION_CACHE_PREFIX));
+        assertThat(CacheManagerFactory.INSTANCE.getCacheManager().getCacheNames()).allMatch(name -> !name.startsWith(SESSION_CACHE_PREFIX));
     }
 }

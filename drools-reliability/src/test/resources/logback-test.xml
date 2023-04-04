@@ -11,7 +11,7 @@
   <logger name="org.drools" level="warn"/>
   <logger name="org.drools.reliability" level="info"/>
 
-  <logger name="org.infinispan" level="warn"/>
+  <logger name="org.infinispan.PERSISTENCE" level="error"/>
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />

@@ -115,6 +115,8 @@ class RemoteCacheManager implements CacheManager {
         if (remoteCacheManager != null) {
             remoteCacheManager.stop();
         }
+
+        // Not setting a remoteCacheManager, expecting the test to set it.
     }
 
     @Override
@@ -123,11 +125,12 @@ class RemoteCacheManager implements CacheManager {
             removeAllCache();
             remoteCacheManager.stop();
         }
+
+        // Not setting a remoteCacheManager, expecting the test to set it.
     }
 
     private void removeAllCache() {
         remoteCacheManager.getCacheNames()
-                .stream()
                 .forEach(this::removeCache);
     }
 
@@ -144,5 +147,10 @@ class RemoteCacheManager implements CacheManager {
                 .addJavaSerialAllowList("org.drools.*")
                 .addJavaSerialAllowList("java.*");
         return builder;
+    }
+
+    @Override
+    public boolean isRemote() {
+        return true;
     }
 }

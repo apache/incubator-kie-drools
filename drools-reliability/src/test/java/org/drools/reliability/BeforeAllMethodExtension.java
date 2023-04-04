@@ -33,7 +33,7 @@ public class BeforeAllMethodExtension implements BeforeAllCallback {
             return;
         }
         initialized = true;
-        if (!CacheManagerFactory.INSTANCE.isRemote()) {
+        if (!CacheManagerFactory.INSTANCE.getCacheManager().isRemote()) {
             EmbeddedCacheManager.cleanUpGlobalStateAndFileStore();
         }
     }

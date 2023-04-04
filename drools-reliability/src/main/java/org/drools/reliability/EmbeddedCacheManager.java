@@ -187,4 +187,9 @@ class EmbeddedCacheManager implements CacheManager {
     public org.infinispan.client.hotrod.configuration.ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder() {
         throw new UnsupportedOperationException("provideRemoteConfigurationBuilder is not supported in " + this.getClass());
     }
+
+    @Override
+    public boolean isRemote() {
+        return false;
+    }
 }

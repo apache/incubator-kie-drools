@@ -21,7 +21,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.infinispan.commons.api.BasicCache;
 import org.infinispan.manager.DefaultCacheManager;
 
-public enum CacheManagerFactory implements AutoCloseable {
+public enum CacheManagerFactory {
 
     INSTANCE;
 
@@ -44,63 +44,10 @@ public enum CacheManagerFactory implements AutoCloseable {
             cacheManager = EmbeddedCacheManager.INSTANCE;
         }
 
-        initCacheManager();
-    }
-
-    private void initCacheManager() {
         cacheManager.initCacheManager();
     }
 
-    public <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
-        return cacheManager.getOrCreateCacheForSession(reteEvaluator, cacheName);
-    }
-
-    @Override
-    public void close() {
-        cacheManager.close();
-    }
-
-    public boolean isRemote() {
-        return cacheManager instanceof RemoteCacheManager;
-    }
-
-    public void setRemoteCacheManager(org.infinispan.client.hotrod.RemoteCacheManager remoteCacheManager) {
-        cacheManager.setRemoteCacheManager(remoteCacheManager);
-    }
-
-    // test purpose to simulate fail-over
-    void restart() {
-        cacheManager.restart();
-    }
-
-    // test purpose to clean up environment
-    void restartWithCleanUp() {
-        cacheManager.restartWithCleanUp();
-    }
-
-    // test purpose to inject fake cacheManager
-    void setEmbeddedCacheManager(DefaultCacheManager cacheManager) {
-        this.cacheManager.setEmbeddedCacheManager(cacheManager);
-    }
-
-    // test purpose
-    org.infinispan.client.hotrod.configuration.ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder() {
-        return cacheManager.provideAdditionalRemoteConfigurationBuilder();
-    }
-
-    public void removeCache(String cacheName) {
-        cacheManager.removeCache(cacheName);
-    }
-
-    public void removeCachesBySessionId(String sessionId) {
-        cacheManager.removeCachesBySessionId(sessionId);
-    }
-
-    public void removeAllSessionCaches() {
-        cacheManager.removeAllSessionCaches();
-    }
-
-    public Set<String> getCacheNames() {
-        return cacheManager.getCacheNames();
+    public CacheManager getCacheManager() {
+        return cacheManager;
     }
 }

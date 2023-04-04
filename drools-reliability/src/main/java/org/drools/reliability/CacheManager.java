@@ -68,4 +68,5 @@ interface CacheManager {
 
     ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder();
 
+    boolean isRemote();
 }
