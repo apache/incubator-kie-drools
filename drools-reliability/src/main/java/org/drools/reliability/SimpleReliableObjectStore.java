@@ -23,15 +23,15 @@ import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.infinispan.Cache;
+import org.infinispan.commons.api.BasicCache;
 
 public class SimpleReliableObjectStore extends IdentityObjectStore {
 
-    private final Cache<Long, StoredObject> cache;
+    private final BasicCache<Long, StoredObject> cache;
 
     private boolean reInitPropagated = false;
 
-    public SimpleReliableObjectStore(Cache<Long, StoredObject> cache) {
+    public SimpleReliableObjectStore(BasicCache<Long, StoredObject> cache) {
         super();
         this.cache = cache;
     }

@@ -16,25 +16,30 @@
 
 package org.drools.reliability;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.core.rule.accessor.GlobalResolver;
-import org.infinispan.Cache;
+import org.infinispan.commons.api.BasicCache;
 
 public class ReliableGlobalResolver implements GlobalResolver {
-    private final Cache<String, Object> cache;
+    private final BasicCache<String, Object> cache;
 
-    private final Set<String> toBeRefreshed = new HashSet<>();
+    private final Map<String, Object> toBeRefreshed = new HashMap<>();
 
-    public ReliableGlobalResolver(Cache<String, Object> cache) {
+    public ReliableGlobalResolver(BasicCache<String, Object> cache) {
         this.cache = cache;
     }
 
     @Override
     public Object resolveGlobal(String identifier) {
-        toBeRefreshed.add(identifier);
-        return cache.get(identifier);
+        // Use an in-memory global reference. Avoid getting a stale object from cache
+        if (toBeRefreshed.containsKey(identifier)) {
+            return toBeRefreshed.get(identifier);
+        }
+        Object global = cache.get(identifier);
+        toBeRefreshed.put(identifier, global);
+        return global;
     }
 
     @Override
@@ -54,7 +59,7 @@ public class ReliableGlobalResolver implements GlobalResolver {
 
     public void updateCache() {
         if (!toBeRefreshed.isEmpty()) {
-            toBeRefreshed.forEach( id -> cache.put(id, cache.get(id)));
+            toBeRefreshed.forEach(cache::put);
             toBeRefreshed.clear();
         }
     }

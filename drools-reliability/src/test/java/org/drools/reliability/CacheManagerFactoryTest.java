@@ -22,39 +22,46 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.infinispan.manager.DefaultCacheManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.reliability.CacheManager.SESSION_CACHE_PREFIX;
+import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
 
-class CacheManagerTest {
+class CacheManagerFactoryTest {
 
     @AfterEach
     public void tearDown() {
-        CacheManager.INSTANCE.restart(); // make sure that FakeCacheManager is removed
+        CacheManagerFactory.INSTANCE.getCacheManager().restart(); // make sure that FakeCacheManager is removed
     }
 
+    private boolean isRemote() {
+        return CacheManagerFactory.INSTANCE.getCacheManager().isRemote();
+    }
+
+    @DisabledIf("isRemote")
     @Test
     void removeAllSessionCaches_shouldLeaveNonSessionCache() {
-        CacheManager.INSTANCE.setCacheManager(new FakeCacheManager());
+        CacheManagerFactory.INSTANCE.getCacheManager().setEmbeddedCacheManager(new FakeCacheManager());
 
-        assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactlyInAnyOrder(
+        assertThat(CacheManagerFactory.INSTANCE.getCacheManager().getCacheNames()).containsExactlyInAnyOrder(
                 SESSION_CACHE_PREFIX + "0_" + "epDefault", SESSION_CACHE_PREFIX + "1_" + "epDefault", "METADATA_0");
 
-        CacheManager.INSTANCE.removeAllSessionCaches();
+        CacheManagerFactory.INSTANCE.getCacheManager().removeAllSessionCaches();
 
-        assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactly("METADATA_0");
+        assertThat(CacheManagerFactory.INSTANCE.getCacheManager().getCacheNames()).containsExactly("METADATA_0");
     }
 
+    @DisabledIf("isRemote")
     @Test
     void removeCachesBySessionId_shouldRemoveSpecifiedCacheOnly() {
-        CacheManager.INSTANCE.setCacheManager(new FakeCacheManager());
+        CacheManagerFactory.INSTANCE.getCacheManager().setEmbeddedCacheManager(new FakeCacheManager());
 
-        assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactlyInAnyOrder(
+        assertThat(CacheManagerFactory.INSTANCE.getCacheManager().getCacheNames()).containsExactlyInAnyOrder(
                 SESSION_CACHE_PREFIX + "0_" + "epDefault", SESSION_CACHE_PREFIX + "1_" + "epDefault", "METADATA_0");
 
-        CacheManager.INSTANCE.removeCachesBySessionId("1");
+        CacheManagerFactory.INSTANCE.getCacheManager().removeCachesBySessionId("1");
 
-        assertThat(CacheManager.INSTANCE.getCacheNames()).containsExactlyInAnyOrder(SESSION_CACHE_PREFIX + "0_" + "epDefault", "METADATA_0");
+        assertThat(CacheManagerFactory.INSTANCE.getCacheManager().getCacheNames()).containsExactlyInAnyOrder(SESSION_CACHE_PREFIX + "0_" + "epDefault", "METADATA_0");
     }
 
     public static class FakeCacheManager extends DefaultCacheManager {

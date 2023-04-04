@@ -48,7 +48,7 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
     @Override
     public void dispose() {
         super.dispose();
-        CacheManager.INSTANCE.removeCachesBySessionId(String.valueOf(this.id));
+        CacheManagerFactory.INSTANCE.getCacheManager().removeCachesBySessionId(String.valueOf(this.id));
     }
 
     @Override

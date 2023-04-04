@@ -19,7 +19,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.PropagationList;
 import org.drools.kiesession.agenda.DefaultAgenda;
-import org.infinispan.Cache;
+import org.infinispan.commons.api.BasicCache;
 
 public class ReliableAgenda extends DefaultAgenda {
 
@@ -40,7 +40,7 @@ public class ReliableAgenda extends DefaultAgenda {
 
     @Override
     protected PropagationList createPropagationList() {
-        Cache<String, Object> componentsCache = CacheManager.INSTANCE.getOrCreateCacheForSession(workingMemory, "components");
+        BasicCache<String, Object> componentsCache = CacheManagerFactory.INSTANCE.getCacheManager().getOrCreateCacheForSession(workingMemory, "components");
         ReliablePropagationList propagationList = (ReliablePropagationList) componentsCache.get("PropagationList");
         if (propagationList == null) {
             propagationList = new ReliablePropagationList(workingMemory);
