@@ -9,7 +9,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
-import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
  * on a specific entity.
  */
 abstract class AbstractInverseEntityFilteringValueSelector<Solution_>
-        extends AbstractValueSelector<Solution_>
+        extends AbstractDemandEnabledSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_> {
 
     protected final EntityIndependentValueSelector<Solution_> childValueSelector;

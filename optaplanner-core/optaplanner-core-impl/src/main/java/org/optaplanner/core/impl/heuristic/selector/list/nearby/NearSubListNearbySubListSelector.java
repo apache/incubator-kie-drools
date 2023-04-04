@@ -1,7 +1,6 @@
 package org.optaplanner.core.impl.heuristic.selector.list.nearby;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
@@ -9,29 +8,21 @@ import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
-import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbyDistanceMatrixDemand;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbySelector;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.list.RandomSubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.list.SubList;
 import org.optaplanner.core.impl.heuristic.selector.list.SubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.list.mimic.MimicReplayingSubListSelector;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.optaplanner.core.impl.util.MemoizingSupply;
 
-public final class NearSubListNearbySubListSelector<Solution_> extends AbstractSelector<Solution_>
+public final class NearSubListNearbySubListSelector<Solution_>
+        extends AbstractNearbySelector<Solution_, RandomSubListSelector<Solution_>, MimicReplayingSubListSelector<Solution_>>
         implements SubListSelector<Solution_> {
 
-    private final RandomSubListSelector<Solution_> childSubListSelector;
-    private final MimicReplayingSubListSelector<Solution_> replayingOriginSubListSelector;
-    private final NearbyDistanceMeter<?, ?> nearbyDistanceMeter;
-    private final NearbyRandom nearbyRandom;
-    private final SubListNearbySubListMatrixDemand<Solution_, ?, ?> nearbyDistanceMatrixDemand;
-
-    private MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply = null;
     private SingletonInverseVariableSupply inverseVariableSupply;
     private IndexVariableSupply indexVariableSupply;
 
@@ -40,57 +31,42 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
             SubListSelector<Solution_> originSubListSelector,
             NearbyDistanceMeter<?, ?> nearbyDistanceMeter,
             NearbyRandom nearbyRandom) {
-        this.childSubListSelector = childSubListSelector;
-        if (!(originSubListSelector instanceof MimicReplayingSubListSelector)) {
+        super(childSubListSelector, originSubListSelector, nearbyDistanceMeter, nearbyRandom, true);
+    }
+
+    @Override
+    protected MimicReplayingSubListSelector<Solution_> castReplayingSelector(Object uncastReplayingSelector) {
+        if (!(uncastReplayingSelector instanceof MimicReplayingSubListSelector)) {
             // In order to select a nearby subList, we must first have something to be near by.
             throw new IllegalStateException("Impossible state: Nearby subList selector (" + this +
-                    ") did not receive a replaying subList selector (" + originSubListSelector + ").");
+                    ") did not receive a replaying subList selector (" + uncastReplayingSelector + ").");
         }
-        this.replayingOriginSubListSelector = (MimicReplayingSubListSelector<Solution_>) originSubListSelector;
-        this.nearbyDistanceMeter = nearbyDistanceMeter;
-        this.nearbyRandom = nearbyRandom;
-        if (nearbyRandom == null) {
-            throw new IllegalArgumentException("The subListSelector (" + this
-                    + ") requires a nearbyRandom (" + nearbyRandom + ") because it only supports random selection order.");
-        }
-        this.nearbyDistanceMatrixDemand = new SubListNearbySubListMatrixDemand<>(
+        return (MimicReplayingSubListSelector<Solution_>) uncastReplayingSelector;
+    }
+
+    @Override
+    protected AbstractNearbyDistanceMatrixDemand<?, ?, ?, ?> createDemand() {
+        return new SubListNearbySubListMatrixDemand<>(
                 nearbyDistanceMeter,
                 nearbyRandom,
-                childSubListSelector,
-                replayingOriginSubListSelector,
+                childSelector,
+                replayingSelector,
                 this::computeDestinationSize);
-
-        phaseLifecycleSupport.addEventListener(childSubListSelector);
-        phaseLifecycleSupport.addEventListener(originSubListSelector);
     }
 
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-        ListVariableDescriptor<Solution_> listVariableDescriptor = childSubListSelector.getVariableDescriptor();
-        /*
-         * Supply will ask questions of the child selector.
-         * However, child selector will only be initialized during phase start.
-         * Yet we still want the very expensive nearby distance matrix to be reused across phases.
-         * Therefore we request the supply here, but actually lazily initialize it during phase start.
-         */
-        nearbyDistanceMatrixSupply = (MemoizingSupply) supplyManager.demand(nearbyDistanceMatrixDemand);
+        ListVariableDescriptor<Solution_> listVariableDescriptor = childSelector.getVariableDescriptor();
         inverseVariableSupply = supplyManager.demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor));
         indexVariableSupply = supplyManager.demand(new IndexVariableDemand<>(listVariableDescriptor));
     }
 
-    @Override
-    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
-        super.phaseStarted(phaseScope);
-        // Lazily initialize the supply, so that steps can then have uniform performance.
-        nearbyDistanceMatrixSupply.read();
-    }
-
     private int computeDestinationSize(Object origin) {
-        long valueCount = childSubListSelector.getValueCount();
+        long valueCount = childSelector.getValueCount();
         if (valueCount > Integer.MAX_VALUE) {
-            throw new IllegalStateException("The childSubListSelector (" + childSubListSelector
+            throw new IllegalStateException("The childSubListSelector (" + childSelector
                     + ") has a valueCount (" + valueCount
                     + ") which is higher than Integer.MAX_VALUE.");
         }
@@ -107,8 +83,6 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
     @Override
     public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
-        solverScope.getScoreDirector().getSupplyManager().cancel(nearbyDistanceMatrixDemand);
-        nearbyDistanceMatrixSupply = null;
         inverseVariableSupply = null;
         indexVariableSupply = null;
     }
@@ -119,25 +93,18 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
 
     @Override
     public boolean isCountable() {
-        return childSubListSelector.isCountable();
-    }
-
-    @Override
-    public boolean isNeverEnding() {
-        // Because it's random.
-        return true;
+        return childSelector.isCountable();
     }
 
     @Override
     public long getSize() {
-        return childSubListSelector.getSize();
+        return childSelector.getSize();
     }
 
     @Override
     public Iterator<SubList> iterator() {
-        Iterator<SubList> replayingOriginSubListIterator = replayingOriginSubListSelector.iterator();
-        return new RandomSubListNearbySubListIterator(replayingOriginSubListIterator,
-                childSubListSelector.getValueCount());
+        Iterator<SubList> replayingOriginSubListIterator = replayingSelector.iterator();
+        return new RandomSubListNearbySubListIterator(replayingOriginSubListIterator, childSelector.getValueCount());
     }
 
     private final class RandomSubListNearbySubListIterator extends SelectionIterator<SubList> {
@@ -163,7 +130,7 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
             // 3. The child subList selector must be non-empty. It can happen that its minimumSubListSize is higher than
             //    any list variable size at this step, in which case it would be impossible to find a nearby subList
             //    with the required size.
-            return replayingOriginSubListIterator.hasNext() && nearbySize > 0 && childSubListSelector.getSize() > 0;
+            return replayingOriginSubListIterator.hasNext() && nearbySize > 0 && childSelector.getSize() > 0;
         }
 
         @Override
@@ -200,7 +167,7 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
              * and some nearby value is guaranteed to be selected because nearbySize is greater than 0, otherwise this
              * iterator’s hasNext() is false and this block is unreachable.
              */
-            while (availableListSize < childSubListSelector.getMinimumSubListSize()) {
+            while (availableListSize < childSelector.getMinimumSubListSize()) {
                 int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
                 Object nearbyElement = nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
                 nearbyElementEntity = inverseVariableSupply.getInverseSingleton(nearbyElement);
@@ -210,28 +177,27 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
                 availableListSize = listSize(nearbyElementEntity) - nearbyElementListIndex;
             }
 
-            int maxSubListSize = Math.min(childSubListSelector.getMaximumSubListSize(), availableListSize);
-            int subListSizeRange = maxSubListSize - childSubListSelector.getMinimumSubListSize();
+            int maxSubListSize = Math.min(childSelector.getMaximumSubListSize(), availableListSize);
+            int subListSizeRange = maxSubListSize - childSelector.getMinimumSubListSize();
 
             int subListSize = (subListSizeRange == 0 ? 0 : workingRandom.nextInt(subListSizeRange))
-                    + childSubListSelector.getMinimumSubListSize();
+                    + childSelector.getMinimumSubListSize();
 
             return new SubList(nearbyElementEntity, nearbyElementListIndex, subListSize);
         }
 
         private Object firstElement(SubList subList) {
-            return replayingOriginSubListSelector.getVariableDescriptor().getElement(subList.getEntity(),
-                    subList.getFromIndex());
+            return replayingSelector.getVariableDescriptor().getElement(subList.getEntity(), subList.getFromIndex());
         }
 
         private int listSize(Object entity) {
-            return childSubListSelector.getVariableDescriptor().getListSize(entity);
+            return childSelector.getVariableDescriptor().getListSize(entity);
         }
     }
 
     @Override
     public ListVariableDescriptor<Solution_> getVariableDescriptor() {
-        return childSubListSelector.getVariableDescriptor();
+        return childSelector.getVariableDescriptor();
     }
 
     @Override
@@ -244,28 +210,4 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
         throw new UnsupportedOperationException("Not used.");
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (other == null || getClass() != other.getClass()) {
-            return false;
-        }
-        NearSubListNearbySubListSelector<?> that = (NearSubListNearbySubListSelector<?>) other;
-        return Objects.equals(childSubListSelector, that.childSubListSelector)
-                && Objects.equals(replayingOriginSubListSelector, that.replayingOriginSubListSelector)
-                && Objects.equals(nearbyDistanceMeter, that.nearbyDistanceMeter)
-                && Objects.equals(nearbyRandom, that.nearbyRandom);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(childSubListSelector, replayingOriginSubListSelector, nearbyDistanceMeter, nearbyRandom);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" + replayingOriginSubListSelector + ", " + childSubListSelector + ")";
-    }
 }

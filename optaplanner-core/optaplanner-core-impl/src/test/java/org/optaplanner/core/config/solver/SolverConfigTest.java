@@ -192,20 +192,20 @@ class SolverConfigTest {
     public static abstract class DummyConstraintProvider implements ConstraintProvider {
     }
 
-    public abstract class DummyValueFilter implements SelectionFilter<TestdataSolution, TestdataValue> {
+    public abstract static class DummyValueFilter implements SelectionFilter<TestdataSolution, TestdataValue> {
     }
 
-    public abstract class DummyEntityFilter implements SelectionFilter<TestdataSolution, TestdataEntity> {
+    public abstract static class DummyEntityFilter implements SelectionFilter<TestdataSolution, TestdataEntity> {
     }
 
-    public abstract class DummyChangeMoveFilter
+    public abstract static class DummyChangeMoveFilter
             implements SelectionFilter<TestdataSolution, ChangeMove<TestdataSolution>> {
     }
 
-    public abstract class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution, DummyMove> {
+    public abstract static class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution, DummyMove> {
     }
 
-    public abstract class DummyMoveListFactory implements MoveListFactory<TestdataSolution> {
+    public abstract static class DummyMoveListFactory implements MoveListFactory<TestdataSolution> {
     }
 
 }

@@ -6,11 +6,13 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public final class SelectedCountLimitEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
+public final class SelectedCountLimitEntitySelector<Solution_>
+        extends AbstractDemandEnabledSelector<Solution_>
+        implements EntitySelector<Solution_> {
 
     private final EntitySelector<Solution_> childEntitySelector;
     private final boolean randomSelection;

@@ -8,7 +8,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCod
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfOrderedEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -68,8 +67,7 @@ class FilteringEntitySelectorTest {
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
 
         SelectionFilter<TestdataSolution, TestdataEntity> filter = (scoreDirector, entity) -> !entity.getCode().equals("e3");
-        List<SelectionFilter> filterList = Arrays.asList(filter);
-        EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, filterList);
+        EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, List.of(filter));
         if (cacheType.isCached()) {
             entitySelector = new CachingEntitySelector(entitySelector, cacheType, false);
         }

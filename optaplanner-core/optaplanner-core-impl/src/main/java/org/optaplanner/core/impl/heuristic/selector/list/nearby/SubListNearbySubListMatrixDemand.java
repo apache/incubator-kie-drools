@@ -1,20 +1,16 @@
 package org.optaplanner.core.impl.heuristic.selector.list.nearby;
 
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
-import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbyDistanceMatrixDemand;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.list.RandomSubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.list.mimic.MimicReplayingSubListSelector;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
-import org.optaplanner.core.impl.util.MemoizingSupply;
 
 /**
  * Demands a distance matrix where both the origins and nearby destinations are planning values.
@@ -31,13 +27,10 @@ import org.optaplanner.core.impl.util.MemoizingSupply;
  * @param <Origin_> planning values
  * @param <Destination_> planning values
  */
-public final class SubListNearbySubListMatrixDemand<Solution_, Origin_, Destination_>
-        implements Demand<MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>> {
+final class SubListNearbySubListMatrixDemand<Solution_, Origin_, Destination_>
+        extends
+        AbstractNearbyDistanceMatrixDemand<Origin_, Destination_, RandomSubListSelector<Solution_>, MimicReplayingSubListSelector<Solution_>> {
 
-    private final NearbyDistanceMeter<Origin_, Destination_> meter;
-    private final NearbyRandom random;
-    private final RandomSubListSelector<Solution_> childSubListSelector;
-    private final MimicReplayingSubListSelector<Solution_> replayingOriginSubListSelector;
     private final ToIntFunction<Origin_> destinationSizeFunction;
 
     public SubListNearbySubListMatrixDemand(
@@ -46,74 +39,36 @@ public final class SubListNearbySubListMatrixDemand<Solution_, Origin_, Destinat
             RandomSubListSelector<Solution_> childSubListSelector,
             MimicReplayingSubListSelector<Solution_> replayingOriginSubListSelector,
             ToIntFunction<Origin_> destinationSizeFunction) {
-        this.meter = meter;
-        this.random = random;
-        this.childSubListSelector = childSubListSelector;
-        this.replayingOriginSubListSelector = replayingOriginSubListSelector;
+        super(meter, random, childSubListSelector, replayingOriginSubListSelector);
         this.destinationSizeFunction = destinationSizeFunction;
     }
 
     @Override
-    public MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>> createExternalizedSupply(SupplyManager supplyManager) {
-        Supplier<NearbyDistanceMatrix<Origin_, Destination_>> supplier = () -> {
-            final long childSize = childSubListSelector.getValueCount();
-            if (childSize > Integer.MAX_VALUE) {
-                throw new IllegalStateException("The childSize (" + childSize + ") is higher than Integer.MAX_VALUE.");
-            }
-
-            long originSize = replayingOriginSubListSelector.getValueCount();
-            if (originSize > Integer.MAX_VALUE) {
-                throw new IllegalStateException("The originSubListSelector (" + replayingOriginSubListSelector
-                        + ") has a subListSize (" + originSize
-                        + ") which is higher than Integer.MAX_VALUE.");
-            }
-            // Destinations: values extracted from a subList selector.
-            // Distance "matrix" cannot contain subLists because:
-            // 1. Its elements are exposed to the user-implemented NearbyDistanceMeter. SubList is an internal class.
-            // 2. The matrix is static; it's computed once when solving starts and then never changes.
-            //    The subLists available in the solution change with every step.
-            Function<Origin_, Iterator<Destination_>> destinationIteratorProvider =
-                    origin -> (Iterator<Destination_>) childSubListSelector.endingValueIterator();
-            NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix =
-                    new NearbyDistanceMatrix<>(meter, (int) originSize, destinationIteratorProvider, destinationSizeFunction);
-            // Origins: values extracted from a subList selector.
-            replayingOriginSubListSelector.endingValueIterator()
-                    .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations((Origin_) origin));
-            return nearbyDistanceMatrix;
-        };
-        return new MemoizingSupply<>(supplier);
-    }
-
-    /**
-     * Two instances of this class are considered equal if and only if:
-     *
-     * <ul>
-     * <li>Their meter instances are equal.</li>
-     * <li>Their child subList selectors are equal.</li>
-     * <li>Their replaying origin subList selectors are equal.</li>
-     * </ul>
-     *
-     * Otherwise as defined by {@link Object#equals(Object)}.
-     *
-     * @see ClassInstanceCache for how we ensure equality for meter instances in particular and selectors in general.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    protected NearbyDistanceMatrix<Origin_, Destination_> supplyNearbyDistanceMatrix() {
+        final long childSize = childSelector.getValueCount();
+        if (childSize > Integer.MAX_VALUE) {
+            throw new IllegalStateException("The childSize (" + childSize + ") is higher than Integer.MAX_VALUE.");
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+
+        long originSize = replayingSelector.getValueCount();
+        if (originSize > Integer.MAX_VALUE) {
+            throw new IllegalStateException("The originSubListSelector (" + replayingSelector
+                    + ") has a subListSize (" + originSize
+                    + ") which is higher than Integer.MAX_VALUE.");
         }
-        SubListNearbySubListMatrixDemand<?, ?, ?> that = (SubListNearbySubListMatrixDemand<?, ?, ?>) o;
-        return Objects.equals(meter, that.meter)
-                && Objects.equals(random, that.random)
-                && Objects.equals(childSubListSelector, that.childSubListSelector)
-                && Objects.equals(replayingOriginSubListSelector, that.replayingOriginSubListSelector);
+        // Destinations: values extracted from a subList selector.
+        // Distance "matrix" cannot contain subLists because:
+        // 1. Its elements are exposed to the user-implemented NearbyDistanceMeter. SubList is an internal class.
+        // 2. The matrix is static; it's computed once when solving starts and then never changes.
+        //    The subLists available in the solution change with every step.
+        Function<Origin_, Iterator<Destination_>> destinationIteratorProvider =
+                origin -> (Iterator<Destination_>) childSelector.endingValueIterator();
+        NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix =
+                new NearbyDistanceMatrix<>(meter, (int) originSize, destinationIteratorProvider, destinationSizeFunction);
+        // Origins: values extracted from a subList selector.
+        replayingSelector.endingValueIterator()
+                .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations((Origin_) origin));
+        return nearbyDistanceMatrix;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(meter, random, childSubListSelector, replayingOriginSubListSelector);
-    }
 }

@@ -6,13 +6,13 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 public final class SelectedCountLimitValueSelector<Solution_>
-        extends AbstractValueSelector<Solution_>
+        extends AbstractDemandEnabledSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_> {
 
     private final ValueSelector<Solution_> childValueSelector;

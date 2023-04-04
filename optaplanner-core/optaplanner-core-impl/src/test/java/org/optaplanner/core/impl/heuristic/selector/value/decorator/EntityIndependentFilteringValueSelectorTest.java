@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfValueSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -30,9 +29,8 @@ class EntityIndependentFilteringValueSelectorTest {
                 new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"), new TestdataValue("v4"));
 
         SelectionFilter<TestdataSolution, TestdataValue> filter = (scoreDirector, value) -> !value.getCode().equals("v3");
-        List<SelectionFilter> filterList = Arrays.asList(filter);
-        EntityIndependentValueSelector valueSelector = new EntityIndependentFilteringValueSelector(
-                childValueSelector, filterList);
+        EntityIndependentValueSelector valueSelector =
+                new EntityIndependentFilteringValueSelector(childValueSelector, List.of(filter));
 
         SolverScope solverScope = mock(SolverScope.class);
         valueSelector.solvingStarted(solverScope);

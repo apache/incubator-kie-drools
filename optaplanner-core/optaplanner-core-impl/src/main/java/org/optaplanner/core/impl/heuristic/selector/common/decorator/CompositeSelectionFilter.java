@@ -1,7 +1,6 @@
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.Arrays;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -13,17 +12,19 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */
-public final class CompositeSelectionFilter<Solution_, T> implements SelectionFilter<Solution_, T> {
+final class CompositeSelectionFilter<Solution_, T> implements SelectionFilter<Solution_, T> {
 
-    private final List<SelectionFilter<Solution_, T>> selectionFilterList;
+    static final SelectionFilter NOOP = (scoreDirector, selection) -> true;
 
-    public CompositeSelectionFilter(List<SelectionFilter<Solution_, T>> selectionFilterList) {
-        this.selectionFilterList = selectionFilterList;
+    final SelectionFilter<Solution_, T>[] selectionFilterArray;
+
+    CompositeSelectionFilter(SelectionFilter<Solution_, T>[] selectionFilterArray) {
+        this.selectionFilterArray = selectionFilterArray;
     }
 
     @Override
     public boolean accept(ScoreDirector<Solution_> scoreDirector, T selection) {
-        for (SelectionFilter<Solution_, T> selectionFilter : selectionFilterList) {
+        for (SelectionFilter<Solution_, T> selectionFilter : selectionFilterArray) {
             if (!selectionFilter.accept(scoreDirector, selection)) {
                 return false;
             }
@@ -38,12 +39,12 @@ public final class CompositeSelectionFilter<Solution_, T> implements SelectionFi
         if (other == null || getClass() != other.getClass())
             return false;
         CompositeSelectionFilter<?, ?> that = (CompositeSelectionFilter<?, ?>) other;
-        return Objects.equals(selectionFilterList, that.selectionFilterList);
+        return Arrays.equals(selectionFilterArray, that.selectionFilterArray);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(selectionFilterList);
+        return Arrays.hashCode(selectionFilterArray);
     }
 
 }

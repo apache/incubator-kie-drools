@@ -7,15 +7,16 @@ import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
-import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public abstract class AbstractCachingValueSelector<Solution_> extends AbstractValueSelector<Solution_>
-        implements SelectionCacheLifecycleListener<Solution_> {
+public abstract class AbstractCachingValueSelector<Solution_>
+        extends AbstractDemandEnabledSelector<Solution_>
+        implements SelectionCacheLifecycleListener<Solution_>, ValueSelector<Solution_> {
 
     protected final EntityIndependentValueSelector<Solution_> childValueSelector;
     protected final SelectionCacheType cacheType;

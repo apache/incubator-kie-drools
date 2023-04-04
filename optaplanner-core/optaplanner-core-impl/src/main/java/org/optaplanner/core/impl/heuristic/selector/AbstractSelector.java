@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract superclass for {@link Selector}.
  *
- * @see Selector
+ * @see AbstractDemandEnabledSelector
  */
 public abstract class AbstractSelector<Solution_> implements Selector<Solution_> {
 

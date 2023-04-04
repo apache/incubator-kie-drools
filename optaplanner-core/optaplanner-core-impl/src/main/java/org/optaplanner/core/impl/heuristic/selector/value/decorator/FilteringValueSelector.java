@@ -6,15 +6,16 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 public class FilteringValueSelector<Solution_>
-        extends AbstractValueSelector<Solution_> {
+        extends AbstractDemandEnabledSelector<Solution_>
+        implements ValueSelector<Solution_> {
 
     public static <Solution_> ValueSelector<Solution_> create(ValueSelector<Solution_> valueSelector,
             List<SelectionFilter<Solution_, Object>> filterList) {
@@ -28,7 +29,7 @@ public class FilteringValueSelector<Solution_>
     }
 
     protected final ValueSelector<Solution_> childValueSelector;
-    private final List<SelectionFilter<Solution_, Object>> filterList;
+    private final SelectionFilter<Solution_, Object> selectionFilter;
     protected final boolean bailOutEnabled;
 
     private ScoreDirector<Solution_> scoreDirector = null;
@@ -36,7 +37,7 @@ public class FilteringValueSelector<Solution_>
     protected FilteringValueSelector(ValueSelector<Solution_> childValueSelector,
             List<SelectionFilter<Solution_, Object>> filterList) {
         this.childValueSelector = childValueSelector;
-        this.filterList = filterList;
+        this.selectionFilter = SelectionFilter.compose(filterList);
         bailOutEnabled = childValueSelector.isNeverEnding();
         phaseLifecycleSupport.addEventListener(childValueSelector);
     }
@@ -111,7 +112,7 @@ public class FilteringValueSelector<Solution_>
                     attemptsBeforeBailOut--;
                 }
                 next = childValueIterator.next();
-            } while (!accept(scoreDirector, next));
+            } while (!selectionFilter.accept(scoreDirector, next));
             return next;
         }
 
@@ -130,15 +131,6 @@ public class FilteringValueSelector<Solution_>
         return childValueSelector.getSize(entity) * 10L;
     }
 
-    protected boolean accept(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        for (SelectionFilter<Solution_, Object> filter : filterList) {
-            if (!filter.accept(scoreDirector, entity)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -146,12 +138,13 @@ public class FilteringValueSelector<Solution_>
         if (o == null || getClass() != o.getClass())
             return false;
         FilteringValueSelector<?> that = (FilteringValueSelector<?>) o;
-        return Objects.equals(childValueSelector, that.childValueSelector) && Objects.equals(filterList, that.filterList);
+        return Objects.equals(childValueSelector, that.childValueSelector)
+                && Objects.equals(selectionFilter, that.selectionFilter);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(childValueSelector, filterList);
+        return Objects.hash(childValueSelector, selectionFilter);
     }
 
     @Override

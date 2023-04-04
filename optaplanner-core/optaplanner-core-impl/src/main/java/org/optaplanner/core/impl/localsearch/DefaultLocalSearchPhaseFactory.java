@@ -1,14 +1,18 @@
 package org.optaplanner.core.impl.localsearch;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListSwapMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchType;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
@@ -16,6 +20,9 @@ import org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAccep
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
@@ -191,17 +198,40 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
             defaultSelectionOrder = SelectionOrder.RANDOM;
         }
         if (phaseConfig.getMoveSelectorConfig() == null) {
-            // TODO default to list move selectors if list variable?
-            // Default to changeMoveSelector and swapMoveSelector
-            UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig().withMoveSelectors(
-                    new ChangeMoveSelectorConfig(),
-                    new SwapMoveSelectorConfig());
-            moveSelector = new UnionMoveSelectorFactory<Solution_>(unionMoveSelectorConfig)
+            moveSelector = new UnionMoveSelectorFactory<Solution_>(determineDefaultMoveSelectorConfig(configPolicy))
                     .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         } else {
             moveSelector = MoveSelectorFactory.<Solution_> create(phaseConfig.getMoveSelectorConfig())
                     .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         }
         return moveSelector;
+    }
+
+    private UnionMoveSelectorConfig determineDefaultMoveSelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
+        SolutionDescriptor<Solution_> solutionDescriptor = configPolicy.getSolutionDescriptor();
+        List<VariableDescriptor<Solution_>> basicVariableDescriptors = solutionDescriptor.getEntityDescriptors().stream()
+                .flatMap(entityDescriptor -> entityDescriptor.getGenuineVariableDescriptorList().stream())
+                .filter(variableDescriptor -> !variableDescriptor.isListVariable())
+                .distinct()
+                .collect(Collectors.toList());
+        List<ListVariableDescriptor<Solution_>> listVariableDescriptors =
+                solutionDescriptor.getListVariableDescriptors();
+        if (basicVariableDescriptors.isEmpty()) { // We only have list variables.
+            return new UnionMoveSelectorConfig()
+                    .withMoveSelectors(new ListChangeMoveSelectorConfig(), new ListSwapMoveSelectorConfig());
+        } else if (listVariableDescriptors.isEmpty()) { // We only have basic variables.
+            return new UnionMoveSelectorConfig()
+                    .withMoveSelectors(new ChangeMoveSelectorConfig(), new SwapMoveSelectorConfig());
+        } else {
+            /*
+             * We have a mix of basic and list variables.
+             * The "old" move selector configs handle this situation correctly but they complain of it being deprecated.
+             *
+             * TODO Improve so that list variables get list variable selectors directly.
+             * TODO PLANNER-2755 Support coexistence of basic and list variables on the same entity.
+             */
+            return new UnionMoveSelectorConfig()
+                    .withMoveSelectors(new ChangeMoveSelectorConfig(), new SwapMoveSelectorConfig());
+        }
     }
 }

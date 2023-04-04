@@ -10,16 +10,17 @@ import java.util.TreeMap;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
-import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public final class ProbabilityEntitySelector<Solution_> extends AbstractEntitySelector<Solution_>
-        implements SelectionCacheLifecycleListener<Solution_> {
+public final class ProbabilityEntitySelector<Solution_>
+        extends AbstractDemandEnabledSelector<Solution_>
+        implements SelectionCacheLifecycleListener<Solution_>, EntitySelector<Solution_> {
 
     private final EntitySelector<Solution_> childEntitySelector;
     private final SelectionCacheType cacheType;

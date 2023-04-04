@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -15,7 +16,9 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  * This is the common {@link EntitySelector} implementation.
  */
-public final class FromSolutionEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
+public final class FromSolutionEntitySelector<Solution_>
+        extends AbstractDemandEnabledSelector<Solution_>
+        implements EntitySelector<Solution_> {
 
     protected final EntityDescriptor<Solution_> entityDescriptor;
     protected final SelectionCacheType minimumCacheType;

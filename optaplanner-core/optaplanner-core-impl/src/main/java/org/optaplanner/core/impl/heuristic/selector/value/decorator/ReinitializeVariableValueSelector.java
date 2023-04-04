@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
@@ -18,7 +18,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  * it shouldn't be added during configuration in the first place.
  */
 public final class ReinitializeVariableValueSelector<Solution_>
-        extends AbstractValueSelector<Solution_> {
+        extends AbstractDemandEnabledSelector<Solution_>
+        implements ValueSelector<Solution_> {
 
     private final ValueSelector<Solution_> childValueSelector;
 

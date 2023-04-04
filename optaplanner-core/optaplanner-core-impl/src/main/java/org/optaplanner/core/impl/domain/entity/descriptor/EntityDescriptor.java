@@ -53,7 +53,6 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.InverseRelation
 import org.optaplanner.core.impl.domain.variable.nextprev.NextElementShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.nextprev.PreviousElementShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.CompositeSelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
@@ -401,10 +400,8 @@ public class EntityDescriptor<Solution_> {
         selectionFilterList.addAll(declaredPinEntityFilterList);
         if (selectionFilterList.isEmpty()) {
             effectiveMovableEntitySelectionFilter = null;
-        } else if (selectionFilterList.size() == 1) {
-            effectiveMovableEntitySelectionFilter = selectionFilterList.get(0);
         } else {
-            effectiveMovableEntitySelectionFilter = new CompositeSelectionFilter<>(selectionFilterList);
+            effectiveMovableEntitySelectionFilter = SelectionFilter.compose(selectionFilterList);
         }
     }
 

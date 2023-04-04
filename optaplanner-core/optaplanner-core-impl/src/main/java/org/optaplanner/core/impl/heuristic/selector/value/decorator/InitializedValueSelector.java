@@ -5,8 +5,8 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
@@ -19,7 +19,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  * Mainly used for chained planning variables, but supports other planning variables too.
  */
 public class InitializedValueSelector<Solution_>
-        extends AbstractValueSelector<Solution_> {
+        extends AbstractDemandEnabledSelector<Solution_>
+        implements ValueSelector<Solution_> {
 
     public static <Solution_> ValueSelector<Solution_> create(ValueSelector<Solution_> valueSelector) {
         if (valueSelector instanceof EntityIndependentValueSelector) {

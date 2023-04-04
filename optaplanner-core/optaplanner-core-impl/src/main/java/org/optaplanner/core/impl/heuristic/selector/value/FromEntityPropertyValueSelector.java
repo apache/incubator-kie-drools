@@ -8,6 +8,7 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 /**
@@ -16,7 +17,8 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public final class FromEntityPropertyValueSelector<Solution_>
-        extends AbstractValueSelector<Solution_> {
+        extends AbstractDemandEnabledSelector<Solution_>
+        implements ValueSelector<Solution_> {
 
     private final ValueRangeDescriptor<Solution_> valueRangeDescriptor;
     private final boolean randomSelection;

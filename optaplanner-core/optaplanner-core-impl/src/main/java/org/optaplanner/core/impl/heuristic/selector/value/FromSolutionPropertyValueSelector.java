@@ -9,6 +9,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -17,7 +18,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  * This is the common {@link ValueSelector} implementation.
  */
 public final class FromSolutionPropertyValueSelector<Solution_>
-        extends AbstractValueSelector<Solution_>
+        extends AbstractDemandEnabledSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_> {
 
     private final EntityIndependentValueRangeDescriptor<Solution_> valueRangeDescriptor;

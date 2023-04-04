@@ -8,13 +8,14 @@ import java.util.Objects;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
-import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 public final class EntityDependentSortingValueSelector<Solution_>
-        extends AbstractValueSelector<Solution_> {
+        extends AbstractDemandEnabledSelector<Solution_>
+        implements ValueSelector<Solution_> {
 
     private final ValueSelector<Solution_> childValueSelector;
     private final SelectionCacheType cacheType;
