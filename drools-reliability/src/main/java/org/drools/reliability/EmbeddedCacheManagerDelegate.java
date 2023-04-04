@@ -40,8 +40,9 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.reliability.CacheManager.DELIMITER;
 import static org.drools.reliability.CacheManager.SESSION_CACHE_PREFIX;
+import static org.drools.reliability.CacheManagerDelegate.createCacheId;
 
-public class EmbeddedCacheManagerDelegate extends CacheManagerDelegate {
+class EmbeddedCacheManagerDelegate implements CacheManagerDelegate {
 
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedCacheManagerDelegate.class);
 
@@ -56,7 +57,7 @@ public class EmbeddedCacheManagerDelegate extends CacheManagerDelegate {
     private EmbeddedCacheManagerDelegate() {}
 
     @Override
-    protected void initCacheManager() {
+    public void initCacheManager() {
         LOG.info("Using Embedded Cache Manager");
 
         // Set up a clustered Cache Manager.
@@ -89,24 +90,24 @@ public class EmbeddedCacheManagerDelegate extends CacheManagerDelegate {
     }
 
     @Override
-    protected <k, V> Cache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
+    public <k, V> Cache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
         return embeddedCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), cacheConfiguration);
     }
 
     @Override
-    protected void close() {
+    public void close() {
         embeddedCacheManager.stop();
     }
 
     @Override
-    protected void removeCache(String cacheName) {
+    public void removeCache(String cacheName) {
         if (embeddedCacheManager.cacheExists(cacheName)) {
             embeddedCacheManager.removeCache(cacheName);
         }
     }
 
     @Override
-    protected void removeCachesBySessionId(String sessionId) {
+    public void removeCachesBySessionId(String sessionId) {
         embeddedCacheManager.getCacheNames()
                             .stream()
                             .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX + sessionId + DELIMITER))
@@ -114,7 +115,7 @@ public class EmbeddedCacheManagerDelegate extends CacheManagerDelegate {
     }
 
     @Override
-    protected void removeAllSessionCaches() {
+    public void removeAllSessionCaches() {
         embeddedCacheManager.getCacheNames()
                             .stream()
                             .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX))
@@ -122,19 +123,19 @@ public class EmbeddedCacheManagerDelegate extends CacheManagerDelegate {
     }
 
     @Override
-    protected Set<String> getCacheNames() {
+    public Set<String> getCacheNames() {
         return embeddedCacheManager.getCacheNames();
     }
 
     @Override
-    protected void setRemoteCacheManager(RemoteCacheManager remoteCacheManager) {
+    public void setRemoteCacheManager(RemoteCacheManager remoteCacheManager) {
         throw new UnsupportedOperationException("setRemoteCacheManager is not supported in " + this.getClass());
     }
 
     //--- test purpose
 
     @Override
-    protected void restart() {
+    public void restart() {
         // JVM crashed
         embeddedCacheManager.stop();
         embeddedCacheManager = null;
@@ -145,7 +146,7 @@ public class EmbeddedCacheManagerDelegate extends CacheManagerDelegate {
     }
 
     @Override
-    protected void restartWithCleanUp() {
+    public void restartWithCleanUp() {
         // JVM down
         embeddedCacheManager.stop();
         embeddedCacheManager = null;
@@ -159,7 +160,7 @@ public class EmbeddedCacheManagerDelegate extends CacheManagerDelegate {
     }
 
     @Override
-    protected void setEmbeddedCacheManager(DefaultCacheManager embeddedCacheManager) {
+    public void setEmbeddedCacheManager(DefaultCacheManager embeddedCacheManager) {
         if (this.embeddedCacheManager != null) {
             this.embeddedCacheManager.stop();
         }
@@ -183,7 +184,7 @@ public class EmbeddedCacheManagerDelegate extends CacheManagerDelegate {
     }
 
     @Override
-    org.infinispan.client.hotrod.configuration.ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder() {
+    public org.infinispan.client.hotrod.configuration.ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder() {
         throw new UnsupportedOperationException("provideRemoteConfigurationBuilder is not supported in " + this.getClass());
     }
 }

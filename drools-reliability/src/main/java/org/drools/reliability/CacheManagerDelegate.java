@@ -27,29 +27,29 @@ import org.kie.api.runtime.conf.PersistedSessionOption;
 import static org.drools.reliability.CacheManager.DELIMITER;
 import static org.drools.reliability.CacheManager.SESSION_CACHE_PREFIX;
 
-public abstract class CacheManagerDelegate {
+interface CacheManagerDelegate {
 
-    protected abstract void initCacheManager();
+    void initCacheManager();
 
-    protected abstract <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName);
+    <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName);
 
-    protected abstract void close();
+    void close();
 
-    protected abstract void removeCache(String cacheName);
+    void removeCache(String cacheName);
 
-    protected abstract void removeCachesBySessionId(String sessionId);
+    void removeCachesBySessionId(String sessionId);
 
-    protected abstract void removeAllSessionCaches();
+    void removeAllSessionCaches();
 
-    protected abstract Set<String> getCacheNames();
+    Set<String> getCacheNames();
 
-    protected abstract void setRemoteCacheManager(RemoteCacheManager remoteCacheManager);
+    void setRemoteCacheManager(RemoteCacheManager remoteCacheManager);
 
-    protected String createCacheId(ReteEvaluator reteEvaluator, String cacheName) {
+    static String createCacheId(ReteEvaluator reteEvaluator, String cacheName) {
         return SESSION_CACHE_PREFIX + getSessionIdentifier(reteEvaluator) + DELIMITER + cacheName;
     }
 
-    private long getSessionIdentifier(ReteEvaluator reteEvaluator) {
+    private static long getSessionIdentifier(ReteEvaluator reteEvaluator) {
         PersistedSessionOption persistedSessionOption = reteEvaluator.getSessionConfiguration().getPersistedSessionOption();
         if (persistedSessionOption != null) {
             return persistedSessionOption.isNewSession() ? reteEvaluator.getIdentifier() : persistedSessionOption.getSessionId();
@@ -60,12 +60,12 @@ public abstract class CacheManagerDelegate {
 
     //--- test purpose
 
-    abstract void restart();
+    void restart();
 
-    abstract void restartWithCleanUp();
+    void restartWithCleanUp();
 
-    abstract void setEmbeddedCacheManager(DefaultCacheManager cacheManager);
+    void setEmbeddedCacheManager(DefaultCacheManager cacheManager);
 
-    abstract ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder();
+    ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder();
 
 }

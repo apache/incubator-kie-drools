@@ -28,8 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.reliability.CacheManager.DELIMITER;
 import static org.drools.reliability.CacheManager.SESSION_CACHE_PREFIX;
+import static org.drools.reliability.CacheManagerDelegate.*;
 
-public class RemoteCacheManagerDelegate extends CacheManagerDelegate {
+class RemoteCacheManagerDelegate implements CacheManagerDelegate {
 
     private static final Logger LOG = LoggerFactory.getLogger(RemoteCacheManagerDelegate.class);
 
@@ -41,7 +42,7 @@ public class RemoteCacheManagerDelegate extends CacheManagerDelegate {
     }
 
     @Override
-    protected void initCacheManager() {
+    public void initCacheManager() {
         // Create a RemoteCacheManager with provided properties
         LOG.info("Using Remote Cache Manager");
         String host = System.getProperty(CacheManager.CACHE_MANAGER_REMOTE_HOST);
@@ -66,24 +67,24 @@ public class RemoteCacheManagerDelegate extends CacheManagerDelegate {
     }
 
     @Override
-    protected <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
+    public <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
         return remoteCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), (String) null);
     }
 
     @Override
-    protected void close() {
+    public void close() {
         remoteCacheManager.close();
     }
 
     @Override
-    protected void removeCache(String cacheName) {
+    public void removeCache(String cacheName) {
         if (remoteCacheManager.getCache(cacheName) != null) {
             remoteCacheManager.administration().removeCache(cacheName);
         }
     }
 
     @Override
-    protected void removeCachesBySessionId(String sessionId) {
+    public void removeCachesBySessionId(String sessionId) {
         remoteCacheManager.getCacheNames()
                 .stream()
                 .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX + sessionId + DELIMITER))
@@ -91,7 +92,7 @@ public class RemoteCacheManagerDelegate extends CacheManagerDelegate {
     }
 
     @Override
-    protected void removeAllSessionCaches() {
+    public void removeAllSessionCaches() {
         remoteCacheManager.getCacheNames()
                 .stream()
                 .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX))
@@ -99,26 +100,26 @@ public class RemoteCacheManagerDelegate extends CacheManagerDelegate {
     }
 
     @Override
-    protected Set<String> getCacheNames() {
+    public Set<String> getCacheNames() {
         return remoteCacheManager.getCacheNames();
     }
 
     @Override
-    protected void setRemoteCacheManager(RemoteCacheManager remoteCacheManager) {
+    public void setRemoteCacheManager(RemoteCacheManager remoteCacheManager) {
         this.remoteCacheManager = remoteCacheManager;
     }
 
     //--- test purpose
 
     @Override
-    protected void restart() {
+    public void restart() {
         if (remoteCacheManager != null) {
             remoteCacheManager.stop();
         }
     }
 
     @Override
-    protected void restartWithCleanUp() {
+    public void restartWithCleanUp() {
         if (remoteCacheManager != null) {
             removeAllCache();
             remoteCacheManager.stop();
@@ -132,12 +133,12 @@ public class RemoteCacheManagerDelegate extends CacheManagerDelegate {
     }
 
     @Override
-    protected void setEmbeddedCacheManager(DefaultCacheManager cacheManager) {
+    public void setEmbeddedCacheManager(DefaultCacheManager cacheManager) {
         throw new UnsupportedOperationException("setEmbeddedCacheManager is not supported in " + this.getClass());
     }
 
     @Override
-    ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder() {
+    public ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.marshaller(new JavaSerializationMarshaller())
                 .addJavaSerialAllowList("org.kie.*")

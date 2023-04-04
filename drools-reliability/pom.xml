@@ -123,6 +123,40 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ban-duplicated-classes</id>
+            <configuration>
+              <rules>
+                <banDuplicateClasses>
+                  <dependencies>
+                    <dependency>
+                      <!-- Ignore them because infinispan-objectfilter is a shade jar -->
+                      <groupId>org.infinispan</groupId>
+                      <artifactId>infinispan-objectfilter</artifactId>
+                      <type>jar</type>
+                      <ignoreClasses>
+                        <ignoreClass>com.fasterxml.jackson.*</ignoreClass>
+                        <ignoreClass>com.github.benmanes.*</ignoreClass>
+                        <ignoreClass>com.squareup.protoparser.*</ignoreClass>
+                        <ignoreClass>org.infinispan.*</ignoreClass>
+                      </ignoreClasses>
+                    </dependency>
+                  </dependencies>
+                </banDuplicateClasses>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <profiles>
     <profile>
       <id>remote</id>

@@ -2,11 +2,8 @@ package org.drools.reliability.example;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.drools.reliability.CacheManager;
-import org.drools.reliability.ReliableRuntimeComponentFactoryImpl;
-import org.drools.reliability.RemoteCacheManagerDelegate;
 import org.drools.reliability.domain.Person;
 import org.jetbrains.annotations.NotNull;
 import org.kie.api.KieBase;

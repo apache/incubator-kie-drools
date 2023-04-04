@@ -1,17 +1,7 @@
 package org.drools.reliability.example;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.reliability.CacheManager;
-import org.drools.reliability.domain.Person;
-import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.PersistedSessionOption;
-import org.kie.internal.utils.KieHelper;
 
 /**
  * Example class to demonstrate how to use RemoteCacheManagerDelegate.
