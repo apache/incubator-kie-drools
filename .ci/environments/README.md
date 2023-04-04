@@ -2,32 +2,28 @@
 
 This folder contains update scripts which would be called for a specific environments.
 
-
-Updating branch.
-================
+## Updating branch for an environment
 
 The `.ci/environments/update.sh` script is responsible to execute the update/migration.
 
-It expect at least one parameter, namely the "environment" and optionally a second one, when the rewrite execution is required.
+It expect at least one parameter, namely the "environment", corresponding to the folder which will be "executed" (e.g. *quarkus-3*, *quarkus-main*, etc) and optionally some more which would be transmitted to the `before.sh` and/or `after.sh` scripts.
 
-The first parameter defines which folder will be executed (e.g. *quarkus-3*, *quarkus-main*, etc).
-The second parameter, if provided and equals to *rewrite*, fires the **rewrite** execution.
+Please look at the specific environment README file for more information about the needed parameters for the before and after scripts.
 
-The process of define the migration changes is split in two parts
+### Execute script
 
-1. rewrite execution: this is done manually, since rewrite execution take a lot of time; after successfully execution, the changes must be saved as *patches*
-2. patches apply: this is done automatically, and all *patches* found in the `${environment}/patches` are applied
-3. if executed, rewrite runs ***BEFORE*** the patch apply
-4. the `0001_before_sh.patch` is generated executing the `before.sh` script; it then contains all the `openrewrite` migration and the synchronization of libraries with quarkus ones
-5. all other patches have been made manually
-6. if some other modifications are needed, they should be created as `patch`, following numerations
-7. if some patch does not apply anymore, it has to be recreated manually; in case of the first one, it means to execute the `before.sh` script again
+To execute migration from an environment, ***WITHOUT*** extra parameters:
 
-To execute migration in the *quarkus-3* ***WITHOUT*** rewrite
+`.ci/environments/update.sh <environment>`
 
-`.ci/environments/update.sh quarkus-3`
+To execute migration from an environment ***WITH*** extra paramerers:
 
-To execute migration in the *quarkus-3* ***WITH*** rewrite
+`.ci/environments/update.sh <environment> <extra_param1> <extra_param2>`
 
-`.ci/environments/update.sh quarkus-3 rewrite`
+### What happens ?
 
+When called, the update script will (in order and if exists):
+
+1. call `<environment>/before.sh` script with extra parameters
+2. apply patches from the `<environment>/patches` folder in alphanumeric order
+3. call `<environment>/before.sh` script with extra parameters

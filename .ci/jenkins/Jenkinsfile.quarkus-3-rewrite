@@ -1,0 +1,116 @@
+import org.jenkinsci.plugins.workflow.libs.Library
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+
+pipeline {
+    agent {
+        label 'kie-rhel8 && kie-mem16g && !built-in'
+    }
+
+    tools {
+        maven env.BUILD_MAVEN_TOOL
+        jdk env.BUILD_JDK_TOOL
+    }
+
+    options {
+        timestamps()
+        timeout(time: 180, unit: 'MINUTES')
+    }
+
+    // parameters {
+    // For parameters, check into ./dsl/jobs.groovy file
+    // }
+
+    environment {
+        // Static env is defined into ./dsl/jobs.groovy file
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+    }
+
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    clean()
+
+                    if (params.DISPLAY_NAME) {
+                        currentBuild.displayName = params.DISPLAY_NAME
+                    }
+                    dir(getRepoName()) {
+                        checkoutRepo(getRepoName(), getBuildBranch())
+                    }
+                }
+            }
+        }
+        stage('Generate rewrite patch') {
+            steps {
+                script {
+                    dir(getRepoName()) {
+                        sh '.ci/environments/quarkus-3/before.sh rewrite'
+                    }
+                }
+            }
+        }
+        stage('Push changes') {
+            steps {
+                script {
+                    dir(getRepoName()) {
+                        githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsId())
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendNotification()
+        }
+        cleanup {
+            script {
+                clean()
+            }
+        }
+    }
+}
+
+void clean() {
+    sh 'rm -rf ~/.rewrite-cache/'
+    util.cleanNode('docker')
+}
+
+void sendNotification() {
+    if (params.SEND_NOTIFICATION) {
+        mailer.sendMarkdownTestSummaryNotification('Setup branch', "[${getBuildBranch()}] Drools", [env.KOGITO_CI_EMAIL_TO])
+    } else {
+        echo 'No notification sent per configuration'
+    }
+}
+
+void checkoutRepo(String repository, String branch) {
+    checkout(githubscm.resolveRepository(repository, getGitAuthor(), branch, false))
+    // need to manually checkout branch since on a detached branch after checkout command
+    sh "git checkout ${branch}"
+}
+
+String getRepoName() {
+    return env.REPO_NAME
+}
+
+String getGitAuthor() {
+    // GIT_AUTHOR can be env or param
+    return "${GIT_AUTHOR}"
+}
+
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
+}
+
+String getGitAuthorCredsId() {
+    return env.AUTHOR_CREDS_ID
+}
+
+MavenCommand getMavenCommand() {
+    return new MavenCommand(this, ['-fae', '-ntp'])
+                .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
+                .withProperty('full')
+}
