@@ -18,7 +18,6 @@ package org.drools.reliability;
 import java.util.Set;
 
 import org.drools.core.common.ReteEvaluator;
-import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.commons.api.BasicCache;
 import org.infinispan.commons.marshall.JavaSerializationMarshaller;
@@ -26,29 +25,29 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.reliability.CacheManager.DELIMITER;
-import static org.drools.reliability.CacheManager.SESSION_CACHE_PREFIX;
-import static org.drools.reliability.CacheManagerDelegate.*;
+import static org.drools.reliability.CacheManagerFactory.DELIMITER;
+import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
+import static org.drools.reliability.CacheManager.*;
 
-class RemoteCacheManagerDelegate implements CacheManagerDelegate {
+class RemoteCacheManager implements CacheManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RemoteCacheManagerDelegate.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RemoteCacheManager.class);
 
-    static final RemoteCacheManagerDelegate INSTANCE = new RemoteCacheManagerDelegate();
+    static final RemoteCacheManager INSTANCE = new RemoteCacheManager();
 
-    private RemoteCacheManager remoteCacheManager;
+    private org.infinispan.client.hotrod.RemoteCacheManager remoteCacheManager;
 
-    private RemoteCacheManagerDelegate() {
+    private RemoteCacheManager() {
     }
 
     @Override
     public void initCacheManager() {
         // Create a RemoteCacheManager with provided properties
         LOG.info("Using Remote Cache Manager");
-        String host = System.getProperty(CacheManager.CACHE_MANAGER_REMOTE_HOST);
-        String port = System.getProperty(CacheManager.CACHE_MANAGER_REMOTE_PORT);
-        String user = System.getProperty(CacheManager.CACHE_MANAGER_REMOTE_USER);
-        String pass = System.getProperty(CacheManager.CACHE_MANAGER_REMOTE_PASS);
+        String host = System.getProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_HOST);
+        String port = System.getProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_PORT);
+        String user = System.getProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_USER);
+        String pass = System.getProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_PASS);
         if (host == null || port == null) {
             LOG.info("Remote Cache Manager host '{}' and port '{}' not set. So not creating a default RemoteCacheManager." +
                              " You will need to set a RemoteCacheManager with setRemoteCacheManager() method.", host, port);
@@ -63,7 +62,7 @@ class RemoteCacheManagerDelegate implements CacheManagerDelegate {
                 .addJavaSerialAllowList("org.kie.*")
                 .addJavaSerialAllowList("org.drools.*")
                 .addJavaSerialAllowList("java.*");
-        remoteCacheManager = new RemoteCacheManager(builder.build());
+        remoteCacheManager = new org.infinispan.client.hotrod.RemoteCacheManager(builder.build());
     }
 
     @Override
@@ -105,7 +104,7 @@ class RemoteCacheManagerDelegate implements CacheManagerDelegate {
     }
 
     @Override
-    public void setRemoteCacheManager(RemoteCacheManager remoteCacheManager) {
+    public void setRemoteCacheManager(org.infinispan.client.hotrod.RemoteCacheManager remoteCacheManager) {
         this.remoteCacheManager = remoteCacheManager;
     }
 

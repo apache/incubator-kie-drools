@@ -33,7 +33,7 @@ public class ReliableNamedEntryPoint extends NamedEntryPoint {
     protected ObjectStore createObjectStore(EntryPointId entryPoint, RuleBaseConfiguration conf, ReteEvaluator reteEvaluator) {
         boolean storesOnlyStrategy = reteEvaluator.getSessionConfiguration().getPersistedSessionOption().getStrategy() == PersistedSessionOption.Strategy.STORES_ONLY;
         return storesOnlyStrategy ?
-                new SimpleReliableObjectStore(CacheManager.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "ep" + getEntryPointId())) :
-                new FullReliableObjectStore(CacheManager.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "ep" + getEntryPointId()));
+                new SimpleReliableObjectStore(CacheManagerFactory.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "ep" + getEntryPointId())) :
+                new FullReliableObjectStore(CacheManagerFactory.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "ep" + getEntryPointId()));
     }
 }

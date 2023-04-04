@@ -60,38 +60,38 @@ public abstract class ReliabilityTestBasics {
 
     @BeforeEach
     public void setUp() {
-        if (CacheManager.INSTANCE.isRemote()) {
+        if (CacheManagerFactory.INSTANCE.isRemote()) {
             LOG.info("Starting InfinispanContainer");
             container = new InfinispanContainer();
             container.start();
             LOG.info("InfinispanContainer started"); // takes about 10 seconds
-            RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(CacheManager.INSTANCE.provideAdditionalRemoteConfigurationBuilder());
-            CacheManager.INSTANCE.setRemoteCacheManager(remoteCacheManager);
+            RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(CacheManagerFactory.INSTANCE.provideAdditionalRemoteConfigurationBuilder());
+            CacheManagerFactory.INSTANCE.setRemoteCacheManager(remoteCacheManager);
         }
     }
 
     @AfterEach
     public void tearDown() {
-        if (CacheManager.INSTANCE.isRemote()) {
-            CacheManager.INSTANCE.close(); // close remoteCacheManager
+        if (CacheManagerFactory.INSTANCE.isRemote()) {
+            CacheManagerFactory.INSTANCE.close(); // close remoteCacheManager
             container.stop(); // stop remote infinispan
         } else {
             // clean up embedded Infinispan including GlobalState and FireStore so that test methods can be isolated
-            CacheManager.INSTANCE.restartWithCleanUp();
+            CacheManagerFactory.INSTANCE.restartWithCleanUp();
         }
 
         ReliableRuntimeComponentFactoryImpl.resetCounter();
     }
 
     public void failover() {
-        if (CacheManager.INSTANCE.isRemote()) {
+        if (CacheManagerFactory.INSTANCE.isRemote()) {
             // fail-over means restarting Drools instance. Assuming remote infinispan keeps alive
-            CacheManager.INSTANCE.close(); // close remoteCacheManager
+            CacheManagerFactory.INSTANCE.close(); // close remoteCacheManager
             // Reclaim RemoteCacheManager
-            RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(CacheManager.INSTANCE.provideAdditionalRemoteConfigurationBuilder());
-            CacheManager.INSTANCE.setRemoteCacheManager(remoteCacheManager);
+            RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(CacheManagerFactory.INSTANCE.provideAdditionalRemoteConfigurationBuilder());
+            CacheManagerFactory.INSTANCE.setRemoteCacheManager(remoteCacheManager);
         } else {
-            CacheManager.INSTANCE.restart(); // restart embedded infinispan cacheManager. GlobalState and FireStore are kept
+            CacheManagerFactory.INSTANCE.restart(); // restart embedded infinispan cacheManager. GlobalState and FireStore are kept
         }
         ReliableRuntimeComponentFactoryImpl.resetCounter();
     }

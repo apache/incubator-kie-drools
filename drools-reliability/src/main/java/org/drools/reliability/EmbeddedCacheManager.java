@@ -38,15 +38,15 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.reliability.CacheManager.DELIMITER;
-import static org.drools.reliability.CacheManager.SESSION_CACHE_PREFIX;
-import static org.drools.reliability.CacheManagerDelegate.createCacheId;
+import static org.drools.reliability.CacheManagerFactory.DELIMITER;
+import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
+import static org.drools.reliability.CacheManager.createCacheId;
 
-class EmbeddedCacheManagerDelegate implements CacheManagerDelegate {
+class EmbeddedCacheManager implements CacheManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EmbeddedCacheManagerDelegate.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EmbeddedCacheManager.class);
 
-    static final EmbeddedCacheManagerDelegate INSTANCE = new EmbeddedCacheManagerDelegate();
+    static final EmbeddedCacheManager INSTANCE = new EmbeddedCacheManager();
 
     private DefaultCacheManager embeddedCacheManager;
     private Configuration cacheConfiguration;
@@ -54,7 +54,7 @@ class EmbeddedCacheManagerDelegate implements CacheManagerDelegate {
     public static final String GLOBAL_STATE_DIR = "global/state";
     public static final String CACHE_DIR = "cache";
 
-    private EmbeddedCacheManagerDelegate() {}
+    private EmbeddedCacheManager() {}
 
     @Override
     public void initCacheManager() {

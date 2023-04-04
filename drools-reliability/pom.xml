@@ -168,6 +168,7 @@
       <build>
         <plugins>
           <plugin>
+            <!-- override default-test from embedded to remote -->
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>

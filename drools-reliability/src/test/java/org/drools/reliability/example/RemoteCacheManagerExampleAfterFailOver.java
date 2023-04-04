@@ -4,7 +4,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
 /**
- * Example class to demonstrate how to use RemoteCacheManagerDelegate.
+ * Example class to demonstrate how to use RemoteCacheManager.
  *
  * See RemoteCacheManagerExample for more details.
  */

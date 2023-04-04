@@ -3,7 +3,7 @@ package org.drools.reliability.example;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.reliability.CacheManager;
+import org.drools.reliability.CacheManagerFactory;
 import org.drools.reliability.domain.Person;
 import org.jetbrains.annotations.NotNull;
 import org.kie.api.KieBase;
@@ -15,7 +15,7 @@ import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.internal.utils.KieHelper;
 
 /**
- * Example class to demonstrate how to use RemoteCacheManagerDelegate.
+ * Example class to demonstrate how to use RemoteCacheManager.
  * <p>
  * Test with an Infinispan server running on localhost:11222
  * <p>
@@ -53,11 +53,11 @@ public class RemoteCacheManagerExample {
 
     @NotNull
     public static KieSession getKieSession(PersistedSessionOption option) {
-        System.setProperty(CacheManager.CACHE_MANAGER_MODE_PROPERTY, "REMOTE");
-        System.setProperty(CacheManager.CACHE_MANAGER_REMOTE_HOST, "localhost");
-        System.setProperty(CacheManager.CACHE_MANAGER_REMOTE_PORT, "11222");
-        System.setProperty(CacheManager.CACHE_MANAGER_REMOTE_USER, "admin");
-        System.setProperty(CacheManager.CACHE_MANAGER_REMOTE_PASS, "secret");
+        System.setProperty(CacheManagerFactory.CACHE_MANAGER_MODE, "REMOTE");
+        System.setProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_HOST, "localhost");
+        System.setProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_PORT, "11222");
+        System.setProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_USER, "admin");
+        System.setProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_PASS, "secret");
 
         KieBase kbase = new KieHelper().addContent(BASIC_RULE, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();

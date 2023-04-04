@@ -61,12 +61,12 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
 
     @Override
     public GlobalResolver createGlobalResolver(ReteEvaluator reteEvaluator, Environment environment) {
-        return new ReliableGlobalResolver(CacheManager.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "globals"));
+        return new ReliableGlobalResolver(CacheManagerFactory.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "globals"));
     }
 
     @Override
     public TimerService createTimerService(ReteEvaluator reteEvaluator) {
-        return new ReliablePseudoClockScheduler(CacheManager.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "timer"));
+        return new ReliablePseudoClockScheduler(CacheManagerFactory.INSTANCE.getOrCreateCacheForSession(reteEvaluator, "timer"));
     }
 
     private InternalWorkingMemory internalInitSession(InternalKnowledgeBase kbase, SessionConfiguration sessionConfig, InternalWorkingMemory session) {

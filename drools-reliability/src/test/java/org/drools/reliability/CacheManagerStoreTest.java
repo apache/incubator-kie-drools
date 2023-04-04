@@ -24,7 +24,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.reliability.CacheManager.SESSION_CACHE_PREFIX;
+import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
 
 /**
  * This class is an integration test with Infinispan DefaultCacheManager and its store configuration.
@@ -47,9 +47,9 @@ class CacheManagerStoreTest extends ReliabilityTestBasics {
 
         failover();
 
-        assertThat(CacheManager.INSTANCE.getCacheNames()).contains(SESSION_CACHE_PREFIX + "0_epDEFAULT", SESSION_CACHE_PREFIX + "0_globals"); // CacheManager knows cache names even after failover
+        assertThat(CacheManagerFactory.INSTANCE.getCacheNames()).contains(SESSION_CACHE_PREFIX + "0_epDEFAULT", SESSION_CACHE_PREFIX + "0_globals"); // CacheManager knows cache names even after failover
 
-        CacheManager.INSTANCE.removeAllSessionCaches(); // must remove all session caches
+        CacheManagerFactory.INSTANCE.removeAllSessionCaches(); // must remove all session caches
 
         restoreSession(EMPTY_RULE, strategy); // restored but no objects in the cache
 
@@ -67,6 +67,6 @@ class CacheManagerStoreTest extends ReliabilityTestBasics {
 
         disposeSession(); // This should clean up session's cache
 
-        assertThat(CacheManager.INSTANCE.getCacheNames()).allMatch(name -> !name.startsWith(SESSION_CACHE_PREFIX));
+        assertThat(CacheManagerFactory.INSTANCE.getCacheNames()).allMatch(name -> !name.startsWith(SESSION_CACHE_PREFIX));
     }
 }

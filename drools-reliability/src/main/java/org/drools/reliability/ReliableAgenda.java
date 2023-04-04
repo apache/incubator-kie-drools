@@ -40,7 +40,7 @@ public class ReliableAgenda extends DefaultAgenda {
 
     @Override
     protected PropagationList createPropagationList() {
-        BasicCache<String, Object> componentsCache = CacheManager.INSTANCE.getOrCreateCacheForSession(workingMemory, "components");
+        BasicCache<String, Object> componentsCache = CacheManagerFactory.INSTANCE.getOrCreateCacheForSession(workingMemory, "components");
         ReliablePropagationList propagationList = (ReliablePropagationList) componentsCache.get("PropagationList");
         if (propagationList == null) {
             propagationList = new ReliablePropagationList(workingMemory);

@@ -19,89 +19,53 @@ import java.util.Set;
 
 import org.drools.core.common.ReteEvaluator;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.commons.api.BasicCache;
 import org.infinispan.manager.DefaultCacheManager;
+import org.kie.api.runtime.conf.PersistedSessionOption;
 
-public enum CacheManager implements AutoCloseable {
+import static org.drools.reliability.CacheManagerFactory.DELIMITER;
+import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
 
-    INSTANCE;
+interface CacheManager {
 
-    public static final String SESSION_CACHE_PREFIX = "session_";
-    public static final String DELIMITER = "_";
+    void initCacheManager();
 
-    public static final String CACHE_MANAGER_MODE_PROPERTY = "drools.reliability.cache.manager.mode";
-    public static final String CACHE_MANAGER_REMOTE_HOST = "drools.reliability.cache.manager.remote.host";
-    public static final String CACHE_MANAGER_REMOTE_PORT = "drools.reliability.cache.manager.remote.port";
-    public static final String CACHE_MANAGER_REMOTE_USER = "drools.reliability.cache.manager.remote.user";
-    public static final String CACHE_MANAGER_REMOTE_PASS = "drools.reliability.cache.manager.remote.pass";
+    <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName);
 
-    private final CacheManagerDelegate delegate;
+    void close();
 
-    CacheManager() {
-        String modeValue = System.getProperty(CACHE_MANAGER_MODE_PROPERTY, "EMBEDDED");
-        if (modeValue.equalsIgnoreCase("REMOTE")) {
-            delegate = RemoteCacheManagerDelegate.INSTANCE;
+    void removeCache(String cacheName);
+
+    void removeCachesBySessionId(String sessionId);
+
+    void removeAllSessionCaches();
+
+    Set<String> getCacheNames();
+
+    void setRemoteCacheManager(RemoteCacheManager remoteCacheManager);
+
+    static String createCacheId(ReteEvaluator reteEvaluator, String cacheName) {
+        return SESSION_CACHE_PREFIX + getSessionIdentifier(reteEvaluator) + DELIMITER + cacheName;
+    }
+
+    private static long getSessionIdentifier(ReteEvaluator reteEvaluator) {
+        PersistedSessionOption persistedSessionOption = reteEvaluator.getSessionConfiguration().getPersistedSessionOption();
+        if (persistedSessionOption != null) {
+            return persistedSessionOption.isNewSession() ? reteEvaluator.getIdentifier() : persistedSessionOption.getSessionId();
         } else {
-            delegate = EmbeddedCacheManagerDelegate.INSTANCE;
+            throw new ReliabilityConfigurationException("PersistedSessionOption has to be configured when drools-reliability is used");
         }
-
-        initCacheManager();
     }
 
-    private void initCacheManager() {
-        delegate.initCacheManager();
-    }
+    //--- test purpose
 
-    public <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
-        return delegate.getOrCreateCacheForSession(reteEvaluator, cacheName);
-    }
+    void restart();
 
-    @Override
-    public void close() {
-        delegate.close();
-    }
+    void restartWithCleanUp();
 
-    public boolean isRemote() {
-        return delegate instanceof RemoteCacheManagerDelegate;
-    }
+    void setEmbeddedCacheManager(DefaultCacheManager cacheManager);
 
-    public void setRemoteCacheManager(RemoteCacheManager remoteCacheManager) {
-        delegate.setRemoteCacheManager(remoteCacheManager);
-    }
+    ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder();
 
-    // test purpose to simulate fail-over
-    void restart() {
-        delegate.restart();
-    }
-
-    // test purpose to clean up environment
-    void restartWithCleanUp() {
-        delegate.restartWithCleanUp();
-    }
-
-    // test purpose to inject fake cacheManager
-    void setEmbeddedCacheManager(DefaultCacheManager cacheManager) {
-        delegate.setEmbeddedCacheManager(cacheManager);
-    }
-
-    // test purpose
-    org.infinispan.client.hotrod.configuration.ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder() {
-        return delegate.provideAdditionalRemoteConfigurationBuilder();
-    }
-
-    public void removeCache(String cacheName) {
-        delegate.removeCache(cacheName);
-    }
-
-    public void removeCachesBySessionId(String sessionId) {
-        delegate.removeCachesBySessionId(sessionId);
-    }
-
-    public void removeAllSessionCaches() {
-        delegate.removeAllSessionCaches();
-    }
-
-    public Set<String> getCacheNames() {
-        return delegate.getCacheNames();
-    }
 }
