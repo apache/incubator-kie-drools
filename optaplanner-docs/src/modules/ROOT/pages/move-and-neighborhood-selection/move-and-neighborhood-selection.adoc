@@ -1526,14 +1526,13 @@ public interface NearbyDistanceMeter<O, D> {
 
 }
 ----
-
-It returns a `double` which represents the distance:
+In a nutshell, when nearby selection is used in a list move selector, Origin_ is always a planning value (for example Customer) but Destination_ can be either a planning value or a planning entity. That means that in VRP the distance meter must be able to handle both Customers and Vehicles as the Destination_ destination argument:
 
 [source,java,options="nowrap"]
 ----
-public class CustomerNearbyDistanceMeter implements NearbyDistanceMeter<Customer, Standstill> {
+public class CustomerNearbyDistanceMeter implements NearbyDistanceMeter<Customer, LocationAware> {
 
-    public double getNearbyDistance(Customer origin, Standstill destination) {
+    public double getNearbyDistance(Customer origin, LocationAware destination) {
         return origin.getDistanceTo(destination);
     }
 
