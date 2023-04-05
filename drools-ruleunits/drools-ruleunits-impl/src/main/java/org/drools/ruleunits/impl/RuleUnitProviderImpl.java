@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import java.util.jar.JarFile;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.DrlProject;
@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.util.IoUtils.readFileAsString;
 import static org.drools.util.IoUtils.readJarEntryAsString;
+import static org.drools.util.JarUtils.normalizeSpringBootResourceUrlPath;
 
 public class RuleUnitProviderImpl implements RuleUnitProvider {
 
@@ -134,6 +135,8 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
                     case "jar":
                         collectResourcesInJar(ks, resources, unitClass, unitStatement, resourceUrl);
                         break;
+                    default:
+                        // ignore
                 }
 
             }
@@ -180,9 +183,12 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
 
     private static void collectResourcesInJar(KieServices ks, Collection<Resource> resources, Class<?> unitClass, String unitStatement, URL resourceUrl) {
         String path = resourceUrl.getPath();                       // file:/path/to/xxx.jar!org/example
+
         int jarSuffixIndex = path.indexOf(".jar!/");
         String jarPath = path.substring(5, jarSuffixIndex + 4);    // /path/to/xxx.jar
         String directoryPath = path.substring(jarSuffixIndex + 6); // org/example
+
+        directoryPath = normalizeSpringBootResourceUrlPath(directoryPath);
 
         try (JarFile jarFile = new JarFile(new File(jarPath))) {
             Enumeration<JarEntry> entries = jarFile.entries();
