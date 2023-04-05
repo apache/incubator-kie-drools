@@ -29,6 +29,8 @@ import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourcePatternsBuildItem;
+import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 import io.quarkus.reactive.datasource.ReactiveDataSource;
 
 class KogitoAddonsQuarkusJobsServiceEmbeddedProcessor extends OneOfCapabilityKogitoAddOnProcessor {
@@ -79,5 +81,10 @@ class KogitoAddonsQuarkusJobsServiceEmbeddedProcessor extends OneOfCapabilityKog
             }
 
         });
+    }
+
+    @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
+    public void inMemoryNativeResources(BuildProducer<NativeImageResourcePatternsBuildItem> resource) {
+        resource.produce(NativeImageResourcePatternsBuildItem.builder().includeGlob("postgres-*.txz").build());
     }
 }
