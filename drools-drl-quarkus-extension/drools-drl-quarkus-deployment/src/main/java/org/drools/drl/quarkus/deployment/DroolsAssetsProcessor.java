@@ -18,11 +18,17 @@ package org.drools.drl.quarkus.deployment;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.annotations.Produce;
 import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
@@ -30,6 +36,7 @@ import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
+import io.quarkus.deployment.pkg.builditem.ArtifactResultBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
@@ -37,6 +44,10 @@ import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.drl.quarkus.util.deployment.KmoduleKieBaseModelsBuiltItem;
+import org.drools.drl.quarkus.util.deployment.OtnClassesByPackageBuildItem;
+import org.drools.model.codegen.execmodel.PackageModel;
+import org.drools.model.codegen.project.RuleCodegen;
 import org.kie.api.io.Resource;
 import org.kie.drl.engine.runtime.mapinput.service.KieRuntimeServiceDrlMapInput;
 import org.slf4j.Logger;
@@ -77,13 +88,16 @@ public class DroolsAssetsProcessor {
     public void generateSources( BuildProducer<GeneratedBeanBuildItem> generatedBeans,
                                  BuildProducer<NativeImageResourceBuildItem> resource,
                                  BuildProducer<AdditionalStaticResourceBuildItem> staticResProducer,
-                                 BuildProducer<GeneratedResourceBuildItem> genResBI ) {
+                                 BuildProducer<GeneratedResourceBuildItem> genResBI,
+                                 BuildProducer<OtnClassesByPackageBuildItem> otnClasesBI,
+                                 BuildProducer<KmoduleKieBaseModelsBuiltItem> kbaseModelsBI) {
         DroolsModelBuildContext context =
                 createDroolsBuildContext(outputTargetBuildItem.getOutputDirectory(), root.getPaths(), combinedIndexBuildItem.getIndex());
 
         Collection<Resource> resources = ResourceCollector.fromPaths(context.getAppPaths().getPaths());
 
-        Collection<GeneratedFile> generatedFiles = ofResources(context, resources).generate();
+        RuleCodegen ruleCodegen = ofResources(context, resources);
+        Collection<GeneratedFile> generatedFiles = ruleCodegen.generate();
         generatedFiles.addAll(getRuleUnitDefProducerSource(combinedIndexBuildItem.getIndex()));
 
         // The HotReloadSupportClass has to be generated only during the first model generation
@@ -103,6 +117,11 @@ public class DroolsAssetsProcessor {
         generatedBeanBuildItems.forEach(generatedBeans::produce);
 
         registerResources(generatedFiles, staticResProducer, resource, genResBI);
+        
+        otnClasesBI.produce(new OtnClassesByPackageBuildItem(ruleCodegen.getPackageModels().stream().collect(Collectors.toMap(PackageModel::getName, PackageModel::getOtnsClasses))));
+        if (ruleCodegen.getKmoduleKieBaseModels() != null) {
+            kbaseModelsBI.produce(new KmoduleKieBaseModelsBuiltItem(ruleCodegen.getKmoduleKieBaseModels()));
+        }
     }
 
     @BuildStep
@@ -112,5 +131,14 @@ public class DroolsAssetsProcessor {
         toReturn.add(new ReflectiveClassBuildItem(true, true, KieRuntimeServiceDrlMapInput.class));
         LOGGER.debug("toReturn {}", toReturn.size());
         return toReturn;
+    }
+    
+    @BuildStep
+    @Produce(GeneratedResourceBuildItem.class)
+    public void demo( OtnClassesByPackageBuildItem otn, Optional<KmoduleKieBaseModelsBuiltItem> kbaseModels) {
+        LOGGER.debug("{}", otn.getOtnClasses());
+        if (kbaseModels.isPresent()) {
+            LOGGER.debug("{}", kbaseModels.get().getKieBaseModels());            
+        }
     }
 }

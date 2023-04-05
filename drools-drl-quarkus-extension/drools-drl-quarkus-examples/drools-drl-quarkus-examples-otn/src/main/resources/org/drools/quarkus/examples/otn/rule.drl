@@ -1,0 +1,19 @@
+package org.drools.quarkus.examples.otn;
+
+import org.drools.quarkus.examples.otn.model.*; // IMPORTANT!! Key point is using * import.
+
+global java.util.Set controlSet;
+
+rule "will execute per each Measurement having ID color"
+when
+	Measurement( id == "color", $colorVal : val )
+then
+	controlSet.add($colorVal);
+end
+
+rule R2
+when
+	MyInterface( $m : val )
+then
+	insert( new Measurement("R2", $m) );
+end
