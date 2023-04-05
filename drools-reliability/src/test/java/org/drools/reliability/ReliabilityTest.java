@@ -15,9 +15,7 @@
 
 package org.drools.reliability;
 
-import java.util.Collection;
-
-import org.drools.reliability.domain.Person;
+import org.test.domain.Person;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -25,6 +23,7 @@ import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityTest extends ReliabilityTestBasics {
@@ -42,7 +41,6 @@ class ReliabilityTest extends ReliabilityTestBasics {
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
     void insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.Strategy strategy) {
-
         createSession(BASIC_RULE, strategy);
 
 		insertString("M");

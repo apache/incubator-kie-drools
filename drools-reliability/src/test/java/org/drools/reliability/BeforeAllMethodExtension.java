@@ -18,6 +18,8 @@ package org.drools.reliability;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
+
 public class BeforeAllMethodExtension implements BeforeAllCallback {
 
     // note: cache directory is shared, so we must not run junit 5 with multi-thread (e.g. ExecutionMode.CONCURRENT)
@@ -33,6 +35,7 @@ public class BeforeAllMethodExtension implements BeforeAllCallback {
             return;
         }
         initialized = true;
+        System.setProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES, "org.test.domain");
         if (!CacheManagerFactory.INSTANCE.getCacheManager().isRemote()) {
             EmbeddedCacheManager.cleanUpGlobalStateAndFileStore();
         }

@@ -15,12 +15,6 @@
 
 package org.drools.reliability;
 
-import java.util.Set;
-
-import org.drools.core.common.ReteEvaluator;
-import org.infinispan.commons.api.BasicCache;
-import org.infinispan.manager.DefaultCacheManager;
-
 public enum CacheManagerFactory {
 
     INSTANCE;
@@ -28,16 +22,18 @@ public enum CacheManagerFactory {
     public static final String SESSION_CACHE_PREFIX = "session_";
     public static final String DELIMITER = "_";
 
-    public static final String CACHE_MANAGER_MODE = "drools.reliability.cache.manager.mode";
-    public static final String CACHE_MANAGER_REMOTE_HOST = "drools.reliability.cache.manager.remote.host";
-    public static final String CACHE_MANAGER_REMOTE_PORT = "drools.reliability.cache.manager.remote.port";
-    public static final String CACHE_MANAGER_REMOTE_USER = "drools.reliability.cache.manager.remote.user";
-    public static final String CACHE_MANAGER_REMOTE_PASS = "drools.reliability.cache.manager.remote.pass";
+    public static final String RELIABILITY_CACHE = "drools.reliability.cache";
+    public static final String RELIABILITY_CACHE_ALLOWED_PACKAGES = RELIABILITY_CACHE + ".allowedpackages";
+    public static final String RELIABILITY_CACHE_MODE = RELIABILITY_CACHE + ".mode";
+    public static final String RELIABILITY_CACHE_REMOTE_HOST = RELIABILITY_CACHE + ".remote.host";
+    public static final String RELIABILITY_CACHE_REMOTE_PORT = RELIABILITY_CACHE + ".remote.port";
+    public static final String RELIABILITY_CACHE_REMOTE_USER = RELIABILITY_CACHE + ".remote.user";
+    public static final String RELIABILITY_CACHE_REMOTE_PASS = RELIABILITY_CACHE + ".remote.pass";
 
     private final CacheManager cacheManager;
 
     CacheManagerFactory() {
-        String modeValue = System.getProperty(CACHE_MANAGER_MODE, "EMBEDDED");
+        String modeValue = System.getProperty(RELIABILITY_CACHE_MODE, "EMBEDDED");
         if (modeValue.equalsIgnoreCase("REMOTE")) {
             cacheManager = RemoteCacheManager.INSTANCE;
         } else {

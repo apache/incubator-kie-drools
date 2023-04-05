@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.reliability.CacheManagerFactory;
-import org.drools.reliability.domain.Person;
+import org.test.domain.Person;
 import org.jetbrains.annotations.NotNull;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -53,11 +53,11 @@ public class RemoteCacheManagerExample {
 
     @NotNull
     public static KieSession getKieSession(PersistedSessionOption option) {
-        System.setProperty(CacheManagerFactory.CACHE_MANAGER_MODE, "REMOTE");
-        System.setProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_HOST, "localhost");
-        System.setProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_PORT, "11222");
-        System.setProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_USER, "admin");
-        System.setProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_PASS, "secret");
+        System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_MODE, "REMOTE");
+        System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_HOST, "localhost");
+        System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PORT, "11222");
+        System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_USER, "admin");
+        System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PASS, "secret");
 
         KieBase kbase = new KieHelper().addContent(BASIC_RULE, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();

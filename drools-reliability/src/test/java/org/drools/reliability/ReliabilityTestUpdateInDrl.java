@@ -15,7 +15,7 @@
 
 package org.drools.reliability;
 
-import org.drools.reliability.domain.Person;
+import org.test.domain.Person;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
