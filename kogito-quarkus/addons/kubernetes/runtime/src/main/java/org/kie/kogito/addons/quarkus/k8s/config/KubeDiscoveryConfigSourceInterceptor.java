@@ -24,8 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.fabric8.knative.client.KnativeClient;
+import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.openshift.client.OpenShiftClient;
+import io.fabric8.openshift.client.OpenShiftConfig;
 import io.smallrye.config.ConfigSourceInterceptor;
 import io.smallrye.config.ConfigSourceInterceptorContext;
 import io.smallrye.config.ConfigValue;
@@ -39,7 +41,10 @@ public class KubeDiscoveryConfigSourceInterceptor implements ConfigSourceInterce
     public KubeDiscoveryConfigSourceInterceptor() {
         logger.debug("Configuring k8s client...");
 
-        var kubernetesClient = new DefaultKubernetesClient();
+        OpenShiftConfig config = OpenShiftConfig.wrap(new ConfigBuilder().build());
+        config.setDisableApiGroupCheck(true); // Quarkus LTS 2.13 compatibility
+
+        var kubernetesClient = new DefaultKubernetesClient(config);
 
         var knativeServiceDiscovery = new KnativeServiceDiscovery(kubernetesClient.adapt(KnativeClient.class));
 
