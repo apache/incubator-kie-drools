@@ -15,13 +15,13 @@
 
 package org.drools.reliability;
 
-import java.util.Optional;
-
-import org.drools.reliability.domain.Person;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.conf.PersistedSessionOption;
+import org.test.domain.Person;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;

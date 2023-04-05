@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.drools.core.ClassObjectFilter;
-import org.drools.reliability.domain.Person;
+import org.test.domain.Person;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.server.test.core.InfinispanContainer;
 import org.junit.jupiter.api.AfterEach;

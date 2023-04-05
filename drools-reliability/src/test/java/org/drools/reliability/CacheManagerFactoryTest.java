@@ -15,19 +15,24 @@
 
 package org.drools.reliability;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.infinispan.manager.DefaultCacheManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
 import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
 
 class CacheManagerFactoryTest {
+
+    static {
+        System.setProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES, "org.test.domain");
+    }
 
     @AfterEach
     public void tearDown() {

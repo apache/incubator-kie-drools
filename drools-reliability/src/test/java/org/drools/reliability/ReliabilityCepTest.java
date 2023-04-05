@@ -15,9 +15,6 @@
 
 package org.drools.reliability;
 
-import java.util.concurrent.TimeUnit;
-
-import org.drools.reliability.domain.StockTick;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -25,6 +22,9 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.time.SessionPseudoClock;
+import org.test.domain.StockTick;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

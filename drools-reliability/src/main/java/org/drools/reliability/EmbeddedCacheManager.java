@@ -15,16 +15,6 @@
 
 package org.drools.reliability;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.stream.Stream;
-
 import org.drools.core.common.ReteEvaluator;
 import org.infinispan.Cache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
@@ -38,13 +28,35 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.reliability.CacheManagerFactory.DELIMITER;
-import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Stream;
+
 import static org.drools.reliability.CacheManager.createCacheId;
+import static org.drools.reliability.CacheManagerFactory.*;
 
 class EmbeddedCacheManager implements CacheManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedCacheManager.class);
+
+    private static final String[] ALLOWED_PACKAGES;
+
+    static {
+        List<String> allowList = new ArrayList<>();
+        allowList.add("org.kie.*");
+        allowList.add("org.drools.*");
+        allowList.add("java.*");
+        String additionalPkgs = System.getProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES);
+        if (additionalPkgs != null) {
+            Arrays.stream(additionalPkgs.split(",")).forEach(p -> allowList.add(p + ".*"));
+        }
+        ALLOWED_PACKAGES = allowList.toArray(new String[allowList.size()]);
+    }
 
     static final EmbeddedCacheManager INSTANCE = new EmbeddedCacheManager();
 
@@ -65,9 +77,7 @@ class EmbeddedCacheManager implements CacheManager {
         global.serialization()
               .marshaller(new JavaSerializationMarshaller())
               .allowList()
-              .addRegexps("org.kie.*") // TODO: need to be configurable
-              .addRegexps("org.drools.*") // TODO: need to be configurable
-              .addRegexps("java.*"); // TODO: why is this necessary?
+              .addRegexps(ALLOWED_PACKAGES);
         global.globalState()
               .enable()
               .persistentLocation(GLOBAL_STATE_DIR)

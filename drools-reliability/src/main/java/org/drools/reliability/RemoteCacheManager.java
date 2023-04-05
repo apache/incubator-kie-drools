@@ -44,10 +44,10 @@ class RemoteCacheManager implements CacheManager {
     public void initCacheManager() {
         // Create a RemoteCacheManager with provided properties
         LOG.info("Using Remote Cache Manager");
-        String host = System.getProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_HOST);
-        String port = System.getProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_PORT);
-        String user = System.getProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_USER);
-        String pass = System.getProperty(CacheManagerFactory.CACHE_MANAGER_REMOTE_PASS);
+        String host = System.getProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_HOST);
+        String port = System.getProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PORT);
+        String user = System.getProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_USER);
+        String pass = System.getProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PASS);
         if (host == null || port == null) {
             LOG.info("Remote Cache Manager host '{}' and port '{}' not set. So not creating a default RemoteCacheManager." +
                              " You will need to set a RemoteCacheManager with setRemoteCacheManager() method.", host, port);
