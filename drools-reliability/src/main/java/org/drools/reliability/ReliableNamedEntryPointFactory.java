@@ -25,6 +25,9 @@ public class ReliableNamedEntryPointFactory extends NamedEntryPointFactory {
 
     @Override
     public NamedEntryPoint createEntryPoint(EntryPointNode addedNode, EntryPointId id, ReteEvaluator reteEvaluator) {
+        if (!reteEvaluator.getSessionConfiguration().hasPersistedSessionOption()) {
+            return super.createEntryPoint(addedNode, id, reteEvaluator);
+        }
         return new ReliableNamedEntryPoint(id, addedNode, reteEvaluator);
     }
 }

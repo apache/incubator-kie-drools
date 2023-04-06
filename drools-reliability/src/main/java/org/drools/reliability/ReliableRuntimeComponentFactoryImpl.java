@@ -53,7 +53,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
 
         InternalKnowledgeBase kbase = (InternalKnowledgeBase) ruleBase;
         if (fromPool || kbase.getSessionPool() == null) {
-            InternalWorkingMemory session = getWorkingMemoryFactory().createWorkingMemory(RELIABLE_SESSIONS_COUNTER.getAndIncrement(), kbase, sessionConfig, environment);
+            InternalWorkingMemory session = wmFactory.createWorkingMemory(RELIABLE_SESSIONS_COUNTER.getAndIncrement(), kbase, sessionConfig, environment);
             return internalInitSession(kbase, sessionConfig, session);
         }
         return (InternalWorkingMemory) kbase.getSessionPool().newKieSession(sessionConfig);
@@ -61,11 +61,17 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
 
     @Override
     public GlobalResolver createGlobalResolver(ReteEvaluator reteEvaluator, Environment environment) {
+        if (!reteEvaluator.getSessionConfiguration().hasPersistedSessionOption()) {
+            return super.createGlobalResolver(reteEvaluator, environment);
+        }
         return new ReliableGlobalResolver(CacheManagerFactory.INSTANCE.getCacheManager().getOrCreateCacheForSession(reteEvaluator, "globals"));
     }
 
     @Override
     public TimerService createTimerService(ReteEvaluator reteEvaluator) {
+        if (!reteEvaluator.getSessionConfiguration().hasPersistedSessionOption()) {
+            return super.createTimerService(reteEvaluator);
+        }
         return new ReliablePseudoClockScheduler(CacheManagerFactory.INSTANCE.getCacheManager().getOrCreateCacheForSession(reteEvaluator, "timer"));
     }
 
@@ -82,11 +88,6 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
             return super.getAgendaFactory(sessionConfig);
         }
         return agendaFactory;
-    }
-
-    @Override
-    protected WorkingMemoryFactory getWorkingMemoryFactory() {
-        return wmFactory;
     }
 
     // test purpose to simulate fail-over

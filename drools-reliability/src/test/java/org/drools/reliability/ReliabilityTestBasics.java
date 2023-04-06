@@ -129,7 +129,7 @@ public abstract class ReliabilityTestBasics {
     }
 
     protected KieSession createSession(String drl, PersistedSessionOption.Strategy strategy, Option... options) {
-        getKieSession(drl, PersistedSessionOption.newSession(strategy), options);
+        getKieSession(drl, strategy != null ? PersistedSessionOption.newSession(strategy) : null, options);
         savedSessionId = session.getIdentifier();
         return session;
     }
@@ -142,14 +142,16 @@ public abstract class ReliabilityTestBasics {
         session.dispose();
     }
 
-    protected KieSession getKieSession(String drl, PersistedSessionOption option, Option... options) {
+    protected KieSession getKieSession(String drl, PersistedSessionOption persistedSessionOption, Option... options) {
         OptionsFilter optionsFilter = new OptionsFilter(options);
         KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build(optionsFilter.getKieBaseOptions());
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
-        conf.setOption(option);
+        if (persistedSessionOption != null) {
+            conf.setOption(persistedSessionOption);
+        }
         Stream.of(optionsFilter.getKieSessionOption()).forEach(conf::setOption);
         session = kbase.newKieSession(conf, null);
-        if (option.isNewSession()) {
+        if (persistedSessionOption == null || persistedSessionOption.isNewSession()) {
             List<Object> results = new ArrayList<>();
             session.setGlobal("results", results);
         }
