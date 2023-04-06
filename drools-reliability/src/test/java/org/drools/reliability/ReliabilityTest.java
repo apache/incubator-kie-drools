@@ -15,15 +15,16 @@
 
 package org.drools.reliability;
 
-import org.test.domain.Person;
+import org.drools.core.common.InternalWorkingMemory;
+import org.infinispan.commons.api.BasicCache;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.FactHandle;
+import org.test.domain.Person;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityTest extends ReliabilityTestBasics {
@@ -221,4 +222,26 @@ class ReliabilityTest extends ReliabilityTestBasics {
         assertThat(session.fireAllRules()).isEqualTo(0);
     }
 
+    @ParameterizedTest
+    @MethodSource("strategyProviderFull")
+    void insertFailover_propListShouldNotBeEmpty(PersistedSessionOption.Strategy strategy){
+        createSession(BASIC_RULE, strategy);
+
+        insertString("M");
+        insertMatchingPerson("Maria", 30);
+
+        BasicCache<String, Object> componentsCache = CacheManagerFactory.INSTANCE.getCacheManager().getOrCreateCacheForSession(((InternalWorkingMemory) session).getReteEvaluator(), "components");
+        ReliablePropagationList reliablePropagationListPropList = (ReliablePropagationList) componentsCache.get("PropagationList");
+        assertThat(reliablePropagationListPropList.isEmpty()).isFalse();
+
+        failover();
+
+        componentsCache = CacheManagerFactory.INSTANCE.getCacheManager().getOrCreateCacheForSession(((InternalWorkingMemory) session).getReteEvaluator(), "components");
+        reliablePropagationListPropList = (ReliablePropagationList) componentsCache.get("PropagationList");
+        assertThat(reliablePropagationListPropList.isEmpty()).isFalse();
+
+        //restoreSession(BASIC_RULE, strategy);
+
+        //assertThat(session.fireAllRules()).isEqualTo(1);
+    }
 }

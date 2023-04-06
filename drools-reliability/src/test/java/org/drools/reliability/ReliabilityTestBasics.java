@@ -15,17 +15,10 @@
 
 package org.drools.reliability;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import org.drools.core.ClassObjectFilter;
-import org.test.domain.Person;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.server.test.core.InfinispanContainer;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -40,6 +33,12 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.test.domain.Person;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 public abstract class ReliabilityTestBasics {
@@ -58,16 +57,8 @@ public abstract class ReliabilityTestBasics {
         return Stream.of(PersistedSessionOption.Strategy.STORES_ONLY);
     }
 
-    @BeforeEach
-    public void setUp() {
-        if (CacheManagerFactory.INSTANCE.getCacheManager().isRemote()) {
-            LOG.info("Starting InfinispanContainer");
-            container = new InfinispanContainer();
-            container.start();
-            LOG.info("InfinispanContainer started"); // takes about 10 seconds
-            RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(CacheManagerFactory.INSTANCE.getCacheManager().provideAdditionalRemoteConfigurationBuilder());
-            CacheManagerFactory.INSTANCE.getCacheManager().setRemoteCacheManager(remoteCacheManager);
-        }
+    static Stream<PersistedSessionOption.Strategy> strategyProviderFull() {
+        return Stream.of(PersistedSessionOption.Strategy.FULL);
     }
 
     @AfterEach

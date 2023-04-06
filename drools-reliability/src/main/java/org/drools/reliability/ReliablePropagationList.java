@@ -15,12 +15,18 @@
 
 package org.drools.reliability;
 
-import java.io.Serializable;
-
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.SynchronizedPropagationList;
 
+import java.io.Serializable;
+
 public class ReliablePropagationList extends SynchronizedPropagationList implements Serializable {
+
+    public ReliablePropagationList(){
+        super();
+    }
 
     public ReliablePropagationList(ReteEvaluator reteEvaluator) {
         super(reteEvaluator);
@@ -30,5 +36,24 @@ public class ReliablePropagationList extends SynchronizedPropagationList impleme
         super(reteEvaluator);
         this.head = originalList.head;
         this.tail = originalList.tail;
+    }
+
+    public boolean entryInTheList(Object entry){
+
+        boolean inTheList=false;
+
+        PropagationEntry current = this.head;
+
+        while (current!=null && !inTheList){
+            if (current instanceof  PropagationEntry.Insert){
+                InternalFactHandle fh = ((PropagationEntry.Insert) current).getHandle();
+                inTheList = fh.getObject().equals(entry);
+            }else if (entry instanceof PropagationEntry.Update){
+
+            }
+            current = current.getNext();
+        }
+
+        return inTheList;
     }
 }
