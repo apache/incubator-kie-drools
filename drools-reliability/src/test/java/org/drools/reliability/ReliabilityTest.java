@@ -241,7 +241,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
         assertThat(reliablePropagationListPropList.isEmpty()).isFalse();
 
         //restoreSession(BASIC_RULE, strategy);
-
         //assertThat(session.fireAllRules()).isEqualTo(1);
+        
     }
 }
