@@ -15,9 +15,6 @@
 
 package org.drools.reliability;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,8 +39,11 @@ import org.slf4j.LoggerFactory;
 import static org.drools.reliability.CacheManager.createCacheId;
 import static org.drools.reliability.CacheManagerFactory.DELIMITER;
 import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
+import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_DIRECTORY;
 import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
 import static org.drools.reliability.CacheManagerFactory.SHARED_CACHE_PREFIX;
+import static org.drools.util.Config.getConfig;
+import static org.drools.util.Config.getOptionalConfig;
 
 class EmbeddedCacheManager implements CacheManager {
 
@@ -51,15 +51,15 @@ class EmbeddedCacheManager implements CacheManager {
 
     private static final String[] ALLOWED_PACKAGES;
 
+    public static final String GLOBAL_STATE_DIR = getConfig(RELIABILITY_CACHE_DIRECTORY, "global/state");
+
     static {
         List<String> allowList = new ArrayList<>();
         allowList.add("org.kie.*");
         allowList.add("org.drools.*");
         allowList.add("java.*");
-        String additionalPkgs = System.getProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES);
-        if (additionalPkgs != null) {
-            Arrays.stream(additionalPkgs.split(",")).forEach(p -> allowList.add(p + ".*"));
-        }
+        getOptionalConfig(RELIABILITY_CACHE_ALLOWED_PACKAGES)
+                .ifPresent(additionalPkgs -> Arrays.stream(additionalPkgs.split(",")).forEach(p -> allowList.add(p + ".*")));
         ALLOWED_PACKAGES = allowList.toArray(new String[allowList.size()]);
     }
 
@@ -68,7 +68,6 @@ class EmbeddedCacheManager implements CacheManager {
     private DefaultCacheManager embeddedCacheManager;
     private Configuration cacheConfiguration;
 
-    public static final String GLOBAL_STATE_DIR = "global/state";
     public static final String CACHE_DIR = "cache";
 
     private EmbeddedCacheManager() {}

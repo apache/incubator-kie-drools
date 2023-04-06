@@ -25,6 +25,7 @@ public enum CacheManagerFactory {
 
     public static final String RELIABILITY_CACHE = "drools.reliability.cache";
     public static final String RELIABILITY_CACHE_ALLOWED_PACKAGES = RELIABILITY_CACHE + ".allowedpackages";
+    public static final String RELIABILITY_CACHE_DIRECTORY = RELIABILITY_CACHE + ".dir";
     public static final String RELIABILITY_CACHE_MODE = RELIABILITY_CACHE + ".mode";
     public static final String RELIABILITY_CACHE_REMOTE_HOST = RELIABILITY_CACHE + ".remote.host";
     public static final String RELIABILITY_CACHE_REMOTE_PORT = RELIABILITY_CACHE + ".remote.port";

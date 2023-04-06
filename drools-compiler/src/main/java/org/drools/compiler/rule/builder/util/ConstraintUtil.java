@@ -8,11 +8,13 @@ import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.OperatorDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 
+import static org.drools.util.Config.getConfig;
+
 public class ConstraintUtil {
 
     public static final String DROOLS_NORMALIZE_CONSTRAINT = "drools.normalize.constraint";
 
-    static boolean ENABLE_NORMALIZE = Boolean.parseBoolean(System.getProperty(DROOLS_NORMALIZE_CONSTRAINT, "true"));
+    static boolean ENABLE_NORMALIZE = Boolean.parseBoolean(getConfig(DROOLS_NORMALIZE_CONSTRAINT, "true"));
 
     private ConstraintUtil() {}
 

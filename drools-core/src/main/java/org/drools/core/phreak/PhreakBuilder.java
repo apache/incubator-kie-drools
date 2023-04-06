@@ -21,6 +21,8 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.TerminalNode;
 
+import static org.drools.util.Config.getConfig;
+
 public interface PhreakBuilder {
 
     static PhreakBuilder get() {
@@ -35,7 +37,7 @@ public interface PhreakBuilder {
     void removeRule(TerminalNode tn, Collection<InternalWorkingMemory> wms, RuleBase kBase);
 
     class Holder {
-        private static final boolean EAGER_SEGMENT_CREATION = Boolean.parseBoolean(System.getProperty("drools.useEagerSegmentCreation", "false"));
+        private static final boolean EAGER_SEGMENT_CREATION = Boolean.parseBoolean(getConfig("drools.useEagerSegmentCreation", "false"));
         private static final PhreakBuilder PHREAK_BUILDER = EAGER_SEGMENT_CREATION ? new EagerPhreakBuilder() : new LazyPhreakBuilder();
     }
 }

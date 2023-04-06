@@ -29,6 +29,8 @@ import javax.naming.NamingException;
 
 import org.kie.api.concurrent.KieExecutors;
 
+import static org.drools.util.Config.getConfig;
+
 public class ExecutorProviderImpl implements KieExecutors {
 
     public static final String EXECUTOR_SERVICE_PROPERTY = "drools.executorService";
@@ -41,7 +43,7 @@ public class ExecutorProviderImpl implements KieExecutors {
         private static final ThreadFactory threadFactory;
 
         static {
-            String threadFactoryClass = System.getProperty( THREAD_FACTORY_PROPERTY );
+            String threadFactoryClass = getConfig( THREAD_FACTORY_PROPERTY );
 
             if ( threadFactoryClass == null ) {
                 threadFactory = new DaemonThreadFactory();

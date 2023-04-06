@@ -40,12 +40,13 @@ import org.kie.memorycompiler.StoreClassLoader;
 import org.kie.memorycompiler.WritableClassLoader;
 
 import static org.drools.util.ClassUtils.findParentClassLoader;
+import static org.drools.util.Config.getConfig;
 
 public abstract class ProjectClassLoader extends ClassLoader implements KieTypeResolver, StoreClassLoader, WritableClassLoader {
 
     static final boolean CACHE_NON_EXISTING_CLASSES = true;
 
-    private static boolean enableStoreFirst = Boolean.valueOf(System.getProperty("drools.projectClassLoader.enableStoreFirst", "true"));
+    private static boolean enableStoreFirst = Boolean.valueOf(getConfig("drools.projectClassLoader.enableStoreFirst", "true"));
 
     static {
         registerAsParallelCapable();

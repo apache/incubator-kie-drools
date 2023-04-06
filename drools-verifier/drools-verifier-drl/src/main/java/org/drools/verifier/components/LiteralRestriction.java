@@ -21,6 +21,8 @@ import java.util.Locale;
 
 import org.drools.verifier.report.components.Cause;
 
+import static org.drools.util.Config.getConfig;
+
 public abstract class LiteralRestriction extends Restriction
     implements
     Cause {
@@ -69,7 +71,7 @@ public abstract class LiteralRestriction extends Restriction
 
         try {
             // TODO: Get this from config.
-            String fmt = System.getProperty( "drools.dateformat" );
+            String fmt = getConfig( "drools.dateformat" );
             if ( fmt == null ) {
                 fmt = "dd-MMM-yyyy";
             }

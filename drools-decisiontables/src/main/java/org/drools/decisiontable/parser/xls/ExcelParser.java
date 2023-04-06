@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
+import static org.drools.util.Config.getConfig;
 
 /**
  * Parse an excel spreadsheet, pushing cell info into the SheetListener interface.
@@ -58,7 +59,7 @@ public class ExcelParser
     private static final Logger log = LoggerFactory.getLogger( ExcelParser.class );
 
     private static void initMinInflateRatio() {
-        String minInflateRatio = System.getProperty( "drools.excelParser.minInflateRatio" );
+        String minInflateRatio = getConfig( "drools.excelParser.minInflateRatio" );
         if (minInflateRatio != null) {
             try {
                 ZipSecureFile.setMinInflateRatio( Double.parseDouble( minInflateRatio ) );

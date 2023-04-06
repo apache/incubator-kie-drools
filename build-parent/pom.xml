@@ -83,6 +83,7 @@
     <version.org.jboss.narayana.tomcat>5.13.1.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
+    <version.org.eclipse.microprofile.config>2.0.1</version.org.eclipse.microprofile.config>
     <version.jakarta.enterprise.cdi-api>2.0.2</version.jakarta.enterprise.cdi-api>
     <version.jakarta.activation>1.2.1</version.jakarta.activation>
     <version.jakarta.activation-api>1.2.1</version.jakarta.activation-api>
@@ -1262,6 +1263,11 @@
         <version>${version.it.unimi.dsi.fastutil}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.eclipse.microprofile.config</groupId>
+        <artifactId>microprofile-config-api</artifactId>
+        <version>${version.org.eclipse.microprofile.config}</version>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>

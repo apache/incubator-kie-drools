@@ -33,6 +33,7 @@ import static org.drools.reliability.CacheManagerFactory.DELIMITER;
 import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
 import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
 import static org.drools.reliability.CacheManagerFactory.SHARED_CACHE_PREFIX;
+import static org.drools.util.Config.getConfig;
 
 class RemoteCacheManager implements CacheManager {
 
@@ -45,7 +46,7 @@ class RemoteCacheManager implements CacheManager {
         allowList.add("org.kie.*");
         allowList.add("org.drools.*");
         allowList.add("java.*");
-        String additionalPkgs = System.getProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES);
+        String additionalPkgs = getConfig(RELIABILITY_CACHE_ALLOWED_PACKAGES);
         if (additionalPkgs != null) {
             Arrays.stream(additionalPkgs.split(",")).forEach(p -> allowList.add(p + ".*"));
         }
@@ -63,10 +64,10 @@ class RemoteCacheManager implements CacheManager {
     public void initCacheManager() {
         // Create a RemoteCacheManager with provided properties
         LOG.info("Using Remote Cache Manager");
-        String host = System.getProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_HOST);
-        String port = System.getProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PORT);
-        String user = System.getProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_USER);
-        String pass = System.getProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PASS);
+        String host = getConfig(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_HOST);
+        String port = getConfig(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PORT);
+        String user = getConfig(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_USER);
+        String pass = getConfig(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PASS);
         if (host == null || port == null) {
             LOG.info("Remote Cache Manager host '{}' and port '{}' not set. So not creating a default RemoteCacheManager." +
                              " You will need to set a RemoteCacheManager with setRemoteCacheManager() method.", host, port);

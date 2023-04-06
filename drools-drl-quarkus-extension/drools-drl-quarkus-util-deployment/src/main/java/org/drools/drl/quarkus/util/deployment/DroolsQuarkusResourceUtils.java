@@ -48,6 +48,7 @@ import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 
+import static org.drools.util.Config.getConfig;
 import static org.kie.memorycompiler.KieMemoryCompiler.compileNoLoad;
 
 /**
@@ -77,8 +78,8 @@ public class DroolsQuarkusResourceUtils {
     private static final GeneratedFileWriter.Builder generatedFileWriterBuilder =
             new GeneratedFileWriter.Builder(
                     "target/classes",
-                    System.getProperty("drools.codegen.sources.directory", "target/generated-sources/drools/"),
-                    System.getProperty("drools.codegen.resources.directory", "target/generated-resources/drools/"),
+                    getConfig("drools.codegen.sources.directory", "target/generated-sources/drools/"),
+                    getConfig("drools.codegen.resources.directory", "target/generated-resources/drools/"),
                     "target/generated-sources/drools/");
 
     public static DroolsModelBuildContext createDroolsBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index) {

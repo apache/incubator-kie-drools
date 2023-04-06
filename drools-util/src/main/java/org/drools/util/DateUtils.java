@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static org.drools.util.Config.getConfig;
+
 public class DateUtils {
 
     private static final long serialVersionUID = 510l;
@@ -39,7 +41,7 @@ public class DateUtils {
     });
 
     private static String getDefaultLanguage() {
-        String fmt = System.getProperty("drools.defaultlanguage");
+        String fmt = getConfig("drools.defaultlanguage");
         if (fmt == null) {
             fmt = DEFAULT_LANGUAGE;
         }
@@ -47,7 +49,7 @@ public class DateUtils {
     }
 
     private static String getDefaultContry() {
-        String fmt = System.getProperty("drools.defaultcountry");
+        String fmt = getConfig("drools.defaultcountry");
         if (fmt == null) {
             fmt = DEFAULT_COUNTRY;
         }
@@ -91,7 +93,7 @@ public class DateUtils {
 
     /** Check for the system property override, if it exists */
     public static String getDateFormatMask() {
-        String fmt = System.getProperty("drools.dateformat");
+        String fmt = getConfig("drools.dateformat");
         if (fmt == null) {
             fmt = DEFAULT_FORMAT_MASK;
         }
