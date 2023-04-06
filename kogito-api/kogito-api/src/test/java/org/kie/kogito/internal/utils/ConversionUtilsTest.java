@@ -25,9 +25,37 @@ import static org.kie.kogito.internal.utils.ConversionUtils.toCamelCase;
 class ConversionUtilsTest {
 
     @Test
-    void testConvert() {
-        assertThat(convert("5", Integer.class)).isEqualTo(5);
+    void testConvertBoolean() {
         assertThat(convert("5", Boolean.class)).isFalse();
+    }
+
+    @Test
+    void testConvertInteger() {
+        assertThat(convert("5", Integer.class)).isEqualTo(5);
+    }
+
+    @Test
+    void testConvertDouble() {
+        final Double expectedDouble = 10.54d;
+        assertThat(convert("10.54d", Double.class)).isEqualTo(expectedDouble);
+    }
+
+    @Test
+    void testConvertFloat() {
+        final Float expectedFloat = 10.54f;
+        assertThat(convert("10.54f", Float.class)).isEqualTo(expectedFloat);
+    }
+
+    @Test
+    void testConvertShort() {
+        final short expectedShort = 5;
+        assertThat(convert("5", Short.class)).isEqualTo(expectedShort);
+    }
+
+    @Test
+    void testConvertByte() {
+        final byte expectedByte = 112;
+        assertThat(convert("112", Byte.class)).isEqualTo(expectedByte);
     }
 
     @Test

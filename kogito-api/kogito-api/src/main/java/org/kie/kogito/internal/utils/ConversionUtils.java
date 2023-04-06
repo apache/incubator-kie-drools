@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.internal.utils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
@@ -42,23 +43,46 @@ public class ConversionUtils {
         if (value == null || clazz.isAssignableFrom(value.getClass())) {
             return clazz.cast(value);
         } else {
-            for (Method method : clazz.getMethods()) {
-                int modifiers = method.getModifiers();
-                if (Modifier.isStatic(modifiers) && method.getParameterCount() == 1 && method.getParameterTypes()[0].equals(String.class) && clazz.isAssignableFrom(method.getReturnType())) {
-                    try {
-                        return clazz.cast(method.invoke(null, stringConverter.apply(value)));
-                    } catch (ReflectiveOperationException e) {
-                        // see end method
+            final T convertedNumber = tryToConvertNumber(value, clazz, stringConverter);
+            if (convertedNumber != null) {
+                return convertedNumber;
+            } else {
+                for (Method method : clazz.getMethods()) {
+                    int modifiers = method.getModifiers();
+                    if (Modifier.isStatic(modifiers) && method.getParameterCount() == 1 && method.getParameterTypes()[0].equals(String.class) && clazz.isAssignableFrom(method.getReturnType())) {
+                        try {
+                            return clazz.cast(method.invoke(null, stringConverter.apply(value)));
+                        } catch (ReflectiveOperationException e) {
+                            // see end method
+                        }
                     }
                 }
-            }
-            try {
-                return clazz.getConstructor(String.class).newInstance(stringConverter.apply(value));
-            } catch (ReflectiveOperationException e) {
-                // see end method
+                try {
+                    return clazz.getConstructor(String.class).newInstance(stringConverter.apply(value));
+                } catch (ReflectiveOperationException e) {
+                    // see end method
+                }
             }
         }
         throw new IllegalArgumentException(value + " cannot be converted to " + clazz.getName());
+    }
+
+    private static <T> T tryToConvertNumber(Object value, Class<T> clazz, Function<Object, String> stringConverter) {
+        if (clazz.isAssignableFrom(Integer.class)
+                || clazz.isAssignableFrom(Double.class)
+                || clazz.isAssignableFrom(Long.class)
+                || clazz.isAssignableFrom(Float.class)
+                || clazz.isAssignableFrom(Short.class)
+                || clazz.isAssignableFrom(Byte.class)) {
+            try {
+                final Method valueOfMethod = clazz.getMethod("valueOf", String.class);
+                return clazz.cast(valueOfMethod.invoke(null, stringConverter.apply(value)));
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new IllegalArgumentException(value + " cannot be converted to " + clazz.getName(), e);
+            }
+        } else {
+            return null;
+        }
     }
 
     /**
