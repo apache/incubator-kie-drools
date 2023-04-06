@@ -15,12 +15,19 @@
 
 package org.drools.reliability;
 
+import java.nio.file.Path;
+
+import org.drools.util.FileUtils;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
 
 public class BeforeAllMethodExtension implements BeforeAllCallback {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BeforeAllMethodExtension.class);
 
     // note: cache directory is shared, so we must not run junit 5 with multi-thread (e.g. ExecutionMode.CONCURRENT)
     // nor surefire-plugin with fork > 1
@@ -28,7 +35,7 @@ public class BeforeAllMethodExtension implements BeforeAllCallback {
     private static boolean initialized = false;
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(ExtensionContext context) {
         // This method will be called before the first test method of all test classes
         // So it makes sure to clean up even if we terminate a process while debugging
         if (initialized) {
@@ -36,8 +43,7 @@ public class BeforeAllMethodExtension implements BeforeAllCallback {
         }
         initialized = true;
         System.setProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES, "org.test.domain");
-        if (!CacheManagerFactory.INSTANCE.getCacheManager().isRemote()) {
-            EmbeddedCacheManager.cleanUpGlobalStateAndFileStore();
-        }
+        FileUtils.deleteDirectory(Path.of(EmbeddedCacheManager.GLOBAL_STATE_DIR));
+        LOG.info("### Deleted directory {}", EmbeddedCacheManager.GLOBAL_STATE_DIR);
     }
 }

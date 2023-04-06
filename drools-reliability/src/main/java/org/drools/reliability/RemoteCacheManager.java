@@ -15,6 +15,9 @@
 
 package org.drools.reliability;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.core.common.ReteEvaluator;
@@ -25,13 +28,29 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.reliability.CacheManager.createCacheId;
 import static org.drools.reliability.CacheManagerFactory.DELIMITER;
+import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
 import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
-import static org.drools.reliability.CacheManager.*;
+import static org.drools.reliability.CacheManagerFactory.SHARED_CACHE_PREFIX;
 
 class RemoteCacheManager implements CacheManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(RemoteCacheManager.class);
+
+    private static final String[] ALLOWED_PACKAGES;
+
+    static {
+        List<String> allowList = new ArrayList<>();
+        allowList.add("org.kie.*");
+        allowList.add("org.drools.*");
+        allowList.add("java.*");
+        String additionalPkgs = System.getProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES);
+        if (additionalPkgs != null) {
+            Arrays.stream(additionalPkgs.split(",")).forEach(p -> allowList.add(p + ".*"));
+        }
+        ALLOWED_PACKAGES = allowList.toArray(new String[allowList.size()]);
+    }
 
     static final RemoteCacheManager INSTANCE = new RemoteCacheManager();
 
@@ -59,15 +78,18 @@ class RemoteCacheManager implements CacheManager {
             builder.security().authentication().username(user).password(pass);
         }
         builder.marshaller(new JavaSerializationMarshaller())
-                .addJavaSerialAllowList("org.kie.*")
-                .addJavaSerialAllowList("org.drools.*")
-                .addJavaSerialAllowList("java.*");
+                .addJavaSerialAllowList(ALLOWED_PACKAGES);
         remoteCacheManager = new org.infinispan.client.hotrod.RemoteCacheManager(builder.build());
     }
 
     @Override
     public <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
         return remoteCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), (String) null);
+    }
+
+    @Override
+    public <k, V> BasicCache<k, V> getOrCreateSharedCache(String cacheName) {
+        return remoteCacheManager.administration().getOrCreateCache(SHARED_CACHE_PREFIX + cacheName, (String) null);
     }
 
     @Override
@@ -143,9 +165,7 @@ class RemoteCacheManager implements CacheManager {
     public ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.marshaller(new JavaSerializationMarshaller())
-                .addJavaSerialAllowList("org.kie.*")
-                .addJavaSerialAllowList("org.drools.*")
-                .addJavaSerialAllowList("java.*");
+                .addJavaSerialAllowList(ALLOWED_PACKAGES);
         return builder;
     }
 

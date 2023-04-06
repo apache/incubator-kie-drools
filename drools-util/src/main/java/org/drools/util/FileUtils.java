@@ -19,8 +19,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -87,5 +89,23 @@ public class FileUtils {
      */
     public static Optional<InputStream> getInputStreamFromFileNameAndClassLoader(String fileName, ClassLoader classLoader) {
         return Optional.ofNullable(classLoader.getResourceAsStream(fileName));
+    }
+
+    /**
+     * delete a directory and all its content
+     * @param path path to the directory to delete
+     */
+    public static void deleteDirectory(Path path) {
+        try {
+            if (Files.exists(path)) {
+                try (Stream<Path> walk = Files.walk(path)) {
+                    walk.sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                }
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

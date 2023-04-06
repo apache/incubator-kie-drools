@@ -79,7 +79,6 @@ public abstract class ReliabilityTestBasics {
             // clean up embedded Infinispan including GlobalState and FireStore so that test methods can be isolated
             CacheManagerFactory.INSTANCE.getCacheManager().restartWithCleanUp();
         }
-
         ReliableRuntimeComponentFactoryImpl.resetCounter();
     }
 
@@ -93,7 +92,7 @@ public abstract class ReliabilityTestBasics {
         } else {
             CacheManagerFactory.INSTANCE.getCacheManager().restart(); // restart embedded infinispan cacheManager. GlobalState and FireStore are kept
         }
-        ReliableRuntimeComponentFactoryImpl.resetCounter();
+        ReliableRuntimeComponentFactoryImpl.refreshCounterUsingCache();
     }
 
     protected FactHandle insertString(String str) {
