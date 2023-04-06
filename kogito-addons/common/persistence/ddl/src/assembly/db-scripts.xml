@@ -8,13 +8,6 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>${path.to.persistence.modules}/postgresql/src/main/resources/db/migration</directory>
-      <outputDirectory>postgresql</outputDirectory>
-      <includes>
-        <include>*.sql</include>
-      </includes>
-    </fileSet>
-    <fileSet>
       <directory>${path.to.persistence.modules}/jdbc/src/main/resources/db/postgresql</directory>
       <outputDirectory>postgresql</outputDirectory>
       <includes>

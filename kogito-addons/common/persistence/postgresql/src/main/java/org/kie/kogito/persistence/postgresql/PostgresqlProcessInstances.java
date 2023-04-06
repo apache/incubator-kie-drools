@@ -17,7 +17,6 @@ package org.kie.kogito.persistence.postgresql;
 
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -79,7 +78,7 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
             disconnect(instance);
             return;
         }
-        insertInternal(UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+        insertInternal(id, marshaller.marshallProcessInstance(instance));
     }
 
     @SuppressWarnings("unchecked")
@@ -91,9 +90,9 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
         }
         try {
             if (lock) {
-                updateWithLock(UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.version());
+                updateWithLock(id, marshaller.marshallProcessInstance(instance), instance.version());
             } else {
-                updateInternal(UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+                updateInternal(id, marshaller.marshallProcessInstance(instance));
             }
         } finally {
             disconnect(instance);
@@ -102,12 +101,12 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
 
     @Override
     public void remove(String id) {
-        deleteInternal(UUID.fromString(id));
+        deleteInternal(id);
     }
 
     @Override
     public Optional<ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
-        return findByIdInternal(UUID.fromString(id)).map(r -> unmarshall(r, mode));
+        return findByIdInternal(id).map(r -> unmarshall(r, mode));
     }
 
     @Override
@@ -136,13 +135,13 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
     }
 
     private void disconnect(ProcessInstance instance) {
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(() -> findByIdInternal(UUID.fromString(instance.id())).map(r -> {
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(() -> findByIdInternal(instance.id()).map(r -> {
             ((AbstractProcessInstance) instance).setVersion(r.getLong(VERSION));
             return r.getBuffer(PAYLOAD).getBytes();
         }).orElseThrow()));
     }
 
-    private boolean insertInternal(UUID id, byte[] payload) {
+    private boolean insertInternal(String id, byte[] payload) {
         try {
             Future<RowSet<Row>> future = client.preparedQuery(INSERT)
                     .execute(Tuple.of(id, Buffer.buffer(payload), process.id(), process.version(), 0L));
@@ -159,7 +158,7 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
         return new RuntimeException(String.format(message, param), ex);
     }
 
-    private boolean updateInternal(UUID id, byte[] payload) {
+    private boolean updateInternal(String id, byte[] payload) {
         try {
             Future<RowSet<Row>> future =
                     client.preparedQuery(UPDATE + (process.version() == null ? IS_NULL : "= $4"))
@@ -173,7 +172,7 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
         }
     }
 
-    private boolean deleteInternal(UUID id) {
+    private boolean deleteInternal(String id) {
         try {
             Future<RowSet<Row>> future = client.preparedQuery(DELETE + (process.version() == null ? IS_NULL : "= $3"))
                     .execute(tuple(process.id(), id));
@@ -204,7 +203,7 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
         }
     }
 
-    private Optional<Row> findByIdInternal(UUID id) {
+    private Optional<Row> findByIdInternal(String id) {
         try {
             Future<RowSet<Row>> future =
                     client.preparedQuery(FIND_BY_ID + (process.version() == null ? IS_NULL : "= $3"))
@@ -226,13 +225,13 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
         return tuple;
     }
 
-    private boolean updateWithLock(UUID id, byte[] payload, long version) {
+    private boolean updateWithLock(String id, byte[] payload, long version) {
         try {
             Future<RowSet<Row>> future = client.preparedQuery(UPDATE_WITH_LOCK + (process.version() == null ? IS_NULL : "= $6"))
                     .execute(tuple(Buffer.buffer(payload), version + 1, process.id(), id, version));
             boolean result = getExecutedResult(future);
             if (!result) {
-                throw new ProcessInstanceOptimisticLockingException(id.toString());
+                throw new ProcessInstanceOptimisticLockingException(id);
             }
             return result;
         } catch (InterruptedException e) {

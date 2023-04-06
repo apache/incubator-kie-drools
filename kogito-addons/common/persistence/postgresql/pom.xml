@@ -9,6 +9,12 @@
   <name>Kogito :: Add-Ons :: Persistence :: PostgreSQL</name>
 
   <description>PostgreSQL based persistence for Kogito</description>
+  <properties>
+    <path.to.jdbc.addon>../jdbc</path.to.jdbc.addon>
+    <path.to.script.folder>src/main/resources/db</path.to.script.folder>
+    <path.to.migration.scripts.from>${path.to.jdbc.addon}/${path.to.script.folder}/postgresql</path.to.migration.scripts.from>
+    <path.to.migration.scripts.to>${path.to.script.folder}/migration</path.to.migration.scripts.to>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -92,6 +98,38 @@
             <goals>
               <goal>jandex</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${path.to.script.folder}</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+<!--  The cleanest way would be to use the maven-dependency-plugin to unpack and copy scripts from the built artifact `kogito-addons-persistence-jdbc` but there's a limitation to using this only in the `package` phase whereas we need that into the `generate-sources` phase. See also https://issues.apache.org/jira/browse/MDEP-98 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-resource-one</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${path.to.migration.scripts.to}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${path.to.migration.scripts.from}</directory>
+                </resource>
+              </resources>
+            </configuration>
           </execution>
         </executions>
       </plugin>
