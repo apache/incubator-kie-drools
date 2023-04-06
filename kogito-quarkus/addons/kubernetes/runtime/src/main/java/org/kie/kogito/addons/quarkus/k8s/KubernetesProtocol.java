@@ -17,9 +17,19 @@ package org.kie.kogito.addons.quarkus.k8s;
 
 public enum KubernetesProtocol {
 
-    VANILLA_KUBERNETES,
-    OPENSHIFT,
-    KNATIVE;
+    VANILLA_KUBERNETES("kubernetes"),
+    OPENSHIFT("openshift"),
+    KNATIVE("knative");
+
+    private final String value;
+
+    KubernetesProtocol(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 
     public static KubernetesProtocol from(String value) {
         switch (value) {

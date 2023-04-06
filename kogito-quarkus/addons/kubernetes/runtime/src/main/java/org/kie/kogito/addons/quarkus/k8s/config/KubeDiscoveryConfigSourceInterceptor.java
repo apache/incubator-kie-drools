@@ -36,7 +36,7 @@ public class KubeDiscoveryConfigSourceInterceptor implements ConfigSourceInterce
 
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-    private final transient KubeDiscoveryConfigCache kubeDiscoveryConfigCache;
+    private final transient ConfigValueExpander configValueExpander;
 
     public KubeDiscoveryConfigSourceInterceptor() {
         logger.debug("Configuring k8s client...");
@@ -57,17 +57,13 @@ public class KubeDiscoveryConfigSourceInterceptor implements ConfigSourceInterce
         var kubeDiscoveryConfigCacheUpdater = new KubeDiscoveryConfigCacheUpdater(vanillaKubernetesResourceDiscovery,
                 openShiftResourceDiscovery, knativeServiceDiscovery);
 
-        this.kubeDiscoveryConfigCache = new KubeDiscoveryConfigCache(kubeDiscoveryConfigCacheUpdater);
+        var kubeDiscoveryConfigCache = new KubeDiscoveryConfigCache(kubeDiscoveryConfigCacheUpdater);
+
+        this.configValueExpander = new ConfigValueExpander(kubeDiscoveryConfigCache);
     }
 
     @Override
     public ConfigValue getValue(ConfigSourceInterceptorContext context, String s) {
-        ConfigValue configValue = context.proceed(s);
-        if (configValue == null) {
-            return null;
-        }
-        return kubeDiscoveryConfigCache.get(configValue.getName(), configValue.getValue())
-                .map(configValue::withValue)
-                .orElse(configValue);
+        return configValueExpander.expand(context.proceed(s));
     }
 }

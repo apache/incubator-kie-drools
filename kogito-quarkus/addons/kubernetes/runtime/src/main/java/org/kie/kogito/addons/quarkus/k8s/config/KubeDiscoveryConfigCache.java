@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class KubeDiscoveryConfigCache {
+class KubeDiscoveryConfigCache {
 
     private static final Logger logger = LoggerFactory.getLogger(KubeDiscoveryConfigCache.class);
 
