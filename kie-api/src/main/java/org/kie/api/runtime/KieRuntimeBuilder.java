@@ -8,4 +8,8 @@ public interface KieRuntimeBuilder {
 
     KieSession newKieSession();
     KieSession newKieSession(String sessionName);
+
+    default KieSession newKieSession(KieSessionConfiguration conf) {
+        return getKieBase().newKieSession(conf, null);
+    }
 }

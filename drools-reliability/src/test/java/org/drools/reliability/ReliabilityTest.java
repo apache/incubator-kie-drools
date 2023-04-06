@@ -15,15 +15,15 @@
 
 package org.drools.reliability;
 
-import org.test.domain.Person;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.FactHandle;
+import org.test.domain.Person;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityTest extends ReliabilityTestBasics {
@@ -37,6 +37,21 @@ class ReliabilityTest extends ReliabilityTestBasics {
             "then\n" +
             "  results.add( $p.getName() );\n" +
             "end";
+
+    @Test
+    void createAndUseOfNonReliableSession_shouldWorkNormally() {
+        createSession(BASIC_RULE, null);
+
+        insertString("M");
+        insertMatchingPerson("Matching Person One", 37);
+
+        insertNonMatchingPerson("Toshiya", 35);
+        insertMatchingPerson("Matching Person Two", 40);
+
+        session.fireAllRules();
+
+        assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
+    }
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
