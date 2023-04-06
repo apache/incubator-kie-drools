@@ -15,9 +15,20 @@
 
 package org.drools.reliability;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.core.common.ReteEvaluator;
+import org.drools.util.FileUtils;
 import org.infinispan.Cache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.commons.api.BasicCache;
 import org.infinispan.commons.marshall.JavaSerializationMarshaller;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.Configuration;
@@ -28,17 +39,11 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Stream;
-
 import static org.drools.reliability.CacheManager.createCacheId;
-import static org.drools.reliability.CacheManagerFactory.*;
+import static org.drools.reliability.CacheManagerFactory.DELIMITER;
+import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
+import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
+import static org.drools.reliability.CacheManagerFactory.SHARED_CACHE_PREFIX;
 
 class EmbeddedCacheManager implements CacheManager {
 
@@ -101,6 +106,11 @@ class EmbeddedCacheManager implements CacheManager {
     @Override
     public <k, V> Cache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
         return embeddedCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), cacheConfiguration);
+    }
+
+    @Override
+    public <k, V> BasicCache<k, V> getOrCreateSharedCache(String cacheName) {
+        return embeddedCacheManager.administration().getOrCreateCache(SHARED_CACHE_PREFIX + cacheName, cacheConfiguration);
     }
 
     @Override
@@ -177,19 +187,8 @@ class EmbeddedCacheManager implements CacheManager {
     }
 
     // test purpose to remove GlobalState and FileStore
-    static void cleanUpGlobalStateAndFileStore() {
-        try {
-            Path path = Paths.get(GLOBAL_STATE_DIR);
-            if (Files.exists(path)) {
-                try (Stream<Path> walk = Files.walk(path)) {
-                    walk.sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
-                }
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    private static void cleanUpGlobalStateAndFileStore() {
+        FileUtils.deleteDirectory(Paths.get(GLOBAL_STATE_DIR));
     }
 
     @Override

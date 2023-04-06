@@ -177,7 +177,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <systemPropertyVariables>
-                <drools.reliability.cache.manager.mode>REMOTE</drools.reliability.cache.manager.mode>
+                <drools.reliability.cache.mode>REMOTE</drools.reliability.cache.mode>
               </systemPropertyVariables>
             </configuration>
           </plugin>

@@ -27,11 +27,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
 
 /**
- * This class is an integration test with Infinispan DefaultCacheManager and its store configuration.
+ * This class is an integration test with Infinispan embedded and remote cache manager to verify cache persistence.
  * If we want to test drools CacheManager's methods with a fake cacheManager, use CacheManagerTest
  */
 @ExtendWith(BeforeAllMethodExtension.class)
-class CacheManagerStoreTest extends ReliabilityTestBasics {
+class CachePersistenceTest extends ReliabilityTestBasics {
 
     private static final String EMPTY_RULE =
             "global java.util.List results;\n" +
@@ -41,7 +41,7 @@ class CacheManagerStoreTest extends ReliabilityTestBasics {
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
-    void removeAllSessionCaches_failoverRemove(PersistedSessionOption.Strategy strategy) {
+    void removeAllSessionCaches_shouldRemoveAllSessionCachesEvenAfterFailover(PersistedSessionOption.Strategy strategy) {
         createSession(EMPTY_RULE, strategy); // savedSessionId = 0, sessionId = 0
         insertNonMatchingPerson("Toshiya", 10);
 
@@ -68,5 +68,27 @@ class CacheManagerStoreTest extends ReliabilityTestBasics {
         disposeSession(); // This should clean up session's cache
 
         assertThat(CacheManagerFactory.INSTANCE.getCacheManager().getCacheNames()).allMatch(name -> !name.startsWith(SESSION_CACHE_PREFIX));
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnly")
+    void missingDispose_shouldNotReuseOrphanedCache(PersistedSessionOption.Strategy strategy) {
+        createSession(EMPTY_RULE, strategy); // sessionId = 0
+        insertNonMatchingPerson("Toshiya", 10);
+
+        // disposeSession() is missing
+        failover();
+
+        createSession(EMPTY_RULE, strategy); // new session. If sessionId = 0, it will potentially reuse the orphaned cache
+
+        Optional<Person> toshiya = getPersonByName(session, "Toshiya");
+        assertThat(toshiya).isEmpty(); // new session doesn't trigger re-propagation
+
+        failover();
+
+        restoreSession(EMPTY_RULE, strategy); // restoreSession triggers re-propagation
+
+        toshiya = getPersonByName(session, "Toshiya");
+        assertThat(toshiya).isEmpty(); // should not reuse the orphaned cache
     }
 }

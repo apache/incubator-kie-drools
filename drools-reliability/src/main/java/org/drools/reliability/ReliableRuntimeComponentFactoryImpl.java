@@ -28,6 +28,7 @@ import org.drools.core.time.TimerService;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 import org.drools.kiesession.factory.WorkingMemoryFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.infinispan.commons.api.BasicCache;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
@@ -36,9 +37,24 @@ import static org.drools.reliability.ReliableSessionInitializer.initReliableSess
 public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImpl {
 
     private static final AtomicLong RELIABLE_SESSIONS_COUNTER = new AtomicLong(0);
+    private static final String NEXT_SESSION_ID = "nextSessionId";
 
     private final WorkingMemoryFactory wmFactory = ReliablePhreakWorkingMemoryFactory.getInstance();
     private final AgendaFactory agendaFactory = ReliableAgendaFactory.getInstance();
+
+    public ReliableRuntimeComponentFactoryImpl() {
+        refreshReliableSessionsCounterUsingCache();
+    }
+
+    private static void refreshReliableSessionsCounterUsingCache() {
+        BasicCache<String, Long> sessionsCounter = CacheManagerFactory.INSTANCE.getCacheManager().getOrCreateSharedCache("sessionsCounter");
+        // computeIfAbsent is not supported by RemoteCache
+        if (sessionsCounter.containsKey(NEXT_SESSION_ID)) {
+            RELIABLE_SESSIONS_COUNTER.set(sessionsCounter.get(NEXT_SESSION_ID));
+        } else {
+            sessionsCounter.put(NEXT_SESSION_ID, RELIABLE_SESSIONS_COUNTER.get());
+        }
+    }
 
     @Override
     public EntryPointFactory getEntryPointFactory() {
@@ -50,13 +66,18 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         if (!sessionConfig.hasPersistedSessionOption()) {
             return super.createStatefulSession(ruleBase, environment, sessionConfig, fromPool);
         }
-
         InternalKnowledgeBase kbase = (InternalKnowledgeBase) ruleBase;
         if (fromPool || kbase.getSessionPool() == null) {
             InternalWorkingMemory session = wmFactory.createWorkingMemory(RELIABLE_SESSIONS_COUNTER.getAndIncrement(), kbase, sessionConfig, environment);
+            updateSessionsCounter();
             return internalInitSession(kbase, sessionConfig, session);
         }
         return (InternalWorkingMemory) kbase.getSessionPool().newKieSession(sessionConfig);
+    }
+
+    private void updateSessionsCounter() {
+        BasicCache<String, Long> sessionsCounter = CacheManagerFactory.INSTANCE.getCacheManager().getOrCreateSharedCache("sessionsCounter");
+        sessionsCounter.put(NEXT_SESSION_ID, RELIABLE_SESSIONS_COUNTER.get());
     }
 
     @Override
@@ -90,9 +111,14 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         return agendaFactory;
     }
 
-    // test purpose to simulate fail-over
+    // test purpose to completely reset the counter
     static void resetCounter() {
         RELIABLE_SESSIONS_COUNTER.set(0);
+    }
+
+    // test purpose to simulate fail-over
+    static void refreshCounterUsingCache() {
+        refreshReliableSessionsCounterUsingCache();
     }
 
     @Override

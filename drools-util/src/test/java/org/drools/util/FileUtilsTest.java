@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -66,5 +68,14 @@ public class FileUtilsTest {
     public void getInputStreamFromFileNameNotExisting() {
         Optional<InputStream> retrieved = FileUtils.getInputStreamFromFileNameAndClassLoader(NOT_EXISTING_FILE, FileUtilsTest.class.getClassLoader());
         assertThat(retrieved).isNotPresent();
+    }
+
+    @Test
+    public void deleteDirectory() throws IOException {
+        final Path tempDirectory = Files.createTempDirectory("temp");
+        final Path tempFile = Files.createTempFile(tempDirectory, "temp", "temp");
+        FileUtils.deleteDirectory(tempDirectory);
+        assertThat(Files.exists(tempDirectory)).isFalse();
+        assertThat(Files.exists(tempFile)).isFalse();
     }
 }

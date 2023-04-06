@@ -14,6 +14,8 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.internal.utils.KieHelper;
 
+import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
+
 /**
  * Example class to demonstrate how to use RemoteCacheManager.
  * <p>
@@ -58,6 +60,8 @@ public class RemoteCacheManagerExample {
         System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PORT, "11222");
         System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_USER, "admin");
         System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PASS, "secret");
+
+        System.setProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES, "org.test.domain");
 
         KieBase kbase = new KieHelper().addContent(BASIC_RULE, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();

@@ -19,6 +19,7 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Map;
 import java.util.Set;
@@ -26,9 +27,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
+import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_MODE;
 import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
 
-class CacheManagerFactoryTest {
+/**
+ *  This class is a unit test for EmbeddedCacheManager methods with a fake cacheManager instead of Infinispan DefaultCacheManager.
+ */
+@DisabledIf("isRemote")
+@ExtendWith(BeforeAllMethodExtension.class)
+class EmbeddedCacheManagerTest {
 
     static {
         System.setProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES, "org.test.domain");
@@ -39,11 +46,10 @@ class CacheManagerFactoryTest {
         CacheManagerFactory.INSTANCE.getCacheManager().restart(); // make sure that FakeCacheManager is removed
     }
 
-    private boolean isRemote() {
-        return CacheManagerFactory.INSTANCE.getCacheManager().isRemote();
+    private static boolean isRemote() {
+        return "REMOTE".equalsIgnoreCase(System.getProperty(RELIABILITY_CACHE_MODE));
     }
 
-    @DisabledIf("isRemote")
     @Test
     void removeAllSessionCaches_shouldLeaveNonSessionCache() {
         CacheManagerFactory.INSTANCE.getCacheManager().setEmbeddedCacheManager(new FakeCacheManager());
@@ -56,7 +62,6 @@ class CacheManagerFactoryTest {
         assertThat(CacheManagerFactory.INSTANCE.getCacheManager().getCacheNames()).containsExactly("METADATA_0");
     }
 
-    @DisabledIf("isRemote")
     @Test
     void removeCachesBySessionId_shouldRemoveSpecifiedCacheOnly() {
         CacheManagerFactory.INSTANCE.getCacheManager().setEmbeddedCacheManager(new FakeCacheManager());

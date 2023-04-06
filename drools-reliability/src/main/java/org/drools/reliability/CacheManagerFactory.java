@@ -20,6 +20,7 @@ public enum CacheManagerFactory {
     INSTANCE;
 
     public static final String SESSION_CACHE_PREFIX = "session_";
+    public static final String SHARED_CACHE_PREFIX = "shared_";
     public static final String DELIMITER = "_";
 
     public static final String RELIABILITY_CACHE = "drools.reliability.cache";
@@ -33,8 +34,7 @@ public enum CacheManagerFactory {
     private final CacheManager cacheManager;
 
     CacheManagerFactory() {
-        String modeValue = System.getProperty(RELIABILITY_CACHE_MODE, "EMBEDDED");
-        if (modeValue.equalsIgnoreCase("REMOTE")) {
+        if ("REMOTE".equalsIgnoreCase(System.getProperty(RELIABILITY_CACHE_MODE))) {
             cacheManager = RemoteCacheManager.INSTANCE;
         } else {
             cacheManager = EmbeddedCacheManager.INSTANCE;

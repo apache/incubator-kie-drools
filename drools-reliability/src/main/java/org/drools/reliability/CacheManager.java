@@ -33,6 +33,8 @@ interface CacheManager {
 
     <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName);
 
+    <k, V> BasicCache<k, V> getOrCreateSharedCache(String cacheName);
+
     void close();
 
     void removeCache(String cacheName);
