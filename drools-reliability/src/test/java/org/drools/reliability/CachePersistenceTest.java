@@ -15,6 +15,8 @@
 
 package org.drools.reliability;
 
+import org.drools.util.ClassUtils;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -39,6 +41,11 @@ class CachePersistenceTest extends ReliabilityTestBasics {
                     "then\n" +
                     "end";
 
+    private static boolean isWindows() {
+        return ClassUtils.isWindows();
+    }
+
+    @DisabledIf("isWindows") // temporarily disabled until DROOLS-7393 is fixed
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
     void removeAllSessionCaches_shouldRemoveAllSessionCachesEvenAfterFailover(PersistedSessionOption.Strategy strategy) {
@@ -90,5 +97,19 @@ class CachePersistenceTest extends ReliabilityTestBasics {
 
         toshiya = getPersonByName(session, "Toshiya");
         assertThat(toshiya).isEmpty(); // should not reuse the orphaned cache
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnly")
+    void reliableSessionCounter_shouldNotHaveTheSameIdAsPreviousKsession(PersistedSessionOption.Strategy strategy) {
+        createSession(EMPTY_RULE, strategy); // new session. sessionId = 0
+        long firstSessionId = session.getIdentifier();
+
+        failover();
+
+        createSession(EMPTY_RULE, strategy); // new session. sessionId = 1
+        long secondSessionId = session.getIdentifier();
+
+        assertThat(secondSessionId).isNotEqualTo(firstSessionId); // sessionId should not be the same
     }
 }
