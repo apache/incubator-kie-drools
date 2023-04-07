@@ -18,7 +18,8 @@
   <properties>
     <java.module.name>org.drools.reliability</java.module.name>
     <version.infinispan>14.0.6.Final</version.infinispan>
-  </properties>
+    <skipTests>false</skipTests> 
+ </properties>
 
   <dependencyManagement>
     <dependencies>

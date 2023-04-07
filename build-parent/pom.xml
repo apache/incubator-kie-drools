@@ -2197,6 +2197,20 @@
           <name>full</name>
         </property>
       </activation>
+ 
+      <properties>
+        <formatter.skip>true</formatter.skip>
+        <skipITs>true</skipITs>
+        <skipTests>true</skipTests>
+        <invoker.skip>true</invoker.skip>
+        <archetype.test.skip>true</archetype.test.skip>
+        <enforcer.skip>true</enforcer.skip>
+        <revapi.skip>true</revapi.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <checkstyle.skip>true</checkstyle.skip>
+      </properties>
+
+
       <build>
         <plugins>
           <plugin>

@@ -60,6 +60,7 @@ public abstract class ReliabilityTestBasics {
 
     @BeforeEach
     public void setUp() {
+        LOG.info("## setUp");
         if (CacheManagerFactory.INSTANCE.getCacheManager().isRemote()) {
             LOG.info("Starting InfinispanContainer");
             container = new InfinispanContainer();
@@ -68,10 +69,12 @@ public abstract class ReliabilityTestBasics {
             RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(CacheManagerFactory.INSTANCE.getCacheManager().provideAdditionalRemoteConfigurationBuilder());
             CacheManagerFactory.INSTANCE.getCacheManager().setRemoteCacheManager(remoteCacheManager);
         }
+        LOG.info("## setUp done");
     }
 
     @AfterEach
     public void tearDown() {
+        LOG.info("## tearDown");
         if (CacheManagerFactory.INSTANCE.getCacheManager().isRemote()) {
             CacheManagerFactory.INSTANCE.getCacheManager().close(); // close remoteCacheManager
             container.stop(); // stop remote infinispan
@@ -80,9 +83,11 @@ public abstract class ReliabilityTestBasics {
             CacheManagerFactory.INSTANCE.getCacheManager().restartWithCleanUp();
         }
         ReliableRuntimeComponentFactoryImpl.resetCounter();
+        LOG.info("## tearDown done");
     }
 
     public void failover() {
+        LOG.info("## failover");
         if (CacheManagerFactory.INSTANCE.getCacheManager().isRemote()) {
             // fail-over means restarting Drools instance. Assuming remote infinispan keeps alive
             CacheManagerFactory.INSTANCE.getCacheManager().close(); // close remoteCacheManager
@@ -93,6 +98,7 @@ public abstract class ReliabilityTestBasics {
             CacheManagerFactory.INSTANCE.getCacheManager().restart(); // restart embedded infinispan cacheManager. GlobalState and FireStore are kept
         }
         ReliableRuntimeComponentFactoryImpl.refreshCounterUsingCache();
+        LOG.info("## failover done");
     }
 
     protected FactHandle insertString(String str) {
