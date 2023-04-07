@@ -31,6 +31,8 @@ import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
 
+import static org.drools.util.Config.getConfig;
+
 public class DroolsDocsBuilder {
 
     protected final String currentDate = getFormatter().format( new Date() );
@@ -101,7 +103,7 @@ public class DroolsDocsBuilder {
     }
 
     public static String getDateFormatMask() {
-        String fmt = System.getProperty( "drools.dateformat" );
+        String fmt = getConfig( "drools.dateformat" );
         if ( fmt == null ) {
             fmt = "dd-MMM-yyyy";
         }

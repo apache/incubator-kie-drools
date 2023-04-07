@@ -5,6 +5,8 @@ import java.util.Comparator;
 
 import org.drools.core.util.Queue.QueueEntry;
 
+import static org.drools.util.Config.getConfig;
+
 public class QueueFactory {
 
     private static final String BINARY_HEAP_QUEUE = "binaryheap";
@@ -35,7 +37,7 @@ public class QueueFactory {
     private static final QueueType QUEUE_TYPE;
 
     static {
-        QUEUE_TYPE = QueueType.get(System.getProperty("org.drools.queuetype", DEFAULT_QUEUE));
+        QUEUE_TYPE = QueueType.get(getConfig("org.drools.queuetype", DEFAULT_QUEUE));
     }
 
     public static <T extends QueueEntry> Queue<T> createQueue(Comparator<T> comparator) {

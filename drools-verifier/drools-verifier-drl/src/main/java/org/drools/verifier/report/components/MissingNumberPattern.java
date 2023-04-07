@@ -26,6 +26,8 @@ import org.drools.verifier.components.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.util.Config.getConfig;
+
 public class MissingNumberPattern extends MissingRange
     implements
     Comparable<MissingRange> {
@@ -67,7 +69,7 @@ public class MissingNumberPattern extends MissingRange
             return Boolean.valueOf( value );
         } else if ( valueType.equals(Field.DATE) ) {
             try {
-                String fmt = System.getProperty( "drools.dateformat" );
+                String fmt = getConfig( "drools.dateformat" );
                 if ( fmt == null ) {
                     fmt = "dd-MMM-yyyy";
                 }

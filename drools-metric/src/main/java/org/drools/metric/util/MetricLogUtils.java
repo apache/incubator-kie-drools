@@ -20,16 +20,18 @@ import org.drools.core.common.BaseNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.util.Config.getConfig;
+
 public class MetricLogUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(MetricLogUtils.class);
 
     public static final String METRIC_LOGGER_ENABLED = "drools.metric.logger.enabled";
-    private boolean enabled = Boolean.parseBoolean(System.getProperty(METRIC_LOGGER_ENABLED, "false"));
+    private boolean enabled = Boolean.parseBoolean(getConfig(METRIC_LOGGER_ENABLED, "false"));
     private boolean micrometerAvailable = isMicrometerAvailable();
 
     public static final String METRIC_LOGGER_THRESHOLD = "drools.metric.logger.threshold";
-    private int threshold = Integer.parseInt(System.getProperty(METRIC_LOGGER_THRESHOLD, "500")); // microseconds
+    private int threshold = Integer.parseInt(getConfig(METRIC_LOGGER_THRESHOLD, "500")); // microseconds
 
     private final ThreadLocal<NodeStats> nodeStats = new ThreadLocal<>();
 

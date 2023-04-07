@@ -4,6 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.drools.core.reteoo.TupleMemory;
 
+import static org.drools.util.Config.getConfig;
+
 public class IndexMemory {
 
     private static final String INTERNAL_INDEX = "internal";
@@ -60,8 +62,8 @@ public class IndexMemory {
     private static ComparisonMemoryType COMPARISON_MEMORY_TYPE; // did not set this as final, as some tests need to change this
 
     static {
-        EQUALITY_MEMORY_TYPE = EqualityMemoryType.get(System.getProperty("org.drools.equalitymemory", DEFAULT_INDEX));
-        COMPARISON_MEMORY_TYPE = ComparisonMemoryType.get(System.getProperty("org.drools.comparisonmemory", DEFAULT_INDEX));
+        EQUALITY_MEMORY_TYPE = EqualityMemoryType.get(getConfig("org.drools.equalitymemory", DEFAULT_INDEX));
+        COMPARISON_MEMORY_TYPE = ComparisonMemoryType.get(getConfig("org.drools.comparisonmemory", DEFAULT_INDEX));
     }
 
     public static EqualityMemoryType getEqualityMemoryType() {
