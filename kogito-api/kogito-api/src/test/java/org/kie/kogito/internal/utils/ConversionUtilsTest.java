@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.internal.utils;
 
+import java.util.Objects;
+
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,8 +26,52 @@ import static org.kie.kogito.internal.utils.ConversionUtils.toCamelCase;
 
 class ConversionUtilsTest {
 
+    static class Person {
+        private final String name;
+        private final int age;
+
+        public Person(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        @Override
+        public String toString() {
+            return name + ";" + age;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(age, name);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            Person other = (Person) obj;
+            return age == other.age && Objects.equals(name, other.name);
+        }
+
+        public static Person convert(String str) {
+            String[] strs = str.split(";");
+            return new Person(strs[0], Integer.parseInt(strs[1]));
+        }
+
+    }
+
+    static class PersonConstructor {
+
+        public PersonConstructor(String str) {
+
+        }
+    }
+
     @Test
     void testConvertBoolean() {
+        assertThat(convert("true", Boolean.class)).isTrue();
         assertThat(convert("5", Boolean.class)).isFalse();
     }
 
@@ -36,26 +82,35 @@ class ConversionUtilsTest {
 
     @Test
     void testConvertDouble() {
-        final Double expectedDouble = 10.54d;
-        assertThat(convert("10.54d", Double.class)).isEqualTo(expectedDouble);
+        assertThat(convert("10.54d", Double.class)).isEqualTo(10.54d);
     }
 
     @Test
     void testConvertFloat() {
-        final Float expectedFloat = 10.54f;
-        assertThat(convert("10.54f", Float.class)).isEqualTo(expectedFloat);
+        assertThat(convert("10.54f", Float.class)).isEqualTo(10.54f);
+    }
+
+    @Test
+    void testConvertLong() {
+        assertThat(convert("1000000000", Long.class)).isEqualTo(1000000000L);
     }
 
     @Test
     void testConvertShort() {
-        final short expectedShort = 5;
-        assertThat(convert("5", Short.class)).isEqualTo(expectedShort);
+        assertThat(convert("5", Short.class)).isEqualTo((short) 5);
     }
 
     @Test
     void testConvertByte() {
-        final byte expectedByte = 112;
-        assertThat(convert("112", Byte.class)).isEqualTo(expectedByte);
+        assertThat(convert("112", Byte.class)).isEqualTo((byte) 112);
+    }
+
+    @Test
+    void testConvertPerson() {
+        Person person = new Person("Javi", 23);
+        String personAsString = person.toString();
+        assertThat(convert(personAsString, Person.class)).isEqualTo(person);
+        assertThat(convert(personAsString, PersonConstructor.class)).isInstanceOf(PersonConstructor.class);
     }
 
     @Test
