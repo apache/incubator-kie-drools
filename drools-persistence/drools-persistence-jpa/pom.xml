@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-persistence</artifactId>
-    <version>8.36.1-SNAPSHOT</version>
+    <version>quarkus-3-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-persistence-jpa</artifactId>
@@ -104,11 +104,6 @@
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -151,10 +146,16 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
+      <artifactId>hibernate-core-jakarta</artifactId>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -166,6 +167,7 @@
           <artifactId>jandex</artifactId>
         </exclusion>
       </exclusions>
+      <version>5.6.15.Final</version>
     </dependency>
     <dependency>
       <groupId>${jandex.group-id}</groupId>
@@ -191,8 +193,9 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.jta</groupId>
-      <artifactId>narayana-jta</artifactId>
+      <artifactId>narayana-jta-jakarta</artifactId>
       <scope>test</scope>
+      <version>5.13.1.Alpha1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss</groupId>

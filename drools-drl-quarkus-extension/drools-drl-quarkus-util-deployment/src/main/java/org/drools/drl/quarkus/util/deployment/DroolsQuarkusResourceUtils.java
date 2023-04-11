@@ -222,8 +222,8 @@ public class DroolsQuarkusResourceUtils {
     }
 
     private static final String RULE_UNIT_DEF_PRODUCER =
-            "import javax.enterprise.context.Dependent;\n" +
-                    "import javax.enterprise.inject.Produces;\n" +
+            "import jakarta.enterprise.context.Dependent;\n" +
+                    "import jakarta.enterprise.inject.Produces;\n" +
                     "\n" +
                     "import org.drools.ruleunits.api.RuleUnit;\n" +
                     "import org.drools.ruleunits.api.RuleUnitProvider;\n" +

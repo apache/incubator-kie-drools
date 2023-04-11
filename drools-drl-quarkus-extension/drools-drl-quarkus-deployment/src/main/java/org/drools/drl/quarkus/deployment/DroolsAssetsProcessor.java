@@ -18,7 +18,7 @@ package org.drools.drl.quarkus.deployment;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;

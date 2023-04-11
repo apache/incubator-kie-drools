@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-dmn-ruleset2dmn-parent</artifactId>
-    <version>8.36.1-SNAPSHOT</version>
+    <version>quarkus-3-SNAPSHOT</version>
   </parent>
   <artifactId>kie-dmn-ruleset2dmn</artifactId>
 

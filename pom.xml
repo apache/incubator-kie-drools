@@ -17,7 +17,7 @@
   <groupId>org.kie</groupId>
   <artifactId>drools-parent</artifactId>
   <packaging>pom</packaging>
-  <version>8.36.1-SNAPSHOT</version>
+  <version>quarkus-3-SNAPSHOT</version>
 
   <name>Drools :: Parent</name>
   <description>

@@ -16,7 +16,7 @@
 
 package org.kie.internal.runtime.manager.deploy;
 
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 import org.kie.internal.runtime.conf.ObjectModel;
 

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-model</artifactId>
-    <version>8.36.1-SNAPSHOT</version>
+    <version>quarkus-3-SNAPSHOT</version>
   </parent>
 
   <name>Drools :: MVEL Parser</name>

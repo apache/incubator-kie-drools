@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-core-bom</artifactId>
-    <version>8.36.1-SNAPSHOT</version>
+    <version>quarkus-3-SNAPSHOT</version>
     <relativePath>../kie-core-bom/pom.xml</relativePath>
   </parent>
 

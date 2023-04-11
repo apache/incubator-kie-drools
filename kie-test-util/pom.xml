@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>drools-build-parent</artifactId>
-    <version>8.36.1-SNAPSHOT</version>
+    <version>quarkus-3-SNAPSHOT</version>
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -63,7 +63,8 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.jta</groupId>
-      <artifactId>narayana-jta</artifactId>
+      <artifactId>narayana-jta-jakarta</artifactId>
+      <version>5.13.1.Alpha1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss</groupId>

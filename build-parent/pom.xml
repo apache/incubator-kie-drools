@@ -5,7 +5,7 @@
   <parent>
     <artifactId>drools-parent</artifactId>
     <groupId>org.kie</groupId>
-    <version>8.36.1-SNAPSHOT</version>
+    <version>quarkus-3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -54,9 +54,9 @@
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.1</version.info.picocli>
-    <version.io.micrometer>1.10.2</version.io.micrometer>
-    <version.io.quarkus>2.16.4.Final</version.io.quarkus>
-    <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
+    <version.io.micrometer>1.10.4</version.io.micrometer>
+    <version.io.quarkus>3.0.0.Alpha5</version.io.quarkus>
+    <version.io.smallrye.openapi.core>3.2.0</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
@@ -69,12 +69,12 @@
     <version.org.apache.httpcomponents.httpcore>4.4.15</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.maven>3.8.6</version.org.apache.maven>
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
-    <version.org.apache.maven.wagon>3.5.1</version.org.apache.maven.wagon>
+    <version.org.apache.maven.wagon>3.5.3</version.org.apache.maven.wagon>
     <version.org.apache.poi>5.1.0</version.org.apache.poi>
-    <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
+    <version.org.apache.tomcat.tomcat-dbcp>10.1.2</version.org.apache.tomcat.tomcat-dbcp>
     <version.org.assertj>3.23.1</version.org.assertj>
     <version.org.eclipse.jdt>3.18.0</version.org.eclipse.jdt>
-    <version.org.glassfish.jaxb>2.3.6</version.org.glassfish.jaxb>
+    <version.org.glassfish.jaxb>3.0.2</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>1.3</version.org.hamcrest>
     <version.org.hibernate>5.6.12.Final</version.org.hibernate>
@@ -83,23 +83,23 @@
     <version.org.jboss.narayana.tomcat>5.13.1.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
-    <version.jakarta.enterprise.cdi-api>2.0.2</version.jakarta.enterprise.cdi-api>
-    <version.jakarta.activation>1.2.1</version.jakarta.activation>
-    <version.jakarta.activation-api>1.2.1</version.jakarta.activation-api>
-    <version.jakarta.inject-api>1.0</version.jakarta.inject-api>
-    <version.jakarta.annotation-api>1.3.5</version.jakarta.annotation-api>
+    <version.jakarta.enterprise.cdi-api>4.0.1</version.jakarta.enterprise.cdi-api>
+    <version.jakarta.activation>2.0.1</version.jakarta.activation>
+    <version.jakarta.activation-api>2.1.1</version.jakarta.activation-api>
+    <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
+    <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
     <version.jakarta.ejb-api>3.2.6</version.jakarta.ejb-api>
     <version.jakarta.servlet.jsp-api>2.3.6</version.jakarta.servlet.jsp-api>
     <version.jakarta.servlet.jsp.jstl-api>2.0.0</version.jakarta.servlet.jsp.jstl-api>
-    <version.jakarta.transaction-api>1.3.3</version.jakarta.transaction-api>
-    <version.jakarta.ws.rs-api>2.1.6</version.jakarta.ws.rs-api>
-    <version.jakarta.xml.ws-api>2.3.3</version.jakarta.xml.ws-api>
-    <version.jakarta.persistence-api>2.2.3</version.jakarta.persistence-api>
-    <version.jakarta.servlet-api>4.0.3</version.jakarta.servlet-api>
-    <version.jakarta.xml.bind-api>2.3.3</version.jakarta.xml.bind-api>
-    <version.jakarta.json.bind-api>1.0.2</version.jakarta.json.bind-api>
-    <version.jakarta.json-api>1.1.6</version.jakarta.json-api>
-    <version.org.jpmml.model>1.5.1</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
+    <version.jakarta.transaction-api>2.0.1</version.jakarta.transaction-api>
+    <version.jakarta.ws.rs-api>3.1.0</version.jakarta.ws.rs-api>
+    <version.jakarta.xml.ws-api>3.0.1</version.jakarta.xml.ws-api>
+    <version.jakarta.persistence-api>3.1.0</version.jakarta.persistence-api>
+    <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
+    <version.jakarta.xml.bind-api>4.0.0</version.jakarta.xml.bind-api>
+    <version.jakarta.json.bind-api>3.0.0</version.jakarta.json.bind-api>
+    <version.jakarta.json-api>2.1.1</version.jakarta.json-api>
+    <version.org.jpmml.model>1.6.4</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
     <version.org.junit>5.9.2</version.org.junit>
     <version.org.mvel>2.4.15.Final</version.org.mvel>
     <version.org.powermock>2.0.7</version.org.powermock>
@@ -128,7 +128,7 @@
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
     <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-    <version.org.mockito>4.11.0</version.org.mockito>
+    <version.org.mockito>5.1.1</version.org.mockito>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
@@ -183,9 +183,9 @@
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.io.smallrye.jandex>3.0.5</version.io.smallrye.jandex>
     <version.io.smallrye.jandex-maven-plugin>${version.io.smallrye.jandex}</version.io.smallrye.jandex-maven-plugin>
-    <version.org.eclipse.yasson>1.0.11</version.org.eclipse.yasson>
+    <version.org.eclipse.yasson>3.0.2</version.org.eclipse.yasson>
 
-    <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
+    <version.com.github.javaparser>3.25.1</version.com.github.javaparser>
 
     <!-- JaCoCo coverage data file location -->
     <!--suppress UnresolvedMavenProperty -->
@@ -1016,18 +1016,8 @@
 
       <dependency>
         <groupId>org.jboss.narayana.jta</groupId>
-        <artifactId>narayana-jta</artifactId>
+        <artifactId>narayana-jta-jakarta</artifactId>
         <version>${version.org.jboss.narayana.tomcat}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.resource</groupId>
-            <artifactId>jboss-connector-api_1.7_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-transaction-spi</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.jboss</groupId>
@@ -1066,7 +1056,7 @@
 
       <dependency>
         <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-core</artifactId>
+        <artifactId>hibernate-core-jakarta</artifactId>
         <version>${version.org.hibernate}</version>
         <exclusions>
           <exclusion>

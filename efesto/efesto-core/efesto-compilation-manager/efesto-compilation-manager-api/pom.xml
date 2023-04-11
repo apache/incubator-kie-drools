@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>efesto-compilation-manager</artifactId>
-    <version>8.36.1-SNAPSHOT</version>
+    <version>quarkus-3-SNAPSHOT</version>
   </parent>
 
   <artifactId>efesto-compilation-manager-api</artifactId>
