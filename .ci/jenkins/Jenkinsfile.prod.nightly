@@ -36,7 +36,19 @@ pipeline {
             steps {
                 script {
                     println "[INFO] Installing build-chain tool"
-                    sh "npm install -g @kie/build-chain-action${env.NPM_REGISTRY_URL ? " -registry=${NPM_REGISTRY_URL}" : ''}"
+
+                    def buildChainActionFilePath = "${env.WORKSPACE}/build_chain_action.yaml"
+                    sh "curl https://raw.githubusercontent.com/kiegroup/kogito-pipelines/main/.ci/actions/build-chain/action.yml -o ${buildChainActionFilePath}"
+
+                    def buildChainVersion = buildChain.getBuildChainVersionFromCompositeActionFile(buildChainActionFilePath)
+                    if ([null, 'null'].contains(buildChainVersion)) {
+                        def errorMessage = "[ERROR] The build-chain version can't be recovered. Please contact administrator"
+                        println errorMessage
+                        error(errorMessage)
+                    }
+                    println "[INFO] build-chain version recovered '${buildChainVersion}'"
+
+                    sh "npm install -g @kie/build-chain-action@${buildChainVersion}${env.NPM_REGISTRY_URL ? " -registry=${NPM_REGISTRY_URL}" : ''}"
 
                     sh "npm list -g | grep build-chain"
                 }
