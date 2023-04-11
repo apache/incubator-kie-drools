@@ -1,3 +1,5 @@
+# Drools Reliability (experimental)
+
 drools-reliability is a module to add reliability to stateful ksessions backed by Infinispan so that stateful ksessions can resume after a JVM crash.
 
 ## Usage
