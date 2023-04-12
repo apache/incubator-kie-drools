@@ -13,7 +13,7 @@ UNSTABLE_STAGES = [:]
 // Should be multibranch pipeline
 pipeline {
     agent {
-        label 'kie-rhel7 && !built-in'
+        label 'kie-rhel8 && !built-in'
     }
 
     options {
@@ -61,6 +61,22 @@ pipeline {
                 }
             }
         }
+
+        // Launch the nightly to deploy all artifacts from the branch
+        stage('Launch the nightly') {
+            steps {
+                script {
+                    def buildParams = getDefaultBuildParams()
+                    addBooleanParam(buildParams, 'SKIP_TESTS', true)
+                    buildJob('../nightly/0-nightly', buildParams, 'nightly', false)
+                }
+            }
+            post {
+                failure {
+                    addFailedStage('nightly')
+                }
+            }
+        }
     }
     post {
         unsuccessful {
@@ -69,14 +85,14 @@ pipeline {
     }
 }
 
-def buildJob(String jobName, List buildParams, String jobKey = jobName) {
+def buildJob(String jobName, List buildParams, String jobKey = jobName, boolean waitForJob = true) {
     echo "[${jobKey}] Build ${jobName} with params ${buildParams}"
 
-    def job = build(job: "${jobName}", wait: true, parameters: buildParams, propagate: false)
+    def job = build(job: "${jobName}", wait: waitForJob, parameters: buildParams, propagate: false)
     JOBS[jobKey] = job
 
     // Set Unstable if job did not succeed
-    if (!isJobSucceeded(jobKey)) {
+    if (waitForJob && !isJobSucceeded(jobKey)) {
         addUnstableStage(jobKey)
         unstable("Job ${jobName} finished with result ${job.result}")
     }
