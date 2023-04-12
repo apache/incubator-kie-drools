@@ -47,6 +47,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
@@ -282,8 +283,16 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
         public void signalEvent(String type, Object event) {
             if (type.startsWith("processInstanceCompleted:")) {
                 KogitoProcessInstance pi = (KogitoProcessInstance) event;
-                if (!id().equals(pi.getProcessId()) && pi.getParentProcessInstanceId() != null) {
-                    instances().findById(pi.getParentProcessInstanceId()).ifPresent(p -> p.send(Sig.of(type, event)));
+                String parentProcessInstanceId = pi.getParentProcessInstanceId();
+                if (!id().equals(pi.getProcessId()) && ConversionUtils.isNotEmpty(parentProcessInstanceId)) {
+                    //checking if parent is present in ProcessInstanceManager (in-memory local transaction)
+                    KogitoProcessInstance parentKogitoProcessInstance = services.getProcessInstanceManager().getProcessInstance(parentProcessInstanceId);
+                    if (parentKogitoProcessInstance != null) {
+                        parentKogitoProcessInstance.signalEvent(type, event);
+                    } else {
+                        //if not present ProcessInstanceManager try to signal instance from repository
+                        instances().findById(pi.getParentProcessInstanceId()).ifPresent(p -> p.send(Sig.of(type, event)));
+                    }
                 }
             }
         }

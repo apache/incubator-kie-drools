@@ -58,10 +58,13 @@ public class SubProcessIT extends AbstractCodegenIT {
         subProcessInstance.send(Sig.of("end", "another review"));
         assertThat(subProcessInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+
+        processInstance.send(Sig.of("end", null));
+
         assertThat(processInstance.variables().toMap()).hasSize(2).contains(
                 entry("name", "test"), entry("review", "another review"));
 
-        processInstance.send(Sig.of("end", null));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 }
