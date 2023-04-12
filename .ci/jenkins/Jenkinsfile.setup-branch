@@ -5,7 +5,7 @@ import org.kie.jenkins.MavenCommand
 
 pipeline {
     agent {
-        label 'kie-rhel8 && kie-mem16g && !built-in'
+        label 'kie-rhel8 && !built-in'
     }
 
     tools {
@@ -42,7 +42,7 @@ pipeline {
                     if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
-                    dir(getRepoName()){
+                    dir(getRepoName()) {
                         checkoutRepo(getRepoName(), getBuildBranch())
                     }
                 }
@@ -51,7 +51,7 @@ pipeline {
         stage('Update project version') {
             steps {
                 script {
-                    dir(getRepoName()){
+                    dir(getRepoName()) {
                         maven.mvnVersionsSet(getMavenCommand(), getDroolsVersion(), true)
                     }
                 }
@@ -75,30 +75,21 @@ pipeline {
                     }
                 }
             }
-        } 
-        stage('Deploy to repository') {
-            when {
-                expression { return shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    dir(getRepoName()){
-                        runMavenDeploy()
-                    }    
-                }
-            }
         }
-        stage('update Drools version in kie-benchmarks') {
+
+        // Should be moved to a job in kie-benchmarks repository
+        // and called from main setup-branch job directly after drools update
+        stage('Update Drools version in kie-benchmarks') {
             when {
                 expression { isMainBranch() }
-            }            
+            }
             steps {
                 script {
                     String commitMsg = 'bumped up Drools version to next SNAPSHOT'
                     String localBranch = "kie-benchmarks-drools-update-${env.BRANCH_HASH}"
                     String targetBranch = 'main'
                     String kieBenchmarksRepo = 'kie-benchmarks'
-                    dir(kieBenchmarksRepo){
+                    dir(kieBenchmarksRepo) {
                         checkoutRepo(kieBenchmarksRepo, targetBranch)
                         githubscm.createBranch(localBranch)
                         maven.mvnSetVersionProperty('version.org.drools', getDroolsVersion())
@@ -110,7 +101,7 @@ pipeline {
                     }
                 }
             }
-        }        
+        }
     }
     post {
         unsuccessful {
@@ -138,10 +129,6 @@ void checkoutRepo(String repository, String branch) {
     sh "git checkout ${branch}"
 }
 
-boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'kiegroup'
-}
-
 String getRepoName() {
     return env.REPO_NAME
 }
@@ -167,16 +154,6 @@ MavenCommand getMavenCommand() {
     return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
                 .withProperty('full')
-}
-
-void runMavenDeploy(boolean localDeployment = false) {
-    mvnCmd = getMavenCommand()
-
-    if (env.MAVEN_DEPLOY_REPOSITORY) {
-        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
-    }
-
-    mvnCmd.skipTests(true).run('clean deploy')
 }
 
 boolean isMainBranch() {
