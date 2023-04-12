@@ -85,10 +85,10 @@ pipeline {
     }
 }
 
-def buildJob(String jobName, List buildParams, String jobKey = jobName) {
+def buildJob(String jobName, List buildParams, String jobKey = jobName, boolean waitForJob = true) {
     echo "[${jobKey}] Build ${jobName} with params ${buildParams}"
 
-    def job = build(job: "${jobName}", wait: true, parameters: buildParams, propagate: false)
+    def job = build(job: "${jobName}", wait: waitForJob, parameters: buildParams, propagate: false)
     JOBS[jobKey] = job
 
     // Set Unstable if job did not succeed
