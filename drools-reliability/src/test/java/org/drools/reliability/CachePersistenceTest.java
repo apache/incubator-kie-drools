@@ -45,7 +45,6 @@ class CachePersistenceTest extends ReliabilityTestBasics {
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
     void removeAllSessionCaches_shouldRemoveAllSessionCachesEvenAfterFailover(PersistedSessionOption.Strategy strategy) {
-        System.out.println("## removeAllSessionCaches_shouldRemoveAllSessionCachesEvenAfterFailover");
         createSession(EMPTY_RULE, strategy); // savedSessionId = 0, sessionId = 0
         insertNonMatchingPerson("Toshiya", 10);
 
