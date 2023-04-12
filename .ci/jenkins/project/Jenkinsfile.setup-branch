@@ -92,7 +92,7 @@ def buildJob(String jobName, List buildParams, String jobKey = jobName, boolean 
     JOBS[jobKey] = job
 
     // Set Unstable if job did not succeed
-    if (!isJobSucceeded(jobKey)) {
+    if (waitForJob && !isJobSucceeded(jobKey)) {
         addUnstableStage(jobKey)
         unstable("Job ${jobName} finished with result ${job.result}")
     }
