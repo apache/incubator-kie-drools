@@ -27,7 +27,7 @@ import org.kie.api.runtime.conf.PersistedSessionOption;
 import static org.drools.reliability.CacheManagerFactory.DELIMITER;
 import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
 
-interface CacheManager {
+public interface CacheManager {
 
     void initCacheManager();
 

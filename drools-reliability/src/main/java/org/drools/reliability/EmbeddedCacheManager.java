@@ -45,7 +45,7 @@ import static org.drools.reliability.CacheManagerFactory.SHARED_CACHE_PREFIX;
 import static org.drools.util.Config.getConfig;
 import static org.drools.util.Config.getOptionalConfig;
 
-class EmbeddedCacheManager implements CacheManager {
+public class EmbeddedCacheManager implements CacheManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedCacheManager.class);
 

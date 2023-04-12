@@ -35,7 +35,7 @@ import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
 import static org.drools.reliability.CacheManagerFactory.SHARED_CACHE_PREFIX;
 import static org.drools.util.Config.getConfig;
 
-class RemoteCacheManager implements CacheManager {
+public class RemoteCacheManager implements CacheManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(RemoteCacheManager.class);
 

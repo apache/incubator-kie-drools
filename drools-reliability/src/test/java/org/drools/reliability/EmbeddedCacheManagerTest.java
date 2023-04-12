@@ -15,20 +15,21 @@
 
 package org.drools.reliability;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.infinispan.manager.DefaultCacheManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
 import static org.drools.reliability.CacheManagerFactory.RELIABILITY_CACHE_MODE;
 import static org.drools.reliability.CacheManagerFactory.SESSION_CACHE_PREFIX;
+import static org.drools.util.Config.getConfig;
 
 /**
  *  This class is a unit test for EmbeddedCacheManager methods with a fake cacheManager instead of Infinispan DefaultCacheManager.
@@ -47,7 +48,7 @@ class EmbeddedCacheManagerTest {
     }
 
     private static boolean isRemote() {
-        return "REMOTE".equalsIgnoreCase(System.getProperty(RELIABILITY_CACHE_MODE));
+        return "REMOTE".equalsIgnoreCase(getConfig(RELIABILITY_CACHE_MODE));
     }
 
     @Test

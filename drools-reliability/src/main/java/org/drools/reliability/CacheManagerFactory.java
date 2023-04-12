@@ -15,6 +15,10 @@
 
 package org.drools.reliability;
 
+import org.drools.util.Config;
+
+import static org.drools.util.Config.getConfig;
+
 public enum CacheManagerFactory {
 
     INSTANCE;
@@ -35,7 +39,7 @@ public enum CacheManagerFactory {
     private final CacheManager cacheManager;
 
     CacheManagerFactory() {
-        if ("REMOTE".equalsIgnoreCase(System.getProperty(RELIABILITY_CACHE_MODE))) {
+        if ("REMOTE".equalsIgnoreCase(getConfig(RELIABILITY_CACHE_MODE))) {
             cacheManager = RemoteCacheManager.INSTANCE;
         } else {
             cacheManager = EmbeddedCacheManager.INSTANCE;
