@@ -108,7 +108,7 @@ pipeline {
                 script {
                     echo "[INFO] Start uploading sources zip files.."
 
-                    def folder="${env.RCM_GUEST_FOLDER}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly"
+                    def folder="rhbop/RHBOP-${PRODUCT_VERSION}.nightly"
 
                     // zip source directories
                     dir("${env.WORKSPACE}/deployDirectory/org/kie/rhbop/rhbop/${PRODUCT_VERSION}.redhat-${env.DATE_TIME_SUFFIX}") {
@@ -247,9 +247,9 @@ def computeSourcesFilename(String project, String suffix) {
 
 def uploadSources(String sourcesFilename, String folder) {
     echo "[INFO] Start uploading $sourcesFilename sources zip file.."
-    sshagent(credentials: ['rcm-publish-server']) {
-        sh "ssh 'rhba@${env.RCM_HOST}' 'mkdir -p ${folder}'"
-        sh "scp -o StrictHostKeyChecking=no $sourcesFilename rhba@${env.RCM_HOST}:${folder}"
+    util.withKerberos('rhba-prod-keytab') {
+        sh "ssh 'rhba-prod@${env.RCM_HOST}' 'mkdir -p ${env.RCM_GUEST_FOLDER}/${folder}'"
+        sh "rsync -rlp --info=progress2 $sourcesFilename rhba-prod@${env.RCM_HOST}:staging/${folder}"
     }
 }
 
