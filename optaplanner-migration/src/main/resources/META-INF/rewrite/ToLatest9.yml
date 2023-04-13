@@ -31,10 +31,13 @@ tags:
 recipeList:
   - org.openrewrite.maven.ChangePropertyValue:
       key: quarkus.platform.version
-      newValue: 3.0.0.CR1
+      newValue: 3.0.0.Final
   - org.openrewrite.maven.ChangePropertyValue:
       key: quarkus.version
-      newValue: 3.0.0.CR1
+      newValue: 3.0.0.Final
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.io.quarkus
+      newValue: 3.0.0.Final
   - org.openrewrite.java.migrate.jakarta.JavaxActivationMigrationToJakartaActivation
   - org.openrewrite.java.migrate.jakarta.JavaxAnnotationMigrationToJakartaAnnotation
   - org.openrewrite.java.migrate.jakarta.ChangeJavaxAnnotationToJakarta
@@ -81,6 +84,119 @@ recipeList:
   - io.quarkus.updates.core.quarkus30.JavaxToJakartaCodestarts
   - io.quarkus.updates.core.quarkus30.JavaxToJakartaCodestartsTests
   - io.quarkus.updates.core.quarkus30.JavaxToJakartaKotlin
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.quarkus.updates.core.quarkus30.UpgradeQuarkiverse
+recipeList:
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkus.bot
+      artifactId: 'build-reporter-*'
+      newVersion: 3.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.vault
+      artifactId: '*'
+      newVersion: 3.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.amazonservices
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.cxf
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.jsch
+      artifactId: '*'
+      newVersion: 3.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.jberet
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.artemis
+      artifactId: '*'
+      newVersion: 3.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.config
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.freemarker
+      artifactId: '*'
+      newVersion: 1.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.githubapp
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.mybatis
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.messaginghub
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.prettytime
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.xmlsec
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.jef
+      artifactId: '*'
+      newVersion: 3.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.githubaction
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.hibernatesearchextras
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.jackson-jq
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.jdbc
+      artifactId: '*'
+      newVersion: 3.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.microprofile
+      artifactId: '*'
+      newVersion: 3.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.minio
+      artifactId: '*'
+      newVersion: 3.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.pact
+      artifactId: '*'
+      newVersion: 1.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.poi
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.primefaces
+      artifactId: '*'
+      newVersion: 3.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.reactivemessaging.http
+      artifactId: '*'
+      newVersion: 2.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.renarde
+      artifactId: '*'
+      newVersion: 3.x
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.shardingsphere
+      artifactId: '*'
+      newVersion: 2.x
+
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.java.migrate.jakarta.JavaxActivationMigrationToJakartaActivation
@@ -948,6 +1064,10 @@ recipeList:
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: com.fasterxml.jackson.datatype.jsr353.JSR353Module
       newFullyQualifiedTypeName: com.fasterxml.jackson.datatype.jsonp.JSONPModule
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: com.fasterxml.jackson.jaxrs
+      newPackageName: com.fasterxml.jackson.jakarta.rs
+      recursive: true
 
 ---
 # Currently this recipe is only updating the artifacts to a version that is compatible with J2EE 9. There still may be
@@ -978,18 +1098,39 @@ recipeList:
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.hibernate
       oldArtifactId: hibernate-core
-      newGroupId: org.hibernate
-      newArtifactId: hibernate-core-jakarta
+      newGroupId: org.hibernate.orm
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.hibernate
       oldArtifactId: hibernate-envers
-      newGroupId: org.hibernate
-      newArtifactId: hibernate-envers-jakarta
+      newGroupId: org.hibernate.orm
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.hibernate
       oldArtifactId: hibernate-jpamodelgen
-      newGroupId: org.hibernate
-      newArtifactId: hibernate-jpamodelgen-jakarta
+      newGroupId: org.hibernate.orm
+  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
+      oldGroupId: org.hibernate
+      oldArtifactId: hibernate-spatial
+      newGroupId: org.hibernate.orm
+  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
+      oldGroupId: org.hibernate
+      oldArtifactId: hibernate-testing
+      newGroupId: org.hibernate.orm
+  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
+      oldGroupId: org.hibernate
+      oldArtifactId: hibernate-micrometer
+      newGroupId: org.hibernate.orm
+  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
+      oldGroupId: org.hibernate
+      oldArtifactId: hibernate-jcache
+      newGroupId: org.hibernate.orm
+  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
+      oldGroupId: org.hibernate
+      oldArtifactId: hibernate-infinispan
+      newGroupId: org.hibernate.orm
+  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
+      oldGroupId: org.hibernate
+      oldArtifactId: hibernate-ehcache
+      newGroupId: org.hibernate.orm
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.hibernate.search
       oldArtifactId: hibernate-search-mapper-orm-coordination-outbox-polling
@@ -1000,11 +1141,6 @@ recipeList:
       oldArtifactId: hibernate-search-mapper-orm
       newGroupId: org.hibernate.search
       newArtifactId: hibernate-search-mapper-orm-jakarta
-  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
-      oldGroupId: org.hibernate.reactive
-      oldArtifactId: hibernate-reactive-core
-      newGroupId: org.hibernate.reactive
-      newArtifactId: hibernate-reactive-core-jakarta
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.hibernate
       oldArtifactId: quarkus-local-cache
@@ -1114,118 +1250,10 @@ recipeList:
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: io.quarkus.arc.Priority
       newFullyQualifiedTypeName: jakarta.annotation.Priority
-
-#####
-# Update the Quarkiverse extensions
-#####
----
-type: specs.openrewrite.org/v1beta/recipe
-name: io.quarkus.updates.core.quarkus30.UpgradeQuarkiverse
-recipeList:
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.vault
-      artifactId: '*'
-      newVersion: 3.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.amazonservices
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.cxf
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.jsch
-      artifactId: '*'
-      newVersion: 3.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.jberet
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.artemis
-      artifactId: '*'
-      newVersion: 3.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.config
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.freemarker
-      artifactId: '*'
-      newVersion: 1.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.githubapp
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.mybatis
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.messaginghub
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.prettytime
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.xmlsec
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.jef
-      artifactId: '*'
-      newVersion: 3.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.githubaction
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.hibernatesearchextras
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.jackson-jq
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.jdbc
-      artifactId: '*'
-      newVersion: 3.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.microprofile
-      artifactId: '*'
-      newVersion: 3.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.minio
-      artifactId: '*'
-      newVersion: 3.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.pact
-      artifactId: '*'
-      newVersion: 1.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.poi
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.primefaces
-      artifactId: '*'
-      newVersion: 3.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.reactivemessaging.http
-      artifactId: '*'
-      newVersion: 2.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.renarde
-      artifactId: '*'
-      newVersion: 3.x
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.quarkiverse.shardingsphere
-      artifactId: '*'
-      newVersion: 2.x
+  - org.openrewrite.text.FindAndReplace:
+      find: quarkus-bootstrap-maven-plugin
+      replace: quarkus-extension-maven-plugin
+      fileMatcher: '**/pom.xml'
 
 #####
 # Adjust properties in application.properties
@@ -1233,35 +1261,32 @@ recipeList:
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.ApplicationProperties
+applicability:
+  singleSource:
+    - org.openrewrite.FindSourceFiles:
+        filePattern: "**/application*.properties"
 recipeList:
   - org.openrewrite.properties.ChangePropertyKey:
       oldPropertyKey: quarkus.kubernetes.expose
       newPropertyKey: quarkus.kubernetes.ingress.expose
-      fileMatcher: "**/application*.properties"
   - org.openrewrite.properties.ChangePropertyKey:
       oldPropertyKey: quarkus.openshift.expose
       newPropertyKey: quarkus.openshift.route.expose
-      fileMatcher: "**/application*.properties"
   - org.openrewrite.properties.ChangePropertyKey:
       oldPropertyKey: quarkus.kubernetes.host
       newPropertyKey: quarkus.kubernetes.ingress.host
-      fileMatcher: "**/application*.properties"
   - org.openrewrite.properties.ChangePropertyKey:
       oldPropertyKey: quarkus.openshift.host
       newPropertyKey: quarkus.openshift.route.host
-      fileMatcher: "**/application*.properties"
   - org.openrewrite.properties.ChangePropertyKey:
       oldPropertyKey: quarkus.kubernetes.group
       newPropertyKey: quarkus.kubernetes.part-of
-      fileMatcher: "**/application*.properties"
   - org.openrewrite.properties.ChangePropertyKey:
       oldPropertyKey: quarkus.openshift.group
       newPropertyKey: quarkus.openshift.part-of
-      fileMatcher: "**/application*.properties"
   - org.openrewrite.properties.ChangePropertyKey:
       oldPropertyKey: quarkus.jib.labels
       newPropertyKey: quarkus.container-image.labels
-      fileMatcher: "**/application*.properties"
 
 #####
 # Adjust properties in application.yml
@@ -1269,35 +1294,32 @@ recipeList:
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.ApplicationYml
+applicability:
+  singleSource:
+    - org.openrewrite.FindSourceFiles:
+        filePattern: "**/application*.yml"
 recipeList:
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.kubernetes.expose
       newPropertyKey: quarkus.kubernetes.ingress.expose
-      fileMatcher: "**/application*.yml"
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.openshift.expose
       newPropertyKey: quarkus.openshift.route.expose
-      fileMatcher: "**/application*.yml"
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.kubernetes.host
       newPropertyKey: quarkus.kubernetes.ingress.host
-      fileMatcher: "**/application*.yml"
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.openshift.host
       newPropertyKey: quarkus.openshift.route.host
-      fileMatcher: "**/application*.yml"
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.kubernetes.group
       newPropertyKey: quarkus.kubernetes.part-of
-      fileMatcher: "**/application*.yml"
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.openshift.group
       newPropertyKey: quarkus.openshift.part-of
-      fileMatcher: "**/application*.yml"
   - org.openrewrite.properties.ChangePropertyKey:
       oldPropertyKey: quarkus.jib.labels
       newPropertyKey: quarkus.container-image.labels
-      fileMatcher: "**/application*.yml"
 
 #####
 # Adjust properties in application.yaml
@@ -1305,35 +1327,32 @@ recipeList:
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.ApplicationYaml
+applicability:
+  singleSource:
+    - org.openrewrite.FindSourceFiles:
+        filePattern: "**/application*.yaml"
 recipeList:
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.kubernetes.expose
       newPropertyKey: quarkus.kubernetes.ingress.expose
-      fileMatcher: "**/application*.yaml"
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.openshift.expose
       newPropertyKey: quarkus.openshift.route.expose
-      fileMatcher: "**/application*.yaml"
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.kubernetes.host
       newPropertyKey: quarkus.kubernetes.ingress.host
-      fileMatcher: "**/application*.yaml"
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.openshift.host
       newPropertyKey: quarkus.openshift.route.host
-      fileMatcher: "**/application*.yaml"
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.kubernetes.group
       newPropertyKey: quarkus.kubernetes.part-of
-      fileMatcher: "**/application*.yaml"
   - org.openrewrite.yaml.ChangePropertyKey:
       oldPropertyKey: quarkus.openshift.group
       newPropertyKey: quarkus.openshift.part-of
-      fileMatcher: "**/application*.yaml"
   - org.openrewrite.properties.ChangePropertyKey:
       oldPropertyKey: quarkus.jib.labels
       newPropertyKey: quarkus.container-image.labels
-      fileMatcher: "**/application*.yaml"
 
 #####
 # Generated by PropertiesToRecipe.java from jakarta-renames.properties
@@ -1341,2740 +1360,2080 @@ recipeList:
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.JavaxToJakartaDocumentationAdoc
+applicability:
+  singleSource:
+    - org.openrewrite.FindSourceFiles:
+        filePattern: "**/*.adoc"
 recipeList:
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.config.
       replace: jakarta.json.bind.config.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.soap.
       replace: jakarta.xml.soap.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.jacc.
       replace: jakarta.security.jacc.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.internet.
       replace: jakarta.mail.internet.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.chunk.
       replace: jakarta.batch.api.chunk.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.spi.
       replace: jakarta.json.spi.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.
       replace: jakarta.resource.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.work.
       replace: jakarta.resource.spi.work.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.annotation.adapters.
       replace: jakarta.xml.bind.annotation.adapters.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.webapp.
       replace: jakarta.faces.webapp.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.application.
       replace: jakarta.faces.application.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.util.
       replace: jakarta.xml.bind.util.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.criteria.
       replace: jakarta.persistence.criteria.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.event.
       replace: jakarta.faces.event.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.activation.
       replace: jakarta.activation.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.flow.builder.
       replace: jakarta.faces.flow.builder.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.websocket.
       replace: jakarta.websocket.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.serializer.
       replace: jakarta.json.bind.serializer.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.se.
       replace: jakarta.enterprise.inject.se.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.cci.
       replace: jakarta.resource.cci.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.spi.
       replace: jakarta.validation.spi.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.transaction.
       replace: jakarta.transaction.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.attachment.
       replace: jakarta.xml.bind.attachment.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.interceptor.
       replace: jakarta.interceptor.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.helpers.
       replace: jakarta.xml.bind.helpers.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.embeddable.
       replace: jakarta.ejb.embeddable.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.
       replace: jakarta.persistence.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.
       replace: jakarta.enterprise.inject.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.event.
       replace: jakarta.mail.event.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.endpoint.
       replace: jakarta.resource.spi.endpoint.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.visit.
       replace: jakarta.faces.component.visit.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.
       replace: jakarta.servlet.jsp.jstl.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.el.
       replace: jakarta.servlet.jsp.el.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.el.
       replace: jakarta.faces.el.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.
       replace: jakarta.xml.bind.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.adapter.
       replace: jakarta.json.bind.adapter.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.valueextraction.
       replace: jakarta.validation.valueextraction.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.view.facelets.
       replace: jakarta.faces.view.facelets.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.flow.
       replace: jakarta.faces.flow.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.render.
       replace: jakarta.faces.render.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.util.
       replace: jakarta.mail.util.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.runtime.context.
       replace: jakarta.batch.runtime.context.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.security.
       replace: jakarta.annotation.security.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.
       replace: jakarta.faces.component.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.fmt.
       replace: jakarta.servlet.jsp.jstl.fmt.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.spi.
       replace: jakarta.json.bind.spi.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.
       replace: jakarta.servlet.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.operations.
       replace: jakarta.batch.operations.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.push.
       replace: jakarta.faces.push.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.descriptor.
       replace: jakarta.servlet.descriptor.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.handler.soap.
       replace: jakarta.xml.ws.handler.soap.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.executable.
       replace: jakarta.validation.executable.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.behavior.
       replace: jakarta.faces.component.behavior.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.annotation.
       replace: jakarta.xml.bind.annotation.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.runtime.
       replace: jakarta.batch.runtime.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.stream.
       replace: jakarta.json.stream.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.annotation.
       replace: jakarta.servlet.annotation.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.resources.
       replace: jakarta.servlet.resources.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.http.
       replace: jakarta.servlet.http.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.spi.http.
       replace: jakarta.xml.ws.spi.http.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.container.
       replace: jakarta.ws.rs.container.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.
       replace: jakarta.xml.ws.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.spi.
       replace: jakarta.enterprise.context.spi.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.
       replace: jakarta.resource.spi.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.validator.
       replace: jakarta.faces.validator.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jws.
       replace: jakarta.jws.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.
       replace: jakarta.annotation.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.search.
       replace: jakarta.faces.component.search.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.
       replace: jakarta.json.bind.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.tlv.
       replace: jakarta.servlet.jsp.jstl.tlv.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.core.
       replace: jakarta.servlet.jsp.jstl.core.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.decorator.
       replace: jakarta.decorator.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.bean.
       replace: jakarta.faces.bean.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.sse.
       replace: jakarta.ws.rs.sse.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.metamodel.
       replace: jakarta.persistence.metamodel.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.
       replace: jakarta.enterprise.context.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.spi.
       replace: jakarta.xml.ws.spi.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.
       replace: jakarta.batch.api.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.el.
       replace: jakarta.el.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.
       replace: jakarta.json.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.chunk.listener.
       replace: jakarta.batch.api.chunk.listener.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.spi.
       replace: jakarta.persistence.spi.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.handler.
       replace: jakarta.xml.ws.handler.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.sql.
       replace: jakarta.servlet.jsp.jstl.sql.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.literal.
       replace: jakarta.enterprise.inject.literal.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.ext.
       replace: jakarta.ws.rs.ext.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.constraints.
       replace: jakarta.validation.constraints.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.resources.
       replace: jakarta.servlet.jsp.resources.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.constraintvalidation.
       replace: jakarta.validation.constraintvalidation.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.lifecycle.
       replace: jakarta.faces.lifecycle.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.callback.
       replace: jakarta.security.auth.message.callback.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.
       replace: jakarta.ws.rs.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.config.
       replace: jakarta.security.auth.message.config.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.websocket.server.
       replace: jakarta.websocket.server.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.authentication.mechanism.http.
       replace: jakarta.security.enterprise.authentication.mechanism.http.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.event.
       replace: jakarta.enterprise.event.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.inject.
       replace: jakarta.inject.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.listener.
       replace: jakarta.batch.api.listener.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.http.
       replace: jakarta.xml.ws.http.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.soap.
       replace: jakarta.xml.ws.soap.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.spi.
       replace: jakarta.enterprise.inject.spi.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.
       replace: jakarta.faces.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jms.
       replace: jakarta.jms.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.wsaddressing.
       replace: jakarta.xml.ws.wsaddressing.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.bootstrap.
       replace: jakarta.validation.bootstrap.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.spi.
       replace: jakarta.ejb.spi.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.metadata.
       replace: jakarta.validation.metadata.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.
       replace: jakarta.servlet.jsp.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.convert.
       replace: jakarta.faces.convert.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.
       replace: jakarta.mail.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.concurrent.
       replace: jakarta.enterprise.concurrent.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.partition.
       replace: jakarta.batch.api.partition.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.html.
       replace: jakarta.faces.component.html.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.spi.configurator.
       replace: jakarta.enterprise.inject.spi.configurator.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.credential.
       replace: jakarta.security.enterprise.credential.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.control.
       replace: jakarta.enterprise.context.control.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.annotation.
       replace: jakarta.json.bind.annotation.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.search.
       replace: jakarta.mail.search.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.util.
       replace: jakarta.enterprise.util.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.client.
       replace: jakarta.ws.rs.client.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.model.
       replace: jakarta.faces.model.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.security.
       replace: jakarta.resource.spi.security.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.view.
       replace: jakarta.faces.view.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.
       replace: jakarta.security.enterprise.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.tagext.
       replace: jakarta.servlet.jsp.tagext.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.core.
       replace: jakarta.ws.rs.core.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.module.
       replace: jakarta.security.auth.message.module.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.context.
       replace: jakarta.faces.context.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.
       replace: jakarta.security.auth.message.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.sql.
       replace: jakarta.annotation.sql.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.annotation.
       replace: jakarta.faces.annotation.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.groups.
       replace: jakarta.validation.groups.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jws.soap.
       replace: jakarta.jws.soap.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.
       replace: jakarta.ejb.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.identitystore.
       replace: jakarta.security.enterprise.identitystore.
-      fileMatcher: '**/*.adoc'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.
       replace: jakarta.validation.
-      fileMatcher: '**/*.adoc'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.JavaxToJakartaDocumentationMd
+applicability:
+  singleSource:
+    - org.openrewrite.FindSourceFiles:
+        filePattern: "**/*.md"
 recipeList:
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.config.
       replace: jakarta.json.bind.config.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.soap.
       replace: jakarta.xml.soap.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.jacc.
       replace: jakarta.security.jacc.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.internet.
       replace: jakarta.mail.internet.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.chunk.
       replace: jakarta.batch.api.chunk.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.spi.
       replace: jakarta.json.spi.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.
       replace: jakarta.resource.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.work.
       replace: jakarta.resource.spi.work.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.annotation.adapters.
       replace: jakarta.xml.bind.annotation.adapters.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.webapp.
       replace: jakarta.faces.webapp.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.application.
       replace: jakarta.faces.application.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.util.
       replace: jakarta.xml.bind.util.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.criteria.
       replace: jakarta.persistence.criteria.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.event.
       replace: jakarta.faces.event.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.activation.
       replace: jakarta.activation.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.flow.builder.
       replace: jakarta.faces.flow.builder.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.websocket.
       replace: jakarta.websocket.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.serializer.
       replace: jakarta.json.bind.serializer.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.se.
       replace: jakarta.enterprise.inject.se.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.cci.
       replace: jakarta.resource.cci.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.spi.
       replace: jakarta.validation.spi.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.transaction.
       replace: jakarta.transaction.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.attachment.
       replace: jakarta.xml.bind.attachment.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.interceptor.
       replace: jakarta.interceptor.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.helpers.
       replace: jakarta.xml.bind.helpers.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.embeddable.
       replace: jakarta.ejb.embeddable.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.
       replace: jakarta.persistence.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.
       replace: jakarta.enterprise.inject.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.event.
       replace: jakarta.mail.event.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.endpoint.
       replace: jakarta.resource.spi.endpoint.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.visit.
       replace: jakarta.faces.component.visit.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.
       replace: jakarta.servlet.jsp.jstl.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.el.
       replace: jakarta.servlet.jsp.el.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.el.
       replace: jakarta.faces.el.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.
       replace: jakarta.xml.bind.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.adapter.
       replace: jakarta.json.bind.adapter.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.valueextraction.
       replace: jakarta.validation.valueextraction.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.view.facelets.
       replace: jakarta.faces.view.facelets.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.flow.
       replace: jakarta.faces.flow.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.render.
       replace: jakarta.faces.render.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.util.
       replace: jakarta.mail.util.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.runtime.context.
       replace: jakarta.batch.runtime.context.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.security.
       replace: jakarta.annotation.security.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.
       replace: jakarta.faces.component.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.fmt.
       replace: jakarta.servlet.jsp.jstl.fmt.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.spi.
       replace: jakarta.json.bind.spi.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.
       replace: jakarta.servlet.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.operations.
       replace: jakarta.batch.operations.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.push.
       replace: jakarta.faces.push.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.descriptor.
       replace: jakarta.servlet.descriptor.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.handler.soap.
       replace: jakarta.xml.ws.handler.soap.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.executable.
       replace: jakarta.validation.executable.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.behavior.
       replace: jakarta.faces.component.behavior.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.annotation.
       replace: jakarta.xml.bind.annotation.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.runtime.
       replace: jakarta.batch.runtime.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.stream.
       replace: jakarta.json.stream.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.annotation.
       replace: jakarta.servlet.annotation.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.resources.
       replace: jakarta.servlet.resources.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.http.
       replace: jakarta.servlet.http.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.spi.http.
       replace: jakarta.xml.ws.spi.http.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.container.
       replace: jakarta.ws.rs.container.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.
       replace: jakarta.xml.ws.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.spi.
       replace: jakarta.enterprise.context.spi.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.
       replace: jakarta.resource.spi.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.validator.
       replace: jakarta.faces.validator.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jws.
       replace: jakarta.jws.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.
       replace: jakarta.annotation.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.search.
       replace: jakarta.faces.component.search.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.
       replace: jakarta.json.bind.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.tlv.
       replace: jakarta.servlet.jsp.jstl.tlv.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.core.
       replace: jakarta.servlet.jsp.jstl.core.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.decorator.
       replace: jakarta.decorator.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.bean.
       replace: jakarta.faces.bean.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.sse.
       replace: jakarta.ws.rs.sse.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.metamodel.
       replace: jakarta.persistence.metamodel.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.
       replace: jakarta.enterprise.context.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.spi.
       replace: jakarta.xml.ws.spi.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.
       replace: jakarta.batch.api.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.el.
       replace: jakarta.el.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.
       replace: jakarta.json.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.chunk.listener.
       replace: jakarta.batch.api.chunk.listener.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.spi.
       replace: jakarta.persistence.spi.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.handler.
       replace: jakarta.xml.ws.handler.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.sql.
       replace: jakarta.servlet.jsp.jstl.sql.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.literal.
       replace: jakarta.enterprise.inject.literal.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.ext.
       replace: jakarta.ws.rs.ext.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.constraints.
       replace: jakarta.validation.constraints.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.resources.
       replace: jakarta.servlet.jsp.resources.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.constraintvalidation.
       replace: jakarta.validation.constraintvalidation.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.lifecycle.
       replace: jakarta.faces.lifecycle.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.callback.
       replace: jakarta.security.auth.message.callback.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.
       replace: jakarta.ws.rs.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.config.
       replace: jakarta.security.auth.message.config.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.websocket.server.
       replace: jakarta.websocket.server.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.authentication.mechanism.http.
       replace: jakarta.security.enterprise.authentication.mechanism.http.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.event.
       replace: jakarta.enterprise.event.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.inject.
       replace: jakarta.inject.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.listener.
       replace: jakarta.batch.api.listener.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.http.
       replace: jakarta.xml.ws.http.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.soap.
       replace: jakarta.xml.ws.soap.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.spi.
       replace: jakarta.enterprise.inject.spi.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.
       replace: jakarta.faces.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jms.
       replace: jakarta.jms.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.wsaddressing.
       replace: jakarta.xml.ws.wsaddressing.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.bootstrap.
       replace: jakarta.validation.bootstrap.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.spi.
       replace: jakarta.ejb.spi.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.metadata.
       replace: jakarta.validation.metadata.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.
       replace: jakarta.servlet.jsp.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.convert.
       replace: jakarta.faces.convert.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.
       replace: jakarta.mail.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.concurrent.
       replace: jakarta.enterprise.concurrent.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.partition.
       replace: jakarta.batch.api.partition.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.html.
       replace: jakarta.faces.component.html.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.spi.configurator.
       replace: jakarta.enterprise.inject.spi.configurator.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.credential.
       replace: jakarta.security.enterprise.credential.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.control.
       replace: jakarta.enterprise.context.control.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.annotation.
       replace: jakarta.json.bind.annotation.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.search.
       replace: jakarta.mail.search.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.util.
       replace: jakarta.enterprise.util.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.client.
       replace: jakarta.ws.rs.client.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.model.
       replace: jakarta.faces.model.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.security.
       replace: jakarta.resource.spi.security.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.view.
       replace: jakarta.faces.view.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.
       replace: jakarta.security.enterprise.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.tagext.
       replace: jakarta.servlet.jsp.tagext.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.core.
       replace: jakarta.ws.rs.core.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.module.
       replace: jakarta.security.auth.message.module.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.context.
       replace: jakarta.faces.context.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.
       replace: jakarta.security.auth.message.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.sql.
       replace: jakarta.annotation.sql.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.annotation.
       replace: jakarta.faces.annotation.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.groups.
       replace: jakarta.validation.groups.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jws.soap.
       replace: jakarta.jws.soap.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.
       replace: jakarta.ejb.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.identitystore.
       replace: jakarta.security.enterprise.identitystore.
-      fileMatcher: '**/*.md'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.
       replace: jakarta.validation.
-      fileMatcher: '**/*.md'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.JavaxToJakartaCodestarts
+applicability:
+  singleSource:
+    - org.openrewrite.FindSourceFiles:
+        filePattern: "**/src/main/codestarts/**/*.java"
 recipeList:
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.config.
       replace: jakarta.json.bind.config.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.soap.
       replace: jakarta.xml.soap.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.jacc.
       replace: jakarta.security.jacc.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.internet.
       replace: jakarta.mail.internet.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.chunk.
       replace: jakarta.batch.api.chunk.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.spi.
       replace: jakarta.json.spi.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.
       replace: jakarta.resource.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.work.
       replace: jakarta.resource.spi.work.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.annotation.adapters.
       replace: jakarta.xml.bind.annotation.adapters.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.webapp.
       replace: jakarta.faces.webapp.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.application.
       replace: jakarta.faces.application.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.util.
       replace: jakarta.xml.bind.util.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.criteria.
       replace: jakarta.persistence.criteria.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.event.
       replace: jakarta.faces.event.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.activation.
       replace: jakarta.activation.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.flow.builder.
       replace: jakarta.faces.flow.builder.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.websocket.
       replace: jakarta.websocket.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.serializer.
       replace: jakarta.json.bind.serializer.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.se.
       replace: jakarta.enterprise.inject.se.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.cci.
       replace: jakarta.resource.cci.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.spi.
       replace: jakarta.validation.spi.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.transaction.
       replace: jakarta.transaction.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.attachment.
       replace: jakarta.xml.bind.attachment.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.interceptor.
       replace: jakarta.interceptor.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.helpers.
       replace: jakarta.xml.bind.helpers.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.embeddable.
       replace: jakarta.ejb.embeddable.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.
       replace: jakarta.persistence.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.
       replace: jakarta.enterprise.inject.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.event.
       replace: jakarta.mail.event.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.endpoint.
       replace: jakarta.resource.spi.endpoint.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.visit.
       replace: jakarta.faces.component.visit.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.
       replace: jakarta.servlet.jsp.jstl.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.el.
       replace: jakarta.servlet.jsp.el.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.el.
       replace: jakarta.faces.el.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.
       replace: jakarta.xml.bind.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.adapter.
       replace: jakarta.json.bind.adapter.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.valueextraction.
       replace: jakarta.validation.valueextraction.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.view.facelets.
       replace: jakarta.faces.view.facelets.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.flow.
       replace: jakarta.faces.flow.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.render.
       replace: jakarta.faces.render.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.util.
       replace: jakarta.mail.util.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.runtime.context.
       replace: jakarta.batch.runtime.context.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.security.
       replace: jakarta.annotation.security.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.
       replace: jakarta.faces.component.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.fmt.
       replace: jakarta.servlet.jsp.jstl.fmt.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.spi.
       replace: jakarta.json.bind.spi.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.
       replace: jakarta.servlet.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.operations.
       replace: jakarta.batch.operations.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.push.
       replace: jakarta.faces.push.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.descriptor.
       replace: jakarta.servlet.descriptor.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.handler.soap.
       replace: jakarta.xml.ws.handler.soap.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.executable.
       replace: jakarta.validation.executable.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.behavior.
       replace: jakarta.faces.component.behavior.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.annotation.
       replace: jakarta.xml.bind.annotation.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.runtime.
       replace: jakarta.batch.runtime.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.stream.
       replace: jakarta.json.stream.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.annotation.
       replace: jakarta.servlet.annotation.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.resources.
       replace: jakarta.servlet.resources.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.http.
       replace: jakarta.servlet.http.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.spi.http.
       replace: jakarta.xml.ws.spi.http.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.container.
       replace: jakarta.ws.rs.container.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.
       replace: jakarta.xml.ws.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.spi.
       replace: jakarta.enterprise.context.spi.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.
       replace: jakarta.resource.spi.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.validator.
       replace: jakarta.faces.validator.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jws.
       replace: jakarta.jws.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.
       replace: jakarta.annotation.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.search.
       replace: jakarta.faces.component.search.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.
       replace: jakarta.json.bind.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.tlv.
       replace: jakarta.servlet.jsp.jstl.tlv.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.core.
       replace: jakarta.servlet.jsp.jstl.core.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.decorator.
       replace: jakarta.decorator.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.bean.
       replace: jakarta.faces.bean.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.sse.
       replace: jakarta.ws.rs.sse.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.metamodel.
       replace: jakarta.persistence.metamodel.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.
       replace: jakarta.enterprise.context.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.spi.
       replace: jakarta.xml.ws.spi.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.
       replace: jakarta.batch.api.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.el.
       replace: jakarta.el.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.
       replace: jakarta.json.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.chunk.listener.
       replace: jakarta.batch.api.chunk.listener.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.spi.
       replace: jakarta.persistence.spi.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.handler.
       replace: jakarta.xml.ws.handler.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.sql.
       replace: jakarta.servlet.jsp.jstl.sql.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.literal.
       replace: jakarta.enterprise.inject.literal.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.ext.
       replace: jakarta.ws.rs.ext.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.constraints.
       replace: jakarta.validation.constraints.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.resources.
       replace: jakarta.servlet.jsp.resources.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.constraintvalidation.
       replace: jakarta.validation.constraintvalidation.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.lifecycle.
       replace: jakarta.faces.lifecycle.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.callback.
       replace: jakarta.security.auth.message.callback.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.
       replace: jakarta.ws.rs.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.config.
       replace: jakarta.security.auth.message.config.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.websocket.server.
       replace: jakarta.websocket.server.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.authentication.mechanism.http.
       replace: jakarta.security.enterprise.authentication.mechanism.http.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.event.
       replace: jakarta.enterprise.event.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.inject.
       replace: jakarta.inject.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.listener.
       replace: jakarta.batch.api.listener.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.http.
       replace: jakarta.xml.ws.http.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.soap.
       replace: jakarta.xml.ws.soap.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.spi.
       replace: jakarta.enterprise.inject.spi.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.
       replace: jakarta.faces.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jms.
       replace: jakarta.jms.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.wsaddressing.
       replace: jakarta.xml.ws.wsaddressing.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.bootstrap.
       replace: jakarta.validation.bootstrap.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.spi.
       replace: jakarta.ejb.spi.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.metadata.
       replace: jakarta.validation.metadata.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.
       replace: jakarta.servlet.jsp.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.convert.
       replace: jakarta.faces.convert.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.
       replace: jakarta.mail.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.concurrent.
       replace: jakarta.enterprise.concurrent.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.partition.
       replace: jakarta.batch.api.partition.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.html.
       replace: jakarta.faces.component.html.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.spi.configurator.
       replace: jakarta.enterprise.inject.spi.configurator.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.credential.
       replace: jakarta.security.enterprise.credential.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.control.
       replace: jakarta.enterprise.context.control.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.annotation.
       replace: jakarta.json.bind.annotation.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.search.
       replace: jakarta.mail.search.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.util.
       replace: jakarta.enterprise.util.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.client.
       replace: jakarta.ws.rs.client.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.model.
       replace: jakarta.faces.model.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.security.
       replace: jakarta.resource.spi.security.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.view.
       replace: jakarta.faces.view.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.
       replace: jakarta.security.enterprise.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.tagext.
       replace: jakarta.servlet.jsp.tagext.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.core.
       replace: jakarta.ws.rs.core.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.module.
       replace: jakarta.security.auth.message.module.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.context.
       replace: jakarta.faces.context.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.
       replace: jakarta.security.auth.message.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.sql.
       replace: jakarta.annotation.sql.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.annotation.
       replace: jakarta.faces.annotation.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.groups.
       replace: jakarta.validation.groups.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jws.soap.
       replace: jakarta.jws.soap.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.
       replace: jakarta.ejb.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.identitystore.
       replace: jakarta.security.enterprise.identitystore.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.
       replace: jakarta.validation.
-      fileMatcher: '**/src/main/codestarts/**/*.java'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.JavaxToJakartaCodestartsTests
+applicability:
+  singleSource:
+    - org.openrewrite.FindSourceFiles:
+        filePattern: "**/src/test/resources/__snapshots__/**/*.java"
 recipeList:
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.config.
       replace: jakarta.json.bind.config.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.soap.
       replace: jakarta.xml.soap.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.jacc.
       replace: jakarta.security.jacc.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.internet.
       replace: jakarta.mail.internet.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.chunk.
       replace: jakarta.batch.api.chunk.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.spi.
       replace: jakarta.json.spi.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.
       replace: jakarta.resource.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.work.
       replace: jakarta.resource.spi.work.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.annotation.adapters.
       replace: jakarta.xml.bind.annotation.adapters.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.webapp.
       replace: jakarta.faces.webapp.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.application.
       replace: jakarta.faces.application.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.util.
       replace: jakarta.xml.bind.util.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.criteria.
       replace: jakarta.persistence.criteria.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.event.
       replace: jakarta.faces.event.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.activation.
       replace: jakarta.activation.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.flow.builder.
       replace: jakarta.faces.flow.builder.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.websocket.
       replace: jakarta.websocket.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.serializer.
       replace: jakarta.json.bind.serializer.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.se.
       replace: jakarta.enterprise.inject.se.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.cci.
       replace: jakarta.resource.cci.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.spi.
       replace: jakarta.validation.spi.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.transaction.
       replace: jakarta.transaction.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.attachment.
       replace: jakarta.xml.bind.attachment.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.interceptor.
       replace: jakarta.interceptor.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.helpers.
       replace: jakarta.xml.bind.helpers.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.embeddable.
       replace: jakarta.ejb.embeddable.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.
       replace: jakarta.persistence.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.
       replace: jakarta.enterprise.inject.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.event.
       replace: jakarta.mail.event.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.endpoint.
       replace: jakarta.resource.spi.endpoint.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.visit.
       replace: jakarta.faces.component.visit.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.
       replace: jakarta.servlet.jsp.jstl.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.el.
       replace: jakarta.servlet.jsp.el.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.el.
       replace: jakarta.faces.el.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.
       replace: jakarta.xml.bind.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.adapter.
       replace: jakarta.json.bind.adapter.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.valueextraction.
       replace: jakarta.validation.valueextraction.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.view.facelets.
       replace: jakarta.faces.view.facelets.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.flow.
       replace: jakarta.faces.flow.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.render.
       replace: jakarta.faces.render.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.util.
       replace: jakarta.mail.util.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.runtime.context.
       replace: jakarta.batch.runtime.context.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.security.
       replace: jakarta.annotation.security.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.
       replace: jakarta.faces.component.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.fmt.
       replace: jakarta.servlet.jsp.jstl.fmt.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.spi.
       replace: jakarta.json.bind.spi.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.
       replace: jakarta.servlet.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.operations.
       replace: jakarta.batch.operations.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.push.
       replace: jakarta.faces.push.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.descriptor.
       replace: jakarta.servlet.descriptor.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.handler.soap.
       replace: jakarta.xml.ws.handler.soap.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.executable.
       replace: jakarta.validation.executable.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.behavior.
       replace: jakarta.faces.component.behavior.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.annotation.
       replace: jakarta.xml.bind.annotation.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.runtime.
       replace: jakarta.batch.runtime.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.stream.
       replace: jakarta.json.stream.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.annotation.
       replace: jakarta.servlet.annotation.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.resources.
       replace: jakarta.servlet.resources.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.http.
       replace: jakarta.servlet.http.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.spi.http.
       replace: jakarta.xml.ws.spi.http.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.container.
       replace: jakarta.ws.rs.container.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.
       replace: jakarta.xml.ws.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.spi.
       replace: jakarta.enterprise.context.spi.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.
       replace: jakarta.resource.spi.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.validator.
       replace: jakarta.faces.validator.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jws.
       replace: jakarta.jws.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.
       replace: jakarta.annotation.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.search.
       replace: jakarta.faces.component.search.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.
       replace: jakarta.json.bind.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.tlv.
       replace: jakarta.servlet.jsp.jstl.tlv.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.core.
       replace: jakarta.servlet.jsp.jstl.core.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.decorator.
       replace: jakarta.decorator.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.bean.
       replace: jakarta.faces.bean.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.sse.
       replace: jakarta.ws.rs.sse.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.metamodel.
       replace: jakarta.persistence.metamodel.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.
       replace: jakarta.enterprise.context.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.spi.
       replace: jakarta.xml.ws.spi.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.
       replace: jakarta.batch.api.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.el.
       replace: jakarta.el.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.
       replace: jakarta.json.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.chunk.listener.
       replace: jakarta.batch.api.chunk.listener.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.spi.
       replace: jakarta.persistence.spi.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.handler.
       replace: jakarta.xml.ws.handler.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.sql.
       replace: jakarta.servlet.jsp.jstl.sql.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.literal.
       replace: jakarta.enterprise.inject.literal.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.ext.
       replace: jakarta.ws.rs.ext.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.constraints.
       replace: jakarta.validation.constraints.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.resources.
       replace: jakarta.servlet.jsp.resources.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.constraintvalidation.
       replace: jakarta.validation.constraintvalidation.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.lifecycle.
       replace: jakarta.faces.lifecycle.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.callback.
       replace: jakarta.security.auth.message.callback.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.
       replace: jakarta.ws.rs.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.config.
       replace: jakarta.security.auth.message.config.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.websocket.server.
       replace: jakarta.websocket.server.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.authentication.mechanism.http.
       replace: jakarta.security.enterprise.authentication.mechanism.http.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.event.
       replace: jakarta.enterprise.event.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.inject.
       replace: jakarta.inject.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.listener.
       replace: jakarta.batch.api.listener.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.http.
       replace: jakarta.xml.ws.http.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.soap.
       replace: jakarta.xml.ws.soap.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.spi.
       replace: jakarta.enterprise.inject.spi.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.
       replace: jakarta.faces.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jms.
       replace: jakarta.jms.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.wsaddressing.
       replace: jakarta.xml.ws.wsaddressing.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.bootstrap.
       replace: jakarta.validation.bootstrap.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.spi.
       replace: jakarta.ejb.spi.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.metadata.
       replace: jakarta.validation.metadata.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.
       replace: jakarta.servlet.jsp.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.convert.
       replace: jakarta.faces.convert.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.
       replace: jakarta.mail.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.concurrent.
       replace: jakarta.enterprise.concurrent.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.partition.
       replace: jakarta.batch.api.partition.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.html.
       replace: jakarta.faces.component.html.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.spi.configurator.
       replace: jakarta.enterprise.inject.spi.configurator.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.credential.
       replace: jakarta.security.enterprise.credential.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.control.
       replace: jakarta.enterprise.context.control.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.annotation.
       replace: jakarta.json.bind.annotation.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.search.
       replace: jakarta.mail.search.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.util.
       replace: jakarta.enterprise.util.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.client.
       replace: jakarta.ws.rs.client.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.model.
       replace: jakarta.faces.model.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.security.
       replace: jakarta.resource.spi.security.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.view.
       replace: jakarta.faces.view.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.
       replace: jakarta.security.enterprise.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.tagext.
       replace: jakarta.servlet.jsp.tagext.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.core.
       replace: jakarta.ws.rs.core.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.module.
       replace: jakarta.security.auth.message.module.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.context.
       replace: jakarta.faces.context.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.
       replace: jakarta.security.auth.message.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.sql.
       replace: jakarta.annotation.sql.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.annotation.
       replace: jakarta.faces.annotation.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.groups.
       replace: jakarta.validation.groups.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jws.soap.
       replace: jakarta.jws.soap.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.
       replace: jakarta.ejb.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.identitystore.
       replace: jakarta.security.enterprise.identitystore.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.
       replace: jakarta.validation.
-      fileMatcher: '**/src/test/resources/__snapshots__/**/*.java'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.JavaxToJakartaKotlin
+applicability:
+  singleSource:
+    - org.openrewrite.FindSourceFiles:
+        filePattern: "**/*.kt"
 recipeList:
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.config.
       replace: jakarta.json.bind.config.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.soap.
       replace: jakarta.xml.soap.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.jacc.
       replace: jakarta.security.jacc.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.internet.
       replace: jakarta.mail.internet.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.chunk.
       replace: jakarta.batch.api.chunk.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.spi.
       replace: jakarta.json.spi.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.
       replace: jakarta.resource.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.work.
       replace: jakarta.resource.spi.work.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.annotation.adapters.
       replace: jakarta.xml.bind.annotation.adapters.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.webapp.
       replace: jakarta.faces.webapp.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.application.
       replace: jakarta.faces.application.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.util.
       replace: jakarta.xml.bind.util.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.criteria.
       replace: jakarta.persistence.criteria.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.event.
       replace: jakarta.faces.event.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.activation.
       replace: jakarta.activation.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.flow.builder.
       replace: jakarta.faces.flow.builder.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.websocket.
       replace: jakarta.websocket.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.serializer.
       replace: jakarta.json.bind.serializer.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.se.
       replace: jakarta.enterprise.inject.se.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.cci.
       replace: jakarta.resource.cci.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.spi.
       replace: jakarta.validation.spi.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.transaction.
       replace: jakarta.transaction.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.attachment.
       replace: jakarta.xml.bind.attachment.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.interceptor.
       replace: jakarta.interceptor.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.helpers.
       replace: jakarta.xml.bind.helpers.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.embeddable.
       replace: jakarta.ejb.embeddable.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.
       replace: jakarta.persistence.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.
       replace: jakarta.enterprise.inject.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.event.
       replace: jakarta.mail.event.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.endpoint.
       replace: jakarta.resource.spi.endpoint.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.visit.
       replace: jakarta.faces.component.visit.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.
       replace: jakarta.servlet.jsp.jstl.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.el.
       replace: jakarta.servlet.jsp.el.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.el.
       replace: jakarta.faces.el.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.
       replace: jakarta.xml.bind.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.adapter.
       replace: jakarta.json.bind.adapter.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.valueextraction.
       replace: jakarta.validation.valueextraction.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.view.facelets.
       replace: jakarta.faces.view.facelets.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.flow.
       replace: jakarta.faces.flow.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.render.
       replace: jakarta.faces.render.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.util.
       replace: jakarta.mail.util.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.runtime.context.
       replace: jakarta.batch.runtime.context.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.security.
       replace: jakarta.annotation.security.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.
       replace: jakarta.faces.component.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.fmt.
       replace: jakarta.servlet.jsp.jstl.fmt.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.spi.
       replace: jakarta.json.bind.spi.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.
       replace: jakarta.servlet.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.operations.
       replace: jakarta.batch.operations.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.push.
       replace: jakarta.faces.push.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.descriptor.
       replace: jakarta.servlet.descriptor.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.handler.soap.
       replace: jakarta.xml.ws.handler.soap.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.executable.
       replace: jakarta.validation.executable.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.behavior.
       replace: jakarta.faces.component.behavior.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.bind.annotation.
       replace: jakarta.xml.bind.annotation.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.runtime.
       replace: jakarta.batch.runtime.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.stream.
       replace: jakarta.json.stream.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.annotation.
       replace: jakarta.servlet.annotation.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.resources.
       replace: jakarta.servlet.resources.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.http.
       replace: jakarta.servlet.http.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.spi.http.
       replace: jakarta.xml.ws.spi.http.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.container.
       replace: jakarta.ws.rs.container.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.
       replace: jakarta.xml.ws.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.spi.
       replace: jakarta.enterprise.context.spi.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.
       replace: jakarta.resource.spi.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.validator.
       replace: jakarta.faces.validator.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jws.
       replace: jakarta.jws.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.
       replace: jakarta.annotation.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.search.
       replace: jakarta.faces.component.search.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.
       replace: jakarta.json.bind.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.tlv.
       replace: jakarta.servlet.jsp.jstl.tlv.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.core.
       replace: jakarta.servlet.jsp.jstl.core.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.decorator.
       replace: jakarta.decorator.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.bean.
       replace: jakarta.faces.bean.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.sse.
       replace: jakarta.ws.rs.sse.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.metamodel.
       replace: jakarta.persistence.metamodel.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.
       replace: jakarta.enterprise.context.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.spi.
       replace: jakarta.xml.ws.spi.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.
       replace: jakarta.batch.api.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.el.
       replace: jakarta.el.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.
       replace: jakarta.json.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.chunk.listener.
       replace: jakarta.batch.api.chunk.listener.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.persistence.spi.
       replace: jakarta.persistence.spi.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.handler.
       replace: jakarta.xml.ws.handler.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.jstl.sql.
       replace: jakarta.servlet.jsp.jstl.sql.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.literal.
       replace: jakarta.enterprise.inject.literal.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.ext.
       replace: jakarta.ws.rs.ext.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.constraints.
       replace: jakarta.validation.constraints.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.resources.
       replace: jakarta.servlet.jsp.resources.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.constraintvalidation.
       replace: jakarta.validation.constraintvalidation.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.lifecycle.
       replace: jakarta.faces.lifecycle.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.callback.
       replace: jakarta.security.auth.message.callback.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.
       replace: jakarta.ws.rs.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.config.
       replace: jakarta.security.auth.message.config.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.websocket.server.
       replace: jakarta.websocket.server.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.authentication.mechanism.http.
       replace: jakarta.security.enterprise.authentication.mechanism.http.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.event.
       replace: jakarta.enterprise.event.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.inject.
       replace: jakarta.inject.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.listener.
       replace: jakarta.batch.api.listener.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.http.
       replace: jakarta.xml.ws.http.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.soap.
       replace: jakarta.xml.ws.soap.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.spi.
       replace: jakarta.enterprise.inject.spi.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.
       replace: jakarta.faces.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jms.
       replace: jakarta.jms.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.xml.ws.wsaddressing.
       replace: jakarta.xml.ws.wsaddressing.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.bootstrap.
       replace: jakarta.validation.bootstrap.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.spi.
       replace: jakarta.ejb.spi.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.metadata.
       replace: jakarta.validation.metadata.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.
       replace: jakarta.servlet.jsp.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.convert.
       replace: jakarta.faces.convert.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.
       replace: jakarta.mail.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.concurrent.
       replace: jakarta.enterprise.concurrent.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.batch.api.partition.
       replace: jakarta.batch.api.partition.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.component.html.
       replace: jakarta.faces.component.html.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.inject.spi.configurator.
       replace: jakarta.enterprise.inject.spi.configurator.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.credential.
       replace: jakarta.security.enterprise.credential.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.context.control.
       replace: jakarta.enterprise.context.control.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.json.bind.annotation.
       replace: jakarta.json.bind.annotation.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.mail.search.
       replace: jakarta.mail.search.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.enterprise.util.
       replace: jakarta.enterprise.util.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.client.
       replace: jakarta.ws.rs.client.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.model.
       replace: jakarta.faces.model.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.resource.spi.security.
       replace: jakarta.resource.spi.security.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.view.
       replace: jakarta.faces.view.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.
       replace: jakarta.security.enterprise.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.servlet.jsp.tagext.
       replace: jakarta.servlet.jsp.tagext.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ws.rs.core.
       replace: jakarta.ws.rs.core.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.module.
       replace: jakarta.security.auth.message.module.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.context.
       replace: jakarta.faces.context.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.auth.message.
       replace: jakarta.security.auth.message.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.annotation.sql.
       replace: jakarta.annotation.sql.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.faces.annotation.
       replace: jakarta.faces.annotation.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.groups.
       replace: jakarta.validation.groups.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.jws.soap.
       replace: jakarta.jws.soap.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.ejb.
       replace: jakarta.ejb.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.security.enterprise.identitystore.
       replace: jakarta.security.enterprise.identitystore.
-      fileMatcher: '**/*.kt'
   - org.openrewrite.text.FindAndReplace:
       find: javax.validation.
       replace: jakarta.validation.
-      fileMatcher: '**/*.kt'

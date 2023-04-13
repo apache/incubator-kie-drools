@@ -17,6 +17,8 @@
     <java.module.name>org.optaplanner.quarkus</java.module.name>
     <!-- Code of integration tests should not be a part of test coverage reports. -->
     <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
+    <!-- Quarkus 2 and 3 use different context roots. -->
+    <dev.ui.root>/q/dev</dev.ui.root>
   </properties>
 
   <dependencies>
@@ -67,6 +69,15 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <dev.iu.root>${dev.ui.root}</dev.iu.root>
+          </systemProperties>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
