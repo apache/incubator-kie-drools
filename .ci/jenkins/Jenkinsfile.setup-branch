@@ -5,7 +5,7 @@ import org.kie.jenkins.MavenCommand
 
 pipeline {
     agent {
-        label 'kie-rhel8 && kie-mem16g && !built-in'
+        label 'kie-rhel8 && !built-in'
     }
 
     tools {
@@ -29,7 +29,7 @@ pipeline {
 
         // Keep here for visitibility
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
-    
+
         BRANCH_HASH = "${util.generateHash(10)}"
     }
 
@@ -42,7 +42,7 @@ pipeline {
                     if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
-                    dir(getRepoName()){
+                    dir(getRepoName()) {
                         checkoutRepo(getRepoName(), getBuildBranch())
                     }
                 }
@@ -51,9 +51,9 @@ pipeline {
         stage('Update project version') {
             steps {
                 script {
-                    dir(getRepoName()){
+                    dir(getRepoName()) {
                         maven.mvnVersionsSet(getMavenCommand(), getOptaPlannerVersion(), true)
-                    }    
+                    }
                 }
             }
         }
@@ -76,30 +76,21 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to repository') {
-            when {
-                expression { return shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    dir(getRepoName()){
-                        runMavenDeploy()
-                    }    
-                }
-            }
-        }
+
+        // Should be moved to a job in kie-benchmarks repository
+        // and called from main setup-branch job directly after drools update
         stage('Update Optaplanner version in kie-benchmarks') {
             when {
                 // TODO to change once Optaplanner is totally migrated to Quarkus 3
                 expression { isStream8() && isMainBranch() }
-            }    
+            }
             steps {
                 script {
                     String commitMsg = 'bumped up Optaplanner version to next SNAPSHOT'
                     String localBranch = "kie-benchmarks-optaplanner-update-${env.BRANCH_HASH}"
                     String targetBranch = 'main'
                     String kieBenchmarksRepo = 'kie-benchmarks'
-                    dir(kieBenchmarksRepo){
+                    dir(kieBenchmarksRepo) {
                         checkoutRepo(kieBenchmarksRepo, targetBranch)
                         githubscm.setUserConfigFromCreds()
                         githubscm.createBranch(localBranch)
@@ -111,7 +102,7 @@ pipeline {
                     }
                 }
             }
-        }        
+        }
     }
     post {
         unsuccessful {
@@ -128,7 +119,7 @@ pipeline {
 void sendErrorNotification() {
     if (params.SEND_NOTIFICATION) {
         String additionalInfo = "**[${getBuildBranch()}] Optaplanner - Setup branch**"
-        mailer.sendMarkdownTestSummaryNotification("CI failures", [env.OPTAPLANNER_CI_EMAIL_TO], additionalInfo)
+        mailer.sendMarkdownTestSummaryNotification('CI failures', [env.OPTAPLANNER_CI_EMAIL_TO], additionalInfo)
     } else {
         echo 'No notification sent per configuration'
     }
@@ -138,10 +129,6 @@ void checkoutRepo(String repository, String branch) {
     checkout(githubscm.resolveRepository(repository, getGitAuthor(), branch, false))
     // need to manually checkout branch since on a detached branch after checkout command
     sh "git checkout ${branch}"
-}
-
-boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'kiegroup'
 }
 
 String getRepoName() {
@@ -169,16 +156,6 @@ MavenCommand getMavenCommand() {
     return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
                 .withProperty('full')
-}
-
-void runMavenDeploy(boolean localDeployment = false) {
-    mvnCmd = getMavenCommand()
-
-    if (env.MAVEN_DEPLOY_REPOSITORY) {
-        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
-    }
-
-    mvnCmd.skipTests(true).run('clean deploy')
 }
 
 boolean isMainBranch() {
