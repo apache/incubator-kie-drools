@@ -20,8 +20,8 @@ import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.utils.ModelUtil;
@@ -49,7 +49,7 @@ public class HttpRecipientValidator implements RecipientValidator {
             throw new ValidationException("Recipient must be a non-null instance of: " + HttpRecipient.class + ".");
         }
         HttpRecipient<?> httpRecipient = (HttpRecipient<?>) recipient;
-        if (StringUtils.isBlank(httpRecipient.getUrl())) {
+        if (ConversionUtils.isEmpty(httpRecipient.getUrl())) {
             throw new ValidationException("HttpRecipient url must have a non empty value.");
         }
         try {

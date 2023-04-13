@@ -22,8 +22,8 @@ import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient;
 import org.kie.kogito.jobs.service.api.utils.EventUtils;
@@ -52,7 +52,7 @@ public class SinkRecipientValidator implements RecipientValidator {
             throw new ValidationException("Recipient must be a non-null instance of: " + SinkRecipient.class + ".");
         }
         SinkRecipient<?> sinkRecipient = (SinkRecipient<?>) recipient;
-        if (StringUtils.isBlank(sinkRecipient.getSinkUrl())) {
+        if (ConversionUtils.isEmpty(sinkRecipient.getSinkUrl())) {
             throw new ValidationException("SinkRecipient sinkUrl must have a non empty value.");
         }
         try {
@@ -66,7 +66,7 @@ public class SinkRecipientValidator implements RecipientValidator {
         if (Objects.isNull(sinkRecipient.getCeSpecVersion())) {
             throw new ValidationException("SinkRecipient ce-specversion must have a non null value.");
         }
-        if (StringUtils.isBlank(sinkRecipient.getCeType())) {
+        if (ConversionUtils.isEmpty(sinkRecipient.getCeType())) {
             throw new ValidationException("SinkRecipient ce-type must have a non empty value.");
         }
         if (Objects.isNull(sinkRecipient.getCeSource())) {

@@ -21,7 +21,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Objects;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.kie.kogito.jobs.service.api.Job;
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.api.Retry;
@@ -120,14 +119,14 @@ public class JobDetailsAdapter {
                         .startTime(fromFireTime(trigger.hasNextFireTime()))
                         .build();
             }
-            throw new NotImplementedException("Only SimpleTimerTrigger, IntervalTrigger and PointInTimeTrigger are supported");
+            throw new UnsupportedOperationException("Only SimpleTimerTrigger, IntervalTrigger and PointInTimeTrigger are supported");
         }
 
         public static Trigger from(Schedule schedule) {
             if (schedule instanceof TimerSchedule) {
                 return simpleTimerTrigger((TimerSchedule) schedule);
             }
-            throw new NotImplementedException("Only TimeSchedule is supported");
+            throw new UnsupportedOperationException("Only TimeSchedule is supported");
         }
 
         private static OffsetDateTime fromFireTime(Date fireTime) {
@@ -174,7 +173,7 @@ public class JobDetailsAdapter {
 
         static void checkIsSupported(Recipient<?> recipient) {
             if (!(recipient instanceof HttpRecipient) && !(recipient instanceof SinkRecipient)) {
-                throw new NotImplementedException("Only HttpRecipient and SinkRecipient are supported");
+                throw new UnsupportedOperationException("Only HttpRecipient and SinkRecipient are supported");
             }
         }
     }
