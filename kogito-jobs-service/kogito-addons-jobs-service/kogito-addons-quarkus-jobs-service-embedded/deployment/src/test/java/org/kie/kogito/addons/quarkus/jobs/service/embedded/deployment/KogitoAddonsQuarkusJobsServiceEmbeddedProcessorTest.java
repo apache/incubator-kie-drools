@@ -17,6 +17,7 @@ package org.kie.kogito.addons.quarkus.jobs.service.embedded.deployment;
 
 import java.util.List;
 
+import org.jboss.jandex.IndexView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +26,15 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import io.quarkus.arc.deployment.ExcludedTypeBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.addons.quarkus.jobs.service.embedded.stream.EventPublisherJobStreams.DATA_INDEX_EVENT_PUBLISHER;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -45,6 +50,14 @@ class KogitoAddonsQuarkusJobsServiceEmbeddedProcessorTest {
     private BuildProducer<SystemPropertyBuildItem> systemPropertyBuildItemBuildProducer;
     @Captor
     private ArgumentCaptor<SystemPropertyBuildItem> systemPropertyBuildItemCaptor;
+    @Mock
+    private BuildProducer<ExcludedTypeBuildItem> excludedBeansBuildProducer;
+    @Captor
+    private ArgumentCaptor<ExcludedTypeBuildItem> excludedTypeBuildItemCaptor;
+    @Mock
+    private IndexView indexView;
+    @Mock
+    private IndexView computingIndexView;
 
     @BeforeEach
     void setUp() {
@@ -65,5 +78,16 @@ class KogitoAddonsQuarkusJobsServiceEmbeddedProcessorTest {
         assertThat(items)
                 .anyMatch(item -> JOBS_SERVICE_URL.equals(item.getKey()) && ("${" + SERVICE_URL + "}").equals(item.getValue()))
                 .anyMatch(item -> SERVICE_URL.equals(item.getKey()) && "http://${quarkus.http.host}:${quarkus.http.port}".equals(item.getValue()));
+    }
+
+    @Test
+    void excludeEventPublisherJobStreams() {
+        CombinedIndexBuildItem combinedIndexBuildItem = new CombinedIndexBuildItem(indexView, computingIndexView);
+        doReturn(null).when(indexView).getClassByName(DATA_INDEX_EVENT_PUBLISHER);
+        processor.excludeEventPublisherJobStreams(combinedIndexBuildItem, excludedBeansBuildProducer);
+        verify(indexView).getClassByName(DATA_INDEX_EVENT_PUBLISHER);
+        verify(excludedBeansBuildProducer).produce(excludedTypeBuildItemCaptor.capture());
+        assertThat(excludedTypeBuildItemCaptor.getValue()).isNotNull();
+        assertThat(excludedTypeBuildItemCaptor.getValue().getMatch()).isEqualTo(DATA_INDEX_EVENT_PUBLISHER);
     }
 }
