@@ -86,8 +86,7 @@ pipeline {
             steps {
                 script {
                     checkoutRepo(optaplannerRepository)
-                    // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                    if (isStream8()) {
+                    if (isStream9()) {
                         checkoutQuickstarts()
                     }
                 }
@@ -101,8 +100,7 @@ pipeline {
             steps {
                 script {
                     prepareForPR(optaplannerRepository)
-                    // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                    if (isStream8()) {
+                    if (isStream9()) {
                         prepareForPR(quickstartsRepository)
                     }
                 }
@@ -123,8 +121,7 @@ pipeline {
 
                     mavenCleanInstallOptaPlannerParents()
 
-                    // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                    if (isStream8()) {
+                    if (isStream9()) {
                         updateQuickstartsVersions()
                     }
                 }
@@ -156,8 +153,7 @@ pipeline {
 
         stage('Build Quickstarts') {
             when {
-                // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                expression { return isStream8() }
+                expression { return isStream9() }
             }
             steps {
                 script {
@@ -184,8 +180,7 @@ pipeline {
             steps {
                 script {
                     runMavenDeploy(getOptaplannerMavenCommand())
-                    // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                    if (isStream8()) {
+                    if (isStream9()) {
                         runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
                     }
                 }
@@ -234,8 +229,7 @@ pipeline {
             steps {
                 script {
                     commitAndCreatePR(optaplannerRepository, getBuildBranch())
-                    // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                    if (isStream8()) {
+                    if (isStream9()) {
                         commitAndCreatePR(quickstartsRepository, getQuickStartsBranch())
                     }
                 }
@@ -254,6 +248,7 @@ pipeline {
 
         stage('Push a temporary operator image to a registry') {
             when {
+                // TODO: switch to 9 when the operator is migrated to Quarkus 3
                 expression { return isRelease() && isStream8() }
             }
             steps {

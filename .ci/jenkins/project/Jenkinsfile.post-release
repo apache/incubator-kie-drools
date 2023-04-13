@@ -58,8 +58,7 @@ pipeline {
 
         stage('Reset Quickstarts stable branch') {
             when {
-                // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                expression { return isStream8() }
+                expression { return isStream9() }
             }
             steps {
                 script {
@@ -74,8 +73,7 @@ pipeline {
 
         stage('Upload OptaPlanner distribution from Quickstarts') {
             when {
-                // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                expression { return isStream8() }
+                expression { return isStream9() }
             }
             steps {
                 script {
@@ -92,8 +90,7 @@ pipeline {
 
         stage('Update OptaPlanner website') {
             when {
-                // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                expression { return isStream8() }
+                expression { return isStream9() }
             }
             steps {
                 script {

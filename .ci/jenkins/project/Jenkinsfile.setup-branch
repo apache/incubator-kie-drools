@@ -64,8 +64,7 @@ pipeline {
 
         stage('Init Optaplanner Quickstarts') {
             when {
-                // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                expression { return isStream8() }
+                expression { return isStream9() }
             }
             steps {
                 script {

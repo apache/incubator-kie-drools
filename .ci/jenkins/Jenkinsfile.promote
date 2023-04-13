@@ -81,8 +81,7 @@ pipeline {
 
         stage('Merge OptaPlanner Quickstarts PR and tag') {
             when {
-                // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                expression { return isRelease() && isStream8() }
+                expression { return isRelease() && isStream9() }
             }
             steps {
                 script {
@@ -97,8 +96,7 @@ pipeline {
 
         stage('Upload OptaPlanner documentation') {
             when {
-                // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                expression { return isRelease() && isStream8() }
+                expression { return isRelease() && isStream9() }
             }
             steps {
                 script {
@@ -140,8 +138,7 @@ pipeline {
 
         stage('Set Quickstarts next snapshot version') {
             when {
-                // TODO: switch to the 9 stream after quickstarts will have been migrated.
-                expression { return isRelease() && isStream8() }
+                expression { return isRelease() && isStream9() }
             }
             steps {
                 script {
@@ -164,6 +161,7 @@ pipeline {
 
         stage('Push the final OptaPlanner operator image') {
             when {
+                // TODO: switch to 9 when the operator is migrated to Quarkus 3
                 expression { return isRelease() && isStream8() }
             }
             steps {
