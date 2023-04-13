@@ -244,18 +244,36 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-reliability</artifactId>
+        <artifactId>drools-reliability-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-reliability</artifactId>
+        <artifactId>drools-reliability-core</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-reliability</artifactId>
+        <artifactId>drools-reliability-core</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-reliability-infinispan</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-reliability-infinispan</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-reliability-infinispan</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
