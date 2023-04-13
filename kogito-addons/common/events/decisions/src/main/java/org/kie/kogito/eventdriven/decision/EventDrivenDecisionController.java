@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import org.apache.commons.lang3.StringUtils;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.kogito.config.ConfigBean;
@@ -36,6 +35,7 @@ import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.event.cloudevents.extension.KogitoExtension;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
+import org.kie.kogito.internal.utils.ConversionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +103,7 @@ public class EventDrivenDecisionController {
 
     private DMNResult processRequest(DecisionModel model, DataEvent<Map> event, KogitoExtension kogitoExtension) {
         DMNContext context = DMNJSONUtils.ctx(model, event.getData());
-        return StringUtils.isEmpty(kogitoExtension.getDmnEvaluateDecision()) ? model.evaluateAll(context)
+        return ConversionUtils.isEmpty(kogitoExtension.getDmnEvaluateDecision()) ? model.evaluateAll(context)
                 : model.evaluateDecisionService(context, kogitoExtension.getDmnEvaluateDecision());
     }
 
@@ -126,7 +126,7 @@ public class EventDrivenDecisionController {
     }
 
     private URI buildResponseCloudEventSource(KogitoExtension ctx) {
-        return StringUtils.isEmpty(ctx.getDmnEvaluateDecision())
+        return ConversionUtils.isEmpty(ctx.getDmnEvaluateDecision())
                 ? CloudEventUtils.buildDecisionSource(config.getServiceUrl(), ctx.getDmnModelName())
                 : CloudEventUtils.buildDecisionSource(config.getServiceUrl(), ctx.getDmnModelName(), ctx.getDmnEvaluateDecision());
     }

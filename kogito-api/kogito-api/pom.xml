@@ -57,25 +57,7 @@
       <groupId>io.cloudevents</groupId>
       <artifactId>cloudevents-api</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-timer</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-pmml-api-dependencies</artifactId>
-    </dependency>
-
+ 
     <!-- test -->
     <dependency>
       <groupId>ch.qos.logback</groupId>

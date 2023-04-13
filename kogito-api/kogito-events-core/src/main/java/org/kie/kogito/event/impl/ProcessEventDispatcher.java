@@ -23,13 +23,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.kie.kogito.Model;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.correlation.CorrelationInstance;
 import org.kie.kogito.correlation.SimpleCorrelation;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventDispatcher;
+import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessService;
@@ -68,7 +68,7 @@ public class ProcessEventDispatcher<M extends Model, D> implements EventDispatch
         }
 
         final String kogitoReferenceId = resolveCorrelationId(event);
-        if (StringUtils.isNotEmpty(kogitoReferenceId)) {
+        if (!ConversionUtils.isEmpty(kogitoReferenceId)) {
             return CompletableFuture.supplyAsync(() -> handleMessageWithReference(trigger, event, kogitoReferenceId), executor);
         }
 
