@@ -132,13 +132,4 @@ public class DroolsAssetsProcessor {
         LOGGER.debug("toReturn {}", toReturn.size());
         return toReturn;
     }
-    
-    @BuildStep
-    @Produce(GeneratedResourceBuildItem.class)
-    public void demo( OtnClassesByPackageBuildItem otn, Optional<KmoduleKieBaseModelsBuiltItem> kbaseModels) {
-        LOGGER.debug("{}", otn.getOtnClasses());
-        if (kbaseModels.isPresent()) {
-            LOGGER.debug("{}", kbaseModels.get().getKieBaseModels());            
-        }
-    }
 }
