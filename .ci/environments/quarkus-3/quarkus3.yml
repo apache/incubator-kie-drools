@@ -3,8 +3,8 @@ description: Update Quarkus version and refactor imports and resources if needed
 type: specs.openrewrite.org/v1beta/recipe
 recipeList:
 - org.openrewrite.maven.ChangePropertyValue: {
-    newValue: 3.0.0.Final,
-    key: version.io.quarkus
+    key: version.io.quarkus,
+    newValue: 3.0.0.Final
   }
 - org.kie.drools.Quarkus3Migration
 - org.kie.ManagedDependencies
@@ -86,6 +86,18 @@ recipeList:
     oldArtifactId: infinispan-core,
     newGroupId: org.infinispan,
     newArtifactId: infinispan-core-jakarta
+  }
+- org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId: {
+    oldGroupId: org.infinispan,
+    oldArtifactId: infinispan-client-hotrod,
+    newGroupId: org.infinispan,
+    newArtifactId: infinispan-client-hotrod-jakarta
+  }
+- org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId: {
+    oldGroupId: org.infinispan,
+    oldArtifactId: infinispan-client-hotrod,
+    newGroupId: org.infinispan,
+    newArtifactId: infinispan-client-hotrod-jakarta
   }
 - org.openrewrite.maven.RemoveDependency: {
     groupId: org.hibernate,

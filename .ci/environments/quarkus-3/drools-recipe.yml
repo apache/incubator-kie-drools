@@ -44,6 +44,16 @@ recipeList:
       oldArtifactId: infinispan-core
       newGroupId: org.infinispan
       newArtifactId: infinispan-core-jakarta
+  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
+      oldGroupId: org.infinispan
+      oldArtifactId: infinispan-client-hotrod
+      newGroupId: org.infinispan
+      newArtifactId: infinispan-client-hotrod-jakarta
+  - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId:
+      oldGroupId: org.infinispan
+      oldArtifactId: infinispan-client-hotrod
+      newGroupId: org.infinispan
+      newArtifactId: infinispan-client-hotrod-jakarta
   
   # Update hibernate libs to jakarta one
   - org.openrewrite.maven.RemoveDependency:
@@ -70,10 +80,6 @@ recipeList:
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.org.apache.tomcat.tomcat-dbcp
       newValue: 10.1.7
-  - org.openrewrite.java.ChangePackage:
-      oldPackageName: jakarta.transaction.xa
-      newPackageName: javax.transaction.xa
-      recursive: true
 #   - org.openrewrite.maven.RemoveExclusion:
 #       groupId: org.jboss.narayana.jta
 #       artifactId: narayana-jta
