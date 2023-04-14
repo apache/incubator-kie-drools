@@ -5,6 +5,7 @@ import static org.optaplanner.core.api.score.stream.ConstraintStreamImplType.DRO
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
@@ -12,6 +13,7 @@ import java.util.function.BiFunction;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactoryService;
+import org.optaplanner.constraint.streams.common.InnerConstraintFactory;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -78,12 +80,25 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
             BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction,
             ConstraintProvider_ constraintProvider, EnvironmentMode environmentMode) {
         var scoreDirectorFactoryService = getScoreDirectorFactoryService();
-        var constraint = constraintFunction.apply(constraintProvider,
-                scoreDirectorFactoryService.buildConstraintFactory(solutionDescriptor, environmentMode));
-        var constraintId = constraint.getConstraintId();
+        /*
+         * Apply all validations on the constraint factory before extracting the one constraint.
+         * This step is only necessary to perform validation of the constraint provider;
+         * if we only wanted the one constraint, we could just call constraintFunction directly.
+         */
+        InnerConstraintFactory<Solution_, ?> fullConstraintFactory =
+                (InnerConstraintFactory<Solution_, ?>) scoreDirectorFactoryService.buildConstraintFactory(solutionDescriptor,
+                        environmentMode);
+        List<Constraint> constraints = (List<Constraint>) fullConstraintFactory.buildConstraints(constraintProvider);
+        Constraint expectedConstraint = constraintFunction.apply(constraintProvider, fullConstraintFactory);
+        Constraint result = constraints.stream()
+                .filter(c -> Objects.equals(c.getConstraintId(), expectedConstraint.getConstraintId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Impossible state: Constraint provider (" + constraintProvider
+                        + ") has no constraint (" + expectedConstraint + ")."));
+        var constraintId = result.getConstraintId();
         return getScoreDirectorFactory(constraintId,
                 constraintFactory -> new Constraint[] {
-                        constraint
+                        result
                 }, environmentMode);
     }
 
