@@ -34,7 +34,7 @@ setupProjectNightlyJob()
 setupProjectReleaseJob()
 setupProjectPostReleaseJob()
 
-if (Utils.isMainBranch(this) && getOptaPlannerLatestStream() == '8') { // When there is Drools 9, we may enable the job for 9.x
+if (Utils.isMainBranch(this) && isStream8()) { // When there is Drools 9, we may enable the job for 9.x
     setupProjectDroolsJob('main')
 }
 
@@ -181,7 +181,10 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 repository: 'optaplanner-quickstarts',
                 env : [
                     BUILD_MVN_OPTS_CURRENT: '-Dfull',
-                    OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull'
+                    OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull',
+                    env: [
+                        MIGRATE_TO_9: Utils.isMainBranch(this) && isStream8()
+                    ]
                 ]
             ]
         ]
@@ -407,4 +410,8 @@ String getOptaPlannerLatestStream() {
     } else {
         return gitMainBranch
     }
+}
+
+boolean isStream8() {
+    return getOptaPlannerLatestStream() == '8'
 }

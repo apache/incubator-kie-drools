@@ -26,7 +26,10 @@ default:
 
 build:
   - project: kiegroup/optaplanner
-    build-command: 
+    build-command:
+      before:
+        upstream: |
+          bash -c "if [ \"${{ env.MIGRATE_TO_9 }}\" == \"true\" ]; then ./build/8-to-9-migration/migrate.sh; fi"
       current: |
         mvn clean install -Dfull ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS }}
       upstream: |
