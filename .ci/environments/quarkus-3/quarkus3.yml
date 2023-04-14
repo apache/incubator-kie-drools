@@ -103,11 +103,6 @@ recipeList:
     key: version.org.apache.tomcat.tomcat-dbcp,
     newValue: 10.1.7
   }
-- org.openrewrite.java.ChangePackage: {
-    oldPackageName: jakarta.transaction.xa,
-    newPackageName: javax.transaction.xa,
-    recursive: true
-  }
 - org.kie.openrewrite.recipe.jpmml.JPMMLRecipe
 ---
 name: org.kie.ManagedDependencies
