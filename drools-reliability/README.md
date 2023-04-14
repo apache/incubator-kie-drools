@@ -1,18 +1,23 @@
 # Drools Reliability (experimental)
 
-drools-reliability is a module to add reliability to stateful ksessions backed by Infinispan so that stateful ksessions can resume after a JVM crash.
+`drools-reliability` is a module to make a stateful `KieSession` reliable or in other words to allow to resume the state of a session after a JVM crash. 
+It has a pluggable persistence layer with currently one implementation backed by Infinispan.
 
 ## Usage
-- Add drools-reliability as a dependency to your project
+- Add `drools-reliability-core` and `drools-reliability-infinispan` as dependencies to your project
 
 ```xml
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-reliability</artifactId>
+      <artifactId>drools-reliability-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-reliability-infinispan</artifactId>
     </dependency>
 ```
 
-- Create a stateful ksession with `PersistedSessionOption.newSession`
+- Create a stateful `KieSession` with `PersistedSessionOption.newSession`
 
 ```Java
 KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
