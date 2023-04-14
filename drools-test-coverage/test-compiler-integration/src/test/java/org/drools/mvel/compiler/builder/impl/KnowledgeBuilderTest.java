@@ -58,7 +58,6 @@ import org.drools.core.rule.accessor.CompiledInvoker;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.constraint.Constraint;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.BehaviorDescr;
@@ -106,7 +105,7 @@ import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-public class KnowledgeBuilderTest extends DroolsTestCase {
+public class KnowledgeBuilderTest {
     
     @After
     public void tearDown() {
@@ -178,8 +177,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
         RuleImpl rule = pkg.getRule( "rule-1" );
 
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
 
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         kBase.addGlobal( "map", Map.class );
@@ -248,8 +246,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
         final RuleImpl rule = pkg.getRule( "rule-1" );
 
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
 
         InternalKnowledgePackage newPkg = SerializationHelper.serializeObject( pkg );
         final RuleImpl newRule = newPkg.getRule( "rule-1" );
@@ -340,8 +337,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
     }
 
     @Test
@@ -445,8 +441,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
     }
 
     @Test
@@ -522,8 +517,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
 
         InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
         final RuleImpl rule = pkg.getRule( "rule-1" );
@@ -566,16 +560,13 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         final RuleImpl rule = createRule( new OrDescr(),
                                       builder,
                                       "update(stilton);" );
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
 
         final GroupElement lhs = rule.getLhs();
-        assertLength( 1,
-                      lhs.getChildren() );
+        assertThat(lhs.getChildren()).hasSize(1);
 
         final GroupElement or = (GroupElement) lhs.getChildren().get( 0 );
-        assertLength( 1,
-                      or.getChildren() );
+        assertThat(or.getChildren()).hasSize(1);
         final Pattern pattern = (Pattern) or.getChildren().get( 0 );
     }
 
@@ -585,16 +576,13 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         final RuleImpl rule = createRule( new AndDescr(),
                                       builder,
                                       "update(stilton);" );
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
 
         final GroupElement lhs = rule.getLhs();
-        assertLength( 1,
-                      lhs.getChildren() );
+        assertThat(lhs.getChildren()).hasSize(1);
 
         final GroupElement and = (GroupElement) lhs.getChildren().get( 0 );
-        assertLength( 1,
-                      and.getChildren() );
+        assertThat(and.getChildren()).hasSize(1);
         final Pattern pattern = (Pattern) and.getChildren().get( 0 );
     }
 
@@ -616,12 +604,10 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         assertThat(builder.getErrors().getErrors().length).isEqualTo(0);
 
         final GroupElement lhs = rule.getLhs();
-        assertLength( 1,
-                      lhs.getChildren() );
+        assertThat(lhs.getChildren()).hasSize(1);
 
         final GroupElement not = (GroupElement) lhs.getChildren().get( 0 );
-        assertLength( 1,
-                      not.getChildren() );
+        assertThat(not.getChildren()).hasSize(1);
         final Pattern pattern = (Pattern) not.getChildren().get( 0 );
     }
 
@@ -643,12 +629,10 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         assertThat(builder.getErrors().getErrors().length).isEqualTo(0);
 
         final GroupElement lhs = rule.getLhs();
-        assertLength( 1,
-                      lhs.getChildren() );
+        assertThat(lhs.getChildren()).hasSize(1);
 
         final GroupElement exists = (GroupElement) lhs.getChildren().get( 0 );
-        assertLength( 1,
-                      exists.getChildren() );
+        assertThat(exists.getChildren()).hasSize(1);
         final Pattern pattern = (Pattern) exists.getChildren().get( 0 );
     }
 
@@ -722,8 +706,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
         final RuleImpl rule = pkg.getRule( "rule-1" );
 
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
     }
     
     @Test
@@ -888,8 +871,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 2,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(2);
         final ParserError err = (ParserError) builder.getErrors().getErrors()[0];
         assertThat(err.getRow()).isEqualTo(42);
         assertThat(err.getCol()).isEqualTo(43);
@@ -948,8 +930,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 2,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(2);
     }
 
     @Test
@@ -1181,8 +1162,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
     }
 
     private RuleImpl createRule( final ConditionalElementDescr ceDescr,
@@ -1244,8 +1224,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
 
         InternalKnowledgePackage pkg = builder.getPackageRegistry().get( "p1" ).getPackage();
         final RuleImpl rule = pkg.getRule( "rule-1" );

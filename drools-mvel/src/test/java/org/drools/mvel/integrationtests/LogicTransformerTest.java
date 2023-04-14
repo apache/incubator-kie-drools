@@ -30,13 +30,12 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.InvalidRuleException;
 import org.drools.core.rule.LogicTransformer;
 import org.drools.core.rule.Pattern;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LogicTransformerTest extends DroolsTestCase {
+public class LogicTransformerTest {
     /**
      * (a||b)&&c
      *
@@ -84,8 +83,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         LogicTransformer.getInstance().applyOrTransformation( parent );
 
-        assertLength( 2,
-                      parent.getChildren() );
+        assertThat(parent.getChildren()).hasSize(2);
         assertThat(parent.getChildren().get(0).getClass()).isEqualTo(GroupElement.class);
         assertThat(parent.getChildren().get(1).getClass()).isEqualTo(GroupElement.class);
 
@@ -175,8 +173,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         assertThat(parent.getType()).isEqualTo(GroupElement.Type.OR);
 
-        assertLength( 4,
-                      parent.getChildren() );
+        assertThat(parent.getChildren()).hasSize(4);
         assertThat(parent.getChildren().get(0).getClass()).isEqualTo(GroupElement.class);
         assertThat(parent.getChildren().get(1).getClass()).isEqualTo(GroupElement.class);
         assertThat(parent.getChildren().get(2).getClass()).isEqualTo(GroupElement.class);
@@ -184,8 +181,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         GroupElement and1 = (GroupElement) parent.getChildren().get( 0 );
         assertThat(and1.isAnd()).isTrue();
-        assertLength( 4,
-                      and1.getChildren() );
+        assertThat(and1.getChildren()).hasSize(4);
         assertThat(and1.getChildren().get(0)).isEqualTo(a);
         assertThat(and1.getChildren().get(1)).isEqualTo(c);
         assertThat(and1.getChildren().get(2)).isEqualTo(d);
@@ -193,8 +189,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         and1 = (GroupElement) parent.getChildren().get( 1 );
         assertThat(and1.isAnd()).isTrue();
-        assertLength( 4,
-                      and1.getChildren() );
+        assertThat(and1.getChildren()).hasSize(4);
         assertThat(and1.getChildren().get(0)).isEqualTo(a);
         assertThat(and1.getChildren().get(1)).isEqualTo(c);
         assertThat(and1.getChildren().get(2)).isEqualTo(e);
@@ -202,8 +197,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         and1 = (GroupElement) parent.getChildren().get( 2 );
         assertThat(and1.isAnd()).isTrue();
-        assertLength( 4,
-                      and1.getChildren() );
+        assertThat(and1.getChildren()).hasSize(4);
         assertThat(and1.getChildren().get(0)).isEqualTo(b);
         assertThat(and1.getChildren().get(1)).isEqualTo(c);
         assertThat(and1.getChildren().get(2)).isEqualTo(d);
@@ -211,8 +205,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         and1 = (GroupElement) parent.getChildren().get( 3 );
         assertThat(and1.isAnd()).isTrue();
-        assertLength( 4,
-                      and1.getChildren() );
+        assertThat(and1.getChildren()).hasSize(4);
         assertThat(and1.getChildren().get(0)).isEqualTo(b);
         assertThat(and1.getChildren().get(1)).isEqualTo(c);
         assertThat(and1.getChildren().get(2)).isEqualTo(e);
@@ -436,10 +429,8 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         final GroupElement[] result = LogicTransformer.getInstance().transform( and1, Collections.EMPTY_MAP );
 
-        assertLength( 1,
-                      result );
-        assertLength( 4,
-                      result[0].getChildren() );
+        assertThat(result).hasSize(1);
+        assertThat(result[0].getChildren()).hasSize(4);
         // we must ensure order
         assertThat(result[0].getChildren().get(0)).isEqualTo(a);
         assertThat(result[0].getChildren().get(1)).isEqualTo(b);

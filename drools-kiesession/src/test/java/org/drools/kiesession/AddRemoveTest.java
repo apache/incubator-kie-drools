@@ -26,11 +26,10 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
 
-public class AddRemoveTest extends DroolsTestCase {
+public class AddRemoveTest {
     @Test
     public void testAdd() {
         /*

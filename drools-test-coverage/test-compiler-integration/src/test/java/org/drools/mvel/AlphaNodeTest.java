@@ -32,7 +32,6 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.model.Cheese;
@@ -43,7 +42,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class AlphaNodeTest extends DroolsTestCase {
+public class AlphaNodeTest {
     
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
@@ -97,8 +96,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final DefaultFactHandle f0 = (DefaultFactHandle) ksession.insert( cheddar );
 
         // check sink is empty
-        assertLength( 0,
-                      sink.getAsserted() );
+        assertThat((Collection) sink.getAsserted()).hasSize(0);
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,
@@ -120,8 +118,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                 context,
                                 ksession );
 
-        assertLength( 1,
-                      sink.getAsserted() );
+        assertThat((Collection) sink.getAsserted()).hasSize(1);
 
         list = (Object[]) sink.getAsserted().get( 0 );
         assertThat(ksession.getObject((DefaultFactHandle) list[0])).isSameAs(cheddar);
@@ -158,16 +155,14 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final DefaultFactHandle f0 = (DefaultFactHandle) ksession.insert( cheddar );
 
-        assertLength( 0,
-                      sink.getAsserted() );
+        assertThat((Collection) sink.getAsserted()).hasSize(0);
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,
                                 context,
                                 ksession );
 
-        assertLength( 1,
-                      sink.getAsserted() );
+        assertThat((Collection) sink.getAsserted()).hasSize(1);
         final Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertThat(ksession.getObject((DefaultFactHandle) list[0])).isSameAs(cheddar);
 
@@ -182,8 +177,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                 context,
                                 ksession );
 
-        assertLength( 0,
-                      sink.getAsserted() );
+        assertThat((Collection) sink.getAsserted()).hasSize(0);
     }
 
     @Test
@@ -239,8 +233,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                 context,
                                 ksession );
 
-        assertLength( 1,
-                      sink1.getAsserted() );
+        assertThat((Collection) sink1.getAsserted()).hasSize(1);
 
         // Attach a new tuple sink
         final MockObjectSink sink2 = new MockObjectSink();
@@ -252,10 +245,8 @@ public class AlphaNodeTest extends DroolsTestCase {
                               context,
                               ksession );
 
-        assertLength( 1,
-                      sink1.getAsserted() );
-        assertLength( 1,
-                      sink2.getAsserted() );
+        assertThat((Collection) sink1.getAsserted()).hasSize(1);
+        assertThat((Collection) sink2.getAsserted()).hasSize(1);
         assertThat(source.getUdated()).isEqualTo(1);
     }
 

@@ -40,7 +40,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.test.model.Cheese;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Before;
@@ -52,7 +51,7 @@ import org.kie.internal.utils.ChainedProperties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ReteTest extends DroolsTestCase {
+public class ReteTest {
     private PropagationContextFactory pctxFactory;
     private InternalKnowledgeBase kBase;
     private BuildContext   buildContext;
@@ -153,12 +152,10 @@ public class ReteTest extends DroolsTestCase {
                           ksession);
 
         ClassObjectTypeConf conf = (ClassObjectTypeConf) ksession.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
-        assertLength(3,
-                     conf.getObjectTypeNodes());
+        assertThat(conf.getObjectTypeNodes()).hasSize(3);
 
         conf = (ClassObjectTypeConf) ksession.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
-        assertLength(3,
-                     conf.getObjectTypeNodes());
+        assertThat(conf.getObjectTypeNodes()).hasSize(3);
 
     }
 
@@ -195,8 +192,7 @@ public class ReteTest extends DroolsTestCase {
                                                                null),
                           ksession);
 
-        assertLength(0,
-                     sink1.getAsserted());
+        assertThat((Collection) sink1.getAsserted()).hasSize(0);
 
         // There is a List ObjectTypeNode, make sure it was propagated
         final List list = new ArrayList();
@@ -214,8 +210,7 @@ public class ReteTest extends DroolsTestCase {
         ksession.fireAllRules();
 
         final List asserted = sink1.getAsserted();
-        assertLength(1,
-                     asserted);
+        assertThat((Collection) asserted).hasSize(1);
 
         final Object[] results = (Object[]) asserted.get(0);
         assertThat(((DefaultFactHandle) results[0]).getObject()).isSameAs(list);
@@ -335,10 +330,8 @@ public class ReteTest extends DroolsTestCase {
                                                                null,
                                                                null),
                           ksession);
-        assertLength(0,
-                     sink1.getAsserted());
-        assertLength(0,
-                     sink1.getRetracted());
+        assertThat((Collection) sink1.getAsserted()).hasSize(0);
+        assertThat((Collection) sink1.getRetracted()).hasSize(0);
 
         // There is a List ObjectTypeNode, make sure it was propagated
         final List list = new ArrayList();
@@ -365,8 +358,7 @@ public class ReteTest extends DroolsTestCase {
         ksession.fireAllRules();
 
         final List retracted = sink1.getRetracted();
-        assertLength(1,
-                     retracted);
+        assertThat((Collection) retracted).hasSize(1);
 
         final Object[] results = (Object[]) retracted.get(0);
         assertThat(((DefaultFactHandle) results[0]).getObject()).isSameAs(list);

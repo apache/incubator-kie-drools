@@ -22,13 +22,12 @@ import java.util.Collections;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.test.model.DroolsTestCase;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TupleSourceTest extends DroolsTestCase {
+public class TupleSourceTest {
 
     @Test
     public void testObjectTupleConstructor() {

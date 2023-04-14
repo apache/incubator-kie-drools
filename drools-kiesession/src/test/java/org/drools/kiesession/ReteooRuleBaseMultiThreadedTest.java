@@ -23,7 +23,6 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Before;
@@ -37,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Test case to ensure that the ReteooRuleBase is thread safe. Specifically to test for
  * deadlocks when modifying the rulebase while creating new sessions.
  */
-public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
+public class ReteooRuleBaseMultiThreadedTest {
 
     InternalKnowledgeBase kBase;
     RuleImpl rule;
