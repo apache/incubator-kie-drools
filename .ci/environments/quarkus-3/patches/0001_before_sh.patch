@@ -3567,7 +3567,7 @@ index 36713ed817..5d2cb983ce 100644
    <modelVersion>4.0.0</modelVersion>
  
 diff --git a/drools-reliability/drools-reliability-infinispan/pom.xml b/drools-reliability/drools-reliability-infinispan/pom.xml
-index 079d1ff8dc..545cbc52ed 100644
+index 079d1ff8dc..7efb57660a 100644
 --- a/drools-reliability/drools-reliability-infinispan/pom.xml
 +++ b/drools-reliability/drools-reliability-infinispan/pom.xml
 @@ -5,7 +5,7 @@
@@ -3579,7 +3579,7 @@ index 079d1ff8dc..545cbc52ed 100644
    </parent>
    <modelVersion>4.0.0</modelVersion>
  
-@@ -34,7 +34,7 @@
+@@ -34,11 +34,11 @@
    <dependencies>
      <dependency>
        <groupId>org.infinispan</groupId>
@@ -3588,6 +3588,11 @@ index 079d1ff8dc..545cbc52ed 100644
      </dependency>
      <dependency>
        <groupId>org.infinispan</groupId>
+-      <artifactId>infinispan-client-hotrod</artifactId>
++      <artifactId>infinispan-client-hotrod-jakarta</artifactId>
+     </dependency>
+     <dependency>
+       <groupId>org.drools</groupId>
 diff --git a/drools-reliability/pom.xml b/drools-reliability/pom.xml
 index 5e29be8765..7f154a0627 100644
 --- a/drools-reliability/pom.xml
