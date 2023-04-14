@@ -16,14 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -32,16 +24,20 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.Trigger;
 import org.kie.api.time.SessionClock;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * A default Scheduler implementation that uses the
  * JDK built-in ScheduledThreadPoolExecutor as the
  * scheduler and the system clock as the clock.
  */
-public class JDKTimerService
-        implements
-        TimerService,
-        SessionClock,
-        InternalSchedulerService {
+public class JDKTimerService implements TimerService, SessionClock, InternalSchedulerService {
 
     private final int size;
 
@@ -92,9 +88,7 @@ public class JDKTimerService
         this.scheduler.shutdownNow();
     }
 
-    public JobHandle scheduleJob(Job job,
-            JobContext ctx,
-            Trigger trigger) {
+    public JobHandle scheduleJob(Job job, JobContext ctx, Trigger trigger) {
         Date date = trigger.hasNextFireTime();
         if (date != null) {
             JDKJobHandle jobHandle = new JDKJobHandle(idCounter.getAndIncrement());
@@ -135,11 +129,11 @@ public class JDKTimerService
         jobFactoryManager.addTimerJobInstance(timerJobInstance);
     }
 
-    public boolean removeJob(JobHandle jobHandle) {
+    public void removeJob(JobHandle jobHandle) {
         jobHandle.setCancel(true);
         JDKJobHandle jdkJobHandle = (JDKJobHandle) jobHandle;
         jobFactoryManager.removeTimerJobInstance(jdkJobHandle.getTimerJobInstance());
-        return this.scheduler.remove((Runnable) jdkJobHandle.getFuture());
+        this.scheduler.remove((Runnable) jdkJobHandle.getFuture());
     }
 
     public static class JDKJobHandle extends DefaultJobHandle

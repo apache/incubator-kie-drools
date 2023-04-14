@@ -21,13 +21,14 @@ import org.drools.core.time.JobHandle;
 import org.drools.core.time.Trigger;
 
 public interface TimerJobInstance {
-    public JobHandle getJobHandle();
+    JobHandle getJobHandle();
     
-    public Job getJob();
+    Job getJob();
     
-    public Trigger getTrigger();
+    Trigger getTrigger();
     
-    public JobContext getJobContext();
+    JobContext getJobContext();
     
-    
+    void cancel();
+    boolean isCanceled();
 }
