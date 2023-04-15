@@ -16,17 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collection;
-import java.util.Date;
-import java.util.PriorityQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -37,32 +26,41 @@ import org.drools.core.time.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.PriorityQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * A PseudoClockScheduler is a scheduler based on a user controlled clock 
  * that allows the user to explicitly control current time.
  */
-public class PseudoClockScheduler
-    implements
-    TimerService,
-    SessionPseudoClock,
-    Externalizable,
-    InternalSchedulerService {
+public class PseudoClockScheduler implements TimerService, SessionPseudoClock, Externalizable, InternalSchedulerService {
     
     private final Logger logger = LoggerFactory.getLogger( PseudoClockScheduler.class );
 
     protected AtomicLong timer = new AtomicLong(0);
 
-    protected PriorityQueue<DefaultTimerJobInstance> queue = new PriorityQueue<>();
+    protected PriorityQueue<TimerJobInstance> queue = new PriorityQueue<>();
 
     private TimerJobFactoryManager jobFactoryManager = DefaultTimerJobFactoryManager.INSTANCE;
 
     protected AtomicLong idCounter = new AtomicLong(0);
 
+    private int cancelledJob = 0;
+
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         timer = new AtomicLong( in.readLong() );
-        PriorityQueue<DefaultTimerJobInstance> tmp = (PriorityQueue<DefaultTimerJobInstance>) in.readObject();
+        PriorityQueue<TimerJobInstance> tmp = (PriorityQueue<TimerJobInstance>) in.readObject();
         if ( tmp != null ) {
             queue = tmp;
         }
@@ -108,15 +106,19 @@ public class PseudoClockScheduler
     public void internalSchedule(TimerJobInstance timerJobInstance) {
         jobFactoryManager.addTimerJobInstance(timerJobInstance);
         synchronized (this) {
-            queue.add( ( DefaultTimerJobInstance ) timerJobInstance );
+            queue.add( timerJobInstance );
         }
     }
 
     @Override
-    public synchronized boolean removeJob(JobHandle jobHandle) {
+    public synchronized void removeJob(JobHandle jobHandle) {
         jobHandle.setCancel(true);
-        jobFactoryManager.removeTimerJobInstance(((DefaultJobHandle) jobHandle).getTimerJobInstance());
-        return this.queue.remove((DefaultTimerJobInstance) ((DefaultJobHandle) jobHandle).getTimerJobInstance());
+        TimerJobInstance timerJobInstance = jobHandle.getTimerJobInstance();
+        jobFactoryManager.removeTimerJobInstance(timerJobInstance);
+        timerJobInstance.cancel();
+        if ( ++cancelledJob > 1000 ) {
+            purgeCancelledJob();
+        }
     }
 
     @Override
@@ -133,6 +135,7 @@ public class PseudoClockScheduler
         idCounter.set(0);
         timer.set(0);
         queue.clear();
+        cancelledJob = 0;
     }
 
     @Override
@@ -143,7 +146,7 @@ public class PseudoClockScheduler
     @SuppressWarnings("unchecked")
     private synchronized long runCallBacksAndIncreaseTimer( long increase ) {
         long endTime = this.timer.get() + increase;
-        TimerJobInstance item = queue.peek();
+        TimerJobInstance item = peek();
         long fireTime;
         while (item != null && item.getTrigger().hasNextFireTime() != null && (fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime) {
             // remove the head
@@ -161,15 +164,35 @@ public class PseudoClockScheduler
             }
 
             // get next head
-            item = queue.peek();
+            item = peek();
         }
         this.timer.set( endTime );
         return this.timer.get();
     }
 
+    private TimerJobInstance peek() {
+        TimerJobInstance peek = queue.peek();
+        while (peek != null && peek.isCanceled()) {
+            cancelledJob--;
+            queue.poll();
+            peek = queue.peek();
+        }
+        return peek;
+    }
+
+    private void purgeCancelledJob() {
+        Iterator<TimerJobInstance> i = queue.iterator();
+        while (i.hasNext()) {
+            if (i.next().isCanceled()) {
+                i.remove();
+            }
+        }
+        cancelledJob = 0;
+    }
+
     @Override
     public synchronized long getTimeToNextJob() {
-        TimerJobInstance item = queue.peek();
+        TimerJobInstance item = peek();
         return (item != null) ? item.getTrigger().hasNextFireTime().getTime() - this.timer.get() : -1;
     }
 

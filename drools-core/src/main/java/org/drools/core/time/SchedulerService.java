@@ -37,5 +37,5 @@ public interface SchedulerService {
      * 
      * @return
      */
-    boolean removeJob(JobHandle jobHandle);
+    void removeJob(JobHandle jobHandle);
 }

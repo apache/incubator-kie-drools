@@ -15,10 +15,6 @@
 
 package org.drools.core.time.impl;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.concurrent.Callable;
-
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -27,27 +23,26 @@ import org.drools.core.time.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultTimerJobInstance
-    implements
-    Callable<Void>,
-    Comparable<DefaultTimerJobInstance>,
-    TimerJobInstance, Serializable {
+import java.io.Serializable;
+import java.util.Date;
+import java.util.concurrent.Callable;
+
+public class DefaultTimerJobInstance implements Callable<Void>, Comparable<DefaultTimerJobInstance>, TimerJobInstance, Serializable {
 
     private static final long serialVersionUID = -4441139572159254264L;
 
     protected static final transient Logger logger = LoggerFactory.getLogger(DefaultTimerJobInstance.class);
     
-    private final Job                         job;
-    private final Trigger                     trigger;
-    private final JobContext                  ctx;
-    protected transient InternalSchedulerService  scheduler;
-    private final JobHandle                   handle;
+    private final Job job;
+    private final Trigger trigger;
+    private final JobContext ctx;
 
-    public DefaultTimerJobInstance(Job job,
-                          JobContext ctx,
-                          Trigger trigger,
-                          JobHandle handle,
-                          InternalSchedulerService scheduler) {
+    protected transient InternalSchedulerService scheduler;
+    private final JobHandle handle;
+
+    private boolean canceled = false;
+
+    public DefaultTimerJobInstance(Job job, JobContext ctx, Trigger trigger, JobHandle handle, InternalSchedulerService scheduler) {
         this.job = job;
         this.ctx = ctx;
         this.trigger = trigger;
@@ -100,5 +95,15 @@ public class DefaultTimerJobInstance
 
     public JobContext getJobContext() {
         return ctx;
+    }
+
+    @Override
+    public void cancel() {
+        this.canceled = true;
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return canceled;
     }
 }

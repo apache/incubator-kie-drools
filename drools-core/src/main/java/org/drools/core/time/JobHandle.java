@@ -17,6 +17,7 @@
 package org.drools.core.time;
 
 
+import org.drools.core.time.impl.TimerJobInstance;
 import org.drools.core.util.LinkedListNode;
 
 /**
@@ -24,9 +25,11 @@ import org.drools.core.util.LinkedListNode;
  */
 public interface JobHandle extends LinkedListNode<JobHandle> {
     
-    public long getId();
+    long getId();
 
-    public void setCancel(boolean cancel);
+    void setCancel(boolean cancel);
     
-    public boolean isCancel();
+    boolean isCancel();
+
+    TimerJobInstance getTimerJobInstance();
 }
