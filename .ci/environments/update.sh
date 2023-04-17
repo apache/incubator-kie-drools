@@ -41,7 +41,7 @@ fi
 # If update script is present, apply it
 if [ -f "${env_path}/after.sh" ]; then
     echo "Run after script"
-    ${env_path}/after.sh
+    ${env_path}/after.sh $@
 fi
 
 # Download `setup_integration_branch` script and execute
