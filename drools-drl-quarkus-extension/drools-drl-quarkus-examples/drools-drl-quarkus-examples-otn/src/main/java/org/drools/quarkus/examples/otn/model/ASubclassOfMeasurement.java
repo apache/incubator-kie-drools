@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.drl.quarkus.util.deployment;
+package org.drools.quarkus.examples.otn.model;
 
-import java.util.Map;
-import java.util.Set;
+public class ASubclassOfMeasurement extends Measurement {
 
-import io.quarkus.builder.item.SimpleBuildItem;
-
-public final class OtnClassesByPackageBuildItem extends SimpleBuildItem {
-    private final Map<String, Set<Class<?>>> otnClasses;
-    
-    public OtnClassesByPackageBuildItem(Map<String, Set<Class<?>>> otnClasses) {
-        this.otnClasses = otnClasses;
+    public ASubclassOfMeasurement(String id, String val) {
+        super(id, val);
     }
 
-    public Map<String, Set<Class<?>>> getOtnClasses() {
-        return otnClasses;
+    @Override
+    public String toString() {
+        return "ASubclassOfMeasurement{ "+ super.toString() +"}";
     }
 }

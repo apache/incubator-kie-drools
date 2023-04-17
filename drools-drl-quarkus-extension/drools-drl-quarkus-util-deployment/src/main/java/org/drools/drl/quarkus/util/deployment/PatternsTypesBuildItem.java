@@ -14,16 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.quarkus.examples.otn.model;
+package org.drools.drl.quarkus.util.deployment;
 
-public class Misurazione extends Measurement {
+import java.util.Map;
+import java.util.Set;
 
-    public Misurazione(String id, String val) {
-        super(id, val);
+import io.quarkus.builder.item.SimpleBuildItem;
+
+/**
+ * Collect Pattern types by package.
+ * 
+ * (a Pattern type is generally one referring to a Phreak OTN class)
+ */
+public final class PatternsTypesBuildItem extends SimpleBuildItem {
+    private final Map<String, Set<Class<?>>> patternsClasses;
+    
+    public PatternsTypesBuildItem(Map<String, Set<Class<?>>> patternsClasses) {
+        this.patternsClasses = patternsClasses;
     }
 
-    @Override
-    public String toString() {
-        return "Misurazione{ "+ super.toString() +"}";
+    public Map<String, Set<Class<?>>> getOtnClasses() {
+        return patternsClasses;
     }
 }

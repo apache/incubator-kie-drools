@@ -45,7 +45,7 @@ import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.drl.quarkus.util.deployment.KmoduleKieBaseModelsBuiltItem;
-import org.drools.drl.quarkus.util.deployment.OtnClassesByPackageBuildItem;
+import org.drools.drl.quarkus.util.deployment.PatternsTypesBuildItem;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.project.RuleCodegen;
 import org.kie.api.io.Resource;
@@ -89,7 +89,7 @@ public class DroolsAssetsProcessor {
                                  BuildProducer<NativeImageResourceBuildItem> resource,
                                  BuildProducer<AdditionalStaticResourceBuildItem> staticResProducer,
                                  BuildProducer<GeneratedResourceBuildItem> genResBI,
-                                 BuildProducer<OtnClassesByPackageBuildItem> otnClasesBI,
+                                 BuildProducer<PatternsTypesBuildItem> otnClasesBI,
                                  BuildProducer<KmoduleKieBaseModelsBuiltItem> kbaseModelsBI) {
         DroolsModelBuildContext context =
                 createDroolsBuildContext(outputTargetBuildItem.getOutputDirectory(), root.getPaths(), combinedIndexBuildItem.getIndex());
@@ -118,7 +118,7 @@ public class DroolsAssetsProcessor {
 
         registerResources(generatedFiles, staticResProducer, resource, genResBI);
         
-        otnClasesBI.produce(new OtnClassesByPackageBuildItem(ruleCodegen.getPackageModels().stream().collect(Collectors.toMap(PackageModel::getName, PackageModel::getOtnsClasses))));
+        otnClasesBI.produce(new PatternsTypesBuildItem(ruleCodegen.getPackageModels().stream().collect(Collectors.toMap(PackageModel::getName, PackageModel::getOtnsClasses))));
         if (ruleCodegen.getKmoduleKieBaseModels() != null) {
             kbaseModelsBI.produce(new KmoduleKieBaseModelsBuiltItem(ruleCodegen.getKmoduleKieBaseModels()));
         }
