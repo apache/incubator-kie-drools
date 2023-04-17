@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Set;
 
 import static org.drools.reliability.core.CacheManager.createCacheId;
@@ -83,13 +84,21 @@ public class EmbeddedCacheManager implements InfinispanCacheManager {
     }
 
     @Override
-    public <k, V> Cache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
-        return embeddedCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), cacheConfiguration);
+    public <K, V> Map<K, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
+        if (ASYNC) {
+            return new AsyncAwareCache<K, V>(embeddedCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), cacheConfiguration));
+        } else {
+            return embeddedCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), cacheConfiguration);
+        }
     }
 
     @Override
-    public <k, V> BasicCache<k, V> getOrCreateSharedCache(String cacheName) {
-        return embeddedCacheManager.administration().getOrCreateCache(SHARED_CACHE_PREFIX + cacheName, cacheConfiguration);
+    public <K, V> Map<K, V> getOrCreateSharedCache(String cacheName) {
+        if (ASYNC) {
+            return new AsyncAwareCache<K, V>(embeddedCacheManager.administration().getOrCreateCache(SHARED_CACHE_PREFIX + cacheName, cacheConfiguration));
+        } else {
+            return embeddedCacheManager.administration().getOrCreateCache(SHARED_CACHE_PREFIX + cacheName, cacheConfiguration);
+        }
     }
 
     @Override

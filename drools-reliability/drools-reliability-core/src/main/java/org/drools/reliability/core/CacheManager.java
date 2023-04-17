@@ -21,13 +21,18 @@ import org.kie.api.runtime.conf.PersistedSessionOption;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.reliability.core.CacheManagerFactory.RELIABILITY_CACHE_ASYNC;
+import static org.drools.util.Config.getConfig;
+
 public interface CacheManager {
+
+    boolean ASYNC = Boolean.parseBoolean(getConfig(RELIABILITY_CACHE_ASYNC, "false"));
 
     void initCacheManager();
 
-    <k, V> Map<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName);
+    <K, V> Map<K, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName);
 
-    <k, V> Map<k, V> getOrCreateSharedCache(String cacheName);
+    <K, V> Map<K, V> getOrCreateSharedCache(String cacheName);
 
     void close();
 

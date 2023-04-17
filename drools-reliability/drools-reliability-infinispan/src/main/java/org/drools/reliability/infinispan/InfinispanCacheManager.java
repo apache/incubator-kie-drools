@@ -1,18 +1,21 @@
 package org.drools.reliability.infinispan;
 
-import org.drools.reliability.core.TestableCacheManager;
-import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
-import org.infinispan.manager.DefaultCacheManager;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import org.drools.reliability.core.TestableCacheManager;
+import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
+import org.infinispan.commons.api.BasicCache;
+import org.infinispan.manager.DefaultCacheManager;
 
 import static org.drools.reliability.core.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
 import static org.drools.util.Config.getOptionalConfig;
 
 public interface InfinispanCacheManager extends TestableCacheManager {
+
     void setRemoteCacheManager(RemoteCacheManager remoteCacheManager);
 
     void setEmbeddedCacheManager(DefaultCacheManager cacheManager);

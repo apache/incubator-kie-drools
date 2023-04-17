@@ -23,6 +23,7 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.Set;
 
 import static org.drools.reliability.core.CacheManager.createCacheId;
@@ -64,13 +65,21 @@ public class RemoteCacheManager implements InfinispanCacheManager {
     }
 
     @Override
-    public <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
-        return remoteCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), (String) null);
+    public <K, V> Map<K, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
+        if (ASYNC) {
+            return new AsyncAwareCache<K, V>(remoteCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), (String) null));
+        } else {
+            return remoteCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), (String) null);
+        }
     }
 
     @Override
-    public <k, V> BasicCache<k, V> getOrCreateSharedCache(String cacheName) {
-        return remoteCacheManager.administration().getOrCreateCache(SHARED_CACHE_PREFIX + cacheName, (String) null);
+    public <K, V> Map<K, V> getOrCreateSharedCache(String cacheName) {
+        if (ASYNC) {
+            return new AsyncAwareCache<K, V>(remoteCacheManager.administration().getOrCreateCache(SHARED_CACHE_PREFIX + cacheName, (String) null));
+        } else {
+            return remoteCacheManager.administration().getOrCreateCache(SHARED_CACHE_PREFIX + cacheName, (String) null);
+        }
     }
 
     @Override

@@ -175,6 +175,28 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>async</id>
+      <activation>
+        <property>
+          <name>async</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- override default-test from sync to async -->
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <drools.reliability.cache.async>true</drools.reliability.cache.async>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
 </project>

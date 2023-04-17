@@ -15,6 +15,7 @@
 
 package org.drools.reliability.infinispan;
 
+import org.drools.reliability.core.CacheManager;
 import org.drools.util.FileUtils;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 
 import static org.drools.reliability.core.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
+import static org.drools.reliability.core.CacheManagerFactory.RELIABILITY_CACHE_ASYNC;
 
 public class BeforeAllMethodExtension implements BeforeAllCallback {
 
@@ -45,5 +47,8 @@ public class BeforeAllMethodExtension implements BeforeAllCallback {
         System.setProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES, "org.test.domain");
         FileUtils.deleteDirectory(Path.of(EmbeddedCacheManager.GLOBAL_STATE_DIR));
         LOG.info("### Deleted directory {}", EmbeddedCacheManager.GLOBAL_STATE_DIR);
+
+        System.setProperty(RELIABILITY_CACHE_ASYNC, "true"); // [DO-NOT-MERGE] Only for PR testing
+        LOG.info("CacheManger.ASYNC = " + CacheManager.ASYNC);
     }
 }
