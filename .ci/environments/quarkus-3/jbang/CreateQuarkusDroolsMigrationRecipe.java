@@ -1,12 +1,9 @@
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,13 +12,23 @@ import org.apache.commons.io.IOUtils;
 import io.quarkus.devtools.project.BuildTool;
 import io.quarkus.devtools.project.update.QuarkusUpdateRecipe;
 import io.quarkus.devtools.project.update.QuarkusUpdateRecipeIO;
-import io.quarkus.devtools.project.update.RewriteOperation;
 import io.quarkus.devtools.project.update.operations.UpdatePropertyOperation;
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 // Version to be changed when needed
 //DEPS io.quarkus:quarkus-devtools-common:3.0.0.Final
 
+/*
+ * This script will generate the final `quarkus3.yml` file based on:
+ *   - quarkus recipe file (see `QUARKUS_UPDATES_BASE_URL` constant)
+ *   - local drools-recipe.yaml => Specific drools repository rules
+ * 
+ * As in Drools we use a lot of managed dependencies, it concatenates both files but it also add some new rules:
+ * In the Quarkus recipe, the dependencies rules are modified only for direct dependencies but not for managed dependencies.
+ * So the script adds a new step:
+ *   - Reads all modified direct dependencies from the Quarkus recipe
+ *   - Generates one managed dependency rule for each of them
+ */
 class CreateQuarkusDroolsMigrationRecipe {
 
     static final String QUARKUS_VERSION = "3.0.0.Final";

@@ -51,12 +51,8 @@ To do so, just run:
 
 ## How reset the quarkus3.yaml recipe file ?
 
-The `quarkus3.yml` file is generated automatically based on:
-
-- https://github.com/quarkusio/quarkus-updates/blob/main/recipes/src/main/resources/quarkus-updates/core/3alpha.yaml  
-  This file is the Quarkus base recipe for Quarkus 2->3 migration
-- `drools_recipe.yml` file  
-  This file contains all other simple modifications needed for the Quarkus 2->3 migration on Drools project
+The `quarkus3.yml` file is generated automatically based on Quarkus recipe file and `drools-recipe.yml` file.  
+See also comments in [Jbang script](jbang/CreateQuarkusDroolsMigrationRecipe.java) for more details on the generation.
   
 To refresh the recipe file, just execute:
 
