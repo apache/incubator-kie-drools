@@ -19,7 +19,6 @@ package org.drools.verifier.core.maps;
 import java.util.List;
 
 import org.drools.verifier.core.AnalyzerConfigurationMock;
-import org.drools.verifier.core.Util;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.UUIDKey;
@@ -52,19 +51,14 @@ public class KeyTreeMapTest {
     private AnalyzerConfiguration configuration;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
         configuration = new AnalyzerConfigurationMock();
 
-        map = new KeyTreeMap<>(AGE,
-                               NAME);
+        map = new KeyTreeMap<>(AGE, NAME);
 
-        toni = new Person("Toni",
-                          20);
-        eder = new Person("Eder",
-                          20);
-        michael = new Person("Michael",
-                             30);
+        toni = new Person("Toni", 20);
+        eder = new Person("Eder", 20);
+        michael = new Person("Michael", 30);
 
         put(toni);
         put(eder);
@@ -72,53 +66,41 @@ public class KeyTreeMapTest {
     }
 
     @Test
-    void testFindByUUID() throws
-            Exception {
-        Util.assertMapContent(map.get(UUIDKey.UNIQUE_UUID),
-                toni.uuidKey,
-                eder.uuidKey,
-                michael.uuidKey);
+    void testFindByUUID() throws Exception {
+    	assertThat(map.get(UUIDKey.UNIQUE_UUID).keySet()).containsExactlyInAnyOrder(toni.uuidKey.getSingleValue(),
+    			eder.uuidKey.getSingleValue(),
+                michael.uuidKey.getSingleValue());
     }
 
     @Test
-    void testReAdd() throws
-            Exception {
+    void testReAdd() throws Exception {
         assertThrows(IllegalArgumentException.class, () -> {
             put(toni);
         });
     }
 
     @Test
-    void testFindByName() throws
-            Exception {
-        Util.assertMapContent(map.get(KeyDefinition.newKeyDefinition()
+    void testFindByName() throws Exception {
+        MultiMap<Value, Person, List<Person>> multiMap = map.get(KeyDefinition.newKeyDefinition()
                         .withId("name")
-                        .build()),
-                "Toni",
-                "Eder",
-                "Michael");
+                        .build());
+        
+        assertThat(multiMap.keySet()).extracting(x -> x.getComparable()).containsExactlyInAnyOrder("Toni", "Eder", "Michael");
     }
 
     @Test
-    void testFindByAge() throws
-            Exception {
+    void testFindByAge() throws Exception {
         final MultiMap<Value, Person, List<Person>> age = map.get(KeyDefinition.newKeyDefinition()
                 .withId("age")
                 .build());
-
-        Util.assertMapContent(age,
-                20,
-                20,
-                30);
-        assertThat(age.get(new Value(20))
-                .contains(toni)).isTrue();
-        assertThat(age.get(new Value(20))
-                .contains(eder)).isTrue();
+        
+        assertThat(age.keySet()).extracting(x -> x.getComparable()).containsExactly(20, 30);
+		
+        assertThat(age.get(new Value(20))).contains(toni, eder);
     }
 
     @Test
-    void testUpdateAge() throws
-            Exception {
+    void testUpdateAge() throws Exception {
         final MultiMapChangeHandler changeHandler = mock(MultiMapChangeHandler.class);
         map.get(AGE).addChangeListener(changeHandler);
 
@@ -126,69 +108,60 @@ public class KeyTreeMapTest {
 
         final MultiMap<Value, Person, List<Person>> age = map.get(AGE);
 
-        assertThat(age.get(new Value(20))
-                .contains(toni)).isFalse();
-        assertThat(age.get(new Value(10))
-                .contains(toni)).isTrue();
+        assertThat(age.get(new Value(20))).doesNotContain(toni);
+        assertThat(age.get(new Value(10))).contains(toni);
     }
 
     @Test
-    void testRetract() throws
-            Exception {
-
+    void testRetract() throws Exception {
         toni.uuidKey.retract();
 
-        Util.assertMapContent(map.get(UUIDKey.UNIQUE_UUID),
-                eder.uuidKey,
-                michael.uuidKey);
-        Util.assertMapContent(map.get(KeyDefinition.newKeyDefinition()
+        assertThat(map.get(UUIDKey.UNIQUE_UUID).keySet()).containsExactlyInAnyOrder(eder.uuidKey.getSingleValue(), michael.uuidKey.getSingleValue());
+        
+        MultiMap<Value, Person, List<Person>> nameMap = map.get(KeyDefinition.newKeyDefinition()
                         .withId("name")
-                        .build()),
-                "Eder",
-                "Michael");
-        Util.assertMapContent(map.get(KeyDefinition.newKeyDefinition()
+                        .build());
+        
+        assertThat(nameMap.keySet()).extracting(x -> x.getComparable()).containsExactly("Eder", "Michael");
+        
+        MultiMap<Value, Person, List<Person>> ageMap = map.get(KeyDefinition.newKeyDefinition()
                         .withId("age")
-                        .build()),
-                20,
-                30);
+                        .build());
+        
+        assertThat(ageMap.keySet()).extracting(x -> x.getComparable()).containsExactly(20, 30);
+        
     }
 
     @Test
-    void testRemoveWhenItemDoesNotExist() throws
-            Exception {
+    void testRemoveWhenItemDoesNotExist() throws Exception {
         final UUIDKey uuidKey = mock(UUIDKey.class);
         when(uuidKey.getKeyDefinition()).thenReturn(UUIDKey.UNIQUE_UUID);
         when(uuidKey.getSingleValue()).thenReturn(new Value("DoesNotExist"));
+        
         assertThat(map.remove(uuidKey)).isNull();
-
-        assertThat(map.get(UUIDKey.UNIQUE_UUID)
-                .size()).isEqualTo(3);
+        assertThat(map.get(UUIDKey.UNIQUE_UUID).size()).isEqualTo(3);
     }
 
     private void put(final Person person) {
         map.put(person);
     }
 
-    class Person
-            implements HasKeys {
+    class Person implements HasKeys {
 
         final String name;
         private final UUIDKey uuidKey = configuration.getUUID(this);
         private UpdatableKey ageKey;
 
-        public Person(final String name,
-                      final int age) {
+        public Person(final String name, final int age) {
             this.name = name;
-            this.ageKey = new UpdatableKey(AGE,
-                                           age);
+            this.ageKey = new UpdatableKey(AGE, age);
         }
 
         @Override
         public Key[] keys() {
             return new Key[]{
                     uuidKey,
-                    new Key(NAME,
-                            name),
+                    new Key(NAME, name),
                     ageKey
             };
         }
@@ -196,12 +169,9 @@ public class KeyTreeMapTest {
         public void setAge(final int age) {
             final UpdatableKey oldKey = ageKey;
 
-            final UpdatableKey<Person> newKey = new UpdatableKey<>(AGE,
-                                                                   age);
+            final UpdatableKey<Person> newKey = new UpdatableKey<>(AGE, age);
             ageKey = newKey;
-
-            oldKey.update(newKey,
-                          this);
+            oldKey.update(newKey, this);
         }
 
         @Override

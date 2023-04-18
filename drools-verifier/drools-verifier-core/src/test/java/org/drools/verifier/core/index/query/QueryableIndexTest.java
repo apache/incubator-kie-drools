@@ -66,39 +66,28 @@ public class QueryableIndexTest {
     private Column firstColumn;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
         configuration = new AnalyzerConfigurationMock();
 
         final Rules rules = new Rules();
-        rules.add(new Rule(0,
-                           configuration));
-        rules.add(new Rule(1,
-                           configuration));
-        rules.add(new Rule(2,
-                           configuration));
+        rules.add(new Rule(0, configuration));
+        rules.add(new Rule(1, configuration));
+        rules.add(new Rule(2, configuration));
 
         final Columns columns = new Columns();
-        firstColumn = new Column(0,
-                                 configuration);
+        firstColumn = new Column(0, configuration);
         columns.add(firstColumn);
-        columns.add(new Column(1,
-                               configuration));
+        columns.add(new Column(1, configuration));
 
         final ObjectTypes objectTypes = new ObjectTypes();
-        objectTypes.add(new ObjectType("Person",
-                                       configuration));
-        objectTypes.add(new ObjectType("Address",
-                                       configuration));
+        objectTypes.add(new ObjectType("Person", configuration));
+        objectTypes.add(new ObjectType("Address", configuration));
 
-        queryableIndex = new QueryableIndex(rules,
-                                            columns,
-                                            objectTypes);
+        queryableIndex = new QueryableIndex(rules, columns, objectTypes);
     }
 
     @Test
-    void queryAllRules() throws
-            Exception {
+    void queryAllRules() throws Exception {
 
         queryableIndex.getRules()
                 .where(Rule.index()
@@ -108,13 +97,11 @@ public class QueryableIndexTest {
 
         verify(rulesQueryCallback).callback(rulesArgumentCaptor.capture());
 
-        assertThat(rulesArgumentCaptor.getValue()
-                .size()).isEqualTo(3);
+        assertThat(rulesArgumentCaptor.getValue()).hasSize(3);
     }
 
     @Test
-    void queryFirstColumn() throws
-            Exception {
+    void queryFirstColumn() throws Exception {
 
         queryableIndex.getColumns()
                 .where(Column.index()
@@ -128,8 +115,7 @@ public class QueryableIndexTest {
     }
 
     @Test
-    void makeSureFirstAndLastObjectTypesAreTheSame() throws
-            Exception {
+    void makeSureFirstAndLastObjectTypesAreTheSame() throws Exception {
 
         queryableIndex.getObjectTypes()
                 .where(ObjectType.type()

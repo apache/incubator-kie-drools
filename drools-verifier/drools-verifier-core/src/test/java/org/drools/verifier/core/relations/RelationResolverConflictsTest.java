@@ -43,8 +43,7 @@ public class RelationResolverConflictsTest {
     private Person firstItemInA;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
         configuration = new AnalyzerConfigurationMock();
 
         a = new InspectorList(configuration);
@@ -57,21 +56,18 @@ public class RelationResolverConflictsTest {
 
         b.add(new Person(10));
 
-        relationResolver = new RelationResolver(a,
-                                                true);
+        relationResolver = new RelationResolver(a, true);
     }
 
     @Test
-    void empty() throws
-            Exception {
+    void empty() throws Exception {
 
         relationResolver = new RelationResolver(new InspectorList(configuration));
         assertThat(relationResolver.isConflicting(new InspectorList(configuration))).isFalse();
     }
 
     @Test
-    void recheck() throws
-            Exception {
+    void recheck() throws Exception {
 
         assertThat(relationResolver.isConflicting(b)).isTrue();
 
@@ -81,13 +77,11 @@ public class RelationResolverConflictsTest {
 
         assertThat(relationResolver.isConflicting(b)).isTrue();
 
-        verify(firstItemInA,
-                never()).conflicts(any());
+        verify(firstItemInA, never()).conflicts(any());
     }
 
     @Test
-    void recheckWithUpdate() throws
-            Exception {
+    void recheckWithUpdate() throws Exception {
 
         assertThat(relationResolver.isConflicting(b)).isTrue();
 
@@ -102,8 +96,7 @@ public class RelationResolverConflictsTest {
     }
 
     @Test
-    void recheckConflictingItemRemoved() throws
-            Exception {
+    void recheckConflictingItemRemoved() throws Exception {
 
         assertThat(relationResolver.isConflicting(b)).isTrue();
 
@@ -118,28 +111,22 @@ public class RelationResolverConflictsTest {
     }
 
     @Test
-    void recheckOtherListBecomesEmpty() throws
-            Exception {
+    void recheckOtherListBecomesEmpty() throws Exception {
 
         assertThat(relationResolver.isConflicting(b)).isTrue();
 
-        reset(firstItemInA,
-                isConflicting);
+        reset(firstItemInA, isConflicting);
 
         // UPDATE
         b.clear();
 
         assertThat(relationResolver.isConflicting(b)).isFalse();
 
-        verify(firstItemInA,
-                never()).conflicts(any());
-        verify(isConflicting,
-                never()).conflicts(any());
+        verify(firstItemInA, never()).conflicts(any());
+        verify(isConflicting, never()).conflicts(any());
     }
 
-    public class Person
-            implements IsConflicting,
-                       HasKeys {
+    public class Person implements IsConflicting, HasKeys {
 
         int age;
 

@@ -19,17 +19,14 @@ package org.drools.verifier.core.cache.inspectors.condition;
 import java.util.Date;
 
 import org.drools.verifier.core.AnalyzerConfigurationMock;
-import org.drools.verifier.core.index.keys.Values;
-import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
-import org.drools.verifier.core.index.model.FieldCondition;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.drools.verifier.core.cache.inspectors.condition.ConditionInspectorUtils.fieldCondition;
 
 @ExtendWith(MockitoExtension.class)
 public class DateConditionInspectorSubsumptionTest {
@@ -38,8 +35,7 @@ public class DateConditionInspectorSubsumptionTest {
     private Field field;
 
     @Test
-    void testSubsume001() throws
-            Exception {
+    void testSubsume001() throws Exception {
         ComparableConditionInspector<Date> a = getCondition(new Date(100),
                 "!=");
         ComparableConditionInspector<Date> b = getCondition(new Date(100),
@@ -50,8 +46,7 @@ public class DateConditionInspectorSubsumptionTest {
     }
 
     @Test
-    void testSubsumeEquals001() throws
-            Exception {
+    void testSubsumeEquals001() throws Exception {
         ComparableConditionInspector<Date> a = getCondition(new Date(100),
                 "==");
         ComparableConditionInspector<Date> b = getCondition(new Date(10),
@@ -62,8 +57,7 @@ public class DateConditionInspectorSubsumptionTest {
     }
 
     @Test
-    void testSubsumeEquals002() throws
-            Exception {
+    void testSubsumeEquals002() throws Exception {
         ComparableConditionInspector<Date> a = getCondition(new Date(10),
                 "==");
         ComparableConditionInspector<Date> b = getCondition(new Date(100),
@@ -76,11 +70,6 @@ public class DateConditionInspectorSubsumptionTest {
     private ComparableConditionInspector<Date> getCondition(Date date,
                                                             String operator) {
         AnalyzerConfigurationMock configurationMock = new AnalyzerConfigurationMock();
-        return new ComparableConditionInspector<Date>(new FieldCondition(field,
-                                                                         mock(Column.class),
-                                                                         operator,
-                                                                         new Values<>(date),
-                                                                         configurationMock),
-                                                      configurationMock);
+        return new ComparableConditionInspector<Date>(fieldCondition(field, date, operator), configurationMock);
     }
 }

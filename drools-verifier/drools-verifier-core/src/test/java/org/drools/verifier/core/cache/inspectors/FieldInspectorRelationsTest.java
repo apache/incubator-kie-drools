@@ -34,8 +34,7 @@ public class FieldInspectorRelationsTest {
     private FieldInspector b;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
 
         configurationMock = new AnalyzerConfigurationMock();
 
@@ -57,15 +56,13 @@ public class FieldInspectorRelationsTest {
     }
 
     @Test
-    void testRedundancy01() throws
-            Exception {
+    void testRedundancy01() throws Exception {
         assertThat(a.isRedundant(b)).isTrue();
         assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
-    void testRedundancy02() throws
-            Exception {
+    void testRedundancy02() throws Exception {
         final FieldInspector x = new FieldInspector(new Field(mock(ObjectField.class),
                         "org.Address",
                         "String",
@@ -79,15 +76,13 @@ public class FieldInspectorRelationsTest {
     }
 
     @Test
-    void testSubsumpt01() throws
-            Exception {
+    void testSubsumpt01() throws Exception {
         assertThat(a.subsumes(b)).isTrue();
         assertThat(b.subsumes(a)).isTrue();
     }
 
     @Test
-    void testSubsumpt02() throws
-            Exception {
+    void testSubsumpt02() throws Exception {
         final FieldInspector x = new FieldInspector(new Field(mock(ObjectField.class),
                         "org.Address",
                         "String",

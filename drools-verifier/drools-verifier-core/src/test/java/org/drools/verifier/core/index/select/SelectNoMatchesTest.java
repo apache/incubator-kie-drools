@@ -15,7 +15,6 @@
  */
 package org.drools.verifier.core.index.select;
 
-import java.util.Collection;
 
 import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.index.keys.Key;
@@ -47,9 +46,7 @@ public class SelectNoMatchesTest {
 
     @Test
     void testAll() throws Exception {
-        final Collection<Address> all = select.all();
-
-        assertThat(all.isEmpty()).isTrue();
+        assertThat(select.all()).isEmpty();
     }
 
     @Test
@@ -62,8 +59,7 @@ public class SelectNoMatchesTest {
         assertThat(select.last()).isNull();
     }
 
-    private class Address
-            implements HasKeys {
+    private class Address implements HasKeys {
 
         private UUIDKey uuidKey = new AnalyzerConfigurationMock().getUUID(this);
 

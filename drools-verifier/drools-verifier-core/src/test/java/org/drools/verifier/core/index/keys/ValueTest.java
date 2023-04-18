@@ -24,37 +24,37 @@ public class ValueTest {
 
     @Test
     void testIntegerVSInteger() throws Exception {
-        final Value nroZero = new Value( 0 );
-        final Value nroOne = new Value( 1 );
+        final Value nroZero = new Value(0);
+        final Value nroOne = new Value(1);
 
-        assertThat(nroZero.compareTo(nroOne) < 0).isTrue();
-        assertThat(nroOne.compareTo(nroZero) > 0).isTrue();
+        assertThat(nroZero).isLessThan(nroOne);
+        assertThat(nroOne).isGreaterThan(nroZero);
     }
 
     @Test
     void testStringVSInteger() throws Exception {
-        final Value hello = new Value( "hello" );
-        final Value nroOne = new Value( 1 );
+        final Value hello = new Value("hello");
+        final Value nroOne = new Value(1);
 
-        assertThat(hello.compareTo(nroOne) > 0).isTrue();
-        assertThat(nroOne.compareTo(hello) < 0).isTrue();
+        assertThat(hello).isGreaterThan(nroOne);
+        assertThat(nroOne).isLessThan(hello);
     }
 
     @Test
     void testStringVSIntegerString() throws Exception {
-        final Value hello = new Value( "hello" );
-        final Value nroOne = new Value( "1" );
+        final Value hello = new Value("hello");
+        final Value nroOne = new Value("1");
 
-        assertThat(hello.compareTo(nroOne) > 0).isTrue();
-        assertThat(nroOne.compareTo(hello) < 0).isTrue();
+        assertThat(hello).isGreaterThan(nroOne);
+        assertThat(nroOne).isLessThan(hello);
     }
 
     @Test
     void testStringVSString() throws Exception {
-        final Value a = new Value( "a" );
-        final Value b = new Value( "b" );
+        final Value a = new Value("a");
+        final Value b = new Value("b");
 
-        assertThat(a.compareTo(b) < 0).isTrue();
-        assertThat(b.compareTo(a) > 0).isTrue();
+        assertThat(a).isLessThan(b);
+        assertThat(b).isGreaterThan(a);
     }
 }

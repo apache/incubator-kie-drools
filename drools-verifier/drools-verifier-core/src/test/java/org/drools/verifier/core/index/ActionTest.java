@@ -32,34 +32,23 @@ public class ActionTest {
     private Action action;
 
     @BeforeEach
-    public void setUp() throws
-                        Exception {
-        action = new Action(mock( Column.class ),
+    public void setUp() throws Exception {
+        action = new Action(mock(Column.class),
                             ActionSuperType.FIELD_ACTION,
-                            new Values(true ),
-                            new AnalyzerConfigurationMock() ) {
+                            new Values<>(true),
+                            new AnalyzerConfigurationMock()) {
         };
     }
 
     @Test
-    void valueSet() throws
-            Exception {
-        assertThat(action.getValues()
-                .size()).isEqualTo(1);
-        assertThat(action.getValues()
-                .iterator()
-                .next()).isEqualTo(true);
+    void valueSet() throws Exception {
+        assertThat(action.getValues()).hasSize(1).containsExactly(true);
     }
 
     @Test
-    void changeValue() throws
-            Exception {
-        action.setValue(new Values( false ));
+    void changeValue() throws Exception {
+        action.setValue(new Values<>(false));
 
-        assertThat(action.getValues()
-                .size()).isEqualTo(1);
-        assertThat(action.getValues()
-                .iterator()
-                .next()).isEqualTo(false);
+        assertThat(action.getValues()).hasSize(1).containsExactly(false);
     }
 }

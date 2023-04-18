@@ -26,6 +26,7 @@ public class KeyTest {
     void testEqual() throws Exception {
         final Key a = new Key(KeyDefinition.newKeyDefinition().withId("id").build(), 2);
         final Key b = new Key(KeyDefinition.newKeyDefinition().withId("id").build(), 2);
+        
         assertThat(a.compareTo(b)).isEqualTo(0);
     }
 }

@@ -36,8 +36,7 @@ public class UpdatableInspectorListTest {
     private AnalyzerConfiguration configuration;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
 
         configuration = new AnalyzerConfigurationMock();
 
@@ -57,65 +56,62 @@ public class UpdatableInspectorListTest {
     }
 
     @Test
-    void add() throws
-            Exception {
+    void add() throws Exception {
         final ArrayList<Item> updates = new ArrayList<>();
-
         updates.add(new Item());
 
         list.update(updates);
 
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
     }
 
     @Test
-    void reAdd() throws
-            Exception {
+    void reAdd() throws Exception {
         final ArrayList<Item> updates = new ArrayList<>();
-
         updates.add(new Item());
 
         list.update(updates);
-        assertThat(list.size()).isEqualTo(1);
+        
+        assertThat(list).hasSize(1);
 
         list.update(updates);
-        assertThat(list.size()).isEqualTo(1);
+
+        assertThat(list).hasSize(1);
     }
 
     @Test
-    void reAddNew() throws
-            Exception {
+    void reAddNew() throws Exception {
         final ArrayList<Item> updates = new ArrayList<>();
-
         updates.add(new Item());
 
         list.update(updates);
-        assertThat(list.size()).isEqualTo(1);
+        
+        assertThat(list).hasSize(1);
 
         updates.add(new Item());
         list.update(updates);
-        assertThat(list.size()).isEqualTo(2);
+
+        assertThat(list).hasSize(2);
     }
 
     @Test
-    void remove() throws
-            Exception {
+    void remove() throws Exception {
         final ArrayList<Item> updates = new ArrayList<>();
-
         updates.add(new Item());
         final Item removeMe = new Item();
         updates.add(removeMe);
 
         list.update(updates);
-        assertThat(list.size()).isEqualTo(2);
+        
+        assertThat(list).hasSize(2);
 
         updates.remove(removeMe);
         list.update(updates);
-        assertThat(list.size()).isEqualTo(1);
+        
+        assertThat(list).hasSize(1);
     }
 
-    private class Item
-            implements HasKeys {
+    private class Item implements HasKeys {
 
         private UUIDKey uuidKey = configuration.getUUID(this);
 

@@ -39,8 +39,7 @@ public class ConditionsListenerTest {
     private AnalyzerConfigurationMock configuration;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
         configuration = new AnalyzerConfigurationMock();
 
         conditions = new Conditions();
@@ -54,15 +53,13 @@ public class ConditionsListenerTest {
     }
 
     @Test
-    void testListen() throws
-            Exception {
-        conditions.add(new FieldCondition(new Field(mock(ObjectField.class),
+    void testListen() throws Exception {
+        conditions.add(new FieldCondition<>(new Field(mock(ObjectField.class),
                         "Person",
                         "String",
                         "name",
                         configuration),
-                new Column(1,
-                        configuration),
+                new Column(1, configuration),
                 "==",
                 new Values<>(10),
                 configuration));
@@ -71,15 +68,13 @@ public class ConditionsListenerTest {
     }
 
     @Test
-    void testUpdate() throws
-            Exception {
-        final Condition condition = new FieldCondition(new Field(mock(ObjectField.class),
+    void testUpdate() throws Exception {
+        final Condition condition = new FieldCondition<>(new Field(mock(ObjectField.class),
                         "Person",
                         "String",
                         "name",
                         configuration),
-                new Column(1,
-                        configuration),
+                new Column(1, configuration),
                 "==",
                 new Values<>(10),
                 configuration);

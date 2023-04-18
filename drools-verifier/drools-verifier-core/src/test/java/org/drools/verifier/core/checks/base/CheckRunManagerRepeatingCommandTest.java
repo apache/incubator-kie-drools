@@ -31,7 +31,6 @@ public class CheckRunManagerRepeatingCommandTest {
     public void setUp() throws Exception {
         checksToRun = new HashSet<>();
         for (int i = 0; i < 100; i++) {
-
             checksToRun.add(mock(Check.class));
         }
     }
@@ -48,7 +47,6 @@ public class CheckRunManagerRepeatingCommandTest {
 
         final Check[] array = checksToRun.toArray(new Check[checksToRun.size()]);
         for (int i = 0; i < 100; i++) {
-//            System.out.println( "i " + i );
             verify(array[i]).check();
         }
     }

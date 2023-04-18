@@ -20,43 +20,24 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.verifier.core.AnalyzerConfigurationMock;
-import org.drools.verifier.core.index.keys.Values;
-import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
-import org.drools.verifier.core.index.model.FieldCondition;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.verifier.core.cache.inspectors.condition.ConditionInspectorUtils.fieldCondition;
 import static org.mockito.Mockito.mock;
 
 public class BooleanConditionInspectorTest {
 
-    private boolean value1;
-    private boolean value2;
-    private String operator1;
-    private String operator2;
-    private boolean conflictExpected;
-    private Field field;
 
-    public void initBooleanConditionInspectorTest(String operator1,
-                                         boolean value1,
-                                         String operator2,
-                                         boolean value2,
-                                         boolean conflictExpected) {
-        this.field = mock(Field.class);
-        this.value1 = value1;
-        this.value2 = value2;
-        this.operator1 = operator1;
-        this.operator2 = operator2;
-        this.conflictExpected = conflictExpected;
-    }
+    private Field field;
 
     @MethodSource("testData")
     @ParameterizedTest
     void parametrizedConflictTest(String operator1, boolean value1, String operator2, boolean value2, boolean conflictExpected) {
-        initBooleanConditionInspectorTest(operator1, value1, operator2, value2, conflictExpected);
+        this.field = mock(Field.class);
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
@@ -67,7 +48,7 @@ public class BooleanConditionInspectorTest {
     @MethodSource("testData")
     @ParameterizedTest
     void parametrizedRedundancyTest(String operator1, boolean value1, String operator2, boolean value2, boolean conflictExpected) {
-        initBooleanConditionInspectorTest(operator1, value1, operator2, value2, conflictExpected);
+        this.field = mock(Field.class);
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
@@ -78,7 +59,7 @@ public class BooleanConditionInspectorTest {
     @MethodSource("testData")
     @ParameterizedTest
     void parametrizedOverlapTest(String operator1, boolean value1, String operator2, boolean value2, boolean conflictExpected) {
-        initBooleanConditionInspectorTest(operator1, value1, operator2, value2, conflictExpected);
+        this.field = mock(Field.class);
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
@@ -89,7 +70,7 @@ public class BooleanConditionInspectorTest {
     @MethodSource("testData")
     @ParameterizedTest
     void parametrizedSubsumptionTest(String operator1, boolean value1, String operator2, boolean value2, boolean conflictExpected) {
-        initBooleanConditionInspectorTest(operator1, value1, operator2, value2, conflictExpected);
+        this.field = mock(Field.class);
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
@@ -109,8 +90,8 @@ public class BooleanConditionInspectorTest {
         });
     }
 
-    private String getAssertDescription(BooleanConditionInspector a,
-                                        BooleanConditionInspector b,
+    private String getAssertDescription(ComparableConditionInspector a,
+    		ComparableConditionInspector b,
                                         boolean conditionExpected,
                                         String condition) {
         return format("Expected conditions '%s' and '%s' %sto %s:",
@@ -120,10 +101,9 @@ public class BooleanConditionInspectorTest {
                 condition);
     }
 
-    private BooleanConditionInspector getCondition(boolean value,
-                                                   String operator) {
-        return new BooleanConditionInspector(new FieldCondition<>(field, mock(Column.class), operator, new Values<>(value),
-                        new AnalyzerConfigurationMock()),
+    private BooleanConditionInspector getCondition(boolean value, String operator) {
+        return new BooleanConditionInspector(fieldCondition(field, Boolean.valueOf(value), operator),
                 new AnalyzerConfigurationMock());
     }
+
 }

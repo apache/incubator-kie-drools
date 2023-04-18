@@ -16,11 +16,8 @@
 
 package org.drools.verifier.core;
 
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.drools.verifier.core.cache.RuleInspectorCache;
-import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.Index;
 import org.drools.verifier.core.index.IndexImpl;
@@ -38,64 +35,31 @@ public class RuleInspectorCacheTest {
     private RuleInspectorCache cache;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
         final Index index = new IndexImpl();
         final AnalyzerConfiguration configuration = new AnalyzerConfigurationMock();
 
-        cache = new RuleInspectorCache(index,
-                                       configuration);
+        cache = new RuleInspectorCache(index, configuration);
 
-        cache.addRule(new Rule(0,
-                               configuration));
-        cache.addRule(new Rule(1,
-                               configuration));
-        cache.addRule(new Rule(2,
-                               configuration));
-        cache.addRule(new Rule(3,
-                               configuration));
-        cache.addRule(new Rule(4,
-                               configuration));
-        cache.addRule(new Rule(5,
-                               configuration));
-        cache.addRule(new Rule(6,
-                               configuration));
+        cache.addRule(new Rule(0, configuration));
+        cache.addRule(new Rule(1, configuration));
+        cache.addRule(new Rule(2, configuration));
+        cache.addRule(new Rule(3, configuration));
+        cache.addRule(new Rule(4, configuration));
+        cache.addRule(new Rule(5, configuration));
+        cache.addRule(new Rule(6, configuration));
     }
 
     @Test
-    void testInit() throws
-            Exception {
-        assertThat(cache.all()
-                .size()).isEqualTo(7);
+    void testInit() throws Exception {
+        assertThat(cache.all()).hasSize(7);
     }
 
     @Test
-    void testRemoveRow() throws
-            Exception {
+    void testRemoveRow() throws Exception {
         cache.removeRow(3);
 
-        final Collection<RuleInspector> all = cache.all();
-        assertThat(all.size()).isEqualTo(6);
+        assertThat(cache.all()).hasSize(6).extracting(ri -> ri.getRowIndex()).containsExactlyInAnyOrder(0, 1, 2, 3, 4, 5);
 
-        assertContainsRowNumbers(all,
-                0,
-                1,
-                2,
-                3,
-                4,
-                5);
-    }
-
-    private void assertContainsRowNumbers(final Collection<RuleInspector> all,
-                                          final int... numbers) {
-        final ArrayList<Integer> rowNumbers = new ArrayList<>();
-        for (final RuleInspector ruleInspector : all) {
-            final int rowIndex = ruleInspector.getRowIndex();
-            rowNumbers.add(rowIndex);
-        }
-
-        for (final int number : numbers) {
-            assertThat(rowNumbers.contains(number)).as(rowNumbers.toString()).isTrue();
-        }
     }
 }

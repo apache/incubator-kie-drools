@@ -32,15 +32,15 @@ public class SelectEmptyMapTest {
     @BeforeEach
     public void setUp() throws Exception {
         select = new Select<>(MultiMapFactory.make(),
-                              new ExactMatcher(KeyDefinition.newKeyDefinition().withId("name" ).build(),
-                                               "Toni" ) );
+                              new ExactMatcher(KeyDefinition.newKeyDefinition().withId("name").build(),
+                                               "Toni"));
     }
 
     @Test
     void testAll() throws Exception {
         final Collection<Address> all = select.all();
 
-        assertThat(all.isEmpty()).isTrue();
+        assertThat(all).isEmpty();
     }
 
     @Test
