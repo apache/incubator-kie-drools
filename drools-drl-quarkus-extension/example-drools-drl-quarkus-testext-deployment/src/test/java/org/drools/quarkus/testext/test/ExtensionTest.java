@@ -49,17 +49,17 @@ public class ExtensionTest {
             );
     
     @Inject
-    OtnClassesSingleton asd;
+    OtnClassesSingleton myBean;
     
     @Test
     public void test() {
-        assertThat(asd.getAllKnown()).contains(ASubclassOfMeasurement.class.getCanonicalName(),
+        assertThat(myBean.getAllKnown()).contains(ASubclassOfMeasurement.class.getCanonicalName(),
                 Measurement.class.getCanonicalName(),
                 MyImplementation.class.getCanonicalName(),
                 MyInterface.class.getCanonicalName())
                 .as("these classes or subclasses are derived from OTNs in the rules.");
         
-        assertThat(asd.getAllKnown()).doesNotContain(MyUnusedClass.class.getCanonicalName())
+        assertThat(myBean.getAllKnown()).doesNotContain(MyUnusedClass.class.getCanonicalName())
                 .as("this class is unused in the rules despite star-import");
     }
 }
