@@ -2074,7 +2074,7 @@ index ccc2fe2585..dfa3bd73f5 100644
      </parent>
  
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/pom.xml
-index 0030a96408..b859fd072a 100644
+index ff839bcbfb..8514792b8e 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/pom.xml
 +++ b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/pom.xml
 @@ -6,7 +6,7 @@
@@ -2087,13 +2087,13 @@ index 0030a96408..b859fd072a 100644
  
    <name>Drools :: Quarkus Extension :: Deployment</name>
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
-index 180691387d..b6be0e3f62 100644
+index 75848ee1fe..9b879819ef 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
 +++ b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
-@@ -18,7 +18,7 @@ package org.drools.drl.quarkus.deployment;
- import java.util.ArrayList;
- import java.util.Collection;
- import java.util.List;
+@@ -23,7 +23,7 @@ import java.util.Optional;
+ import java.util.Set;
+ import java.util.stream.Collectors;
+ 
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
  
@@ -2432,8 +2432,84 @@ index 7a10ca0c24..97e6402761 100644
                  <version>${version.io.quarkus}</version>
                  <executions>
                      <execution>
+diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/pom.xml b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/pom.xml
+index f3b46b16fa..4890fa57ec 100644
+--- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/pom.xml
++++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/pom.xml
+@@ -4,7 +4,7 @@
+     <parent>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-drl-quarkus-extension</artifactId>
+-        <version>8.38.0-SNAPSHOT</version>
++        <version>quarkus-3-SNAPSHOT</version>
+     </parent>
+ 
+     <name>Drools :: Quarkus Testing Extension Example :: Deployment</name>
+diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/main/java/org/drools/drl/quarkus/testext/deployment/DroolsTestExtAssetsProcessor.java b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/main/java/org/drools/drl/quarkus/testext/deployment/DroolsTestExtAssetsProcessor.java
+index 7912b11dda..9d79d13914 100644
+--- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/main/java/org/drools/drl/quarkus/testext/deployment/DroolsTestExtAssetsProcessor.java
++++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/main/java/org/drools/drl/quarkus/testext/deployment/DroolsTestExtAssetsProcessor.java
+@@ -22,7 +22,7 @@ import java.util.Optional;
+ import java.util.Set;
+ import java.util.stream.Collectors;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.drools.drl.quarkus.util.deployment.KmoduleKieBaseModelsBuiltItem;
+ import org.drools.drl.quarkus.util.deployment.PatternsTypesBuildItem;
+diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java
+index be6385b9ac..b67a1b17ac 100644
+--- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java
++++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java
+@@ -17,7 +17,7 @@ package org.drools.quarkus.testext.test;
+ 
+ import static org.assertj.core.api.Assertions.assertThat;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.drools.drl.quarkus.testext.deployment.OtnClassesSingleton;
+ import org.drools.quarkus.examples.otn.model.ASubclassOfMeasurement;
+diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
+index b23404087d..47a7192ff1 100644
+--- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
++++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
+@@ -4,7 +4,7 @@
+     <parent>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-drl-quarkus-extension</artifactId>
+-        <version>8.38.0-SNAPSHOT</version>
++        <version>quarkus-3-SNAPSHOT</version>
+     </parent>
+ 
+     <name>Drools :: Quarkus Testing Extension Example :: Runtime</name>
+@@ -37,7 +37,7 @@
+             </plugin>
+             <plugin>
+                 <groupId>io.quarkus</groupId>
+-                <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
++                <artifactId>quarkus-extension-maven-plugin</artifactId>
+                 <version>${version.io.quarkus}</version>
+                 <executions>
+                     <execution>
+diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/src/main/java/org/drools/drl/quarkus/testext/deployment/OtnClassesSingleton.java b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/src/main/java/org/drools/drl/quarkus/testext/deployment/OtnClassesSingleton.java
+index 21a9a01650..8860daacad 100644
+--- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/src/main/java/org/drools/drl/quarkus/testext/deployment/OtnClassesSingleton.java
++++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/src/main/java/org/drools/drl/quarkus/testext/deployment/OtnClassesSingleton.java
+@@ -19,8 +19,8 @@ package org.drools.drl.quarkus.testext.deployment;
+ import java.util.Map;
+ import java.util.Set;
+ 
+-import javax.enterprise.event.Observes;
+-import javax.inject.Singleton;
++import jakarta.enterprise.event.Observes;
++import jakarta.inject.Singleton;
+ 
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
 diff --git a/drools-drl-quarkus-extension/pom.xml b/drools-drl-quarkus-extension/pom.xml
-index 6ed82b3a4c..c7ad2fb0c7 100644
+index 7c13528a2e..5f37f6294b 100644
 --- a/drools-drl-quarkus-extension/pom.xml
 +++ b/drools-drl-quarkus-extension/pom.xml
 @@ -6,7 +6,7 @@
