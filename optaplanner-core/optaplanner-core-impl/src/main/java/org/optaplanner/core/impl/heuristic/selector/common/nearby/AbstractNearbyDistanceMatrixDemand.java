@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.solver.ClassInstanceCache;
-import org.optaplanner.core.impl.util.MemoizingSupply;
 
 /**
  * Calculating {@link NearbyDistanceMatrix} is very expensive,
@@ -22,7 +21,7 @@ import org.optaplanner.core.impl.util.MemoizingSupply;
  * @param <ReplayingSelector_>
  */
 public abstract class AbstractNearbyDistanceMatrixDemand<Origin_, Destination_, ChildSelector_, ReplayingSelector_>
-        implements Demand<MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>> {
+        implements Demand<NearbyDistanceMatrix<Origin_, Destination_>> {
 
     protected final NearbyDistanceMeter<Origin_, Destination_> meter;
     protected final NearbyRandom random;
@@ -38,9 +37,8 @@ public abstract class AbstractNearbyDistanceMatrixDemand<Origin_, Destination_, 
     }
 
     @Override
-    public final MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>
-            createExternalizedSupply(SupplyManager supplyManager) {
-        return new MemoizingSupply<>(this::supplyNearbyDistanceMatrix);
+    public final NearbyDistanceMatrix<Origin_, Destination_> createExternalizedSupply(SupplyManager supplyManager) {
+        return supplyNearbyDistanceMatrix();
     }
 
     protected abstract NearbyDistanceMatrix<Origin_, Destination_> supplyNearbyDistanceMatrix();

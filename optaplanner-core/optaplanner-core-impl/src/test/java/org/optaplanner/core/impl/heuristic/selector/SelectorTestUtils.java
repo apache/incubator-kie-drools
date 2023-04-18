@@ -254,6 +254,7 @@ public class SelectorTestUtils {
             SolverScope<Solution_> solverScope) {
         AbstractPhaseScope<Solution_> phaseScope = mock(AbstractPhaseScope.class);
         when(phaseScope.getSolverScope()).thenReturn(solverScope);
+        when(phaseScope.getScoreDirector()).thenAnswer(s -> solverScope.getScoreDirector());
         listener.phaseStarted(phaseScope);
         return phaseScope;
     }

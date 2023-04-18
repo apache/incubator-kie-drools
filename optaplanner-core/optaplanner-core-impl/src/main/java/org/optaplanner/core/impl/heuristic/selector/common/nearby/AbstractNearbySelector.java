@@ -5,8 +5,6 @@ import java.util.Objects;
 import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.optaplanner.core.impl.util.MemoizingSupply;
 
 public abstract class AbstractNearbySelector<Solution_, ChildSelector_ extends PhaseLifecycleListener<Solution_>, ReplayingSelector_ extends PhaseLifecycleListener<Solution_>>
         extends AbstractDemandEnabledSelector<Solution_> {
@@ -18,7 +16,7 @@ public abstract class AbstractNearbySelector<Solution_, ChildSelector_ extends P
     protected final boolean randomSelection;
     private final AbstractNearbyDistanceMatrixDemand<?, ?, ?, ?> nearbyDistanceMatrixDemand;
 
-    protected MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply = null;
+    protected NearbyDistanceMatrix<Object, Object> nearbyDistanceMatrix = null;
 
     protected AbstractNearbySelector(ChildSelector_ childSelector, Object replayingSelector,
             NearbyDistanceMeter<?, ?> nearbyDistanceMeter, NearbyRandom nearbyRandom, boolean randomSelection) {
@@ -45,30 +43,19 @@ public abstract class AbstractNearbySelector<Solution_, ChildSelector_ extends P
     }
 
     @Override
-    public void solvingStarted(SolverScope<Solution_> solverScope) {
-        super.solvingStarted(solverScope);
-        /*
-         * Supply will ask questions of the child selector.
-         * However, child selector will only be initialized during phase start.
-         * Yet we still want the very expensive nearby distance matrix to be reused across phases.
-         * Therefore we request the supply here, but actually lazily initialize it during phase start.
-         */
-        nearbyDistanceMatrixSupply = (MemoizingSupply) solverScope.getScoreDirector().getSupplyManager()
+    public final void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
+        super.phaseStarted(phaseScope);
+        // Different phases can not share the matrix; new phase will mean new selector instances.
+        nearbyDistanceMatrix = (NearbyDistanceMatrix<Object, Object>) phaseScope.getScoreDirector().getSupplyManager()
                 .demand(nearbyDistanceMatrixDemand);
     }
 
     @Override
-    public final void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
-        super.phaseStarted(phaseScope);
-        // Lazily initialize the supply, so that steps can then have uniform performance.
-        nearbyDistanceMatrixSupply.read();
-    }
-
-    @Override
-    public void solvingEnded(SolverScope<Solution_> solverScope) {
-        super.solvingEnded(solverScope);
-        solverScope.getScoreDirector().getSupplyManager().cancel(nearbyDistanceMatrixDemand);
-        nearbyDistanceMatrixSupply = null;
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
+        super.phaseEnded(phaseScope);
+        phaseScope.getScoreDirector().getSupplyManager()
+                .cancel(nearbyDistanceMatrixDemand);
+        nearbyDistanceMatrix = null;
     }
 
     @Override

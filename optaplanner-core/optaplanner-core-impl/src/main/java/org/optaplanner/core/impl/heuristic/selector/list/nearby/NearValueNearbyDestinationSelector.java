@@ -156,7 +156,7 @@ public final class NearValueNearbyDestinationSelector<Solution_>
         @Override
         public ElementRef next() {
             selectOrigin();
-            Object next = nearbyDistanceMatrixSupply.read().getDestination(origin, nextNearbyIndex);
+            Object next = nearbyDistanceMatrix.getDestination(origin, nextNearbyIndex);
             nextNearbyIndex++;
             return elementRef(next);
         }
@@ -194,7 +194,7 @@ public final class NearValueNearbyDestinationSelector<Solution_>
              */
             Object origin = replayingOriginValueIterator.next();
             int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
-            Object next = nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
+            Object next = nearbyDistanceMatrix.getDestination(origin, nearbyIndex);
             return elementRef(next);
         }
 

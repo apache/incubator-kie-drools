@@ -168,7 +168,7 @@ public final class NearSubListNearbyDestinationSelector<Solution_>
         @Override
         public ElementRef next() {
             selectOrigin();
-            Object next = nearbyDistanceMatrixSupply.read().getDestination(origin, nextNearbyIndex);
+            Object next = nearbyDistanceMatrix.getDestination(origin, nextNearbyIndex);
             nextNearbyIndex++;
             return elementRef(next);
         }
@@ -208,7 +208,7 @@ public final class NearSubListNearbyDestinationSelector<Solution_>
             // Origin is the subList's first element.
             Object origin = firstElement(subList);
             int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
-            Object next = nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
+            Object next = nearbyDistanceMatrix.getDestination(origin, nearbyIndex);
             return elementRef(next);
         }
 

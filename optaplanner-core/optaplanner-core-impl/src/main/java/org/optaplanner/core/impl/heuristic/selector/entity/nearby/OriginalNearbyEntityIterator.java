@@ -4,18 +4,17 @@ import java.util.Iterator;
 
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
-import org.optaplanner.core.impl.util.MemoizingSupply;
 
 final class OriginalNearbyEntityIterator extends SelectionIterator<Object> {
 
     private final Iterator<Object> replayingOriginEntityIterator;
     private final long childSize;
-    private final MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply;
+    private final NearbyDistanceMatrix<Object, Object> nearbyDistanceMatrix;
     private int nextNearbyIndex;
 
-    public OriginalNearbyEntityIterator(MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply,
+    public OriginalNearbyEntityIterator(NearbyDistanceMatrix<Object, Object> nearbyDistanceMatrix,
             Iterator<Object> replayingOriginEntityIterator, long childSize, boolean discardNearbyIndexZero) {
-        this.nearbyDistanceMatrixSupply = nearbyDistanceMatrixSupply;
+        this.nearbyDistanceMatrix = nearbyDistanceMatrix;
         this.replayingOriginEntityIterator = replayingOriginEntityIterator;
         this.childSize = childSize;
         this.nextNearbyIndex = discardNearbyIndexZero ? 1 : 0;
@@ -36,7 +35,7 @@ final class OriginalNearbyEntityIterator extends SelectionIterator<Object> {
          * first.
          */
         Object origin = replayingOriginEntityIterator.next();
-        Object next = nearbyDistanceMatrixSupply.read().getDestination(origin, nextNearbyIndex);
+        Object next = nearbyDistanceMatrix.getDestination(origin, nextNearbyIndex);
         nextNearbyIndex++;
         return next;
     }

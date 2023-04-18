@@ -169,7 +169,7 @@ public final class NearSubListNearbySubListSelector<Solution_>
              */
             while (availableListSize < childSelector.getMinimumSubListSize()) {
                 int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
-                Object nearbyElement = nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
+                Object nearbyElement = nearbyDistanceMatrix.getDestination(origin, nearbyIndex);
                 nearbyElementEntity = inverseVariableSupply.getInverseSingleton(nearbyElement);
                 nearbyElementListIndex = indexVariableSupply.getIndex(nearbyElement);
                 // Reduce the list variable size by the nearby element index because we're only going to select subLists

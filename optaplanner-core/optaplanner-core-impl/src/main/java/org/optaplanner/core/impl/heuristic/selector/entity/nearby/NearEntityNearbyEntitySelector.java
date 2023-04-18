@@ -89,10 +89,10 @@ public final class NearEntityNearbyEntitySelector<Solution_>
     public Iterator<Object> iterator() {
         Iterator<Object> replayingOriginEntityIterator = replayingSelector.iterator();
         if (!randomSelection) {
-            return new OriginalNearbyEntityIterator(nearbyDistanceMatrixSupply, replayingOriginEntityIterator,
+            return new OriginalNearbyEntityIterator(nearbyDistanceMatrix, replayingOriginEntityIterator,
                     childSelector.getSize(), discardNearbyIndexZero);
         } else {
-            return new RandomNearbyIterator(nearbyDistanceMatrixSupply, nearbyRandom, workingRandom,
+            return new RandomNearbyIterator(nearbyDistanceMatrix, nearbyRandom, workingRandom,
                     replayingOriginEntityIterator, childSelector.getSize(), discardNearbyIndexZero);
         }
     }

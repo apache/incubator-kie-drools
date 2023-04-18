@@ -4,21 +4,19 @@ import java.util.Iterator;
 import java.util.Random;
 
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
-import org.optaplanner.core.impl.util.MemoizingSupply;
 
 public final class RandomNearbyIterator extends SelectionIterator<Object> {
 
-    private final MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply;
+    private final NearbyDistanceMatrix<Object, Object> nearbyDistanceMatrix;
     private final NearbyRandom nearbyRandom;
     private final Random workingRandom;
     private final Iterator<Object> replayingIterator;
     private final int nearbySize;
     private final boolean discardNearbyIndexZero;
 
-    public RandomNearbyIterator(MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply,
-            NearbyRandom nearbyRandom, Random workingRandom, Iterator<Object> replayingIterator, long childSize,
-            boolean discardNearbyIndexZero) {
-        this.nearbyDistanceMatrixSupply = nearbyDistanceMatrixSupply;
+    public RandomNearbyIterator(NearbyDistanceMatrix<Object, Object> nearbyDistanceMatrix, NearbyRandom nearbyRandom,
+            Random workingRandom, Iterator<Object> replayingIterator, long childSize, boolean discardNearbyIndexZero) {
+        this.nearbyDistanceMatrix = nearbyDistanceMatrix;
         this.nearbyRandom = nearbyRandom;
         this.workingRandom = workingRandom;
         this.replayingIterator = replayingIterator;
@@ -50,7 +48,7 @@ public final class RandomNearbyIterator extends SelectionIterator<Object> {
         if (discardNearbyIndexZero) {
             nearbyIndex++;
         }
-        return nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
+        return nearbyDistanceMatrix.getDestination(origin, nearbyIndex);
     }
 
 }

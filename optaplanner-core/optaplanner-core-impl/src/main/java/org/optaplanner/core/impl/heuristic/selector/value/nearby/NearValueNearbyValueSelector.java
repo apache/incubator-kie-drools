@@ -95,10 +95,10 @@ public final class NearValueNearbyValueSelector<Solution_>
     public Iterator<Object> iterator() {
         Iterator<Object> replayingOriginValueIterator = replayingSelector.iterator();
         if (!randomSelection) {
-            return new OriginalNearbyValueIterator(nearbyDistanceMatrixSupply, replayingOriginValueIterator,
+            return new OriginalNearbyValueIterator(nearbyDistanceMatrix, replayingOriginValueIterator,
                     childSelector.getSize(), false);
         } else {
-            return new RandomNearbyIterator(nearbyDistanceMatrixSupply, nearbyRandom, workingRandom,
+            return new RandomNearbyIterator(nearbyDistanceMatrix, nearbyRandom, workingRandom,
                     replayingOriginValueIterator, childSelector.getSize(), false);
         }
     }

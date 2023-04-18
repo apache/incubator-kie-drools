@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-public final class NearbyDistanceMatrix<Origin, Destination> {
+import org.optaplanner.core.impl.domain.variable.supply.Supply;
+
+public final class NearbyDistanceMatrix<Origin, Destination> implements Supply {
 
     private final NearbyDistanceMeter<Origin, Destination> nearbyDistanceMeter;
     private final Map<Origin, Destination[]> originToDestinationsMap;

@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value.nearby;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockEntitySelector;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockReplayingEntitySelector;
@@ -228,6 +229,32 @@ class NearEntityNearbyValueSelectorTest {
     }
 
     @Test
+    void distanceMatrixNotReusedAcrossPhases() {
+        GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+        EntityIndependentValueSelector<TestdataSolution> childValueSelector =
+                mockEntityIndependentValueSelector(variableDescriptor);
+        NearbyDistanceMeter<TestdataEntity, TestdataValue> meter = mock(NearbyDistanceMeter.class);
+        MimicReplayingEntitySelector<TestdataSolution> mimicReplayingEntitySelector =
+                SelectorTestUtils.mockReplayingEntitySelector(TestdataEntity.buildEntityDescriptor());
+
+        NearEntityNearbyValueSelector<TestdataSolution> valueSelector1 = new NearEntityNearbyValueSelector<>(
+                childValueSelector, mimicReplayingEntitySelector, meter, TestNearbyRandom.withDistributionSizeMaximum(2), true);
+
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
+        SupplyManager supplyManager = scoreDirector.getSupplyManager();
+
+        assertThat(supplyManager.getActiveCount(valueSelector1.getNearbyDistanceMatrixDemand())).isEqualTo(0);
+        SolverScope<TestdataSolution> solverScope = solvingStarted(valueSelector1, scoreDirector);
+        AbstractPhaseScope<TestdataSolution> phaseScope = phaseStarted(valueSelector1, solverScope);
+        assertThat(supplyManager.getActiveCount(valueSelector1.getNearbyDistanceMatrixDemand())).isEqualTo(1);
+        valueSelector1.phaseEnded(phaseScope);
+        assertThat(supplyManager.getActiveCount(valueSelector1.getNearbyDistanceMatrixDemand())).isEqualTo(0);
+        valueSelector1.solvingEnded(solverScope);
+        assertThat(supplyManager.getActiveCount(valueSelector1.getNearbyDistanceMatrixDemand())).isEqualTo(0);
+    }
+
+    @Test
     void distanceMatrixNotReusedIfDifferentMaximums() {
         final TestdataEntity africa = new TestdataEntity("Africa");
         final TestdataEntity europe = new TestdataEntity("Europe");
@@ -305,14 +332,16 @@ class NearEntityNearbyValueSelectorTest {
         assertThat(supplyManager.getActiveCount(valueSelector1.getNearbyDistanceMatrixDemand())).isEqualTo(0);
         assertThat(supplyManager.getActiveCount(valueSelector2.getNearbyDistanceMatrixDemand())).isEqualTo(0);
 
-        // solvingStarted() is first called on valueSelector1, which uses lower distributionSizeMaximum.
+        // phaseStarted() is first called on valueSelector1, which uses lower distributionSizeMaximum.
         // The resulting shared distance matrix only has 2 destinations for each origin.
         SolverScope<TestdataSolution> solverScope = solvingStarted(valueSelector1, scoreDirector, workingRandom);
+        AbstractPhaseScope<TestdataSolution> phaseScope = phaseStarted(valueSelector1, solverScope);
         assertThat(supplyManager.getActiveCount(valueSelector1.getNearbyDistanceMatrixDemand())).isEqualTo(1);
         assertThat(supplyManager.getActiveCount(valueSelector2.getNearbyDistanceMatrixDemand())).isEqualTo(0);
-        // solvingStarted() is called on valueSelector2, which uses a different distributionSizeMaximum.
+        // phaseStarted() is called on valueSelector2, which uses a different distributionSizeMaximum.
         // The resulting shared distance matrix has 3 destinations for each origin.
         valueSelector2.solvingStarted(solverScope);
+        valueSelector2.phaseStarted(phaseScope);
         assertThat(supplyManager.getActiveCount(valueSelector1.getNearbyDistanceMatrixDemand())).isEqualTo(1);
         assertThat(supplyManager.getActiveCount(valueSelector2.getNearbyDistanceMatrixDemand())).isEqualTo(1);
 
