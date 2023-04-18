@@ -46,7 +46,7 @@ public class DiskResourceStore implements ResourceStore {
 
     @Override
     public void write(PortablePath resourcePath, byte[] pResourceData, boolean createFolder) {
-        commonWrite(resourcePath.asString(), pResourceData, createFolder);
+        commonWrite(getFilePath(resourcePath.asString()), pResourceData, createFolder);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class DiskResourceStore implements ResourceStore {
 
     @Override
     public byte[] read(PortablePath resourcePath) {
-        return commonRead(resourcePath.asString());
+        return commonRead(getFilePath(resourcePath.asString()));
     }
 
     @Override
