@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.drl.quarkus.util.deployment;
+package org.drools.drl.quarkus.testext.deployment;
 
 import java.util.Map;
 import java.util.Set;
 
-import io.quarkus.builder.item.SimpleBuildItem;
+import io.quarkus.arc.runtime.BeanContainerListener;
+import io.quarkus.runtime.annotations.Recorder;
 
-/**
- * Collect Pattern types by package.
- * 
- * (a Pattern type is generally one referring to a Phreak OTN class)
- */
-public final class PatternsTypesBuildItem extends SimpleBuildItem {
-    private final Map<String, Set<Class<?>>> patternsClasses;
+@Recorder
+public class OtnMetadataRecorder {
     
-    public PatternsTypesBuildItem(Map<String, Set<Class<?>>> patternsClasses) {
-        this.patternsClasses = patternsClasses;
-    }
-
-    public Map<String, Set<Class<?>>> getPatternsClasses() {
-        return patternsClasses;
+    public BeanContainerListener setContent(Map<String, Set<Class<?>>> contentValue, Set<String> allKnown) {
+        return beanContainer -> {
+            OtnClassesSingleton bean = beanContainer.beanInstance(OtnClassesSingleton.class);
+            bean.setPatternsTypesClasses(contentValue);
+            bean.setAllKnown(allKnown);
+        };
     }
 }
