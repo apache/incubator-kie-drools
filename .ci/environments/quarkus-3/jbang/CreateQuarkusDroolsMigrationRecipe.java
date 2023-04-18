@@ -21,21 +21,21 @@ import io.quarkus.devtools.project.update.operations.UpdatePropertyOperation;
 /*
  * This script will generate the final `quarkus3.yml` file based on:
  *   - quarkus recipe file (see `QUARKUS_UPDATES_BASE_URL` constant)
- *   - local drools-recipe.yaml => Specific drools repository rules
+ *   - local project-recipe.yaml => Specific project repository rules
  * 
- * As in Drools we use a lot of managed dependencies, it concatenates both files but it also add some new rules:
+ * We use a lot of managed dependencies, it concatenates both files but it also add some new rules:
  * In the Quarkus recipe, the dependencies rules are modified only for direct dependencies but not for managed dependencies.
  * So the script adds a new step:
  *   - Reads all modified direct dependencies from the Quarkus recipe
  *   - Generates one managed dependency rule for each of them
  */
-class CreateQuarkusDroolsMigrationRecipe {
+class CreateQuarkusProjectMigrationRecipe {
 
     static final String QUARKUS_VERSION = "3.0.0.Final";
     static final String QUARKUS_UPDATES_BASE_URL = "https://raw.githubusercontent.com/quarkusio/quarkus-updates/1.0.0/recipes/src/main/resources/quarkus-updates/core/3alpha.yaml";
 
     static final Path quarkus3GeneratedRecipePath = Paths.get("quarkus3.yml");
-    static final Path droolsBaseRecipePath = Paths.get("drools-recipe.yml");
+    static final Path projectBaseRecipePath = Paths.get("project-recipe.yml");
 
     public static void main(String... args) throws Exception {
         List<Object> quarkusRecipes = QuarkusUpdateRecipeIO.readRecipesYaml(IOUtils.toString(new URL(QUARKUS_UPDATES_BASE_URL).openStream(), Charset.defaultCharset()));
@@ -43,8 +43,12 @@ class CreateQuarkusDroolsMigrationRecipe {
                 .buildTool(BuildTool.MAVEN)
                 .addOperation(new UpdatePropertyOperation("version.io.quarkus", QUARKUS_VERSION));
         
-        System.out.println("Adding Drools base recipe(s)");
-        mainRecipe.addRecipes(QuarkusUpdateRecipeIO.readRecipesYaml(Files.readString(droolsBaseRecipePath)));
+        if (Files.exists(projectBaseRecipePath)) {
+            System.out.println("Adding Project base recipe(s)");
+            mainRecipe.addRecipes(QuarkusUpdateRecipeIO.readRecipesYaml(Files.readString(projectBaseRecipePath)));
+        } else {
+            System.out.println("No Project base recipe(s) available. Nothing done here ...");
+        }
 
         System.out.println("Adding Managed dependency recipe(s)");
         Map<String, Object> managedDependencyMainRecipe = Map.of(
