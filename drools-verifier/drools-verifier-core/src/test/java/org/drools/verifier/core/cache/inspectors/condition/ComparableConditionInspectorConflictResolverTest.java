@@ -20,19 +20,22 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
-import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.index.model.Field;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.drools.verifier.core.cache.inspectors.condition.ConditionInspectorUtils.fieldCondition;
+import static org.drools.verifier.core.cache.inspectors.condition.ConditionInspectorUtils.getComparableCondition;
 
 
+@ExtendWith(MockitoExtension.class)
 public class ComparableConditionInspectorConflictResolverTest {
 
+	@Mock
     private Field field;
 
     public static Collection<Object[]> testData() {
@@ -116,9 +119,8 @@ public class ComparableConditionInspectorConflictResolverTest {
     @MethodSource("testData")
     @ParameterizedTest
     void parametrizedTest(final String operator1, final Comparable value1, final String operator2, final Comparable value2, final boolean conflictExpected) {
-        this.field = mock(Field.class);
-        final ComparableConditionInspector a = getCondition(value1, operator1);
-        final ComparableConditionInspector b = getCondition(value2, operator2);
+        final ComparableConditionInspector a = getComparableCondition(field, value1, operator1);
+        final ComparableConditionInspector b = getComparableCondition(field, value2, operator2);
 
         assertThat(a.conflicts(b)).as(getAssertDescriptionConflict(a,
                 b,
@@ -150,10 +152,5 @@ public class ComparableConditionInspectorConflictResolverTest {
                 a.toHumanReadableString(),
                 conflictExpected ? "" : "not ",
                 b.toHumanReadableString());
-    }
-
-    private ComparableConditionInspector getCondition(final Comparable value, final String operator) {
-        AnalyzerConfigurationMock configurationMock = new AnalyzerConfigurationMock();
-        return new ComparableConditionInspector(fieldCondition(field, value, operator), configurationMock);
     }
 }

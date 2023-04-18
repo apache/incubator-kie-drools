@@ -19,19 +19,22 @@ package org.drools.verifier.core.cache.inspectors.condition;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Field;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.drools.verifier.core.cache.inspectors.condition.ConditionInspectorUtils.fieldCondition;
+import static org.drools.verifier.core.cache.inspectors.condition.ConditionInspectorUtils.getStringCondition;
 
+@ExtendWith(MockitoExtension.class)
 public class StringConditionInspectorConflictResolverOverlapTest {
 
+	@Mock
     private Field field;
 
     public static Collection<Object[]> testData() {
@@ -158,9 +161,8 @@ public class StringConditionInspectorConflictResolverOverlapTest {
     @MethodSource("testData")
     @ParameterizedTest
     void parametrizedConflictTest(String operator1, Values value1, String operator2, Values value2, boolean conflictExpected, boolean overlapExpected) {
-        this.field = mock(Field.class);
-        StringConditionInspector a = getCondition(value1, operator1);
-        StringConditionInspector b = getCondition(value2, operator2);
+        StringConditionInspector a = getStringCondition(field, value1, operator1);
+        StringConditionInspector b = getStringCondition(field, value2, operator2);
 
         boolean conflicts = a.conflicts(b);
         assertThat(conflicts).as(getAssertDescription(a,
@@ -177,9 +179,8 @@ public class StringConditionInspectorConflictResolverOverlapTest {
     @MethodSource("testData")
     @ParameterizedTest
     void parametrizedOverlapTest(String operator1, Values value1, String operator2, Values value2, boolean conflictExpected, boolean overlapExpected) {
-        this.field = mock(Field.class);
-        StringConditionInspector a = getCondition(value1, operator1);
-        StringConditionInspector b = getCondition(value2, operator2);
+        StringConditionInspector a = getStringCondition(field, value1, operator1);
+        StringConditionInspector b = getStringCondition(field, value2, operator2);
 
         boolean overlaps = a.overlaps(b);
         assertThat(overlaps).as(getAssertDescription(a,
@@ -191,11 +192,6 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                 a,
                 overlapExpected,
                 "overlap")).isEqualTo(overlapExpected);
-    }
-
-    private StringConditionInspector getCondition(final Values values, final String operator) {
-        AnalyzerConfigurationMock configurationMock = new AnalyzerConfigurationMock();
-        return new StringConditionInspector(fieldCondition(field, values, operator), configurationMock);
     }
 
     private String getAssertDescription(StringConditionInspector a,
