@@ -43,6 +43,6 @@ jobs:
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
 
       - name: Migrate to 9
-        run: ./build/8-to-9-migration/migrate.sh test
+        run: ./build/8-to-9-migration/migrate.sh --no-version-upgrade --no-commit
       - name: Build with Maven
         run: mvn -B --fail-at-end clean install -Dfull -Dformatter.skip

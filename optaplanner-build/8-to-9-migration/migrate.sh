@@ -1,5 +1,17 @@
 #!/bin/bash
 
+version_upgrade=true
+commit=true
+
+while [ -n "$1" ]
+do
+  case "$1" in
+  --no-version-upgrade) version_upgrade=false ;;
+  --no-commit) commit=false ;;
+  esac
+  shift
+done
+
 script_dir_path=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd -P)
 
 mvn_cmd="mvn -B ${BUILD_MVN_OPTS:-}"
@@ -32,7 +44,7 @@ unset MAVEN_OPTS
 # Remove obsolete spring.factories
 find "${script_dir_path}/../../optaplanner-spring-integration" -type f -name "spring.factories" -exec rm {} \;
 
-if [[ ! "$1" == "test" ]]; then
+if [[ "$version_upgrade" == "true" ]]; then
   # The formatter and impsort goals override validation activated by the CI environment variable.
   ${mvn_cmd} process-test-sources -Dformatter.goal=format -Dimpsort.goal=sort -Denforcer.skip
 
@@ -42,8 +54,10 @@ if [[ ! "$1" == "test" ]]; then
     -Dfull \
     -DallowSnapshots=true \
     -DgenerateBackupPoms=false \
-    -DnewVersion="${new_project_version}" \
+    -DnewVersion="${new_project_version}"
+fi
 
+if [[ "$commit" == "true" ]]; then
   # Commit the changes.
   git status
   git add -u
