@@ -303,16 +303,18 @@ void updateQuickstartsVersions() {
 
     if (isRelease()) {
         dir(quickstartsRepository) {
+            // TODO: Remove the exclusion after the kubernetes demo is migrated to 9.
             assert !sh(script:
-                    'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} | ' +
+                    'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} --exclude-dir=kubernetes | ' +
                             'grep -v -e "1.0-SNAPSHOT" | ' +
                             'cat', returnStdout: true)
         }
     }
     if (isCreatePr()) {
         dir(quickstartsRepository) {
+            // TODO: Remove the exclusion after the kubernetes demo is migrated to 9.
             assert !sh(script:
-                    'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} | ' +
+                    'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} --exclude-dir=kubernetes | ' +
                             'grep -v -e "${getProjectVersion()}" | ' +
                             'cat', returnStdout: true)
         }
