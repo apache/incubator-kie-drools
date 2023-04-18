@@ -66,6 +66,7 @@ public class EmbeddedCacheManager implements InfinispanCacheManager {
               .enable()
               .persistentLocation(GLOBAL_STATE_DIR)
               .configurationStorage(ConfigurationStorage.OVERLAY);
+        global.metrics().gauges(false);
 
         // Initialize the default Cache Manager.
         embeddedCacheManager = new DefaultCacheManager(global.build());
