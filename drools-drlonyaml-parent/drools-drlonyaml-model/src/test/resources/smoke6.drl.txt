@@ -1,0 +1,8 @@
+// this is only syntactically valid DRL, so not ending with purely .drl
+rule "Fix the Service selector No Pod found for selector"
+when
+  $svc : Service( metadata.name != "kubernetes" )
+  not( Pod( mapContains(metadata.labels, $svc.spec.selector) ) )
+then
+  insert(new Advice("Fix the Service selector","Service "+$svc.getMetadata().getName()+" no Pod found for selector: "+$svc.getSpec().getSelector()));
+end

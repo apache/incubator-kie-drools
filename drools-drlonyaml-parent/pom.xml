@@ -1,0 +1,15 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>drools-build-parent</artifactId>
+    <version>8.38.0-SNAPSHOT</version>
+    <relativePath>../build-parent/pom.xml</relativePath>
+  </parent>
+  <artifactId>drools-drlonyaml-parent</artifactId>
+  <name>Drools :: DRL on YAML</name>
+  <packaging>pom</packaging>
+  <modules>
+  	<module>drools-drlonyaml-model</module>
+  </modules>
+</project>

@@ -1,0 +1,8 @@
+// this is only syntactically valid DRL, so not ending with purely .drl
+rule "Fix the Service selector matches Pod name, but other selectors don't"
+when
+  $svc : Service( metadata.name != "kubernetes", $selectorName: spec!.selector["app.kubernetes.io/name"] )
+  $pod : Pod( metadata.labels["app.kubernetes.io/name"] == $selectorName, !mapContains(metadata.labels, $svc.spec.selector) )
+then
+  insert(new Advice("Fix the Service selector","Service "+$svc.getMetadata().getName()+" selector matches Pod name, but other selectors: '"+DroolsUtils.notFoundMap($svc.getSpec().getSelector(), $pod.getMetadata().getLabels())+"' did not match in the candidate Pod: "+$pod.getMetadata().getLabels()));
+end
