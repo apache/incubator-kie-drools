@@ -28,7 +28,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Before;
@@ -36,7 +35,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class QueryElementNodeTest extends DroolsTestCase {
+public class QueryElementNodeTest {
     private PropagationContext  context;
     private StatefulKnowledgeSessionImpl workingMemory;
     private InternalKnowledgeBase kBase;

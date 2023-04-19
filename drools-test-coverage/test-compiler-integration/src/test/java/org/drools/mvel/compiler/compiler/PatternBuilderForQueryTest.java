@@ -27,7 +27,6 @@ import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
@@ -38,7 +37,7 @@ import org.kie.api.runtime.rule.QueryResults;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PatternBuilderForQueryTest extends DroolsTestCase {
+public class PatternBuilderForQueryTest {
 
     @Test
     public void testRuleWithQuery() throws Exception {
@@ -92,8 +91,7 @@ public class PatternBuilderForQueryTest extends DroolsTestCase {
         ruleDescr.setConsequence( "System.out.println(\"age: \" + $age);" );
 
         builder.addPackage( packageDescr );
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(Arrays.asList(builder.getPackage(packageDescr.getName())));
@@ -149,8 +147,7 @@ public class PatternBuilderForQueryTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat(builder.getErrors().getErrors()).hasSize(0);
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(Arrays.asList(builder.getPackage(packageDescr.getName())));
