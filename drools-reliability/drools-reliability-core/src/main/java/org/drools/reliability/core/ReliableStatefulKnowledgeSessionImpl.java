@@ -20,8 +20,6 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
-import org.drools.reliability.core.CacheManagerFactory;
-import org.drools.reliability.core.ReliableGlobalResolver;
 import org.kie.api.runtime.Environment;
 
 public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl {
@@ -50,14 +48,14 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
     @Override
     public void dispose() {
         super.dispose();
-        CacheManagerFactory.get().getCacheManager().removeCachesBySessionId(String.valueOf(this.id));
+        StorageManagerFactory.get().getStorageManager().removeStoragesBySessionId(String.valueOf(this.id));
     }
 
     @Override
     public void startOperation(InternalOperationType operationType) {
         super.startOperation(operationType);
         if (operationType == InternalOperationType.FIRE) {
-            ((ReliableGlobalResolver) getGlobalResolver()).updateCache();
+            ((ReliableGlobalResolver) getGlobalResolver()).updateStorage();
         }
 
     }
@@ -66,7 +64,7 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
     public void endOperation(InternalOperationType operationType) {
         super.endOperation(operationType);
         if (operationType == InternalOperationType.FIRE) {
-            ((ReliableGlobalResolver) getGlobalResolver()).updateCache();
+            ((ReliableGlobalResolver) getGlobalResolver()).updateStorage();
         }
     }
 }

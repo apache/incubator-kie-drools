@@ -35,28 +35,28 @@ KieSession ksession = kbase.newKieSession(conf, null);
 long savedSessionId = session.getIdentifier();
 ```
 
-## Configuration
-- drools.reliability.cache.mode
+## Infinispan Configuration
+- drools.reliability.storage.infinispan.mode
   - EMBEDDED (default) : Use Infinispan embedded in the same process as Drools engine. It stores data in a filesystem.
   - REMOTE : Use remote Infinispan instances (currently, only one) to store data. It requires Infinispan server to be running.
     - Test cases note: At the moment, remote testing is not enabled by default (because containers' startup is a little time-consuming). You can run test cases with REMOTE mode with `mvn test -Premote`
     - You can find a remote mode use case example in `org.drools.reliability.example.RemoteCacheManagerExample`.
-- drools.reliability.cache.allowedpackages
+- drools.reliability.storage.infinispan.allowedpackages
   - A comma-separated list of packages that are allowed to be stored in Infinispan. It is used to prevent malicious users from storing arbitrary objects in Infinispan. It is recommended to set this property to the package name of your application.
   - Default: None
-- (EMBEDDED mode only) drools.reliability.cache.directory
+- (EMBEDDED mode only) drools.reliability.storage.infinispan.directory
   - The directory where Infinispan stores data.
   - Default: `global/state`
-- (REMOTE mode only) drools.reliability.cache.remote.host
+- (REMOTE mode only) drools.reliability.storage.infinispan.remote.host
   - The host name of remote Infinispan server.
   - Default: None
-- (REMOTE mode only) drools.reliability.cache.remote.port
+- (REMOTE mode only) drools.reliability.storage.infinispan.remote.port
   - The port number of remote Infinispan server.
   - Default: None
-- (REMOTE mode only) drools.reliability.cache.remote.user
+- (REMOTE mode only) drools.reliability.storage.infinispan.remote.user
   - The username of remote Infinispan server.
   - Default: None
-- (REMOTE mode only) drools.reliability.cache.remote.pass
+- (REMOTE mode only) drools.reliability.storage.infinispan.remote.pass
   - The password of remote Infinispan server.
   - Default: None
 

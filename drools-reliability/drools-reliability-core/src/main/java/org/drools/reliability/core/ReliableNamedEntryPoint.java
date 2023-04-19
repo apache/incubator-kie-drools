@@ -21,9 +21,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
-import org.drools.reliability.core.CacheManagerFactory;
-import org.drools.reliability.core.FullReliableObjectStore;
-import org.drools.reliability.core.SimpleReliableObjectStore;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
 public class ReliableNamedEntryPoint extends NamedEntryPoint {
@@ -36,7 +33,7 @@ public class ReliableNamedEntryPoint extends NamedEntryPoint {
     protected ObjectStore createObjectStore(EntryPointId entryPoint, RuleBaseConfiguration conf, ReteEvaluator reteEvaluator) {
         boolean storesOnlyStrategy = reteEvaluator.getSessionConfiguration().getPersistedSessionOption().getStrategy() == PersistedSessionOption.Strategy.STORES_ONLY;
         return storesOnlyStrategy ?
-                new SimpleReliableObjectStore(CacheManagerFactory.get().getCacheManager().getOrCreateCacheForSession(reteEvaluator, "ep" + getEntryPointId())) :
-                new FullReliableObjectStore(CacheManagerFactory.get().getCacheManager().getOrCreateCacheForSession(reteEvaluator, "ep" + getEntryPointId()));
+                new SimpleReliableObjectStore(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, "ep" + getEntryPointId())) :
+                new FullReliableObjectStore(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, "ep" + getEntryPointId()));
     }
 }

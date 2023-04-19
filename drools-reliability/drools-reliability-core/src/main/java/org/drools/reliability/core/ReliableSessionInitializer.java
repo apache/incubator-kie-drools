@@ -52,8 +52,8 @@ public class ReliableSessionInitializer {
         @Override
         public InternalWorkingMemory init(InternalWorkingMemory session, PersistedSessionOption persistedSessionOption) {
             if (!persistedSessionOption.isNewSession()) {
-                // re-propagate objects from the cache to the new session
-                populateSessionFromCache(session);
+                // re-propagate objects from the storage to the new session
+                populateSessionFromStorage(session);
             }
 
             session.setWorkingMemoryActionListener(entry -> onWorkingMemoryAction(session, entry));
@@ -66,11 +66,11 @@ public class ReliableSessionInitializer {
             if (entry instanceof PropagationEntry.Insert) {
                 InternalFactHandle fh = ((PropagationEntry.Insert) entry).getHandle();
                 WorkingMemoryEntryPoint ep = fh.getEntryPoint(session);
-                ((SimpleReliableObjectStore) ep.getObjectStore()).putIntoPersistedCache(fh, true);
+                ((SimpleReliableObjectStore) ep.getObjectStore()).putIntoPersistedStorage(fh, true);
             }
         }
 
-        private void populateSessionFromCache(InternalWorkingMemory session) {
+        private void populateSessionFromStorage(InternalWorkingMemory session) {
             Map<InternalWorkingMemoryEntryPoint, List<StoredObject>> notPropagatedByEntryPoint = new HashMap<>();
 
             for (EntryPoint ep : session.getEntryPoints()) {
@@ -98,7 +98,7 @@ public class ReliableSessionInitializer {
             public void objectUpdated(ObjectUpdatedEvent ev) {
                 InternalFactHandle fh = (InternalFactHandle) ev.getFactHandle();
                 SimpleReliableObjectStore store = (SimpleReliableObjectStore) fh.getEntryPoint(session).getObjectStore();
-                store.putIntoPersistedCache(fh, false);
+                store.putIntoPersistedStorage(fh, false);
             }
         }
     }

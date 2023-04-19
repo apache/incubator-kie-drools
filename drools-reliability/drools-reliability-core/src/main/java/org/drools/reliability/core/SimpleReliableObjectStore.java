@@ -15,32 +15,35 @@
 
 package org.drools.reliability.core;
 
-import org.drools.core.common.*;
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.IdentityObjectStore;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class SimpleReliableObjectStore extends IdentityObjectStore {
 
-    private final Map<Long, StoredObject> cache;
+    private final Storage<Long, StoredObject> storage;
 
     private boolean reInitPropagated = false;
 
-    public SimpleReliableObjectStore(Map<Long, StoredObject> cache) {
+    public SimpleReliableObjectStore(Storage<Long, StoredObject> storage) {
         super();
-        this.cache = cache;
+        this.storage = storage;
     }
 
     @Override
     public void addHandle(InternalFactHandle handle, Object object) {
         super.addHandle(handle, object);
-        putIntoPersistedCache(handle, handle.hasMatches());
+        putIntoPersistedStorage(handle, handle.hasMatches());
     }
 
     @Override
     public void removeHandle(InternalFactHandle handle) {
-        removeFromPersistedCache(handle.getObject());
+        removeFromPersistedStorage(handle.getObject());
         super.removeHandle(handle);
     }
 
@@ -48,14 +51,14 @@ public class SimpleReliableObjectStore extends IdentityObjectStore {
         reInitPropagated = true;
         List<StoredObject> propagated = new ArrayList<>();
         List<StoredObject> notPropagated = new ArrayList<>();
-        for (StoredObject entry : cache.values()) {
+        for (StoredObject entry : storage.values()) {
             if (entry.isPropagated()) {
                 propagated.add(entry);
             } else {
                 notPropagated.add(entry);
             }
         }
-        cache.clear();
+        storage.clear();
 
         // fact handles with a match have been already propagated in the original session, so they shouldn't fire
         propagated.forEach(obj -> obj.repropagate(ep));
@@ -66,18 +69,18 @@ public class SimpleReliableObjectStore extends IdentityObjectStore {
         return notPropagated;
     }
 
-    public void putIntoPersistedCache(InternalFactHandle handle, boolean propagated) {
+    public void putIntoPersistedStorage(InternalFactHandle handle, boolean propagated) {
         Object object = handle.getObject();
         StoredObject storedObject = handle.isEvent() ?
                 new StoredObject(object, reInitPropagated || propagated, ((EventFactHandle) handle).getStartTimestamp(), ((EventFactHandle) handle).getDuration()) :
                 new StoredObject(object, reInitPropagated || propagated);
-        cache.put(fhMap.get(object).getId(), storedObject);
+        storage.put(fhMap.get(object).getId(), storedObject);
     }
 
-    public void removeFromPersistedCache(Object object) {
+    public void removeFromPersistedStorage(Object object) {
         InternalFactHandle fh = fhMap.get(object);
         if (fh != null) {
-            cache.remove(fh.getId());
+            storage.remove(fh.getId());
         }
     }
 }

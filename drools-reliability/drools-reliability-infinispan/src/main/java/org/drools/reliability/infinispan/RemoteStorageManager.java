@@ -16,8 +16,8 @@
 package org.drools.reliability.infinispan;
 
 import org.drools.core.common.ReteEvaluator;
+import org.drools.reliability.core.Storage;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
-import org.infinispan.commons.api.BasicCache;
 import org.infinispan.commons.marshall.JavaSerializationMarshaller;
 import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
@@ -25,29 +25,31 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
-import static org.drools.reliability.core.CacheManager.createCacheId;
-import static org.drools.reliability.infinispan.InfinispanCacheManagerFactory.*;
+import static org.drools.reliability.core.StorageManager.createStorageId;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.DELIMITER;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.SESSION_STORAGE_PREFIX;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.SHARED_STORAGE_PREFIX;
 import static org.drools.util.Config.getConfig;
 
-public class RemoteCacheManager implements InfinispanCacheManager {
+public class RemoteStorageManager implements InfinispanStorageManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RemoteCacheManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RemoteStorageManager.class);
 
-    static final RemoteCacheManager INSTANCE = new RemoteCacheManager();
+    static final RemoteStorageManager INSTANCE = new RemoteStorageManager();
 
     private org.infinispan.client.hotrod.RemoteCacheManager remoteCacheManager;
 
-    private RemoteCacheManager() {
+    private RemoteStorageManager() {
     }
 
     @Override
-    public void initCacheManager() {
+    public void initStorageManager() {
         // Create a RemoteCacheManager with provided properties
         LOG.info("Using Remote Cache Manager");
-        String host = getConfig(InfinispanCacheManagerFactory.RELIABILITY_CACHE_REMOTE_HOST);
-        String port = getConfig(InfinispanCacheManagerFactory.RELIABILITY_CACHE_REMOTE_PORT);
-        String user = getConfig(InfinispanCacheManagerFactory.RELIABILITY_CACHE_REMOTE_USER);
-        String pass = getConfig(InfinispanCacheManagerFactory.RELIABILITY_CACHE_REMOTE_PASS);
+        String host = getConfig(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_HOST);
+        String port = getConfig(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_PORT);
+        String user = getConfig(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_USER);
+        String pass = getConfig(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_PASS);
         if (host == null || port == null) {
             LOG.info("Remote Cache Manager host '{}' and port '{}' not set. So not creating a default RemoteCacheManager." +
                              " You will need to set a RemoteCacheManager with setRemoteCacheManager() method.", host, port);
@@ -59,18 +61,18 @@ public class RemoteCacheManager implements InfinispanCacheManager {
             builder.security().authentication().username(user).password(pass);
         }
         builder.marshaller(new JavaSerializationMarshaller())
-                .addJavaSerialAllowList(InfinispanCacheManager.getAllowedPackages());
+                .addJavaSerialAllowList(InfinispanStorageManager.getAllowedPackages());
         remoteCacheManager = new org.infinispan.client.hotrod.RemoteCacheManager(builder.build());
     }
 
     @Override
-    public <k, V> BasicCache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
-        return remoteCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), (String) null);
+    public <k, V> Storage<k, V> getOrCreateStorageForSession(ReteEvaluator reteEvaluator, String cacheName) {
+        return InfinispanStorage.fromCache(remoteCacheManager.administration().getOrCreateCache(createStorageId(reteEvaluator, cacheName), (String) null));
     }
 
     @Override
-    public <k, V> BasicCache<k, V> getOrCreateSharedCache(String cacheName) {
-        return remoteCacheManager.administration().getOrCreateCache(SHARED_CACHE_PREFIX + cacheName, (String) null);
+    public <k, V> Storage<k, V> getOrCreateSharedStorage(String cacheName) {
+        return InfinispanStorage.fromCache(remoteCacheManager.administration().getOrCreateCache(SHARED_STORAGE_PREFIX + cacheName, (String) null));
     }
 
     @Override
@@ -79,30 +81,30 @@ public class RemoteCacheManager implements InfinispanCacheManager {
     }
 
     @Override
-    public void removeCache(String cacheName) {
-        if (remoteCacheManager.getCache(cacheName) != null) {
-            remoteCacheManager.administration().removeCache(cacheName);
+    public void removeStorage(String storageName) {
+        if (remoteCacheManager.getCache(storageName) != null) {
+            remoteCacheManager.administration().removeCache(storageName);
         }
     }
 
     @Override
-    public void removeCachesBySessionId(String sessionId) {
+    public void removeStoragesBySessionId(String sessionId) {
         remoteCacheManager.getCacheNames()
                 .stream()
-                .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX + sessionId + DELIMITER))
-                .forEach(this::removeCache);
+                .filter(cacheName -> cacheName.startsWith(SESSION_STORAGE_PREFIX + sessionId + DELIMITER))
+                .forEach(this::removeStorage);
     }
 
     @Override
-    public void removeAllSessionCaches() {
+    public void removeAllSessionStorages() {
         remoteCacheManager.getCacheNames()
                 .stream()
-                .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX))
-                .forEach(this::removeCache);
+                .filter(cacheName -> cacheName.startsWith(SESSION_STORAGE_PREFIX))
+                .forEach(this::removeStorage);
     }
 
     @Override
-    public Set<String> getCacheNames() {
+    public Set<String> getStorageNames() {
         return remoteCacheManager.getCacheNames();
     }
 
@@ -134,7 +136,7 @@ public class RemoteCacheManager implements InfinispanCacheManager {
 
     private void removeAllCache() {
         remoteCacheManager.getCacheNames()
-                .forEach(this::removeCache);
+                .forEach(this::removeStorage);
     }
 
     @Override
@@ -146,7 +148,7 @@ public class RemoteCacheManager implements InfinispanCacheManager {
     public ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.marshaller(new JavaSerializationMarshaller())
-                .addJavaSerialAllowList(InfinispanCacheManager.getAllowedPackages());
+                .addJavaSerialAllowList(InfinispanStorageManager.getAllowedPackages());
         return builder;
     }
 

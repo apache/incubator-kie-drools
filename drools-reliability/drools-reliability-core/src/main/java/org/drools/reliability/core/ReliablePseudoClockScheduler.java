@@ -18,32 +18,32 @@ package org.drools.reliability.core;
 
 import org.drools.core.time.impl.PseudoClockScheduler;
 
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
 
-    private final Map<String, Object> cache;
+    private final Storage<String, Object> storage;
 
-    public ReliablePseudoClockScheduler(Map<String, Object> cache) {
-        this.cache = cache;
-        this.timer = new AtomicLong( (Long) cache.getOrDefault("timer", 0L) );
-        this.idCounter = new AtomicLong( (Long) cache.getOrDefault("idCounter", 0L) );
-        this.queue = (PriorityQueue) cache.getOrDefault("queue", new PriorityQueue<>());
+    @SuppressWarnings("unchecked")
+    public ReliablePseudoClockScheduler(Storage<String, Object> storage) {
+        this.storage = storage;
+        this.timer = new AtomicLong( (Long) storage.getOrDefault("timer", 0L) );
+        this.idCounter = new AtomicLong( (Long) storage.getOrDefault("idCounter", 0L) );
+        this.queue = (PriorityQueue) storage.getOrDefault("queue", new PriorityQueue<>());
     }
 
     @Override
     public long advanceTime(long amount, TimeUnit unit) {
         long time = super.advanceTime(amount, unit);
-        updateCache();
+        updateStorage();
         return time;
     }
 
-    private void updateCache() {
-        cache.put("timer", timer.get());
-        cache.put("idCounter", idCounter.get());
-        cache.put("queue", queue);
+    private void updateStorage() {
+        storage.put("timer", timer.get());
+        storage.put("idCounter", idCounter.get());
+        storage.put("queue", queue);
     }
 }

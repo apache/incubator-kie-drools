@@ -15,12 +15,31 @@
 
 package org.drools.reliability.core;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.MapObjectStore;
+import java.util.Collection;
+import java.util.Map;
 
-public class FullReliableObjectStore extends MapObjectStore {
+public interface Storage<K, V> {
 
-    public FullReliableObjectStore(Storage<Object, InternalFactHandle> fhStorage) {
-        super(fhStorage.asMap());
+    V get(K key);
+
+    V getOrDefault(K key, V value);
+
+    V put(K key, V value);
+
+    boolean containsKey(K key);
+
+    V remove(K key);
+
+    void clear();
+
+    Collection<V> values();
+
+    int size();
+
+    boolean isEmpty();
+
+    default Map<K,V> asMap() {
+        return new MapWrappedStorage<>(this);
     }
+
 }
