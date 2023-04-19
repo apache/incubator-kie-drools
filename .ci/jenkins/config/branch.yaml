@@ -51,6 +51,7 @@ disable:
 repositories:
 - name: drools
 - name: drools-website
+- name: kie-benchmarks
 git:
   author:
     name: kiegroup

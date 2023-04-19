@@ -76,29 +76,13 @@ pipeline {
                 }
             }
         }
-
-        // Should be moved to a job in kie-benchmarks repository
-        // and called from main setup-branch job directly after drools update
         stage('Update Drools version in kie-benchmarks') {
             when {
                 expression { isMainBranch() }
             }
             steps {
                 script {
-                    String commitMsg = 'bumped up Drools version to next SNAPSHOT'
-                    String localBranch = "kie-benchmarks-drools-update-${env.BRANCH_HASH}"
-                    String targetBranch = 'main'
-                    String kieBenchmarksRepo = 'kie-benchmarks'
-                    dir(kieBenchmarksRepo) {
-                        checkoutRepo(kieBenchmarksRepo, targetBranch)
-                        githubscm.createBranch(localBranch)
-                        maven.mvnSetVersionProperty('version.org.drools', getDroolsVersion())
-                        // Add changed files, commit, open and merge PR
-                        String prLink = commitAndCreatePR(commitMsg, localBranch, targetBranch)
-                        sh "git checkout ${targetBranch}"
-                        mergeAndPush(prLink, targetBranch)
-                        githubscm.removeRemoteBranch('origin', localBranch, getGitAuthorCredsId())
-                    }
+                    build job: '../tools/kie-benchmarks-update-drools', parameters: [ string(name: 'NEW_VERSION', value: "${getDroolsVersion()}")]                    
                 }
             }
         }
