@@ -28,6 +28,7 @@ import org.infinispan.client.hotrod.MetadataValue;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.commons.util.CloseableIterator;
+import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -36,8 +37,6 @@ import org.kie.kogito.process.ProcessInstanceOptimisticLockingException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
-
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 @SuppressWarnings({ "rawtypes" })
 public class CacheProcessInstances implements MutableProcessInstances {
@@ -50,7 +49,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
     public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String templateName, boolean lock) {
         this.process = process;
         String cacheName = process.id() + "_store";
-        if (isNullOrEmpty(templateName)) {
+        if (ConversionUtils.isEmpty(templateName)) {
             this.cache = cacheManager.administration().getOrCreateCache(cacheName, DefaultTemplate.LOCAL);
         } else {
             this.cache = cacheManager.administration().getOrCreateCache(cacheName, templateName);
