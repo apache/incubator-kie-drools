@@ -25,8 +25,8 @@ environments:
   quarkus-3:
     pull_request_default_check: true
     env_vars:
-      ADDITIONAL_TIMEOUT: 720
-      BUILD_MVN_OPTS: -Denforcer.skip
+      BUILD_MAVEN_TOOL: kie-maven-3.9.1
+      BUILD_MAVEN_JDK: kie-jdk17
     ids:
     - quarkus
     - quarkus3
