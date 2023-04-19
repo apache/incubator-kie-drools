@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowOperationResource;
-import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.OpenAPIWorkflowUtils;
 
 import io.quarkiverse.openapi.generator.deployment.codegen.OpenApiSpecInputProvider;
 import io.quarkiverse.openapi.generator.deployment.codegen.SpecInputModel;
@@ -41,7 +41,7 @@ public class WorkflowOpenApiSpecInputProvider implements OpenApiSpecInputProvide
             inputDir = inputDir.getParent();
         }
         try (Stream<Path> openApiFilesPaths = Files.walk(inputDir)) {
-            return WorkflowCodeGenUtils.operationResources(openApiFilesPaths, ServerlessWorkflowUtils::isOpenApiOperation, context).map(this::getSpecInput).collect(Collectors.toList());
+            return WorkflowCodeGenUtils.operationResources(openApiFilesPaths, OpenAPIWorkflowUtils::isOpenApiOperation, context).map(this::getSpecInput).collect(Collectors.toList());
         } catch (IOException io) {
             throw new IllegalStateException(io);
         }

@@ -16,11 +16,17 @@
 
   <modules>
     <module>kogito-serverless-workflow-builder</module>
+    <module>kogito-serverless-workflow-openapi-parser</module>
+    <module>kogito-serverless-workflow-openapi-generated</module>
+    <module>kogito-serverless-workflow-openapi-common</module>
+    <module>kogito-serverless-workflow-grpc-parser</module>
+    <module>kogito-serverless-workflow-grpc-runtime</module>
+    <module>kogito-serverless-workflow-rest-parser</module>
+    <module>kogito-serverless-workflow-rest-runtime</module>
     <module>kogito-serverless-workflow-runtime</module>
     <module>kogito-serverless-workflow-executor</module>
     <module>kogito-serverless-workflow-utils</module>
     <module>kogito-jsonpath-expression</module>
     <module>kogito-jq-expression</module>
   </modules>
-
 </project>

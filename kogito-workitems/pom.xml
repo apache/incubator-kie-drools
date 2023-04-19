@@ -15,6 +15,7 @@
   <modules>
     <module>kogito-rest-workitem</module>
     <module>kogito-jackson-utils</module>
+    <module>kogito-rest-utils</module>
   </modules>
   <dependencies>
     <dependency>

@@ -27,9 +27,9 @@ import java.util.Optional;
 
 import org.kie.kogito.serverless.workflow.utils.BuildEvaluator;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
-import org.kogito.workitem.rest.auth.ClientOAuth2AuthDecorator;
-import org.kogito.workitem.rest.auth.OAuth2AuthDecorator;
-import org.kogito.workitem.rest.auth.PasswordOAuth2AuthDecorator;
+import org.kogito.workitem.rest.auth.ClientOAuth2AuthToken;
+import org.kogito.workitem.rest.auth.PasswordOAuth2AuthToken;
+import org.kogito.workitem.rest.auth.TokenRetriever;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +92,7 @@ class HttpContentLoader extends FallbackContentLoader {
     }
 
     private void oauth2Auth(HttpURLConnection conn, OauthDefinition oauth) {
-        OAuth2AuthDecorator<?> decorator;
+        TokenRetriever tokenRetriever;
         Map<String, Object> parameters = new HashMap<>();
         // TODO stop using metadata when spec is updated
         String tokenUrl = oauth.getMetadata().get("tokenURL");
@@ -103,20 +103,20 @@ class HttpContentLoader extends FallbackContentLoader {
         }
         switch (oauth.getGrantType()) {
             case CLIENT_CREDENTIALS:
-                decorator = new ClientOAuth2AuthDecorator(tokenUrl, refreshUrl);
-                parameters.put(ClientOAuth2AuthDecorator.CLIENT_ID, eval(oauth.getClientId()));
-                parameters.put(ClientOAuth2AuthDecorator.CLIENT_SECRET, eval(oauth.getClientSecret()));
+                tokenRetriever = new ClientOAuth2AuthToken(tokenUrl, refreshUrl);
+                parameters.put(ClientOAuth2AuthToken.CLIENT_ID, eval(oauth.getClientId()));
+                parameters.put(ClientOAuth2AuthToken.CLIENT_SECRET, eval(oauth.getClientSecret()));
                 break;
             case PASSWORD:
-                decorator = new PasswordOAuth2AuthDecorator(tokenUrl, refreshUrl);
-                parameters.put(PasswordOAuth2AuthDecorator.USER, eval(oauth.getClientId()));
-                parameters.put(PasswordOAuth2AuthDecorator.PASSWORD, eval(oauth.getClientSecret()));
+                tokenRetriever = new PasswordOAuth2AuthToken(tokenUrl, refreshUrl);
+                parameters.put(PasswordOAuth2AuthToken.USER, eval(oauth.getClientId()));
+                parameters.put(PasswordOAuth2AuthToken.PASSWORD, eval(oauth.getClientSecret()));
                 break;
             default:
                 logger.warn("Unsupported grant type {}", oauth.getGrantType());
                 return;
         }
-        bearerAuth(conn, decorator.getToken(parameters));
+        bearerAuth(conn, tokenRetriever.getToken(parameters));
     }
 
     private void bearerAuth(HttpURLConnection conn, BearerAuthDefinition bearerAuth) {

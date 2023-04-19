@@ -17,6 +17,7 @@
     <!-- base path for serverless workflow files that are being used for testing the parsing specific unit tests, and
     that we also want to use for testing them executing. -->
     <shared.test.resources.dir>${project.root.dir}/kogito-serverless-workflow/kogito-serverless-workflow-builder/src/test/resources</shared.test.resources.dir>
+    <callback.test.resources.dir>${project.root.dir}/kogito-serverless-workflow/kogito-serverless-workflow-openapi-parser/src/test/resources</callback.test.resources.dir>
   </properties>
 
   <dependencies>
@@ -219,13 +220,18 @@
                 <resource>
                   <directory>${shared.test.resources.dir}/exec</directory>
                   <includes>
-                    <include>callback-state.sw.json</include>
-                    <include>callback-state-timeouts.sw.json</include>
                     <include>switch-state-data-condition-transition.sw.json</include>
                     <include>switch-state-data-condition-end.sw.json</include>
                     <include>switch-state-event-condition-timeouts-transition.sw.json</include>
                     <include>switch-state-event-condition-timeouts-transition2.sw.json</include>
                     <include>switch-state-event-condition-timeouts-end.sw.json</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>${callback.test.resources.dir}/exec</directory>
+                  <includes>
+                    <include>callback-state.sw.json</include>
+                    <include>callback-state-timeouts.sw.json</include>
                   </includes>
                 </resource>
               </resources>

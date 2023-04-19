@@ -26,7 +26,6 @@ import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.getOpenApiProperty;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.resolveFunctionMetadata;
 
 public class WorkflowUtilsTest {
@@ -48,11 +47,5 @@ public class WorkflowUtilsTest {
         FunctionDefinition function = new FunctionDefinition().withName("testfunction1").withMetadata(Collections.singletonMap("testprop1", "customtestprop1val"));
         assertThat(resolveFunctionMetadata(function, "testprop1", context)).isNotNull().isEqualTo("customtestprop1val");
         assertThat(resolveFunctionMetadata(function, "testprop2", context)).isNotNull().isEqualTo("testprop2val");
-    }
-
-    @Test
-    public void testResolveOpenAPIMetadata() {
-        assertThat(getOpenApiProperty("testfunction", "base_path", context, String.class, "http://localhost:8080")).isEqualTo("http://localhost:8282");
-        assertThat(getOpenApiProperty("testfunction1", "base_path2", context, Integer.class, 0)).isZero();
     }
 }

@@ -83,6 +83,14 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-grpc-runtime</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-rest-runtime</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-jsonpath-expression</artifactId>
     </dependency>
     <dependency>

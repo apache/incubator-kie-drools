@@ -15,37 +15,9 @@
  */
 package org.kogito.workitem.rest.auth;
 
-import java.util.Map;
-
-import org.kogito.workitem.rest.RestWorkItemHandler;
-
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.oauth2.OAuth2FlowType;
-import io.vertx.ext.auth.oauth2.OAuth2Options;
-
-import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getParam;
-
-public class PasswordOAuth2AuthDecorator extends OAuth2AuthDecorator<UserInfo> {
-
-    public static final String USER = RestWorkItemHandler.USER;
-    public static final String PASSWORD = RestWorkItemHandler.PASSWORD;
+public class PasswordOAuth2AuthDecorator extends OAuth2AuthDecorator {
 
     public PasswordOAuth2AuthDecorator(String tokenUrl, String refreshUrl) {
-        super(tokenUrl, refreshUrl);
-    }
-
-    @Override
-    protected OAuth2Options fillOptions(OAuth2Options options, UserInfo cacheKey) {
-        return options.setFlow(OAuth2FlowType.PASSWORD);
-    }
-
-    @Override
-    protected JsonObject getJsonObject(UserInfo cacheKey) {
-        return new JsonObject().put("username", cacheKey.getUser()).put("password", cacheKey.getPassword());
-    }
-
-    @Override
-    protected UserInfo getCacheKey(Map<String, Object> parameters) {
-        return new UserInfo(getParam(parameters, RestWorkItemHandler.USER), getParam(parameters, RestWorkItemHandler.PASSWORD));
+        super(new PasswordOAuth2AuthToken(tokenUrl, refreshUrl));
     }
 }

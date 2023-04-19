@@ -18,12 +18,12 @@
       <artifactId>jbpm-flow</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.smallrye.reactive</groupId>
-      <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-rest-utils</artifactId>
     </dependency>
     <dependency>
-       <groupId>io.smallrye.reactive</groupId>
-       <artifactId>smallrye-mutiny-vertx-auth-oauth2</artifactId>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

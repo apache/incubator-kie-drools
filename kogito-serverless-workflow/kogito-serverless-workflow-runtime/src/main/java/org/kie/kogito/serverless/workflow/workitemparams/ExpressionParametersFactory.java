@@ -21,9 +21,9 @@ import java.util.Map;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.workitems.WorkParametersFactory;
-import org.kogito.workitem.rest.RestWorkItemHandler;
 
 import static java.util.Collections.singletonMap;
+import static org.kie.kogito.serverless.workflow.SWFConstants.CONTENT_DATA;
 
 public class ExpressionParametersFactory extends ExpressionWorkItemResolver<Map<String, Object>> implements WorkParametersFactory {
 
@@ -34,6 +34,6 @@ public class ExpressionParametersFactory extends ExpressionWorkItemResolver<Map<
     @Override
     public Map<String, Object> apply(KogitoWorkItem workItem) {
         Object obj = JsonObjectUtils.toJavaValue(super.evalExpression(workItem));
-        return obj instanceof Map ? (Map<String, Object>) obj : singletonMap(RestWorkItemHandler.CONTENT_DATA, obj);
+        return obj instanceof Map ? (Map<String, Object>) obj : singletonMap(CONTENT_DATA, obj);
     }
 }

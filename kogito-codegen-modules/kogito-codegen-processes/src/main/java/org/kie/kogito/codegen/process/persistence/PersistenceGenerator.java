@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.io.IOUtils;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.infinispan.protostream.FileDescriptorSource;
@@ -162,7 +161,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             String typesURI = "META-INF/kogito-types.proto";
             protoFiles.add(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE,
                     typesURI,
-                    IOUtils.toString(context().getClassLoader().getResourceAsStream(typesURI), StandardCharsets.UTF_8)));
+                    new String(context().getClassLoader().getResourceAsStream(typesURI).readAllBytes(), StandardCharsets.UTF_8)));
         } catch (IOException e) {
             throw new UncheckedIOException("Cannot find kogito types protobuf!", e);
         }
@@ -248,7 +247,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             try {
                 //try to find an existing ObjectMarshallerStrategy descriptor in the classpath to be appended to the ProtoStream generated one
                 objectMarshallerStrategyServiceDescriptor =
-                        IOUtils.toString(getClass().getResourceAsStream("/META-INF/services/org.kie.kogito.serialization.process.ObjectMarshallerStrategy"), StandardCharsets.UTF_8);
+                        new String(getClass().getResourceAsStream("/META-INF/services/org.kie.kogito.serialization.process.ObjectMarshallerStrategy").readAllBytes(), StandardCharsets.UTF_8);
             } catch (Exception e) {
                 LOGGER.warn("No existing ObjectMarshallerStrategy found the the classpath to be included with the ProtoS generated one for SPI.");
             }

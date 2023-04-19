@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.jbpm.compiler.canonical.descriptors.TaskDescriptor;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
@@ -30,7 +29,6 @@ import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
-import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.Join;
@@ -38,8 +36,6 @@ import org.jbpm.workflow.core.node.Split;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.correlation.SimpleCorrelation;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.kie.kogito.serverless.workflow.suppliers.ParamsRestBodyBuilderSupplier;
-import org.kogito.workitem.rest.RestWorkItemHandler;
 
 import io.serverlessworkflow.api.events.EventDefinition;
 
@@ -155,13 +151,6 @@ public class NodeFactoryUtils {
                 .delay(duration)
                 .metaData(UNIQUE_ID, Long.toString(nodeFactory.getNode().getId()))
                 .metaData("EventType", "Timer");
-    }
-
-    public static <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> fillRest(WorkItemNodeFactory<T> workItemNode) {
-        return workItemNode
-                .metaData(TaskDescriptor.KEY_WORKITEM_TYPE, RestWorkItemHandler.REST_TASK_TYPE)
-                .workParameter(RestWorkItemHandler.BODY_BUILDER, new ParamsRestBodyBuilderSupplier())
-                .workName(RestWorkItemHandler.REST_TASK_TYPE);
     }
 
     private NodeFactoryUtils() {

@@ -15,36 +15,11 @@
  */
 package org.kogito.workitem.rest.auth;
 
-import java.util.Map;
-
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.oauth2.OAuth2FlowType;
-import io.vertx.ext.auth.oauth2.OAuth2Options;
-
-import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getParam;
-
-public class ClientOAuth2AuthDecorator extends OAuth2AuthDecorator<ClientInfo> {
+public class ClientOAuth2AuthDecorator extends OAuth2AuthDecorator {
     public static final String CLIENT_ID = "clientId";
     public static final String CLIENT_SECRET = "clientSecret";
 
-    private final JsonObject object = new JsonObject();
-
     public ClientOAuth2AuthDecorator(String tokenUrl, String refreshUrl) {
-        super(tokenUrl, refreshUrl);
-    }
-
-    @Override
-    protected OAuth2Options fillOptions(OAuth2Options options, ClientInfo cacheKey) {
-        return options.setFlow(OAuth2FlowType.CLIENT).setClientId(cacheKey.getClientId()).setClientSecret(cacheKey.getClientId());
-    }
-
-    @Override
-    protected JsonObject getJsonObject(ClientInfo cacheKey) {
-        return object;
-    }
-
-    @Override
-    protected ClientInfo getCacheKey(Map<String, Object> parameters) {
-        return new ClientInfo(getParam(parameters, CLIENT_ID), getParam(parameters, CLIENT_SECRET));
+        super(new ClientOAuth2AuthToken(tokenUrl, refreshUrl));
     }
 }

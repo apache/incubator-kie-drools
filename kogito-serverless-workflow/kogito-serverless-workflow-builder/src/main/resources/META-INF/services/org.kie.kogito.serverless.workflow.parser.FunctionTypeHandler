@@ -1,9 +1,5 @@
 org.kie.kogito.serverless.workflow.parser.types.ExpressionTypeHandler
-org.kie.kogito.serverless.workflow.parser.types.OpenAPITypeHandler
 org.kie.kogito.serverless.workflow.parser.types.AsyncAPITypeHandler
-org.kie.kogito.serverless.workflow.parser.types.RestTypeHandler
-org.kie.kogito.serverless.workflow.parser.types.RPCTypeHandler
 org.kie.kogito.serverless.workflow.parser.types.ScriptTypeHandler
 org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler
-org.kie.kogito.serverless.workflow.parser.types.JavaTypeHandler
 org.kie.kogito.serverless.workflow.parser.types.SysOutTypeHandler

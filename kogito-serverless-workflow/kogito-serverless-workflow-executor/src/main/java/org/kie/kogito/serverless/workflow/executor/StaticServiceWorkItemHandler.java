@@ -27,13 +27,13 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
 
+import static org.kie.kogito.serverless.workflow.SWFConstants.CONTENT_DATA;
 import static org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler.SERVICE_IMPL_KEY;
 import static org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler.SERVICE_TASK_TYPE;
 import static org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler.WORKITEM_INTERFACE;
 import static org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler.WORKITEM_INTERFACE_IMPL;
 import static org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler.WORKITEM_OPERATION;
 import static org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler.WORKITEM_OPERATION_IMPL;
-import static org.kogito.workitem.rest.RestWorkItemHandler.CONTENT_DATA;
 
 public class StaticServiceWorkItemHandler extends WorkflowWorkItemHandler {
 

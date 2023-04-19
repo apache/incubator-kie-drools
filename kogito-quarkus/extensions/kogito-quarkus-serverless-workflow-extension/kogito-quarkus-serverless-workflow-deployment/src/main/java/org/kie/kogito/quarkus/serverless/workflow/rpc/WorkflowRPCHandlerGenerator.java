@@ -30,7 +30,7 @@ import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGeneratedFile;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGenerator;
 import org.kie.kogito.serverless.workflow.rpc.FileDescriptorHolder;
 import org.kie.kogito.serverless.workflow.rpc.RPCWorkItemHandler;
-import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.RPCWorkflowUtils;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -57,7 +57,7 @@ public class WorkflowRPCHandlerGenerator implements WorkflowHandlerGenerator {
 
     private WorkflowHandlerGeneratedFile generateHandler(KogitoBuildContext context, String serviceName) {
         final String packageName = context.getPackageName();
-        final String className = ServerlessWorkflowUtils.getRPCClassName(serviceName);
+        final String className = RPCWorkflowUtils.getRPCClassName(serviceName);
         CompilationUnit unit = new CompilationUnit(packageName);
         ClassOrInterfaceDeclaration clazz = unit.addClass(className);
         clazz.addExtendedType(parseClassOrInterfaceType(RPCWorkItemHandler.class.getCanonicalName()));

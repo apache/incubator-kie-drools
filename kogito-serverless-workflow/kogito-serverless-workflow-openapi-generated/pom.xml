@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-serverless-workflow</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>kogito-serverless-workflow-openapi-generated</artifactId>
+  <name>Kogito :: Serverless Workflow :: OpenAPI:: Generated</name>
+  <description>Kogito Serverless Workflow OpenAPI generated</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-openapi-common</artifactId>
+    </dependency>
+ </dependencies>
+
+</project>

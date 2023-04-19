@@ -15,29 +15,28 @@
  */
 package org.kie.kogito.serverless.workflow.operationid;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ServiceLoader;
 
 public class WorkflowOperationIdFactoryProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(WorkflowOperationIdFactoryProvider.class);
     public static final String PROPERTY_NAME = "kogito.sw.operationIdStrategy";
 
-    private static final WorkflowOperationIdFactoryType defaultType = WorkflowOperationIdFactoryType.FILE_NAME;
+    private static final Map<String, WorkflowOperationIdFactory> operationIds = new HashMap<>();
 
-    public static WorkflowOperationIdFactory getFactory(Optional<String> propValue) {
-        return propValue.map(WorkflowOperationIdFactoryProvider::safeValueOf).orElse(defaultType.factory());
+    static {
+        for (WorkflowOperationIdFactory factory : ServiceLoader.load(WorkflowOperationIdFactory.class)) {
+            for (String propName : factory.propertyValues()) {
+                operationIds.put(propName, factory);
+            }
+        }
     }
 
-    private static WorkflowOperationIdFactory safeValueOf(String name) {
-        try {
-            return WorkflowOperationIdFactoryType.valueOf(name.toUpperCase()).factory();
-        } catch (IllegalArgumentException ex) {
-            logger.error("Wrong value for property {}. Expected values are {}. Using default ", name, WorkflowOperationIdFactoryType.values(), ex);
-            return defaultType.factory();
-        }
+    public static WorkflowOperationIdFactory getFactory(Optional<String> propValue) {
+        Optional<WorkflowOperationIdFactory> factory = propValue.map(String::toUpperCase).map(operationIds::get);
+        return factory.orElse(operationIds.get(FileNameWorkflowOperationIdFactory.FILE_PROP_VALUE));
     }
 
     private WorkflowOperationIdFactoryProvider() {

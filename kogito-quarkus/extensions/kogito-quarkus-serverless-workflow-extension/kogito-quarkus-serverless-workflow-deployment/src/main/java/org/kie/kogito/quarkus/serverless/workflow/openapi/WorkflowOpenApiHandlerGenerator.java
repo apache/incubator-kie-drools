@@ -32,7 +32,7 @@ import org.kie.kogito.quarkus.serverless.workflow.ClassAnnotatedWorkflowHandlerG
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGeneratedFile;
 import org.kie.kogito.serverless.workflow.openapi.OpenApiWorkItemHandler;
-import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.OpenAPIWorkflowUtils;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -77,7 +77,7 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
 
     private WorkflowHandlerGeneratedFile generateHandler(KogitoBuildContext context, ClassInfo classInfo, String fileName, MethodInfo m) {
         final String packageName = context.getPackageName();
-        final String className = ServerlessWorkflowUtils.getOpenApiClassName(fileName, m.name());
+        final String className = OpenAPIWorkflowUtils.getOpenApiClassName(fileName, m.name());
         final ClassOrInterfaceType classNameType = parseClassOrInterfaceType(classInfo.name().toString());
         CompilationUnit unit = new CompilationUnit(packageName);
         ClassOrInterfaceDeclaration clazz = unit.addClass(className);
@@ -114,7 +114,7 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
                 .setBody(new BlockStmt().addStatement(new ReturnStmt(new ClassExpr(classNameType))));
 
         String operationId = m.annotation(generatedMethod).value().asString();
-        String workItemHandlerName = ServerlessWorkflowUtils.getOpenApiWorkItemName(fileName, operationId);
+        String workItemHandlerName = OpenAPIWorkflowUtils.getOpenApiWorkItemName(fileName, operationId);
 
         clazz.addMethod("getName", Keyword.PUBLIC).setType(parseClassOrInterfaceType(String.class.getCanonicalName()))
                 .setBody(new BlockStmt().addStatement(new ReturnStmt(new StringLiteralExpr(workItemHandlerName))));

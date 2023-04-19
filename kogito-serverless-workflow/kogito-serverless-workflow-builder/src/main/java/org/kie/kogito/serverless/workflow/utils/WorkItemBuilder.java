@@ -83,9 +83,9 @@ public abstract class WorkItemBuilder {
             if (isExpr) {
                 workItemFactory.workParameterFactory(new ExpressionParametersFactorySupplier(workflow.getExpressionLang(), object, paramName));
             } else {
-                workItemFactory.workParameter(RestWorkItemHandler.CONTENT_DATA, object);
+                workItemFactory.workParameter(SWFConstants.CONTENT_DATA, object);
             }
-            workItemFactory.workParameterDefinition(RestWorkItemHandler.CONTENT_DATA, getDataType(object, isExpr));
+            workItemFactory.workParameterDefinition(SWFConstants.CONTENT_DATA, getDataType(object, isExpr));
         }
     }
 

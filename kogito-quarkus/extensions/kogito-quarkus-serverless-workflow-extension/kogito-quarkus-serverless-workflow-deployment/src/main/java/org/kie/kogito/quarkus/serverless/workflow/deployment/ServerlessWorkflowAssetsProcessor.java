@@ -44,6 +44,7 @@ import org.kie.kogito.quarkus.serverless.workflow.openapi.ServerlessWorkflowOASF
 import org.kie.kogito.quarkus.serverless.workflow.openapi.WorkflowOpenApiHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.rpc.WorkflowRPCHandlerGenerator;
 import org.kie.kogito.quarkus.workflow.deployment.WorkflowProcessor;
+import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactory;
 import org.kie.kogito.serverless.workflow.parser.FunctionNamespace;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandler;
 import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaGenerator;
@@ -78,6 +79,7 @@ public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
         serviceProvider.produce(ServiceProviderBuildItem.allProvidersFromClassPath(ExpressionHandler.class.getCanonicalName()));
         serviceProvider.produce(ServiceProviderBuildItem.allProvidersFromClassPath(FunctionNamespace.class.getCanonicalName()));
         serviceProvider.produce(ServiceProviderBuildItem.allProvidersFromClassPath(FunctionTypeHandler.class.getCanonicalName()));
+        serviceProvider.produce(ServiceProviderBuildItem.allProvidersFromClassPath(WorkflowOperationIdFactory.class.getCanonicalName()));
         return new NativeImageResourceBuildItem(FileDescriptorHolder.DESCRIPTOR_PATH);
     }
 

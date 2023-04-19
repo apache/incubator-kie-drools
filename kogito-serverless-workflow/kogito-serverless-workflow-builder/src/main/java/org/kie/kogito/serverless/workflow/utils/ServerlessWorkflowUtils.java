@@ -27,7 +27,6 @@ import java.util.function.Supplier;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
-import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.VariableDeclarations;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -49,7 +48,6 @@ import com.github.javaparser.ast.expr.Expression;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.deserializers.ExtensionDeserializer;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
-import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 import io.serverlessworkflow.api.interfaces.Extension;
 import io.serverlessworkflow.api.mapper.BaseObjectMapper;
 import io.serverlessworkflow.api.mapper.JsonObjectMapper;
@@ -77,7 +75,6 @@ public class ServerlessWorkflowUtils {
     @Deprecated
     public static final String ALTERNATE_WORKFLOW_FORMAT = "yml";
     public static final String APP_PROPERTIES_BASE = "kogito.sw.";
-    private static final String OPEN_API_PROPERTIES_BASE = "org.kogito.openapi.client.";
 
     public static final String APP_PROPERTIES_FUNCTIONS_BASE = APP_PROPERTIES_BASE + "functions.";
 
@@ -144,15 +141,25 @@ public class ServerlessWorkflowUtils {
         return objectMapper;
     }
 
-    private static String getFunctionPrefix(FunctionDefinition function) {
+    public static String getFunctionPrefix(FunctionDefinition function) {
         return APP_PROPERTIES_FUNCTIONS_BASE + function.getName();
     }
 
-    private static String getOpenApiPrefix(String serviceName) {
-        return OPEN_API_PROPERTIES_BASE + serviceName;
+    public static <T> Supplier<Expression> runtimeRestApi(FunctionDefinition function, String metadataKey, KogitoBuildContext context, Class<T> clazz, T defaultValue) {
+        return runtimeResolveMetadata(getFunctionPrefix(function), metadataKey, clazz, resolveFunctionMetadata(function, metadataKey, context, clazz, defaultValue),
+                ConfigWorkItemSupplier::new);
     }
 
-    private static String getPropKey(String prefix, String key) {
+    public static Supplier<Expression> runtimeRestApi(FunctionDefinition function, String metadataKey, KogitoBuildContext context) {
+        return runtimeRestApi(function, metadataKey, context, String.class, null);
+    }
+
+    public static <T> Supplier<Expression> runtimeResolveMetadata(String prefix, String metadataKey, Class<T> clazz, T defaultValue,
+            ExpressionBuilder<T> builder) {
+        return builder.create(getPropKey(prefix, metadataKey), clazz, defaultValue);
+    }
+
+    public static String getPropKey(String prefix, String key) {
         return prefix + "." + key;
     }
 
@@ -165,52 +172,8 @@ public class ServerlessWorkflowUtils {
                 : context.getApplicationProperty(getPropKey(getFunctionPrefix(function), metadataKey), clazz).orElse(defaultValue);
     }
 
-    public static String getOpenApiProperty(String serviceName, String metadataKey, KogitoBuildContext context) {
-        return getOpenApiProperty(serviceName, metadataKey, context, String.class, "");
-    }
-
-    public static <T> T getOpenApiProperty(String serviceName, String metadataKey, KogitoBuildContext context, Class<T> clazz, T defaultValue) {
-        return context.getApplicationProperty(getPropKey(getOpenApiPrefix(serviceName), metadataKey), clazz).orElse(defaultValue);
-    }
-
-    public static Supplier<Expression> runtimeRestApi(FunctionDefinition function, String metadataKey, KogitoBuildContext context) {
-        return runtimeRestApi(function, metadataKey, context, String.class, null);
-    }
-
-    public static Supplier<Expression> runtimeOpenApi(String serviceName, String metadataKey, KogitoBuildContext context) {
-        return runtimeOpenApi(serviceName, metadataKey, context, String.class, null);
-    }
-
-    public static <T> Supplier<Expression> runtimeRestApi(FunctionDefinition function, String metadataKey, KogitoBuildContext context, Class<T> clazz, T defaultValue) {
-        return runtimeResolveMetadata(getFunctionPrefix(function), metadataKey, clazz, resolveFunctionMetadata(function, metadataKey, context, clazz, defaultValue),
-                ConfigWorkItemSupplier::new);
-    }
-
-    public static <T> Supplier<Expression> runtimeOpenApi(String serviceName, String metadataKey, KogitoBuildContext context, Class<T> clazz, T defaultValue) {
-        return runtimeOpenApi(serviceName, metadataKey, clazz, getOpenApiProperty(serviceName, metadataKey, context, clazz, defaultValue), ConfigWorkItemSupplier::new);
-    }
-
-    public static <T> Supplier<Expression> runtimeOpenApi(String serviceName, String metadataKey, Class<T> clazz, T defaultValue, ExpressionBuilder<T> builder) {
-        return runtimeResolveMetadata(getOpenApiPrefix(serviceName), metadataKey, clazz, defaultValue, builder);
-    }
-
-    private static <T> Supplier<Expression> runtimeResolveMetadata(String prefix, String metadataKey, Class<T> clazz, T defaultValue,
-            ExpressionBuilder<T> builder) {
-        return builder.create(getPropKey(prefix, metadataKey), clazz, defaultValue);
-    }
-
     public interface ExpressionBuilder<T> {
         Supplier<Expression> create(String key, Class<T> clazz, T defaultValue);
-    }
-
-    /**
-     * Checks whether or not the Function definition is an OpenApi operation
-     *
-     * @param function to verify
-     * @return true if the given function refers to an OpenApi operation
-     */
-    public static boolean isOpenApiOperation(FunctionDefinition function) {
-        return function.getType() == Type.REST && function.getOperation() != null && function.getOperation().contains(OPERATION_SEPARATOR);
     }
 
     public static Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr) {
@@ -241,18 +204,6 @@ public class ServerlessWorkflowUtils {
         return Optional.empty();
     }
 
-    public static String getRPCClassName(String serviceName) {
-        return "RPC_" + serviceName + "_WorkItemHandler";
-    }
-
-    public static String getOpenApiClassName(String fileName, String methodName) {
-        return StringUtils.ucFirst(getValidIdentifier(removeExt(fileName.toLowerCase())) + '_' + methodName);
-    }
-
-    public static String getOpenApiWorkItemName(String fileName, String methodName) {
-        return removeExt(fileName) + '_' + methodName;
-    }
-
     public static String removeExt(String fileName) {
         return fileName.replaceFirst(REGEX_NO_EXT, "");
     }
@@ -269,7 +220,7 @@ public class ServerlessWorkflowUtils {
         return workflow.getExtensions().stream().filter(extensionClass::isInstance).findFirst().map(extensionClass::cast);
     }
 
-    protected static String getValidIdentifier(String name) {
+    public static String getValidIdentifier(String name) {
         return filterString(name, Character::isJavaIdentifierPart, Optional.empty());
     }
 
