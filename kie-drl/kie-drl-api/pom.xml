@@ -19,6 +19,11 @@
       <groupId>org.kie</groupId>
       <artifactId>efesto-common-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 
