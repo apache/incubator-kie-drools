@@ -77,8 +77,6 @@ pipeline {
             }
         }
 
-        // Should be moved to a job in kie-benchmarks repository
-        // and called from main setup-branch job directly after drools update
         stage('Update Optaplanner version in kie-benchmarks') {
             when {
                 // TODO to change once Optaplanner is totally migrated to Quarkus 3
@@ -86,20 +84,7 @@ pipeline {
             }
             steps {
                 script {
-                    String commitMsg = 'bumped up Optaplanner version to next SNAPSHOT'
-                    String localBranch = "kie-benchmarks-optaplanner-update-${env.BRANCH_HASH}"
-                    String targetBranch = 'main'
-                    String kieBenchmarksRepo = 'kie-benchmarks'
-                    dir(kieBenchmarksRepo) {
-                        checkoutRepo(kieBenchmarksRepo, targetBranch)
-                        githubscm.setUserConfigFromCreds()
-                        githubscm.createBranch(localBranch)
-                        maven.mvnSetVersionProperty('version.org.optaplanner', getOptaPlannerVersion())
-                        String prLink = commitAndCreatePR(commitMsg, localBranch, targetBranch)
-                        sh "git checkout ${targetBranch}"
-                        mergeAndPush(prLink, targetBranch)
-                        githubscm.removeRemoteBranch('origin', localBranch, getGitAuthorCredsId())
-                    }
+                    build job: '../tools/kie-benchmarks-update-optaplanner', parameters: [ string(name: 'OPTAPLANNER_VERSION', value: "${getOptaPlannerVersion()}")
                 }
             }
         }
