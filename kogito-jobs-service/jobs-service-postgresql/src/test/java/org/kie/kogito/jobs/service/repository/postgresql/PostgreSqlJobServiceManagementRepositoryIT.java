@@ -51,7 +51,7 @@ class PostgreSqlJobServiceManagementRepositoryIT {
 
         AtomicReference<OffsetDateTime> date = new AtomicReference<>();
         JobServiceManagementInfo updated = tested.getAndUpdate(id, info -> {
-            date.set(OffsetDateTime.now());
+            date.set(DateUtil.now().toOffsetDateTime());
             info.setLastHeartbeat(date.get());
             return info;
         }).await().indefinitely();
