@@ -80,6 +80,9 @@ public class EmbeddedCacheManager implements InfinispanCacheManager {
                .indexLocation(CACHE_DIR + "/index");
         builder.clustering()
                .cacheMode(CacheMode.LOCAL);
+
+        builder.unsafe().unreliableReturnValues(true);
+
         cacheConfiguration = builder.build();
     }
 
