@@ -63,7 +63,8 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
 
     // For Quarkus 3, run only runtimes PR check... for now
     if (EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3')) {
-        jobConfig.jobs.retainAll { it.id == 'kogito-runtimes' }
+        // jobConfig.jobs.retainAll { it.id == 'kogito-runtimes' } // TODO uncomment once quarkus-3 env is stable
+        jobConfig.jobs.clear()
     }
 
     return jobConfig
