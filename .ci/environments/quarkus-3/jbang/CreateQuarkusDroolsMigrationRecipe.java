@@ -34,15 +34,32 @@ class CreateQuarkusProjectMigrationRecipe {
     static final String QUARKUS_VERSION = "3.0.0.Final";
     static final String QUARKUS_UPDATES_BASE_URL = "https://raw.githubusercontent.com/quarkusio/quarkus-updates/1.0.0/recipes/src/main/resources/quarkus-updates/core/3alpha.yaml";
 
+    static final Path quarkus3DownloadedRecipePath = Paths.get("quarkus3-base-recipe.yml");
     static final Path quarkus3GeneratedRecipePath = Paths.get("quarkus3.yml");
     static final Path projectBaseRecipePath = Paths.get("project-recipe.yml");
 
     public static void main(String... args) throws Exception {
-        List<Object> quarkusRecipes = QuarkusUpdateRecipeIO.readRecipesYaml(IOUtils.toString(new URL(QUARKUS_UPDATES_BASE_URL).openStream(), Charset.defaultCharset()));
+        boolean downloadQuarkusRecipe = false;
+        if (args.length > 0) {
+            downloadQuarkusRecipe = Boolean.parseBoolean(args[0]);
+        }
+
+        if (downloadQuarkusRecipe) {
+            Files.write(quarkus3DownloadedRecipePath, new URL(QUARKUS_UPDATES_BASE_URL).openStream().readAllBytes());
+        }
+
+        if (!Files.exists(quarkus3DownloadedRecipePath)) {
+            System.out.println("The Quarkus base recipe (" + quarkus3DownloadedRecipePath.getFileName()
+                    + ") does not exist into the folder. Please download it manually or add the `true` parameter to the script call !");
+            System.exit(1);
+        }
+
+        List<Object> quarkusRecipes = QuarkusUpdateRecipeIO
+                .readRecipesYaml(Files.readString(quarkus3DownloadedRecipePath));
         QuarkusUpdateRecipe mainRecipe = new QuarkusUpdateRecipe()
                 .buildTool(BuildTool.MAVEN)
                 .addOperation(new UpdatePropertyOperation("version.io.quarkus", QUARKUS_VERSION));
-        
+
         if (Files.exists(projectBaseRecipePath)) {
             System.out.println("Adding Project base recipe(s)");
             mainRecipe.addRecipes(QuarkusUpdateRecipeIO.readRecipesYaml(Files.readString(projectBaseRecipePath)));
@@ -52,14 +69,13 @@ class CreateQuarkusProjectMigrationRecipe {
 
         System.out.println("Adding Managed dependency recipe(s)");
         Map<String, Object> managedDependencyMainRecipe = Map.of(
-            "type", "specs.openrewrite.org/v1beta/recipe",
-            "name", "org.kie.ManagedDependencies",
-            "displayName", "Update Managed Dependencies",
-            "description", "Update all managed dependencies based on dependency updates from Quarkus.",
-            "recipeList", retrieveAllChangeDependencyRecipesToManagedDependency(quarkusRecipes)
-        );
+                "type", "specs.openrewrite.org/v1beta/recipe",
+                "name", "org.kie.ManagedDependencies",
+                "displayName", "Update Managed Dependencies",
+                "description", "Update all managed dependencies based on dependency updates from Quarkus.",
+                "recipeList", retrieveAllChangeDependencyRecipesToManagedDependency(quarkusRecipes));
         mainRecipe.addRecipe(managedDependencyMainRecipe);
-        
+
         System.out.println("Adding Quarkus base recipe(s)");
         mainRecipe.addRecipes(quarkusRecipes);
 
@@ -80,7 +96,8 @@ class CreateQuarkusProjectMigrationRecipe {
                                 if (!args.containsKey("newArtifactId")) {
                                     args.put("newArtifactId", args.get("oldArtifactId"));
                                 }
-                                changeDependencyRecipeList.add(Map.of("org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId", args));
+                                changeDependencyRecipeList.add(Map
+                                        .of("org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId", args));
                             }
                         });
                     }
