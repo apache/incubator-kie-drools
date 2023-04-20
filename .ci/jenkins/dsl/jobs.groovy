@@ -182,9 +182,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 env : [
                     BUILD_MVN_OPTS_CURRENT: '-Dfull',
                     OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull',
-                    env: [
-                        MIGRATE_TO_9: Utils.isMainBranch(this)
-                    ]
+                    MIGRATE_TO_9: Utils.isMainBranch(this)
                 ]
             ]
         ]
