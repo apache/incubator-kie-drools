@@ -17,20 +17,20 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhaseLifecycleListener<Solution_> {
+public final class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhaseLifecycleListener<Solution_> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExhaustiveSearchDecider.class);
 
-    protected final String logIndentation;
-    protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
-    protected final Termination<Solution_> termination;
-    protected final ManualEntityMimicRecorder<Solution_> manualEntityMimicRecorder;
-    protected final MoveSelector<Solution_> moveSelector;
-    protected final boolean scoreBounderEnabled;
-    protected final ScoreBounder scoreBounder;
+    private final String logIndentation;
+    private final BestSolutionRecaller<Solution_> bestSolutionRecaller;
+    private final Termination<Solution_> termination;
+    private final ManualEntityMimicRecorder<Solution_> manualEntityMimicRecorder;
+    private final MoveSelector<Solution_> moveSelector;
+    private final boolean scoreBounderEnabled;
+    private final ScoreBounder scoreBounder;
 
-    protected boolean assertMoveScoreFromScratch = false;
-    protected boolean assertExpectedUndoMoveScore = false;
+    private boolean assertMoveScoreFromScratch = false;
+    private boolean assertExpectedUndoMoveScore = false;
 
     public ExhaustiveSearchDecider(String logIndentation, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> termination, ManualEntityMimicRecorder<Solution_> manualEntityMimicRecorder,
@@ -42,10 +42,6 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
         this.moveSelector = moveSelector;
         this.scoreBounderEnabled = scoreBounderEnabled;
         this.scoreBounder = scoreBounder;
-    }
-
-    public ManualEntityMimicRecorder<Solution_> getManualEntityMimicRecorder() {
-        return manualEntityMimicRecorder;
     }
 
     public MoveSelector<Solution_> getMoveSelector() {
@@ -105,7 +101,6 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
     public void expandNode(ExhaustiveSearchStepScope<Solution_> stepScope) {
         ExhaustiveSearchNode expandingNode = stepScope.getExpandingNode();
         manualEntityMimicRecorder.setRecordedEntity(expandingNode.getEntity());
-        stepScope.setBestScoreImproved(false);
 
         int moveIndex = 0;
         ExhaustiveSearchLayer moveLayer = stepScope.getPhaseScope().getLayerList().get(expandingNode.getDepth() + 1);

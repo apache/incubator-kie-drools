@@ -14,7 +14,7 @@ public abstract class AbstractStepScope<Solution_> {
     protected final int stepIndex;
 
     protected Score<?> score = null;
-    protected Boolean bestScoreImproved;
+    protected boolean bestScoreImproved = false;
     // Stays null if there is no need to clone it
     protected Solution_ clonedSolution = null;
 
@@ -36,20 +36,12 @@ public abstract class AbstractStepScope<Solution_> {
         this.score = score;
     }
 
-    public Boolean getBestScoreImproved() {
+    public boolean getBestScoreImproved() {
         return bestScoreImproved;
     }
 
     public void setBestScoreImproved(Boolean bestScoreImproved) {
         this.bestScoreImproved = bestScoreImproved;
-    }
-
-    public Solution_ getClonedSolution() {
-        return clonedSolution;
-    }
-
-    public void setClonedSolution(Solution_ clonedSolution) {
-        this.clonedSolution = clonedSolution;
     }
 
     // ************************************************************************
