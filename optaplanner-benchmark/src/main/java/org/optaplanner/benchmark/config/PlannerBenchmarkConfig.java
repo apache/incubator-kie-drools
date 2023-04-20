@@ -435,7 +435,7 @@ public class PlannerBenchmarkConfig {
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlReader(Reader templateReader, Object model,
             ClassLoader classLoader) {
-        Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_31);
+        Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_32);
         freemarkerConfiguration.setDefaultEncoding("UTF-8");
         freemarkerConfiguration.setNumberFormat("computer");
         freemarkerConfiguration.setDateFormat("yyyy-mm-dd");

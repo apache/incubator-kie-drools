@@ -808,7 +808,7 @@ public class BenchmarkReport {
         WebsiteResourceUtils.copyResourcesTo(benchmarkReportDirectory);
 
         htmlOverviewFile = new File(benchmarkReportDirectory, "index.html");
-        Configuration freemarkerCfg = new Configuration(Configuration.VERSION_2_3_31);
+        Configuration freemarkerCfg = new Configuration(Configuration.VERSION_2_3_32);
         freemarkerCfg.setDefaultEncoding("UTF-8");
         freemarkerCfg.setLocale(locale);
         freemarkerCfg.setClassForTemplateLoading(BenchmarkReport.class, "");
