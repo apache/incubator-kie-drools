@@ -4495,7 +4495,7 @@ index 3ed82fa4dc..1f5ef4aa76 100644
    <modelVersion>4.0.0</modelVersion>
  
 diff --git a/efesto/pom.xml b/efesto/pom.xml
-index 3412c93947..215ee45998 100644
+index 6baa9211a4..8e5603a87a 100644
 --- a/efesto/pom.xml
 +++ b/efesto/pom.xml
 @@ -7,7 +7,7 @@
@@ -5472,7 +5472,7 @@ index 928066451c..9f59b0d2b3 100644
    </parent>
  
 diff --git a/kie-drl/kie-drl-api/pom.xml b/kie-drl/kie-drl-api/pom.xml
-index 92818c94d1..4c8693726d 100644
+index e6ecf80fc5..a2a0a9ba7e 100644
 --- a/kie-drl/kie-drl-api/pom.xml
 +++ b/kie-drl/kie-drl-api/pom.xml
 @@ -5,7 +5,7 @@
@@ -5485,7 +5485,7 @@ index 92818c94d1..4c8693726d 100644
      <modelVersion>4.0.0</modelVersion>
  
 diff --git a/kie-drl/kie-drl-compilation-common/pom.xml b/kie-drl/kie-drl-compilation-common/pom.xml
-index 087fc4dd54..d179018bb4 100644
+index bc66787851..9368084fa7 100644
 --- a/kie-drl/kie-drl-compilation-common/pom.xml
 +++ b/kie-drl/kie-drl-compilation-common/pom.xml
 @@ -5,7 +5,7 @@
@@ -5524,7 +5524,7 @@ index e499292a36..f3a5236d45 100644
      <modelVersion>4.0.0</modelVersion>
      <packaging>pom</packaging>
 diff --git a/kie-drl/kie-drl-implementations/kie-drl-map-input/kie-drl-map-input-runtime/pom.xml b/kie-drl/kie-drl-implementations/kie-drl-map-input/kie-drl-map-input-runtime/pom.xml
-index 49f6dfb9b0..26b29dff15 100644
+index a0f0b8d76f..64ea1bcf92 100644
 --- a/kie-drl/kie-drl-implementations/kie-drl-map-input/kie-drl-map-input-runtime/pom.xml
 +++ b/kie-drl/kie-drl-implementations/kie-drl-map-input/kie-drl-map-input-runtime/pom.xml
 @@ -6,7 +6,7 @@
@@ -5563,7 +5563,7 @@ index 52698fe699..31b1330f3c 100644
  
      <name>KIE :: DRL :: Implementations</name>
 diff --git a/kie-drl/kie-drl-runtime-common/pom.xml b/kie-drl/kie-drl-runtime-common/pom.xml
-index c09c02e6ea..232ec121fc 100644
+index 9e3a725743..c19c75023c 100644
 --- a/kie-drl/kie-drl-runtime-common/pom.xml
 +++ b/kie-drl/kie-drl-runtime-common/pom.xml
 @@ -5,7 +5,7 @@
@@ -5576,7 +5576,7 @@ index c09c02e6ea..232ec121fc 100644
      <modelVersion>4.0.0</modelVersion>
  
 diff --git a/kie-drl/kie-drl-tests-without-index-file/pom.xml b/kie-drl/kie-drl-tests-without-index-file/pom.xml
-index 5968ec9dca..258c41fb26 100644
+index 6d4333cb31..c500ad7e7c 100644
 --- a/kie-drl/kie-drl-tests-without-index-file/pom.xml
 +++ b/kie-drl/kie-drl-tests-without-index-file/pom.xml
 @@ -5,7 +5,7 @@
@@ -5589,7 +5589,7 @@ index 5968ec9dca..258c41fb26 100644
    <modelVersion>4.0.0</modelVersion>
  
 diff --git a/kie-drl/kie-drl-tests/pom.xml b/kie-drl/kie-drl-tests/pom.xml
-index ab0524cce0..1825c4018a 100644
+index 885544b963..a90755b800 100644
 --- a/kie-drl/kie-drl-tests/pom.xml
 +++ b/kie-drl/kie-drl-tests/pom.xml
 @@ -5,7 +5,7 @@
@@ -9741,10 +9741,10 @@ index f2ea698f02..a24a8d96de 100644
    </parent>
  
 diff --git a/pom.xml b/pom.xml
-index 397f2f7414..ca02454a64 100644
+index 665d8500d1..b2785fcfed 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -13,7 +13,7 @@
+@@ -17,7 +17,7 @@
    <groupId>org.kie</groupId>
    <artifactId>drools-parent</artifactId>
    <packaging>pom</packaging>
