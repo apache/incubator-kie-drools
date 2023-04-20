@@ -13,12 +13,12 @@ dependencies:
     mapping:
       dependencies:
         default:
-          - source: development
+          - source: 8.x
             target: main
       dependant:
         default:
           - source: main
-            target: development
+            target: 8.x
 
   - project: jboss-integration/rhbop-optaplanner
     dependencies:
