@@ -122,21 +122,13 @@ final class KOptUtils {
         };
     }
 
-    @SuppressWarnings("unchecked")
-    public static <Node_> Function<Node_, Node_> getPredecessorFunction(
+    public static <Node_> Function<Node_, Node_> getMultiEntitySuccessorFunction(
+            Node_[] pickedValues,
             ListVariableDescriptor<?> listVariableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply) {
-        return (node) -> {
-            List<Node_> valueList =
-                    (List<Node_>) listVariableDescriptor.getListVariable(inverseVariableSupply.getInverseSingleton(node));
-            int index = indexVariableSupply.getIndex(node);
-            if (index == 0) {
-                return valueList.get(valueList.size() - 1);
-            } else {
-                return valueList.get(index - 1);
-            }
-        };
+        EntityOrderInfo entityOrderInfo = new EntityOrderInfo(pickedValues, inverseVariableSupply, listVariableDescriptor);
+        return node -> entityOrderInfo.successor(node, listVariableDescriptor, indexVariableSupply, inverseVariableSupply);
     }
 
     public static <Node_> TriPredicate<Node_, Node_, Node_> getBetweenPredicate(IndexVariableSupply indexVariableSupply) {
@@ -153,6 +145,14 @@ final class KOptUtils {
                 return middleIndex >= startIndex || middleIndex <= endIndex;
             }
         };
+    }
+
+    public static <Node_> TriPredicate<Node_, Node_, Node_> getMultiEntityBetweenPredicate(Node_[] pickedValues,
+            ListVariableDescriptor<?> listVariableDescriptor,
+            SingletonInverseVariableSupply inverseVariableSupply,
+            IndexVariableSupply indexVariableSupply) {
+        EntityOrderInfo entityOrderInfo = new EntityOrderInfo(pickedValues, inverseVariableSupply, listVariableDescriptor);
+        return (start, middle, end) -> entityOrderInfo.between(start, middle, end, indexVariableSupply, inverseVariableSupply);
     }
 
     public static void flipSubarray(int[] array, int fromIndexInclusive, int toIndexExclusive) {

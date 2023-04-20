@@ -4,163 +4,187 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
-import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
-import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.util.CollectionUtils;
 
 /**
- * A 2-opt move for list variables, which takes two edges assigned to the same entity and swap their endpoints.
+ * A 2-opt move for list variables, which takes two edges and swap their endpoints.
  * For instance, let [A, B, E, D, C, F, G, H] be the route assigned to an entity.
  * Select (B, E) and (C, F) as the edges to swap. Then the resulting route after this operation would be
  * [A, B, C, D, E, F, G, H]. The edge (B, E) became (B, C), and the edge (C, F) became (E, F)
  * (the first edge end point became the second edge start point and vice-versa). It is used to fix crossings;
  * for instance, it can change:
  * ... -> A B <- ...
- * x
+ * ....... x .......
  * ... <- C D -> ...
  *
  * to
  *
  * ... -> A -> B -> ...
- *
  * ... <- C <- D <- ...
  *
  * Note the sub-path D...B was reversed. The 2-opt works be reversing the path between the two edges being removed.
+ *
+ * When the edges are assigned to different entities, it results in a tail swap.
+ * For instance, let r1 = [A, B, C, D], and r2 = [E, F, G, H]. Doing a
+ * 2-opt on (B, C) + (F, G) will result in r1 = [A, B, G, H] and r2 = [E, F, C, D].
  *
  * @param <Solution_>
  */
 final class TwoOptListMove<Solution_> extends AbstractMove<Solution_> {
     private final ListVariableDescriptor<Solution_> variableDescriptor;
-    private final IndexVariableSupply indexVariableSupply;
-    private final Object entity;
-    private final Object firstEdgeStartpoint;
-    private final Object firstEdgeEndpoint;
-    private final Object secondEdgeStartpoint;
-    private final Object secondEdgeEndpoint;
+    private final Object firstEntity;
+    private final Object secondEntity;
+    private final int firstEdgeEndpoint;
+    private final int secondEdgeEndpoint;
+
+    private final int shift;
 
     public TwoOptListMove(ListVariableDescriptor<Solution_> variableDescriptor,
-            IndexVariableSupply indexVariableSupply,
-            Object entity,
-            Object firstEdgeEndpoint, Object secondEdgeEndpoint) {
-        this(variableDescriptor, indexVariableSupply, entity,
-                getStartPoint(variableDescriptor, indexVariableSupply, entity, firstEdgeEndpoint), firstEdgeEndpoint,
-                getStartPoint(variableDescriptor, indexVariableSupply, entity, secondEdgeEndpoint), secondEdgeEndpoint);
+            Object firstEntity, Object secondEntity,
+            int firstEdgeEndpoint,
+            int secondEdgeEndpoint) {
+        this.variableDescriptor = variableDescriptor;
+        this.firstEntity = firstEntity;
+        this.secondEntity = secondEntity;
+        this.firstEdgeEndpoint = firstEdgeEndpoint;
+        this.secondEdgeEndpoint = secondEdgeEndpoint;
+        if (firstEntity == secondEntity) {
+            if (firstEdgeEndpoint == 0) {
+                shift = -secondEdgeEndpoint;
+            } else if (secondEdgeEndpoint < firstEdgeEndpoint) {
+                int listSize = variableDescriptor.getListSize(firstEntity);
+                int flippedSectionSize = listSize - firstEdgeEndpoint + secondEdgeEndpoint;
+                int firstElementIndexInFlipped = listSize - firstEdgeEndpoint;
+                int firstElementMirroredIndex = flippedSectionSize - firstElementIndexInFlipped;
+                shift = -(firstEdgeEndpoint + firstElementMirroredIndex - 1);
+            } else {
+                shift = 0;
+            }
+        } else {
+            shift = 0;
+        }
     }
 
     public TwoOptListMove(ListVariableDescriptor<Solution_> variableDescriptor,
-            IndexVariableSupply indexVariableSupply,
-            Object entity,
-            Object firstEdgeStartpoint, Object firstEdgeEndpoint,
-            Object secondEdgeStartpoint, Object secondEdgeEndpoint) {
+            Object firstEntity, Object secondEntity,
+            int firstEdgeEndpoint,
+            int secondEdgeEndpoint,
+            int shift) {
         this.variableDescriptor = variableDescriptor;
-        this.indexVariableSupply = indexVariableSupply;
-        this.entity = entity;
-        this.firstEdgeStartpoint = firstEdgeStartpoint;
+        this.firstEntity = firstEntity;
+        this.secondEntity = secondEntity;
         this.firstEdgeEndpoint = firstEdgeEndpoint;
-        this.secondEdgeStartpoint = secondEdgeStartpoint;
         this.secondEdgeEndpoint = secondEdgeEndpoint;
+        this.shift = shift;
     }
 
     @Override
     protected TwoOptListMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         return new TwoOptListMove<>(variableDescriptor,
-                indexVariableSupply,
-                entity,
-                firstEdgeStartpoint,
-                secondEdgeStartpoint,
+                firstEntity,
+                secondEntity,
                 firstEdgeEndpoint,
-                secondEdgeEndpoint);
+                secondEdgeEndpoint,
+                -shift);
     }
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
-        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
-        List<Object> listVariable = variableDescriptor.getListVariable(entity);
-        int firstEdgeEndpointIndex = indexVariableSupply.getIndex(firstEdgeEndpoint);
-        int secondEdgeEndpointIndex = indexVariableSupply.getIndex(secondEdgeEndpoint);
+        if (firstEntity == secondEntity) {
+            doSublistReversal(scoreDirector);
+        } else {
+            doTailSwap(scoreDirector);
+        }
+    }
 
-        if (firstEdgeEndpointIndex < secondEdgeEndpointIndex) {
-            if (firstEdgeEndpointIndex > 0) {
-                innerScoreDirector.beforeListVariableChanged(variableDescriptor, entity,
-                        firstEdgeEndpointIndex,
-                        secondEdgeEndpointIndex);
+    private void doTailSwap(ScoreDirector<Solution_> scoreDirector) {
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
+        List<Object> firstListVariable = variableDescriptor.getListVariable(firstEntity);
+        List<Object> secondListVariable = variableDescriptor.getListVariable(secondEntity);
+        int firstOriginalSize = firstListVariable.size();
+        int secondOriginalSize = secondListVariable.size();
+
+        innerScoreDirector.beforeListVariableChanged(variableDescriptor, firstEntity,
+                firstEdgeEndpoint,
+                firstOriginalSize);
+        innerScoreDirector.beforeListVariableChanged(variableDescriptor, secondEntity,
+                secondEdgeEndpoint,
+                secondOriginalSize);
+
+        List<Object> firstListVariableTail = firstListVariable.subList(firstEdgeEndpoint, firstOriginalSize);
+        List<Object> secondListVariableTail = secondListVariable.subList(secondEdgeEndpoint, secondOriginalSize);
+
+        int tailSizeDifference = secondListVariableTail.size() - firstListVariableTail.size();
+
+        List<Object> firstListVariableTailCopy = new ArrayList<>(firstListVariableTail);
+        firstListVariableTail.clear();
+        firstListVariable.addAll(secondListVariableTail);
+        secondListVariableTail.clear();
+        secondListVariable.addAll(firstListVariableTailCopy);
+
+        innerScoreDirector.afterListVariableChanged(variableDescriptor, firstEntity,
+                firstEdgeEndpoint,
+                firstOriginalSize + tailSizeDifference);
+        innerScoreDirector.afterListVariableChanged(variableDescriptor, secondEntity,
+                secondEdgeEndpoint,
+                secondOriginalSize - tailSizeDifference);
+    }
+
+    private void doSublistReversal(ScoreDirector<Solution_> scoreDirector) {
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
+        List<Object> listVariable = variableDescriptor.getListVariable(firstEntity);
+
+        if (firstEdgeEndpoint < secondEdgeEndpoint) {
+            if (firstEdgeEndpoint > 0) {
+                innerScoreDirector.beforeListVariableChanged(variableDescriptor, firstEntity,
+                        firstEdgeEndpoint,
+                        secondEdgeEndpoint);
             } else {
-                innerScoreDirector.beforeListVariableChanged(variableDescriptor, entity,
+                innerScoreDirector.beforeListVariableChanged(variableDescriptor, firstEntity,
                         0,
                         listVariable.size());
             }
 
-            Collections.reverse(listVariable.subList(firstEdgeEndpointIndex, secondEdgeEndpointIndex));
-
-            if (firstEdgeEndpointIndex == 0) {
-                Collections.rotate(listVariable, -(secondEdgeEndpointIndex - 1));
+            if (firstEdgeEndpoint == 0 && shift > 0) {
+                Collections.rotate(listVariable, shift);
             }
 
-            if (firstEdgeEndpointIndex > 0) {
-                innerScoreDirector.afterListVariableChanged(variableDescriptor, entity,
-                        firstEdgeEndpointIndex,
-                        secondEdgeEndpointIndex);
+            FlipSublistAction.flipSublist(listVariable, firstEdgeEndpoint, secondEdgeEndpoint);
+
+            if (firstEdgeEndpoint == 0 && shift < 0) {
+                Collections.rotate(listVariable, shift);
+            }
+
+            if (firstEdgeEndpoint > 0) {
+                innerScoreDirector.afterListVariableChanged(variableDescriptor, firstEntity,
+                        firstEdgeEndpoint,
+                        secondEdgeEndpoint);
             } else {
-                innerScoreDirector.afterListVariableChanged(variableDescriptor, entity,
+                innerScoreDirector.afterListVariableChanged(variableDescriptor, firstEntity,
                         0,
                         listVariable.size());
             }
         } else {
-            List<Object> firstHalfReversedPath = listVariable.subList(firstEdgeEndpointIndex, listVariable.size());
-            List<Object> secondHalfReversedPath = listVariable.subList(0, secondEdgeEndpointIndex);
-
-            innerScoreDirector.beforeListVariableChanged(variableDescriptor, entity,
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, firstEntity,
                     0,
                     listVariable.size());
 
-            // Reverse the combined list firstHalfReversedPath + secondHalfReversedPath
-            // For instance, (1, 2, 3)(4, 5, 6, 7, 8, 9) becomes
-            // (9, 8, 7)(6, 5, 4, 3, 2, 1)
-            int totalLength = firstHalfReversedPath.size() + secondHalfReversedPath.size();
-
-            // Used to rotate the list to put the first element back in its original position
-            int firstElementShift = 0;
-            for (int i = 0; (i < totalLength >> 1); i++) {
-                if (i < firstHalfReversedPath.size()) {
-                    if (i < secondHalfReversedPath.size()) {
-                        // firstHalfIndex = i
-                        int secondHalfIndex = secondHalfReversedPath.size() - i - 1;
-                        if (secondHalfIndex == 0) {
-                            firstElementShift = firstEdgeEndpointIndex + i;
-                        }
-                        Object savedFirstItem = firstHalfReversedPath.get(i);
-                        firstHalfReversedPath.set(i, secondHalfReversedPath.get(secondHalfIndex));
-                        secondHalfReversedPath.set(secondHalfIndex, savedFirstItem);
-                    } else {
-                        // firstIndex = i
-                        int secondIndex = firstHalfReversedPath.size() - i + secondHalfReversedPath.size() - 1;
-                        Object savedFirstItem = firstHalfReversedPath.get(i);
-                        firstHalfReversedPath.set(i, firstHalfReversedPath.get(secondIndex));
-                        firstHalfReversedPath.set(secondIndex, savedFirstItem);
-                    }
-                } else {
-                    int firstIndex = i - firstHalfReversedPath.size();
-                    int secondIndex = secondHalfReversedPath.size() - i - 1;
-                    if (firstIndex == 0) {
-                        firstElementShift = secondIndex;
-                    } else if (secondIndex == 0) {
-                        firstElementShift = firstIndex;
-                    }
-                    Object savedFirstItem = secondHalfReversedPath.get(firstIndex);
-                    secondHalfReversedPath.set(firstIndex, secondHalfReversedPath.get(secondIndex));
-                    secondHalfReversedPath.set(secondIndex, savedFirstItem);
-                }
+            if (shift > 0) {
+                Collections.rotate(listVariable, shift);
             }
 
-            // Rotate the list so the first element back in its original position
-            Collections.rotate(listVariable, -firstElementShift);
-            innerScoreDirector.afterListVariableChanged(variableDescriptor, entity,
+            FlipSublistAction.flipSublist(listVariable, firstEdgeEndpoint, secondEdgeEndpoint);
+
+            if (shift < 0) {
+                Collections.rotate(listVariable, shift);
+            }
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, firstEntity,
                     0,
                     listVariable.size());
         }
@@ -173,14 +197,12 @@ final class TwoOptListMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public TwoOptListMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
-        SupplyManager supplyManager = ((InnerScoreDirector<Solution_, ?>) destinationScoreDirector).getSupplyManager();
-        IndexVariableSupply supply = supplyManager.demand(new IndexVariableDemand<>(variableDescriptor));
-        return new TwoOptListMove<>(variableDescriptor, supply,
-                destinationScoreDirector.lookUpWorkingObject(entity),
-                destinationScoreDirector.lookUpWorkingObject(firstEdgeStartpoint),
-                destinationScoreDirector.lookUpWorkingObject(firstEdgeEndpoint),
-                destinationScoreDirector.lookUpWorkingObject(secondEdgeStartpoint),
-                destinationScoreDirector.lookUpWorkingObject(secondEdgeEndpoint));
+        return new TwoOptListMove<>(variableDescriptor,
+                destinationScoreDirector.lookUpWorkingObject(firstEntity),
+                destinationScoreDirector.lookUpWorkingObject(secondEntity),
+                firstEdgeEndpoint,
+                secondEdgeEndpoint,
+                shift);
     }
 
     @Override
@@ -190,26 +212,38 @@ final class TwoOptListMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public Collection<?> getPlanningEntities() {
-        return List.of(entity);
+        return Set.of(firstEntity, secondEntity);
     }
 
     @Override
     public Collection<?> getPlanningValues() {
-        List<Object> listVariable = variableDescriptor.getListVariable(entity);
-        int firstEdgeEndpointIndex = indexVariableSupply.getIndex(firstEdgeEndpoint);
-        int secondEdgeEndpointIndex = indexVariableSupply.getIndex(secondEdgeEndpoint);
-
-        if (firstEdgeEndpointIndex < secondEdgeEndpointIndex) {
-            return new ArrayList<>(listVariable.subList(firstEdgeEndpointIndex, secondEdgeEndpointIndex));
+        if (firstEntity == secondEntity) {
+            List<Object> listVariable = variableDescriptor.getListVariable(firstEntity);
+            if (firstEdgeEndpoint < secondEdgeEndpoint) {
+                return new ArrayList<>(listVariable.subList(firstEdgeEndpoint, secondEdgeEndpoint));
+            } else {
+                List<Object> firstHalfReversedPath = listVariable.subList(firstEdgeEndpoint, listVariable.size());
+                List<Object> secondHalfReversedPath = listVariable.subList(0, secondEdgeEndpoint);
+                return CollectionUtils.concat(firstHalfReversedPath, secondHalfReversedPath);
+            }
         } else {
-            List<Object> firstHalfReversedPath = listVariable.subList(firstEdgeEndpointIndex, listVariable.size());
-            List<Object> secondHalfReversedPath = listVariable.subList(0, secondEdgeEndpointIndex);
-            return CollectionUtils.concat(firstHalfReversedPath, secondHalfReversedPath);
+            List<Object> firstListVariable = variableDescriptor.getListVariable(firstEntity);
+            List<Object> secondListVariable = variableDescriptor.getListVariable(secondEntity);
+            List<Object> firstListVariableTail = firstListVariable.subList(firstEdgeEndpoint, firstListVariable.size());
+            List<Object> secondListVariableTail = secondListVariable.subList(secondEdgeEndpoint, secondListVariable.size());
+            List<Object> out = new ArrayList<>(firstListVariableTail.size() + secondListVariableTail.size());
+            out.addAll(firstListVariableTail);
+            out.addAll(secondListVariableTail);
+            return out;
         }
     }
 
-    public Object getEntity() {
-        return entity;
+    public Object getFirstEntity() {
+        return firstEntity;
+    }
+
+    public Object getSecondEntity() {
+        return secondEntity;
     }
 
     public Object getFirstEdgeEndpoint() {
@@ -220,37 +254,13 @@ final class TwoOptListMove<Solution_> extends AbstractMove<Solution_> {
         return secondEdgeEndpoint;
     }
 
-    public Object getFirstEdgeStartpoint() {
-        return firstEdgeStartpoint;
-    }
-
-    public Object getSecondEdgeStartpoint() {
-        return secondEdgeStartpoint;
-    }
-
-    private static <Solution_> Object getStartPoint(ListVariableDescriptor<Solution_> variableDescriptor,
-            IndexVariableSupply indexVariableSupply,
-            Object entity,
-            Object endPoint) {
-        List<Object> listVariable = variableDescriptor.getListVariable(entity);
-        int endPointIndex = indexVariableSupply.getIndex(endPoint);
-        if (endPointIndex == 0) {
-            return listVariable.get(listVariable.size() - 1);
-        } else {
-            return listVariable.get(endPointIndex - 1);
-        }
-    }
-
     @Override
     public String toString() {
-        return "2-Opt(entity=" +
-                entity +
-                ", removed=[(" +
-                firstEdgeStartpoint + " -> " + firstEdgeEndpoint + "), (" +
-                secondEdgeStartpoint + " -> " + secondEdgeEndpoint + ")]" +
-                ", added=[(" +
-                firstEdgeStartpoint + " -> " + secondEdgeStartpoint + "), (" +
-                firstEdgeEndpoint + " -> " + secondEdgeEndpoint + ")]" +
+        return "2-Opt(firstEntity=" +
+                firstEntity +
+                ", secondEntity=" + secondEntity +
+                ", firstEndpointIndex=" + firstEdgeEndpoint +
+                ", secondEndpointIndex=" + secondEdgeEndpoint +
                 ")";
     }
 }

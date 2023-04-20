@@ -71,7 +71,17 @@
           </nearbySelection>
         </secondarySubListSelector>
       </subListSwapMoveSelector>
-      <kOptListMoveSelector/>
+      <kOptListMoveSelector>
+        <originSelector id="5"/>
+        <valueSelector>
+          <nearbySelection>
+            <originValueSelector mimicSelectorRef="5"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </valueSelector>
+      </kOptListMoveSelector>
     </unionMoveSelector>
     <acceptor>
       <lateAcceptanceSize>200</lateAcceptanceSize>

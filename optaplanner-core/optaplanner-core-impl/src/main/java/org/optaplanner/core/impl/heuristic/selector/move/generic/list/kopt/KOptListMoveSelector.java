@@ -10,29 +10,39 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 final class KOptListMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
-    private final EntitySelector<Solution_> entitySelector;
+
+    private final EntityIndependentValueSelector<Solution_> originSelector;
+    private final EntityIndependentValueSelector<Solution_> valueSelector;
     private final int minK;
     private final int maxK;
+
+    private final int[] pickedKDistribution;
+
     private SingletonInverseVariableSupply inverseVariableSupply;
     private IndexVariableSupply indexVariableSupply;
 
     public KOptListMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
-            EntitySelector<Solution_> entitySelector,
+            EntityIndependentValueSelector<Solution_> originSelector,
+            EntityIndependentValueSelector<Solution_> valueSelector,
             int minK,
-            int maxK) {
+            int maxK,
+            int[] pickedKDistribution) {
         this.listVariableDescriptor = listVariableDescriptor;
-        this.entitySelector = entitySelector;
+        this.originSelector = originSelector;
+        this.valueSelector = valueSelector;
         this.minK = minK;
         this.maxK = maxK;
-        phaseLifecycleSupport.addEventListener(entitySelector);
+        this.pickedKDistribution = pickedKDistribution;
+        phaseLifecycleSupport.addEventListener(originSelector);
+        phaseLifecycleSupport.addEventListener(valueSelector);
     }
 
     @Override
@@ -52,20 +62,21 @@ final class KOptListMoveSelector<Solution_> extends GenericMoveSelector<Solution
 
     @Override
     public long getSize() {
-        Iterator<Object> entityIterator = entitySelector.endingIterator();
         long total = 0;
-        while (entityIterator.hasNext()) {
-            Object entity = entityIterator.next();
-            int valueSelectorSize = listVariableDescriptor.getListSize(entity);
-            for (int i = minK; i < Math.min(valueSelectorSize, maxK); i++) {
-                if (valueSelectorSize > i) { // need more than k nodes in order to perform a k-opt
-                    long kOptMoveTypes = KOptUtils.getPureKOptMoveTypes(i);
+        long valueSelectorSize = valueSelector.getSize();
+        for (int i = minK; i < Math.min(valueSelectorSize, maxK); i++) {
+            if (valueSelectorSize > i) { // need more than k nodes in order to perform a k-opt
+                long kOptMoveTypes = KOptUtils.getPureKOptMoveTypes(i);
 
-                    // A tour with n nodes have n - 1 edges
-                    // And we chose k of them to remove in a k-opt
-                    long edgeChoices = CombinatoricsUtils.binomialCoefficient(valueSelectorSize - 1, i);
-                    total += kOptMoveTypes * edgeChoices;
+                // A tour with n nodes have n - 1 edges
+                // And we chose k of them to remove in a k-opt
+                final long edgeChoices;
+                if (valueSelectorSize <= Integer.MAX_VALUE) {
+                    edgeChoices = CombinatoricsUtils.binomialCoefficient((int) (valueSelectorSize - 1), i);
+                } else {
+                    edgeChoices = Long.MAX_VALUE;
                 }
+                total += kOptMoveTypes * edgeChoices;
             }
         }
         return total;
@@ -74,7 +85,7 @@ final class KOptListMoveSelector<Solution_> extends GenericMoveSelector<Solution
     @Override
     public Iterator<Move<Solution_>> iterator() {
         return new KOptListMoveIterator<>(workingRandom, listVariableDescriptor, inverseVariableSupply, indexVariableSupply,
-                entitySelector, minK, maxK);
+                originSelector, valueSelector, minK, maxK, pickedKDistribution);
     }
 
     @Override

@@ -3,8 +3,10 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 import java.util.Collections;
 import java.util.List;
 
-import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * Flips a sublist of a list variable, (the same thing as a {@link TwoOptListMove}, but no shift to restore the original
@@ -19,21 +21,27 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 final class FlipSublistAction {
 
     private final ListVariableDescriptor<?> variableDescriptor;
-    private final Object entity;
+
+    private final MultipleDelegateList<Object> combinedList;
+
+    private final SingletonInverseVariableSupply inverseVariableSupply;
     private final int fromIndexInclusive;
     private final int toIndexExclusive;
 
     public FlipSublistAction(ListVariableDescriptor<?> variableDescriptor,
-            Object entity,
+            SingletonInverseVariableSupply inverseVariableSupply,
+            MultipleDelegateList<Object> combinedList,
             int fromIndexInclusive, int toIndexExclusive) {
         this.variableDescriptor = variableDescriptor;
-        this.entity = entity;
+        this.inverseVariableSupply = inverseVariableSupply;
+        this.combinedList = combinedList;
         this.fromIndexInclusive = fromIndexInclusive;
         this.toIndexExclusive = toIndexExclusive;
     }
 
     FlipSublistAction createUndoMove() {
-        return new FlipSublistAction(variableDescriptor, entity,
+        return new FlipSublistAction(variableDescriptor, inverseVariableSupply,
+                combinedList,
                 fromIndexInclusive,
                 toIndexExclusive);
     }
@@ -46,20 +54,22 @@ final class FlipSublistAction {
         }
     }
 
-    void doMoveOnGenuineVariables() {
-        List<Object> listVariable = variableDescriptor.getListVariable(entity);
-        flipSublist(listVariable, fromIndexInclusive, toIndexExclusive);
+    MultipleDelegateList<Object> getCombinedList() {
+        return combinedList;
     }
 
-    public FlipSublistAction rebase(ScoreDirector<?> destinationScoreDirector) {
+    void doMoveOnGenuineVariables() {
+        flipSublist(combinedList, fromIndexInclusive, toIndexExclusive);
+    }
+
+    public FlipSublistAction rebase(InnerScoreDirector<?, ?> destinationScoreDirector) {
+        SingletonInverseVariableSupply newInverseVariableSupply = destinationScoreDirector.getSupplyManager()
+                .demand(new SingletonListInverseVariableDemand<>(variableDescriptor));
         return new FlipSublistAction(variableDescriptor,
-                destinationScoreDirector.lookUpWorkingObject(entity),
+                newInverseVariableSupply,
+                combinedList.rebase(variableDescriptor, inverseVariableSupply, destinationScoreDirector),
                 fromIndexInclusive,
                 toIndexExclusive);
-    }
-
-    public Object getEntity() {
-        return entity;
     }
 
     public static <T> void flipSublist(List<T> originalList, int fromIndexInclusive, int toIndexExclusive) {
@@ -102,8 +112,6 @@ final class FlipSublistAction {
 
     @Override
     public String toString() {
-        return "FlipSublistAction(entity=" +
-                entity +
-                ", from=" + fromIndexInclusive + ", to=" + toIndexExclusive + ")";
+        return "FlipSublistAction(from=" + fromIndexInclusive + ", to=" + toIndexExclusive + ")";
     }
 }

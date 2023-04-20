@@ -39,8 +39,7 @@ class TwoOptListMoveTest {
 
         // 2-Opt((v2, v5), (v3, v6))
         TwoOptListMove<TestdataListSolution> move = new TwoOptListMove<>(variableDescriptor,
-                scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor)),
-                e1, v5, v6);
+                e1, e1, 2, 5);
         AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4, v5, v6, v7, v8);
 
@@ -50,6 +49,38 @@ class TwoOptListMoveTest {
 
         undoMove.doMoveOnly(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v1, v2, v5, v4, v3, v6, v7, v8);
+    }
+
+    @Test
+    void doTailSwap() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v4 = new TestdataListValue("4");
+        TestdataListValue v5 = new TestdataListValue("5");
+        TestdataListValue v6 = new TestdataListValue("6");
+        TestdataListValue v7 = new TestdataListValue("7");
+        TestdataListValue v8 = new TestdataListValue("8");
+        TestdataListValue v9 = new TestdataListValue("9");
+        TestdataListEntity e1 = TestdataListEntity.createWithValues("e1", v1, v2, v3, v4);
+        TestdataListEntity e2 = TestdataListEntity.createWithValues("e2", v5, v6, v7, v8, v9);
+
+        // 2-Opt((v2, v3), (v6, v7))
+        TwoOptListMove<TestdataListSolution> move = new TwoOptListMove<>(variableDescriptor,
+                e1, e2, 2, 2);
+        AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v7, v8, v9);
+        assertThat(e2.getValueList()).containsExactly(v5, v6, v3, v4);
+
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 2, 4);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 2, 5);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e2, 2, 5);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e2, 2, 4);
+        verify(scoreDirector).triggerVariableListeners();
+
+        undoMove.doMoveOnly(scoreDirector);
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4);
+        assertThat(e2.getValueList()).containsExactly(v5, v6, v7, v8, v9);
     }
 
     @Test
@@ -66,8 +97,7 @@ class TwoOptListMoveTest {
 
         // 2-Opt((v6, v2), (v7, v3))
         TwoOptListMove<TestdataListSolution> move = new TwoOptListMove<>(variableDescriptor,
-                scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor)),
-                e1, v2, v3);
+                e1, e1, 6, 2);
         AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v8, v1, v2, v3, v4, v5, v6, v7);
 
@@ -92,8 +122,7 @@ class TwoOptListMoveTest {
 
         // 2-Opt((v4, v1), (v5, v2))
         TwoOptListMove<TestdataListSolution> move = new TwoOptListMove<>(variableDescriptor,
-                scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor)),
-                e1, v1, v2);
+                e1, e1, 4, 1);
         AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v5, v6, v7, v1, v2, v3, v4);
 
@@ -118,10 +147,9 @@ class TwoOptListMoveTest {
 
         // 2-Opt((v4, v1), (v5, v2))
         TwoOptListMove<TestdataListSolution> move = new TwoOptListMove<>(variableDescriptor,
-                scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor)),
-                e1, v3, v4);
+                e1, e1, 2, 1);
         AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
-        assertThat(e1.getValueList()).containsExactly(v2, v3, v4, v5, v6, v7, v1);
+        assertThat(e1.getValueList()).containsExactly(v2, v3, v6, v5, v4, v7, v1);
 
         verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 0, 7);
         verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 0, 7);
@@ -153,18 +181,16 @@ class TwoOptListMoveTest {
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
 
         assertSameProperties(
-                destinationE1, destinationV2, destinationV1, destinationV1, destinationV2,
-                new TwoOptListMove<>(variableDescriptor, indexVariableSupply, e1, v2, v1, v1, v2)
+                destinationE1, 0, 1,
+                new TwoOptListMove<>(variableDescriptor, e1, e1, 0, 1)
                         .rebase(destinationScoreDirector));
     }
 
     static void assertSameProperties(
-            Object destinationEntity, Object startV1, Object destinationV1, Object startV2, Object destinationV2,
+            Object destinationEntity, int destinationV1, int destinationV2,
             TwoOptListMove<?> move) {
-        assertThat(move.getEntity()).isSameAs(destinationEntity);
-        assertThat(move.getFirstEdgeStartpoint()).isSameAs(startV1);
-        assertThat(move.getFirstEdgeEndpoint()).isSameAs(destinationV1);
-        assertThat(move.getSecondEdgeStartpoint()).isEqualTo(startV2);
-        assertThat(move.getSecondEdgeEndpoint()).isSameAs(destinationV2);
+        assertThat(move.getFirstEntity()).isSameAs(destinationEntity);
+        assertThat(move.getFirstEdgeEndpoint()).isEqualTo(destinationV1);
+        assertThat(move.getSecondEdgeEndpoint()).isEqualTo(destinationV2);
     }
 }

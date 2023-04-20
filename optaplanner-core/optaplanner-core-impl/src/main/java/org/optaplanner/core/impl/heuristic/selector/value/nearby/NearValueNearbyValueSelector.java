@@ -109,5 +109,4 @@ public final class NearValueNearbyValueSelector<Solution_>
         // It must include the origin entity too
         return childSelector.endingIterator(entity);
     }
-
 }
