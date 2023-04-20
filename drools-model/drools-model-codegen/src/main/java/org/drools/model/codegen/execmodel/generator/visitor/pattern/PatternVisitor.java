@@ -59,6 +59,7 @@ public class PatternVisitor {
         Class<?> patternType;
         try {
             patternType = context.getTypeResolver().resolveType(className);
+            packageModel.addOtnsClass(patternType);
         } catch (ClassNotFoundException e) {
             context.addCompilationError( new InvalidExpressionErrorResult( "Unable to find class: " + className ) );
             return () -> { };

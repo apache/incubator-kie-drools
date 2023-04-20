@@ -17,12 +17,15 @@ package org.drools.model.codegen.project;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.drl.extensions.DecisionTableFactory;
+import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.PackageModelWriter;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +46,12 @@ public class RuleCodegen {
     }
 
     private final Collection<Resource> resources;
+    private Collection<PackageModel> packageModels;
+    private Collection<KieBaseModel> kmoduleKieBaseModels;
 
     private boolean hotReloadMode = false;
     private final boolean decisionTableSupported;
+
 
     private RuleCodegen(DroolsModelBuildContext context, Collection<Resource> resources) {
         Objects.requireNonNull(context, "context cannot be null");
@@ -70,11 +76,13 @@ public class RuleCodegen {
             KieSessionModelBuilder kieSessionModelBuilder = new KieSessionModelBuilder(context(),
                     droolsModelBuilder.packageSources());
             generatedFiles.addAll(kieSessionModelBuilder.generate());
+            this.kmoduleKieBaseModels = kieSessionModelBuilder.getKieBaseModels().values();
         }
 
         if (LOGGER.isDebugEnabled()) {
             generatedFiles.stream().forEach(genFile -> LOGGER.debug(genFile.toStringWithContent()));
         }
+        this.packageModels = droolsModelBuilder.getPackageModels();
 
         return generatedFiles;
     }
@@ -101,5 +109,13 @@ public class RuleCodegen {
     public RuleCodegen withHotReloadMode() {
         hotReloadMode = true;
         return this;
+    }
+    
+    public Collection<PackageModel> getPackageModels() {
+        return packageModels;
+    }
+    
+    public Collection<KieBaseModel> getKmoduleKieBaseModels() {
+        return kmoduleKieBaseModels;
     }
 }

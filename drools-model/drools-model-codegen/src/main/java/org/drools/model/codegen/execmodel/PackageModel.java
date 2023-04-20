@@ -153,6 +153,8 @@ public class PackageModel {
 
     private final Set<Class<?>> domainClasses = new HashSet<>();
     private final Map<Class<?>, ClassDefinition> classDefinitionsMap = new HashMap<>();
+    
+    private final Set<Class<?>> otnsClasses = new HashSet<>();
 
     private final List<Expression> typeMetaDataExpressions = new ArrayList<>();
 
@@ -924,6 +926,14 @@ public class PackageModel {
         ClassDefinition classDef = new ClassDefinition(domainClass);
         TypeDeclarationUtils.processModifiedProps(domainClass, classDef);
         return classDef;
+    }
+    
+    public boolean addOtnsClass(Class<?> clazz) {
+        return otnsClasses.add(clazz);
+    }
+    
+    public Set<Class<?>> getOtnsClasses() {
+        return otnsClasses;
     }
 
     public String getDomainClassesMetadataSource() {

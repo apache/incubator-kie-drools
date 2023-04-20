@@ -18,6 +18,7 @@ package org.drools.model.codegen.project;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,10 @@ public class KieSessionModelBuilder {
             modelsByPackage.put(pkgSources.getPackageName(), pkgSources.getPackageName() + "." + pkgSources.getRulesFileName());
         }
         return modelsByPackage;
+    }
+    
+    public Map<String, KieBaseModel> getKieBaseModels() {
+        return Collections.unmodifiableMap(kieBaseModels);
     }
 
 }

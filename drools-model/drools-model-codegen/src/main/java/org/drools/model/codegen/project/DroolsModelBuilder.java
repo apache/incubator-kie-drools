@@ -60,6 +60,7 @@ public class DroolsModelBuilder {
     public static final ReleaseIdImpl DUMMY_RELEASE_ID = new ReleaseIdImpl("dummy:dummy:0.0.0");
     private static final Logger LOGGER = LoggerFactory.getLogger(DroolsModelBuilder.class);
     private Collection<CodegenPackageSources> codegenPackageSources;
+    private Collection<PackageModel> packageModels;
 
     private final Collection<Resource> resources;
     private final boolean decisionTableSupported;
@@ -130,6 +131,7 @@ public class DroolsModelBuilder {
         }
 
         this.codegenPackageSources = compiler.getPackageSources();
+        this.packageModels = compiler.getPackageModels();
     }
 
     public boolean hasRuleUnits() {
@@ -175,6 +177,10 @@ public class DroolsModelBuilder {
 
     public Collection<CodegenPackageSources> packageSources() {
         return this.codegenPackageSources;
+    }
+    
+    public Collection<PackageModel> getPackageModels() {
+        return this.packageModels;
     }
 
     private void checkDependencyTableSupport() {
