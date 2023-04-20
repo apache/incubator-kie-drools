@@ -154,6 +154,10 @@ public class ExplicitCanonicalModelCompiler<T extends PackageSources> {
     public Collection<T> getPackageSources() {
         return packageSourceManager.getPackageSources();
     }
+    
+    public Collection<PackageModel> getPackageModels() {
+        return packageModelManager.values();
+    }
 
     public ExplicitCanonicalModelCompiler<T> setContext(DroolsModelBuildContext context) {
         this.context = context;

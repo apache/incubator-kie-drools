@@ -102,6 +102,28 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <id>default-test</id>
+                    <phase>test</phase>
+                    <goals>
+                      <goal>test</goal>
+                    </goals>
+                    <configuration>
+                      <systemPropertyVariables>
+                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                      </systemPropertyVariables>
+                    </configuration>
+                  </execution>
+                </executions>
+                <configuration>
+                  <systemPropertyVariables>
+                    <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                  </systemPropertyVariables>
+                </configuration>
+              </plugin>
         </plugins>
     </build>
 </project>
