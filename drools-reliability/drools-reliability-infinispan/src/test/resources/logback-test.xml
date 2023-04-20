@@ -10,6 +10,8 @@
   <logger name="org.kie" level="warn"/>
   <logger name="org.drools" level="warn"/>
   <logger name="org.drools.reliability" level="info"/>
+<!--  <logger name="org.infinispan.protostream" level="debug"/>-->
+<!--  <logger name="org.infinispan.commons.marshall" level="debug"/>-->
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />

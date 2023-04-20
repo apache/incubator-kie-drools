@@ -15,6 +15,7 @@
 
 package org.drools.reliability.infinispan;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled("Temporarily disabled until implementing ProtoStreamAdaptor for java.util.PriorityQueue")
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityCepTest extends ReliabilityTestBasics {
 

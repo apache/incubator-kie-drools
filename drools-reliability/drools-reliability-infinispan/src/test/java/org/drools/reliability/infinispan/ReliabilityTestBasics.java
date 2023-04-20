@@ -77,6 +77,7 @@ public abstract class ReliabilityTestBasics {
     @AfterEach
     public void tearDown() {
         if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
+            StorageManagerFactory.get().getStorageManager().removeAllSessionStorages();
             StorageManagerFactory.get().getStorageManager().close(); // close remoteCacheManager
             container.stop(); // stop remote infinispan
         } else {
