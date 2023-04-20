@@ -4,7 +4,6 @@ import org.kie.jenkins.MavenCommand
 
 changeAuthor = env.ghprbAuthorRepoGitUrl ? util.getGroup(env.ghprbAuthorRepoGitUrl) : (env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR)
 changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
-changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
 
 pipeline {
     agent {
@@ -30,8 +29,6 @@ pipeline {
                     dir(getRepoName()) {
                         checkout(githubscm.resolveRepository(getRepoName(), changeAuthor, changeBranch, false))
                         // need to manually checkout branch since on a detached branch after checkout command
-                        // sh "git fetch origin"
-                        // sh "git checkout origin/${changeTarget} -b ${changeTarget}"
                         sh "git checkout ${changeBranch}"
                     }
                 }
