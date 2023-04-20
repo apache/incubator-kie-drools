@@ -106,7 +106,8 @@ If something goes wrong, the author will be notified and at this point a manual 
 > **NOTE**: this automated backporting is triggered whenever a pull request on `main` branch is labeled or closed, but both conditions must be satisfied to get the new PR created.
 </details>
 
-<details>
+<!-- TODO to uncomment if activating the quarkus-3 rewrite PR job -->
+<!-- <details>
 <summary>
 Quarkus-3 PR check is failing ... what to do ?
 </summary>
@@ -120,4 +121,4 @@ jenkins rewrite quarkus-3
 and it should, after some minutes (~20/30min) apply a commit on the PR with the patch regenerated.
 
 Other patches were generated manually. If any of it fails, you will need to manually update it... and push your changes.
-</details>
+</details> -->
