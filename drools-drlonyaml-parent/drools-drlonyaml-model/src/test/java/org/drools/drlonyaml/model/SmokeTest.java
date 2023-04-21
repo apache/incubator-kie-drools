@@ -36,15 +36,14 @@ public class SmokeTest {
         mapper = new ObjectMapper(yamlFactory);
     }
 
-    private void assertDrlToYamlAndBack(String filename) throws IOException, URISyntaxException, DroolsParserException,
-            StreamWriteException, DatabindException, JsonProcessingException, JsonMappingException {
+    private void assertDrlToYamlAndBack(String filename) throws Exception {
         String content = Files.readString(Paths.get(this.getClass().getResource(filename).toURI()));
         PackageDescr pkgDescr = drlParser.parse(new StringReader(content));
         Package model = Package.from(pkgDescr);
         StringWriter writer = new StringWriter();
         mapper.writeValue(writer, model);
         final String yaml = writer.toString();
-        LOG.info("{}", yaml);
+        LOG.debug("{}", yaml);
         writer.close();
         final Package deserPackage = mapper.readValue(yaml, Package.class);
         assertThat(deserPackage).usingRecursiveComparison()
@@ -113,16 +112,16 @@ public class SmokeTest {
     
     @Test
     public void smokeTestFromYAML1() throws Exception {
-        String content = Files.readString(Paths.get(this.getClass().getResource("/yamlfirst_smoke1.yml").toURI()));
+        String content = Files.readString(Paths.get(this.getClass().getResource("/smoketests/yamlfirst_smoke1.yml").toURI()));
         Package result = mapper.readValue(content, Package.class);
-        LOG.info("{}", result);
+        LOG.debug("{}", result);
     }
     
     @Ignore("additional RHS types not supported.")
     @Test
     public void smokeTestFromYAML2() throws Exception {
-        String content = Files.readString(Paths.get(this.getClass().getResource("/yamlfirst_smoke2.yml").toURI()));
+        String content = Files.readString(Paths.get(this.getClass().getResource("/smoketests/yamlfirst_smoke2.yml").toURI()));
         Package result = mapper.readValue(content, Package.class);
-        LOG.info("{}", result);
+        LOG.debug("{}", result);
     }
 }
