@@ -31,10 +31,10 @@ recipeList:
   - org.optaplanner.migration.jakarta.JakartaJsonMigrationRecipe
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.org.springframework
-      newValue: 6.0.3
+      newValue: 6.0.8
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.org.springframework.boot
-      newValue: 3.0.1
+      newValue: 3.0.5
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.jaxb2.plugin
       newValue: 3.1.0
