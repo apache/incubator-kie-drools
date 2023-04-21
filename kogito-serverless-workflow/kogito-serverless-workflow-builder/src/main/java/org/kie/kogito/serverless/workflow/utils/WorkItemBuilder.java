@@ -32,7 +32,6 @@ import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionParametersFactorySupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ObjectResolverSupplier;
-import org.kogito.workitem.rest.RestWorkItemHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -42,6 +41,8 @@ import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionRef;
 
 public abstract class WorkItemBuilder {
+
+    private static final String RESULT = "Result";
 
     protected <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> addFunctionArgs(Workflow workflow, WorkItemNodeFactory<T> node, FunctionRef functionRef) {
         JsonNode functionArgs = functionRef.getArguments();
@@ -70,7 +71,7 @@ public abstract class WorkItemBuilder {
             String outputVar) {
         return embeddedSubProcess.workItemNode(parserContext.newId())
                 .inMapping(inputVar, SWFConstants.MODEL_WORKFLOW_VAR)
-                .outMapping(RestWorkItemHandler.RESULT, outputVar);
+                .outMapping(RESULT, outputVar);
     }
 
     protected final void processArgs(Workflow workflow, WorkItemNodeFactory<?> workItemFactory,

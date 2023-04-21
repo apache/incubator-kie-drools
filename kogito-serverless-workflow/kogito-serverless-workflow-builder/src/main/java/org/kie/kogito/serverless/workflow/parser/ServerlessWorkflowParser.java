@@ -17,14 +17,10 @@ package org.kie.kogito.serverless.workflow.parser;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.eclipse.microprofile.openapi.OASFactory;
-import org.eclipse.microprofile.openapi.models.tags.Tag;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
@@ -32,6 +28,7 @@ import org.jbpm.workflow.core.WorkflowModelValidator;
 import org.kie.kogito.codegen.api.GeneratedInfo;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.extensions.OutputSchema;
@@ -132,9 +129,13 @@ public class ServerlessWorkflowParser {
             }
         }
 
-        Collection<Tag> tags = getTags(workflow);
-        if (!tags.isEmpty()) {
+        Collection<String> tags = workflow.getAnnotations();
+        if (tags != null && !tags.isEmpty()) {
             factory.metaData(Metadata.TAGS, tags);
+        }
+        String description = workflow.getDescription();
+        if (!ConversionUtils.isEmpty(description)) {
+            factory.metaData(Metadata.DESCRIPTION, description);
         }
         return new GeneratedInfo<>(factory.validate().getProcess(), parserContext.generatedFiles());
     }
@@ -145,21 +146,6 @@ public class ServerlessWorkflowParser {
             processResourceFile(workflow, parserContext, s.getSchema());
             return new JsonSchemaValidatorSupplier(s.getSchema(), s.isFailOnValidationErrors());
         });
-    }
-
-    private static Collection<Tag> getTags(Workflow workflow) {
-        Collection<Tag> tags = new ArrayList<>();
-        if (workflow.getAnnotations() != null && !workflow.getAnnotations().isEmpty()) {
-            for (String annotation : workflow.getAnnotations()) {
-                tags.add(OASFactory.createObject(Tag.class).name(annotation));
-            }
-        }
-        if (workflow.getDescription() != null) {
-            tags.add(OASFactory.createObject(Tag.class)
-                    .name(workflow.getId())
-                    .description(workflow.getDescription()));
-        }
-        return Collections.unmodifiableCollection(tags);
     }
 
     public GeneratedInfo<KogitoWorkflowProcess> getProcessInfo() {

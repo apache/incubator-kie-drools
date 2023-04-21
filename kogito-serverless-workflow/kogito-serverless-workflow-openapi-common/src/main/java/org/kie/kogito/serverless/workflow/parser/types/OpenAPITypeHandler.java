@@ -49,5 +49,4 @@ public abstract class OpenAPITypeHandler extends WorkItemTypeHandler {
     public boolean isCustom() {
         return false;
     }
-
 }

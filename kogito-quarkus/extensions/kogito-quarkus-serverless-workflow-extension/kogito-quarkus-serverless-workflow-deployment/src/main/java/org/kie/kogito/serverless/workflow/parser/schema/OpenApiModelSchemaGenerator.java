@@ -16,6 +16,8 @@
 
 package org.kie.kogito.serverless.workflow.parser.schema;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +31,13 @@ import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
+import org.eclipse.microprofile.openapi.models.tags.Tag;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.WorkflowModelValidator;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
-import org.kie.kogito.serverless.workflow.parser.SwaggerSchemaProvider;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.serverless.workflow.actions.JsonSchemaValidator;
 
 import io.smallrye.openapi.api.util.MergeUtil;
 
@@ -54,13 +59,22 @@ public final class OpenApiModelSchemaGenerator {
     public static Optional<OpenAPI> generateOpenAPIModelSchema(KogitoWorkflowProcess workflow) {
         if (workflow instanceof WorkflowProcess) {
             WorkflowProcess workflowProcess = (WorkflowProcess) workflow;
-            Optional<SwaggerSchemaProvider> inputSchemaSupplier = getSchemaSupplier(workflowProcess.getInputValidator());
-            Optional<SwaggerSchemaProvider> outputSchemaSupplier = getSchemaSupplier(workflowProcess.getOutputValidator());
-            if (inputSchemaSupplier.isPresent() || outputSchemaSupplier.isPresent()) {
+            Optional<Schema> inputSchemaSupplier = getSchema(workflowProcess.getInputValidator());
+            Optional<Schema> outputSchemaSupplier = getSchema(workflowProcess.getOutputValidator());
+            Map<String, Object> metadata = workflowProcess.getMetaData();
+            Collection<String> tags = (Collection<String>) metadata.get(Metadata.TAGS);
+            String description = (String) metadata.get(Metadata.DESCRIPTION);
+            if (inputSchemaSupplier.isPresent() || outputSchemaSupplier.isPresent() || tags != null || description != null) {
                 OpenAPI openAPI = OASFactory.createOpenAPI().openapi(workflow.getId() + '_' + "workflowmodelschema").components(OASFactory.createComponents());
-                inputSchemaSupplier.ifPresent(v -> openAPI.getComponents().addSchema(getInputSchemaName(workflow.getId()), v.getSchema()));
+                inputSchemaSupplier.ifPresent(v -> openAPI.getComponents().addSchema(getInputSchemaName(workflow.getId()), v));
                 outputSchemaSupplier.ifPresent(v -> openAPI.getComponents().addSchema(getOutputSchemaName(workflow.getId()),
-                        OASFactory.createSchema().addProperty("workflowdata", v.getSchema()).addProperty("id", ID_SCHEMA)));
+                        OASFactory.createSchema().addProperty("workflowdata", v).addProperty("id", ID_SCHEMA)));
+                if (tags != null) {
+                    tags.forEach(tag -> openAPI.addTag(OASFactory.createObject(Tag.class).name(tag)));
+                }
+                if (description != null) {
+                    openAPI.addTag(OASFactory.createObject(Tag.class).name(workflow.getId()).description(description));
+                }
                 return Optional.of(openAPI);
             }
         }
@@ -82,8 +96,16 @@ public final class OpenApiModelSchemaGenerator {
         }
     }
 
-    private static Optional<SwaggerSchemaProvider> getSchemaSupplier(Optional<WorkflowModelValidator> validator) {
-        return validator.filter(SwaggerSchemaProvider.class::isInstance).map(SwaggerSchemaProvider.class::cast);
+    private static Optional<Schema> getSchema(Optional<WorkflowModelValidator> validator) {
+        return validator.filter(JsonSchemaValidator.class::isInstance).map(JsonSchemaValidator.class::cast).map(OpenApiModelSchemaGenerator::getSchema);
+    }
+
+    private static Schema getSchema(JsonSchemaValidator validator) {
+        try {
+            return ObjectMapperFactory.get().readValue(validator.load().toString(), JsonSchemaImpl.class);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     private static String getInputSchemaName(String id) {

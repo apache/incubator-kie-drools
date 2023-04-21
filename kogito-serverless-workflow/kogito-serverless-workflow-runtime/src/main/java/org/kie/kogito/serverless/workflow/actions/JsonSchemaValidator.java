@@ -62,7 +62,7 @@ public class JsonSchemaValidator implements WorkflowModelValidator {
         }
     }
 
-    protected Schema load() throws IOException {
+    public Schema load() throws IOException {
         Schema result = schemaObject.get();
         if (result == null) {
             result = SchemaLoader.builder()
