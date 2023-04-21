@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 public class Package {
     @JsonInclude(Include.NON_EMPTY)
-    private String name;
+    private String name = ""; // default empty, consistent with DRL parser.
     @JsonInclude(Include.NON_EMPTY)
     private List<Import> imports = new ArrayList<>();
     private List<Rule> rules = new ArrayList<>();
