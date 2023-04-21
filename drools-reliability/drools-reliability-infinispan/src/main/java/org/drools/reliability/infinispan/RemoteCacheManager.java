@@ -35,9 +35,9 @@ public class RemoteCacheManager implements InfinispanCacheManager {
 
     static final RemoteCacheManager INSTANCE = new RemoteCacheManager();
 
-    private org.infinispan.client.hotrod.RemoteCacheManager remoteCacheManager;
+    protected org.infinispan.client.hotrod.RemoteCacheManager remoteCacheManager;
 
-    private RemoteCacheManager() {
+    protected RemoteCacheManager() {
     }
 
     @Override

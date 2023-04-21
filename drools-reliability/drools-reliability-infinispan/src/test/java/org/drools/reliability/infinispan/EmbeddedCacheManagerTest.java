@@ -48,7 +48,7 @@ class EmbeddedCacheManagerTest {
     }
 
     private static boolean isRemote() {
-        return "REMOTE".equalsIgnoreCase(getConfig(RELIABILITY_CACHE_MODE));
+        return ((TestableCacheManager)CacheManagerFactory.get().getCacheManager()).isRemote();
     }
 
     @Test

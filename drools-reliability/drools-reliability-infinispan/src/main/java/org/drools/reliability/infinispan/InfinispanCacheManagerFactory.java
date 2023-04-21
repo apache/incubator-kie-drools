@@ -27,6 +27,8 @@ public class InfinispanCacheManagerFactory implements CacheManagerFactory {
     public InfinispanCacheManagerFactory() {
         if ("REMOTE".equalsIgnoreCase(getConfig(RELIABILITY_CACHE_MODE))) {
             cacheManager = RemoteCacheManager.INSTANCE;
+        } else if ("REMOTE_FILE_STORE".equalsIgnoreCase(getConfig(RELIABILITY_CACHE_MODE))) {
+            cacheManager = RemoteFileStoreCacheManager.INSTANCE;
         } else {
             cacheManager = EmbeddedCacheManager.INSTANCE;
         }
