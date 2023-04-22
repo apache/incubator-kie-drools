@@ -134,10 +134,8 @@ public class RuleStatefulScenarioExecutableBuilderTest {
         verify(kieSessionFluentMock, times(3)).addCommand(commandArgumentCaptor.capture());
 
         List<ExecutableCommand<?>> allAddCommands = commandArgumentCaptor.getAllValues();
-        assertThat(allAddCommands.stream().map(Object::getClass).anyMatch(ValidateFactCommand.class::isAssignableFrom)).isTrue();
-        assertThat(allAddCommands.stream().map(Object::getClass).anyMatch(AddCoverageListenerCommand.class::isAssignableFrom)).isTrue();
-
-        assertThat(result.containsKey(RuleScenarioExecutableBuilder.COVERAGE_LISTENER)).isTrue();
+        assertThat(allAddCommands).anyMatch(x ->x instanceof ValidateFactCommand).anyMatch(x ->x instanceof AddCoverageListenerCommand);
+        assertThat(result).containsKey(RuleScenarioExecutableBuilder.COVERAGE_LISTENER);
         verify(kieSessionFluentMock, times(1)).out(eq(RULES_AVAILABLE));
     }
 }

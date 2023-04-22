@@ -48,21 +48,21 @@ public class ExpressionEvaluatorFactoryTest {
         ExpressionEvaluatorFactory ruleEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.RULE);
         ExpressionEvaluatorFactory dmnEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.DMN);
 
-        assertThat(ruleEvaluatorFactory.getOrCreate(simpleFMV) instanceof BaseExpressionEvaluator).isTrue();
-        assertThat(ruleEvaluatorFactory.getOrCreate(objectFMV) instanceof BaseExpressionEvaluator).isTrue();
-        assertThat(ruleEvaluatorFactory.getOrCreate(mvelFMV) instanceof MVELExpressionEvaluator).isTrue();
-        assertThat(ruleEvaluatorFactory.getOrCreate(mvelWithSpacesFMV) instanceof MVELExpressionEvaluator).isTrue();
-        assertThat(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionFMV) instanceof MVELExpressionEvaluator).isTrue();
-        assertThat(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionWithSpacesFMV) instanceof MVELExpressionEvaluator).isTrue();
-        assertThat(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionWitoutMVELEscapeSymbolFMV) instanceof BaseExpressionEvaluator).isTrue();
+        assertThat(ruleEvaluatorFactory.getOrCreate(simpleFMV)).isInstanceOf(BaseExpressionEvaluator.class);
+        assertThat(ruleEvaluatorFactory.getOrCreate(objectFMV)).isInstanceOf(BaseExpressionEvaluator.class);
+        assertThat(ruleEvaluatorFactory.getOrCreate(mvelFMV)).isInstanceOf(MVELExpressionEvaluator.class);
+        assertThat(ruleEvaluatorFactory.getOrCreate(mvelWithSpacesFMV)).isInstanceOf(MVELExpressionEvaluator.class);
+        assertThat(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionFMV)).isInstanceOf(MVELExpressionEvaluator.class);
+        assertThat(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionWithSpacesFMV)).isInstanceOf(MVELExpressionEvaluator.class);
+        assertThat(ruleEvaluatorFactory.getOrCreate(mvelCollectionExpressionWitoutMVELEscapeSymbolFMV)).isInstanceOf(BaseExpressionEvaluator.class);
 
-        assertThat(dmnEvaluatorFactory.getOrCreate(simpleFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
-        assertThat(dmnEvaluatorFactory.getOrCreate(objectFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
-        assertThat(dmnEvaluatorFactory.getOrCreate(mvelFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
-        assertThat(dmnEvaluatorFactory.getOrCreate(mvelWithSpacesFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
-        assertThat(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
-        assertThat(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionWithSpacesFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
-        assertThat(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionWitoutMVELEscapeSymbolFMV) instanceof DMNFeelExpressionEvaluator).isTrue();
+        assertThat(dmnEvaluatorFactory.getOrCreate(simpleFMV)).isInstanceOf(DMNFeelExpressionEvaluator.class);
+        assertThat(dmnEvaluatorFactory.getOrCreate(objectFMV)).isInstanceOf(DMNFeelExpressionEvaluator.class);
+        assertThat(dmnEvaluatorFactory.getOrCreate(mvelFMV)).isInstanceOf(DMNFeelExpressionEvaluator.class);
+        assertThat(dmnEvaluatorFactory.getOrCreate(mvelWithSpacesFMV)).isInstanceOf(DMNFeelExpressionEvaluator.class);
+        assertThat(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionFMV)).isInstanceOf(DMNFeelExpressionEvaluator.class);
+        assertThat(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionWithSpacesFMV)).isInstanceOf(DMNFeelExpressionEvaluator.class);
+        assertThat(dmnEvaluatorFactory.getOrCreate(mvelCollectionExpressionWitoutMVELEscapeSymbolFMV)).isInstanceOf(DMNFeelExpressionEvaluator.class);
     }
 
     @Test

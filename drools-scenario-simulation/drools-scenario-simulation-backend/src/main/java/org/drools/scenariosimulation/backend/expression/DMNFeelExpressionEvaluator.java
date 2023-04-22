@@ -18,7 +18,6 @@ package org.drools.scenariosimulation.backend.expression;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

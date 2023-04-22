@@ -15,8 +15,6 @@
  */
 package org.drools.scenariosimulation.backend.fluent;
 
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
@@ -27,18 +25,23 @@ public class CoverageAgendaListenerTest extends AbstractRuleCoverageTest {
 
     private final static String RULE_NAME = "rule1";
 
+    
+    @Test
+    public void constructor() {
+        CoverageAgendaListener coverageAgendaListener = new CoverageAgendaListener();
+
+        assertThat(coverageAgendaListener.getRuleExecuted()).isEmpty();
+        assertThat(coverageAgendaListener.getAuditsMessages()).isEmpty();
+    }
     @Test
     public void beforeMatchFired() {
         CoverageAgendaListener coverageAgendaListener = new CoverageAgendaListener();
-        assertThat(coverageAgendaListener.getRuleExecuted().isEmpty()).isTrue();
-        assertThat(coverageAgendaListener.getAuditsMessages().isEmpty()).isTrue();
+        
         BeforeMatchFiredEvent beforeMatchFiredEvent = createBeforeMatchFiredEventMock(RULE_NAME);
+        
         coverageAgendaListener.beforeMatchFired(beforeMatchFiredEvent);
-        Map<String, Integer> ruleExecuted = coverageAgendaListener.getRuleExecuted();
-        assertThat(ruleExecuted.size()).isEqualTo(1);
-        assertThat(ruleExecuted.get(RULE_NAME)).isEqualTo((Integer) 1);
-        List<String> auditMessages = coverageAgendaListener.getAuditsMessages();
-        assertThat(auditMessages.size()).isEqualTo(1);
-        assertThat(auditMessages.get(0)).isEqualTo(RULE_NAME);
+        
+        assertThat(coverageAgendaListener.getRuleExecuted()).hasSize(1).containsEntry(RULE_NAME, 1);
+        assertThat(coverageAgendaListener.getAuditsMessages()).hasSize(1).containsExactly(RULE_NAME);
     }
 }

@@ -38,25 +38,33 @@ public class ScenarioTest {
         factIdentifier = FactIdentifier.create("test fact", String.class.getCanonicalName());
         expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECT);
     }
+    
+    @Test
+    public void addFactMappingValue() {
+        FactMappingValue factMappingValue = scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
+        
+        Optional<FactMappingValue> retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
+        assertThat(retrieved).isPresent();
+        assertThat(factMappingValue.getRawValue()).isEqualTo("test value");
+    }
 
     @Test
-    public void removeFactMappingValueByIdentifiersTest() {
+    public void removeFactMappingValueByIdentifiers() {
         scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
-        Optional<FactMappingValue> retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertThat(retrieved.isPresent()).isTrue();
+
         scenario.removeFactMappingValueByIdentifiers(factIdentifier, expressionIdentifier);
-        retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertThat(retrieved.isPresent()).isFalse();
+
+        assertThat(scenario.getFactMappingValue(factIdentifier, expressionIdentifier)).isNotPresent();
     }
 
     @Test
     public void removeFactMappingValue() {
         scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
         Optional<FactMappingValue> retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertThat(retrieved.isPresent()).isTrue();
+
         scenario.removeFactMappingValue(retrieved.get());
-        retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertThat(retrieved.isPresent()).isFalse();
+
+        assertThat(scenario.getFactMappingValue(factIdentifier, expressionIdentifier)).isNotPresent();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -67,26 +75,52 @@ public class ScenarioTest {
     }
 
     @Test
-    public void getDescriptionTest() {
+    public void getDescription_initialDescriptionIsEmpty() {
         assertThat(scenario.getDescription()).isEqualTo("");
+    }
 
+    @Test
+    public void getDescription_descriptionIsSetToNullValue() {
+        String description = null;
+        scenario.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, description);
+        
+        assertThat(scenario.getDescription()).isEqualTo("");
+    }
+    
+    @Test
+    public void getDescription_descriptionIsSetToNonNullValue() {
         String description = "Test Description";
         scenario.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, description);
+        
         assertThat(scenario.getDescription()).isEqualTo(description);
+    }
 
+    @Test
+    public void setDescription_nullValue() {
         Scenario scenarioWithDescriptionNull = simulation.addData();
+
         scenarioWithDescriptionNull.setDescription(null);
+        
         assertThat(scenarioWithDescriptionNull.getDescription()).isEqualTo("");
     }
 
     @Test
+    public void getDescription3() {
+        Scenario scenarioWithDescriptionNull = simulation.addData();
+
+        scenarioWithDescriptionNull.setDescription("Test Description");
+        
+        assertThat(scenarioWithDescriptionNull.getDescription()).isEqualTo("Test Description");
+    }
+    
+    @Test
     public void addOrUpdateMappingValue() {
-        Object value1 = "Test 1";
         Object value2 = "Test 2";
-        FactMappingValue factMappingValue = scenario.addMappingValue(factIdentifier, expressionIdentifier, value1);
-        assertThat(value1).isEqualTo(factMappingValue.getRawValue());
+        FactMappingValue factMappingValue = scenario.addMappingValue(factIdentifier, expressionIdentifier, "Test 1");
+
         FactMappingValue factMappingValue1 = scenario.addOrUpdateMappingValue(factIdentifier, expressionIdentifier, value2);
+
         assertThat(factMappingValue1).isEqualTo(factMappingValue);
-        assertThat(value2).isEqualTo(factMappingValue1.getRawValue());
+        assertThat(factMappingValue1.getRawValue()).isEqualTo(value2);
     }
 }

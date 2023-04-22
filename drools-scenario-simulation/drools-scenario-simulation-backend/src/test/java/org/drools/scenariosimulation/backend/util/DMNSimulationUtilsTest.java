@@ -15,10 +15,7 @@
  */
 package org.drools.scenariosimulation.backend.util;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,14 +32,14 @@ public class DMNSimulationUtilsTest {
 
     @Test
     public void findDMNModel() {
-        List<String> pathToFind = Arrays.asList(new StringBuilder("to/find").reverse().toString().split("/"));
+        List<String> pathToFind = List.of(new StringBuilder("to/find").reverse().toString().split("/"));
 
-        List<DMNModel> models = Stream.of("this/should/not/match", "find", "something/to/find")
-                .map(this::createDMNModelMock).collect(Collectors.toList());
+        List<DMNModel> models = List.of(createDMNModelMock("this/should/not/match"), createDMNModelMock("find"), 
+        		createDMNModelMock("something/to/find"));
 
         DMNSimulationUtils.findDMNModel(models, pathToFind, 1);
 
-        List<String> impossibleToFind = Arrays.asList(new StringBuilder("not/find").reverse().toString().split("/"));
+        List<String> impossibleToFind = List.of(new StringBuilder("not/find").reverse().toString().split("/"));
 
         assertThatThrownBy(() -> DMNSimulationUtils.findDMNModel(models, impossibleToFind, 1))
                 .isInstanceOf(ImpossibleToFindDMNException.class)

@@ -47,10 +47,6 @@ public class FactIdentifierTest {
         commonGetClassNameWithoutPackage("test", "Test", "Test");
     }
 
-    private void commonGetClassNameWithoutPackage(String name, String className, String expectedClassName) {
-        FactIdentifier factIdentifier = FactIdentifier.create(name, className);
-        assertThat(factIdentifier.getClassNameWithoutPackage()).isEqualTo(expectedClassName);
-    }
 
     @Test
     public void getPackageWithoutClassName() {
@@ -71,5 +67,9 @@ public class FactIdentifierTest {
         FactIdentifier factIdentifier = FactIdentifier.create(name, className);
         assertThat(factIdentifier.getPackageWithoutClassName()).isEqualTo(expectedPackage);
     }
-    
+
+    private void commonGetClassNameWithoutPackage(String name, String className, String expectedClassName) {
+        FactIdentifier factIdentifier = FactIdentifier.create(name, className);
+        assertThat(factIdentifier.getClassNameWithoutPackage()).isEqualTo(expectedClassName);
+    }    
 }

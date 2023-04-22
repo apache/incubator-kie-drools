@@ -1,17 +1,15 @@
 package org.drools.scenariosimulation.backend.runner.model;
 
-import java.util.List;
-
-import org.drools.scenariosimulation.api.model.AuditLogLine;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.dmn.api.core.DMNDecisionResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.mockito.Mockito.mock;
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED;
 
 public class ScenarioResultMetadataTest {
 
@@ -28,27 +26,24 @@ public class ScenarioResultMetadataTest {
     }
 
     @Test
+    public void noLogLinesAtTheStart() {
+        assertThat(scenarioResultMetadata.getAuditLogLines()).isEmpty();
+    }
+
+    
+    @Test
     public void addAuditMessage() {
-        assertThat(scenarioResultMetadata.getAuditLogLines().isEmpty()).isTrue();
-        int index = 1;
-        String decisionName = "decisionName";
-        String result = DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED.toString();
-        scenarioResultMetadata.addAuditMessage(index, decisionName, result);
-        final List<AuditLogLine> retrieved = scenarioResultMetadata.getAuditLogLines();
-        assertThat(retrieved.size()).isEqualTo(1);
-        commonCheckAuditLogLine(retrieved.get(0), decisionName, result, null);
+        scenarioResultMetadata.addAuditMessage(1, "decisionName", SUCCEEDED.toString());
+        
+        assertThat(scenarioResultMetadata.getAuditLogLines()).hasSize(1);
+        commonCheckAuditLogLine(scenarioResultMetadata.getAuditLogLines().get(0), "decisionName", SUCCEEDED.toString());
     }
 
     @Test
     public void addAuditMessageWithErrorMessage() {
-        assertThat(scenarioResultMetadata.getAuditLogLines().isEmpty()).isTrue();
-        int index = 1;
-        String decisionName = "decisionName";
-        String result =  DMNDecisionResult.DecisionEvaluationStatus.FAILED.toString();
-        String message = "Message";
-        scenarioResultMetadata.addAuditMessage(index, decisionName, result, message);
-        final List<AuditLogLine> retrieved = scenarioResultMetadata.getAuditLogLines();
-        assertThat(retrieved.size()).isEqualTo(1);
-        commonCheckAuditLogLine(retrieved.get(0), decisionName, result, message);
+        scenarioResultMetadata.addAuditMessage(1, "decisionName", FAILED.toString(), "Message");
+        
+        assertThat(scenarioResultMetadata.getAuditLogLines()).hasSize(1);
+        commonCheckAuditLogLine(scenarioResultMetadata.getAuditLogLines().get(0), "decisionName", FAILED.toString(), "Message");
     }
 }

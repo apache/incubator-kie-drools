@@ -42,28 +42,28 @@ public class ScenarioSimulationSharedUtilsTest {
 
     @Test
     public void isCollectionOrMap() {
-        assertThat(listValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollectionOrMap)).isTrue();
-        assertThat(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollectionOrMap)).isTrue();
+        assertThat(listValues).allMatch(ScenarioSimulationSharedUtils::isCollectionOrMap);
+        assertThat(mapValues).allMatch(ScenarioSimulationSharedUtils::isCollectionOrMap);
         assertThat(ScenarioSimulationSharedUtils.isCollectionOrMap(Collection.class.getCanonicalName())).isTrue();
     }
 
     @Test
     public void isCollection() {
-        assertThat(listValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollection)).isTrue();
-        assertThat(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollection)).isFalse();
+        assertThat(listValues).allMatch(ScenarioSimulationSharedUtils::isCollection);
+        assertThat(mapValues).noneMatch(ScenarioSimulationSharedUtils::isCollection);
         assertThat(ScenarioSimulationSharedUtils.isCollectionOrMap(Collection.class.getCanonicalName())).isTrue();
     }
 
     @Test
     public void isList() {
-        assertThat(listValues.stream().allMatch(ScenarioSimulationSharedUtils::isList)).isTrue();
-        assertThat(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isList)).isFalse();
+        assertThat(listValues).allMatch(ScenarioSimulationSharedUtils::isList);
+        assertThat(mapValues).noneMatch(ScenarioSimulationSharedUtils::isList);
         assertThat(ScenarioSimulationSharedUtils.isList(Collection.class.getCanonicalName())).isFalse();
     }
 
     @Test
     public void isMap() {
-        assertThat(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isMap)).isTrue();
+        assertThat(mapValues).allMatch(ScenarioSimulationSharedUtils::isMap);
     }
 
     @Test

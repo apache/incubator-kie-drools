@@ -15,26 +15,21 @@
  */
 package org.drools.scenariosimulation.api.model;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.drools.scenariosimulation.api.model.FactMappingType.EXPECT;
+import static org.drools.scenariosimulation.api.model.FactMappingType.GIVEN;
 
 public class ScesimModelDescriptorTest {
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
-    private ScesimModelDescriptor scesimModelDescriptor;
+    private ScesimModelDescriptor modelDescriptor;
     private FactIdentifier factIdentifier;
     private ExpressionIdentifier expressionIdentifier;
     private FactIdentifier factIdentifier2;
@@ -42,198 +37,149 @@ public class ScesimModelDescriptorTest {
 
     @Before
     public void init() {
-        scesimModelDescriptor = new ScesimModelDescriptor();
+        modelDescriptor = new ScesimModelDescriptor();
         factIdentifier = FactIdentifier.create("test fact", String.class.getCanonicalName());
-        expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECT);
+        expressionIdentifier = ExpressionIdentifier.create("test expression", EXPECT);
         factIdentifier2 = FactIdentifier.create("test fact 2", Integer.class.getCanonicalName());
-        expressionIdentifier2 = ExpressionIdentifier.create("test expression 2", FactMappingType.GIVEN);
+        expressionIdentifier2 = ExpressionIdentifier.create("test expression 2", GIVEN);
     }
 
     @Test
     public void getFactIdentifiers() {
-        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        final Set<FactIdentifier> retrieved = scesimModelDescriptor.getFactIdentifiers();
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.size()).isEqualTo(1);
-        assertThat(retrieved.iterator().next()).isEqualTo(factIdentifier);
+        modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        
+        assertThat(modelDescriptor.getFactIdentifiers()).isNotNull().hasSize(1).containsExactly(factIdentifier);
     }
 
     @Test
-    public void addFactMappingByIndexAndFactMapping() {
+    public void addFactMapping_byIndexAndFactMapping() {
         FactMapping toClone = new FactMapping();
         toClone.setFactAlias("ALIAS");
         toClone.setExpressionAlias("EXPRESSION_ALIAS");
-        final FactMapping cloned = scesimModelDescriptor.addFactMapping(0, toClone);
+        
+        final FactMapping cloned = modelDescriptor.addFactMapping(0, toClone);
+        
         assertThat(cloned.getFactAlias()).isEqualTo(toClone.getFactAlias());
         assertThat(cloned.getExpressionAlias()).isEqualTo(toClone.getExpressionAlias());
     }
 
     @Test
-    public void addFactMappingByFactIdentifierAndExpressionIdentifier() {
-        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        scesimModelDescriptor.addFactMapping(factIdentifier2, expressionIdentifier2);
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(0).getFactAlias()).isEqualTo(factIdentifier.getName());
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(0).getFactIdentifier()).isEqualTo(factIdentifier);
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(0).getExpressionIdentifier()).isEqualTo(expressionIdentifier);
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(1).getFactAlias()).isEqualTo(factIdentifier2.getName());
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(1).getFactIdentifier()).isEqualTo(factIdentifier2);
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(1).getExpressionIdentifier()).isEqualTo(expressionIdentifier2);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addFactMappingByFactIdentifierAndExpressionIdentifierFail() {
-        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        // Should fail
-        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+    public void addFactMapping_byFactIdentifierAndExpressionIdentifier() {
+        modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        modelDescriptor.addFactMapping(factIdentifier2, expressionIdentifier2);
+        
+        assertThat(modelDescriptor.getFactMappingByIndex(0).getFactAlias()).isEqualTo(factIdentifier.getName());
+        assertThat(modelDescriptor.getFactMappingByIndex(0).getFactIdentifier()).isEqualTo(factIdentifier);
+        assertThat(modelDescriptor.getFactMappingByIndex(0).getExpressionIdentifier()).isEqualTo(expressionIdentifier);
+        assertThat(modelDescriptor.getFactMappingByIndex(1).getFactAlias()).isEqualTo(factIdentifier2.getName());
+        assertThat(modelDescriptor.getFactMappingByIndex(1).getFactIdentifier()).isEqualTo(factIdentifier2);
+        assertThat(modelDescriptor.getFactMappingByIndex(1).getExpressionIdentifier()).isEqualTo(expressionIdentifier2);
     }
 
     @Test
-    public void addFactMappingByIndexAndFactIdentifierAndExpressionIdentifier() {
-        scesimModelDescriptor.addFactMapping(0, factIdentifier, expressionIdentifier);
-        scesimModelDescriptor.addFactMapping(0, factIdentifier2, expressionIdentifier2);
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(1).getFactAlias()).isEqualTo(factIdentifier.getName());
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(1).getFactIdentifier()).isEqualTo(factIdentifier);
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(1).getExpressionIdentifier()).isEqualTo(expressionIdentifier);
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(0).getFactAlias()).isEqualTo(factIdentifier2.getName());
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(0).getFactIdentifier()).isEqualTo(factIdentifier2);
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(0).getExpressionIdentifier()).isEqualTo(expressionIdentifier2);
+    public void addFactMapping_byFactIdentifierAndExpressionIdentifier_fail() {
+        modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+
+        assertThatIllegalArgumentException().isThrownBy(() -> modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
+    public void addFactMapping_byIndexAndFactIdentifierAndExpressionIdentifier() {
+        modelDescriptor.addFactMapping(0, factIdentifier, expressionIdentifier);
+        modelDescriptor.addFactMapping(0, factIdentifier2, expressionIdentifier2);
+        
+        assertThat(modelDescriptor.getFactMappingByIndex(1).getFactAlias()).isEqualTo(factIdentifier.getName());
+        assertThat(modelDescriptor.getFactMappingByIndex(1).getFactIdentifier()).isEqualTo(factIdentifier);
+        assertThat(modelDescriptor.getFactMappingByIndex(1).getExpressionIdentifier()).isEqualTo(expressionIdentifier);
+        assertThat(modelDescriptor.getFactMappingByIndex(0).getFactAlias()).isEqualTo(factIdentifier2.getName());
+        assertThat(modelDescriptor.getFactMappingByIndex(0).getFactIdentifier()).isEqualTo(factIdentifier2);
+        assertThat(modelDescriptor.getFactMappingByIndex(0).getExpressionIdentifier()).isEqualTo(expressionIdentifier2);
+    }
+
+    @Test
     public void addFactMappingByIndexAndFactIdentifierAndExpressionIdentifierFail() {
-        // Should fail
-        scesimModelDescriptor.addFactMapping(1, factIdentifier, expressionIdentifier);
+        assertThatIllegalArgumentException().isThrownBy(() -> modelDescriptor.addFactMapping(1, factIdentifier, expressionIdentifier));
     }
 
     @Test
     public void removeFactMappingByIndex() {
-        int testingIndex = 0;
-        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        assertThat(scesimModelDescriptor.getFactMappingByIndex(testingIndex)).isNotNull();
-        scesimModelDescriptor.removeFactMappingByIndex(testingIndex);
-        expectedException.expect(IndexOutOfBoundsException.class);
-        scesimModelDescriptor.getFactMappingByIndex(testingIndex);
+        modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        
+        modelDescriptor.removeFactMappingByIndex(0);
+        
+        assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> modelDescriptor.getFactMappingByIndex(0));
     }
 
     @Test
     public void removeFactMapping() {
-        FactMapping retrieved = scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        assertThat(scesimModelDescriptor.getUnmodifiableFactMappings().contains(retrieved)).isTrue();
-        scesimModelDescriptor.removeFactMapping(retrieved);
-        assertThat(scesimModelDescriptor.getUnmodifiableFactMappings().contains(retrieved)).isFalse();
+        FactMapping retrieved = modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        
+        modelDescriptor.removeFactMapping(retrieved);
+        
+        assertThat(modelDescriptor.getUnmodifiableFactMappings()).doesNotContain(retrieved);
     }
 
     @Test
     public void getIndexByIdentifierTest() {
-        List<FactMapping> originalFactMappings = IntStream.range(0, 2).boxed()
-                .map(i -> scesimModelDescriptor
-                        .addFactMapping(FactIdentifier.create("test " + i, String.class.getCanonicalName()), this.expressionIdentifier)
-                ).collect(Collectors.toList());
+        FactMapping factMapping0 = modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        FactMapping factMapping1 = modelDescriptor.addFactMapping(factIdentifier2, expressionIdentifier);
         int indexToCheck = 0;
-        int indexRetrieved = scesimModelDescriptor.getIndexByIdentifier(originalFactMappings.get(indexToCheck).getFactIdentifier(), this.expressionIdentifier);
+        int indexRetrieved = modelDescriptor.getIndexByIdentifier(factMapping0.getFactIdentifier(), expressionIdentifier);
+        
         assertThat(indexRetrieved).isEqualTo(indexToCheck);
+        
         indexToCheck = 1;
-        indexRetrieved = scesimModelDescriptor.getIndexByIdentifier(originalFactMappings.get(indexToCheck).getFactIdentifier(), this.expressionIdentifier);
+        indexRetrieved = modelDescriptor.getIndexByIdentifier(factMapping1.getFactIdentifier(), expressionIdentifier);
+        
         assertThat(indexRetrieved).isEqualTo(indexToCheck);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void getIndexByIdentifierTestFail() {
-        IntStream.range(0, 2).forEach(i -> scesimModelDescriptor
-                .addFactMapping(FactIdentifier.create("test " + i, String.class.getCanonicalName()), this.expressionIdentifier));
         FactIdentifier notExisting = new FactIdentifier();
-        scesimModelDescriptor.getIndexByIdentifier(notExisting, this.expressionIdentifier);
+        
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> modelDescriptor.getIndexByIdentifier(notExisting, expressionIdentifier));
     }
 
     @Test
     public void getFactMappingsByFactName() {
-        IntStream.range(0, 2).forEach(i -> scesimModelDescriptor
-                .addFactMapping(FactIdentifier.create("test", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression " + i, FactMappingType.EXPECT)));
-        scesimModelDescriptor
-                .addFactMapping(FactIdentifier.create("TEST", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 2", FactMappingType.EXPECT));
-        scesimModelDescriptor
-                .addFactMapping(FactIdentifier.create("Test", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 3", FactMappingType.EXPECT));
-        scesimModelDescriptor
-                .addFactMapping(FactIdentifier.create("tEsT", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 4", FactMappingType.EXPECT));
-        final Stream<FactMapping> retrieved = scesimModelDescriptor.getFactMappingsByFactName("test");
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.count()).isEqualTo(5);
+        modelDescriptor.addFactMapping(FactIdentifier.create("test", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 0", EXPECT));
+        modelDescriptor.addFactMapping(FactIdentifier.create("test", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 1", EXPECT));
+        modelDescriptor.addFactMapping(FactIdentifier.create("TEST", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 2", EXPECT));
+        modelDescriptor.addFactMapping(FactIdentifier.create("Test", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 3", EXPECT));
+        modelDescriptor.addFactMapping(FactIdentifier.create("tEsT", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 4", EXPECT));
+        
+        final Stream<FactMapping> retrieved = modelDescriptor.getFactMappingsByFactName("test");
+        
+        assertThat(retrieved).isNotNull().hasSize(5);
     }
 
     @Test
     public void moveFactMappingTest() {
-        ExpressionIdentifier expressionIdentifier2 = ExpressionIdentifier.create("Test expression 2", FactMappingType.GIVEN);
-        ExpressionIdentifier expressionIdentifier3 = ExpressionIdentifier.create("Test expression 3", FactMappingType.GIVEN);
-        FactMapping factMapping1 = scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        FactMapping factMapping2 = scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier2);
-        FactMapping factMapping3 = scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier3);
-        List<FactMapping> factMappings = scesimModelDescriptor.getUnmodifiableFactMappings();
+        ExpressionIdentifier expressionIdentifier2 = ExpressionIdentifier.create("Test expression 2", GIVEN);
+        ExpressionIdentifier expressionIdentifier3 = ExpressionIdentifier.create("Test expression 3", GIVEN);
+        FactMapping factMapping1 = modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        FactMapping factMapping2 = modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier2);
+        FactMapping factMapping3 = modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier3);
 
-        assertThat(factMapping1).isEqualTo(factMappings.get(0));
-        assertThat(factMapping2).isEqualTo(factMappings.get(1));
-        assertThat(factMapping3).isEqualTo(factMappings.get(2));
+        assertThat(modelDescriptor.getUnmodifiableFactMappings()).containsExactly(factMapping1, factMapping2, factMapping3);
 
-        scesimModelDescriptor.moveFactMapping(0, 1);
+        modelDescriptor.moveFactMapping(0, 1);
 
-        factMappings = scesimModelDescriptor.getUnmodifiableFactMappings();
-        assertThat(factMapping2).isEqualTo(factMappings.get(0));
-        assertThat(factMapping1).isEqualTo(factMappings.get(1));
-        assertThat(factMapping3).isEqualTo(factMappings.get(2));
-
-        scesimModelDescriptor.moveFactMapping(2, 1);
-
-        factMappings = scesimModelDescriptor.getUnmodifiableFactMappings();
-        assertThat(factMapping2).isEqualTo(factMappings.get(0));
-        assertThat(factMapping3).isEqualTo(factMappings.get(1));
-        assertThat(factMapping1).isEqualTo(factMappings.get(2));
-
-        scesimModelDescriptor.moveFactMapping(2, 2);
-
-        factMappings = scesimModelDescriptor.getUnmodifiableFactMappings();
-        assertThat(factMapping2).isEqualTo(factMappings.get(0));
-        assertThat(factMapping3).isEqualTo(factMappings.get(1));
-        assertThat(factMapping1).isEqualTo(factMappings.get(2));
+        assertThat(modelDescriptor.getUnmodifiableFactMappings()).containsExactly(factMapping2, factMapping1, factMapping3);
     }
 
     @Test
-    public void moveFactMappingOldFailTest() {
-        ExpressionIdentifier expressionIdentifier2 = ExpressionIdentifier.create("Test expression 2", FactMappingType.GIVEN);
-        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier2);
+    public void moveFactMapping_failsOutsideBoundaries() {
+        ExpressionIdentifier expressionIdentifier2 = ExpressionIdentifier.create("Test expression 2", GIVEN);
+        modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier2);
+        
+        
+        assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> modelDescriptor.moveFactMapping(2, 0));
+        assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> modelDescriptor.moveFactMapping(-1, 0));
+        assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> modelDescriptor.moveFactMapping(0, 2));
+        assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> modelDescriptor.moveFactMapping(2, -1));
 
-        muteException(() -> {
-                          scesimModelDescriptor.moveFactMapping(2, 0);
-                          fail("Unexpected execution path");
-                      },
-                      IndexOutOfBoundsException.class);
-
-        muteException(() -> {
-                          scesimModelDescriptor.moveFactMapping(-1, 0);
-                          fail("Unexpected execution path");
-                      },
-                      IndexOutOfBoundsException.class);
-
-        muteException(() -> {
-                          scesimModelDescriptor.moveFactMapping(0, 2);
-                          fail("Unexpected execution path");
-                      },
-                      IndexOutOfBoundsException.class);
-
-        muteException(() -> {
-                          scesimModelDescriptor.moveFactMapping(0, -1);
-                          fail("Unexpected execution path");
-                      },
-                      IndexOutOfBoundsException.class);
-    }
-
-    private <T extends Throwable> void muteException(Runnable toBeExecuted, Class<T> expected) {
-        try {
-            toBeExecuted.run();
-        } catch (Throwable t) {
-            //noinspection NonJREEmulationClassesInClientCode
-            if (!t.getClass().isAssignableFrom(expected)) {
-                throw t;
-            }
-        }
     }
 }

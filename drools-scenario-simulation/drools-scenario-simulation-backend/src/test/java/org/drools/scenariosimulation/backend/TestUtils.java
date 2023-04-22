@@ -45,8 +45,11 @@ public class TestUtils {
                 .findFirst()
                 .orElse(null);
         assertThat(filePath).isNotNull();
+        
         File sourceFile = new File(filePath);
-        assertThat(sourceFile.exists()).isTrue();
+        
+        assertThat(sourceFile).exists();
+        
         return new String(Files.readAllBytes(sourceFile.toPath()));
     }
 
@@ -61,12 +64,16 @@ public class TestUtils {
         assertThat(toCheck).isNotNull();
         assertThat(toCheck.getDecisionOrRuleName()).isEqualTo(expectedDecisionOrRuleName);
         assertThat(toCheck.getResult()).isEqualTo(expectedResult);
-        if (expectedMessage == null) {
-            assertThat(toCheck.getMessage().isPresent()).isFalse();
-        } else {
-            assertThat(toCheck.getMessage().get()).isEqualTo(expectedMessage);
-        }
+        assertThat(toCheck.getMessage().get()).isEqualTo(expectedMessage);
     }
+    
+    public static void commonCheckAuditLogLine(AuditLogLine toCheck, String expectedDecisionOrRuleName, String expectedResult) {
+        assertThat(toCheck).isNotNull();
+        assertThat(toCheck.getDecisionOrRuleName()).isEqualTo(expectedDecisionOrRuleName);
+        assertThat(toCheck.getResult()).isEqualTo(expectedResult);
+        assertThat(toCheck.getMessage()).isNotPresent();
+    }
+    
 
     private static DMNMessage createDMNMessageMock(String text, Message.Level level) {
         DMNMessage dmnMessageMock = mock(DMNMessage.class);

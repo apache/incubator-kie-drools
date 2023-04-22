@@ -1,11 +1,12 @@
 package org.drools.scenariosimulation.api.model;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -13,20 +14,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractScesimModelTest {
 
     private final static int SCENARIO_DATA = 5;
     private final static int FACT_MAPPINGS = 3;
-    private AbstractScesimModel<Scenario> abstractScesimModelSpy;
+    private AbstractScesimModel<Scenario> model;
 
     @Before
     public void init() {
-        abstractScesimModelSpy = spy(new AbstractScesimModel<Scenario>() {
+        model = spy(new AbstractScesimModel<Scenario>() {
 
             @Override
-            public AbstractScesimModel cloneModel() {
+            public AbstractScesimModel<Scenario> cloneModel() {
                 return null;
             }
 
@@ -35,112 +35,116 @@ public class AbstractScesimModelTest {
                 return null;
             }
         });
-        IntStream.range(0, SCENARIO_DATA).forEach(index -> abstractScesimModelSpy.scesimData.add(getSpyScenario(index)));
-        IntStream.range(0, FACT_MAPPINGS).forEach(index -> abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().add(getSpyFactMapping()));
+        IntStream.range(0, SCENARIO_DATA).forEach(index -> model.scesimData.add(getSpyScenario(index)));
+        IntStream.range(0, FACT_MAPPINGS).forEach(index -> model.scesimModelDescriptor.getFactMappings().add(getSpyFactMapping()));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void getUnmodifiableData() {
-        final List<Scenario> retrieved = abstractScesimModelSpy.getUnmodifiableData();
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.size()).isEqualTo(SCENARIO_DATA);
-        retrieved.add(new Scenario());
+        assertThat(model.getUnmodifiableData()).isNotNull().hasSize(SCENARIO_DATA);
     }
 
     @Test
-    public void removeDataByIndex() {
-        final Scenario dataByIndex = abstractScesimModelSpy.getDataByIndex(3);
-        assertThat(abstractScesimModelSpy.scesimData.size()).isEqualTo(SCENARIO_DATA);
-        assertThat(abstractScesimModelSpy.scesimData.contains(dataByIndex)).isTrue();
-        abstractScesimModelSpy.removeDataByIndex(3);
-        assertThat(abstractScesimModelSpy.scesimData.size()).isEqualTo(SCENARIO_DATA - 1);
-        assertThat(abstractScesimModelSpy.scesimData.contains(dataByIndex)).isFalse();
-    }
-
-    @Test
-    public void removeData() {
-        final Scenario dataByIndex = abstractScesimModelSpy.getDataByIndex(3);
-        assertThat(abstractScesimModelSpy.scesimData.size()).isEqualTo(SCENARIO_DATA);
-        assertThat(abstractScesimModelSpy.scesimData.contains(dataByIndex)).isTrue();
-        abstractScesimModelSpy.removeData(dataByIndex);
-        assertThat(abstractScesimModelSpy.scesimData.size()).isEqualTo(SCENARIO_DATA - 1);
-        assertThat(abstractScesimModelSpy.scesimData.contains(dataByIndex)).isFalse();
+    public void getUnmodifiableData_isUnmodifiable() {
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> model.getUnmodifiableData().add(new Scenario()));
     }
 
     @Test
     public void getDataByIndex() {
-        final Scenario retrieved = abstractScesimModelSpy.getDataByIndex(3);
-        assertThat(retrieved).isNotNull();
+        final Scenario dataByIndex = model.getDataByIndex(3);
+         
+        assertThat(dataByIndex).isNotNull();
+        assertThat(model.scesimData).contains(dataByIndex);
+    }
+    
+    @Test
+    public void removeDataByIndex() {
+        final Scenario dataByIndex = model.getDataByIndex(3);
+        
+        model.removeDataByIndex(3);
+        
+        assertThat(model.scesimData).hasSize(SCENARIO_DATA - 1).doesNotContain(dataByIndex);
+    }
+
+    @Test
+    public void removeData() {
+        final Scenario dataByIndex = model.getDataByIndex(3);
+        
+        model.removeData(dataByIndex);
+        
+        assertThat(model.scesimData).hasSize(SCENARIO_DATA - 1).doesNotContain(dataByIndex);
     }
 
     @Test
     public void replaceData() {
-        assertThat(abstractScesimModelSpy.scesimData.size()).isEqualTo(SCENARIO_DATA);
-        final Scenario replaced = abstractScesimModelSpy.getDataByIndex(3);
+        final Scenario replaced = model.getDataByIndex(3);
         final Scenario replacement = new Scenario();
-        abstractScesimModelSpy.replaceData(3, replacement);
-        assertThat(abstractScesimModelSpy.scesimData.size()).isEqualTo(SCENARIO_DATA);
-        assertThat(abstractScesimModelSpy.scesimData.contains(replaced)).isFalse();
-        assertThat(abstractScesimModelSpy.scesimData.get(3)).isEqualTo(replacement);
+        
+        model.replaceData(3, replacement);
+        
+        assertThat(model.scesimData).hasSize(SCENARIO_DATA).doesNotContain(replaced);
+        assertThat(model.scesimData.get(3)).isEqualTo(replacement);
     }
-
+    
     @Test
     public void cloneData() {
-        assertThat(abstractScesimModelSpy.scesimData.size()).isEqualTo(SCENARIO_DATA);
-        final Scenario cloned = abstractScesimModelSpy.getDataByIndex(3);
-        final Scenario clone = abstractScesimModelSpy.cloneData(3, 4);
+        final Scenario cloned = model.getDataByIndex(3);
+        final Scenario clone = model.cloneData(3, 4);
+        
         assertThat(clone).isNotNull();
-        assertThat(abstractScesimModelSpy.scesimData.get(4)).isEqualTo(clone);
+        assertThat(model.scesimData.get(4)).isEqualTo(clone);
         assertThat(clone.getDescription()).isEqualTo(cloned.getDescription());
     }
 
     @Test
     public void clear() {
-        abstractScesimModelSpy.clear();
-        verify(abstractScesimModelSpy, times(1)).clearDatas();
+        model.clear();
+        
+        verify(model, times(1)).clearDatas();
     }
 
     @Test
     public void clearDatas() {
-        assertThat(abstractScesimModelSpy.scesimData.size()).isEqualTo(SCENARIO_DATA);
-        abstractScesimModelSpy.clearDatas();
-        assertThat(abstractScesimModelSpy.scesimData.isEmpty()).isTrue();
+        model.clearDatas();
+        
+        assertThat(model.scesimData).isEmpty();
     }
 
     @Test
     public void resetErrors() {
-        abstractScesimModelSpy.resetErrors();
-        abstractScesimModelSpy.scesimData.forEach(scesimData -> verify(scesimData, times(1)).resetErrors());
+        model.resetErrors();
+        
+        model.scesimData.forEach(scesimData -> verify(scesimData, times(1)).resetErrors());
     }
 
     @Test
     public void removeFactMappingByIndex() {
-        assertThat(abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().size()).isEqualTo(FACT_MAPPINGS);
-        final FactMapping factMappingByIndex = abstractScesimModelSpy.scesimModelDescriptor.getFactMappingByIndex(2);
-        abstractScesimModelSpy.removeFactMappingByIndex(2);
-        verify(abstractScesimModelSpy, times(1)).clearDatas(eq(factMappingByIndex));
-        assertThat(abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().size()).isEqualTo(FACT_MAPPINGS - 1);
-        assertThat(abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().contains(factMappingByIndex)).isFalse();
+        final FactMapping factMappingByIndex = model.scesimModelDescriptor.getFactMappingByIndex(2);
+        
+        model.removeFactMappingByIndex(2);
+        
+        verify(model, times(1)).clearDatas(eq(factMappingByIndex));
+        assertThat(model.scesimModelDescriptor.getFactMappings()).hasSize(FACT_MAPPINGS - 1).doesNotContain(factMappingByIndex);
     }
 
     @Test
     public void removeFactMapping() {
-        assertThat(abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().size()).isEqualTo(FACT_MAPPINGS);
-        final FactMapping factMappingByIndex = abstractScesimModelSpy.scesimModelDescriptor.getFactMappingByIndex(2);
-        abstractScesimModelSpy.removeFactMapping(factMappingByIndex);
-        verify(abstractScesimModelSpy, times(1)).clearDatas(eq(factMappingByIndex));
-        assertThat(abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().size()).isEqualTo(FACT_MAPPINGS - 1);
-        assertThat(abstractScesimModelSpy.scesimModelDescriptor.getFactMappings().contains(factMappingByIndex)).isFalse();
+        final FactMapping factMappingByIndex = model.scesimModelDescriptor.getFactMappingByIndex(2);
+        
+        model.removeFactMapping(factMappingByIndex);
+        
+        verify(model, times(1)).clearDatas(eq(factMappingByIndex));
+        assertThat(model.scesimModelDescriptor.getFactMappings()).hasSize(FACT_MAPPINGS - 1).doesNotContain(factMappingByIndex);
     }
 
     @Test
     public void clearDatasByFactMapping() {
-        final FactMapping factMappingByIndex = abstractScesimModelSpy.scesimModelDescriptor.getFactMappingByIndex(2);
-        abstractScesimModelSpy.clearDatas(factMappingByIndex);
+        final FactMapping factMappingByIndex = model.scesimModelDescriptor.getFactMappingByIndex(2);
+        model.clearDatas(factMappingByIndex);
         final FactIdentifier factIdentifier = factMappingByIndex.getFactIdentifier();
         final ExpressionIdentifier expressionIdentifier = factMappingByIndex.getExpressionIdentifier();
-        abstractScesimModelSpy.scesimData.forEach(scesimData ->
-                                                          verify(scesimData, times(1)).removeFactMappingValueByIdentifiers(eq(factIdentifier), eq(expressionIdentifier)));
+
+        model.scesimData.forEach(scesimData -> verify(scesimData, times(1)).removeFactMappingValueByIdentifiers(eq(factIdentifier), eq(expressionIdentifier)));
     }
 
     private Scenario getSpyScenario(int index) {

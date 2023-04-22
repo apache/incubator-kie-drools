@@ -75,11 +75,11 @@ public class ScenarioJunitActivatorTest {
 
     @Test
     public void getChildrenTest() throws InitializationError {
-        assertThat(getScenarioJunitActivator().getChildren().size()).isEqualTo(0);
+        assertThat(getScenarioJunitActivator().getChildren()).hasSize(0);
 
         settingsLocal.setSkipFromBuild(false);
 
-        assertThat(getScenarioJunitActivator().getChildren().size()).isEqualTo(1);
+        assertThat(getScenarioJunitActivator().getChildren()).hasSize(1);
     }
 
     @Test
