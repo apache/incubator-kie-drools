@@ -32,47 +32,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SelectExactMatcherNegateTest {
 
-    private int          amount;
     private Select<Item> select;
-    private Object       firstValue;
-    private Object       lastValue;
 
     private MultiMap<Value, Item, List<Item>> makeMap() {
         final MultiMap<Value, Item, List<Item>> itemKeyTreeMap = MultiMapFactory.make();
 
-        itemKeyTreeMap.put(new Value( null ),
-                new Item( null ));
-        itemKeyTreeMap.put(new Value( 0 ),
-                new Item( 0 ));
-        itemKeyTreeMap.put(new Value( 56 ),
-                new Item( 56 ));
-        itemKeyTreeMap.put(new Value( 100 ),
-                new Item( 100 ));
-        itemKeyTreeMap.put(new Value( 1200 ),
-                new Item( 1200 ));
+        itemKeyTreeMap.put(new Value(null), new Item(null));
+        itemKeyTreeMap.put(new Value(0), new Item(0));
+        itemKeyTreeMap.put(new Value(56), new Item(56));
+        itemKeyTreeMap.put(new Value(100), new Item(100));
+        itemKeyTreeMap.put(new Value(1200), new Item(1200));
         return itemKeyTreeMap;
-    }
-
-    public void initSelectExactMatcherNegateTest(final int amount,
-                                         final Object firstValue,
-                                         final Object lastValue,
-                                         final Matcher matcher) throws Exception {
-
-        this.firstValue = firstValue;
-        this.lastValue = lastValue;
-        this.amount = amount;
-        this.select = new Select<>( makeMap(),
-                matcher );
     }
 
     public static Collection<Object[]> testData() {
         return Arrays.asList(new Object[][]{
-                {5, null, 1200, new ExactMatcher( KeyDefinition.newKeyDefinition().withId("cost").build(),
+                {5, null, 1200, new ExactMatcher(KeyDefinition.newKeyDefinition().withId("cost").build(),
                         13,
-                        true )},
-                {4, 0, 1200, new ExactMatcher( KeyDefinition.newKeyDefinition().withId("cost").build(),
+                        true)},
+                {4, 0, 1200, new ExactMatcher(KeyDefinition.newKeyDefinition().withId("cost").build(),
                         null,
-                        true )},
+                        true)},
         });
     }
 
@@ -80,32 +60,24 @@ public class SelectExactMatcherNegateTest {
     @MethodSource("testData")
     @ParameterizedTest
     void testAll(final int amount, final Object firstValue, final Object lastValue, final Matcher matcher) throws Exception {
-        initSelectExactMatcherNegateTest(amount, firstValue, lastValue, matcher);
-        final Collection<Item> all = select.all();
-
-        assertThat(all.size()).isEqualTo(amount);
+        this.select = new Select<>(makeMap(), matcher);
+        
+        assertThat(select.all()).hasSize(amount);
     }
 
     @MethodSource("testData")
     @ParameterizedTest
     void testFirst(final int amount, final Object firstValue, final Object lastValue, final Matcher matcher) throws Exception {
-        initSelectExactMatcherNegateTest(amount, firstValue, lastValue, matcher);
+        this.select = new Select<>(makeMap(), matcher);
+        
         assertThat(select.first().cost).isEqualTo(firstValue);
     }
 
     @MethodSource("testData")
     @ParameterizedTest
     void testLast(final int amount, final Object firstValue, final Object lastValue, final Matcher matcher) throws Exception {
-        initSelectExactMatcherNegateTest(amount, firstValue, lastValue, matcher);
+        this.select = new Select<>(makeMap(), matcher);
+        
         assertThat(select.last().cost).isEqualTo(lastValue);
-    }
-
-    private class Item {
-
-        private Integer cost;
-
-        public Item(final Integer cost) {
-            this.cost = cost;
-        }
     }
 }

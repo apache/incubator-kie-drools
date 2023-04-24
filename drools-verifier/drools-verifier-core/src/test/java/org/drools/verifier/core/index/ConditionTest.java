@@ -29,38 +29,27 @@ import static org.mockito.Mockito.mock;
 
 public class ConditionTest {
 
-    private Condition condition;
+    private Condition<Integer> condition;
 
     @BeforeEach
-    public void setUp() throws
-                        Exception {
-        condition = new Condition(mock( Column.class ),
+    public void setUp() throws Exception {
+        condition = new Condition<>(mock(Column.class),
                                   ConditionSuperType.FIELD_CONDITION,
-                                  new Values(1 ),
-                                  new AnalyzerConfigurationMock() ) {
+                                  new Values<>(1),
+                                  new AnalyzerConfigurationMock()) {
 
         };
     }
 
     @Test
-    void valueSet() throws
-            Exception {
-        assertThat(condition.getValues()
-                .size()).isEqualTo(1);
-        assertThat(condition.getValues()
-                .iterator()
-                .next()).isEqualTo(1);
+    void valueSet() throws Exception {
+        assertThat(condition.getValues()).hasSize(1).containsExactly(1);
     }
 
     @Test
-    void changeValue() throws
-            Exception {
-        condition.setValue(new Values( 2 ));
+    void changeValue() throws Exception {
+        condition.setValue(new Values<>(2));
 
-        assertThat(condition.getValues()
-                .size()).isEqualTo(1);
-        assertThat(condition.getValues()
-                .iterator()
-                .next()).isEqualTo(2);
+        assertThat(condition.getValues()).hasSize(1).containsExactly(2);
     }
 }

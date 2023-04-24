@@ -52,7 +52,7 @@ public class ComparableWrapperTest {
         assertThat(one.compareTo(ten) < 0).isTrue();
         assertThat(one.compareTo(min) > 0).isTrue();
         assertThat(one.compareTo(max) < 0).isTrue();
-
+        
         assertThat(ten.compareTo(theNull) > 0).isTrue();
         assertThat(ten.compareTo(one) > 0).isTrue();
         assertThat(ten.compareTo(min) > 0).isTrue();

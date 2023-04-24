@@ -31,14 +31,12 @@ public class KeyTreeMapUUIDKeyTest {
     AnalyzerConfiguration configuration;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
         configuration = new AnalyzerConfigurationMock();
     }
 
     @Test
-    void testNoKey() throws
-            Exception {
+    void testNoKey() throws Exception {
         assertThrows(IllegalArgumentException.class, () -> {
             final KeyTreeMap<NoKey> map = new KeyTreeMap<>(UUIDKey.UNIQUE_UUID);
 
@@ -47,8 +45,7 @@ public class KeyTreeMapUUIDKeyTest {
     }
 
     @Test
-    void testTwoKeys() throws
-            Exception {
+    void testTwoKeys() throws Exception {
         assertThrows(IllegalArgumentException.class, () -> {
             final KeyTreeMap<TwoKeys> map = new KeyTreeMap<>(UUIDKey.UNIQUE_UUID);
 

@@ -1,4 +1,5 @@
 /*
+
  * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +17,6 @@
 
 package org.drools.verifier.core.checks.base;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,71 +50,52 @@ public class PairCheckStorageListTest {
     @BeforeEach
     public void setUp() throws Exception {
         pairCheckStorage = new PairCheckStorage();
-        pairCheckListOne = new PairCheckBundle(a,
-                                               b,
-                                               newMockList());
+        pairCheckListOne = new PairCheckBundle(a, b, newMockList());
         pairCheckStorage.add(pairCheckListOne);
-        pairCheckListTwo = new PairCheckBundle(b,
-                                               a,
-                                               newMockList());
+        pairCheckListTwo = new PairCheckBundle(b, a, newMockList());
         pairCheckStorage.add(pairCheckListTwo);
-        pairCheckStorage.add(new PairCheckBundle(a,
-                                                 c,
-                                                 newMockList()));
-        pairCheckStorage.add(new PairCheckBundle(c,
-                                                 a,
-                                                 newMockList()));
+        pairCheckStorage.add(new PairCheckBundle(a, c, newMockList()));
+        pairCheckStorage.add(new PairCheckBundle(c, a, newMockList()));
     }
 
     private List<Check> newMockList() {
-        final ArrayList<Check> checks = new ArrayList<>();
-        checks.add(mock(PairCheck.class));
-        return checks;
+        return List.of(mock(PairCheck.class));
     }
 
     @Test
     void getA() throws Exception {
-        final Collection<PairCheckBundle> pairCheckLists = this.pairCheckStorage.get(a);
-        assertThat(pairCheckLists.size()).isEqualTo(4);
-        assertThat(pairCheckLists.contains(pairCheckListOne)).isTrue();
-        assertThat(pairCheckLists.contains(pairCheckListTwo)).isTrue();
+        final Collection<PairCheckBundle> pairCheckLists = pairCheckStorage.get(a);
+        
+        assertThat(pairCheckLists).hasSize(4).contains(pairCheckListOne, pairCheckListTwo);
     }
 
     @Test
     void getB() throws Exception {
-        final Collection<PairCheckBundle> pairCheckLists = this.pairCheckStorage.get(b);
-        assertThat(pairCheckLists.size()).isEqualTo(2);
-        assertThat(pairCheckLists.contains(pairCheckListOne)).isTrue();
-        assertThat(pairCheckLists.contains(pairCheckListTwo)).isTrue();
+        final Collection<PairCheckBundle> pairCheckLists = pairCheckStorage.get(b);
+        
+        assertThat(pairCheckLists).hasSize(2).contains(pairCheckListOne, pairCheckListTwo);
     }
 
     @Test
     void removeB() throws Exception {
-        final Collection<PairCheckBundle> pairCheckLists = this.pairCheckStorage.remove(b);
-        assertThat(pairCheckLists.size()).isEqualTo(2);
-        assertThat(pairCheckLists.contains(pairCheckListOne)).isTrue();
-        assertThat(pairCheckLists.contains(pairCheckListTwo)).isTrue();
+        final Collection<PairCheckBundle> pairCheckLists = pairCheckStorage.remove(b);
+        
+        assertThat(pairCheckLists).hasSize(2).contains(pairCheckListOne, pairCheckListTwo);
+        assertThat(pairCheckStorage.get(b)).isEmpty();
 
-        assertThat(this.pairCheckStorage.get(b)
-                .isEmpty()).isTrue();
-
-        final Collection<PairCheckBundle> pairChecksForAList = this.pairCheckStorage.get(a);
-        assertThat(pairChecksForAList.size()).isEqualTo(2);
-        assertThat(pairChecksForAList.contains(pairCheckListOne)).isFalse();
-        assertThat(pairChecksForAList.contains(pairCheckListTwo)).isFalse();
+        final Collection<PairCheckBundle> pairChecksForAList = pairCheckStorage.get(a);
+        
+        assertThat(pairChecksForAList).hasSize(2).doesNotContain(pairCheckListOne, pairCheckListTwo);
     }
 
     @Test
     void removeA() throws Exception {
-        final Collection<PairCheckBundle> pairCheckLists = this.pairCheckStorage.remove(a);
+        final Collection<PairCheckBundle> pairCheckLists = pairCheckStorage.remove(a);
 
-        assertThat(pairCheckLists.size()).isEqualTo(4);
+        assertThat(pairCheckLists).hasSize(4);
 
-        assertThat(this.pairCheckStorage.get(a)
-                .isEmpty()).isTrue();
-        assertThat(this.pairCheckStorage.get(b)
-                .isEmpty()).isTrue();
-        assertThat(this.pairCheckStorage.get(c)
-                .isEmpty()).isTrue();
+        assertThat(pairCheckStorage.get(a)).isEmpty();
+        assertThat(pairCheckStorage.get(b)).isEmpty();
+        assertThat(pairCheckStorage.get(c)).isEmpty();
     }
 }

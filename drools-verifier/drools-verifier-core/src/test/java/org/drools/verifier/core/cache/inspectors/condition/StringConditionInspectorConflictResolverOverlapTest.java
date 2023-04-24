@@ -19,230 +19,150 @@ package org.drools.verifier.core.cache.inspectors.condition;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.index.keys.Values;
-import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
-import org.drools.verifier.core.index.model.FieldCondition;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.drools.verifier.core.cache.inspectors.condition.ConditionInspectorUtils.getStringCondition;
 
+@ExtendWith(MockitoExtension.class)
 public class StringConditionInspectorConflictResolverOverlapTest {
 
-    private Values value1;
-    private Values value2;
-    private String operator1;
-    private String operator2;
-    private boolean conflictExpected;
-    private boolean overlapExpected;
+	@Mock
     private Field field;
-
-    public void initStringConditionInspectorConflictResolverOverlapTest(String operator1,
-                                                               Values value1,
-                                                               String operator2,
-                                                               Values value2,
-                                                               boolean conflictExpected,
-                                                               boolean overlapExpected) {
-        this.field = mock(Field.class);
-        this.value1 = value1;
-        this.value2 = value2;
-        this.operator1 = operator1;
-        this.operator2 = operator2;
-        this.conflictExpected = conflictExpected;
-        this.overlapExpected = overlapExpected;
-    }
 
     public static Collection<Object[]> testData() {
         return Arrays.asList(new Object[][]{
                 // matches and soundslike are probably not doable...
                 // op1, val1, op2, val2, conflicts, overlaps
-                {"==", new Values("a"), "==", new Values("a"), false, true},
-                {"!=", new Values("a"), "!=", new Values("a"), false, true},
-                {">", new Values("a"), ">", new Values("a"), false, false},
-                {">=", new Values("a"), ">=", new Values("a"), false, false},
-                {"<", new Values("a"), "<", new Values("a"), false, false},
-                {"<=", new Values("a"), "<=", new Values("a"), false, false},
-                {"in", new Values("a",
-                        "b"), "in", new Values("a",
-                        "b"), false, true},
-                {"not in", new Values("a",
-                        "b"), "not in", new Values("a",
-                        "b"), false, true},
-                {"matches", new Values("a"), "matches", new Values("a"), false, true},
-                {"soundslike", new Values("a"), "soundslike", new Values("a"), false, true},
+                {"==", new Values<>("a"), "==", new Values<>("a"), false, true},
+                {"!=", new Values<>("a"), "!=", new Values<>("a"), false, true},
+                {">", new Values<>("a"), ">", new Values<>("a"), false, false},
+                {">=", new Values<>("a"), ">=", new Values<>("a"), false, false},
+                {"<", new Values<>("a"), "<", new Values<>("a"), false, false},
+                {"<=", new Values<>("a"), "<=", new Values<>("a"), false, false},
+                {"in", new Values<>("a", "b"), "in", new Values<>("a", "b"), false, true},
+                {"not in", new Values<>("a", "b"), "not in", new Values<>("a", "b"), false, true},
+                {"matches", new Values<>("a"), "matches", new Values<>("a"), false, true},
+                {"soundslike", new Values<>("a"), "soundslike", new Values<>("a"), false, true},
 
-                {"==", new Values("a"), "!=", new Values("b"), false, true},
-                {"==", new Values("a"), ">", new Values(" "), false, false},
-                {"==", new Values("a"), ">=", new Values("a"), false, false},
-                {"==", new Values("a"), "<", new Values("b"), false, false},
-                {"==", new Values("a"), "<=", new Values("a"), false, false},
-                {"==", new Values("a"), "in", new Values("a",
-                        "b"), false, true},
-                {"==", new Values("a"), "not in", new Values("b",
-                        "c",
-                        "d"), false, true},
-                {"==", new Values("a"), "matches", new Values("a"), false, true},
-                {"==", new Values("a"), "soundslike", new Values("a"), false, true},
+                {"==", new Values<>("a"), "!=", new Values<>("b"), false, true},
+                {"==", new Values<>("a"), ">", new Values<>(" "), false, false},
+                {"==", new Values<>("a"), ">=", new Values<>("a"), false, false},
+                {"==", new Values<>("a"), "<", new Values<>("b"), false, false},
+                {"==", new Values<>("a"), "<=", new Values<>("a"), false, false},
+                {"==", new Values<>("a"), "in", new Values<>("a", "b"), false, true},
+                {"==", new Values<>("a"), "not in", new Values<>("b", "c", "d"), false, true},
+                {"==", new Values<>("a"), "matches", new Values<>("a"), false, true},
+                {"==", new Values<>("a"), "soundslike", new Values<>("a"), false, true},
 
-                {"==", new Values("a"), "!=", new Values("a"), true, false},
-                {"==", new Values("a"), ">", new Values("a"), false, false},
-                {"==", new Values("a"), ">=", new Values("a"), false, false},
-                {"==", new Values("a"), "<", new Values("a"), false, false},
-                {"==", new Values("a"), "<=", new Values(" "), false, false},
-                {"==", new Values("a"), "in", new Values("b",
-                        "c",
-                        "d"), true, false},
-                {"==", new Values("a"), "not in", new Values("a",
-                        "b"), true, false},
-                {"==", new Values("a"), "matches", new Values("a"), false, true},
-                {"==", new Values("a"), "soundslike", new Values("a"), false, true},
+                {"==", new Values<>("a"), "!=", new Values<>("a"), true, false},
+                {"==", new Values<>("a"), ">", new Values<>("a"), false, false},
+                {"==", new Values<>("a"), ">=", new Values<>("a"), false, false},
+                {"==", new Values<>("a"), "<", new Values<>("a"), false, false},
+                {"==", new Values<>("a"), "<=", new Values<>(" "), false, false},
+                {"==", new Values<>("a"), "in", new Values<>("b", "c", "d"), true, false},
+                {"==", new Values<>("a"), "not in", new Values<>("a", "b"), true, false},
+                {"==", new Values<>("a"), "matches", new Values<>("a"), false, true},
+                {"==", new Values<>("a"), "soundslike", new Values<>("a"), false, true},
 
-                {"!=", new Values("a"), "!=", new Values("a"), false, true},
-                {"!=", new Values("a"), ">", new Values(" "), false, false},
-                {"!=", new Values("a"), ">=", new Values("a"), false, false},
-                {"!=", new Values("a"), "<", new Values("a"), false, false},
-                {"!=", new Values("a"), "<=", new Values("a"), false, false},
-                {"!=", new Values("a"), "in", new Values("a",
-                        "b"), false, true},
-                {"!=", new Values("a"), "in", new Values("b",
-                        "c",
-                        "d"), false, true},
-                {"!=", new Values("a"), "not in", new Values("b",
-                        "c",
-                        "d"), false, true},
-                {"!=", new Values("a"), "matches", new Values("a"), true, false},
-                {"!=", new Values("a"), "soundslike", new Values("a"), true, false},
+                {"!=", new Values<>("a"), "!=", new Values<>("a"), false, true},
+                {"!=", new Values<>("a"), ">", new Values<>(" "), false, false},
+                {"!=", new Values<>("a"), ">=", new Values<>("a"), false, false},
+                {"!=", new Values<>("a"), "<", new Values<>("a"), false, false},
+                {"!=", new Values<>("a"), "<=", new Values<>("a"), false, false},
+                {"!=", new Values<>("a"), "in", new Values<>("a", "b"), false, true},
+                {"!=", new Values<>("a"), "in", new Values<>("b", "c", "d"), false, true},
+                {"!=", new Values<>("a"), "not in", new Values<>("b", "c", "d"), false, true},
+                {"!=", new Values<>("a"), "matches", new Values<>("a"), true, false},
+                {"!=", new Values<>("a"), "soundslike", new Values<>("a"), true, false},
 
-                {"!=", new Values("a"), "in", new Values("a"), true, false},
-                {"!=", new Values("a"), "matches", new Values("a"), true, false},
-                {"!=", new Values("a"), "soundslike", new Values("a"), true, false},
+                {"!=", new Values<>("a"), "in", new Values<>("a"), true, false},
+                {"!=", new Values<>("a"), "matches", new Values<>("a"), true, false},
+                {"!=", new Values<>("a"), "soundslike", new Values<>("a"), true, false},
 
-                {">", new Values("a"), ">", new Values("a"), false, false},
-                {">", new Values("a"), ">=", new Values("a"), false, false},
-                {">", new Values("a"), "<", new Values("c"), false, false},
-                {">", new Values("a"), "<=", new Values("a"), false, false},
-                {">", new Values("a"), "in", new Values("a",
-                        "b"), false, false},
-                {">", new Values("a"), "not in", new Values("b",
-                        "c",
-                        "d"), false, false},
-                {">", new Values("a"), "matches", new Values("a"), false, false},
-                {">", new Values("a"), "soundslike", new Values("a"), false, false},
+                {">", new Values<>("a"), ">", new Values<>("a"), false, false},
+                {">", new Values<>("a"), ">=", new Values<>("a"), false, false},
+                {">", new Values<>("a"), "<", new Values<>("c"), false, false},
+                {">", new Values<>("a"), "<=", new Values<>("a"), false, false},
+                {">", new Values<>("a"), "in", new Values<>("a", "b"), false, false},
+                {">", new Values<>("a"), "not in", new Values<>("b", "c", "d"), false, false},
+                {">", new Values<>("a"), "matches", new Values<>("a"), false, false},
+                {">", new Values<>("a"), "soundslike", new Values<>("a"), false, false},
 
-                {">", new Values("a"), "<", new Values("a"), false, false},
-                {">", new Values("a"), "<=", new Values("a"), false, false},
-                {">", new Values("a"), "in", new Values("0",
-                        "1",
-                        "A",
-                        "B",
-                        "a"), false, false},
-                {">", new Values("a"), "matches", new Values("a"), false, false},
-                {">", new Values("a"), "soundslike", new Values(""), false, false},
+                {">", new Values<>("a"), "<", new Values<>("a"), false, false},
+                {">", new Values<>("a"), "<=", new Values<>("a"), false, false},
+                {">", new Values<>("a"), "in", new Values<>("0", "1", "A", "B", "a"), false, false},
+                {">", new Values<>("a"), "matches", new Values<>("a"), false, false},
+                {">", new Values<>("a"), "soundslike", new Values<>(""), false, false},
 
-                {">=", new Values("a"), ">=", new Values("a"), false, false},
-                {">=", new Values("a"), "<", new Values("a"), false, false},
-                {">=", new Values("a"), "<=", new Values("a"), false, false},
-                {">=", new Values("a"), "in", new Values("a"), false, false},
-                {">=", new Values("a"), "not in", new Values("b",
-                        "c",
-                        "d"), false, false},
-                {">=", new Values("a"), "matches", new Values("a"), false, false},
-                {">=", new Values("a"), "soundslike", new Values("a"), false, false},
+                {">=", new Values<>("a"), ">=", new Values<>("a"), false, false},
+                {">=", new Values<>("a"), "<", new Values<>("a"), false, false},
+                {">=", new Values<>("a"), "<=", new Values<>("a"), false, false},
+                {">=", new Values<>("a"), "in", new Values<>("a"), false, false},
+                {">=", new Values<>("a"), "not in", new Values<>("b", "c", "d"), false, false},
+                {">=", new Values<>("a"), "matches", new Values<>("a"), false, false},
+                {">=", new Values<>("a"), "soundslike", new Values<>("a"), false, false},
 
-                {">=", new Values("a"), "<", new Values(" "), false, false},
-                {">=", new Values("a"), "<=", new Values(" "), false, false},
-                {">=", new Values("a"), "in", new Values("0",
-                        "1",
-                        "A",
-                        "B"), false, false},
-                {">=", new Values("a"), "matches", new Values("A"), false, false},
-                {">=", new Values("a"), "soundslike", new Values(""), false, false},
+                {">=", new Values<>("a"), "<", new Values<>(" "), false, false},
+                {">=", new Values<>("a"), "<=", new Values<>(" "), false, false},
+                {">=", new Values<>("a"), "in", new Values<>("0", "1", "A", "B"), false, false},
+                {">=", new Values<>("a"), "matches", new Values<>("A"), false, false},
+                {">=", new Values<>("a"), "soundslike", new Values<>(""), false, false},
 
-                {"<", new Values("a"), "<", new Values("a"), false, false},
-                {"<", new Values("a"), "<=", new Values("a"), false, false},
-                {"<", new Values("a"), "in", new Values("A",
-                        "B",
-                        "a",
-                        "b"), false, false},
-                {"<", new Values("a"), "not in", new Values("b",
-                        "c",
-                        "d"), false, false},
-                {"<", new Values("a"), "matches", new Values("A"), false, false},
-                {"<", new Values("a"), "soundslike", new Values(""), false, false},
+                {"<", new Values<>("a"), "<", new Values<>("a"), false, false},
+                {"<", new Values<>("a"), "<=", new Values<>("a"), false, false},
+                {"<", new Values<>("a"), "in", new Values<>("A", "B", "a", "b"), false, false},
+                {"<", new Values<>("a"), "not in", new Values<>("b", "c", "d"), false, false},
+                {"<", new Values<>("a"), "matches", new Values<>("A"), false, false},
+                {"<", new Values<>("a"), "soundslike", new Values<>(""), false, false},
 
-                {"<", new Values("a"), "in", new Values("b",
-                        "c",
-                        "d"), false, false},
-                {"<", new Values("a"), "matches", new Values("a"), false, false},
-                {"<", new Values("a"), "soundslike", new Values("a"), false, false},
+                {"<", new Values<>("a"), "in", new Values<>("b", "c", "d"), false, false},
+                {"<", new Values<>("a"), "matches", new Values<>("a"), false, false},
+                {"<", new Values<>("a"), "soundslike", new Values<>("a"), false, false},
 
-                {"<=", new Values("a"), "<=", new Values("a"), false, false},
-                {"<=", new Values("a"), "in", new Values("A",
-                        "B",
-                        "a",
-                        "b"), false, false},
-                {"<=", new Values("a"), "not in", new Values("b",
-                        "c",
-                        "d"), false, false},
-                {"<=", new Values("a"), "matches", new Values("A"), false, false},
-                {"<=", new Values("a"), "soundslike", new Values(""), false, false},
+                {"<=", new Values<>("a"), "<=", new Values<>("a"), false, false},
+                {"<=", new Values<>("a"), "in", new Values<>("A", "B", "a", "b"), false, false},
+                {"<=", new Values<>("a"), "not in", new Values<>("b", "c", "d"), false, false},
+                {"<=", new Values<>("a"), "matches", new Values<>("A"), false, false},
+                {"<=", new Values<>("a"), "soundslike", new Values<>(""), false, false},
 
-                {"<=", new Values("a"), "in", new Values("b",
-                        "c",
-                        "d"), false, false},
-                {"<=", new Values("a"), "matches", new Values("a"), false, false},
-                {"<=", new Values("a"), "soundslike", new Values("a"), false, false},
+                {"<=", new Values<>("a"), "in", new Values<>("b", "c", "d"), false, false},
+                {"<=", new Values<>("a"), "matches", new Values<>("a"), false, false},
+                {"<=", new Values<>("a"), "soundslike", new Values<>("a"), false, false},
 
-                {"in", new Values("a",
-                        "b"), "in", new Values("b",
-                        "c",
-                        "d"), false, true},
-                {"in", new Values("a",
-                        "b"), "not in", new Values("b",
-                        "c",
-                        "d"), false, true},
-                {"in", new Values("a",
-                        "b"), "matches", new Values("a"), false, true},
-                {"in", new Values("a",
-                        "b"), "soundslike", new Values("a"), false, true},
+                {"in", new Values<>("a", "b"), "in", new Values<>("b", "c", "d"), false, true},
+                {"in", new Values<>("a", "b"), "not in", new Values<>("b", "c", "d"), false, true},
+                {"in", new Values<>("a", "b"), "matches", new Values<>("a"), false, true},
+                {"in", new Values<>("a", "b"), "soundslike", new Values<>("a"), false, true},
 
-                {"in", new Values("a",
-                        "b"), "in", new Values("c",
-                        "d"), true, false},
-                {"in", new Values("a",
-                        "b"), "not in", new Values("a",
-                        "b"), true, false},
-                {"in", new Values("a",
-                        "b"), "matches", new Values("c"), true, false},
-                {"in", new Values("a",
-                        "b"), "soundslike", new Values("c"), true, false},
+                {"in", new Values<>("a", "b"), "in", new Values<>("c", "d"), true, false},
+                {"in", new Values<>("a", "b"), "not in", new Values<>("a", "b"), true, false},
+                {"in", new Values<>("a", "b"), "matches", new Values<>("c"), true, false},
+                {"in", new Values<>("a", "b"), "soundslike", new Values<>("c"), true, false},
 
-                {"not in", new Values("a",
-                        "b"), "matches", new Values("c"), false, true},
-                {"not in", new Values("a",
-                        "b"), "soundslike", new Values("c"), false, true},
+                {"not in", new Values<>("a", "b"), "matches", new Values<>("c"), false, true},
+                {"not in", new Values<>("a", "b"), "soundslike", new Values<>("c"), false, true},
 
-                {"not in", new Values("a",
-                        "b"), "matches", new Values("a"), true, false},
+                {"not in", new Values<>("a", "b"), "matches", new Values<>("a"), true, false},
 
-                {"matches", new Values("a"), "soundslike", new Values("a"), false, true},
+                {"matches", new Values<>("a"), "soundslike", new Values<>("a"), false, true},
 
-                {"matches", new Values("a"), "soundslike", new Values("a"), false, true},
+                {"matches", new Values<>("a"), "soundslike", new Values<>("a"), false, true},
         });
     }
 
     @MethodSource("testData")
     @ParameterizedTest
     void parametrizedConflictTest(String operator1, Values value1, String operator2, Values value2, boolean conflictExpected, boolean overlapExpected) {
-        initStringConditionInspectorConflictResolverOverlapTest(operator1, value1, operator2, value2, conflictExpected, overlapExpected);
-        StringConditionInspector a = getCondition(value1,
-                operator1);
-        StringConditionInspector b = getCondition(value2,
-                operator2);
+        StringConditionInspector a = getStringCondition(field, value1, operator1);
+        StringConditionInspector b = getStringCondition(field, value2, operator2);
 
         boolean conflicts = a.conflicts(b);
         assertThat(conflicts).as(getAssertDescription(a,
@@ -259,11 +179,8 @@ public class StringConditionInspectorConflictResolverOverlapTest {
     @MethodSource("testData")
     @ParameterizedTest
     void parametrizedOverlapTest(String operator1, Values value1, String operator2, Values value2, boolean conflictExpected, boolean overlapExpected) {
-        initStringConditionInspectorConflictResolverOverlapTest(operator1, value1, operator2, value2, conflictExpected, overlapExpected);
-        StringConditionInspector a = getCondition(value1,
-                operator1);
-        StringConditionInspector b = getCondition(value2,
-                operator2);
+        StringConditionInspector a = getStringCondition(field, value1, operator1);
+        StringConditionInspector b = getStringCondition(field, value2, operator2);
 
         boolean overlaps = a.overlaps(b);
         assertThat(overlaps).as(getAssertDescription(a,
@@ -277,17 +194,6 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                 "overlap")).isEqualTo(overlapExpected);
     }
 
-    private StringConditionInspector getCondition(final Values values,
-                                                  final String operator) {
-        AnalyzerConfigurationMock configurationMock = new AnalyzerConfigurationMock();
-        return new StringConditionInspector(new FieldCondition<>(field,
-                        mock(Column.class),
-                        operator,
-                        values,
-                        configurationMock),
-                configurationMock);
-    }
-
     private String getAssertDescription(StringConditionInspector a,
                                         StringConditionInspector b,
                                         boolean conflictExpected,
@@ -298,4 +204,6 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                 condition,
                 b.toHumanReadableString());
     }
+    
+    
 }

@@ -43,8 +43,7 @@ public class RelationResolverSubsumptionTest {
     private Person blockingItem;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
         configuration = new AnalyzerConfigurationMock();
 
         a = new InspectorList(configuration);
@@ -62,21 +61,18 @@ public class RelationResolverSubsumptionTest {
     }
 
     @Test
-    void empty() throws
-            Exception {
+    void empty() throws Exception {
         relationResolver = new RelationResolver(new InspectorList(configuration));
         assertThat(relationResolver.subsumes(new InspectorList(configuration))).isTrue();
     }
 
     @Test
-    void emptyListWithItemsSubsumesEmptyLists() throws
-            Exception {
+    void emptyListWithItemsSubsumesEmptyLists() throws Exception {
         assertThat(relationResolver.subsumes(new InspectorList(configuration))).isTrue();
     }
 
     @Test
-    void recheck() throws
-            Exception {
+    void recheck() throws Exception {
 
         assertThat(relationResolver.subsumes(b)).isFalse();
 
@@ -86,13 +82,11 @@ public class RelationResolverSubsumptionTest {
 
         assertThat(relationResolver.subsumes(b)).isFalse();
 
-        verify(firstItemInB,
-                never()).subsumes(any());
+        verify(firstItemInB, never()).subsumes(any());
     }
 
     @Test
-    void recheckWithUpdate() throws
-            Exception {
+    void recheckWithUpdate() throws Exception {
 
         assertThat(relationResolver.subsumes(b)).isFalse();
 
@@ -107,8 +101,7 @@ public class RelationResolverSubsumptionTest {
     }
 
     @Test
-    void recheckConflictingItemRemoved() throws
-            Exception {
+    void recheckConflictingItemRemoved() throws Exception {
 
         assertThat(relationResolver.subsumes(b)).isFalse();
 
@@ -123,28 +116,22 @@ public class RelationResolverSubsumptionTest {
     }
 
     @Test
-    void recheckOtherListBecomesEmpty() throws
-            Exception {
+    void recheckOtherListBecomesEmpty() throws Exception {
 
         assertThat(relationResolver.subsumes(b)).isFalse();
 
-        reset(firstItemInB,
-                blockingItem);
+        reset(firstItemInB, blockingItem);
 
         // UPDATE
         b.clear();
 
         assertThat(relationResolver.subsumes(b)).isTrue();
 
-        verify(firstItemInB,
-                never()).subsumes(any());
-        verify(blockingItem,
-                never()).subsumes(any());
+        verify(firstItemInB, never()).subsumes(any());
+        verify(blockingItem, never()).subsumes(any());
     }
 
-    public class Person
-            implements IsSubsuming,
-                       HasKeys {
+    public class Person implements IsSubsuming, HasKeys {
 
         int age;
 

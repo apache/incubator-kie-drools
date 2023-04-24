@@ -30,25 +30,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ListenAllTest {
 
-
-    private Listen<String>                        listen;
+    private Listen<String> listen;
     private MultiMap<Value, String, List<String>> map;
-    private Collection<String>                    all;
+    private Collection<String> all;
 
     @BeforeEach
     public void setUp() throws Exception {
-        map = MultiMapFactory.make(true );
+        map = MultiMapFactory.make(true);
 
-        listen = new Listen<>( map,
-                               new ExactMatcher(KeyDefinition.newKeyDefinition().withId("ID" ).build(),
-                                                "value" ) );
+        listen = new Listen<>(map,
+                               new ExactMatcher(KeyDefinition.newKeyDefinition().withId("ID").build(),
+                                                "value"));
 
-        listen.all( new AllListener<String>() {
+        listen.all(new AllListener<String>() {
             @Override
-            public void onAllChanged( final Collection<String> all ) {
+            public void onAllChanged(final Collection<String> all) {
                 ListenAllTest.this.all = all;
             }
-        } );
+        });
     }
 
     @Test
@@ -58,9 +57,8 @@ public class ListenAllTest {
 
     @Test
     void testAll() throws Exception {
-        map.put(new Value( "value" ),
-                "hello");
+        map.put(new Value("value"), "hello");
 
-        assertThat(all.contains("hello")).isTrue();
+        assertThat(all).contains("hello");
     }
 }

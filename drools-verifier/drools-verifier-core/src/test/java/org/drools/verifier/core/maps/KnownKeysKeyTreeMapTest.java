@@ -44,8 +44,7 @@ public class KnownKeysKeyTreeMapTest {
         assertThat(map.get(KeyDefinition.newKeyDefinition().withId("unknown").build())).isNull();
     }
 
-    class Person
-            implements HasKeys {
+    class Person implements HasKeys {
 
         private UUIDKey uuidKey = new AnalyzerConfigurationMock().getUUID(this);
 

@@ -40,8 +40,7 @@ public class ConditionsInspectorTest {
     private AnalyzerConfigurationMock configurationMock;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
         configurationMock = new AnalyzerConfigurationMock();
         field = new Field(new ObjectField("Person",
                                           "Integer",
@@ -54,8 +53,7 @@ public class ConditionsInspectorTest {
     }
 
     @Test
-    void testSubsume001() throws
-            Exception {
+    void testSubsume001() throws Exception {
         final ConditionsInspectorMultiMap a = getConditions(new ComparableConditionInspector<Integer>(new FieldCondition(field,
                         mock(Column.class),
                         "==",
@@ -74,8 +72,7 @@ public class ConditionsInspectorTest {
     }
 
     @Test
-    void testSubsume002() throws
-            Exception {
+    void testSubsume002() throws Exception {
         final ConditionsInspectorMultiMap a = getConditions(new ComparableConditionInspector<Integer>(new FieldCondition(field,
                         mock(Column.class),
                         "==",
@@ -105,8 +102,7 @@ public class ConditionsInspectorTest {
     }
 
     @Test
-    void testSubsume003() throws
-            Exception {
+    void testSubsume003() throws Exception {
         final Field nameField = new Field(new ObjectField("Person",
                         "String",
                         "name",

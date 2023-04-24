@@ -35,33 +35,31 @@ public class ExactMatcherSearchTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        map.put( new Value( null ),
-                 "I am null" );
-        map.put( new Value( "helloKey" ),
-                 "hello" );
+        map.put(new Value(null), "I am null");
+        map.put(new Value("helloKey"), "hello");
 
     }
 
     @Test
     void testNullSearch() throws Exception {
-
-        search = new ExactMatcherSearch<>( new ExactMatcher(KeyDefinition.newKeyDefinition().withId("value").build(),
-                        null ),
-                map );
+        search = new ExactMatcherSearch<>(new ExactMatcher(KeyDefinition.newKeyDefinition().withId("value").build(),
+                        null),
+                map);
         MultiMap<Value, Object, List<Object>> search1 = search.search();
-        assertThat(search1.get(new Value( null )).get(0)).isEqualTo("I am null");
+        
+        assertThat(search1.get(new Value(null)).get(0)).isEqualTo("I am null");
 
     }
 
     @Test
     void testNegatedNullSearch() throws Exception {
-
-        search = new ExactMatcherSearch<>( new ExactMatcher( KeyDefinition.newKeyDefinition().withId("value").build(),
+        search = new ExactMatcherSearch<>(new ExactMatcher(KeyDefinition.newKeyDefinition().withId("value").build(),
                         null,
-                        true ),
-                map );
+                        true),
+                map);
         MultiMap<Value, Object, List<Object>> search1 = search.search();
-        assertThat(search1.get(new Value( "helloKey" )).get(0)).isEqualTo("hello");
+        
+        assertThat(search1.get(new Value("helloKey")).get(0)).isEqualTo("hello");
 
     }
 }

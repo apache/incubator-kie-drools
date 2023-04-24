@@ -62,8 +62,7 @@ public class StringConditionInspectorToHumanReadableTest {
     }
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
         configuration = new AnalyzerConfigurationMock();
     }
 
@@ -101,8 +100,7 @@ public class StringConditionInspectorToHumanReadableTest {
                             mock(Column.class),
                             "!=",
                             Values.nullValue(),
-                            configuration
-                    ),
+                            configuration),
                     configuration);
         } else if (IS_NULL.matches(operator)) {
             return new StringConditionInspector(new FieldCondition<>(new Field(mock(ObjectField.class),

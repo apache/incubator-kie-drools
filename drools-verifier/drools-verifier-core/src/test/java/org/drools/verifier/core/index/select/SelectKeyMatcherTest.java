@@ -15,7 +15,6 @@
  */
 package org.drools.verifier.core.index.select;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.drools.verifier.core.index.keys.Value;
@@ -46,9 +45,7 @@ public class SelectKeyMatcherTest {
 
     @Test
     void testAll() throws Exception {
-        final Collection<String> all = select.all();
-
-        assertThat(all.size()).isEqualTo(2);
+        assertThat(select.all()).hasSize(2);
     }
 
     @Test

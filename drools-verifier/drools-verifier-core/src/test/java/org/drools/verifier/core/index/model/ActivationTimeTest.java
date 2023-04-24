@@ -26,17 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ActivationTimeTest {
 
-    private ActivationTime start;
-    private ActivationTime end;
-    private boolean expected;
-
-    public void initActivationTimeTest(final ActivationTime start,
-                              final ActivationTime end,
-                              final boolean expected) {
-        this.start = start;
-        this.end = end;
-        this.expected = expected;
-    }
 
     public static Collection<Object[]> testData() {
         return Arrays.asList(new Object[][]{
@@ -68,7 +57,6 @@ public class ActivationTimeTest {
     @MethodSource("testData")
     @ParameterizedTest
     void testOverlaps(final ActivationTime start, final ActivationTime end, final boolean expected) {
-        initActivationTimeTest(start, end, expected);
         assertThat(start.overlaps(end)).isEqualTo(expected);
     }
 }

@@ -16,7 +16,6 @@
 
 package org.drools.verifier.core.maps;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.verifier.core.index.keys.Value;
@@ -36,14 +35,14 @@ public class ChangeHandledMultiMapTest {
     public void setUp() throws Exception {
         this.timesCalled = 0;
 
-        this.map = MultiMapFactory.make(true );
-        this.map.addChangeListener( new MultiMapChangeHandler<Value, String>() {
+        this.map = MultiMapFactory.make(true);
+        this.map.addChangeListener(new MultiMapChangeHandler<Value, String>() {
             @Override
-            public void onChange( final ChangeSet<Value, String> changeSet ) {
+            public void onChange(final ChangeSet<Value, String> changeSet) {
                 ChangeHandledMultiMapTest.this.changeSet = changeSet;
                 timesCalled++;
             }
-        } );
+        });
     }
 
     @Test
@@ -54,29 +53,19 @@ public class ChangeHandledMultiMapTest {
 
     @Test
     void testPut() throws Exception {
-        map.put(new Value( "hello" ),
-                "test");
+        map.put(new Value("hello"), "test");
 
-        assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("test")).isTrue();
-
+        assertThat(changeSet.getAdded().get(new Value("hello"))).contains("test");
         assertThat(timesCalled).isEqualTo(1);
     }
 
     @Test
     void testAddAllValues() throws Exception {
-        final ArrayList<String> list = new ArrayList<>();
-        list.add("a");
-        list.add("b");
-        list.add("c");
+        final List<String> list = List.of("a", "b", "c");
 
-        map.addAllValues(new Value( "hello" ),
-                list);
+        map.addAllValues(new Value("hello"), list);
 
-        assertThat(changeSet.getAdded().get(new Value( "hello" )).size()).isEqualTo(3);
-        assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("a")).isTrue();
-        assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("b")).isTrue();
-        assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("c")).isTrue();
-
+        assertThat(changeSet.getAdded().get(new Value("hello"))).hasSize(3).contains("a", "b", "c");
         assertThat(timesCalled).isEqualTo(1);
     }
 }

@@ -54,8 +54,7 @@ public class FieldInspectorUpdateTest {
     private AnalyzerConfigurationMock configurationMock;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
 
         configurationMock = new AnalyzerConfigurationMock();
 
@@ -101,16 +100,14 @@ public class FieldInspectorUpdateTest {
     }
 
     @Test
-    void updateAction() throws
-            Exception {
+    void updateAction() throws Exception {
         fieldAction.setValue(new Values(20));
 
         verify(ruleInspectorUpdater).resetActionsInspectors();
     }
 
     @Test
-    void updateCondition() throws
-            Exception {
+    void updateCondition() throws Exception {
         fieldCondition.setValue(new Values(20));
 
         verify(ruleInspectorUpdater).resetConditionsInspectors();
