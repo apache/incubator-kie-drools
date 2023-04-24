@@ -11,15 +11,7 @@
   <properties>
     <java.module.name>org.drools.drlonyaml.todrl</java.module.name>
   </properties>
-  <dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-drlonyaml-model</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
-  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
