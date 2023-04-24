@@ -50,7 +50,7 @@ public class Pattern implements Base {
         } else if (o.getAllBoundIdentifiers().size() == 1) {
             result.as = o.getAllBoundIdentifiers().get(0);
         } else {
-            result.as = o.getAllBoundIdentifiers().get(0); // TODO check with Mario the index=0 is always the pattern one
+            result.as = o.getAllBoundIdentifiers().get(0); // TODO check the index=0 is always the pattern one
         }
         for (BaseDescr c: o.getConstraint().getDescrs()) {
             if (c instanceof MVELExprDescr) {

@@ -32,7 +32,6 @@ public class YAMLtoDrlDumper {
     private static Configuration config() {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_32); // this should ensure check of breaking changes on dependency update
         cfg.setClassForTemplateLoading(YAMLtoDrlDumper.class, "/");
-        // Recommended settings for new projects:
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         cfg.setLogTemplateExceptions(false);
