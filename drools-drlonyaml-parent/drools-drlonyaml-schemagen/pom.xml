@@ -6,6 +6,11 @@
     <version>8.38.0-SNAPSHOT</version>
   </parent>
   <artifactId>drools-drlonyaml-schemagen</artifactId>
+  <name>Drools :: DRL on YAML :: schema generator</name>
+
+  <properties>
+    <java.module.name>org.drools.drlonyaml.schemagen</java.module.name>
+  </properties>
   <dependencies>
     <dependency>
         <groupId>com.github.victools</groupId>
@@ -16,4 +21,27 @@
         <artifactId>jsonschema-module-jackson</artifactId>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <transformers>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <mainClass>${java.module.name}.Generator</mainClass>
+                            </transformer>
+                        </transformers>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+  </build>
 </project>
