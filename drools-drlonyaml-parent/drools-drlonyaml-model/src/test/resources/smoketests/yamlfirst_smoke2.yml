@@ -12,4 +12,4 @@ rules:
     - age >= 18
   then:
     insert:
-        ciao
+        47
