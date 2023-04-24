@@ -32,6 +32,7 @@
         <module>filesystem</module>
         <module>mongodb</module>
         <module>postgresql</module>
+        <module>rocksdb</module>
       </modules>
     </profile>
   </profiles>

@@ -1,0 +1,11 @@
+name: Kogito Add-On Persistence Rocksdb
+description: Kogito Add-On support for persistence on Rocksdb
+metadata:
+  keywords:
+    - kogito
+    - persistence
+    - rocksdb
+    - process
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"
