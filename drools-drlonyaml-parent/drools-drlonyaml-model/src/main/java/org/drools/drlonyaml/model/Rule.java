@@ -7,10 +7,16 @@ import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@JsonPropertyOrder({"name", "when", "then"})
 public class Rule {
+    @JsonProperty(required = true)
     private String name;
+    @JsonProperty(required = true)
     private List<Base> when = new ArrayList<>();
+    @JsonProperty(required = true)
     private AbstractThen then;
 
     public static Rule from(RuleDescr r) {

@@ -8,14 +8,14 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
-public class BaseDeserializer extends StdDeserializer<Base> { 
+public class BaseDeserializer extends StdDeserializer<Base> {
 
-    public BaseDeserializer() { 
-        this(null); 
-    } 
+    public BaseDeserializer() {
+        this(null);
+    }
 
-    public BaseDeserializer(Class<?> vc) { 
-        super(vc); 
+    public BaseDeserializer(Class<?> vc) {
+        super(vc);
     }
 
     @Override
@@ -25,6 +25,10 @@ public class BaseDeserializer extends StdDeserializer<Base> {
             return jp.getCodec().treeToValue(node, Pattern.class);
         } else if (node.get("exists") != null) {
             return jp.getCodec().treeToValue(node, Exists.class);
+        } else if (node.get("all") != null) {
+            return jp.getCodec().treeToValue(node, All.class);
+        } else if (node.get("not") != null) {
+            return jp.getCodec().treeToValue(node, Not.class);
         } else {
             throw new UnsupportedOperationException();
         }

@@ -11,10 +11,12 @@ import org.drools.drl.ast.descr.PatternDescr;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = Pattern.class) // see https://stackoverflow.com/a/34128468/893991 TODO maybe enforce this check somehow
 public class Pattern implements Base {
+    @JsonProperty(required = true)
     private String given;
     @JsonInclude(Include.NON_EMPTY)
     private String as;

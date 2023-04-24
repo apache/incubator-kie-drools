@@ -10,7 +10,9 @@ import org.drools.drl.ast.descr.RuleDescr;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@JsonPropertyOrder({"name", "imports", "rules", "functions"})
 public class Package {
     @JsonInclude(Include.NON_EMPTY)
     private String name = ""; // default empty, consistent with DRL parser.

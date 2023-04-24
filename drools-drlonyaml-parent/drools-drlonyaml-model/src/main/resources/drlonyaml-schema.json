@@ -1,0 +1,184 @@
+{
+  "$schema" : "http://json-schema.org/draft-07/schema#",
+  "definitions" : {
+    "All" : {
+      "type" : "object",
+      "properties" : {
+        "all" : {
+          "type" : "array",
+          "items" : {
+            "anyOf" : [ {
+              "$ref" : "#/definitions/Pattern"
+            }, {
+              "$ref" : "#/definitions/Exists"
+            }, {
+              "$ref" : "#/definitions/All"
+            }, {
+              "$ref" : "#/definitions/Not"
+            } ]
+          }
+        }
+      },
+      "required" : [ "all" ]
+    },
+    "Exists" : {
+      "type" : "object",
+      "properties" : {
+        "exists" : {
+          "type" : "array",
+          "items" : {
+            "anyOf" : [ {
+              "$ref" : "#/definitions/Pattern"
+            }, {
+              "$ref" : "#/definitions/Exists"
+            }, {
+              "$ref" : "#/definitions/All"
+            }, {
+              "$ref" : "#/definitions/Not"
+            } ]
+          }
+        }
+      },
+      "required" : [ "exists" ]
+    },
+    "Function" : {
+      "type" : "object",
+      "properties" : {
+        "body" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "parameters" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Parameter"
+          }
+        },
+        "returnType" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Import" : {
+      "type" : "string"
+    },
+    "InsertThen" : {
+      "type" : "object",
+      "properties" : {
+        "insert" : { }
+      }
+    },
+    "Not" : {
+      "type" : "object",
+      "properties" : {
+        "not" : {
+          "type" : "array",
+          "items" : {
+            "anyOf" : [ {
+              "$ref" : "#/definitions/Pattern"
+            }, {
+              "$ref" : "#/definitions/Exists"
+            }, {
+              "$ref" : "#/definitions/All"
+            }, {
+              "$ref" : "#/definitions/Not"
+            } ]
+          }
+        }
+      },
+      "required" : [ "not" ]
+    },
+    "Parameter" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "type" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Pattern" : {
+      "type" : "object",
+      "properties" : {
+        "as" : {
+          "type" : "string"
+        },
+        "from" : {
+          "type" : "string"
+        },
+        "given" : {
+          "type" : "string"
+        },
+        "having" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      },
+      "required" : [ "given" ]
+    },
+    "Rule" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "when" : {
+          "type" : "array",
+          "items" : {
+            "anyOf" : [ {
+              "$ref" : "#/definitions/Pattern"
+            }, {
+              "$ref" : "#/definitions/Exists"
+            }, {
+              "$ref" : "#/definitions/All"
+            }, {
+              "$ref" : "#/definitions/Not"
+            } ]
+          }
+        },
+        "then" : {
+          "anyOf" : [ {
+            "$ref" : "#/definitions/StringThen"
+          }, {
+            "$ref" : "#/definitions/InsertThen"
+          } ]
+        }
+      },
+      "required" : [ "name", "when", "then" ]
+    },
+    "StringThen" : {
+      "type" : "string"
+    }
+  },
+  "type" : "object",
+  "properties" : {
+    "name" : {
+      "type" : "string"
+    },
+    "imports" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/Import"
+      }
+    },
+    "rules" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/Rule"
+      }
+    },
+    "functions" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/Function"
+      }
+    }
+  },
+  "$comment" : "This schema is automatically (re-)generated from Java class definitions."
+}
