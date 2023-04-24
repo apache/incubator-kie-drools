@@ -40,6 +40,8 @@ jobs:
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Build Chain
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
         uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
         with:
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
