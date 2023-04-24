@@ -40,7 +40,7 @@ public class SmokeTest {
             assertThat(pkgDescr).as("Failed to parse DRL as a PackageDescr")
                 .isNotNull();
             
-            Package model = Package.from(pkgDescr);
+            DrlPackage model = DrlPackage.from(pkgDescr);
             assertThat(model).as("Failed to generate from a PackageDescr a valid model")
                 .isNotNull();
             
@@ -50,9 +50,10 @@ public class SmokeTest {
             writer.close();            
             LOG.debug("{}", yaml);
             assertThat(yaml).as("resulting YAML shall not be null nor empty")
-                .isNotNull().isNotEmpty();
+                .isNotNull()
+                .isNotEmpty();
             
-            final Package deserPackage = mapper.readValue(yaml, Package.class);
+            final DrlPackage deserPackage = mapper.readValue(yaml, DrlPackage.class);
             assertThat(deserPackage).usingRecursiveComparison()
                 .isEqualTo(model);
         } catch (Exception e) {
@@ -123,7 +124,7 @@ public class SmokeTest {
     @Test
     public void smokeTestFromYAML1() throws Exception {
         String content = Files.readString(Paths.get(this.getClass().getResource("/smoketests/yamlfirst_smoke1.yml").toURI()));
-        Package result = mapper.readValue(content, Package.class);
+        DrlPackage result = mapper.readValue(content, DrlPackage.class);
         LOG.debug("{}", result);
     }
     
@@ -131,7 +132,7 @@ public class SmokeTest {
     @Test
     public void smokeTestFromYAML2() throws Exception {
         String content = Files.readString(Paths.get(this.getClass().getResource("/smoketests/yamlfirst_smoke2.yml").toURI()));
-        Package result = mapper.readValue(content, Package.class);
+        DrlPackage result = mapper.readValue(content, DrlPackage.class);
         LOG.debug("{}", result);
     }
 }

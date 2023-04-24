@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import org.assertj.core.api.Assertions;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
+import org.drools.drlonyaml.model.DrlPackage;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class YAMLtoDRLTest {
             assertThat(yamlText).as("Failed to read test resource")
                 .isNotNull();
             
-            org.drools.drlonyaml.model.Package readValue = mapper.readValue(yamlText, org.drools.drlonyaml.model.Package.class);
+            DrlPackage readValue = mapper.readValue(yamlText, DrlPackage.class);
             assertThat(readValue).as("Failed to parse YAML as model")
                 .isNotNull();
             

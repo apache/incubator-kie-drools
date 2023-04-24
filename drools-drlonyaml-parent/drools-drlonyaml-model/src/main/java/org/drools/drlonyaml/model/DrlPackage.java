@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"name", "imports", "rules", "functions"})
-public class Package {
+public class DrlPackage {
     @JsonInclude(Include.NON_EMPTY)
     private String name = ""; // default empty, consistent with DRL parser.
     @JsonInclude(Include.NON_EMPTY)
@@ -23,8 +23,8 @@ public class Package {
     private List<Function> functions = new ArrayList<>();
     // functions;
     
-    public static Package from(PackageDescr o) {
-        Package result = new Package();
+    public static DrlPackage from(PackageDescr o) {
+        DrlPackage result = new DrlPackage();
         result.name = o.getName();
         for (ImportDescr i : o.getImports()) {
             result.imports.add(Import.from(i));

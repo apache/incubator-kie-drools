@@ -1,8 +1,9 @@
 package org.drools.drlonyaml.todrl;
 
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+
+import org.drools.drlonyaml.model.DrlPackage;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -23,7 +24,7 @@ public class YAMLtoDrlDumper {
         return cfg;
     }
     
-    public static String dumpDRL(org.drools.drlonyaml.model.Package drl) throws Exception {
+    public static String dumpDRL(DrlPackage drl) throws Exception {
         Template temp = CONFIGURATION.getTemplate("drl.ftl");
 
         Writer out = new StringWriter();

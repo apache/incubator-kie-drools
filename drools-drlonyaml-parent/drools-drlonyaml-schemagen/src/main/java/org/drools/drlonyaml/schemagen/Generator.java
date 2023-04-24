@@ -25,7 +25,7 @@ public class Generator {
         }
         final String projectBaseDir = args[0];
         
-        final Class<?> ROOT_CLASS = Class.forName("org.drools.drlonyaml.model.Package");
+        final Class<?> ROOT_CLASS = Class.forName("org.drools.drlonyaml.model.DrlPackage");
         JacksonModule module = new JacksonModule(
                 JacksonOption.FLATTENED_ENUMS_FROM_JSONVALUE,
                 JacksonOption.RESPECT_JSONPROPERTY_REQUIRED,
