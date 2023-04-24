@@ -43,6 +43,7 @@
     <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
     <version.com.fasterxml.jackson.databind>2.14.2</version.com.fasterxml.jackson.databind>
     <version.com.fasterxml.jackson.annotations>2.14.2</version.com.fasterxml.jackson.annotations>
+    <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.lowagie.itext>2.1.7</version.com.lowagie.itext>
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
@@ -295,6 +296,17 @@
         <groupId>com.fasterxml.jackson.datatype</groupId>
         <artifactId>jackson-datatype-jsr310</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+  
+      <dependency>
+        <groupId>com.github.victools</groupId>
+        <artifactId>jsonschema-generator</artifactId>
+        <version>${version.com.github.victools}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.victools</groupId>
+        <artifactId>jsonschema-module-jackson</artifactId>
+        <version>${version.com.github.victools}</version>
       </dependency>
 
       <dependency>

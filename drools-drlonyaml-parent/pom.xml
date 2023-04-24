@@ -10,6 +10,7 @@
   <name>Drools :: DRL on YAML</name>
   <packaging>pom</packaging>
   <modules>
+    <module>drools-drlonyaml-schemagen</module>
   	<module>drools-drlonyaml-model</module>
   </modules>
 </project>
