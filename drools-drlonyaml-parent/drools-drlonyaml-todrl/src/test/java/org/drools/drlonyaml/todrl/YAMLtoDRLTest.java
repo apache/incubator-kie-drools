@@ -57,4 +57,44 @@ public class YAMLtoDRLTest {
     public void smokeTestFromYAML2() {
         assertDumpingYAMLtoDRLisValid("/smoketests/yaml2.yml");
     }
+    
+    @Test
+    public void smokeTestFromYAML3() {
+        assertDumpingYAMLtoDRLisValid("/smoketests/yaml3.yml");
+    }    
+    
+    @Test
+    public void smokeTestFromYAML4() {
+        assertDumpingYAMLtoDRLisValid("/smoketests/yaml4.yml");
+    }
+    
+    @Test
+    public void smokeTestFromYAML5() {
+        assertDumpingYAMLtoDRLisValid("/smoketests/yaml5.yml");
+    }
+    
+    @Test
+    public void smokeTestFromYAML6() {
+        assertDumpingYAMLtoDRLisValid("/smoketests/yaml6.yml");
+    }
+    
+    @Test
+    public void smokeTestFromYAML7() {
+        assertDumpingYAMLtoDRLisValid("/smoketests/yaml7.yml");
+    }
+    
+    @Test
+    public void smokeTestFromYAML8() {
+        assertDumpingYAMLtoDRLisValid("/smoketests/yaml8.yml");
+    }
+    
+    @Test
+    public void smokeTestFromYAML9() {
+        assertDumpingYAMLtoDRLisValid("/smoketests/yaml9.yml");
+    }
+    
+    @Test
+    public void smokeTestFromYAML10() {
+        assertDumpingYAMLtoDRLisValid("/smoketests/yaml10.yml");
+    }
 }
