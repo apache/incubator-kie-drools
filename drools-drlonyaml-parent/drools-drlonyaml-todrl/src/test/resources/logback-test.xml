@@ -9,7 +9,7 @@
 
   <logger name="org.kie" level="warn"/>
   <logger name="org.drools" level="warn"/>
-  <logger name="org.drools.drlonyaml.todrl" level="debug"/>
+  <logger name="org.drools.drlonyaml.todrl" level="info"/>
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />
