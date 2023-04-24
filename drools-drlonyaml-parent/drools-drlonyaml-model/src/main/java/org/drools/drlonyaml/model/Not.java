@@ -3,7 +3,6 @@ package org.drools.drlonyaml.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.NotDescr;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

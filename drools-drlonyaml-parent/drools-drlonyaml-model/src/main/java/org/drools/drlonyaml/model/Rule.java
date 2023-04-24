@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
