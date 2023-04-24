@@ -145,7 +145,7 @@ public class SmokeTest {
         LOG.debug("{}", result);
     }
     
-    @Ignore("additional RHS types not supported.")
+    @Ignore("additional RHS types not supported at the moment.")
     @Test
     public void smokeTestFromYAML2() throws Exception {
         String content = Files.readString(Paths.get(this.getClass().getResource("/smoketests/yamlfirst_smoke2.yml").toURI()));
