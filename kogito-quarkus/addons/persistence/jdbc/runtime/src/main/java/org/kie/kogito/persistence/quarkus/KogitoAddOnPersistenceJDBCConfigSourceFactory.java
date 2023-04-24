@@ -15,10 +15,13 @@
  */
 package org.kie.kogito.persistence.quarkus;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.slf4j.Logger;
@@ -26,25 +29,37 @@ import org.slf4j.LoggerFactory;
 
 import io.smallrye.config.ConfigSourceContext;
 import io.smallrye.config.ConfigSourceFactory;
+import io.smallrye.config.ConfigValue;
 
 import static org.kie.kogito.persistence.quarkus.KogitoAddOnPersistenceJDBCConfigSource.ORDINAL;
 
 public class KogitoAddOnPersistenceJDBCConfigSourceFactory implements ConfigSourceFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoAddOnPersistenceJDBCConfigSourceFactory.class);
 
-    private static final String FLYWAY_LOCATIONS = "quarkus.flyway.locations";
+    static final String FLYWAY_LOCATIONS = "quarkus.flyway.locations";
     private static final String DATASOURCE_DB_KIND = "quarkus.datasource.db-kind";
     private static final String LOCATION_PREFIX = "classpath:/db/";
-    private static final String POSTGRESQL = "postgresql";
+    static final String POSTGRESQL = "postgresql";
     private static final String ORACLE = "oracle";
     private static final String ANSI = "ansi";
 
     @Override
     public Iterable<ConfigSource> getConfigSources(ConfigSourceContext context) {
+        ConfigValue flywayLocationsConfigValue = context.getValue(FLYWAY_LOCATIONS);
+        return getConfigSourcesInternal(context.getValue(DATASOURCE_DB_KIND).getValue(),
+                flywayLocationsConfigValue.getValue(), flywayLocationsConfigValue.getConfigSourceOrdinal());
+    }
+
+    Iterable<ConfigSource> getConfigSourcesInternal(String databaseName, String flywayLocationsValue, int flywayLocationsConfigSourceOrdinal) {
         Map<String, String> configuration = new HashMap<>();
-        final String databaseName = context.getValue(DATASOURCE_DB_KIND).getValue();
         if (databaseName != null) {
-            configuration.put(FLYWAY_LOCATIONS, LOCATION_PREFIX + getDBName(databaseName));
+            if (flywayLocationsValue == null || flywayLocationsConfigSourceOrdinal == Integer.MIN_VALUE) {
+                configuration.put(FLYWAY_LOCATIONS, LOCATION_PREFIX + getDBName(databaseName));
+            } else {
+                Set<String> locations = Arrays.stream(flywayLocationsValue.split(",")).collect(Collectors.toSet());
+                locations.add(LOCATION_PREFIX + getDBName(databaseName));
+                configuration.put(FLYWAY_LOCATIONS, String.join(",", locations));
+            }
         } else {
             LOGGER.warn("Kogito Flyway must have the property \"quarkus.datasource.db-kind\" to be set to initialize process schema.");
         }
