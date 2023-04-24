@@ -6,11 +6,13 @@
     <version>8.38.0-SNAPSHOT</version>
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
+  <groupId>org.drools</groupId>
   <artifactId>drools-drlonyaml-parent</artifactId>
   <name>Drools :: DRL on YAML</name>
   <packaging>pom</packaging>
   <modules>
     <module>drools-drlonyaml-schemagen</module>
   	<module>drools-drlonyaml-model</module>
+  	<module>drools-drlonyaml-todrl</module>
   </modules>
 </project>

@@ -33,13 +33,25 @@ public class SmokeTest {
     private void assertDrlToYamlAndBack(String filename) {
         try {
             String content = Files.readString(Paths.get(this.getClass().getResource(filename).toURI()));
+            assertThat(content).as("Failed to read test resource")
+                .isNotNull();
+            
             PackageDescr pkgDescr = drlParser.parse(new StringReader(content));
+            assertThat(pkgDescr).as("Failed to parse DRL as a PackageDescr")
+                .isNotNull();
+            
             Package model = Package.from(pkgDescr);
+            assertThat(model).as("Failed to generate from a PackageDescr a valid model")
+                .isNotNull();
+            
             StringWriter writer = new StringWriter();
             mapper.writeValue(writer, model);
             final String yaml = writer.toString();
             writer.close();            
             LOG.debug("{}", yaml);
+            assertThat(yaml).as("resulting YAML shall not be null nor empty")
+                .isNotNull().isNotEmpty();
+            
             final Package deserPackage = mapper.readValue(yaml, Package.class);
             assertThat(deserPackage).usingRecursiveComparison()
                 .isEqualTo(model);

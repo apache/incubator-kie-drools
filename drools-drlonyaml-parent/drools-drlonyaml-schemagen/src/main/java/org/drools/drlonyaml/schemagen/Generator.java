@@ -51,6 +51,8 @@ public class Generator {
         ObjectNode jsonSchema = generator.generateSchema(ROOT_CLASS);
         
         final String jsonSchemaAsString = OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(jsonSchema);
-        Files.write(Paths.get(projectBaseDir + "/src/main/resources/drlonyaml-schema.json"), jsonSchemaAsString.getBytes());
+        final String jsonSchemaFileRelative = "/src/main/resources/drlonyaml-schema.json";
+        System.out.println("Generating jsonSchema: "+jsonSchemaFileRelative);
+        Files.write(Paths.get(projectBaseDir + jsonSchemaFileRelative), jsonSchemaAsString.getBytes());
     }
 }
