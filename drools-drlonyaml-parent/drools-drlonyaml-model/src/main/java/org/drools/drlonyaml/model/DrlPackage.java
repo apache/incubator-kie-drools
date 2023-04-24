@@ -38,7 +38,6 @@ public class DrlPackage {
     private List<Rule> rules = new ArrayList<>();
     @JsonInclude(Include.NON_EMPTY)
     private List<Function> functions = new ArrayList<>();
-    // functions;
     
     public static DrlPackage from(PackageDescr o) {
         DrlPackage result = new DrlPackage();

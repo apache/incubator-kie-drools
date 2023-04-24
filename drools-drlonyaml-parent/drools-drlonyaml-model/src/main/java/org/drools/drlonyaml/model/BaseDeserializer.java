@@ -38,7 +38,7 @@ public class BaseDeserializer extends StdDeserializer<Base> {
     @Override
     public Base deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         JsonNode node = jp.getCodec().readTree(jp);
-        if (node.get("given") != null) { // TODO maybe enfore XOR checks.
+        if (node.get("given") != null) { // TODO maybe enforce XOR checks.
             return jp.getCodec().treeToValue(node, Pattern.class);
         } else if (node.get("exists") != null) {
             return jp.getCodec().treeToValue(node, Exists.class);

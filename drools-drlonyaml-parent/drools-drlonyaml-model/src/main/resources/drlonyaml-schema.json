@@ -64,12 +64,6 @@
     "Import" : {
       "type" : "string"
     },
-    "InsertThen" : {
-      "type" : "object",
-      "properties" : {
-        "insert" : { }
-      }
-    },
     "Not" : {
       "type" : "object",
       "properties" : {
@@ -143,11 +137,7 @@
           }
         },
         "then" : {
-          "anyOf" : [ {
-            "$ref" : "#/definitions/StringThen"
-          }, {
-            "$ref" : "#/definitions/InsertThen"
-          } ]
+          "$ref" : "#/definitions/StringThen"
         }
       },
       "required" : [ "name", "when", "then" ]

@@ -40,8 +40,10 @@ public class AbstractThenDeserializer extends StdDeserializer<AbstractThen> {
         JsonNode node = jp.getCodec().readTree(jp);
         if (node.isTextual()) {
             return StringThen.from(node.textValue());
-//        } else if (node.get("something") != null) {
-//            return jp.getCodec().treeToValue(node, ConcreteClass.class);
+/* if additional RHS/then will be needed for abstracting from Java (snippet), then the extension mechanism can support additional
+   types providing something ~like:
+        } else if (node.get("something") != null) {
+          return jp.getCodec().treeToValue(node, ConcreteClass.class);*/
         } else {
             throw new UnsupportedOperationException();
         }
