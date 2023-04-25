@@ -54,6 +54,10 @@
       <groupId>org.infinispan.protostream</groupId>
       <artifactId>protostream</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-symbol-solver-core</artifactId>
+    </dependency>
 
     <!-- test -->
     <dependency>

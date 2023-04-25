@@ -90,8 +90,6 @@ public class ProcessCodegen extends AbstractGenerator {
     private static final GeneratedFileType PRODUCER_TYPE = GeneratedFileType.of("PRODUCER", GeneratedFileType.Category.SOURCE);
     private static final SemanticModules BPMN_SEMANTIC_MODULES = new SemanticModules();
     public static final Set<String> SUPPORTED_BPMN_EXTENSIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(".bpmn", ".bpmn2")));
-    private static final String YAML_PARSER = "yml";
-    private static final String JSON_PARSER = "json";
     public static final String SVG_EXPORT_NAME_EXPRESION = "%s-svg.svg";
     public static final Map<String, WorkflowFormat> SUPPORTED_SW_EXTENSIONS;
 
@@ -99,6 +97,7 @@ public class ProcessCodegen extends AbstractGenerator {
     private static final String PROCESS_OPERATIONAL_DASHBOARD_TEMPLATE = "/grafana-dashboard-template/processes/process-operational-dashboard-template.json";
 
     static {
+        ProcessValidatorRegistry.getInstance().registerAdditonalValidator(JavaRuleFlowProcessValidator.getInstance());
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNSemanticModule());
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNExtensionsSemanticModule());
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNDISemanticModule());

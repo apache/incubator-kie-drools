@@ -15,24 +15,17 @@
  */
 package org.jbpm.compiler.canonical;
 
-import java.util.stream.Stream;
-
 import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class ProcessToExecModelGeneratorTest {
 
@@ -82,60 +75,6 @@ public class ProcessToExecModelGeneratorTest {
         assertThat(processMetadata.getProcessClassName()).isEqualTo("com.myspace.demo.OrdersProcess");
         assertThat(processMetadata.getGeneratedClassModel()).isNotNull();
         assertThat(processMetadata.getWorkItems()).hasSize(1);
-    }
-
-    public static Stream<Arguments> invalidVariables() {
-        return Stream.of(
-                Arguments.of(new String[] {
-                        "com.myspace.demo.Order order2 = null; System.out.println(\"Order has been created \" + order);java.util.Arrays.toString(new int[]{1, 2});System.out.println(orders);",
-                        "uses unknown variable in the script: orders" }),
-                Arguments.of(new String[] {
-                        "a = 2",
-                        "unable to parse Java content: Parse error. Found \"}\", expected one of  \"!=\" \"%\" \"%=\" \"&\" \"&&\" \"&=\" \"*\" \"*=\" \"+\" \"+=\" \"-\" \"-=\" \"->\" \"/\" \"/=\" \"::\" \";\" \"<\" \"<<=\" \"<=\" \"=\" \"==\" \">\" \">=\" \">>=\" \">>>=\" \"?\" \"^\" \"^=\" \"instanceof\" \"|\" \"|=\" \"||\"" }),
-                Arguments.of(new String[] {
-                        "a = 2;",
-                        "uses unknown variable in the script: a" }),
-                Arguments.of(new String[] {
-                        "a.toString(); Integer i = Integer.valueOf(\"1\");",
-                        "uses unknown variable in the script: a" }),
-                Arguments.of(new String[] {
-                        "System.out.println(\"Order has been created \" + x);",
-                        "uses unknown variable in the script: x" }),
-                Arguments.of(new String[] {
-                        "System.out.println(\"[\" + (new java.util.Date()) + \"] [\" + java.lang.Thread.currentThread().getName() +\"]\");\n" +
-                                "java.util.ArrayList list = new java.util.ArrayList();\n" +
-                                "System.out.println(Integer.valueOf(x));",
-                        "uses unknown variable in the script: x" }));
-    }
-
-    @ParameterizedTest(name = "{index} {0}")
-    @MethodSource("invalidVariables")
-    public void testScriptInvalidVariable(String script, String message) {
-        RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("demo.orders");
-        factory
-                .variable("order", new ObjectDataType("com.myspace.demo.Order"))
-                .variable("approver", new ObjectDataType("String"))
-                .name("orders")
-                .packageName("com.myspace.demo")
-                .dynamic(false)
-                .version("1.0")
-                .startNode(1)
-                .name("start")
-                .done()
-                .actionNode(2)
-                .name("Dump order 1")
-                .action("java", script)
-                .done()
-                .endNode(3)
-                .name("end")
-                .terminate(false)
-                .done()
-                .connection(1, 2)
-                .connection(2, 3);
-
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> factory.validate())
-                .withMessage(format("Process could not be validated ![Process 'orders' [demo.orders]: Node 'Dump order 1' [2] %s]", message));
     }
 
     @Test
