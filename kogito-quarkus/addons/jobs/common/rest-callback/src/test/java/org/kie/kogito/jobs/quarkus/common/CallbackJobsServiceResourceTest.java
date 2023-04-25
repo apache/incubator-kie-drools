@@ -34,6 +34,8 @@ import org.kie.kogito.uow.UnitOfWorkManager;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -49,8 +51,10 @@ class CallbackJobsServiceResourceTest {
 
     private static final String PROCESS_ID = "PROCESS_ID";
     private static final String PROCESS_INSTANCE_ID = "PROCESS_INSTANCE_ID";
-    private static final String TIMER_ID = "TIMER:1:8be48533-beed-4c7b-ad85-bd7b543e7925";
+    private static final String JOB_ID = "JOB_ID";
+    private static final String TIMER_ID = "TIMER_ID";
     private static final int LIMIT = 1;
+    private static final String PAYLOAD = "{\"correlationId\":\"" + JOB_ID + "\"}";
 
     @Mock
     private Processes processes;
@@ -80,6 +84,7 @@ class CallbackJobsServiceResourceTest {
         resource = new CallbackJobsServiceResource();
         resource.application = mock(Instance.class);
         resource.processes = mock(Instance.class);
+        resource.objectMapper = new ObjectMapper();
         lenient().when(resource.application.get()).thenReturn(application);
         lenient().when(resource.processes.get()).thenReturn(processes);
     }
@@ -95,14 +100,14 @@ class CallbackJobsServiceResourceTest {
     }
 
     private void triggerTimerProcessIdOrProcessInstanceIdNotPresent(String processId, String processInstanceId) {
-        Response response = resource.triggerTimer(processId, processInstanceId, TIMER_ID, LIMIT);
+        Response response = resource.triggerTimer(processId, processInstanceId, TIMER_ID, LIMIT, PAYLOAD);
         assertThat(response.getStatus()).isEqualTo(BAD_REQUEST.getStatusCode());
         assertThat(response.getEntity()).isEqualTo("Process id and Process instance id must be given");
     }
 
     @Test
     void triggerTimerProcessNotFound() {
-        Response response = resource.triggerTimer(PROCESS_ID, PROCESS_INSTANCE_ID, TIMER_ID, LIMIT);
+        Response response = resource.triggerTimer(PROCESS_ID, PROCESS_INSTANCE_ID, TIMER_ID, LIMIT, PAYLOAD);
         assertThat(response.getStatus()).isEqualTo(NOT_FOUND.getStatusCode());
         assertThat(response.getEntity()).isEqualTo("Process with id " + PROCESS_ID + " not found");
     }
@@ -114,8 +119,7 @@ class CallbackJobsServiceResourceTest {
         doReturn(unitOfWorkManager).when(application).unitOfWorkManager();
         doReturn(unitOfWork).when(unitOfWorkManager).newUnitOfWork();
         doReturn(Optional.empty()).when(instances).findById(PROCESS_INSTANCE_ID);
-
-        Response response = resource.triggerTimer(PROCESS_ID, PROCESS_INSTANCE_ID, TIMER_ID, LIMIT);
+        Response response = resource.triggerTimer(PROCESS_ID, PROCESS_INSTANCE_ID, TIMER_ID, LIMIT, PAYLOAD);
         assertThat(response.getStatus()).isEqualTo(NOT_FOUND.getStatusCode());
         assertThat(response.getEntity()).isEqualTo("Process instance with id " + PROCESS_INSTANCE_ID + " not found");
     }
@@ -127,8 +131,7 @@ class CallbackJobsServiceResourceTest {
         doReturn(unitOfWorkManager).when(application).unitOfWorkManager();
         doReturn(unitOfWork).when(unitOfWorkManager).newUnitOfWork();
         doReturn(Optional.of(processInstance)).when(instances).findById(PROCESS_INSTANCE_ID);
-
-        Response response = resource.triggerTimer(PROCESS_ID, PROCESS_INSTANCE_ID, TIMER_ID, LIMIT);
+        Response response = resource.triggerTimer(PROCESS_ID, PROCESS_INSTANCE_ID, TIMER_ID, LIMIT, PAYLOAD);
         assertThat(response.getStatus()).isEqualTo(OK.getStatusCode());
         verify(processInstance).send(any());
     }

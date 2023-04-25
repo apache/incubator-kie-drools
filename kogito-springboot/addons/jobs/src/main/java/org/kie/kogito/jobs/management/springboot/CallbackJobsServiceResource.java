@@ -17,6 +17,7 @@
 package org.kie.kogito.jobs.management.springboot;
 
 import org.kie.kogito.Application;
+import org.kie.kogito.jobs.api.JobCallbackResourceDef;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.services.jobs.impl.TriggerJobCommand;
@@ -24,11 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.JOBS_CALLBACK_POST_URI;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.JOBS_CALLBACK_URI;
@@ -48,11 +47,15 @@ public class CallbackJobsServiceResource {
     @Autowired
     Application application;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @PostMapping(value = JOBS_CALLBACK_POST_URI, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> triggerTimer(@PathVariable(PROCESS_ID) String processId,
             @PathVariable(PROCESS_INSTANCE_ID) String processInstanceId,
             @PathVariable(TIMER_ID) String timerId,
-            @RequestParam(value = LIMIT, defaultValue = LIMIT_DEFAULT_VALUE, required = false) Integer limit) {
+            @RequestParam(value = LIMIT, defaultValue = LIMIT_DEFAULT_VALUE, required = false) Integer limit,
+            @RequestBody String payload) {
         if (processId == null || processInstanceId == null) {
             return ResponseEntity.badRequest().body("Process id and Process instance id must be  given");
         }
@@ -62,7 +65,17 @@ public class CallbackJobsServiceResource {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Process with id " + processId + " not found");
         }
 
-        return new TriggerJobCommand(processInstanceId, timerId, limit, process, application.unitOfWorkManager()).execute()
+        String correlationId = null;
+        if (payload != null && !payload.isBlank()) {
+            try {
+                JobCallbackResourceDef.JobCallbackPayload jobPayload = objectMapper.readValue(payload, JobCallbackResourceDef.JobCallbackPayload.class);
+                correlationId = jobPayload.getCorrelationId();
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid payload: " + payload + ". " + e.getMessage());
+            }
+        }
+
+        return new TriggerJobCommand(processInstanceId, correlationId, timerId, limit, process, application.unitOfWorkManager()).execute()
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Process instance with id " + processInstanceId + " not found");
 

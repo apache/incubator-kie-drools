@@ -28,14 +28,24 @@ import org.kie.kogito.uow.UnitOfWorkManager;
 public class TriggerJobCommand {
 
     private String processInstanceId;
+    private String correlationId;
     private String timerId;
     private Integer limit;
     private Process<?> process;
     private UnitOfWorkManager uom;
     public static final String SIGNAL = "timerTriggered";
 
-    public TriggerJobCommand(String processInstanceId, String timerId, Integer limit, Process<?> process, UnitOfWorkManager uom) {
+    /**
+     * @param processInstanceId Identifier of the process instance to execute.
+     * @param correlationId The correlation id of the job that is being executed.
+     * @param timerId Identifier of the timer to execute.
+     * @param limit The job execution limit, a value of 0 indicates the last execution.
+     * @param process The Process to which the processInstanceId belongs.
+     * @param uom The unit of work manager to produce the execution.
+     */
+    public TriggerJobCommand(String processInstanceId, String correlationId, String timerId, Integer limit, Process<?> process, UnitOfWorkManager uom) {
         this.processInstanceId = processInstanceId;
+        this.correlationId = correlationId;
         this.timerId = timerId;
         this.limit = limit;
         this.process = process;
@@ -46,7 +56,7 @@ public class TriggerJobCommand {
         return UnitOfWorkExecutor.executeInUnitOfWork(uom, () -> {
             Optional<? extends ProcessInstance<?>> processInstanceFound = process.instances().findById(processInstanceId);
             return processInstanceFound.map(processInstance -> {
-                processInstance.send(new JobSignal(SIGNAL, TimerInstance.with(timerId, limit)));
+                processInstance.send(new JobSignal(SIGNAL, TimerInstance.with(correlationId, timerId, limit)));
                 return true;
             }).orElse(false);
         });

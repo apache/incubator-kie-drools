@@ -27,6 +27,7 @@ public class TimerInstance implements Serializable {
     private static final long serialVersionUID = 9161292833931227195L;
 
     private String id;
+    private String timerId;
     private long delay;
     private long period;
     private Date activated;
@@ -40,6 +41,14 @@ public class TimerInstance implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getTimerId() {
+        return timerId;
+    }
+
+    public void setTimerId(String timerId) {
+        this.timerId = timerId;
     }
 
     public long getDelay() {
@@ -92,14 +101,15 @@ public class TimerInstance implements Serializable {
 
     @Override
     public String toString() {
-        return "TimerInstance [id=" + id + ", delay=" + delay + ", period=" + period + ", activated=" + activated + ", lastTriggered=" + lastTriggered + ", processInstanceId="
+        return "TimerInstance [id=" + id + ", timerId=" + timerId + ", delay=" + delay + ", period=" + period + ", activated=" + activated + ", lastTriggered=" + lastTriggered + ", processInstanceId="
                 + processInstanceId
                 + "]";
     }
 
-    public static TimerInstance with(String id, Integer limit) {
+    public static TimerInstance with(String id, String timerId, Integer limit) {
         TimerInstance timerInstance = new TimerInstance();
         timerInstance.setId(id);
+        timerInstance.setTimerId(timerId);
         timerInstance.setRepeatLimit(limit);
 
         return timerInstance;

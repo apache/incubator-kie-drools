@@ -49,7 +49,7 @@ public class LegacyInMemoryJobService extends InMemoryJobService {
                 UnitOfWorkExecutor.executeInUnitOfWork(unitOfWorkManager, () -> {
                     ProcessInstance pi = processRuntime.getProcessInstance(description.processInstanceId());
                     if (pi != null) {
-                        pi.signalEvent(SIGNAL, TimerInstance.with(id, counter.decrementAndGet()));
+                        pi.signalEvent(SIGNAL, TimerInstance.with(description.id(), description.timerId(), counter.decrementAndGet()));
                         if (counter.get() == 0) {
                             cancelJob(id, false);
                         }

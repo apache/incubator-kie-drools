@@ -26,7 +26,10 @@ import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.service.api.Job;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -56,6 +59,7 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
     @Test
     void testGetCallbackEndpoint() {
         ProcessInstanceJobDescription description = ProcessInstanceJobDescription.builder()
+                .id(JOB_ID)
                 .timerId(TIMER_ID)
                 .expirationTime(ExactExpirationTime.now())
                 .processInstanceId(PROCESS_INSTANCE_ID)
@@ -67,7 +71,7 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
                         CALLBACK_URL,
                         PROCESS_ID,
                         PROCESS_INSTANCE_ID,
-                        description.id());
+                        description.timerId());
     }
 
     @Test
@@ -87,6 +91,7 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
 
     protected ProcessInstanceJobDescription buildProcessInstanceJobDescription() {
         return ProcessInstanceJobDescription.builder()
+                .id(JOB_ID)
                 .timerId(TIMER_ID)
                 .expirationTime(ExactExpirationTime.of(EXPIRATION_TIME))
                 .processInstanceId(PROCESS_INSTANCE_ID)
@@ -100,7 +105,6 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
     protected void assertExpectedJob(Job job, String expectedJobId) {
         assertThat(job).isNotNull();
         assertThat(job.getId()).isEqualTo(expectedJobId);
-        assertThat(job.getId()).contains(TIMER_ID);
         assertThat(job.getRecipient())
                 .isNotNull()
                 .isInstanceOf(HttpRecipient.class);
@@ -110,15 +114,21 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
                 CALLBACK_URL,
                 PROCESS_ID,
                 PROCESS_INSTANCE_ID,
-                expectedJobId);
+                TIMER_ID);
         assertThat(httpRecipient.getHeaders())
-                .hasSize(5)
+                .hasSize(6)
                 .containsEntry("processId", PROCESS_ID)
                 .containsEntry("processInstanceId", PROCESS_INSTANCE_ID)
                 .containsEntry("rootProcessId", ROOT_PROCESS_ID)
                 .containsEntry("rootProcessInstanceId", ROOT_PROCESS_INSTANCE_ID)
-                .containsEntry("nodeInstanceId", NODE_INSTANCE_ID);
-        assertThat(httpRecipient.getPayload()).isNull();
+                .containsEntry("nodeInstanceId", NODE_INSTANCE_ID)
+                .containsEntry("Content-Type", "application/json");
+        assertThat(httpRecipient.getPayload()).isNotNull();
+        assertThat(httpRecipient.getPayload()).isInstanceOf(HttpRecipientJsonPayloadData.class);
+        JsonNode data = ((HttpRecipientJsonPayloadData) httpRecipient.getPayload()).getData();
+        assertThat(data).isNotNull()
+                .hasSize(1);
+        assertThat(data.get("correlationId").asText()).isEqualTo(JOB_ID);
         assertThat(job.getSchedule())
                 .isNotNull()
                 .isInstanceOf(TimerSchedule.class);

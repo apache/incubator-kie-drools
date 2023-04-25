@@ -18,12 +18,17 @@ package org.kie.kogito.jobs.api;
 
 import java.net.URI;
 
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,10 +43,12 @@ class JobCallbackResourceDefTest {
     private static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
     private static final ExpirationTime EXPIRATION_TIME = ExactExpirationTime.of("2020-03-21T10:15:30+01:00");
     private static final String JOB_ID = "JOB_ID";
+
+    private static final String TIMER_ID = "TIMER_ID";
     private static final String CALLBACK = "CALLBACK";
 
     private static final String EXPECTED_CALLBACK_URI = SERVICE_URI + "/management/jobs/" + PROCESS_ID
-            + "/instances/" + PROCESS_INSTANCE_ID + "/timers/" + JOB_ID;
+            + "/instances/" + PROCESS_INSTANCE_ID + "/timers/" + TIMER_ID;
 
     @Test
     void buildCallbackURI() {
@@ -61,13 +68,18 @@ class JobCallbackResourceDefTest {
         assertThat(httpRecipient.getMethod()).isEqualTo("POST");
         assertThat(httpRecipient.getUrl()).isEqualTo(CALLBACK);
         assertThat(httpRecipient.getHeaders())
-                .hasSize(5)
+                .hasSize(6)
+                .containsEntry(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .containsEntry("processId", PROCESS_ID)
                 .containsEntry("processInstanceId", PROCESS_INSTANCE_ID)
                 .containsEntry("rootProcessId", ROOT_PROCESS_ID)
                 .containsEntry("rootProcessInstanceId", ROOT_PROCESS_INSTANCE_ID)
                 .containsEntry("nodeInstanceId", NODE_INSTANCE_ID);
-        assertThat(httpRecipient.getPayload()).isNull();
+        assertThat(httpRecipient.getPayload()).isNotNull();
+        assertThat(httpRecipient.getPayload().getData()).isNotNull();
+        assertThat(httpRecipient.getPayload().getData()).isInstanceOf(JsonNode.class);
+        JsonNode json = (JsonNode) httpRecipient.getPayload().getData();
+        assertThat(json.get("correlationId").asText()).isEqualTo(JOB_ID);
         assertThat(job.getSchedule())
                 .isNotNull()
                 .isInstanceOf(TimerSchedule.class);
@@ -77,7 +89,8 @@ class JobCallbackResourceDefTest {
 
     private ProcessInstanceJobDescription mockProcessInstanceJobDescription() {
         return ProcessInstanceJobDescription.builder()
-                .timerId(JOB_ID)
+                .id(JOB_ID)
+                .timerId(TIMER_ID)
                 .expirationTime(EXPIRATION_TIME)
                 .priority(PRIORITY)
                 .processInstanceId(PROCESS_INSTANCE_ID)

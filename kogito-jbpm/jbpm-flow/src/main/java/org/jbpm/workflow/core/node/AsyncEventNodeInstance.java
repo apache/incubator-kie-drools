@@ -97,7 +97,8 @@ public class AsyncEventNodeInstance extends EventNodeInstance {
                     ExpirationTime expirationTime = ExactExpirationTime.of(ZonedDateTime.now().plus(1, ChronoUnit.MILLIS));
                     ProcessInstanceJobDescription jobDescription =
                             ProcessInstanceJobDescription.builder()
-                                    .timerId(getJobId())
+                                    .id(getJobId())
+                                    .timerId("-1")
                                     .expirationTime(expirationTime)
                                     .processInstanceId(instance.getProcessInstance().getStringId())
                                     .rootProcessInstanceId(instance.getProcessInstance().getRootProcessInstanceId())

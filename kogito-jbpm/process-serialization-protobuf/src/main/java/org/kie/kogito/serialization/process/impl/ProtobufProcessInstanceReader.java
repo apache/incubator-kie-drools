@@ -290,6 +290,9 @@ public class ProtobufProcessInstanceReader {
             }
             nodeInstance.internalSetTimerInstances(timerInstances);
         }
+        if (!content.getTimerInstanceReferenceMap().isEmpty()) {
+            nodeInstance.internalSetTimerInstancesReference(new HashMap<>(content.getTimerInstanceReferenceMap()));
+        }
 
         setCommonNodeInstanceData(ruleFlowProcessInstance, parentContainer, protoNodeInstance, nodeInstance);
 
@@ -307,6 +310,9 @@ public class ProtobufProcessInstanceReader {
             }
             nodeInstance.internalSetTimerInstances(timerInstances);
         }
+        if (!content.getTimerInstanceReferenceMap().isEmpty()) {
+            nodeInstance.internalSetTimerInstancesReference(new HashMap<>(content.getTimerInstanceReferenceMap()));
+        }
         buildWorkflowContext(nodeInstance, content.getContext());
         return nodeInstance;
     }
@@ -320,6 +326,9 @@ public class ProtobufProcessInstanceReader {
                 timerInstances.add(_timerId);
             }
             nodeInstance.internalSetTimerInstances(timerInstances);
+        }
+        if (!content.getTimerInstanceReferenceMap().isEmpty()) {
+            nodeInstance.internalSetTimerInstancesReference(new HashMap<>(content.getTimerInstanceReferenceMap()));
         }
 
         setCommonNodeInstanceData(ruleFlowProcessInstance, parentContainer, protoNodeInstance, nodeInstance);
@@ -337,6 +346,9 @@ public class ProtobufProcessInstanceReader {
                 timerInstances.add(_timerId);
             }
             nodeInstance.internalSetTimerInstances(timerInstances);
+        }
+        if (!content.getTimerInstanceReferenceMap().isEmpty()) {
+            nodeInstance.internalSetTimerInstancesReference(new HashMap<>(content.getTimerInstanceReferenceMap()));
         }
         return nodeInstance;
     }
@@ -372,6 +384,9 @@ public class ProtobufProcessInstanceReader {
             }
             nodeInstance.internalSetTimerInstances(timerInstances);
         }
+        if (!content.getTimerInstanceReferenceMap().isEmpty()) {
+            nodeInstance.internalSetTimerInstancesReference(new HashMap<>(content.getTimerInstanceReferenceMap()));
+        }
         return nodeInstance;
     }
 
@@ -385,6 +400,9 @@ public class ProtobufProcessInstanceReader {
             }
             nodeInstance.internalSetTimerInstances(timerInstances);
         }
+        if (!content.getTimerInstanceReferenceMap().isEmpty()) {
+            nodeInstance.internalSetTimerInstancesReference(new HashMap<>(content.getTimerInstanceReferenceMap()));
+        }
 
         return nodeInstance;
     }
@@ -394,6 +412,9 @@ public class ProtobufProcessInstanceReader {
         nodeInstance.internalSetProcessInstanceId(content.getProcessInstanceId());
         if (content.getTimerInstanceIdCount() > 0) {
             nodeInstance.internalSetTimerInstances(new ArrayList<>(content.getTimerInstanceIdList()));
+        }
+        if (!content.getTimerInstanceReferenceMap().isEmpty()) {
+            nodeInstance.internalSetTimerInstancesReference(new HashMap<>(content.getTimerInstanceReferenceMap()));
         }
         return nodeInstance;
     }
@@ -414,6 +435,9 @@ public class ProtobufProcessInstanceReader {
         nodeInstance.setRuleFlowGroup(content.getRuleFlowGroup());
         if (content.getTimerInstanceIdCount() > 0) {
             nodeInstance.internalSetTimerInstances(new ArrayList<>(content.getTimerInstanceIdList()));
+        }
+        if (!content.getTimerInstanceReferenceMap().isEmpty()) {
+            nodeInstance.internalSetTimerInstancesReference(new HashMap<>(content.getTimerInstanceReferenceMap()));
         }
 
         return nodeInstance;
@@ -477,6 +501,9 @@ public class ProtobufProcessInstanceReader {
 
             if (content.getTimerInstanceIdCount() > 0) {
                 nodeInstance.internalSetTimerInstances(new ArrayList<>(content.getTimerInstanceIdList()));
+            }
+            if (!content.getTimerInstanceReferenceMap().isEmpty()) {
+                nodeInstance.internalSetTimerInstancesReference(new HashMap<>(content.getTimerInstanceReferenceMap()));
             }
             nodeInstance.internalSetProcessInstanceId(content.getErrorHandlingProcessInstanceId());
             varReader.buildVariables(content.getVariableList()).forEach(var -> nodeInstance.getWorkItem().getParameters().put(var.getName(), var.getValue()));

@@ -29,9 +29,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.kie.kogito.Application;
+import org.kie.kogito.jobs.api.JobCallbackResourceDef;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.services.jobs.impl.TriggerJobCommand;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.JOBS_CALLBACK_POST_URI;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.JOBS_CALLBACK_URI;
@@ -50,13 +53,17 @@ public class CallbackJobsServiceResource {
     @Inject
     Instance<Application> application;
 
+    @Inject
+    ObjectMapper objectMapper;
+
     @POST
     @Path(JOBS_CALLBACK_POST_URI)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response triggerTimer(@PathParam(PROCESS_ID) String processId,
             @PathParam(PROCESS_INSTANCE_ID) String processInstanceId,
             @PathParam(TIMER_ID) String timerId,
-            @QueryParam(LIMIT) @DefaultValue(LIMIT_DEFAULT_VALUE) Integer limit) {
+            @QueryParam(LIMIT) @DefaultValue(LIMIT_DEFAULT_VALUE) Integer limit,
+            String payload) {
         if (processId == null || processInstanceId == null) {
             return Response.status(Status.BAD_REQUEST).entity("Process id and Process instance id must be given").build();
         }
@@ -66,7 +73,17 @@ public class CallbackJobsServiceResource {
             return Response.status(Status.NOT_FOUND).entity("Process with id " + processId + " not found").build();
         }
 
-        return new TriggerJobCommand(processInstanceId, timerId, limit, process, application.get().unitOfWorkManager()).execute()
+        String correlationId = null;
+        if (payload != null && !payload.isBlank()) {
+            try {
+                JobCallbackResourceDef.JobCallbackPayload jobPayload = objectMapper.readValue(payload, JobCallbackResourceDef.JobCallbackPayload.class);
+                correlationId = jobPayload.getCorrelationId();
+            } catch (Exception e) {
+                return Response.status(Status.BAD_REQUEST).entity("Invalid payload: " + payload + ". " + e.getMessage()).build();
+            }
+        }
+
+        return new TriggerJobCommand(processInstanceId, correlationId, timerId, limit, process, application.get().unitOfWorkManager()).execute()
                 ? Response.status(Status.OK).build()
                 : Response.status(Status.NOT_FOUND).entity("Process instance with id " + processInstanceId + " not found").build();
 

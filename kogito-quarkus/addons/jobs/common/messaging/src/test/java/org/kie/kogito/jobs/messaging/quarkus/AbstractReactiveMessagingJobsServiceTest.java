@@ -36,6 +36,7 @@ import org.kie.kogito.jobs.service.api.TemporalUnit;
 import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
 import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -63,12 +64,13 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
     protected static final Integer PRIORITY = 0;
     protected static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
     protected static final ExpirationTime EXPIRATION_TIME = ExactExpirationTime.of("2020-03-21T10:15:30+01:00");
-    protected static final String TIMER_JOB_ID = "JOB_ID";
+    protected static final String TIMER_ID = "TIMER_ID";
+    protected static final String JOB_ID = "JOB_ID";
     protected static final String SERIALIZED_EVENT = "SERIALIZED_EVENT";
     protected static final String SERIALIZED_SECOND_EVENT = "SERIALIZED_SECOND_EVENT";
     protected static final String JOB_ID_STRING = "JOB_ID_STRING";
     private static final String CALLBACK_ENDPOINT = SERVICE_URI + "/management/jobs/" + PROCESS_ID
-            + "/instances/" + PROCESS_INSTANCE_ID + "/timers/" + TIMER_JOB_ID;
+            + "/instances/" + PROCESS_INSTANCE_ID + "/timers/" + TIMER_ID;
     protected static final String ERROR = "ERROR";
     protected static final String FATAL_ERROR = "FATAL_ERROR";
 
@@ -272,7 +274,8 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
 
     protected ProcessInstanceJobDescription mockProcessInstanceJobDescription() {
         return ProcessInstanceJobDescription.builder()
-                .timerId(TIMER_JOB_ID)
+                .id(JOB_ID)
+                .timerId(TIMER_ID)
                 .expirationTime(EXPIRATION_TIME)
                 .priority(PRIORITY)
                 .processInstanceId(PROCESS_INSTANCE_ID)
@@ -285,7 +288,8 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
 
     protected CreateJobEvent mockExpectedCreateJobEvent() {
         Job job = Job.builder()
-                .id(TIMER_JOB_ID)
+                .id(JOB_ID)
+                .correlationId(JOB_ID)
                 .retry(null)
                 .schedule(TimerSchedule.builder()
                         .startTime(EXPIRATION_TIME.get().toOffsetDateTime())
@@ -293,13 +297,15 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
                         .delay(EXPIRATION_TIME.repeatInterval())
                         .delayUnit(TemporalUnit.MILLIS)
                         .build())
-                .recipient(HttpRecipient.builder().forStringPayload()
+                .recipient(HttpRecipient.builder().forJsonPayload()
+                        .payload(HttpRecipientJsonPayloadData.from(new ObjectMapper().createObjectNode().put("correlationId", JOB_ID)))
                         .url(CALLBACK_ENDPOINT)
                         .header("processInstanceId", PROCESS_INSTANCE_ID)
                         .header("rootProcessInstanceId", ROOT_PROCESS_INSTANCE_ID)
                         .header("processId", PROCESS_ID)
                         .header("rootProcessId", ROOT_PROCESS_ID)
                         .header("nodeInstanceId", NODE_INSTANCE_ID)
+                        .header("Content-Type", "application/json")
                         .build())
                 .build();
 
@@ -323,6 +329,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
         Job job = event.getData();
         assertThat(job.getRetry()).isNull();
         assertThat(job.getId()).isEqualTo(expected.getData().getId());
+        assertThat(job.getCorrelationId()).isEqualTo(expected.getData().getCorrelationId());
 
         assertThat(job.getRecipient()).hasSameClassAs(expected.getData().getRecipient());
         HttpRecipient recipient = (HttpRecipient) job.getRecipient();

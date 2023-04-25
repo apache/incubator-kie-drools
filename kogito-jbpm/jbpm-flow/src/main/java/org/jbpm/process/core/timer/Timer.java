@@ -17,7 +17,6 @@ package org.jbpm.process.core.timer;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * 
@@ -28,22 +27,18 @@ public class Timer implements Serializable {
     public static final int TIME_CYCLE = 2;
     public static final int TIME_DATE = 3;
 
-    private final String id;
+    private long id;
     private String delay;
     private String period;
     private String date;
     private int timeType;
 
-    public Timer() {
-        this(UUID.randomUUID().toString());
-    }
-
-    public Timer(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
+    public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getDelay() {
@@ -70,25 +65,15 @@ public class Timer implements Serializable {
         this.date = date;
     }
 
+    @Override
     public String toString() {
-        String result = "Timer";
-        if (delay != null || period != null) {
-            result += "[";
-            if (delay != null) {
-                result += "delay=" + delay;
-                if (period != null) {
-                    result += ", ";
-                }
-            }
-            if (period != null) {
-                result += "period=" + period;
-            }
-            if (date != null) {
-                result += "date=" + date;
-            }
-            result += "]";
-        }
-        return result;
+        return "Timer{" +
+                "id='" + id + '\'' +
+                ", delay='" + delay + '\'' +
+                ", period='" + period + '\'' +
+                ", date='" + date + '\'' +
+                ", timeType=" + timeType +
+                '}';
     }
 
     public int getTimeType() {
@@ -119,7 +104,7 @@ public class Timer implements Serializable {
             return false;
         }
         Timer timer = (Timer) o;
-        return timeType == timer.timeType && Objects.equals(id, timer.id) && Objects.equals(delay, timer.delay) && Objects.equals(period,
+        return timeType == timer.timeType && id == timer.id && Objects.equals(delay, timer.delay) && Objects.equals(period,
                 timer.period) && Objects.equals(date, timer.date);
     }
 

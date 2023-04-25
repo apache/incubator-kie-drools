@@ -91,7 +91,7 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
     }
 
     public Runnable getSignalProcessInstanceCommand(ProcessInstanceJobDescription description, boolean remove, int limit) {
-        return new SignalProcessInstanceOnExpiredTimer(description.id(), description
+        return new SignalProcessInstanceOnExpiredTimer(description.id(), description.timerId(), description
                 .processInstanceId(), description.processId(), remove, limit);
     }
 
@@ -127,13 +127,15 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
     private class SignalProcessInstanceOnExpiredTimer implements Runnable {
 
         private final String id;
+        private final String timerId;
         private boolean removeAtExecution;
         private String processInstanceId;
         private Integer limit;
         private String processId;
 
-        private SignalProcessInstanceOnExpiredTimer(String id, String processInstanceId, String processId, boolean removeAtExecution, Integer limit) {
+        private SignalProcessInstanceOnExpiredTimer(String id, String timerId, String processInstanceId, String processId, boolean removeAtExecution, Integer limit) {
             this.id = id;
+            this.timerId = timerId;
             this.processInstanceId = processInstanceId;
             this.removeAtExecution = removeAtExecution;
             this.limit = limit;
@@ -146,7 +148,7 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
                 LOGGER.info("Job {} started", id);
                 Process<? extends Model> process = processes.processById(processId);
                 limit--;
-                boolean executed = new TriggerJobCommand(processInstanceId, id, limit, process, unitOfWorkManager).execute();
+                boolean executed = new TriggerJobCommand(processInstanceId, id, timerId, limit, process, unitOfWorkManager).execute();
                 if (limit == 0 || !executed) {
                     cancelJob(id, false);
                 }

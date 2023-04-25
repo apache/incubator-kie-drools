@@ -75,9 +75,10 @@ public class TimerTest extends AbstractBaseTest {
                 .expirationTime(ExactExpirationTime.now())
                 .processInstanceId(processInstance.getStringId())
                 .processId("test")
+                .id("job1")
                 .timerId("timer1")
                 .build();
-        String jobId = jobService.scheduleProcessInstanceJob(desc);
+        jobService.scheduleProcessInstanceJob(desc);
 
         try {
             Thread.sleep(1000);
@@ -91,9 +92,10 @@ public class TimerTest extends AbstractBaseTest {
                 .expirationTime(DurationExpirationTime.after(500))
                 .processInstanceId(processInstance.getStringId())
                 .processId("test")
+                .id("job2")
                 .timerId("timer2")
                 .build();
-        jobId = jobService.scheduleProcessInstanceJob(desc);
+        jobService.scheduleProcessInstanceJob(desc);
         assertThat(counter).isZero();
         try {
             Thread.sleep(1000);
@@ -107,9 +109,10 @@ public class TimerTest extends AbstractBaseTest {
                 .expirationTime(DurationExpirationTime.repeat(500, 300L))
                 .processInstanceId(processInstance.getStringId())
                 .processId("test")
+                .id("job3")
                 .timerId("timer3")
                 .build();
-        jobId = jobService.scheduleProcessInstanceJob(desc);
+        String jobId = jobService.scheduleProcessInstanceJob(desc);
         assertThat(counter).isZero();
         try {
             Thread.sleep(700);

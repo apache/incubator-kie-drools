@@ -63,6 +63,8 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 
     private List<String> timerInstances;
 
+    private Map<String, String> timerInstancesReference;
+
     public StateBasedNode getEventBasedNode() {
         return (StateBasedNode) getNode();
     }
@@ -79,11 +81,13 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         if (timers != null) {
             addTimerListener();
             timerInstances = new ArrayList<>(timers.size());
+            timerInstancesReference = new HashMap<>(timers.size());
             JobsService jobService = ((KogitoProcessRuntime.Provider) getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getKogitoProcessRuntime().getJobsService();
             for (Timer timer : timers.keySet()) {
                 ProcessInstanceJobDescription jobDescription =
                         ProcessInstanceJobDescription.builder()
-                                .timerId(timer.getId())
+                                .generateId()
+                                .timerId(Long.toString(timer.getId()))
                                 .expirationTime(createTimerInstance(timer))
                                 .processInstanceId(getProcessInstance().getStringId())
                                 .rootProcessInstanceId(getProcessInstance().getRootProcessInstanceId())
@@ -93,6 +97,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                                 .build();
                 String jobId = jobService.scheduleProcessInstanceJob(jobDescription);
                 timerInstances.add(jobId);
+                timerInstancesReference.put(jobId, Long.toString(timer.getId()));
             }
         }
 
@@ -274,9 +279,12 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 
     private void triggerTimer(TimerInstance timerInstance) {
         for (Map.Entry<Timer, DroolsAction> entry : getEventBasedNode().getTimers().entrySet()) {
-            if (Objects.equals(entry.getKey().getId(), timerInstance.getId())) {
+            if (Objects.equals(Objects.toString(entry.getKey().getId()), timerInstance.getTimerId())) {
                 if (timerInstance.getRepeatLimit() == 0) {
                     timerInstances.remove(timerInstance.getId());
+                    if (timerInstancesReference != null) {
+                        timerInstancesReference.remove(timerInstance.getId());
+                    }
                 }
                 executeAction((Action) entry.getValue().getMetaData("Action"));
                 return;
@@ -341,6 +349,14 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         this.timerInstances = timerInstances;
     }
 
+    public Map<String, String> getTimerInstancesReference() {
+        return timerInstancesReference;
+    }
+
+    public void internalSetTimerInstancesReference(Map<String, String> timerInstancesReference) {
+        this.timerInstancesReference = timerInstancesReference;
+    }
+
     @Override
     public void cancel() {
         if (this.slaCompliance == KogitoProcessInstance.SLA_PENDING) {
@@ -364,6 +380,9 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             JobsService jobService = ((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService();
             for (String id : timerInstances) {
                 jobService.cancelJob(id);
+                if (timerInstancesReference != null) {
+                    timerInstancesReference.remove(id);
+                }
             }
         }
     }
@@ -396,10 +415,11 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     public Map<String, String> extractTimerEventInformation() {
         if (getTimerInstances() != null) {
             for (String id : getTimerInstances()) {
+                String referenceId = timerInstancesReference != null ? timerInstancesReference.get(id) : null;
                 for (Timer entry : getEventBasedNode().getTimers().keySet()) {
-                    if (Objects.equals(entry.getId(), id)) {
+                    if (Objects.equals(Long.toString(entry.getId()), referenceId)) {
                         Map<String, String> properties = new HashMap<>();
-                        properties.put("TimerID", id);
+                        properties.put("TimerID", referenceId);
                         properties.put("Delay", entry.getDelay());
                         properties.put("Period", entry.getPeriod());
                         properties.put("Date", entry.getDate());

@@ -72,6 +72,40 @@ public final class KogitoNodeInstanceContentsProtobuf {
      */
     com.google.protobuf.ByteString
         getRuleFlowGroupBytes();
+
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    int getTimerInstanceReferenceCount();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    boolean containsTimerInstanceReference(
+        java.lang.String key);
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReference();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReferenceMap();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.RuleSetNodeInstanceContent}
@@ -136,6 +170,19 @@ public final class KogitoNodeInstanceContentsProtobuf {
               ruleFlowGroup_ = s;
               break;
             }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
+                timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+                    TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000004;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              timerInstanceReference__ = input.readMessage(
+                  TimerInstanceReferenceDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              timerInstanceReference_.getMutableMap().put(
+                  timerInstanceReference__.getKey(), timerInstanceReference__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -163,6 +210,18 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetTimerInstanceReference();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -253,6 +312,87 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
     }
 
+    public static final int TIMER_INSTANCE_REFERENCE_FIELD_NUMBER = 3;
+    private static final class TimerInstanceReferenceDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_TimerInstanceReferenceEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> timerInstanceReference_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetTimerInstanceReference() {
+      if (timerInstanceReference_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+      }
+      return timerInstanceReference_;
+    }
+
+    public int getTimerInstanceReferenceCount() {
+      return internalGetTimerInstanceReference().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsTimerInstanceReference(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTimerInstanceReference().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+      return getTimerInstanceReferenceMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+      return internalGetTimerInstanceReference().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -273,6 +413,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (((bitField0_ & 0x00000001) != 0)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, ruleFlowGroup_);
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetTimerInstanceReference(),
+          TimerInstanceReferenceDefaultEntryHolder.defaultEntry,
+          3);
       unknownFields.writeTo(output);
     }
 
@@ -292,6 +438,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
       if (((bitField0_ & 0x00000001) != 0)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, ruleFlowGroup_);
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetTimerInstanceReference().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        timerInstanceReference__ = TimerInstanceReferenceDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, timerInstanceReference__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -315,6 +471,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         if (!getRuleFlowGroup()
             .equals(other.getRuleFlowGroup())) return false;
       }
+      if (!internalGetTimerInstanceReference().equals(
+          other.internalGetTimerInstanceReference())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -333,6 +491,10 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (hasRuleFlowGroup()) {
         hash = (37 * hash) + RULE_FLOW_GROUP_FIELD_NUMBER;
         hash = (53 * hash) + getRuleFlowGroup().hashCode();
+      }
+      if (!internalGetTimerInstanceReference().getMap().isEmpty()) {
+        hash = (37 * hash) + TIMER_INSTANCE_REFERENCE_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTimerInstanceReference().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -441,6 +603,28 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMutableTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -471,6 +655,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         bitField0_ = (bitField0_ & ~0x00000001);
         ruleFlowGroup_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        internalGetMutableTimerInstanceReference().clear();
         return this;
       }
 
@@ -508,6 +693,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           to_bitField0_ |= 0x00000001;
         }
         result.ruleFlowGroup_ = ruleFlowGroup_;
+        result.timerInstanceReference_ = internalGetTimerInstanceReference();
+        result.timerInstanceReference_.makeImmutable();
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -572,6 +759,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           ruleFlowGroup_ = other.ruleFlowGroup_;
           onChanged();
         }
+        internalGetMutableTimerInstanceReference().mergeFrom(
+            other.internalGetTimerInstanceReference());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -792,6 +981,137 @@ public final class KogitoNodeInstanceContentsProtobuf {
         bitField0_ |= 0x00000002;
         ruleFlowGroup_ = value;
         onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> timerInstanceReference_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetTimerInstanceReference() {
+        if (timerInstanceReference_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        return timerInstanceReference_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableTimerInstanceReference() {
+        onChanged();;
+        if (timerInstanceReference_ == null) {
+          timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        if (!timerInstanceReference_.isMutable()) {
+          timerInstanceReference_ = timerInstanceReference_.copy();
+        }
+        return timerInstanceReference_;
+      }
+
+      public int getTimerInstanceReferenceCount() {
+        return internalGetTimerInstanceReference().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetTimerInstanceReference().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTimerInstanceReferenceMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+        return getTimerInstanceReferenceMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+        return internalGetTimerInstanceReference().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearTimerInstanceReference() {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder removeTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableTimerInstanceReference() {
+        return internalGetMutableTimerInstanceReference().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      public Builder putTimerInstanceReference(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder putAllTimerInstanceReference(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .putAll(values);
         return this;
       }
       @java.lang.Override
@@ -1050,6 +1370,40 @@ public final class KogitoNodeInstanceContentsProtobuf {
      * <code>optional .google.protobuf.Any work_item_data = 12;</code>
      */
     com.google.protobuf.AnyOrBuilder getWorkItemDataOrBuilder();
+
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+     */
+    int getTimerInstanceReferenceCount();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+     */
+    boolean containsTimerInstanceReference(
+        java.lang.String key);
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReference();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReferenceMap();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.WorkItemNodeInstanceContent}
@@ -1190,6 +1544,19 @@ public final class KogitoNodeInstanceContentsProtobuf {
               bitField0_ |= 0x00000040;
               break;
             }
+            case 106: {
+              if (!((mutable_bitField0_ & 0x00000400) != 0)) {
+                timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+                    TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000400;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              timerInstanceReference__ = input.readMessage(
+                  TimerInstanceReferenceDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              timerInstanceReference_.getMutableMap().put(
+                  timerInstanceReference__.getKey(), timerInstanceReference__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -1223,6 +1590,18 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 13:
+          return internalGetTimerInstanceReference();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -1648,6 +2027,87 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return workItemData_ == null ? com.google.protobuf.Any.getDefaultInstance() : workItemData_;
     }
 
+    public static final int TIMER_INSTANCE_REFERENCE_FIELD_NUMBER = 13;
+    private static final class TimerInstanceReferenceDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_TimerInstanceReferenceEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> timerInstanceReference_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetTimerInstanceReference() {
+      if (timerInstanceReference_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+      }
+      return timerInstanceReference_;
+    }
+
+    public int getTimerInstanceReferenceCount() {
+      return internalGetTimerInstanceReference().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsTimerInstanceReference(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTimerInstanceReference().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+      return getTimerInstanceReferenceMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+      return internalGetTimerInstanceReference().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1698,6 +2158,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (((bitField0_ & 0x00000040) != 0)) {
         output.writeMessage(12, getWorkItemData());
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetTimerInstanceReference(),
+          TimerInstanceReferenceDefaultEntryHolder.defaultEntry,
+          13);
       unknownFields.writeTo(output);
     }
 
@@ -1753,6 +2219,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (((bitField0_ & 0x00000040) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(12, getWorkItemData());
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetTimerInstanceReference().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        timerInstanceReference__ = TimerInstanceReferenceDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(13, timerInstanceReference__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1814,6 +2290,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         if (!getWorkItemData()
             .equals(other.getWorkItemData())) return false;
       }
+      if (!internalGetTimerInstanceReference().equals(
+          other.internalGetTimerInstanceReference())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1870,6 +2348,10 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (hasWorkItemData()) {
         hash = (37 * hash) + WORK_ITEM_DATA_FIELD_NUMBER;
         hash = (53 * hash) + getWorkItemData().hashCode();
+      }
+      if (!internalGetTimerInstanceReference().getMap().isEmpty()) {
+        hash = (37 * hash) + TIMER_INSTANCE_REFERENCE_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTimerInstanceReference().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1978,6 +2460,28 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 13:
+            return internalGetTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 13:
+            return internalGetMutableTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -2043,6 +2547,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
           workItemDataBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000200);
+        internalGetMutableTimerInstanceReference().clear();
         return this;
       }
 
@@ -2128,6 +2633,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           }
           to_bitField0_ |= 0x00000040;
         }
+        result.timerInstanceReference_ = internalGetTimerInstanceReference();
+        result.timerInstanceReference_.makeImmutable();
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2275,6 +2782,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         if (other.hasWorkItemData()) {
           mergeWorkItemData(other.getWorkItemData());
         }
+        internalGetMutableTimerInstanceReference().mergeFrom(
+            other.internalGetTimerInstanceReference());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -3543,6 +4052,137 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
         return workItemDataBuilder_;
       }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> timerInstanceReference_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetTimerInstanceReference() {
+        if (timerInstanceReference_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        return timerInstanceReference_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableTimerInstanceReference() {
+        onChanged();;
+        if (timerInstanceReference_ == null) {
+          timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        if (!timerInstanceReference_.isMutable()) {
+          timerInstanceReference_ = timerInstanceReference_.copy();
+        }
+        return timerInstanceReference_;
+      }
+
+      public int getTimerInstanceReferenceCount() {
+        return internalGetTimerInstanceReference().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetTimerInstanceReference().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTimerInstanceReferenceMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+        return getTimerInstanceReferenceMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+        return internalGetTimerInstanceReference().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearTimerInstanceReference() {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+       */
+
+      public Builder removeTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableTimerInstanceReference() {
+        return internalGetMutableTimerInstanceReference().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+       */
+      public Builder putTimerInstanceReference(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 13;</code>
+       */
+
+      public Builder putAllTimerInstanceReference(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .putAll(values);
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -3641,6 +4281,40 @@ public final class KogitoNodeInstanceContentsProtobuf {
      */
     com.google.protobuf.ByteString
         getTimerInstanceIdBytes(int index);
+
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    int getTimerInstanceReferenceCount();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    boolean containsTimerInstanceReference(
+        java.lang.String key);
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReference();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReferenceMap();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.LambdaSubProcessNodeInstanceContent}
@@ -3705,6 +4379,19 @@ public final class KogitoNodeInstanceContentsProtobuf {
               timerInstanceId_.add(s);
               break;
             }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
+                timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+                    TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000004;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              timerInstanceReference__ = input.readMessage(
+                  TimerInstanceReferenceDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              timerInstanceReference_.getMutableMap().put(
+                  timerInstanceReference__.getKey(), timerInstanceReference__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -3732,6 +4419,18 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetTimerInstanceReference();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -3822,6 +4521,87 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return timerInstanceId_.getByteString(index);
     }
 
+    public static final int TIMER_INSTANCE_REFERENCE_FIELD_NUMBER = 3;
+    private static final class TimerInstanceReferenceDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> timerInstanceReference_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetTimerInstanceReference() {
+      if (timerInstanceReference_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+      }
+      return timerInstanceReference_;
+    }
+
+    public int getTimerInstanceReferenceCount() {
+      return internalGetTimerInstanceReference().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsTimerInstanceReference(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTimerInstanceReference().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+      return getTimerInstanceReferenceMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+      return internalGetTimerInstanceReference().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -3842,6 +4622,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
       for (int i = 0; i < timerInstanceId_.size(); i++) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, timerInstanceId_.getRaw(i));
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetTimerInstanceReference(),
+          TimerInstanceReferenceDefaultEntryHolder.defaultEntry,
+          3);
       unknownFields.writeTo(output);
     }
 
@@ -3861,6 +4647,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
         size += dataSize;
         size += 1 * getTimerInstanceIdList().size();
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetTimerInstanceReference().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        timerInstanceReference__ = TimerInstanceReferenceDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, timerInstanceReference__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3884,6 +4680,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
       if (!getTimerInstanceIdList()
           .equals(other.getTimerInstanceIdList())) return false;
+      if (!internalGetTimerInstanceReference().equals(
+          other.internalGetTimerInstanceReference())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -3902,6 +4700,10 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (getTimerInstanceIdCount() > 0) {
         hash = (37 * hash) + TIMER_INSTANCE_ID_FIELD_NUMBER;
         hash = (53 * hash) + getTimerInstanceIdList().hashCode();
+      }
+      if (!internalGetTimerInstanceReference().getMap().isEmpty()) {
+        hash = (37 * hash) + TIMER_INSTANCE_REFERENCE_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTimerInstanceReference().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -4010,6 +4812,28 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMutableTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -4040,6 +4864,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         bitField0_ = (bitField0_ & ~0x00000001);
         timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
+        internalGetMutableTimerInstanceReference().clear();
         return this;
       }
 
@@ -4077,6 +4902,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           bitField0_ = (bitField0_ & ~0x00000002);
         }
         result.timerInstanceId_ = timerInstanceId_;
+        result.timerInstanceReference_ = internalGetTimerInstanceReference();
+        result.timerInstanceReference_.makeImmutable();
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4141,6 +4968,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           }
           onChanged();
         }
+        internalGetMutableTimerInstanceReference().mergeFrom(
+            other.internalGetTimerInstanceReference());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -4363,6 +5192,137 @@ public final class KogitoNodeInstanceContentsProtobuf {
         onChanged();
         return this;
       }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> timerInstanceReference_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetTimerInstanceReference() {
+        if (timerInstanceReference_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        return timerInstanceReference_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableTimerInstanceReference() {
+        onChanged();;
+        if (timerInstanceReference_ == null) {
+          timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        if (!timerInstanceReference_.isMutable()) {
+          timerInstanceReference_ = timerInstanceReference_.copy();
+        }
+        return timerInstanceReference_;
+      }
+
+      public int getTimerInstanceReferenceCount() {
+        return internalGetTimerInstanceReference().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetTimerInstanceReference().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTimerInstanceReferenceMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+        return getTimerInstanceReferenceMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+        return internalGetTimerInstanceReference().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearTimerInstanceReference() {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder removeTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableTimerInstanceReference() {
+        return internalGetMutableTimerInstanceReference().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      public Builder putTimerInstanceReference(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder putAllTimerInstanceReference(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .putAll(values);
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -4461,6 +5421,40 @@ public final class KogitoNodeInstanceContentsProtobuf {
      */
     com.google.protobuf.ByteString
         getTimerInstanceIdBytes(int index);
+
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    int getTimerInstanceReferenceCount();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    boolean containsTimerInstanceReference(
+        java.lang.String key);
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReference();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReferenceMap();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.SubProcessNodeInstanceContent}
@@ -4525,6 +5519,19 @@ public final class KogitoNodeInstanceContentsProtobuf {
               timerInstanceId_.add(s);
               break;
             }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
+                timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+                    TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000004;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              timerInstanceReference__ = input.readMessage(
+                  TimerInstanceReferenceDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              timerInstanceReference_.getMutableMap().put(
+                  timerInstanceReference__.getKey(), timerInstanceReference__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -4552,6 +5559,18 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetTimerInstanceReference();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -4642,6 +5661,87 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return timerInstanceId_.getByteString(index);
     }
 
+    public static final int TIMER_INSTANCE_REFERENCE_FIELD_NUMBER = 3;
+    private static final class TimerInstanceReferenceDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> timerInstanceReference_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetTimerInstanceReference() {
+      if (timerInstanceReference_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+      }
+      return timerInstanceReference_;
+    }
+
+    public int getTimerInstanceReferenceCount() {
+      return internalGetTimerInstanceReference().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsTimerInstanceReference(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTimerInstanceReference().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+      return getTimerInstanceReferenceMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+      return internalGetTimerInstanceReference().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4662,6 +5762,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
       for (int i = 0; i < timerInstanceId_.size(); i++) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, timerInstanceId_.getRaw(i));
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetTimerInstanceReference(),
+          TimerInstanceReferenceDefaultEntryHolder.defaultEntry,
+          3);
       unknownFields.writeTo(output);
     }
 
@@ -4681,6 +5787,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
         size += dataSize;
         size += 1 * getTimerInstanceIdList().size();
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetTimerInstanceReference().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        timerInstanceReference__ = TimerInstanceReferenceDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, timerInstanceReference__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4704,6 +5820,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
       }
       if (!getTimerInstanceIdList()
           .equals(other.getTimerInstanceIdList())) return false;
+      if (!internalGetTimerInstanceReference().equals(
+          other.internalGetTimerInstanceReference())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -4722,6 +5840,10 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (getTimerInstanceIdCount() > 0) {
         hash = (37 * hash) + TIMER_INSTANCE_ID_FIELD_NUMBER;
         hash = (53 * hash) + getTimerInstanceIdList().hashCode();
+      }
+      if (!internalGetTimerInstanceReference().getMap().isEmpty()) {
+        hash = (37 * hash) + TIMER_INSTANCE_REFERENCE_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTimerInstanceReference().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -4830,6 +5952,28 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMutableTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -4860,6 +6004,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         bitField0_ = (bitField0_ & ~0x00000001);
         timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
+        internalGetMutableTimerInstanceReference().clear();
         return this;
       }
 
@@ -4897,6 +6042,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           bitField0_ = (bitField0_ & ~0x00000002);
         }
         result.timerInstanceId_ = timerInstanceId_;
+        result.timerInstanceReference_ = internalGetTimerInstanceReference();
+        result.timerInstanceReference_.makeImmutable();
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4961,6 +6108,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           }
           onChanged();
         }
+        internalGetMutableTimerInstanceReference().mergeFrom(
+            other.internalGetTimerInstanceReference());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -5183,6 +6332,137 @@ public final class KogitoNodeInstanceContentsProtobuf {
         onChanged();
         return this;
       }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> timerInstanceReference_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetTimerInstanceReference() {
+        if (timerInstanceReference_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        return timerInstanceReference_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableTimerInstanceReference() {
+        onChanged();;
+        if (timerInstanceReference_ == null) {
+          timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        if (!timerInstanceReference_.isMutable()) {
+          timerInstanceReference_ = timerInstanceReference_.copy();
+        }
+        return timerInstanceReference_;
+      }
+
+      public int getTimerInstanceReferenceCount() {
+        return internalGetTimerInstanceReference().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetTimerInstanceReference().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTimerInstanceReferenceMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+        return getTimerInstanceReferenceMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+        return internalGetTimerInstanceReference().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearTimerInstanceReference() {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder removeTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableTimerInstanceReference() {
+        return internalGetMutableTimerInstanceReference().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      public Builder putTimerInstanceReference(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder putAllTimerInstanceReference(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .putAll(values);
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -5264,6 +6544,40 @@ public final class KogitoNodeInstanceContentsProtobuf {
      */
     com.google.protobuf.ByteString
         getTimerInstanceIdBytes(int index);
+
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    int getTimerInstanceReferenceCount();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    boolean containsTimerInstanceReference(
+        java.lang.String key);
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReference();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReferenceMap();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.MilestoneNodeInstanceContent}
@@ -5321,6 +6635,19 @@ public final class KogitoNodeInstanceContentsProtobuf {
               timerInstanceId_.add(s);
               break;
             }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+                    TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000002;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              timerInstanceReference__ = input.readMessage(
+                  TimerInstanceReferenceDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              timerInstanceReference_.getMutableMap().put(
+                  timerInstanceReference__.getKey(), timerInstanceReference__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -5348,6 +6675,18 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetTimerInstanceReference();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -5391,6 +6730,87 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return timerInstanceId_.getByteString(index);
     }
 
+    public static final int TIMER_INSTANCE_REFERENCE_FIELD_NUMBER = 2;
+    private static final class TimerInstanceReferenceDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_TimerInstanceReferenceEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> timerInstanceReference_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetTimerInstanceReference() {
+      if (timerInstanceReference_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+      }
+      return timerInstanceReference_;
+    }
+
+    public int getTimerInstanceReferenceCount() {
+      return internalGetTimerInstanceReference().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsTimerInstanceReference(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTimerInstanceReference().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+      return getTimerInstanceReferenceMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+      return internalGetTimerInstanceReference().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -5408,6 +6828,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
       for (int i = 0; i < timerInstanceId_.size(); i++) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, timerInstanceId_.getRaw(i));
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetTimerInstanceReference(),
+          TimerInstanceReferenceDefaultEntryHolder.defaultEntry,
+          2);
       unknownFields.writeTo(output);
     }
 
@@ -5424,6 +6850,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
         size += dataSize;
         size += 1 * getTimerInstanceIdList().size();
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetTimerInstanceReference().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        timerInstanceReference__ = TimerInstanceReferenceDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, timerInstanceReference__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5442,6 +6878,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       if (!getTimerInstanceIdList()
           .equals(other.getTimerInstanceIdList())) return false;
+      if (!internalGetTimerInstanceReference().equals(
+          other.internalGetTimerInstanceReference())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -5456,6 +6894,10 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (getTimerInstanceIdCount() > 0) {
         hash = (37 * hash) + TIMER_INSTANCE_ID_FIELD_NUMBER;
         hash = (53 * hash) + getTimerInstanceIdList().hashCode();
+      }
+      if (!internalGetTimerInstanceReference().getMap().isEmpty()) {
+        hash = (37 * hash) + TIMER_INSTANCE_REFERENCE_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTimerInstanceReference().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -5564,6 +7006,28 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetMutableTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -5592,6 +7056,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         super.clear();
         timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
+        internalGetMutableTimerInstanceReference().clear();
         return this;
       }
 
@@ -5624,6 +7089,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.timerInstanceId_ = timerInstanceId_;
+        result.timerInstanceReference_ = internalGetTimerInstanceReference();
+        result.timerInstanceReference_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -5682,6 +7149,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           }
           onChanged();
         }
+        internalGetMutableTimerInstanceReference().mergeFrom(
+            other.internalGetTimerInstanceReference());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -5819,6 +7288,137 @@ public final class KogitoNodeInstanceContentsProtobuf {
         ensureTimerInstanceIdIsMutable();
         timerInstanceId_.add(value);
         onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> timerInstanceReference_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetTimerInstanceReference() {
+        if (timerInstanceReference_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        return timerInstanceReference_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableTimerInstanceReference() {
+        onChanged();;
+        if (timerInstanceReference_ == null) {
+          timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        if (!timerInstanceReference_.isMutable()) {
+          timerInstanceReference_ = timerInstanceReference_.copy();
+        }
+        return timerInstanceReference_;
+      }
+
+      public int getTimerInstanceReferenceCount() {
+        return internalGetTimerInstanceReference().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetTimerInstanceReference().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTimerInstanceReferenceMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+        return getTimerInstanceReferenceMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+        return internalGetTimerInstanceReference().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearTimerInstanceReference() {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+
+      public Builder removeTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableTimerInstanceReference() {
+        return internalGetMutableTimerInstanceReference().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+      public Builder putTimerInstanceReference(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+
+      public Builder putAllTimerInstanceReference(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .putAll(values);
         return this;
       }
       @java.lang.Override
@@ -8339,6 +9939,40 @@ public final class KogitoNodeInstanceContentsProtobuf {
      */
     com.google.protobuf.ByteString
         getTimerInstanceIdBytes(int index);
+
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    int getTimerInstanceReferenceCount();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    boolean containsTimerInstanceReference(
+        java.lang.String key);
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReference();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReferenceMap();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.StateNodeInstanceContent}
@@ -8396,6 +10030,19 @@ public final class KogitoNodeInstanceContentsProtobuf {
               timerInstanceId_.add(s);
               break;
             }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+                    TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000002;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              timerInstanceReference__ = input.readMessage(
+                  TimerInstanceReferenceDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              timerInstanceReference_.getMutableMap().put(
+                  timerInstanceReference__.getKey(), timerInstanceReference__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -8423,6 +10070,18 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetTimerInstanceReference();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -8466,6 +10125,87 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return timerInstanceId_.getByteString(index);
     }
 
+    public static final int TIMER_INSTANCE_REFERENCE_FIELD_NUMBER = 2;
+    private static final class TimerInstanceReferenceDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_TimerInstanceReferenceEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> timerInstanceReference_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetTimerInstanceReference() {
+      if (timerInstanceReference_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+      }
+      return timerInstanceReference_;
+    }
+
+    public int getTimerInstanceReferenceCount() {
+      return internalGetTimerInstanceReference().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsTimerInstanceReference(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTimerInstanceReference().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+      return getTimerInstanceReferenceMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+      return internalGetTimerInstanceReference().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -8483,6 +10223,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
       for (int i = 0; i < timerInstanceId_.size(); i++) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, timerInstanceId_.getRaw(i));
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetTimerInstanceReference(),
+          TimerInstanceReferenceDefaultEntryHolder.defaultEntry,
+          2);
       unknownFields.writeTo(output);
     }
 
@@ -8499,6 +10245,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
         size += dataSize;
         size += 1 * getTimerInstanceIdList().size();
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetTimerInstanceReference().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        timerInstanceReference__ = TimerInstanceReferenceDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, timerInstanceReference__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -8517,6 +10273,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
       if (!getTimerInstanceIdList()
           .equals(other.getTimerInstanceIdList())) return false;
+      if (!internalGetTimerInstanceReference().equals(
+          other.internalGetTimerInstanceReference())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -8531,6 +10289,10 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (getTimerInstanceIdCount() > 0) {
         hash = (37 * hash) + TIMER_INSTANCE_ID_FIELD_NUMBER;
         hash = (53 * hash) + getTimerInstanceIdList().hashCode();
+      }
+      if (!internalGetTimerInstanceReference().getMap().isEmpty()) {
+        hash = (37 * hash) + TIMER_INSTANCE_REFERENCE_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTimerInstanceReference().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -8639,6 +10401,28 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetMutableTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -8667,6 +10451,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         super.clear();
         timerInstanceId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
+        internalGetMutableTimerInstanceReference().clear();
         return this;
       }
 
@@ -8699,6 +10484,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.timerInstanceId_ = timerInstanceId_;
+        result.timerInstanceReference_ = internalGetTimerInstanceReference();
+        result.timerInstanceReference_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -8757,6 +10544,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           }
           onChanged();
         }
+        internalGetMutableTimerInstanceReference().mergeFrom(
+            other.internalGetTimerInstanceReference());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -8896,6 +10685,137 @@ public final class KogitoNodeInstanceContentsProtobuf {
         onChanged();
         return this;
       }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> timerInstanceReference_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetTimerInstanceReference() {
+        if (timerInstanceReference_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        return timerInstanceReference_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableTimerInstanceReference() {
+        onChanged();;
+        if (timerInstanceReference_ == null) {
+          timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        if (!timerInstanceReference_.isMutable()) {
+          timerInstanceReference_ = timerInstanceReference_.copy();
+        }
+        return timerInstanceReference_;
+      }
+
+      public int getTimerInstanceReferenceCount() {
+        return internalGetTimerInstanceReference().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetTimerInstanceReference().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTimerInstanceReferenceMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+        return getTimerInstanceReferenceMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+        return internalGetTimerInstanceReference().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearTimerInstanceReference() {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+
+      public Builder removeTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableTimerInstanceReference() {
+        return internalGetMutableTimerInstanceReference().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+      public Builder putTimerInstanceReference(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 2;</code>
+       */
+
+      public Builder putAllTimerInstanceReference(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .putAll(values);
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -8992,6 +10912,40 @@ public final class KogitoNodeInstanceContentsProtobuf {
      * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 2;</code>
      */
     org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContextOrBuilder getContextOrBuilder();
+
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    int getTimerInstanceReferenceCount();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    boolean containsTimerInstanceReference(
+        java.lang.String key);
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReference();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReferenceMap();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.CompositeContextNodeInstanceContent}
@@ -9062,6 +11016,19 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
               break;
             }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+                    TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000002;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              timerInstanceReference__ = input.readMessage(
+                  TimerInstanceReferenceDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              timerInstanceReference_.getMutableMap().put(
+                  timerInstanceReference__.getKey(), timerInstanceReference__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -9089,6 +11056,18 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetTimerInstanceReference();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -9158,6 +11137,87 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return getContext();
     }
 
+    public static final int TIMER_INSTANCE_REFERENCE_FIELD_NUMBER = 3;
+    private static final class TimerInstanceReferenceDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_TimerInstanceReferenceEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> timerInstanceReference_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetTimerInstanceReference() {
+      if (timerInstanceReference_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+      }
+      return timerInstanceReference_;
+    }
+
+    public int getTimerInstanceReferenceCount() {
+      return internalGetTimerInstanceReference().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsTimerInstanceReference(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTimerInstanceReference().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+      return getTimerInstanceReferenceMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+      return internalGetTimerInstanceReference().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -9178,6 +11238,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (context_ != null) {
         output.writeMessage(2, getContext());
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetTimerInstanceReference(),
+          TimerInstanceReferenceDefaultEntryHolder.defaultEntry,
+          3);
       unknownFields.writeTo(output);
     }
 
@@ -9198,6 +11264,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (context_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getContext());
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetTimerInstanceReference().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        timerInstanceReference__ = TimerInstanceReferenceDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, timerInstanceReference__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -9221,6 +11297,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         if (!getContext()
             .equals(other.getContext())) return false;
       }
+      if (!internalGetTimerInstanceReference().equals(
+          other.internalGetTimerInstanceReference())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -9239,6 +11317,10 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (hasContext()) {
         hash = (37 * hash) + CONTEXT_FIELD_NUMBER;
         hash = (53 * hash) + getContext().hashCode();
+      }
+      if (!internalGetTimerInstanceReference().getMap().isEmpty()) {
+        hash = (37 * hash) + TIMER_INSTANCE_REFERENCE_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTimerInstanceReference().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -9347,6 +11429,28 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMutableTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -9381,6 +11485,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
           context_ = null;
           contextBuilder_ = null;
         }
+        internalGetMutableTimerInstanceReference().clear();
         return this;
       }
 
@@ -9418,6 +11523,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         } else {
           result.context_ = contextBuilder_.build();
         }
+        result.timerInstanceReference_ = internalGetTimerInstanceReference();
+        result.timerInstanceReference_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -9479,6 +11586,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         if (other.hasContext()) {
           mergeContext(other.getContext());
         }
+        internalGetMutableTimerInstanceReference().mergeFrom(
+            other.internalGetTimerInstanceReference());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -9737,6 +11846,137 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
         return contextBuilder_;
       }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> timerInstanceReference_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetTimerInstanceReference() {
+        if (timerInstanceReference_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        return timerInstanceReference_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableTimerInstanceReference() {
+        onChanged();;
+        if (timerInstanceReference_ == null) {
+          timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        if (!timerInstanceReference_.isMutable()) {
+          timerInstanceReference_ = timerInstanceReference_.copy();
+        }
+        return timerInstanceReference_;
+      }
+
+      public int getTimerInstanceReferenceCount() {
+        return internalGetTimerInstanceReference().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetTimerInstanceReference().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTimerInstanceReferenceMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+        return getTimerInstanceReferenceMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+        return internalGetTimerInstanceReference().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearTimerInstanceReference() {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder removeTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableTimerInstanceReference() {
+        return internalGetMutableTimerInstanceReference().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      public Builder putTimerInstanceReference(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder putAllTimerInstanceReference(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .putAll(values);
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -9833,6 +12073,40 @@ public final class KogitoNodeInstanceContentsProtobuf {
      * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 2;</code>
      */
     org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContextOrBuilder getContextOrBuilder();
+
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    int getTimerInstanceReferenceCount();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    boolean containsTimerInstanceReference(
+        java.lang.String key);
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReference();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReferenceMap();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.DynamicNodeInstanceContent}
@@ -9903,6 +12177,19 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
               break;
             }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+                    TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000002;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              timerInstanceReference__ = input.readMessage(
+                  TimerInstanceReferenceDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              timerInstanceReference_.getMutableMap().put(
+                  timerInstanceReference__.getKey(), timerInstanceReference__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -9930,6 +12217,18 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetTimerInstanceReference();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -9999,6 +12298,87 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return getContext();
     }
 
+    public static final int TIMER_INSTANCE_REFERENCE_FIELD_NUMBER = 3;
+    private static final class TimerInstanceReferenceDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_TimerInstanceReferenceEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> timerInstanceReference_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetTimerInstanceReference() {
+      if (timerInstanceReference_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+      }
+      return timerInstanceReference_;
+    }
+
+    public int getTimerInstanceReferenceCount() {
+      return internalGetTimerInstanceReference().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsTimerInstanceReference(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTimerInstanceReference().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+      return getTimerInstanceReferenceMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+      return internalGetTimerInstanceReference().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10019,6 +12399,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (context_ != null) {
         output.writeMessage(2, getContext());
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetTimerInstanceReference(),
+          TimerInstanceReferenceDefaultEntryHolder.defaultEntry,
+          3);
       unknownFields.writeTo(output);
     }
 
@@ -10039,6 +12425,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (context_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getContext());
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetTimerInstanceReference().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        timerInstanceReference__ = TimerInstanceReferenceDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, timerInstanceReference__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -10062,6 +12458,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         if (!getContext()
             .equals(other.getContext())) return false;
       }
+      if (!internalGetTimerInstanceReference().equals(
+          other.internalGetTimerInstanceReference())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -10080,6 +12478,10 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (hasContext()) {
         hash = (37 * hash) + CONTEXT_FIELD_NUMBER;
         hash = (53 * hash) + getContext().hashCode();
+      }
+      if (!internalGetTimerInstanceReference().getMap().isEmpty()) {
+        hash = (37 * hash) + TIMER_INSTANCE_REFERENCE_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTimerInstanceReference().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -10188,6 +12590,28 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMutableTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -10222,6 +12646,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
           context_ = null;
           contextBuilder_ = null;
         }
+        internalGetMutableTimerInstanceReference().clear();
         return this;
       }
 
@@ -10259,6 +12684,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         } else {
           result.context_ = contextBuilder_.build();
         }
+        result.timerInstanceReference_ = internalGetTimerInstanceReference();
+        result.timerInstanceReference_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -10320,6 +12747,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         if (other.hasContext()) {
           mergeContext(other.getContext());
         }
+        internalGetMutableTimerInstanceReference().mergeFrom(
+            other.internalGetTimerInstanceReference());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -10578,6 +13007,137 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
         return contextBuilder_;
       }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> timerInstanceReference_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetTimerInstanceReference() {
+        if (timerInstanceReference_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        return timerInstanceReference_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableTimerInstanceReference() {
+        onChanged();;
+        if (timerInstanceReference_ == null) {
+          timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        if (!timerInstanceReference_.isMutable()) {
+          timerInstanceReference_ = timerInstanceReference_.copy();
+        }
+        return timerInstanceReference_;
+      }
+
+      public int getTimerInstanceReferenceCount() {
+        return internalGetTimerInstanceReference().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetTimerInstanceReference().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTimerInstanceReferenceMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+        return getTimerInstanceReferenceMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+        return internalGetTimerInstanceReference().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearTimerInstanceReference() {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder removeTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableTimerInstanceReference() {
+        return internalGetMutableTimerInstanceReference().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      public Builder putTimerInstanceReference(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder putAllTimerInstanceReference(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .putAll(values);
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -10674,6 +13234,40 @@ public final class KogitoNodeInstanceContentsProtobuf {
      * <code>.org.kie.kogito.serialization.process.protobuf.WorkflowContext context = 2;</code>
      */
     org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf.WorkflowContextOrBuilder getContextOrBuilder();
+
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    int getTimerInstanceReferenceCount();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    boolean containsTimerInstanceReference(
+        java.lang.String key);
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReference();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReferenceMap();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.EventSubProcessNodeInstanceContent}
@@ -10744,6 +13338,19 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
               break;
             }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+                    TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000002;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              timerInstanceReference__ = input.readMessage(
+                  TimerInstanceReferenceDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              timerInstanceReference_.getMutableMap().put(
+                  timerInstanceReference__.getKey(), timerInstanceReference__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -10771,6 +13378,18 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetTimerInstanceReference();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -10840,6 +13459,87 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return getContext();
     }
 
+    public static final int TIMER_INSTANCE_REFERENCE_FIELD_NUMBER = 3;
+    private static final class TimerInstanceReferenceDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> timerInstanceReference_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetTimerInstanceReference() {
+      if (timerInstanceReference_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+      }
+      return timerInstanceReference_;
+    }
+
+    public int getTimerInstanceReferenceCount() {
+      return internalGetTimerInstanceReference().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsTimerInstanceReference(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTimerInstanceReference().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+      return getTimerInstanceReferenceMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+      return internalGetTimerInstanceReference().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10860,6 +13560,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (context_ != null) {
         output.writeMessage(2, getContext());
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetTimerInstanceReference(),
+          TimerInstanceReferenceDefaultEntryHolder.defaultEntry,
+          3);
       unknownFields.writeTo(output);
     }
 
@@ -10880,6 +13586,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (context_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getContext());
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetTimerInstanceReference().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        timerInstanceReference__ = TimerInstanceReferenceDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, timerInstanceReference__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -10903,6 +13619,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         if (!getContext()
             .equals(other.getContext())) return false;
       }
+      if (!internalGetTimerInstanceReference().equals(
+          other.internalGetTimerInstanceReference())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -10921,6 +13639,10 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (hasContext()) {
         hash = (37 * hash) + CONTEXT_FIELD_NUMBER;
         hash = (53 * hash) + getContext().hashCode();
+      }
+      if (!internalGetTimerInstanceReference().getMap().isEmpty()) {
+        hash = (37 * hash) + TIMER_INSTANCE_REFERENCE_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTimerInstanceReference().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -11029,6 +13751,28 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMutableTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -11063,6 +13807,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
           context_ = null;
           contextBuilder_ = null;
         }
+        internalGetMutableTimerInstanceReference().clear();
         return this;
       }
 
@@ -11100,6 +13845,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         } else {
           result.context_ = contextBuilder_.build();
         }
+        result.timerInstanceReference_ = internalGetTimerInstanceReference();
+        result.timerInstanceReference_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -11161,6 +13908,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         if (other.hasContext()) {
           mergeContext(other.getContext());
         }
+        internalGetMutableTimerInstanceReference().mergeFrom(
+            other.internalGetTimerInstanceReference());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -11419,6 +14168,137 @@ public final class KogitoNodeInstanceContentsProtobuf {
         }
         return contextBuilder_;
       }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> timerInstanceReference_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetTimerInstanceReference() {
+        if (timerInstanceReference_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        return timerInstanceReference_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableTimerInstanceReference() {
+        onChanged();;
+        if (timerInstanceReference_ == null) {
+          timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        if (!timerInstanceReference_.isMutable()) {
+          timerInstanceReference_ = timerInstanceReference_.copy();
+        }
+        return timerInstanceReference_;
+      }
+
+      public int getTimerInstanceReferenceCount() {
+        return internalGetTimerInstanceReference().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetTimerInstanceReference().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTimerInstanceReferenceMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+        return getTimerInstanceReferenceMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+        return internalGetTimerInstanceReference().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearTimerInstanceReference() {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder removeTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableTimerInstanceReference() {
+        return internalGetMutableTimerInstanceReference().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+      public Builder putTimerInstanceReference(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 3;</code>
+       */
+
+      public Builder putAllTimerInstanceReference(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .putAll(values);
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -11533,6 +14413,40 @@ public final class KogitoNodeInstanceContentsProtobuf {
      * @return The hasAsyncInstances.
      */
     boolean getHasAsyncInstances();
+
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+     */
+    int getTimerInstanceReferenceCount();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+     */
+    boolean containsTimerInstanceReference(
+        java.lang.String key);
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReference();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getTimerInstanceReferenceMap();
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+     */
+
+    java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code org.kie.kogito.serialization.process.protobuf.ForEachNodeInstanceContent}
@@ -11618,6 +14532,19 @@ public final class KogitoNodeInstanceContentsProtobuf {
               hasAsyncInstances_ = input.readBool();
               break;
             }
+            case 50: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+                    TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000002;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              timerInstanceReference__ = input.readMessage(
+                  TimerInstanceReferenceDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              timerInstanceReference_.getMutableMap().put(
+                  timerInstanceReference__.getKey(), timerInstanceReference__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -11645,6 +14572,18 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 6:
+          return internalGetTimerInstanceReference();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -11747,6 +14686,87 @@ public final class KogitoNodeInstanceContentsProtobuf {
       return hasAsyncInstances_;
     }
 
+    public static final int TIMER_INSTANCE_REFERENCE_FIELD_NUMBER = 6;
+    private static final class TimerInstanceReferenceDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_TimerInstanceReferenceEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> timerInstanceReference_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetTimerInstanceReference() {
+      if (timerInstanceReference_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+      }
+      return timerInstanceReference_;
+    }
+
+    public int getTimerInstanceReferenceCount() {
+      return internalGetTimerInstanceReference().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsTimerInstanceReference(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTimerInstanceReference().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTimerInstanceReferenceMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+      return getTimerInstanceReferenceMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+      return internalGetTimerInstanceReference().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getTimerInstanceReferenceOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTimerInstanceReference().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -11776,6 +14796,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
       if (hasAsyncInstances_ != false) {
         output.writeBool(5, hasAsyncInstances_);
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetTimerInstanceReference(),
+          TimerInstanceReferenceDefaultEntryHolder.defaultEntry,
+          6);
       unknownFields.writeTo(output);
     }
 
@@ -11809,6 +14835,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(5, hasAsyncInstances_);
       }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetTimerInstanceReference().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        timerInstanceReference__ = TimerInstanceReferenceDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(6, timerInstanceReference__);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -11837,6 +14873,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
           != other.getExecutedInstances()) return false;
       if (getHasAsyncInstances()
           != other.getHasAsyncInstances()) return false;
+      if (!internalGetTimerInstanceReference().equals(
+          other.internalGetTimerInstanceReference())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -11863,6 +14901,10 @@ public final class KogitoNodeInstanceContentsProtobuf {
       hash = (37 * hash) + HASASYNCINSTANCES_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getHasAsyncInstances());
+      if (!internalGetTimerInstanceReference().getMap().isEmpty()) {
+        hash = (37 * hash) + TIMER_INSTANCE_REFERENCE_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTimerInstanceReference().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -11970,6 +15012,28 @@ public final class KogitoNodeInstanceContentsProtobuf {
         return org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 6:
+            return internalGetTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 6:
+            return internalGetMutableTimerInstanceReference();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -12010,6 +15074,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
 
         hasAsyncInstances_ = false;
 
+        internalGetMutableTimerInstanceReference().clear();
         return this;
       }
 
@@ -12050,6 +15115,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         result.totalInstances_ = totalInstances_;
         result.executedInstances_ = executedInstances_;
         result.hasAsyncInstances_ = hasAsyncInstances_;
+        result.timerInstanceReference_ = internalGetTimerInstanceReference();
+        result.timerInstanceReference_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -12120,6 +15187,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
         if (other.getHasAsyncInstances() != false) {
           setHasAsyncInstances(other.getHasAsyncInstances());
         }
+        internalGetMutableTimerInstanceReference().mergeFrom(
+            other.internalGetTimerInstanceReference());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -12469,6 +15538,137 @@ public final class KogitoNodeInstanceContentsProtobuf {
         
         hasAsyncInstances_ = false;
         onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> timerInstanceReference_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetTimerInstanceReference() {
+        if (timerInstanceReference_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        return timerInstanceReference_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableTimerInstanceReference() {
+        onChanged();;
+        if (timerInstanceReference_ == null) {
+          timerInstanceReference_ = com.google.protobuf.MapField.newMapField(
+              TimerInstanceReferenceDefaultEntryHolder.defaultEntry);
+        }
+        if (!timerInstanceReference_.isMutable()) {
+          timerInstanceReference_ = timerInstanceReference_.copy();
+        }
+        return timerInstanceReference_;
+      }
+
+      public int getTimerInstanceReferenceCount() {
+        return internalGetTimerInstanceReference().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetTimerInstanceReference().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTimerInstanceReferenceMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReference() {
+        return getTimerInstanceReferenceMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getTimerInstanceReferenceMap() {
+        return internalGetTimerInstanceReference().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getTimerInstanceReferenceOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTimerInstanceReference().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearTimerInstanceReference() {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+       */
+
+      public Builder removeTimerInstanceReference(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableTimerInstanceReference() {
+        return internalGetMutableTimerInstanceReference().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+       */
+      public Builder putTimerInstanceReference(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; timer_instance_reference = 6;</code>
+       */
+
+      public Builder putAllTimerInstanceReference(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableTimerInstanceReference().getMutableMap()
+            .putAll(values);
         return this;
       }
       @java.lang.Override
@@ -13098,25 +16298,50 @@ public final class KogitoNodeInstanceContentsProtobuf {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_TimerInstanceReferenceEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_TimerInstanceReferenceEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_TimerInstanceReferenceEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_kie_kogito_serialization_process_protobuf_EventNodeInstanceContent_descriptor;
   private static final 
@@ -13143,25 +16368,50 @@ public final class KogitoNodeInstanceContentsProtobuf {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_TimerInstanceReferenceEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_TimerInstanceReferenceEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_TimerInstanceReferenceEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_TimerInstanceReferenceEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_kie_kogito_serialization_process_protobuf_AsyncEventNodeInstanceContent_descriptor;
   private static final 
@@ -13181,60 +16431,111 @@ public final class KogitoNodeInstanceContentsProtobuf {
       "oto\022-org.kie.kogito.serialization.proces" +
       "s.protobuf\032@org/kie/kogito/serialization" +
       "/process/protobuf/kogito_types.proto\032\031go" +
-      "ogle/protobuf/any.proto\"i\n\032RuleSetNodeIn" +
-      "stanceContent\022\031\n\021timer_instance_id\030\001 \003(\t" +
-      "\022\034\n\017rule_flow_group\030\002 \001(\tH\000\210\001\001B\022\n\020_rule_" +
-      "flow_group\"\321\004\n\033WorkItemNodeInstanceConte" +
-      "nt\022\024\n\014work_item_id\030\001 \001(\t\022\031\n\021timer_instan" +
-      "ce_id\030\002 \003(\t\022/\n\"error_handling_process_in" +
-      "stance_id\030\003 \001(\tH\000\210\001\001\022\r\n\005state\030\004 \001(\005\022I\n\010v" +
-      "ariable\030\005 \003(\01327.org.kie.kogito.serializa" +
-      "tion.process.protobuf.Variable\022G\n\006result" +
-      "\030\006 \003(\01327.org.kie.kogito.serialization.pr" +
-      "ocess.protobuf.Variable\022\025\n\010phase_id\030\007 \001(" +
-      "\tH\001\210\001\001\022\031\n\014phase_status\030\010 \001(\tH\002\210\001\001\022\021\n\004nam" +
-      "e\030\t \001(\tH\003\210\001\001\022\027\n\nstart_date\030\n \001(\003H\004\210\001\001\022\032\n" +
-      "\rcomplete_date\030\013 \001(\003H\005\210\001\001\0221\n\016work_item_d" +
-      "ata\030\014 \001(\0132\024.google.protobuf.AnyH\006\210\001\001B%\n#" +
-      "_error_handling_process_instance_idB\013\n\t_" +
-      "phase_idB\017\n\r_phase_statusB\007\n\005_nameB\r\n\013_s" +
-      "tart_dateB\020\n\016_complete_dateB\021\n\017_work_ite" +
-      "m_data\"z\n#LambdaSubProcessNodeInstanceCo" +
-      "ntent\022 \n\023process_instance_id\030\001 \001(\tH\000\210\001\001\022" +
-      "\031\n\021timer_instance_id\030\002 \003(\tB\026\n\024_process_i" +
-      "nstance_id\"t\n\035SubProcessNodeInstanceCont" +
-      "ent\022 \n\023process_instance_id\030\001 \001(\tH\000\210\001\001\022\031\n" +
-      "\021timer_instance_id\030\002 \003(\tB\026\n\024_process_ins" +
-      "tance_id\"9\n\034MilestoneNodeInstanceContent" +
-      "\022\031\n\021timer_instance_id\030\001 \003(\t\"\032\n\030EventNode" +
-      "InstanceContent\">\n\030TimerNodeInstanceCont" +
-      "ent\022\025\n\010timer_id\030\001 \001(\tH\000\210\001\001B\013\n\t_timer_id\"" +
-      "\321\001\n\027JoinNodeInstanceContent\022c\n\007trigger\030\001" +
-      " \003(\0132R.org.kie.kogito.serialization.proc" +
-      "ess.protobuf.JoinNodeInstanceContent.Joi" +
-      "nTrigger\032Q\n\013JoinTrigger\022\024\n\007node_id\030\001 \001(\003" +
-      "H\000\210\001\001\022\024\n\007counter\030\002 \001(\005H\001\210\001\001B\n\n\010_node_idB" +
-      "\n\n\010_counter\"5\n\030StateNodeInstanceContent\022" +
-      "\031\n\021timer_instance_id\030\001 \003(\t\"\221\001\n#Composite" +
-      "ContextNodeInstanceContent\022\031\n\021timer_inst" +
-      "ance_id\030\001 \003(\t\022O\n\007context\030\002 \001(\0132>.org.kie" +
-      ".kogito.serialization.process.protobuf.W" +
-      "orkflowContext\"\210\001\n\032DynamicNodeInstanceCo" +
-      "ntent\022\031\n\021timer_instance_id\030\001 \003(\t\022O\n\007cont" +
-      "ext\030\002 \001(\0132>.org.kie.kogito.serialization" +
-      ".process.protobuf.WorkflowContext\"\220\001\n\"Ev" +
-      "entSubProcessNodeInstanceContent\022\031\n\021time" +
-      "r_instance_id\030\001 \003(\t\022O\n\007context\030\002 \001(\0132>.o" +
+      "ogle/protobuf/any.proto\"\262\002\n\032RuleSetNodeI" +
+      "nstanceContent\022\031\n\021timer_instance_id\030\001 \003(" +
+      "\t\022\034\n\017rule_flow_group\030\002 \001(\tH\000\210\001\001\022\207\001\n\030time" +
+      "r_instance_reference\030\003 \003(\0132e.org.kie.kog" +
+      "ito.serialization.process.protobuf.RuleS" +
+      "etNodeInstanceContent.TimerInstanceRefer" +
+      "enceEntry\032=\n\033TimerInstanceReferenceEntry" +
+      "\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001B\022\n\020_rul" +
+      "e_flow_group\"\233\006\n\033WorkItemNodeInstanceCon" +
+      "tent\022\024\n\014work_item_id\030\001 \001(\t\022\031\n\021timer_inst" +
+      "ance_id\030\002 \003(\t\022/\n\"error_handling_process_" +
+      "instance_id\030\003 \001(\tH\000\210\001\001\022\r\n\005state\030\004 \001(\005\022I\n" +
+      "\010variable\030\005 \003(\01327.org.kie.kogito.seriali" +
+      "zation.process.protobuf.Variable\022G\n\006resu" +
+      "lt\030\006 \003(\01327.org.kie.kogito.serialization." +
+      "process.protobuf.Variable\022\025\n\010phase_id\030\007 " +
+      "\001(\tH\001\210\001\001\022\031\n\014phase_status\030\010 \001(\tH\002\210\001\001\022\021\n\004n" +
+      "ame\030\t \001(\tH\003\210\001\001\022\027\n\nstart_date\030\n \001(\003H\004\210\001\001\022" +
+      "\032\n\rcomplete_date\030\013 \001(\003H\005\210\001\001\0221\n\016work_item" +
+      "_data\030\014 \001(\0132\024.google.protobuf.AnyH\006\210\001\001\022\210" +
+      "\001\n\030timer_instance_reference\030\r \003(\0132f.org." +
+      "kie.kogito.serialization.process.protobu" +
+      "f.WorkItemNodeInstanceContent.TimerInsta" +
+      "nceReferenceEntry\032=\n\033TimerInstanceRefere" +
+      "nceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001" +
+      "B%\n#_error_handling_process_instance_idB" +
+      "\013\n\t_phase_idB\017\n\r_phase_statusB\007\n\005_nameB\r" +
+      "\n\013_start_dateB\020\n\016_complete_dateB\021\n\017_work" +
+      "_item_data\"\314\002\n#LambdaSubProcessNodeInsta" +
+      "nceContent\022 \n\023process_instance_id\030\001 \001(\tH" +
+      "\000\210\001\001\022\031\n\021timer_instance_id\030\002 \003(\t\022\220\001\n\030time" +
+      "r_instance_reference\030\003 \003(\0132n.org.kie.kog" +
+      "ito.serialization.process.protobuf.Lambd" +
+      "aSubProcessNodeInstanceContent.TimerInst" +
+      "anceReferenceEntry\032=\n\033TimerInstanceRefer" +
+      "enceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028" +
+      "\001B\026\n\024_process_instance_id\"\300\002\n\035SubProcess" +
+      "NodeInstanceContent\022 \n\023process_instance_" +
+      "id\030\001 \001(\tH\000\210\001\001\022\031\n\021timer_instance_id\030\002 \003(\t" +
+      "\022\212\001\n\030timer_instance_reference\030\003 \003(\0132h.or" +
+      "g.kie.kogito.serialization.process.proto" +
+      "buf.SubProcessNodeInstanceContent.TimerI" +
+      "nstanceReferenceEntry\032=\n\033TimerInstanceRe" +
+      "ferenceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t" +
+      ":\0028\001B\026\n\024_process_instance_id\"\204\002\n\034Milesto" +
+      "neNodeInstanceContent\022\031\n\021timer_instance_" +
+      "id\030\001 \003(\t\022\211\001\n\030timer_instance_reference\030\002 " +
+      "\003(\0132g.org.kie.kogito.serialization.proce" +
+      "ss.protobuf.MilestoneNodeInstanceContent" +
+      ".TimerInstanceReferenceEntry\032=\n\033TimerIns" +
+      "tanceReferenceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005valu" +
+      "e\030\002 \001(\t:\0028\001\"\032\n\030EventNodeInstanceContent\"" +
+      ">\n\030TimerNodeInstanceContent\022\025\n\010timer_id\030" +
+      "\001 \001(\tH\000\210\001\001B\013\n\t_timer_id\"\321\001\n\027JoinNodeInst" +
+      "anceContent\022c\n\007trigger\030\001 \003(\0132R.org.kie.k" +
+      "ogito.serialization.process.protobuf.Joi" +
+      "nNodeInstanceContent.JoinTrigger\032Q\n\013Join" +
+      "Trigger\022\024\n\007node_id\030\001 \001(\003H\000\210\001\001\022\024\n\007counter" +
+      "\030\002 \001(\005H\001\210\001\001B\n\n\010_node_idB\n\n\010_counter\"\374\001\n\030" +
+      "StateNodeInstanceContent\022\031\n\021timer_instan" +
+      "ce_id\030\001 \003(\t\022\205\001\n\030timer_instance_reference" +
+      "\030\002 \003(\0132c.org.kie.kogito.serialization.pr" +
+      "ocess.protobuf.StateNodeInstanceContent." +
+      "TimerInstanceReferenceEntry\032=\n\033TimerInst" +
+      "anceReferenceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value" +
+      "\030\002 \001(\t:\0028\001\"\343\002\n#CompositeContextNodeInsta" +
+      "nceContent\022\031\n\021timer_instance_id\030\001 \003(\t\022O\n" +
+      "\007context\030\002 \001(\0132>.org.kie.kogito.serializ" +
+      "ation.process.protobuf.WorkflowContext\022\220" +
+      "\001\n\030timer_instance_reference\030\003 \003(\0132n.org." +
+      "kie.kogito.serialization.process.protobu" +
+      "f.CompositeContextNodeInstanceContent.Ti" +
+      "merInstanceReferenceEntry\032=\n\033TimerInstan" +
+      "ceReferenceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002" +
+      " \001(\t:\0028\001\"\321\002\n\032DynamicNodeInstanceContent\022" +
+      "\031\n\021timer_instance_id\030\001 \003(\t\022O\n\007context\030\002 " +
+      "\001(\0132>.org.kie.kogito.serialization.proce" +
+      "ss.protobuf.WorkflowContext\022\207\001\n\030timer_in" +
+      "stance_reference\030\003 \003(\0132e.org.kie.kogito." +
+      "serialization.process.protobuf.DynamicNo" +
+      "deInstanceContent.TimerInstanceReference" +
+      "Entry\032=\n\033TimerInstanceReferenceEntry\022\013\n\003" +
+      "key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\341\002\n\"EventSu" +
+      "bProcessNodeInstanceContent\022\031\n\021timer_ins" +
+      "tance_id\030\001 \003(\t\022O\n\007context\030\002 \001(\0132>.org.ki" +
+      "e.kogito.serialization.process.protobuf." +
+      "WorkflowContext\022\217\001\n\030timer_instance_refer" +
+      "ence\030\003 \003(\0132m.org.kie.kogito.serializatio" +
+      "n.process.protobuf.EventSubProcessNodeIn" +
+      "stanceContent.TimerInstanceReferenceEntr" +
+      "y\032=\n\033TimerInstanceReferenceEntry\022\013\n\003key\030" +
+      "\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\237\003\n\032ForEachNode" +
+      "InstanceContent\022\031\n\021timer_instance_id\030\001 \003" +
+      "(\t\022O\n\007context\030\002 \001(\0132>.org.kie.kogito.ser" +
+      "ialization.process.protobuf.WorkflowCont" +
+      "ext\022\026\n\016totalInstances\030\003 \001(\005\022\031\n\021executedI" +
+      "nstances\030\004 \001(\005\022\031\n\021hasAsyncInstances\030\005 \001(" +
+      "\010\022\207\001\n\030timer_instance_reference\030\006 \003(\0132e.o" +
       "rg.kie.kogito.serialization.process.prot" +
-      "obuf.WorkflowContext\"\326\001\n\032ForEachNodeInst" +
-      "anceContent\022\031\n\021timer_instance_id\030\001 \003(\t\022O" +
-      "\n\007context\030\002 \001(\0132>.org.kie.kogito.seriali" +
-      "zation.process.protobuf.WorkflowContext\022" +
-      "\026\n\016totalInstances\030\003 \001(\005\022\031\n\021executedInsta" +
-      "nces\030\004 \001(\005\022\031\n\021hasAsyncInstances\030\005 \001(\010\"/\n" +
-      "\035AsyncEventNodeInstanceContent\022\016\n\006job_id" +
-      "\030\001 \001(\tB$B\"KogitoNodeInstanceContentsProt" +
-      "obufb\006proto3"
+      "obuf.ForEachNodeInstanceContent.TimerIns" +
+      "tanceReferenceEntry\032=\n\033TimerInstanceRefe" +
+      "renceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\002" +
+      "8\001\"/\n\035AsyncEventNodeInstanceContent\022\016\n\006j" +
+      "ob_id\030\001 \001(\tB$B\"KogitoNodeInstanceContent" +
+      "sProtobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -13247,31 +16548,61 @@ public final class KogitoNodeInstanceContentsProtobuf {
     internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_descriptor,
-        new java.lang.String[] { "TimerInstanceId", "RuleFlowGroup", "RuleFlowGroup", });
+        new java.lang.String[] { "TimerInstanceId", "RuleFlowGroup", "TimerInstanceReference", "RuleFlowGroup", });
+    internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_TimerInstanceReferenceEntry_descriptor =
+      internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_descriptor.getNestedTypes().get(0);
+    internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_kie_kogito_serialization_process_protobuf_RuleSetNodeInstanceContent_TimerInstanceReferenceEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_descriptor,
-        new java.lang.String[] { "WorkItemId", "TimerInstanceId", "ErrorHandlingProcessInstanceId", "State", "Variable", "Result", "PhaseId", "PhaseStatus", "Name", "StartDate", "CompleteDate", "WorkItemData", "ErrorHandlingProcessInstanceId", "PhaseId", "PhaseStatus", "Name", "StartDate", "CompleteDate", "WorkItemData", });
+        new java.lang.String[] { "WorkItemId", "TimerInstanceId", "ErrorHandlingProcessInstanceId", "State", "Variable", "Result", "PhaseId", "PhaseStatus", "Name", "StartDate", "CompleteDate", "WorkItemData", "TimerInstanceReference", "ErrorHandlingProcessInstanceId", "PhaseId", "PhaseStatus", "Name", "StartDate", "CompleteDate", "WorkItemData", });
+    internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_TimerInstanceReferenceEntry_descriptor =
+      internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_descriptor.getNestedTypes().get(0);
+    internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_kie_kogito_serialization_process_protobuf_WorkItemNodeInstanceContent_TimerInstanceReferenceEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_descriptor,
-        new java.lang.String[] { "ProcessInstanceId", "TimerInstanceId", "ProcessInstanceId", });
+        new java.lang.String[] { "ProcessInstanceId", "TimerInstanceId", "TimerInstanceReference", "ProcessInstanceId", });
+    internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor =
+      internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_descriptor.getNestedTypes().get(0);
+    internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_kie_kogito_serialization_process_protobuf_LambdaSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_descriptor,
-        new java.lang.String[] { "ProcessInstanceId", "TimerInstanceId", "ProcessInstanceId", });
+        new java.lang.String[] { "ProcessInstanceId", "TimerInstanceId", "TimerInstanceReference", "ProcessInstanceId", });
+    internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor =
+      internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_descriptor.getNestedTypes().get(0);
+    internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_kie_kogito_serialization_process_protobuf_SubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_descriptor,
-        new java.lang.String[] { "TimerInstanceId", });
+        new java.lang.String[] { "TimerInstanceId", "TimerInstanceReference", });
+    internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_TimerInstanceReferenceEntry_descriptor =
+      internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_descriptor.getNestedTypes().get(0);
+    internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_kie_kogito_serialization_process_protobuf_MilestoneNodeInstanceContent_TimerInstanceReferenceEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_org_kie_kogito_serialization_process_protobuf_EventNodeInstanceContent_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_org_kie_kogito_serialization_process_protobuf_EventNodeInstanceContent_fieldAccessorTable = new
@@ -13301,31 +16632,61 @@ public final class KogitoNodeInstanceContentsProtobuf {
     internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_descriptor,
-        new java.lang.String[] { "TimerInstanceId", });
+        new java.lang.String[] { "TimerInstanceId", "TimerInstanceReference", });
+    internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_TimerInstanceReferenceEntry_descriptor =
+      internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_descriptor.getNestedTypes().get(0);
+    internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_kie_kogito_serialization_process_protobuf_StateNodeInstanceContent_TimerInstanceReferenceEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_descriptor,
-        new java.lang.String[] { "TimerInstanceId", "Context", });
+        new java.lang.String[] { "TimerInstanceId", "Context", "TimerInstanceReference", });
+    internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_TimerInstanceReferenceEntry_descriptor =
+      internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_descriptor.getNestedTypes().get(0);
+    internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_kie_kogito_serialization_process_protobuf_CompositeContextNodeInstanceContent_TimerInstanceReferenceEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_descriptor =
       getDescriptor().getMessageTypes().get(10);
     internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_descriptor,
-        new java.lang.String[] { "TimerInstanceId", "Context", });
+        new java.lang.String[] { "TimerInstanceId", "Context", "TimerInstanceReference", });
+    internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_TimerInstanceReferenceEntry_descriptor =
+      internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_descriptor.getNestedTypes().get(0);
+    internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_kie_kogito_serialization_process_protobuf_DynamicNodeInstanceContent_TimerInstanceReferenceEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_descriptor =
       getDescriptor().getMessageTypes().get(11);
     internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_descriptor,
-        new java.lang.String[] { "TimerInstanceId", "Context", });
+        new java.lang.String[] { "TimerInstanceId", "Context", "TimerInstanceReference", });
+    internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor =
+      internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_descriptor.getNestedTypes().get(0);
+    internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_kie_kogito_serialization_process_protobuf_EventSubProcessNodeInstanceContent_TimerInstanceReferenceEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_descriptor =
       getDescriptor().getMessageTypes().get(12);
     internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_descriptor,
-        new java.lang.String[] { "TimerInstanceId", "Context", "TotalInstances", "ExecutedInstances", "HasAsyncInstances", });
+        new java.lang.String[] { "TimerInstanceId", "Context", "TotalInstances", "ExecutedInstances", "HasAsyncInstances", "TimerInstanceReference", });
+    internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_TimerInstanceReferenceEntry_descriptor =
+      internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_descriptor.getNestedTypes().get(0);
+    internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_kie_kogito_serialization_process_protobuf_ForEachNodeInstanceContent_TimerInstanceReferenceEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_org_kie_kogito_serialization_process_protobuf_AsyncEventNodeInstanceContent_descriptor =
       getDescriptor().getMessageTypes().get(13);
     internal_static_org_kie_kogito_serialization_process_protobuf_AsyncEventNodeInstanceContent_fieldAccessorTable = new

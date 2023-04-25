@@ -10,6 +10,7 @@ option java_outer_classname = "KogitoNodeInstanceContentsProtobuf";
 message RuleSetNodeInstanceContent {
     repeated string timer_instance_id = 1;
     optional string rule_flow_group = 2;
+    map<string, string> timer_instance_reference = 3;
 }
 
 message WorkItemNodeInstanceContent {
@@ -27,27 +28,31 @@ message WorkItemNodeInstanceContent {
     optional int64 start_date = 10;
     optional int64 complete_date = 11;
     optional google.protobuf.Any work_item_data = 12;
+    map<string, string> timer_instance_reference = 13;
 }
 
 message LambdaSubProcessNodeInstanceContent {
     optional string process_instance_id = 1;
     repeated string timer_instance_id = 2;
+    map<string, string> timer_instance_reference = 3;
 }
 
 message SubProcessNodeInstanceContent {
     optional string process_instance_id = 1;
     repeated string timer_instance_id = 2;
+    map<string, string> timer_instance_reference = 3;
 }
 
-message MilestoneNodeInstanceContent { 
-    repeated string timer_instance_id = 1; 
+message MilestoneNodeInstanceContent {
+    repeated string timer_instance_id = 1;
+    map<string, string> timer_instance_reference = 2;
 }
 
 message EventNodeInstanceContent {
 }
 
 message TimerNodeInstanceContent {
-   optional string timer_id = 1; 
+   optional string timer_id = 1;
 }
 
 message JoinNodeInstanceContent {
@@ -58,23 +63,27 @@ message JoinNodeInstanceContent {
     }
 }
 
-message StateNodeInstanceContent { 
-    repeated string timer_instance_id = 1; 
+message StateNodeInstanceContent {
+    repeated string timer_instance_id = 1;
+    map<string, string> timer_instance_reference = 2;
 }
 
 message CompositeContextNodeInstanceContent {
     repeated string timer_instance_id = 1;
     WorkflowContext context = 2;
+    map<string, string> timer_instance_reference = 3;
 }
 
 message DynamicNodeInstanceContent {
     repeated string timer_instance_id = 1;
     WorkflowContext context = 2;
+    map<string, string> timer_instance_reference = 3;
 }
 
 message EventSubProcessNodeInstanceContent {
     repeated string timer_instance_id = 1;
     WorkflowContext context = 2;
+    map<string, string> timer_instance_reference = 3;
 }
 
 message ForEachNodeInstanceContent {
@@ -83,6 +92,7 @@ message ForEachNodeInstanceContent {
     int32 totalInstances = 3;
     int32 executedInstances = 4;
     bool hasAsyncInstances = 5;
+    map<string, string> timer_instance_reference = 6;
 }
 
 message AsyncEventNodeInstanceContent {

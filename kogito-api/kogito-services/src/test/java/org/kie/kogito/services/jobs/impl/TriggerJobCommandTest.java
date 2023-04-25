@@ -38,7 +38,8 @@ import static org.mockito.Mockito.verify;
 class TriggerJobCommandTest {
 
     private static final String PROCESS_INSTANCE_ID = "PROCESS_INSTANCE_ID";
-    private static final String TIMER_ID = "TIMER:1:8be48533-beed-4c7b-ad85-bd7b543e7925";
+    private static final String JOB_ID = "JOB_ID";
+    private static final String TIMER_ID = "TIMER_ID";
     private static final int LIMIT = 1;
 
     @Mock
@@ -60,7 +61,7 @@ class TriggerJobCommandTest {
 
     @BeforeEach
     void setUp() {
-        command = new TriggerJobCommand(PROCESS_INSTANCE_ID, TIMER_ID, LIMIT, process, unitOfWorkManager);
+        command = new TriggerJobCommand(PROCESS_INSTANCE_ID, JOB_ID, TIMER_ID, LIMIT, process, unitOfWorkManager);
     }
 
     @Test

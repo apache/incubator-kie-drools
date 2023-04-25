@@ -282,6 +282,9 @@ public class ProtobufProcessInstanceWriter {
         RuleSetNodeInstanceContent.Builder ruleSet = RuleSetNodeInstanceContent.newBuilder();
         ruleSet.setRuleFlowGroup(nodeInstance.getRuleFlowGroup());
         ruleSet.addAllTimerInstanceId(nodeInstance.getTimerInstances());
+        if (nodeInstance.getTimerInstancesReference() != null) {
+            ruleSet.putAllTimerInstanceReference(nodeInstance.getTimerInstancesReference());
+        }
         return Any.pack(ruleSet.build());
     }
 
@@ -291,6 +294,9 @@ public class ProtobufProcessInstanceWriter {
         List<String> timerInstances = nodeInstance.getTimerInstances();
         if (timerInstances != null) {
             foreachBuilder.addAllTimerInstanceId(timerInstances);
+        }
+        if (nodeInstance.getTimerInstancesReference() != null) {
+            foreachBuilder.putAllTimerInstanceReference(nodeInstance.getTimerInstancesReference());
         }
         List<NodeInstance> nodeInstances = nodeInstance.getNodeInstances().stream().filter(CompositeContextNodeInstance.class::isInstance).collect(Collectors.toList());
 
@@ -314,6 +320,9 @@ public class ProtobufProcessInstanceWriter {
         if (timerInstances != null) {
             builder.addAllTimerInstanceId(timerInstances);
         }
+        if (nodeInstance.getTimerInstancesReference() != null) {
+            builder.putAllTimerInstanceReference(nodeInstance.getTimerInstancesReference());
+        }
 
         return Any.pack(builder.build());
     }
@@ -325,6 +334,9 @@ public class ProtobufProcessInstanceWriter {
         if (timerInstances != null) {
             builder.addAllTimerInstanceId(timerInstances);
         }
+        if (nodeInstance.getTimerInstancesReference() != null) {
+            builder.putAllTimerInstanceReference(nodeInstance.getTimerInstancesReference());
+        }
         return Any.pack(builder.build());
     }
 
@@ -333,6 +345,9 @@ public class ProtobufProcessInstanceWriter {
         List<String> timerInstances = nodeInstance.getTimerInstances();
         if (timerInstances != null) {
             builder.addAllTimerInstanceId(timerInstances);
+        }
+        if (nodeInstance.getTimerInstancesReference() != null) {
+            builder.putAllTimerInstanceReference(nodeInstance.getTimerInstancesReference());
         }
         return Any.pack(builder.build());
     }
@@ -369,6 +384,9 @@ public class ProtobufProcessInstanceWriter {
         if (timerInstances != null) {
             builder.addAllTimerInstanceId(timerInstances);
         }
+        if (nodeInstance.getTimerInstancesReference() != null) {
+            builder.putAllTimerInstanceReference(nodeInstance.getTimerInstancesReference());
+        }
         return Any.pack(builder.build());
     }
 
@@ -378,6 +396,9 @@ public class ProtobufProcessInstanceWriter {
         List<String> timerInstances = nodeInstance.getTimerInstances();
         if (timerInstances != null) {
             builder.addAllTimerInstanceId(timerInstances);
+        }
+        if (nodeInstance.getTimerInstancesReference() != null) {
+            builder.putAllTimerInstanceReference(nodeInstance.getTimerInstancesReference());
         }
 
         builder.setContext(buildWorkflowContext(nodeInstance));
@@ -392,6 +413,9 @@ public class ProtobufProcessInstanceWriter {
         if (timerInstances != null) {
             builder.addAllTimerInstanceId(timerInstances);
         }
+        if (nodeInstance.getTimerInstancesReference() != null) {
+            builder.putAllTimerInstanceReference(nodeInstance.getTimerInstancesReference());
+        }
 
         builder.setContext(buildWorkflowContext(nodeInstance));
 
@@ -404,6 +428,9 @@ public class ProtobufProcessInstanceWriter {
         List<String> timerInstances = nodeInstance.getTimerInstances();
         if (timerInstances != null) {
             builder.addAllTimerInstanceId(timerInstances);
+        }
+        if (nodeInstance.getTimerInstancesReference() != null) {
+            builder.putAllTimerInstanceReference(nodeInstance.getTimerInstancesReference());
         }
 
         builder.setContext(buildWorkflowContext(nodeInstance));
@@ -430,6 +457,9 @@ public class ProtobufProcessInstanceWriter {
         List<String> timerInstances = nodeInstance.getTimerInstances();
         if (timerInstances != null) {
             builder.addAllTimerInstanceId(timerInstances);
+        }
+        if (nodeInstance.getTimerInstancesReference() != null) {
+            builder.putAllTimerInstanceReference(nodeInstance.getTimerInstancesReference());
         }
         if (nodeInstance.getExceptionHandlingProcessInstanceId() != null) {
             builder.setErrorHandlingProcessInstanceId(nodeInstance.getExceptionHandlingProcessInstanceId());

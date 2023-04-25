@@ -560,6 +560,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     private TimerInstance createDurationTimer(long duration) {
         TimerInstance timerInstance = new TimerInstance();
         timerInstance.setId(UUID.randomUUID().toString());
+        timerInstance.setTimerId("-1");
         timerInstance.setDelay(duration);
         timerInstance.setPeriod(0);
         return timerInstance;
@@ -568,7 +569,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     private TimerInstance registerTimer(TimerInstance timerInstance) {
         ProcessInstanceJobDescription description =
                 ProcessInstanceJobDescription.builder()
-                        .timerId(timerInstance.getId())
+                        .id(timerInstance.getId())
+                        .timerId(timerInstance.getTimerId())
                         .expirationTime(DurationExpirationTime.after(timerInstance.getDelay()))
                         .processInstanceId(getStringId())
                         .processId(getProcessId())

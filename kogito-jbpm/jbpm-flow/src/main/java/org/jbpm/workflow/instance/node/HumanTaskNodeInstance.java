@@ -129,7 +129,8 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
             for (DeadlineInfo<T> deadline : deadlines) {
                 for (ScheduleInfo info : deadline.getScheduleInfo()) {
                     timers.put(getJobsService().scheduleProcessInstanceJob(ProcessInstanceJobDescription.builder()
-                            .generateTimerId()
+                            .generateId()
+                            .timerId("-1")
                             .expirationTime(DeadlineHelper.getExpirationTime(info))
                             .processInstanceId(pi.getStringId())
                             .rootProcessInstanceId(pi.getRootProcessInstanceId())
