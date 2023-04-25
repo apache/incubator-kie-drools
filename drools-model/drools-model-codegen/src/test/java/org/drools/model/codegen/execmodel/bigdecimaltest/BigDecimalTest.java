@@ -693,7 +693,7 @@ public class BigDecimalTest extends BaseModelTest {
     }
 
     @Test
-    public void bigDecimalEqualityWithDifferentScale() {
+    public void bigDecimalEqualityWithDifferentScale_shouldBeEqual() {
         // DROOLS-7414
         String str =
                 "package org.drools.modelcompiler.bigdecimals\n" +

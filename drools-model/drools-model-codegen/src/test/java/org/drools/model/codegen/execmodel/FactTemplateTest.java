@@ -1424,7 +1424,7 @@ public class FactTemplateTest {
     }
 
     @Test
-    public void bigDecimalEqualityWithDifferentScale() {
+    public void bigDecimalEqualityWithDifferentScale_shouldBeEqual() {
         // DROOLS-7332
         Prototype personFact = prototype( "org.drools.FactPerson", "name", "age" );
 
