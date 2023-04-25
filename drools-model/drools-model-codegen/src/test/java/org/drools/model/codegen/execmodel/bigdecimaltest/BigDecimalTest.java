@@ -691,4 +691,33 @@ public class BigDecimalTest extends BaseModelTest {
             return String.format("%,d", bd.longValue());
         }
     }
+
+    @Test
+    public void bigDecimalEqualityWithDifferentScale_shouldBeEqual() {
+        // DROOLS-7414
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + Customer.class.getCanonicalName() + ";\n" +
+                     "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule \"Rule 1a\"\n" +
+                     "    when\n" +
+                     "        Customer( $rate : rate == new BigDecimal(\"1.0\") )\n" +
+                     "    then\n" +
+                     "        result.add($rate);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<BigDecimal> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Customer customerTwoScale = new Customer();
+        customerTwoScale.setRate(new BigDecimal("1.00"));
+
+        ksession.insert(customerTwoScale);
+        ksession.fireAllRules();
+
+        // BigDecimal("1.0") and BigDecimal("1.00") are considered as equal because exec-model uses EvaluationUtil.equals() which is based on compareTo()
+        assertThat(result).contains(new BigDecimal("1.00"));
+    }
 }
