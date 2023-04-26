@@ -19,6 +19,20 @@
     <dependency>
         <groupId>com.github.victools</groupId>
         <artifactId>jsonschema-module-jackson</artifactId>
+        <exclusions>
+          <exclusion>
+            <groupId>com.fasterxml</groupId>
+            <artifactId>classmate</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+          </exclusion>
+        </exclusions>
     </dependency>
   </dependencies>
   <build>
