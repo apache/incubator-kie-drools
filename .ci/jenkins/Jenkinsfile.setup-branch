@@ -84,7 +84,7 @@ pipeline {
             }
             steps {
                 script {
-                    build job: '../tools/kie-benchmarks-update-optaplanner', parameters: [ string(name: 'NEW_VERSION', value: "${getOptaPlannerVersion()}")
+                    build job: '../tools/kie-benchmarks-update-optaplanner', parameters: [ string(name: 'NEW_VERSION', value: "${getOptaPlannerVersion()}")]
                 }
             }
         }

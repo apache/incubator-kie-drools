@@ -81,7 +81,7 @@ pipeline {
 
         stage('Merge OptaPlanner Quickstarts PR and tag') {
             when {
-                expression { return isRelease() && isStream9() }
+                expression { return isRelease() }
             }
             steps {
                 script {
@@ -96,7 +96,7 @@ pipeline {
 
         stage('Upload OptaPlanner documentation') {
             when {
-                expression { return isRelease() && isStream9() }
+                expression { return isRelease() }
             }
             steps {
                 script {
@@ -138,7 +138,7 @@ pipeline {
 
         stage('Set Quickstarts next snapshot version') {
             when {
-                expression { return isRelease() && isStream9() }
+                expression { return isRelease() }
             }
             steps {
                 script {

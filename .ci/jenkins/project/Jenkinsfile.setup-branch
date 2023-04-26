@@ -63,9 +63,6 @@ pipeline {
         }
 
         stage('Init Optaplanner Quickstarts') {
-            when {
-                expression { return isStream9() }
-            }
             steps {
                 script {
                     def buildParams = getDefaultBuildParams()

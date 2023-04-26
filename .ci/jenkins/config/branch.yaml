@@ -49,6 +49,8 @@ disable:
 repositories:
 - name: optaplanner
   branch: main
+- name: optaplanner-quickstarts
+  branch: 8.x
 # keep the website publish job on the main branch
 - name: optaplanner-website
   branch: main

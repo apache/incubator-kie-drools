@@ -86,9 +86,7 @@ pipeline {
             steps {
                 script {
                     checkoutRepo(optaplannerRepository)
-                    if (isStream9()) {
-                        checkoutQuickstarts()
-                    }
+                    checkoutQuickstarts()
                 }
             }
         }
@@ -100,9 +98,7 @@ pipeline {
             steps {
                 script {
                     prepareForPR(optaplannerRepository)
-                    if (isStream9()) {
-                        prepareForPR(quickstartsRepository)
-                    }
+                    prepareForPR(quickstartsRepository)
                 }
             }
         }
@@ -116,14 +112,9 @@ pipeline {
                     if (getDroolsVersion()) {
                         maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.drools', getDroolsVersion())
                     }
-
                     maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion(), !isRelease())
-
                     mavenCleanInstallOptaPlannerParents()
-
-                    if (isStream9()) {
-                        updateQuickstartsVersions()
-                    }
+                    updateQuickstartsVersions()
                 }
             }
         }
@@ -152,9 +143,6 @@ pipeline {
         }
 
         stage('Build Quickstarts') {
-            when {
-                expression { return isStream9() }
-            }
             steps {
                 script {
                     getOptaplannerQuickstartsMavenCommand()
@@ -180,9 +168,7 @@ pipeline {
             steps {
                 script {
                     runMavenDeploy(getOptaplannerMavenCommand())
-                    if (isStream9()) {
-                        runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
-                    }
+                    runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
                 }
             }
         }
@@ -229,9 +215,7 @@ pipeline {
             steps {
                 script {
                     commitAndCreatePR(optaplannerRepository, getBuildBranch())
-                    if (isStream9()) {
-                        commitAndCreatePR(quickstartsRepository, getQuickStartsBranch())
-                    }
+                    commitAndCreatePR(quickstartsRepository, getQuickStartsBranch())
                 }
             }
             post {
