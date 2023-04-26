@@ -2901,7 +2901,7 @@ index 00fd015360..aab74b865e 100644
    </parent>
  
 diff --git a/drools-model/drools-canonical-model/pom.xml b/drools-model/drools-canonical-model/pom.xml
-index 0d425fdb72..dbf93c5a57 100644
+index 82253c37fe..9531898fa2 100644
 --- a/drools-model/drools-canonical-model/pom.xml
 +++ b/drools-model/drools-canonical-model/pom.xml
 @@ -7,7 +7,7 @@
@@ -4192,7 +4192,7 @@ index aaf01f00a2..9d634ec94c 100644
  import org.drools.core.base.MapGlobalResolver;
  import org.drools.core.impl.EnvironmentFactory;
 diff --git a/drools-util/pom.xml b/drools-util/pom.xml
-index b7f797911b..42ece7cfbd 100644
+index da3b7b4cc8..4353607227 100644
 --- a/drools-util/pom.xml
 +++ b/drools-util/pom.xml
 @@ -7,7 +7,7 @@
