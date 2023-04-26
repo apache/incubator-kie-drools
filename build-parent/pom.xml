@@ -308,6 +308,20 @@
         <groupId>com.github.victools</groupId>
         <artifactId>jsonschema-module-jackson</artifactId>
         <version>${version.com.github.victools}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.fasterxml</groupId>
+            <artifactId>classmate</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
