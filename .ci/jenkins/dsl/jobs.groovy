@@ -193,7 +193,7 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
 
 // Quarkus 3
 if (EnvUtils.isEnvironmentEnabled(this, 'quarkus-3')) {
-    // setupPrQuarkus3RewriteJob() # TODO to enable if you want the PR quarkus-3 rewrite job
+    setupPrQuarkus3RewriteJob()
     setupStandaloneQuarkus3RewriteJob()
 }
 
