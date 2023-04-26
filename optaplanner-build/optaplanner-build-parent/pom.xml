@@ -53,7 +53,7 @@
     <version.dependency.plugin>3.5.0</version.dependency.plugin>
     <version.formatter.plugin>2.22.0</version.formatter.plugin>
     <version.impsort.plugin>1.8.0</version.impsort.plugin>
-    <version.jacoco.plugin>0.8.9</version.jacoco.plugin>
+    <version.jacoco.plugin>0.8.10</version.jacoco.plugin>
     <!--
       Do not upgrade unless prepared to deal with JPMS issues.
       If upgrading, ensure build still passes with the full profile (-Dfull).
