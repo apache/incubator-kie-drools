@@ -456,4 +456,43 @@ public class SubnetworkTest {
             this.id = id;
         }
     }
+
+    @Test
+    public void subnetworkSharingWith2SinksAndRightTupleDelete_shouldNotThrowNPE() {
+        // DROOLS-7420
+        // Note: exec-model doesn't share the FromNodes, so not hitting the issue.
+        final String drl = "import " + List.class.getCanonicalName() + ";\n" +
+                           "global java.util.List list;\n" +
+                           "rule R1\n" +
+                           "when\n" +
+                           "  not String()\n" +
+                           "  List() from collect (Integer() from new Integer [] {1,2})\n" +
+                           "  Boolean() // always doesn't match\n" +
+                           "then\n" +
+                           "  list.add(\"R1\");\n" +
+                           "end\n" +
+                           "\n" +
+                           "rule R2\n" +
+                           "when\n" +
+                           "  not String()\n" +
+                           "  List() from collect (Integer() from new Integer [] {1,2})\n" +
+                           " then\n" +
+                           "  list.add(\"R2\");\n" +
+                           "  insert(new String());\n" +
+                           "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("subnetwork-test", kieBaseTestConfiguration, drl);
+        final KieSession kieSession = kbase.newKieSession();
+
+        try {
+            final List<String> list = new ArrayList<>();
+            kieSession.setGlobal("list", list);
+
+            kieSession.fireAllRules();
+
+            assertThat(list).containsExactly("R2");
+        } finally {
+            kieSession.dispose();
+        }
+    }
 }

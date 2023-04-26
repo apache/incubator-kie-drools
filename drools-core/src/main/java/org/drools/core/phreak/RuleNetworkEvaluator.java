@@ -15,6 +15,7 @@
 
 package org.drools.core.phreak;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.base.DroolsQuery;
@@ -649,6 +650,7 @@ public class RuleNetworkEvaluator {
             bm = (BetaMemory) nodeMem;
         }
         TupleSets<RightTuple> rightTuples = bm.getStagedRightTuples();
+        reorderRightTuplesInsert(rightTuples);
 
         // Build up iteration array for other sinks
         BetaNode[] bns = null;
@@ -752,6 +754,23 @@ public class RuleNetworkEvaluator {
         }
 
         srcTuples.resetAll();
+    }
+
+    private static void reorderRightTuplesInsert(TupleSets<RightTuple> srcRightTuples) {
+        RightTuple insertFirst = srcRightTuples.getInsertFirst();
+        if (insertFirst == null || insertFirst.getStagedPrevious() == null) {
+            return; // no problem
+        }
+        // stagedNext/stagedPrevious relationship has been inverted by previous node. So reorder
+        List<RightTuple> tupleList = new ArrayList<>();
+        for (RightTuple rightTuple = insertFirst; rightTuple != null; rightTuple = (RightTuple) rightTuple.getStagedPrevious()) {
+            tupleList.add(rightTuple);
+        }
+        for (RightTuple rightTuple : tupleList) {
+            rightTuple.setStagedNext(null);
+            rightTuple.setStagedPrevious(null);
+            srcRightTuples.addInsert(rightTuple);
+        }
     }
 
     public static void findLeftTupleBlocker(BetaNode betaNode, TupleMemory rtm,
