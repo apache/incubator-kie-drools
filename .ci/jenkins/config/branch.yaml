@@ -26,7 +26,7 @@ environments:
     pull_request_default_check: true
     env_vars:
       BUILD_MAVEN_TOOL: kie-maven-3.9.1
-      BUILD_MAVEN_JDK: kie-jdk17
+      BUILD_JDK_TOOL: kie-jdk17
       BUILD_MVN_OPTS: -Denforcer.skip
     ids:
     - quarkus
