@@ -22,7 +22,14 @@ public class ConfigResolverHolder {
     private static ConfigResolver configResolver = new ConfigResolver() {
         @Override
         public <T> Optional<T> getConfigProperty(String name, Class<T> clazz) {
-            return Optional.empty();
+
+            Object value = null;
+            if (Integer.class.isAssignableFrom(clazz)) {
+                value = Integer.getInteger(name);
+            } else if (String.class.isAssignableFrom(clazz)) {
+                value = System.getProperty(name);
+            }
+            return Optional.ofNullable(clazz.cast(value));
         }
     };
 

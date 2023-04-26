@@ -59,6 +59,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.In;
 
 import static org.kie.kogito.internal.utils.ConversionUtils.concatPaths;
+import static org.kie.kogito.serverless.workflow.utils.RestWorkflowUtils.URL;
 import static org.kie.kogito.serverless.workflow.utils.RestWorkflowUtils.fillRest;
 import static org.kie.kogito.serverless.workflow.utils.RestWorkflowUtils.runtimeOpenApi;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.ACCESS_TOKEN;
@@ -88,7 +89,7 @@ public class DescriptorRestOperationHandler extends OpenAPITypeHandler {
         OpenAPIDescriptor openAPIDescriptor = OpenAPIDescriptorFactory.of(openAPI, operationId.getOperation());
         addSecurity(node, openAPIDescriptor, serviceName, parserContext);
         return node.workParameter(RestWorkItemHandler.URL,
-                runtimeOpenApi(serviceName, "base_path", String.class, OpenAPIDescriptorFactory.getDefaultURL(openAPI, "http://localhost:8080"),
+                runtimeOpenApi(serviceName, URL, String.class, OpenAPIDescriptorFactory.getDefaultURL(openAPI, "http://localhost:8080"),
                         (key, clazz, defaultValue) -> new ConfigSuppliedWorkItemSupplier<>(key, clazz, defaultValue, calculatedKey -> concatPaths(calculatedKey, openAPIDescriptor.getPath()),
                                 new LambdaExpr(new Parameter(new UnknownType(), "calculatedKey"),
                                         new MethodCallExpr(ConversionUtils.class.getCanonicalName() + ".concatPaths")

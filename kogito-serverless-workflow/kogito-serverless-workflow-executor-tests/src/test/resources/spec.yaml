@@ -1,0 +1,72 @@
+---
+openapi: 3.0.3
+info:
+  title: Generated API
+  version: "1.0"
+paths:
+  /multiply:
+    post:
+     operationId: multiply
+     parameters:
+        - in: header
+          name: notUsed
+          schema: 
+            type: string
+          required: false
+     requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MultiplicationOperation'
+     responses:
+        "200":
+          description: OK
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  product:
+                    format: float
+                    type: number
+                    
+  /substract:
+    post:
+      operationId: substract
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubtractionOperation'
+      responses:
+        "200":
+          description: OK
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties:
+                 difference:
+                   format: float
+                   type: number 
+components:
+  schemas:
+    MultiplicationOperation:
+      type: object
+      properties:
+        leftElement:
+          format: float
+          type: number
+        rightElement:
+          format: float
+          type: number
+    SubtractionOperation:
+      type: object
+      properties:
+        leftElement:
+          format: float
+          type: number
+        rightElement:
+          format: float
+          type: number
+          

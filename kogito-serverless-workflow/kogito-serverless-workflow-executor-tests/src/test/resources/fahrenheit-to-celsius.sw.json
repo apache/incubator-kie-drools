@@ -1,0 +1,52 @@
+{
+  "id": "fahrenheit_to_celsius",
+  "name": "Fahrenheit to Celsius Conversion Flow",
+  "version": "v1.0",
+  "start": "SetConstants",
+  "functions": [
+    {
+      "name": "multiplication",
+      "operation": "spec.yaml#multiply"
+    },
+    {
+      "name": "subtraction",
+      "operation": "spec.yaml#substract"
+    }
+  ],
+  "states": [
+    {
+      "name": "SetConstants",
+      "type": "inject",
+      "data": {
+        "subtractValue": 32,
+        "multiplyValue": 0.5556
+      },
+      "transition": "Computation"
+    },
+    {
+      "name": "Computation",
+      "actionMode": "sequential",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "subtract",
+          "functionRef": {
+            "refName": "subtraction",
+            "arguments": {
+              "leftElement": ".fahrenheit", 
+              "rightElement": ".subtractValue" 
+            }
+          }
+        },
+        {
+          "name": "multiply",
+          "functionRef": {
+            "refName": "multiplication",
+            "arguments":  "{ leftElement: .difference, rightElement: .multiplyValue }"
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}

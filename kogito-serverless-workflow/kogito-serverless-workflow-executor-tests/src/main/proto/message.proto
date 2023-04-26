@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+option java_package="org.kie.kogito.serverless.workflow.executor.greeting";
+option java_multiple_files = true;
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+  string language=2;
+  InnerHello innerHello= 3;
+}
+
+message InnerHello {
+  bool unknown = 1;
+}
+
+message HelloArrayRequest {
+	repeated HelloRequest requests = 1;
+}
+
+message HelloArrayReply {
+	repeated HelloReply replies = 1;
+}
+
+message InnerMessage {
+  int32 number = 2;
+  State state  = 3;
+}
+
+enum State {
+    UNKNOWN = 0;
+    SUCCESS = 1;
+    ERROR = 2;
+  }
+  
+// The response message containing the greetings
+message HelloReply {
+  
+  string message = 1;
+  State state = 2;
+  InnerMessage innerMessage = 3;
+}

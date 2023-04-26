@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package="org.kie.kogito.serverless.workflow.executor.greeting";
+
+import "message.proto";
+
+
+
+// The greeter service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+  
+  rpc SayHelloArray (HelloArrayRequest) returns (HelloArrayReply) {}
+}
+

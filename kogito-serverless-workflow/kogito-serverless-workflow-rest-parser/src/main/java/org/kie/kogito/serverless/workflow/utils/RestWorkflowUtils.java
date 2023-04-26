@@ -33,7 +33,8 @@ import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.r
 
 public class RestWorkflowUtils {
 
-    private static final String OPEN_API_PROPERTIES_BASE = "org.kogito.openapi.client.";
+    public static final String URL = "url";
+    private static final String OPEN_API_PROPERTIES_BASE = "kogito.sw.openapi.";
 
     public static String getOpenApiProperty(String serviceName, String metadataKey, KogitoBuildContext context) {
         return getOpenApiProperty(serviceName, metadataKey, context, String.class, "");
@@ -55,7 +56,7 @@ public class RestWorkflowUtils {
         return runtimeResolveMetadata(getOpenApiPrefix(serviceName), metadataKey, clazz, defaultValue, builder);
     }
 
-    private static String getOpenApiPrefix(String serviceName) {
+    public static String getOpenApiPrefix(String serviceName) {
         return OPEN_API_PROPERTIES_BASE + serviceName;
     }
 

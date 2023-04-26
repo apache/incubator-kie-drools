@@ -52,7 +52,11 @@ public class ActionResourceFactory {
         if (factory == null) {
             throw new UnsupportedOperationException(function.getType() + " does not support action resources");
         }
-        return factory.apply(function.getOperation());
+        String operation = function.getOperation();
+        if (operation == null) {
+            throw new IllegalArgumentException("operation string must not be null for function " + function.getName());
+        }
+        return factory.apply(operation);
     }
 
     private ActionResourceFactory() {

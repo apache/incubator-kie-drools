@@ -58,7 +58,6 @@ import io.grpc.stub.StreamObserver;
 
 public abstract class RPCWorkItemHandler extends WorkflowWorkItemHandler {
 
-    public static final String NAME = "gRPC";
     public static final String SERVICE_PROP = "serviceName";
     public static final String FILE_PROP = "fileName";
     public static final String METHOD_PROP = "methodName";
