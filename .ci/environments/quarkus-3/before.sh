@@ -7,7 +7,6 @@ ci="${CI:-false}"
 
 rewrite_plugin_version=4.43.0
 quarkus_version=${QUARKUS_VERSION:-3.0.0.CR1}
-project_version='quarkus-3-SNAPSHOT'
 
 quarkus_file="${script_dir_path}/quarkus3.yml"
 patch_file="${script_dir_path}"/patches/0001_before_sh.patch
@@ -31,11 +30,7 @@ if [ "${ci}" = "true" ]; then
     ${mvn_cmd} clean install -Dquickly
 fi
 
-# Change version
-${mvn_cmd} -e -N -Dfull -DnewVersion=${project_version} -DallowSnapshots=true -DgenerateBackupPoms=false versions:set
-
-# Make sure artifacts are updated locally
-${mvn_cmd} clean install -Dquickly
+project_version=$(${mvn_cmd} -q -Dexpression=project.version -DforceStdout help:evaluate)
 
 # Regenerate quarkus3 recipe
 cd ${script_dir_path}
