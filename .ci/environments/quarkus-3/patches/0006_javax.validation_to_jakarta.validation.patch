@@ -1,0 +1,51 @@
+commit 5734b95afaa7bb91293c6d1982a94311e69393e5
+Author: radtriste <radtriste@jenkins.redhat>
+Date:   Tue Apr 18 15:03:16 2023 +0200
+
+    patch: javax.validation -> jakarta.validation
+
+diff --git a/jbpm/jbpm-flow-builder/src/main/java/org/jbpm/compiler/canonical/ModelMetaData.java b/jbpm/jbpm-flow-builder/src/main/java/org/jbpm/compiler/canonical/ModelMetaData.java
+index 187abddd40..85d7bbf377 100644
+--- a/jbpm/jbpm-flow-builder/src/main/java/org/jbpm/compiler/canonical/ModelMetaData.java
++++ b/jbpm/jbpm-flow-builder/src/main/java/org/jbpm/compiler/canonical/ModelMetaData.java
+@@ -231,10 +231,10 @@ public class ModelMetaData {
+     private void applyValidation(FieldDeclaration fd, List<String> tags) {
+ 
+         if (supportsValidation) {
+-            fd.addAnnotation("javax.validation.Valid");
++            fd.addAnnotation("jakarta.validation.Valid");
+ 
+             if (tags != null && tags.contains(Variable.REQUIRED_TAG)) {
+-                fd.addAnnotation("javax.validation.constraints.NotNull");
++                fd.addAnnotation("jakarta.validation.constraints.NotNull");
+             }
+         }
+     }
+diff --git a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/utils/KogitoCodeGenConstants.java b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/utils/KogitoCodeGenConstants.java
+index 1b0b12f786..a84a732b4a 100644
+--- a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/utils/KogitoCodeGenConstants.java
++++ b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/utils/KogitoCodeGenConstants.java
+@@ -21,7 +21,7 @@ public class KogitoCodeGenConstants {
+ 
+     }
+ 
+-    public static final String VALIDATION_CLASS = "javax.validation.constraints.NotNull";
++    public static final String VALIDATION_CLASS = "jakarta.validation.constraints.NotNull";
+     public static final String OPENAPI_SPEC_CLASS = "org.eclipse.microprofile.openapi.annotations.media.Schema";
+     /**
+      * Property that controls whether Kogito Codegen should ignore hidden files. Defaults to true.
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/java/org/kie/kogito/codegen/process/ProcessResourceGenerator.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/java/org/kie/kogito/codegen/process/ProcessResourceGenerator.java
+index f74ed81f1c..33f7c5ffe0 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/java/org/kie/kogito/codegen/process/ProcessResourceGenerator.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/java/org/kie/kogito/codegen/process/ProcessResourceGenerator.java
+@@ -305,8 +305,8 @@ public class ProcessResourceGenerator {
+     }
+ 
+     private void insertValidationAnnotations(Parameter param) {
+-        param.addAnnotation("javax.validation.Valid");
+-        param.addAnnotation("javax.validation.constraints.NotNull");
++        param.addAnnotation("jakarta.validation.Valid");
++        param.addAnnotation("jakarta.validation.constraints.NotNull");
+     }
+ 
+     private void initializeProcessField(FieldDeclaration fd) {

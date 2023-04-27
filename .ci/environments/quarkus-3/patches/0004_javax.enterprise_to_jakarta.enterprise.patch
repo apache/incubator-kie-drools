@@ -1,0 +1,291 @@
+commit ab7f929c80c55efa0d0151d97225c0348f97d5ce
+Author: radtriste <radtriste@jenkins.redhat>
+Date:   Tue Apr 18 14:57:52 2023 +0200
+
+    patch: javax.enterprise -> jakarta.enterprise
+
+diff --git a/kogito-codegen-modules/GUIDELINES.adoc b/kogito-codegen-modules/GUIDELINES.adoc
+index ae862535a4..a8ad497c5d 100644
+--- a/kogito-codegen-modules/GUIDELINES.adoc
++++ b/kogito-codegen-modules/GUIDELINES.adoc
+@@ -157,7 +157,7 @@ This is the end-result when the class is rendered:
+ .TravelersMessageConsumer_3.java
+ [source,java]
+ ----
+-@javax.enterprise.context.ApplicationScoped()
++@jakarta.enterprise.context.ApplicationScoped()
+ public class TravelersMessageConsumer_3 {
+ 
+     @jakarta.inject.Inject()
+@@ -219,7 +219,7 @@ u.findAll(FieldDeclaration.class,
+         if (isSpring()) {
+             vd.setType("java.util.List<WorkItemHandler>");
+         } else {
+-            vd.setType("javax.enterprise.inject.Instance<WorkItemHandler>");
++            vd.setType("jakarta.enterprise.inject.Instance<WorkItemHandler>");
+         }
+     });
+ ----
+diff --git a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
+index 54cef037a5..7f3857df63 100644
+--- a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
++++ b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
+@@ -35,7 +35,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
+ 
+     @Override
+     public <T extends NodeWithAnnotations<?>> T withProduces(T node, boolean isDefault) {
+-        node.addAndGetAnnotation("javax.enterprise.inject.Produces");
++        node.addAndGetAnnotation("jakarta.enterprise.inject.Produces");
+         if (isDefault) {
+             node.addAndGetAnnotation("io.quarkus.arc.DefaultBean");
+         }
+@@ -50,7 +50,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
+ 
+     @Override
+     public <T extends NodeWithAnnotations<?>> T withApplicationComponent(T node) {
+-        node.addAnnotation("javax.enterprise.context.ApplicationScoped");
++        node.addAnnotation("jakarta.enterprise.context.ApplicationScoped");
+         return node;
+     }
+ 
+@@ -106,7 +106,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
+ 
+     @Override
+     public String optionalInstanceInjectionType() {
+-        return "javax.enterprise.inject.Instance";
++        return "jakarta.enterprise.inject.Instance";
+     }
+ 
+     @Override
+@@ -133,7 +133,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
+ 
+     @Override
+     public String applicationComponentType() {
+-        return "javax.enterprise.context.ApplicationScoped";
++        return "jakarta.enterprise.context.ApplicationScoped";
+     }
+ 
+     @Override
+@@ -173,7 +173,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
+ 
+     @Override
+     public <T extends NodeWithAnnotations<?>> T withFactoryMethod(T node) {
+-        node.addAnnotation("javax.enterprise.inject.Produces");
++        node.addAnnotation("jakarta.enterprise.inject.Produces");
+         return node;
+     }
+ }
+diff --git a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java
+index 64bd6d374c..023cf9e482 100644
+--- a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java
+@@ -21,7 +21,7 @@ public class Application extends org.kie.kogito.StaticApplication {
+     @jakarta.inject.Inject
+     public Application(
+             org.kie.kogito.Config config,
+-            javax.enterprise.inject.Instance<org.kie.kogito.KogitoEngine> engines) {
++            jakarta.enterprise.inject.Instance<org.kie.kogito.KogitoEngine> engines) {
+         super(config, engines);
+     }
+ }
+diff --git a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/config/ApplicationConfigQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/config/ApplicationConfigQuarkusTemplate.java
+index b9ebe19f94..a3c37cd670 100644
+--- a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/config/ApplicationConfigQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/config/ApplicationConfigQuarkusTemplate.java
+@@ -15,7 +15,7 @@
+  */
+ package $Package$;
+ 
+-import javax.enterprise.inject.Instance;
++import jakarta.enterprise.inject.Instance;
+ 
+ @jakarta.inject.Singleton
+ public class ApplicationConfig extends org.kie.kogito.StaticConfig {
+diff --git a/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionContainerQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionContainerQuarkusTemplate.java
+index 7ef2f6460f..f01360a70e 100644
+--- a/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionContainerQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionContainerQuarkusTemplate.java
+@@ -15,7 +15,7 @@
+  */
+ package $Package$;
+ 
+-@javax.enterprise.context.ApplicationScoped()
++@jakarta.enterprise.context.ApplicationScoped()
+ @io.quarkus.runtime.Startup() //<-- Required to force full reload during hot reload
+ public class DecisionModels extends org.kie.kogito.dmn.AbstractDecisionModels {
+ 
+diff --git a/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/config/DecisionConfigQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/config/DecisionConfigQuarkusTemplate.java
+index 0ecd290a24..7b685c7a0e 100644
+--- a/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/config/DecisionConfigQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/config/DecisionConfigQuarkusTemplate.java
+@@ -22,7 +22,7 @@ import java.util.function.Function;
+ import java.util.stream.Collectors;
+ import java.util.stream.Stream;
+ 
+-import javax.enterprise.inject.Instance;
++import jakarta.enterprise.inject.Instance;
+ 
+ import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
+ import org.kie.kogito.decision.DecisionEventListenerConfig;
+diff --git a/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/PredictionModelsQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/PredictionModelsQuarkusTemplate.java
+index 672bc5e149..9cd8f6265e 100644
+--- a/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/PredictionModelsQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/PredictionModelsQuarkusTemplate.java
+@@ -15,7 +15,7 @@
+  */
+ package $Package$;
+ 
+-@javax.enterprise.context.ApplicationScoped()
++@jakarta.enterprise.context.ApplicationScoped()
+ public class PredictionModels extends org.kie.kogito.pmml.AbstractPredictionModels {
+ 
+     static {
+diff --git a/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/config/PredictionConfigQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/config/PredictionConfigQuarkusTemplate.java
+index 8be168e8a3..aa1b0a6811 100644
+--- a/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/config/PredictionConfigQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/config/PredictionConfigQuarkusTemplate.java
+@@ -22,7 +22,7 @@ import java.util.function.Function;
+ import java.util.stream.Collectors;
+ import java.util.stream.Stream;
+ 
+-import javax.enterprise.inject.Instance;
++import jakarta.enterprise.inject.Instance;
+ 
+ import org.kie.kogito.pmml.config.AbstractPredictionConfig;
+ import org.kie.kogito.prediction.PredictionEventListenerConfig;
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerQuarkusTemplate.java
+index 81e9ad561b..99de8839df 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerQuarkusTemplate.java
+@@ -15,11 +15,11 @@
+  */
+ package $Package$;
+ 
+-@javax.enterprise.context.ApplicationScoped
++@jakarta.enterprise.context.ApplicationScoped
+ public class Processes implements org.kie.kogito.process.Processes {
+ 
+     @jakarta.inject.Inject
+-    javax.enterprise.inject.Instance<org.kie.kogito.process.Process<? extends org.kie.kogito.Model>> processes;
++    jakarta.enterprise.inject.Instance<org.kie.kogito.process.Process<? extends org.kie.kogito.Model>> processes;
+ 
+     private java.util.Map<String, org.kie.kogito.process.Process<? extends org.kie.kogito.Model>> mappedProcesses = new java.util.HashMap<>();
+ 
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/config/ProcessConfigQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/config/ProcessConfigQuarkusTemplate.java
+index b31e82652d..fd466857b8 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/config/ProcessConfigQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/config/ProcessConfigQuarkusTemplate.java
+@@ -15,7 +15,7 @@
+  */
+ package $Package$;
+ 
+-import javax.enterprise.inject.Instance;
++import jakarta.enterprise.inject.Instance;
+ 
+ import org.kie.api.event.process.ProcessEventListener;
+ import org.kie.kogito.event.EventPublisher;
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/persistence/KafkaStreamsTopologyProducerJavaTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/persistence/KafkaStreamsTopologyProducerJavaTemplate.java
+index 736f1de9d7..d6ac80b21a 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/persistence/KafkaStreamsTopologyProducerJavaTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/persistence/KafkaStreamsTopologyProducerJavaTemplate.java
+@@ -18,8 +18,8 @@ package org.kie.kogito.persistence;
+ import java.util.Arrays;
+ import java.util.List;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Produces;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Produces;
+ 
+ import org.apache.kafka.streams.Topology;
+ import org.slf4j.Logger;
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/producer/ProcessServiceProducerQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/producer/ProcessServiceProducerQuarkusTemplate.java
+index f99e5d61ae..2a483a3e27 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/producer/ProcessServiceProducerQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/producer/ProcessServiceProducerQuarkusTemplate.java
+@@ -15,8 +15,8 @@
+  */
+ package $Package$;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Produces;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Produces;
+ 
+ import org.kie.kogito.Application;
+ import org.kie.kogito.process.ProcessService;
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java b/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java
+index bf7aff2b2e..5baf698463 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java
+@@ -1,4 +1,4 @@
+-import javax.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.context.ApplicationScoped;
+ import jakarta.ws.rs.GET;
+ import jakarta.ws.rs.Path;
+ import jakarta.ws.rs.Produces;
+diff --git a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/config/RuleConfigQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/config/RuleConfigQuarkusTemplate.java
+index e32f459b23..e9f4d6bbad 100644
+--- a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/config/RuleConfigQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/config/RuleConfigQuarkusTemplate.java
+@@ -15,7 +15,7 @@
+  */
+ package $Package$;
+ 
+-import javax.enterprise.inject.Instance;
++import jakarta.enterprise.inject.Instance;
+ 
+ import org.kie.kogito.drools.core.config.AbstractRuleConfig;
+ import org.kie.api.event.rule.AgendaEventListener;
+diff --git a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/EventDrivenExecutorQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/EventDrivenExecutorQuarkusTemplate.java
+index 2897c9829e..6d50c68123 100644
+--- a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/EventDrivenExecutorQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/EventDrivenExecutorQuarkusTemplate.java
+@@ -16,7 +16,7 @@
+ package com.myspace.demo;
+ 
+ import javax.annotation.PostConstruct;
+-import javax.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.context.ApplicationScoped;
+ import jakarta.inject.Inject;
+ 
+ import org.kie.kogito.eventdriven.rules.AbstractEventDrivenQueryExecutor;
+diff --git a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RuleUnitContainerQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RuleUnitContainerQuarkusTemplate.java
+index aa8fa8a753..9fb49f4422 100644
+--- a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RuleUnitContainerQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RuleUnitContainerQuarkusTemplate.java
+@@ -23,7 +23,7 @@ import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
+ import org.kie.kogito.rules.RuleEventListenerConfig;
+ import org.kie.kogito.app.Application;
+ 
+-@javax.enterprise.context.ApplicationScoped
++@jakarta.enterprise.context.ApplicationScoped
+ public class RuleUnits extends org.kie.kogito.drools.core.unit.AbstractRuleUnits implements org.kie.kogito.rules.RuleUnits {
+ 
+     @jakarta.inject.Inject
+diff --git a/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleContainerQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleContainerQuarkusTemplate.java
+index 9b5c4635bb..8a13cea8c3 100644
+--- a/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleContainerQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleContainerQuarkusTemplate.java
+@@ -16,7 +16,7 @@
+ import java.util.HashMap;
+ import java.util.Map;
+ 
+-@javax.enterprise.context.ApplicationScoped()
++@jakarta.enterprise.context.ApplicationScoped()
+ public class SampleRuntime extends org.kie.kogito.codegen.sample.core.SampleRuntimeImpl {
+ 
+     @jakarta.inject.Inject
+diff --git a/quarkus/addons/monitoring/core/src/main/java/org/kie/kogito/monitoring/core/quarkus/QuarkusMetricsFilterRegister.java b/quarkus/addons/monitoring/core/src/main/java/org/kie/kogito/monitoring/core/quarkus/QuarkusMetricsFilterRegister.java
+index 130135619b..b3647a7d03 100644
+--- a/quarkus/addons/monitoring/core/src/main/java/org/kie/kogito/monitoring/core/quarkus/QuarkusMetricsFilterRegister.java
++++ b/quarkus/addons/monitoring/core/src/main/java/org/kie/kogito/monitoring/core/quarkus/QuarkusMetricsFilterRegister.java
+@@ -36,7 +36,7 @@ public class QuarkusMetricsFilterRegister implements DynamicFeature {
+ 
+     // Indirect Instance<Boolean> to solve warning message during compilation:
+     // WARNING Directly injecting a @ConfigProperty into a JAX-RS provider may lead to unexpected results.
+-    // To ensure proper results, please change the type of the field to javax.enterprise.inject.Instance<Boolean>.
++    // To ensure proper results, please change the type of the field to jakarta.enterprise.inject.Instance<Boolean>.
+     @ConfigProperty(name = Constants.HTTP_INTERCEPTOR_USE_DEFAULT, defaultValue = "true")
+     Instance<Boolean> httpInterceptorUseDefault;
+ 

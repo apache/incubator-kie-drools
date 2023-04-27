@@ -1,0 +1,337 @@
+commit af01abe48c91f6aa22ce4788ce74a3fd19e546b6
+Author: radtriste <radtriste@jenkins.redhat>
+Date:   Tue Apr 18 14:49:52 2023 +0200
+
+    patch: javax.ws -> jakarta.ws
+
+diff --git a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/context/impl/QuarkusKogitoBuildContext.java b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/context/impl/QuarkusKogitoBuildContext.java
+index 241167b57d..c15aa39596 100644
+--- a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/context/impl/QuarkusKogitoBuildContext.java
++++ b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/context/impl/QuarkusKogitoBuildContext.java
+@@ -21,7 +21,7 @@ import org.kie.kogito.codegen.api.rest.impl.CDIRestAnnotator;
+ public class QuarkusKogitoBuildContext extends AbstractKogitoBuildContext {
+ 
+     public static final String CONTEXT_NAME = "Quarkus";
+-    public static final String QUARKUS_REST = "javax.ws.rs.Path";
++    public static final String QUARKUS_REST = "jakarta.ws.rs.Path";
+     public static final String QUARKUS_DI = "javax.inject.Inject";
+ 
+     protected QuarkusKogitoBuildContext(QuarkusKogitoBuildContextBuilder builder) {
+diff --git a/kogito-codegen-modules/kogito-codegen-decisions/src/main/java/org/kie/kogito/codegen/decision/DecisionRestResourceGenerator.java b/kogito-codegen-modules/kogito-codegen-decisions/src/main/java/org/kie/kogito/codegen/decision/DecisionRestResourceGenerator.java
+index 48ab828a1c..a065405fe6 100644
+--- a/kogito-codegen-modules/kogito-codegen-decisions/src/main/java/org/kie/kogito/codegen/decision/DecisionRestResourceGenerator.java
++++ b/kogito-codegen-modules/kogito-codegen-decisions/src/main/java/org/kie/kogito/codegen/decision/DecisionRestResourceGenerator.java
+@@ -289,7 +289,7 @@ public class DecisionRestResourceGenerator {
+ 
+     private void interpolateRequestPath(String pathName, String placeHolder, MethodDeclaration clonedDmnMethod) {
+         clonedDmnMethod.getAnnotations().stream()
+-                .filter(a -> a.getNameAsString().endsWith("Path") || a.getNameAsString().endsWith("PostMapping")) // e.g.: @javax.ws.rs.Path("/DSn/dmnresult") or @org.springframework.web.bind.annotation.PostMapping(value = "$dmnMethodUrl$", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
++                .filter(a -> a.getNameAsString().endsWith("Path") || a.getNameAsString().endsWith("PostMapping")) // e.g.: @jakarta.ws.rs.Path("/DSn/dmnresult") or @org.springframework.web.bind.annotation.PostMapping(value = "$dmnMethodUrl$", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+                 .flatMap(a -> a.findAll(StringLiteralExpr.class).stream())
+                 .forEach(vv -> {
+                     String s = vv.getValue();
+diff --git a/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionRestResourceQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionRestResourceQuarkusTemplate.java
+index 7f07766c1c..d983b515cf 100644
+--- a/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionRestResourceQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionRestResourceQuarkusTemplate.java
+@@ -17,14 +17,14 @@ package org.kie.dmn.kogito.quarkus.example;
+ 
+ import java.util.stream.Collectors;
+ 
+-import javax.ws.rs.Consumes;
+-import javax.ws.rs.GET;
+-import javax.ws.rs.POST;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.MediaType;
+-import javax.ws.rs.core.Response;
+-import javax.ws.rs.core.Response.ResponseBuilder;
++import jakarta.ws.rs.Consumes;
++import jakarta.ws.rs.GET;
++import jakarta.ws.rs.POST;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.Produces;
++import jakarta.ws.rs.core.MediaType;
++import jakarta.ws.rs.core.Response;
++import jakarta.ws.rs.core.Response.ResponseBuilder;
+ 
+ import org.kie.kogito.Application;
+ import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
+@@ -82,7 +82,7 @@ public class DMNRestResourceTemplate {
+     }
+ 
+     private ResponseBuilder buildFailedEvaluationResponse(KogitoDMNResult result){
+-        return Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).entity(result);
++        return Response.status(jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).entity(result);
+     }
+ 
+     private ResponseBuilder extractStronglyTypedContextIfSucceded(KogitoDMNResult result) {
+diff --git a/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/PMMLRestResourceQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/PMMLRestResourceQuarkusTemplate.java
+index 64017c41bf..d67a8c095b 100644
+--- a/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/PMMLRestResourceQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-predictions/src/main/resources/class-templates/PMMLRestResourceQuarkusTemplate.java
+@@ -17,11 +17,11 @@ package org.kie.kogito.pmml.rest;
+ 
+ import java.util.Collections;
+ 
+-import javax.ws.rs.Consumes;
+-import javax.ws.rs.POST;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.MediaType;
++import jakarta.ws.rs.Consumes;
++import jakarta.ws.rs.POST;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.Produces;
++import jakarta.ws.rs.core.MediaType;
+ 
+ import org.kie.kogito.Application;
+ 
+@@ -53,11 +53,11 @@ public class PMMLRestResourceTemplate extends org.kie.kogito.pmml.AbstractPMMLRe
+         return super.descriptive(application, FILE_NAME, MODEL_NAME, variables);
+     }
+ 
+-    @javax.ws.rs.ext.Provider
+-    public static class ErrorExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<java.lang.Exception> {
++    @jakarta.ws.rs.ext.Provider
++    public static class ErrorExceptionMapper implements jakarta.ws.rs.ext.ExceptionMapper<java.lang.Exception> {
+ 
+-        public javax.ws.rs.core.Response toResponse(java.lang.Exception e) {
+-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).entity(org.kie.kogito.pmml.AbstractPMMLRestResource.getJsonErrorMessage(e)).build();
++        public jakarta.ws.rs.core.Response toResponse(java.lang.Exception e) {
++            return jakarta.ws.rs.core.Response.status(jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).entity(org.kie.kogito.pmml.AbstractPMMLRestResource.getJsonErrorMessage(e)).build();
+         }
+     }
+ 
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ReactiveRestResourceQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ReactiveRestResourceQuarkusTemplate.java
+index a1eb2da385..049289b49f 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ReactiveRestResourceQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ReactiveRestResourceQuarkusTemplate.java
+@@ -22,20 +22,20 @@ import java.util.stream.Collectors;
+ import java.util.concurrent.CompletableFuture;
+ import java.util.concurrent.CompletionStage;
+ 
+-import javax.ws.rs.Consumes;
+-import javax.ws.rs.DELETE;
+-import javax.ws.rs.GET;
+-import javax.ws.rs.NotFoundException;
+-import javax.ws.rs.POST;
+-import javax.ws.rs.PUT;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.DefaultValue;
+-import javax.ws.rs.PathParam;
+-import javax.ws.rs.QueryParam;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.Context;
+-import javax.ws.rs.core.HttpHeaders;
+-import javax.ws.rs.core.MediaType;
++import jakarta.ws.rs.Consumes;
++import jakarta.ws.rs.DELETE;
++import jakarta.ws.rs.GET;
++import jakarta.ws.rs.NotFoundException;
++import jakarta.ws.rs.POST;
++import jakarta.ws.rs.PUT;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.DefaultValue;
++import jakarta.ws.rs.PathParam;
++import jakarta.ws.rs.QueryParam;
++import jakarta.ws.rs.Produces;
++import jakarta.ws.rs.core.Context;
++import jakarta.ws.rs.core.HttpHeaders;
++import jakarta.ws.rs.core.MediaType;
+ 
+ import org.jbpm.util.JsonSchemaUtil;
+ import org.kie.kogito.process.Process;
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/RestResourceQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/RestResourceQuarkusTemplate.java
+index 2bbbe8858b..18bdfd0452 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/RestResourceQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/RestResourceQuarkusTemplate.java
+@@ -22,25 +22,25 @@ import java.util.Optional;
+ import java.util.stream.Collectors;
+ 
+ import javax.inject.Inject;
+-import javax.ws.rs.Consumes;
+-import javax.ws.rs.DELETE;
+-import javax.ws.rs.GET;
+-import javax.ws.rs.NotFoundException;
+-import javax.ws.rs.PATCH;
+-import javax.ws.rs.POST;
+-import javax.ws.rs.PUT;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.DefaultValue;
+-import javax.ws.rs.PathParam;
+-import javax.ws.rs.QueryParam;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.Context;
+-import javax.ws.rs.core.HttpHeaders;
+-import javax.ws.rs.core.MediaType;
+-import javax.ws.rs.core.Response;
+-import javax.ws.rs.core.UriBuilder;
+-import javax.ws.rs.core.UriInfo;
+-import javax.ws.rs.core.Response.Status;
++import jakarta.ws.rs.Consumes;
++import jakarta.ws.rs.DELETE;
++import jakarta.ws.rs.GET;
++import jakarta.ws.rs.NotFoundException;
++import jakarta.ws.rs.PATCH;
++import jakarta.ws.rs.POST;
++import jakarta.ws.rs.PUT;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.DefaultValue;
++import jakarta.ws.rs.PathParam;
++import jakarta.ws.rs.QueryParam;
++import jakarta.ws.rs.Produces;
++import jakarta.ws.rs.core.Context;
++import jakarta.ws.rs.core.HttpHeaders;
++import jakarta.ws.rs.core.MediaType;
++import jakarta.ws.rs.core.Response;
++import jakarta.ws.rs.core.UriBuilder;
++import jakarta.ws.rs.core.UriInfo;
++import jakarta.ws.rs.core.Response.Status;
+ 
+ import org.eclipse.microprofile.openapi.annotations.Operation;
+ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/RestResourceUserTaskQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/RestResourceUserTaskQuarkusTemplate.java
+index cac6b56163..61f4da6a87 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/RestResourceUserTaskQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/RestResourceUserTaskQuarkusTemplate.java
+@@ -17,10 +17,10 @@ package com.myspace.demo;
+ 
+ import java.util.List;
+ 
+-import javax.ws.rs.NotFoundException;
+-import javax.ws.rs.core.Context;
+-import javax.ws.rs.core.Response;
+-import javax.ws.rs.core.UriInfo;
++import jakarta.ws.rs.NotFoundException;
++import jakarta.ws.rs.core.Context;
++import jakarta.ws.rs.core.Response;
++import jakarta.ws.rs.core.UriInfo;
+ 
+ import org.kie.kogito.auth.IdentityProviders;
+ import org.kie.kogito.auth.SecurityPolicy;
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java b/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java
+index c9611d5a32..bf7aff2b2e 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java
+@@ -1,8 +1,8 @@
+ import javax.enterprise.context.ApplicationScoped;
+-import javax.ws.rs.GET;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.MediaType;
++import jakarta.ws.rs.GET;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.Produces;
++import jakarta.ws.rs.core.MediaType;
+ 
+ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+ 
+diff --git a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryJavaTemplate.java b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryJavaTemplate.java
+index 39b86127ef..10cfcda88f 100644
+--- a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryJavaTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryJavaTemplate.java
+@@ -18,11 +18,11 @@ package com.myspace.demo;
+ import java.util.List;
+ import java.util.Map;
+ 
+-import javax.ws.rs.Consumes;
+-import javax.ws.rs.POST;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.MediaType;
++import jakarta.ws.rs.Consumes;
++import jakarta.ws.rs.POST;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.Produces;
++import jakarta.ws.rs.core.MediaType;
+ 
+ import org.drools.ruleunits.api.RuleUnit;
+ import org.drools.ruleunits.api.RuleUnitInstance;
+diff --git a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java
+index 3447ad6f97..4bfc800f1a 100644
+--- a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java
+@@ -18,11 +18,11 @@ package com.myspace.demo;
+ import java.util.List;
+ import java.util.Map;
+ 
+-import javax.ws.rs.Consumes;
+-import javax.ws.rs.POST;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.MediaType;
++import jakarta.ws.rs.Consumes;
++import jakarta.ws.rs.POST;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.Produces;
++import jakarta.ws.rs.core.MediaType;
+ 
+ import org.drools.ruleunits.api.RuleUnit;
+ import org.drools.ruleunits.api.RuleUnitInstance;
+diff --git a/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleRestResourceQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleRestResourceQuarkusTemplate.java
+index 7fdbefde91..8920575b8a 100644
+--- a/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleRestResourceQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleRestResourceQuarkusTemplate.java
+@@ -15,11 +15,11 @@
+  */
+ package org.kie.dmn.kogito.quarkus.example;
+ 
+-import javax.ws.rs.Consumes;
+-import javax.ws.rs.GET;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.MediaType;
++import jakarta.ws.rs.Consumes;
++import jakarta.ws.rs.GET;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.Produces;
++import jakarta.ws.rs.core.MediaType;
+ 
+ import org.kie.kogito.codegen.sample.core.SampleRuntime;
+ import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
+diff --git a/quarkus/addons/messaging/integration-tests/src/main/java/org/kie/kogito/integrationtests/QuarkusCloudEventResource.java b/quarkus/addons/messaging/integration-tests/src/main/java/org/kie/kogito/integrationtests/QuarkusCloudEventResource.java
+index faaae4a358..e7d1ea6e66 100644
+--- a/quarkus/addons/messaging/integration-tests/src/main/java/org/kie/kogito/integrationtests/QuarkusCloudEventResource.java
++++ b/quarkus/addons/messaging/integration-tests/src/main/java/org/kie/kogito/integrationtests/QuarkusCloudEventResource.java
+@@ -18,8 +18,8 @@ package org.kie.kogito.integrationtests;
+ import java.util.concurrent.CompletableFuture;
+ import java.util.concurrent.CompletionStage;
+ 
+-import javax.ws.rs.Path;
+-import javax.ws.rs.core.Response;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.core.Response;
+ 
+ import org.kie.kogito.addon.quarkus.messaging.common.http.AbstractQuarkusCloudEventResource;
+ 
+diff --git a/quarkus/addons/messaging/integration-tests/src/test/java/org/kie/kogito/integrationtests/QuarkusCloudEventResourceIT.java b/quarkus/addons/messaging/integration-tests/src/test/java/org/kie/kogito/integrationtests/QuarkusCloudEventResourceIT.java
+index 8d30bc9ae3..df556c09cd 100644
+--- a/quarkus/addons/messaging/integration-tests/src/test/java/org/kie/kogito/integrationtests/QuarkusCloudEventResourceIT.java
++++ b/quarkus/addons/messaging/integration-tests/src/test/java/org/kie/kogito/integrationtests/QuarkusCloudEventResourceIT.java
+@@ -22,9 +22,9 @@ import java.net.URL;
+ import java.nio.charset.StandardCharsets;
+ import java.util.UUID;
+ 
+-import javax.ws.rs.core.HttpHeaders;
+-import javax.ws.rs.core.MediaType;
+-import javax.ws.rs.core.Response;
++import jakarta.ws.rs.core.HttpHeaders;
++import jakarta.ws.rs.core.MediaType;
++import jakarta.ws.rs.core.Response;
+ 
+ import org.hamcrest.Matchers;
+ import org.junit.jupiter.api.Test;
+diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/token-propagation.sw.json b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/token-propagation.sw.json
+index b637610c69..190eb1fcca 100644
+--- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/token-propagation.sw.json
++++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/token-propagation.sw.json
+@@ -7,7 +7,7 @@
+   "errors": [
+     {
+       "name": "execution_error",
+-      "code": "javax.ws.rs.ProcessingException"
++      "code": "jakarta.ws.rs.ProcessingException"
+     }
+   ],
+   "functions": [

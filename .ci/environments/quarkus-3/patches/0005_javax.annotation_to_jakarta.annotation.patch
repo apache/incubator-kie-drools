@@ -1,0 +1,149 @@
+commit 4bc4bdc3a1c2829b4194c11c6bbd4ad4f2c88ea7
+Author: radtriste <radtriste@jenkins.redhat>
+Date:   Tue Apr 18 15:02:03 2023 +0200
+
+    patch: javax.annotation -> jakarta.annotation
+
+diff --git a/kogito-codegen-modules/GUIDELINES.adoc b/kogito-codegen-modules/GUIDELINES.adoc
+index a8ad497c5d..909d7a2b31 100644
+--- a/kogito-codegen-modules/GUIDELINES.adoc
++++ b/kogito-codegen-modules/GUIDELINES.adoc
+@@ -292,7 +292,7 @@ public class TravelersProcess extends AbstractProcess<TravelersModel> {
+ 
+     // post construct method that delegates to a non-final 
+     // super-class method
+-    @javax.annotation.PostConstruct()
++    @jakarta.annotation.PostConstruct()
+     public void init() {
+         this.activate();
+     }
+diff --git a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/DependencyInjectionAnnotator.java b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/DependencyInjectionAnnotator.java
+index 29ebcf1a4d..fa2fcbce68 100644
+--- a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/DependencyInjectionAnnotator.java
++++ b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/DependencyInjectionAnnotator.java
+@@ -179,7 +179,7 @@ public interface DependencyInjectionAnnotator {
+                 rolesExpr.add(new StringLiteralExpr(role.trim()));
+             }
+ 
+-            node.addAnnotation(new SingleMemberAnnotationExpr(new Name("javax.annotation.security.RolesAllowed"), new ArrayInitializerExpr(NodeList.nodeList(rolesExpr))));
++            node.addAnnotation(new SingleMemberAnnotationExpr(new Name("jakarta.annotation.security.RolesAllowed"), new ArrayInitializerExpr(NodeList.nodeList(rolesExpr))));
+         }
+         return node;
+     }
+diff --git a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/config/ConfigBeanSpringTemplate.java b/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/config/ConfigBeanSpringTemplate.java
+index b4593ab904..94041b4d11 100644
+--- a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/config/ConfigBeanSpringTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/config/ConfigBeanSpringTemplate.java
+@@ -27,7 +27,7 @@ public class ConfigBean extends org.kie.kogito.config.StaticConfigBean {
+     @org.springframework.beans.factory.annotation.Value("${kogito.jackson.fail-on-empty-bean:#{false}}")
+     boolean failOnEmptyBean;
+ 
+-    @javax.annotation.PostConstruct
++    @jakarta.annotation.PostConstruct
+     protected void init() {
+         setServiceUrl(kogitoService.orElse(""));
+         setCloudEvents(useCloudEvents);
+diff --git a/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionContainerQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionContainerQuarkusTemplate.java
+index f01360a70e..dba432a452 100644
+--- a/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionContainerQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionContainerQuarkusTemplate.java
+@@ -31,7 +31,7 @@ public class DecisionModels extends org.kie.kogito.dmn.AbstractDecisionModels {
+         super();
+     }
+ 
+-    @javax.annotation.PostConstruct
++    @jakarta.annotation.PostConstruct
+     protected void init() {
+         initApplication(application);
+     }
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageConsumerQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageConsumerQuarkusTemplate.java
+index eea908c5e0..8acab05922 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageConsumerQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageConsumerQuarkusTemplate.java
+@@ -39,7 +39,7 @@ public class $Type$MessageConsumer extends QuarkusMessageConsumer<$Type$, $DataT
+     
+     private Set<String> correlation;
+ 
+-    @javax.annotation.PostConstruct
++    @jakarta.annotation.PostConstruct
+     void init() {
+         init(process,"$Trigger$",$DataType$.class, eventReceiver, correlation);
+     }
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageConsumerSpringTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageConsumerSpringTemplate.java
+index 58918526d5..df84986801 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageConsumerSpringTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageConsumerSpringTemplate.java
+@@ -22,7 +22,7 @@ import org.kie.kogito.process.Process;
+ import org.kie.kogito.addon.cloudevents.spring.SpringMessageConsumer;
+ import org.kie.kogito.event.EventReceiver;
+ 
+-import javax.annotation.PostConstruct;
++import jakarta.annotation.PostConstruct;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.beans.factory.annotation.Qualifier;
+ 
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageProducerQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageProducerQuarkusTemplate.java
+index 96952225a1..83e35c71c6 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageProducerQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/MessageProducerQuarkusTemplate.java
+@@ -26,7 +26,7 @@ public class MessageProducer extends AbstractMessageProducer<$DataType$> {
+     @Inject
+     EventEmitter emitter;
+ 
+-    @javax.annotation.PostConstruct
++    @jakarta.annotation.PostConstruct
+     public void init() {
+         init(emitter,"$Trigger$");
+     }
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerQuarkusTemplate.java
+index 99de8839df..f4e98ce03f 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerQuarkusTemplate.java
+@@ -23,7 +23,7 @@ public class Processes implements org.kie.kogito.process.Processes {
+ 
+     private java.util.Map<String, org.kie.kogito.process.Process<? extends org.kie.kogito.Model>> mappedProcesses = new java.util.HashMap<>();
+ 
+-    @javax.annotation.PostConstruct
++    @jakarta.annotation.PostConstruct
+     public void setup() {
+         for (org.kie.kogito.process.Process<? extends org.kie.kogito.Model> process : processes) {
+             mappedProcesses.put(process.id(), process);
+diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerSpringTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerSpringTemplate.java
+index 88676b8784..43a408fda7 100644
+--- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerSpringTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/ProcessContainerSpringTemplate.java
+@@ -24,7 +24,7 @@ public class Processes implements org.kie.kogito.process.Processes {
+ 
+     private java.util.Map<String, org.kie.kogito.process.Process<? extends org.kie.kogito.Model>> mappedProcesses = new java.util.HashMap<>();
+ 
+-    @javax.annotation.PostConstruct
++    @jakarta.annotation.PostConstruct
+     public void setup() {
+         for (org.kie.kogito.process.Process<? extends org.kie.kogito.Model> process : processes) {
+             mappedProcesses.put(process.id(), process);
+diff --git a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/EventDrivenExecutorQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/EventDrivenExecutorQuarkusTemplate.java
+index 6d50c68123..06c6ff368e 100644
+--- a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/EventDrivenExecutorQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/EventDrivenExecutorQuarkusTemplate.java
+@@ -15,7 +15,7 @@
+  */
+ package com.myspace.demo;
+ 
+-import javax.annotation.PostConstruct;
++import jakarta.annotation.PostConstruct;
+ import jakarta.enterprise.context.ApplicationScoped;
+ import jakarta.inject.Inject;
+ 
+diff --git a/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleContainerQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleContainerQuarkusTemplate.java
+index 8a13cea8c3..386cf83844 100644
+--- a/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleContainerQuarkusTemplate.java
++++ b/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleContainerQuarkusTemplate.java
+@@ -26,7 +26,7 @@ public class SampleRuntime extends org.kie.kogito.codegen.sample.core.SampleRunt
+         super();
+     }
+ 
+-    @javax.annotation.PostConstruct
++    @jakarta.annotation.PostConstruct
+     protected void init() {
+         initApplication(application);
+         initContent();

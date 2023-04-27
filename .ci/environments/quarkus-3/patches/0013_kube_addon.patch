@@ -1,0 +1,882 @@
+commit 1834fbf59923d82bcbfd540bf37a20f7dc09bc74
+Author: radtriste <radtriste@jenkins.redhat>
+Date:   Fri Apr 21 09:52:35 2023 +0200
+
+    patch: kube addon correction
+
+diff --git a/quarkus/addons/kubernetes/deployment/pom.xml b/quarkus/addons/kubernetes/deployment/pom.xml
+index 240d6cdfec..e5755bb97e 100644
+--- a/quarkus/addons/kubernetes/deployment/pom.xml
++++ b/quarkus/addons/kubernetes/deployment/pom.xml
+@@ -56,6 +56,16 @@
+           </annotationProcessorPaths>
+         </configuration>
+       </plugin>
++      <!-- Needed by QuarkusUnitTest class. JBoss logging must be in bootstrap logger-->
++      <plugin>
++        <groupId>io.quarkus</groupId>
++        <artifactId>quarkus-extension-maven-plugin</artifactId>
++        <configuration>
++            <parentFirstArtifacts>
++                <parentFirstArtifact>org.jboss.logging:jboss-logging</parentFirstArtifact>
++            </parentFirstArtifacts>
++        </configuration>
++    </plugin>
+     </plugins>
+   </build>
+ </project>
+diff --git a/quarkus/addons/kubernetes/deployment/src/test/java/org/kie/kogito/addons/quarkus/kubernetes/KubernetesAddOnTest.java b/quarkus/addons/kubernetes/deployment/src/test/java/org/kie/kogito/addons/quarkus/kubernetes/KubernetesAddOnTest.java
+index 77a4491cbd..b93abb6fa5 100644
+--- a/quarkus/addons/kubernetes/deployment/src/test/java/org/kie/kogito/addons/quarkus/kubernetes/KubernetesAddOnTest.java
++++ b/quarkus/addons/kubernetes/deployment/src/test/java/org/kie/kogito/addons/quarkus/kubernetes/KubernetesAddOnTest.java
+@@ -15,8 +15,6 @@
+  */
+ package org.kie.kogito.addons.quarkus.kubernetes;
+ 
+-import jakarta.inject.Inject;
+-
+ import org.jboss.shrinkwrap.api.ShrinkWrap;
+ import org.jboss.shrinkwrap.api.spec.JavaArchive;
+ import org.junit.jupiter.api.Test;
+@@ -26,6 +24,8 @@ import org.kie.kogito.addons.k8s.workitems.AbstractDiscoveredEndpointCaller;
+ 
+ import io.quarkus.test.QuarkusUnitTest;
+ 
++import jakarta.inject.Inject;
++
+ import static org.junit.jupiter.api.Assertions.assertNotNull;
+ 
+ public class KubernetesAddOnTest {
+diff --git a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/EndpointCallerProducer.java b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/EndpointCallerProducer.java
+index 2ee0bfca5d..1bfda3ee04 100644
+--- a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/EndpointCallerProducer.java
++++ b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/EndpointCallerProducer.java
+@@ -15,17 +15,17 @@
+  */
+ package org.kie.kogito.addons.quarkus.k8s;
+ 
++import org.kie.kogito.addons.k8s.EndpointDiscovery;
++import org.kie.kogito.addons.quarkus.k8s.workitems.QuarkusDiscoveredEndpointCaller;
++
++import com.fasterxml.jackson.databind.ObjectMapper;
++
+ import jakarta.enterprise.context.ApplicationScoped;
+ import jakarta.enterprise.inject.Default;
+ import jakarta.enterprise.inject.Produces;
+ import jakarta.inject.Inject;
+ import jakarta.inject.Singleton;
+ 
+-import org.kie.kogito.addons.k8s.EndpointDiscovery;
+-import org.kie.kogito.addons.quarkus.k8s.workitems.QuarkusDiscoveredEndpointCaller;
+-
+-import com.fasterxml.jackson.databind.ObjectMapper;
+-
+ @ApplicationScoped
+ public class EndpointCallerProducer {
+ 
+diff --git a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/EndpointDiscoveryProducer.java b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/EndpointDiscoveryProducer.java
+index 4471230cf3..b19b9e5194 100644
+--- a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/EndpointDiscoveryProducer.java
++++ b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/EndpointDiscoveryProducer.java
+@@ -15,6 +15,12 @@
+  */
+ package org.kie.kogito.addons.quarkus.k8s;
+ 
++import org.kie.kogito.addons.k8s.KnativeRouteEndpointDiscovery;
++import org.kie.kogito.addons.k8s.KubernetesServiceEndpointDiscovery;
++import org.kie.kogito.addons.k8s.ServiceAndThenRouteEndpointDiscovery;
++
++import io.fabric8.kubernetes.client.KubernetesClient;
++
+ import jakarta.enterprise.context.ApplicationScoped;
+ import jakarta.enterprise.inject.Default;
+ import jakarta.enterprise.inject.Produces;
+@@ -22,12 +28,6 @@ import jakarta.inject.Inject;
+ import jakarta.inject.Named;
+ import jakarta.inject.Singleton;
+ 
+-import org.kie.kogito.addons.k8s.KnativeRouteEndpointDiscovery;
+-import org.kie.kogito.addons.k8s.KubernetesServiceEndpointDiscovery;
+-import org.kie.kogito.addons.k8s.ServiceAndThenRouteEndpointDiscovery;
+-
+-import io.fabric8.kubernetes.client.KubernetesClient;
+-
+ @ApplicationScoped
+ public class EndpointDiscoveryProducer {
+ 
+diff --git a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeClientProducer.java b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeClientProducer.java
+index fce0eb001e..46142bfac9 100644
+--- a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeClientProducer.java
++++ b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeClientProducer.java
+@@ -15,13 +15,13 @@
+  */
+ package org.kie.kogito.addons.quarkus.k8s.discovery;
+ 
++import io.fabric8.knative.client.KnativeClient;
++import io.fabric8.kubernetes.client.KubernetesClient;
++
+ import jakarta.enterprise.context.ApplicationScoped;
+ import jakarta.enterprise.inject.Produces;
+ import jakarta.inject.Inject;
+ 
+-import io.fabric8.knative.client.KnativeClient;
+-import io.fabric8.kubernetes.client.KubernetesClient;
+-
+ final class KnativeClientProducer {
+ 
+     private final KubernetesClient kubernetesClient;
+diff --git a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscovery.java b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscovery.java
+index a419e5ac98..72419eb4f2 100644
+--- a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscovery.java
++++ b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscovery.java
+@@ -18,15 +18,15 @@ package org.kie.kogito.addons.quarkus.k8s.discovery;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import jakarta.enterprise.context.ApplicationScoped;
+-import jakarta.inject.Inject;
+-
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+ import io.fabric8.knative.client.KnativeClient;
+ import io.fabric8.knative.serving.v1.Service;
+ 
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
++
+ @ApplicationScoped
+ public class KnativeServiceDiscovery extends AbstractResourceDiscovery {
+ 
+diff --git a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftResourceDiscovery.java b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftResourceDiscovery.java
+index 12a1f156ec..005858c320 100644
+--- a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftResourceDiscovery.java
++++ b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftResourceDiscovery.java
+@@ -20,9 +20,6 @@ import java.net.URI;
+ import java.util.Optional;
+ import java.util.function.Supplier;
+ 
+-import jakarta.enterprise.context.ApplicationScoped;
+-import jakarta.inject.Inject;
+-
+ import org.kie.kogito.addons.quarkus.k8s.KubeConstants;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.utils.PodUtils;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.utils.ServiceUtils;
+@@ -34,6 +31,9 @@ import io.fabric8.openshift.api.model.DeploymentConfig;
+ import io.fabric8.openshift.api.model.Route;
+ import io.fabric8.openshift.client.OpenShiftClient;
+ 
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
++
+ @ApplicationScoped
+ public class OpenShiftResourceDiscovery extends AbstractResourceDiscovery {
+ 
+diff --git a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscovery.java b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscovery.java
+index a7f7ac1619..dea6aa2ff9 100644
+--- a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscovery.java
++++ b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscovery.java
+@@ -19,9 +19,6 @@ import java.net.URI;
+ import java.util.Optional;
+ import java.util.function.Supplier;
+ 
+-import jakarta.enterprise.context.ApplicationScoped;
+-import jakarta.inject.Inject;
+-
+ import org.kie.kogito.addons.quarkus.k8s.discovery.utils.DeploymentUtils;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.utils.IngressUtils;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.utils.PodUtils;
+@@ -32,6 +29,9 @@ import org.slf4j.LoggerFactory;
+ 
+ import io.fabric8.kubernetes.client.KubernetesClient;
+ 
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
++
+ @ApplicationScoped
+ public class VanillaKubernetesResourceDiscovery extends AbstractResourceDiscovery {
+ 
+diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/KnativeRouteEndpointDiscoveryTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/KnativeRouteEndpointDiscoveryTest.java
+index ff8268bd65..d2408b7659 100644
+--- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/KnativeRouteEndpointDiscoveryTest.java
++++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/KnativeRouteEndpointDiscoveryTest.java
+@@ -22,8 +22,6 @@ import java.util.List;
+ import java.util.Map;
+ import java.util.Optional;
+ 
+-import jakarta.inject.Inject;
+-
+ import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.addons.k8s.Endpoint;
+@@ -37,6 +35,8 @@ import io.fabric8.kubernetes.client.KubernetesClient;
+ import io.quarkus.test.junit.QuarkusTest;
+ import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+ 
++import jakarta.inject.Inject;
++
+ import static org.junit.jupiter.api.Assertions.assertFalse;
+ import static org.junit.jupiter.api.Assertions.assertTrue;
+ import static org.junit.jupiter.api.Assertions.fail;
+diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/KubernetesServiceEndpointDiscoveryTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/KubernetesServiceEndpointDiscoveryTest.java
+index 1e9cabca8c..d5be5ce3af 100644
+--- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/KubernetesServiceEndpointDiscoveryTest.java
++++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/KubernetesServiceEndpointDiscoveryTest.java
+@@ -23,9 +23,6 @@ import java.util.List;
+ import java.util.Map;
+ import java.util.Optional;
+ 
+-import jakarta.inject.Inject;
+-import jakarta.inject.Named;
+-
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.addons.k8s.Endpoint;
+ import org.kie.kogito.addons.k8s.EndpointDiscovery;
+@@ -39,6 +36,9 @@ import io.quarkus.test.junit.QuarkusTest;
+ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
+ import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+ 
++import jakarta.inject.Inject;
++import jakarta.inject.Named;
++
+ import static org.junit.jupiter.api.Assertions.assertFalse;
+ import static org.junit.jupiter.api.Assertions.assertTrue;
+ import static org.junit.jupiter.api.Assertions.fail;
+diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
+index bab0b6063b..b4bbd0ddd2 100644
+--- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
++++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
+@@ -17,8 +17,6 @@ package org.kie.kogito.addons.quarkus.k8s.config;
+ 
+ import java.net.URI;
+ 
+-import jakarta.inject.Inject;
+-
+ import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceDiscovery;
+@@ -30,6 +28,8 @@ import io.quarkus.test.junit.QuarkusTest;
+ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
+ import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+ 
++import jakarta.inject.Inject;
++
+ import static org.assertj.core.api.Assertions.assertThat;
+ import static org.kie.kogito.addons.quarkus.k8s.test.utils.KnativeResourceDiscoveryTestUtil.createServiceIfNotExists;
+ 
+@@ -70,4 +70,4 @@ class KubeDiscoveryConfigCacheUpdaterTest {
+         assertThat(kubeDiscoveryConfigCacheUpdater.update("knative:serving.knative.dev/v1/Service/test/serverless-workflow-greeting-quarkus"))
+                 .hasValue(URI.create(remoteServiceUrl));
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscoveryTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscoveryTest.java
+index 84fc2e3971..5957cf2036 100644
+--- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscoveryTest.java
++++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscoveryTest.java
+@@ -18,8 +18,6 @@ package org.kie.kogito.addons.quarkus.k8s.discovery;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import jakarta.inject.Inject;
+-
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.addons.quarkus.k8s.test.utils.KnativeResourceDiscoveryTestUtil;
+ 
+@@ -28,6 +26,8 @@ import io.quarkus.test.junit.QuarkusTest;
+ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
+ import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+ 
++import jakarta.inject.Inject;
++
+ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+ 
+ @QuarkusTest
+diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java
+index ed2cdd327f..0f4dac857c 100644
+--- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java
++++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java
+@@ -18,8 +18,6 @@ package org.kie.kogito.addons.quarkus.k8s.discovery;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import jakarta.inject.Inject;
+-
+ import org.junit.jupiter.api.Test;
+ 
+ import io.fabric8.kubernetes.api.model.Pod;
+@@ -32,6 +30,8 @@ import io.quarkus.test.junit.QuarkusTest;
+ import io.quarkus.test.kubernetes.client.OpenShiftTestServer;
+ import io.quarkus.test.kubernetes.client.WithOpenShiftTestServer;
+ 
++import jakarta.inject.Inject;
++
+ import static org.junit.jupiter.api.Assertions.assertEquals;
+ 
+ @QuarkusTest
+@@ -49,7 +49,7 @@ public class OpenShiftServiceDiscoveryTest {
+     @Test
+     public void testNotFoundDeploymentConfig() {
+         DeploymentConfig deploymentConfig = mockServer.getOpenshiftClient().deploymentConfigs().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config.yaml")).item();
+         deploymentConfig.getMetadata().setName("test");
+         mockServer.getOpenshiftClient().resource(deploymentConfig).inNamespace(namespace).createOrReplace();
+         assertEquals(Optional.empty(),
+@@ -63,13 +63,13 @@ public class OpenShiftServiceDiscoveryTest {
+         DeploymentConfig deploymentConfig = mockServer.getOpenshiftClient()
+                 .deploymentConfigs()
+                 .inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config.yaml")).item();
+         mockServer.getOpenshiftClient().resource(deploymentConfig).inNamespace(namespace).createOrReplace();
+ 
+         Service service = mockServer.getOpenshiftClient()
+                 .services()
+                 .inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config-service.yaml")).item();
+         mockServer.getOpenshiftClient().resource(service).inNamespace(namespace).createOrReplace();
+ 
+         Optional<String> url = kubeResourceDiscovery.query(kubeURI).map(URI::toString);
+@@ -83,20 +83,20 @@ public class OpenShiftServiceDiscoveryTest {
+         DeploymentConfig deploymentConfig = mockServer.getOpenshiftClient()
+                 .deploymentConfigs()
+                 .inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config-no-service.yaml")).item();
+         DeploymentConfig createdDc = mockServer.getOpenshiftClient().resource(deploymentConfig).inNamespace(namespace).createOrReplace();
+ 
+         ReplicationController rc = mockServer.getOpenshiftClient()
+                 .replicationControllers()
+                 .inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/replication-controller-dc-no-svc.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/replication-controller-dc-no-svc.yaml")).item();
+         rc.getMetadata().getOwnerReferences().get(0).setUid(createdDc.getMetadata().getUid());
+         ReplicationController createdRc = mockServer.getOpenshiftClient().resource(rc).inNamespace(namespace).createOrReplace();
+ 
+         Pod pod = mockServer.getOpenshiftClient()
+                 .pods()
+                 .inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/pod-deployment-config-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/pod-deployment-config-no-service.yaml")).item();
+         pod.getMetadata().setName("example-dc-no-service-1-phlx4");
+         pod.getMetadata().getOwnerReferences().get(0).setUid(createdRc.getMetadata().getUid());
+         mockServer.getOpenshiftClient().resource(pod).inNamespace(namespace).createOrReplace();
+@@ -110,7 +110,7 @@ public class OpenShiftServiceDiscoveryTest {
+         Route route = mockServer.getOpenshiftClient()
+                 .routes()
+                 .inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("route/route.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("route/route.yaml")).item();
+         mockServer.getOpenshiftClient().resource(route).inNamespace(namespace).createOrReplace();
+ 
+         assertEquals(Optional.empty(),
+@@ -124,7 +124,7 @@ public class OpenShiftServiceDiscoveryTest {
+         Route route = mockServer.getOpenshiftClient()
+                 .routes()
+                 .inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("route/route.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("route/route.yaml")).item();
+         mockServer.getOpenshiftClient().resource(route).inNamespace(namespace).createOrReplace();
+ 
+         Optional<String> url = kubeResourceDiscovery.query(kubeURI).map(URI::toString);
+@@ -138,7 +138,7 @@ public class OpenShiftServiceDiscoveryTest {
+         Route route = mockServer.getOpenshiftClient()
+                 .routes()
+                 .inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("route/route-tls.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("route/route-tls.yaml")).item();
+         mockServer.getOpenshiftClient().resource(route).inNamespace(namespace).createOrReplace();
+ 
+         Optional<String> url = kubeResourceDiscovery.query(kubeURI).map(URI::toString);
+diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java
+index 3cb4a476cc..1cd16fb240 100644
+--- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java
++++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java
+@@ -18,8 +18,6 @@ package org.kie.kogito.addons.quarkus.k8s.discovery;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import jakarta.inject.Inject;
+-
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.addons.quarkus.k8s.KubeConstants;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.utils.ServiceUtils;
+@@ -31,6 +29,8 @@ import io.quarkus.test.junit.QuarkusTest;
+ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
+ import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+ 
++import jakarta.inject.Inject;
++
+ import static org.junit.jupiter.api.Assertions.assertEquals;
+ 
+ /**
+@@ -53,7 +53,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/" + namespace + "/process-quarkus-example-pod-service");
+ 
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).item();
+ 
+         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+ 
+@@ -66,7 +66,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/" + namespace + "/custom-port-name-service?port-name=my-custom-port");
+ 
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).item();
+         service.getMetadata().setName("custom-port-name-service");
+         service.getSpec().getPorts().get(0).setName("my-custom-port");
+         service.getSpec().getPorts().get(0).setPort(8089);
+@@ -81,7 +81,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("v1/service/" + namespace + "/process-quarkus-example-pod-clusterip-svc");
+ 
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+ 
+         Optional<String> url = vanillaKubernetesResourceDiscovery.query(kubeURI).map(URI::toString);
+@@ -93,7 +93,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/" + namespace + "/process-quarkus-example-pod");
+ 
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-external-name.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-external-name.yaml")).item();
+         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+ 
+         Optional<String> url = vanillaKubernetesResourceDiscovery.query(kubeURI).map(URI::toString);
+@@ -103,7 +103,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
+     @Test
+     public void testNotFoundService() {
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+ 
+         assertEquals(Optional.empty(),
+@@ -113,7 +113,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
+     @Test
+     public void testNotSupportedTypeService() {
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+         service.getSpec().setType(KubeConstants.LOAD_BALANCER_TYPE);
+         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+ 
+@@ -126,7 +126,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/process-quarkus-example-pod-service");
+ 
+         Service service = mockServer.getClient().services().inNamespace("test")
+-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).item();
+         mockServer.getClient().resource(service).inNamespace("test").createOrReplace();
+ 
+         Optional<String> url = vanillaKubernetesResourceDiscovery.query(kubeURI).map(URI::toString);
+@@ -137,7 +137,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
+     public void testNotFoundKnativeService() {
+         KnativeClient knativeClient = mockServer.getClient().adapt(KnativeClient.class);
+         io.fabric8.knative.serving.v1.Service service = knativeClient.services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).item();
+         service.getMetadata().setName("test");
+ 
+         // ItemWritableOperation#create is deprecated. However, we can't use the new method while Quarkus LTS is not greater than 2.16.
+@@ -153,7 +153,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
+ 
+         KnativeClient knativeClient = mockServer.getClient().adapt(KnativeClient.class);
+         io.fabric8.knative.serving.v1.Service kService = knativeClient.services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).item();
+ 
+         // ItemWritableOperation#create is deprecated. However, we can't use the new method while Quarkus LTS is not greater than 2.16.
+         knativeClient.services().inNamespace(namespace).create(kService);
+diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java
+index aa596d14dc..230c8eb860 100644
+--- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java
++++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java
+@@ -18,8 +18,6 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import jakarta.inject.Inject;
+-
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceUri;
+@@ -38,6 +36,8 @@ import io.quarkus.test.junit.QuarkusTest;
+ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
+ import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+ 
++import jakarta.inject.Inject;
++
+ import static org.junit.jupiter.api.Assertions.assertEquals;
+ import static org.junit.jupiter.api.Assertions.assertTrue;
+ 
+@@ -60,7 +60,7 @@ public class DeploymentUtilsTest {
+     @Test
+     public void testNotFoundDeployment() {
+         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).item();
+         deployment.getMetadata().setName("test");
+         mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
+         assertEquals(Optional.empty(),
+@@ -72,11 +72,11 @@ public class DeploymentUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/deployment/" + namespace + "/example-deployment-with-service");
+ 
+         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).item();
+         mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
+ 
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-service.yaml")).item();
+         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+ 
+         Optional<String> url = discovery.query(kubeURI).map(URI::toString);
+@@ -88,14 +88,14 @@ public class DeploymentUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/deployment/" + namespace + "/custom-port-deployment?port-name=my-custom-port");
+ 
+         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).item();
+         deployment.getMetadata().setName("custom-port-deployment");
+         deployment.getSpec().getTemplate().getSpec().getContainers().get(0).getPorts()
+                 .add(new ContainerPortBuilder().withName("test-port").withContainerPort(4000).build());
+         mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
+ 
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-service.yaml")).item();
+         service.getMetadata().setName("custom-port-name-service");
+         service.getSpec().getPorts().add(new ServicePortBuilder()
+                 .withName("my-custom-port")
+@@ -112,16 +112,16 @@ public class DeploymentUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/deployment/" + namespace + "/example-deployment-no-service");
+ 
+         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-no-service.yaml")).item();
+         Deployment createdDeployment = mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
+ 
+         ReplicaSet rs = mockServer.getClient().apps().replicaSets().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/replica-set-deployment-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/replica-set-deployment-no-service.yaml")).item();
+         rs.getMetadata().getOwnerReferences().get(0).setUid(createdDeployment.getMetadata().getUid());
+         ReplicaSet createdRs = mockServer.getClient().resource(rs).inNamespace(namespace).createOrReplace();
+ 
+         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/pod-deployment-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/pod-deployment-no-service.yaml")).item();
+         pod.getMetadata().setName("pod-deployment-no-service");
+         pod.getMetadata().getOwnerReferences().get(0).setUid(createdRs.getMetadata().getUid());
+         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+@@ -135,19 +135,19 @@ public class DeploymentUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/deployment/" + namespace + "/example-deployment-no-service-2-replicas");
+ 
+         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-no-service.yaml")).item();
+         deployment.getMetadata().setName("example-deployment-no-service-2-replicas");
+         deployment.getStatus().setReplicas(2);
+         Deployment createdDeployment = mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
+ 
+         ReplicaSet rs = mockServer.getClient().apps().replicaSets().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/replica-set-deployment-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/replica-set-deployment-no-service.yaml")).item();
+         rs.getMetadata().setName("rs-2-replicas");
+         rs.getMetadata().getOwnerReferences().get(0).setUid(createdDeployment.getMetadata().getUid());
+         ReplicaSet createdRs = mockServer.getClient().resource(rs).inNamespace(namespace).createOrReplace();
+ 
+         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/pod-deployment-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/pod-deployment-no-service.yaml")).item();
+         pod.getMetadata().setName("pod-2-replicas");
+         pod.getMetadata().getOwnerReferences().get(0).setUid(createdRs.getMetadata().getUid());
+         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+@@ -162,20 +162,20 @@ public class DeploymentUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/deployment/" + namespace + "/custom-port-deployment-1?port-name=my-custom-port");
+ 
+         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-no-service.yaml")).item();
+         deployment.getMetadata().setName("custom-port-deployment-1");
+         deployment.getSpec().getTemplate().getSpec().getContainers().get(0).getPorts()
+                 .add(new ContainerPortBuilder().withName("test-port").withContainerPort(4000).build());
+         Deployment createdDeployment = mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
+ 
+         ReplicaSet rs = mockServer.getClient().apps().replicaSets().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/replica-set-deployment-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/replica-set-deployment-no-service.yaml")).item();
+         rs.getMetadata().setName("custom-port-rs");
+         rs.getMetadata().getOwnerReferences().get(0).setUid(createdDeployment.getMetadata().getUid());
+         ReplicaSet createdRs = mockServer.getClient().resource(rs).inNamespace(namespace).createOrReplace();
+ 
+         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/pod-deployment-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("deployment/pod-deployment-no-service.yaml")).item();
+         pod.getMetadata().getOwnerReferences().get(0).setUid(createdRs.getMetadata().getUid());
+         pod.getSpec().getContainers().get(0).getPorts()
+                 .add(new ContainerPortBuilder()
+diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java
+index 96c433021d..09162d7f5b 100644
+--- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java
++++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java
+@@ -18,8 +18,6 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import jakarta.inject.Inject;
+-
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceUri;
+@@ -31,6 +29,8 @@ import io.quarkus.test.junit.QuarkusTest;
+ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
+ import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+ 
++import jakarta.inject.Inject;
++
+ import static org.junit.jupiter.api.Assertions.assertEquals;
+ 
+ /**
+@@ -53,7 +53,7 @@ public class IngressUtilsTest {
+         Ingress ingress = mockServer.getClient()
+                 .network().v1().ingresses()
+                 .inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("ingress/ingress-with-ip.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("ingress/ingress-with-ip.yaml")).item();
+         mockServer.getClient().resource(ingress).inNamespace(namespace).createOrReplace();
+ 
+         assertEquals(Optional.empty(),
+@@ -65,7 +65,7 @@ public class IngressUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("networking.k8s.io/v1/ingress/" + namespace + "/process-quarkus-ingress");
+ 
+         Ingress ingress = mockServer.getClient().network().v1().ingresses().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("ingress/ingress-with-ip.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("ingress/ingress-with-ip.yaml")).item();
+ 
+         mockServer.getClient().resource(ingress).inNamespace(namespace).createOrReplace();
+ 
+@@ -78,7 +78,7 @@ public class IngressUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("networking.k8s.io/v1/ingress/" + namespace + "/hello-app-ingress-tls");
+ 
+         Ingress ingress = mockServer.getClient().network().v1().ingresses().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("ingress/ingress-with-tls-and-host.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("ingress/ingress-with-tls-and-host.yaml")).item();
+ 
+         mockServer.getClient().resource(ingress).inNamespace(namespace).createOrReplace();
+ 
+diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java
+index ff030d1066..f9c8916ac6 100644
+--- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java
++++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java
+@@ -19,8 +19,6 @@ import java.net.URI;
+ import java.util.Map;
+ import java.util.Optional;
+ 
+-import jakarta.inject.Inject;
+-
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceUri;
+@@ -33,6 +31,8 @@ import io.quarkus.test.junit.QuarkusTest;
+ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
+ import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+ 
++import jakarta.inject.Inject;
++
+ import static org.junit.jupiter.api.Assertions.assertEquals;
+ 
+ /**
+@@ -53,7 +53,7 @@ public class PodUtilsTest {
+     @Test
+     public void testPodNotFound() {
+         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
+         pod.getMetadata().setName("test-pod");
+         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+         assertEquals(Optional.empty(),
+@@ -65,7 +65,7 @@ public class PodUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("v1/pod/" + namespace + "/process-quarkus-example-pod-no-service");
+ 
+         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
+         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+ 
+         Optional<String> url = discovery.query(kubeURI).map(URI::toString);
+@@ -77,7 +77,7 @@ public class PodUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("v1/pod/" + namespace + "/pod-no-service-custom-port?port-name=my-custom-port");
+ 
+         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service-custom-port-name.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service-custom-port-name.yaml")).item();
+         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+ 
+         Optional<String> url = discovery.query(kubeURI).map(URI::toString);
+@@ -89,12 +89,12 @@ public class PodUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("v1/pod/" + namespace + "/test-pod-with-service");
+ 
+         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
+         pod.getMetadata().setName("test-pod-with-service");
+         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+ 
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+ 
+         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+ 
+@@ -107,17 +107,17 @@ public class PodUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("v1/pod/" + namespace + "/test-pod-with-service-custom-label?labels=label-name=test-label;other-label=other-value");
+ 
+         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
+         pod.getMetadata().setName("test-pod-with-service-custom-label");
+         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+ 
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+         service.getMetadata().setName(" process-quarkus-example-pod-clusterip-svc-custom-label");
+         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+ 
+         Service service1 = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+         Map<String, String> labels = service1.getMetadata().getLabels();
+         labels.put("label-name", "test-label");
+         service1.getMetadata().setLabels(labels);
+diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java
+index 10b356868b..79a7c43ec3 100644
+--- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java
++++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java
+@@ -18,8 +18,6 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import jakarta.inject.Inject;
+-
+ import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
+@@ -38,6 +36,8 @@ import io.quarkus.test.junit.QuarkusTest;
+ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
+ import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+ 
++import jakarta.inject.Inject;
++
+ import static org.junit.jupiter.api.Assertions.assertEquals;
+ import static org.junit.jupiter.api.Assertions.assertTrue;
+ 
+@@ -66,7 +66,7 @@ public class StatefulSetUtilsTest {
+     @Test
+     public void testNotFoundStatefulSet() {
+         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).item();
+         statefulSet.getMetadata().setName("test");
+         mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
+         assertEquals(Optional.empty(),
+@@ -78,11 +78,11 @@ public class StatefulSetUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/" + namespace + "/example-statefulset-with-service");
+ 
+         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset.yaml")).item();
+         mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
+ 
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-service.yaml")).item();
+         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+ 
+         Optional<String> url = discovery.query(kubeURI).map(URI::toString);
+@@ -93,7 +93,7 @@ public class StatefulSetUtilsTest {
+     public void testStatefulSetWithServiceWithCustomPortName() {
+         var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/" + namespace + "/custom-port-statefulset?port-name=my-custom-port-stateful");
+         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset.yaml")).item();
+         statefulSet.getMetadata().setName("custom-port-statefulset");
+         statefulSet.getSpec().getTemplate().getSpec().getContainers().get(0).getPorts()
+                 .add(new ContainerPortBuilder().withName("test-port").withContainerPort(4000).build());
+@@ -102,7 +102,7 @@ public class StatefulSetUtilsTest {
+         mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
+ 
+         Service service = mockServer.getClient().services().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-service.yaml")).item();
+         service.getMetadata().setName("custom-port-name-service-statefulset");
+         service.getSpec().getPorts().add(new ServicePortBuilder()
+                 .withName("my-custom-port-stateful")
+@@ -121,11 +121,11 @@ public class StatefulSetUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/" + namespace + "/process-quarkus-example-statefulset-no-service");
+ 
+         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).item();
+         StatefulSet createdDeployment = mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
+ 
+         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).item();
+         pod.getMetadata().setName("pod-deployment-no-service");
+         pod.getMetadata().getOwnerReferences().get(0).setUid(createdDeployment.getMetadata().getUid());
+         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+@@ -139,13 +139,13 @@ public class StatefulSetUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/" + namespace + "/example-statefulset-no-service-2-replicas");
+ 
+         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).item();
+         statefulSet.getMetadata().setName("example-statefulset-no-service-2-replicas");
+         statefulSet.getStatus().setReplicas(2);
+         StatefulSet createdstatefulSet = mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
+ 
+         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).item();
+         pod.getMetadata().setName("pod-2-replicas");
+         pod.getMetadata().getOwnerReferences().get(0).setUid(createdstatefulSet.getMetadata().getUid());
+         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+@@ -159,14 +159,14 @@ public class StatefulSetUtilsTest {
+         var kubeURI = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/" + namespace + "/custom-port-statefulset-1?port-name=my-custom-port");
+ 
+         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).item();
+         statefulSet.getMetadata().setName("custom-port-statefulset-1");
+         statefulSet.getSpec().getTemplate().getSpec().getContainers().get(0).getPorts()
+                 .add(new ContainerPortBuilder().withName("test-port").withContainerPort(4000).build());
+         StatefulSet createdStatefulSet = mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
+ 
+         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
+-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).get();
++                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).item();
+         pod.getMetadata().getOwnerReferences().get(0).setUid(createdStatefulSet.getMetadata().getUid());
+         pod.getSpec().getContainers().get(0).getPorts()
+                 .add(new ContainerPortBuilder()
+diff --git a/quarkus/addons/kubernetes/test-utils/src/main/java/org/kie/kogito/addons/quarkus/k8s/test/utils/KnativeResourceDiscoveryTestUtil.java b/quarkus/addons/kubernetes/test-utils/src/main/java/org/kie/kogito/addons/quarkus/k8s/test/utils/KnativeResourceDiscoveryTestUtil.java
+index 5bcafe29dc..eadc5283bd 100644
+--- a/quarkus/addons/kubernetes/test-utils/src/main/java/org/kie/kogito/addons/quarkus/k8s/test/utils/KnativeResourceDiscoveryTestUtil.java
++++ b/quarkus/addons/kubernetes/test-utils/src/main/java/org/kie/kogito/addons/quarkus/k8s/test/utils/KnativeResourceDiscoveryTestUtil.java
+@@ -33,7 +33,7 @@ public final class KnativeResourceDiscoveryTestUtil {
+             Service service = knativeClient.services()
+                     .inNamespace(namespace)
+                     .load(getResourceAsStream(knativeYaml))
+-                    .get();
++                    .item();
+ 
+             service.getStatus().setUrl(remoteServiceUrl);
+ 

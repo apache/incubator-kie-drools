@@ -1,0 +1,24 @@
+diff --git a/quarkus/addons/messaging/deployment/src/main/resources/class-templates/EventEmitterQuarkusTemplate.java b/quarkus/addons/messaging/deployment/src/main/resources/class-templates/EventEmitterQuarkusTemplate.java
+index c7d7e37afa..3db4785891 100644
+--- a/quarkus/addons/messaging/deployment/src/main/resources/class-templates/EventEmitterQuarkusTemplate.java
++++ b/quarkus/addons/messaging/deployment/src/main/resources/class-templates/EventEmitterQuarkusTemplate.java
+@@ -16,6 +16,7 @@
+ package $Package$;
+ 
+ 
++import jakarta.annotation.PostConstruct;
+ import jakarta.enterprise.context.ApplicationScoped;
+ import jakarta.inject.Inject;
+ 
+diff --git a/quarkus/addons/messaging/deployment/src/main/resources/class-templates/EventReceiverQuarkusTemplate.java b/quarkus/addons/messaging/deployment/src/main/resources/class-templates/EventReceiverQuarkusTemplate.java
+index acbd1c48ca..cc21d922c8 100644
+--- a/quarkus/addons/messaging/deployment/src/main/resources/class-templates/EventReceiverQuarkusTemplate.java
++++ b/quarkus/addons/messaging/deployment/src/main/resources/class-templates/EventReceiverQuarkusTemplate.java
+@@ -18,6 +18,7 @@ package $Package$;
+ 
+ import java.util.concurrent.CompletionStage;
+ 
++import jakarta.annotation.PostConstruct;
+ import jakarta.enterprise.context.ApplicationScoped;
+ 
+ import org.eclipse.microprofile.reactive.messaging.Incoming;

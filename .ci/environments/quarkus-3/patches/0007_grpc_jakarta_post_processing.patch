@@ -1,0 +1,52 @@
+commit 8dcc50f6400d55501a6622081ac80d66210d3864
+Author: radtriste <radtriste@jenkins.redhat>
+Date:   Tue Apr 18 17:01:33 2023 +0200
+
+    patch: grpc post processing with jakarta
+    
+    taken from https://github.com/quarkusio/quarkus/pull/31115
+
+diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/pom.xml b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/pom.xml
+index 8c6af693fd..fdebdd5f3b 100644
+--- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/pom.xml
++++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/pom.xml
+@@ -53,6 +53,10 @@
+       <groupId>io.quarkus</groupId>
+       <artifactId>quarkus-jdbc-postgresql</artifactId>
+     </dependency>
++    <dependency>
++      <groupId>io.quarkus</groupId>
++      <artifactId>quarkus-grpc-codegen</artifactId>
++    </dependency>
+ 
+     <dependency>
+       <groupId>org.kie.kogito</groupId>
+@@ -170,6 +174,28 @@
+           </execution>
+         </executions>
+       </plugin>
++      <!-- Based on https://github.com/quarkusio/quarkus/pull/31115 -->
++      <plugin>
++        <groupId>org.codehaus.mojo</groupId>
++        <artifactId>exec-maven-plugin</artifactId>
++        <executions>
++          <execution>
++            <id>post-process-grpc</id>
++            <phase>generate-sources</phase>
++            <goals>
++              <goal>java</goal>
++            </goals>
++            <configuration>
++              <skip>false</skip>
++              <includeProjectDependencies>true</includeProjectDependencies>
++              <arguments>
++                <argument>${project.build.directory}/generated-sources/grpc</argument>
++              </arguments>
++              <mainClass>io.quarkus.grpc.deployment.GrpcPostProcessing</mainClass>
++            </configuration>
++          </execution>
++        </executions>
++      </plugin>
+       <plugin>
+         <groupId>io.quarkus</groupId>
+         <artifactId>quarkus-maven-plugin</artifactId>

@@ -1,0 +1,90 @@
+#
+# Copyright 2021 the original author or authors.
+# <p>
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# <p>
+# https://www.apache.org/licenses/LICENSE-2.0
+# <p>
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.kie.kogito.Quarkus3Migration
+displayName: All Quarkus 3 Migration for Kogito Runtimes project
+recipeList: 
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.org.kie
+      newValue: quarkus-3-SNAPSHOT
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.org.springframework.boot
+      newValue: 3.0.5
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.org.springframework.cloud.kubernetes.fabric8
+      newValue: 3.0.2
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.ch.qos.logback
+      newValue: 1.4.7
+  # TODO to update once sdk-java provides a library compatible with jakarta
+  # cf https://github.com/serverlessworkflow/sdk-java/issues/225
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.io.serverlessworkflow
+      newValue: 4.0.3.Final
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.com.github.javaparser
+      newValue: 3.25.1
+  # TODO to update to Final version once available
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.io.quarkus.camel
+      newValue: 3.0.0-M1
+
+  # Quarkiverse versions
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.io.quarkiverse.openapi.generator
+      newValue: 2.2.2
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.io.quarkiverse.asyncapi
+      newValue: 0.1.0
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.io.quarkiverse.reactivemessaging.http
+      newValue: 2.0.1
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.io.quarkiverse.jackson-jq
+      newValue: 2.0.1
+
+  # Cleanup Spring bom
+  - org.openrewrite.maven.RemoveManagedDependency:
+      groupId: org.yaml
+      artifactId: snakeyaml
+  - org.openrewrite.maven.RemoveProperty:
+      propertyName: snakeyaml.version
+
+  # Update infinispan libs to jakarta one
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.org.infinispan
+      newValue: 14.0.7.Final
+  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
+      oldGroupId: org.infinispan
+      oldArtifactId: infinispan-core
+      newGroupId: org.infinispan
+      newArtifactId: infinispan-core-jakarta
+  - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId:
+      oldGroupId: org.infinispan
+      oldArtifactId: infinispan-core
+      newGroupId: org.infinispan
+      newArtifactId: infinispan-core-jakarta
+  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
+      oldGroupId: org.infinispan
+      oldArtifactId: infinispan-client-hotrod
+      newGroupId: org.infinispan
+      newArtifactId: infinispan-client-hotrod-jakarta
+  - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId:
+      oldGroupId: org.infinispan
+      oldArtifactId: infinispan-client-hotrod
+      newGroupId: org.infinispan
+      newArtifactId: infinispan-client-hotrod-jakarta
