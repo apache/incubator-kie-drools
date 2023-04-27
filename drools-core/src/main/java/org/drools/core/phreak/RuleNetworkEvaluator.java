@@ -15,8 +15,6 @@
 
 package org.drools.core.phreak;
 
-import java.util.List;
-
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.BetaConstraints;
@@ -70,6 +68,8 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.phreak.PhreakNotNode.updateBlockersAndPropagate;
@@ -704,10 +704,10 @@ public class RuleNetworkEvaluator {
             switch ( subnetworkTuple.getStagedTypeOnRight() ) {
                 // handle clash with already staged entries
                 case Tuple.INSERT:
-                    rightTuples.removeInsert( subnetworkTuple );
+                    rightTuples.removeInsert( subnetworkTuple.moveStagingFromLeftToRight() );
                     break;
                 case Tuple.UPDATE:
-                    rightTuples.removeUpdate( subnetworkTuple );
+                    rightTuples.removeUpdate( subnetworkTuple.moveStagingFromLeftToRight() );
                     break;
             }
 
@@ -809,8 +809,7 @@ public class RuleNetworkEvaluator {
         trgLeftTuples.addDelete( childLeftTuple );
     }
 
-    public static void doUpdatesReorderLeftMemory(BetaMemory bm,
-                                                  TupleSets<LeftTuple> srcLeftTuples) {
+    public static void doUpdatesReorderLeftMemory(BetaMemory bm, TupleSets<LeftTuple> srcLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
 
         // sides must first be re-ordered, to ensure iteration integrity
@@ -830,8 +829,7 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    public static void doUpdatesExistentialReorderLeftMemory(BetaMemory bm,
-                                                             TupleSets<LeftTuple> srcLeftTuples) {
+    public static void doUpdatesExistentialReorderLeftMemory(BetaMemory bm, TupleSets<LeftTuple> srcLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
 
         // sides must first be re-ordered, to ensure iteration integrity
@@ -857,8 +855,7 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    public static void doUpdatesReorderRightMemory(BetaMemory bm,
-                                                   TupleSets<RightTuple> srcRightTuples) {
+    public static void doUpdatesReorderRightMemory(BetaMemory bm, TupleSets<RightTuple> srcRightTuples) {
         TupleMemory rtm = bm.getRightTupleMemory();
 
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
