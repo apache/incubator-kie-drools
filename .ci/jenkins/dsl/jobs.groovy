@@ -111,7 +111,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // As we have only Community edition
                     ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
                     // Setup full build if not prod profile
-                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod') || EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3') ? '' : '-Dfull'}",
+                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod') ? '' : '-Dfull'}",
                 ]
             ], [
                 id: 'kogito-runtimes',
@@ -173,7 +173,7 @@ setupQuarkusIntegrationJob('quarkus-branch', addFullProfileJobParamsGetter)
 setupQuarkusIntegrationJob('quarkus-lts')
 setupQuarkusIntegrationJob('native-lts')
 setupQuarkusIntegrationJob('quarkus-3') { script ->
-    def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
+    def jobParams = addFullProfileJobParamsGetter(script)
     jobParams.env.put('BUILD_ENVIRONMENT_OPTIONS_CURRENT', 'rewrite push_changes')
     jobParams.env.put('INTEGRATION_BRANCH_CURRENT', '9.x')
     JobParamsUtils.setupJobParamsDeployConfiguration(script, jobParams)
