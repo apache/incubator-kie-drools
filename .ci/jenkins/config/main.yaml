@@ -7,7 +7,7 @@ ecosystem:
   - name: kie-benchmarks
     ignore_release: true
     regexs:
-    - kie-benchmarks.*  
+    - kie-benchmarks.*
 git:
   branches:
   - name: main
@@ -26,6 +26,9 @@ git:
   - name: 8.37.x
     seed:
       branch: seed-drools-8.37.x
+  - name: 8.38.x
+    seed:
+      branch: seed-drools-8.38.x
 seed:
   config_file:
     git:
