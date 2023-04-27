@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.graphql.query.GraphQLQueryOrderByParser;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
+import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
@@ -71,7 +72,8 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
         schema = createSchema();
         GraphQLQueryParserRegistry.get().registerParsers(
                 (GraphQLInputObjectType) schema.getType("ProcessInstanceArgument"),
-                (GraphQLInputObjectType) schema.getType("UserTaskInstanceArgument"));
+                (GraphQLInputObjectType) schema.getType("UserTaskInstanceArgument"),
+                (GraphQLInputObjectType) schema.getType("JobArgument"));
     }
 
     protected TypeDefinitionRegistry loadSchemaDefinitionFile(String fileName) {
@@ -180,6 +182,10 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     protected Collection<UserTaskInstance> getUserTaskInstancesValues(DataFetchingEnvironment env) {
         return executeAdvancedQueryForCache(cacheService.getUserTaskInstancesCache(), env);
+    }
+
+    protected Collection<Job> getJobsValues(DataFetchingEnvironment env) {
+        return executeAdvancedQueryForCache(getCacheService().getJobsCache(), env);
     }
 
     public CompletableFuture<String> getProcessInstanceDiagram(DataFetchingEnvironment env) {

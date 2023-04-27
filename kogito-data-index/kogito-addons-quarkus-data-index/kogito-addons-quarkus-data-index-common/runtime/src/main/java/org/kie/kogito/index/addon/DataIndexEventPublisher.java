@@ -16,6 +16,8 @@
 
 package org.kie.kogito.index.addon;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Collection;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,9 +29,12 @@ import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.event.ProcessInstanceEventMapper;
 import org.kie.kogito.index.event.UserTaskInstanceEventMapper;
+import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.service.IndexingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 @ApplicationScoped
 public class DataIndexEventPublisher implements EventPublisher {
@@ -49,6 +54,13 @@ public class DataIndexEventPublisher implements EventPublisher {
             case "UserTaskInstanceEvent":
                 indexingService.indexUserTaskInstance(new UserTaskInstanceEventMapper().apply((UserTaskInstanceDataEvent) event));
                 break;
+            case "JobEvent":
+                try {
+                    indexingService.indexJob(getObjectMapper().readValue(new String((byte[]) event.getData()), Job.class));
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+                break;
             default:
                 LOGGER.debug("Unknown type of event '{}', ignoring for this publisher", event.getType());
         }
@@ -59,4 +71,7 @@ public class DataIndexEventPublisher implements EventPublisher {
         events.forEach(this::publish);
     }
 
+    protected void setIndexingService(IndexingService indexingService) {
+        this.indexingService = indexingService;
+    }
 }

@@ -294,10 +294,6 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
                 env.getArgument(ATTACHMENT_ID));
     }
 
-    protected Collection<Job> getJobsValues(DataFetchingEnvironment env) {
-        return executeAdvancedQueryForCache(getCacheService().getJobsCache(), env);
-    }
-
     private DataFetcher<Publisher<ObjectNode>> getProcessInstanceAddedDataFetcher() {
         return objectCreatedPublisher(() -> getCacheService().getProcessInstancesCache());
     }
