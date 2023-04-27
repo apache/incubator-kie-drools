@@ -37,58 +37,49 @@ public class ChangeHandledMultiMapPreExistingDataTest {
     public void setUp() throws Exception {
         this.timesCalled = 0;
 
-        this.map = MultiMapFactory.make(true );
+        this.map = MultiMapFactory.make(true);
 
-        this.map.put( new Value( "hello" ), "a" );
-        this.map.put( new Value( "ok" ), "b" );
-        this.map.put( new Value( "ok" ), "c" );
+        this.map.put(new Value("hello"), "a");
+        this.map.put(new Value("ok"), "b");
+        this.map.put(new Value("ok"), "c");
 
-        this.map.addChangeListener( new MultiMapChangeHandler<Value, String>() {
+        this.map.addChangeListener(new MultiMapChangeHandler<Value, String>() {
             @Override
-            public void onChange( final ChangeSet<Value, String> changeSet ) {
+            public void onChange(final ChangeSet<Value, String> changeSet) {
                 ChangeHandledMultiMapPreExistingDataTest.this.changeSet = changeSet;
                 timesCalled++;
             }
-        } );
+        });
     }
 
     @Test
     void move() throws Exception {
-        map.move(new Values<>(new Value("ok" ) ),
-                new Values<>( new Value( "hello" ) ),
-                "b");
+        map.move(new Values<>(new Value("ok")), new Values<>(new Value("hello")), "b");
 
         assertThat(timesCalled).isEqualTo(1);
 
         // Check data moved
-        assertThat(map.get(new Value( "hello" )).size()).isEqualTo(2);
-        assertThat(map.get(new Value( "hello" )).contains("a")).isTrue();
-        assertThat(map.get(new Value( "hello" )).contains("b")).isTrue();
-        assertThat(map.get(new Value( "ok" )).size()).isEqualTo(1);
-        assertThat(map.get(new Value( "ok" )).contains("c")).isTrue();
+        assertThat(map.get(new Value("hello"))).hasSize(2).contains("a", "b");
+        assertThat(map.get(new Value("ok"))).hasSize(1).contains("c");
 
         // Updates should be up to date
-        assertThat(changeSet.getRemoved().get(new Value( "ok" )).size()).isEqualTo(1);
-        assertThat(changeSet.getAdded().get(new Value( "hello" )).size()).isEqualTo(1);
+        assertThat(changeSet.getRemoved().get(new Value("ok"))).hasSize(1);
+        assertThat(changeSet.getAdded().get(new Value("hello"))).hasSize(1);
     }
 
     @Test
     void testRemove() throws Exception {
-        map.remove(new Value( "ok" ));
+        map.remove(new Value("ok"));
 
-        assertThat(changeSet.getRemoved().get(new Value( "ok" )).size()).isEqualTo(2);
-
+        assertThat(changeSet.getRemoved().get(new Value("ok"))).hasSize(2);
         assertThat(timesCalled).isEqualTo(1);
     }
 
     @Test
     void testRemoveValue() throws Exception {
-        map.removeValue(new Value( "ok" ),
-                "b");
+        map.removeValue(new Value("ok"), "b");
 
-        assertThat(changeSet.getRemoved().get(new Value( "ok" )).size()).isEqualTo(1);
-        assertThat(changeSet.getRemoved().get(new Value( "ok" )).contains("b")).isTrue();
-
+        assertThat(changeSet.getRemoved().get(new Value("ok"))).hasSize(1).contains("b");
         assertThat(timesCalled).isEqualTo(1);
     }
 
@@ -96,31 +87,23 @@ public class ChangeHandledMultiMapPreExistingDataTest {
     void testClear() throws Exception {
         map.clear();
 
-        assertThat(changeSet.getRemoved().get(new Value( "hello" )).size()).isEqualTo(1);
-        assertThat(changeSet.getRemoved().get(new Value( "hello" )).contains("a")).isTrue();
-        assertThat(changeSet.getRemoved().get(new Value( "ok" )).size()).isEqualTo(2);
-        assertThat(changeSet.getRemoved().get(new Value( "ok" )).contains("b")).isTrue();
-        assertThat(changeSet.getRemoved().get(new Value( "ok" )).contains("c")).isTrue();
-
+        assertThat(changeSet.getRemoved().get(new Value("hello"))).hasSize(1).contains("a");
+        assertThat(changeSet.getRemoved().get(new Value("ok"))).hasSize(2).contains("b", "c");
         assertThat(timesCalled).isEqualTo(1);
     }
 
     @Test
     void testMerge() throws Exception {
         final MultiMap<Value, String, List<String>> other = MultiMapFactory.make();
-        other.put(new Value( "hello" ), "d");
-        other.put(new Value( "ok" ), "e");
-        other.put(new Value( "newOne" ), "f");
+        other.put(new Value("hello"), "d");
+        other.put(new Value("ok"), "e");
+        other.put(new Value("newOne"), "f");
 
-        MultiMap.merge(map,
-                other);
+        MultiMap.merge(map, other);
 
-        assertThat(changeSet.getAdded().get(new Value( "hello" )).size()).isEqualTo(1);
-        assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("d")).isTrue();
-        assertThat(changeSet.getAdded().get(new Value( "ok" )).size()).isEqualTo(1);
-        assertThat(changeSet.getAdded().get(new Value( "ok" )).contains("e")).isTrue();
-        assertThat(changeSet.getAdded().get(new Value( "newOne" )).size()).isEqualTo(1);
-        assertThat(changeSet.getAdded().get(new Value( "newOne" )).contains("f")).isTrue();
+        assertThat(changeSet.getAdded().get(new Value("hello"))).hasSize(1).contains("d");
+        assertThat(changeSet.getAdded().get(new Value("ok"))).hasSize(1).contains("e");
+        assertThat(changeSet.getAdded().get(new Value("newOne"))).hasSize(1).contains("f");
 
         assertThat(timesCalled).isEqualTo(1);
     }

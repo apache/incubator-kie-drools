@@ -28,6 +28,6 @@ public class IllegalVerifierStateIssueTest {
 
         assertThat(issue.getSeverity()).isEqualTo(Severity.ERROR);
         assertThat(issue.getCheckType()).isEqualTo(CheckType.ILLEGAL_VERIFIER_STATE);
-        assertThat(issue.getRowNumbers().isEmpty()).isTrue();
+        assertThat(issue.getRowNumbers()).isEmpty();
     }
 }

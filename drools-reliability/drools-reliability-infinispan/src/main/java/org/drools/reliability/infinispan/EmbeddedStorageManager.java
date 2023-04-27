@@ -79,6 +79,9 @@ public class EmbeddedStorageManager implements InfinispanStorageManager {
                .indexLocation(CACHE_DIR + "/index");
         builder.clustering()
                .cacheMode(CacheMode.LOCAL);
+
+        builder.unsafe().unreliableReturnValues(true);
+
         cacheConfiguration = builder.build();
     }
 

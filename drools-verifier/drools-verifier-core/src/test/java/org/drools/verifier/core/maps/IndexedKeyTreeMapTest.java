@@ -41,8 +41,7 @@ public class IndexedKeyTreeMapTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        map = new IndexedKeyTreeMap<>(NAME_KEY_DEFINITION,
-                                      AGE_KEY_DEFINITION);
+        map = new IndexedKeyTreeMap<>(NAME_KEY_DEFINITION, AGE_KEY_DEFINITION);
 
         toni = new Person("Toni", 20);
         eder = new Person("Eder", 20);
@@ -59,25 +58,22 @@ public class IndexedKeyTreeMapTest {
 
     @Test
     void testIndexOrder() throws Exception {
-        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(0)).iterator().next()).isEqualTo(toni);
-        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(1)).iterator().next()).isEqualTo(eder);
-        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(2)).iterator().next()).isEqualTo(michael);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(0))).containsExactly(toni);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(1))).containsExactly(eder);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(2))).containsExactly(michael);
     }
 
     @Test
     void testAddToMiddle() throws Exception {
 
-        final Person smurf = new Person("Smurf",
-                55);
-
-        map.put(smurf,
-                1);
+        final Person smurf = new Person("Smurf", 55);
+        map.put(smurf, 1);
 
         assertThat(map.get(IndexKey.INDEX_ID).size()).isEqualTo(4);
-        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(0)).iterator().next()).isEqualTo(toni);
-        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(1)).iterator().next()).isEqualTo(smurf);
-        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(2)).iterator().next()).isEqualTo(eder);
-        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(3)).iterator().next()).isEqualTo(michael);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(0))).containsExactly(toni);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(1))).containsExactly(smurf);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(2))).containsExactly(eder);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(3))).containsExactly(michael);
     }
 
     @Test
@@ -87,8 +83,8 @@ public class IndexedKeyTreeMapTest {
 
         toni.uuidKey.retract();
 
-        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(0)).iterator().next()).isEqualTo(eder);
-        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(1)).iterator().next()).isEqualTo(michael);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(0))).containsExactly(eder);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(1))).containsExactly(michael);
 
         eder.uuidKey.retract();
 
@@ -107,9 +103,7 @@ public class IndexedKeyTreeMapTest {
         assertThat(person.getAge()).isEqualTo(100);
     }
 
-    class Person
-            implements HasIndex,
-                       HasKeys {
+    class Person implements HasIndex, HasKeys {
 
         private final UUIDKey uuidKey = new AnalyzerConfigurationMock().getUUID(this);
 
@@ -119,19 +113,16 @@ public class IndexedKeyTreeMapTest {
 
         private UpdatableKey<Person> ageKey;
 
-        public Person(final String name,
-                      final int age) {
+        public Person(final String name, final int age) {
             this.name = name;
-            ageKey = new UpdatableKey<Person>(AGE_KEY_DEFINITION,
-                                              age);
+            ageKey = new UpdatableKey<Person>(AGE_KEY_DEFINITION, age);
         }
 
         public Key[] keys() {
             return new Key[]{
                     uuidKey,
                     indexKey,
-                    new Key(NAME_KEY_DEFINITION,
-                            name),
+                    new Key(NAME_KEY_DEFINITION, name),
                     ageKey
             };
         }
@@ -144,13 +135,11 @@ public class IndexedKeyTreeMapTest {
         @Override
         public void setIndex(final int index) {
             UpdatableKey<Person> oldKey = indexKey;
-            final UpdatableKey<Person> newKey = new UpdatableKey<>(IndexKey.INDEX_ID,
-                                                                   index);
+            final UpdatableKey<Person> newKey = new UpdatableKey<>(IndexKey.INDEX_ID, index);
             indexKey = newKey;
 
             if (oldKey != null) {
-                oldKey.update(newKey,
-                              this);
+                oldKey.update(newKey, this);
             }
         }
 
@@ -165,12 +154,10 @@ public class IndexedKeyTreeMapTest {
             } else {
                 final UpdatableKey<Person> oldKey = ageKey;
 
-                final UpdatableKey<Person> newKey = new UpdatableKey<>(AGE_KEY_DEFINITION,
-                                                                       age);
+                final UpdatableKey<Person> newKey = new UpdatableKey<>(AGE_KEY_DEFINITION, age);
                 ageKey = newKey;
 
-                oldKey.update(newKey,
-                              this);
+                oldKey.update(newKey, this);
             }
         }
 

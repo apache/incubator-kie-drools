@@ -40,14 +40,10 @@ public class SelectWithNegativeExactMatcherWhenTheValueIsNotInTheMapTest {
     private MultiMap<Value, Item, List<Item>> makeMap() {
         final MultiMap<Value, Item, List<Item>> map = MultiMapFactory.make(false);
 
-        map.put(new Value(0),
-                new Item(0));
-        map.put(new Value(56),
-                new Item(56));
-        map.put(new Value(100),
-                new Item(100));
-        map.put(new Value(1200),
-                new Item(1200));
+        map.put(new Value(0), new Item(0));
+        map.put(new Value(56), new Item(56));
+        map.put(new Value(100), new Item(100));
+        map.put(new Value(1200), new Item(1200));
         return map;
     }
 
@@ -68,7 +64,7 @@ public class SelectWithNegativeExactMatcherWhenTheValueIsNotInTheMapTest {
     void testAll() throws Exception {
         final Collection<Item> all = select.all();
 
-        assertThat(all.size()).isEqualTo(4);
+        assertThat(all).hasSize(4);
     }
 
     @Test
@@ -81,8 +77,7 @@ public class SelectWithNegativeExactMatcherWhenTheValueIsNotInTheMapTest {
         assertThat(select.last().cost).isEqualTo(1200);
     }
 
-    private class Item
-            implements HasKeys {
+    private class Item implements HasKeys {
 
         private int cost;
         private UUIDKey uuidKey = new AnalyzerConfigurationMock().getUUID(this);

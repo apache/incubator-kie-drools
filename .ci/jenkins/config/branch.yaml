@@ -25,7 +25,8 @@ environments:
   quarkus-3:
     pull_request_default_check: true
     env_vars:
-      ADDITIONAL_TIMEOUT: 720
+      BUILD_MAVEN_TOOL: kie-maven-3.9.1
+      BUILD_JDK_TOOL: kie-jdk17
       BUILD_MVN_OPTS: -Denforcer.skip
     ids:
     - quarkus
@@ -50,6 +51,7 @@ disable:
 repositories:
 - name: drools
 - name: drools-website
+- name: kie-benchmarks
 git:
   author:
     name: kiegroup

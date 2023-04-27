@@ -33,6 +33,7 @@ public class KeyDefinitionBuilderTest {
     @Test
     void testDefaults() throws Exception {
         final KeyDefinition keyDefinition = KeyDefinition.newKeyDefinition().withId("test").build();
+        
         assertThat(keyDefinition.isUpdatable()).isFalse();
     }
 
@@ -42,6 +43,7 @@ public class KeyDefinitionBuilderTest {
                 .withId("test")
                 .updatable()
                 .build();
+        
         assertThat(keyDefinition.isUpdatable()).isTrue();
     }
 

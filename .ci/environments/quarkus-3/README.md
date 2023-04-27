@@ -49,22 +49,33 @@ To do so, just run:
 .ci/environments/quarkus-3/before.sh rewrite
 ```
 
-## How reset the quarkus3.yaml recipe file ?
+## Recipe files
 
-The `quarkus3.yml` file is generated automatically based on Quarkus recipe file and `drools-recipe.yml` file.  
-See also comments in [Jbang script](jbang/CreateQuarkusDroolsMigrationRecipe.java) for more details on the generation.
-  
-To refresh the recipe file, just execute:
+There are 3 recipe files:
+
+- `project-recipe.yml` is the recipe file to update in case you need a new recipe
+- `quarkus3-base-recipe.yml` is the base recipe setup by Quarkus team in https://github.com/quarkusio/quarkus-updates. You should not modify it !
+- `quarkus3.yml` is the final recipe file and is a compute of the previous 2 files, plus some processing.  
+  See also comments in [Jbang script](jbang/CreateQuarkusDroolsMigrationRecipe.java) for more details on the generation.
+
+### How to reset the quarkus3.yaml recipe file ?
+
+The `before.sh` script should handle the reset of the `quarkus3.yml` recipe file when executed with `rewrite` command.
+
+In case you want to do manually, just run:
 
 ```bash
-cd .ci/environments/quarkus-3
-curl -Ls https://sh.jbang.dev | bash -s - jbang/CreateQuarkusDroolsMigrationRecipe.java
-cd -
+cd .ci/environments/quarkus-3 && curl -Ls https://sh.jbang.dev | bash -s - jbang/CreateQuarkusDroolsMigrationRecipe.java; cd -
 ```
+  
+### How to update the Quarkus version ?
 
-If you are setting a new quarkus version:
+If you are setting a new Quarkus version:
 
 1. Update `quarkus-devtools-common` version in `jbang/CreateQuarkusDroolsMigrationRecipe.java` file
 2. Update `QUARKUS_VERSION` in `jbang/CreateQuarkusDroolsMigrationRecipe.java` file
-3. Update the `QUARKUS_UPDATES_BASE_URL` with the corresponding released version of https://github.com/quarkusio/quarkus-updates
-4. Rerun the jbang script (see above)
+3. Update `QUARKUS_UPDATES_BASE_URL` with the corresponding released version of https://github.com/quarkusio/quarkus-updates recipe file
+4. Run the jbang script to update the `quarkus3.yml` file
+  ```bash
+  cd .ci/environments/quarkus-3 && curl -Ls https://sh.jbang.dev | bash -s - jbang/CreateQuarkusDroolsMigrationRecipe.java true; cd -
+  ```

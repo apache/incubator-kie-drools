@@ -26,7 +26,7 @@ public class SelectNullTest {
     void testAll() throws Exception {
         assertThrows(IllegalArgumentException.class, () -> {
             new Select<>(MultiMapFactory.make(),
-                    null );
+                    null);
         });
     }
 }

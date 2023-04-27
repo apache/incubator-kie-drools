@@ -6,10 +6,11 @@ mvn_cmd="mvn ${BUILD_MVN_OPTS:-} ${BUILD_MVN_OPTS_QUARKUS_UPDATE:-}"
 ci="${CI:-false}"
 
 rewrite_plugin_version=4.43.0
-
 quarkus_version=${QUARKUS_VERSION:-3.0.0.CR1}
-quarkus_file="${script_dir_path}/quarkus3.yml"
 project_version='quarkus-3-SNAPSHOT'
+
+quarkus_file="${script_dir_path}/quarkus3.yml"
+patch_file="${script_dir_path}"/patches/0001_before_sh.patch
 
 rewrite=${1:-'none'}
 echo "rewrite "${rewrite}
@@ -36,6 +37,15 @@ ${mvn_cmd} -e -N -Dfull -DnewVersion=${project_version} -DallowSnapshots=true -D
 # Make sure artifacts are updated locally
 ${mvn_cmd} clean install -Dquickly
 
+# Regenerate quarkus3 recipe
+cd ${script_dir_path}
+curl -Ls https://sh.jbang.dev | bash -s - jbang/CreateQuarkusDroolsMigrationRecipe.java
+cd -
+if [ "$(git status --porcelain ${quarkus_file})" != '' ]; then
+    git add "${quarkus_file}"
+    git commit -m '[Quarkus 3 migration] Update Openrewrite recipe'
+fi
+
 # Launch Quarkus 3 Openrewrite
 ${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:${rewrite_plugin_version}:run \
     -Drewrite.configLocation="${quarkus_file}" \
@@ -47,16 +57,24 @@ ${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:${rewrite_plugin_version}:
     -DplainTextMasks=**/kmodule.xml
 
 # Update dependencies with Quarkus 3 bom
-${mvn_cmd} versions:compare-dependencies -pl :drools-build-parent -DremotePom=io.quarkus:quarkus-bom:${quarkus_version} -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false
+${mvn_cmd} \
+    -pl :drools-build-parent \
+    -DremotePom=io.quarkus:quarkus-bom:${quarkus_version} \
+    -DupdatePropertyVersions=true \
+    -DupdateDependencies=true \
+    -DgenerateBackupPoms=false \
+    versions:compare-dependencies
 
 # Create the `patches/0001_before_sh.patch` file
 git add .
-git diff --cached > "${script_dir_path}"/patches/0001_before_sh.patch
+git diff --cached > "${patch_file}"
 git reset
 
 # Commit the change on patch
-git add "${script_dir_path}"/patches/0001_before_sh.patch
-git commit -m '[Quarkus 3 migration] Updated `before.sh` patch file'
+if [ "$(git status --porcelain ${patch_file})" != '' ]; then
+    git add "${patch_file}"
+    git commit -m '[Quarkus 3 migration] Updated Openrewrite patch'
+fi
 
 # Reset all other changes as they will be applied next by the `patches/0001_before_sh.patch` file
 git reset --hard

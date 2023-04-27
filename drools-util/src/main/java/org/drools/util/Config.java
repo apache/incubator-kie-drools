@@ -46,7 +46,7 @@ public class Config {
         private static ConfigResolver createConfigResolver() {
             try {
                 return new MicroprofileConfigResolver(ConfigProvider.getConfig());
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 return new SystemPropertyConfigResolver();
             }
         }

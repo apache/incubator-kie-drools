@@ -19,7 +19,6 @@ package org.drools.verifier.core.checks;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
@@ -63,8 +62,7 @@ public class CheckRunManagerTest {
     private AnalyzerConfiguration configuration;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
         configuration = new AnalyzerConfigurationMock();
 
         checkStorage = new CheckStorage(
@@ -91,94 +89,64 @@ public class CheckRunManagerTest {
     }
 
     @Test
-    void testChecksGetGenerated() throws
-            Exception {
-        assertThat(ruleInspector1.getChecks()
-                .size()).isEqualTo(5);
-        assertThat(ruleInspector2.getChecks()
-                .size()).isEqualTo(5);
-        assertThat(ruleInspector3.getChecks()
-                .size()).isEqualTo(5);
+    void testChecksGetGenerated() throws Exception {
+        assertThat(ruleInspector1.getChecks()).hasSize(5);
+        assertThat(ruleInspector2.getChecks()).hasSize(5);
+        assertThat(ruleInspector3.getChecks()).hasSize(5);
     }
 
     @Test
-    void testRemove() throws
-            Exception {
+    void testRemove() throws Exception {
+        checkRunManager.remove(ruleInspector2);
 
-        this.checkRunManager.remove(ruleInspector2);
-
-        final Set<Check> checks = ruleInspector1.getChecks();
-        assertThat(checks.size()).isEqualTo(3);
-        assertThat(ruleInspector2.getChecks()
-                .isEmpty()).isTrue();
-        assertThat(ruleInspector3.getChecks()
-                .size()).isEqualTo(3);
+        assertThat(ruleInspector1.getChecks()).hasSize(3);
+        assertThat(ruleInspector2.getChecks()).isEmpty();
+        assertThat(ruleInspector3.getChecks()).hasSize(3);
     }
 
     @Test
-    void testRunTests() throws
-            Exception {
+    void testRunTests() throws Exception {
 
         for (RuleInspector ruleInspector : cache.all()) {
-            assertNoIssues(ruleInspector);
+            assertThat(ruleInspector.getChecks()).noneMatch(check -> check.hasIssues());
         }
 
-        this.checkRunManager.run(null,
-                null);
+        checkRunManager.run(null, null);
 
         for (RuleInspector ruleInspector : cache.all()) {
-            assertHasIssues(ruleInspector);
+            assertThat(ruleInspector.getChecks()).allMatch(check -> check.hasIssues());
         }
     }
 
     @Test
-    void testOnlyTestChanges() throws
-            Exception {
+    void testOnlyTestChanges() throws Exception {
         // First run
-        this.checkRunManager.run(null,
-                null);
+        checkRunManager.run(null, null);
 
         RuleInspector newRuleInspector = mockRowInspector(3);
         ruleInspectors.add(newRuleInspector);
 
-        this.checkRunManager.addChecks(newRuleInspector.getChecks());
-
-        assertNoIssues(newRuleInspector);
+        checkRunManager.addChecks(newRuleInspector.getChecks());
+		assertThat(newRuleInspector.getChecks()).noneMatch(check1 -> check1.hasIssues());
 
         // Second run
-        this.checkRunManager.run(null,
-                null);
+        checkRunManager.run(null, null);
+		final RuleInspector ruleInspector = newRuleInspector;
 
-        assertHasIssues(newRuleInspector);
+        assertThat(ruleInspector.getChecks()).allMatch(check -> check.hasIssues());
 
-        assertThat(ruleInspector1.getChecks()
-                .size()).isEqualTo(7);
-        assertThat(newRuleInspector.getChecks()
-                .size()).isEqualTo(7);
+        assertThat(ruleInspector1.getChecks()).hasSize(7);
+        assertThat(newRuleInspector.getChecks()).hasSize(7);
     }
 
     private RuleInspector mockRowInspector(final int rowNumber) {
-        return new RuleInspector(new Rule(rowNumber,
-                                          configuration),
+        return new RuleInspector(new Rule(rowNumber, configuration),
                                  checkStorage,
                                  cache,
                                  mock(AnalyzerConfiguration.class));
     }
 
-    private void assertHasIssues(final RuleInspector ruleInspector) {
-        for (final Check check : ruleInspector.getChecks()) {
-            assertThat(check.hasIssues()).isTrue();
-        }
-    }
-
-    private void assertNoIssues(final RuleInspector ruleInspector) {
-        for (final Check check : (ruleInspector.getChecks())) {
-            assertThat(check.hasIssues()).isFalse();
-        }
-    }
-
-    private class MockSingleCheck
-            extends SingleCheck {
+    private class MockSingleCheck extends SingleCheck {
 
         public MockSingleCheck(RuleInspector ruleInspector) {
             super(ruleInspector,
@@ -197,11 +165,8 @@ public class CheckRunManagerTest {
         }
 
         @Override
-        protected Issue makeIssue(final Severity severity,
-                                  final CheckType checkType) {
-            return new Issue(severity,
-                             checkType,
-                             Collections.emptySet());
+        protected Issue makeIssue(final Severity severity, final CheckType checkType) {
+            return new Issue(severity, checkType, Collections.emptySet());
         }
     }
 }

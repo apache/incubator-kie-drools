@@ -23,19 +23,16 @@ public class ValuesTest {
 
 
     @Test
-    void testNull() throws
-            Exception {
+    void testNull() throws Exception {
         final Values<Comparable> values = new Values<>();
         values.add(null);
 
-        assertThat(values.isEmpty()).isFalse();
-        assertThat(values.iterator()
-                .next()).isEqualTo(null);
+        assertThat(values).isNotEmpty();
+        assertThat(values.iterator().next()).isEqualTo(null);
     }
 
     @Test
-    void testChanges() throws
-            Exception {
+    void testChanges() throws Exception {
         final Values a = new Values();
         final Values b = new Values();
 

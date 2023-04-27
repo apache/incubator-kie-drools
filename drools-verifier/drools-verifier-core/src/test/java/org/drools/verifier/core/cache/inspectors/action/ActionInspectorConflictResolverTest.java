@@ -40,14 +40,12 @@ public class ActionInspectorConflictResolverTest {
     private AnalyzerConfiguration configuration;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
         configuration = new AnalyzerConfigurationMock();
     }
 
     @Test
-    void testRedundancy001() throws
-            Exception {
+    void testRedundancy001() throws Exception {
 
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "Person",
@@ -67,8 +65,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testRedundancy002() throws
-            Exception {
+    void testRedundancy002() throws Exception {
 
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "Person",
@@ -88,8 +85,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testRedundancy003() throws
-            Exception {
+    void testRedundancy003() throws Exception {
 
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "org.test1.Person",
@@ -109,8 +105,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testRedundancy004() throws
-            Exception {
+    void testRedundancy004() throws Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "Person",
                         "Boolean",
@@ -129,8 +124,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testRedundancy005() throws
-            Exception {
+    void testRedundancy005() throws Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "Person",
                         "Boolean",
@@ -149,8 +143,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testRedundancy006() throws
-            Exception {
+    void testRedundancy006() throws Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "Person",
                         "Integer",
@@ -169,8 +162,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testRedundancy007() throws
-            Exception {
+    void testRedundancy007() throws Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "Person",
                         "Integer",
@@ -189,8 +181,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testRedundancy008() throws
-            Exception {
+    void testRedundancy008() throws Exception {
         Date date = new Date();
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "Person",
@@ -210,8 +201,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testRedundancy009() throws
-            Exception {
+    void testRedundancy009() throws Exception {
 
         Date value = new Date();
 
@@ -233,8 +223,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testConflict001() throws
-            Exception {
+    void testConflict001() throws Exception {
 
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "Person",
@@ -254,8 +243,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testConflict002() throws
-            Exception {
+    void testConflict002() throws Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "Person",
                         "Boolean",
@@ -274,8 +262,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testNoConflict001() throws
-            Exception {
+    void testNoConflict001() throws Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "Person",
                         "String",
@@ -294,8 +281,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testNoConflict002() throws
-            Exception {
+    void testNoConflict002() throws Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
                         "Person",
                         "String",
@@ -314,8 +300,7 @@ public class ActionInspectorConflictResolverTest {
     }
 
     @Test
-    void testNoConflict003() throws
-            Exception {
+    void testNoConflict003() throws Exception {
         ActionInspector a = createSetActionInspector(new FieldAction(new Field(mock(ObjectField.class),
                         "Person",
                         "String",

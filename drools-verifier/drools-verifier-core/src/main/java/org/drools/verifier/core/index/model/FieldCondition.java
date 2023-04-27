@@ -15,9 +15,6 @@
  */
 package org.drools.verifier.core.index.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.Values;

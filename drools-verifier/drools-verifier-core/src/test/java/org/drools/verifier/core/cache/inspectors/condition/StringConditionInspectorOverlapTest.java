@@ -16,18 +16,15 @@
 
 package org.drools.verifier.core.cache.inspectors.condition;
 
-import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.index.keys.Values;
-import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
-import org.drools.verifier.core.index.model.FieldCondition;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.drools.verifier.core.cache.inspectors.condition.ConditionInspectorUtils.getStringCondition;
 
 @ExtendWith(MockitoExtension.class)
 public class StringConditionInspectorOverlapTest {
@@ -36,156 +33,102 @@ public class StringConditionInspectorOverlapTest {
     private Field field;
 
     @Test
-    void test001() throws
-            Exception {
-        StringConditionInspector a = getCondition(new Values<>("Toni"),
-                "==");
-        StringConditionInspector b = getCondition(new Values<>("Toni"),
-                "!=");
+    void test001() throws Exception {
+        StringConditionInspector a = getStringCondition(field, new Values<>("Toni"), "==");
+        StringConditionInspector b = getStringCondition(field, new Values<>("Toni"), "!=");
 
         assertThat(a.overlaps(b)).isFalse();
         assertThat(b.overlaps(a)).isFalse();
     }
 
     @Test
-    void test002() throws
-            Exception {
-        StringConditionInspector a = getCondition(new Values<>("Toni"),
-                "==");
-        StringConditionInspector b = getCondition(new Values<>("Eder"),
-                "!=");
+    void test002() throws Exception {
+        StringConditionInspector a = getStringCondition(field, new Values<>("Toni"), "==");
+        StringConditionInspector b = getStringCondition(field, new Values<>("Eder"), "!=");
 
         assertThat(a.overlaps(b)).isTrue();
         assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
-    void test003() throws
-            Exception {
-        StringConditionInspector a = getCondition(new Values<>("Toni",
-                        "Michael",
-                        "Eder"),
-                "in");
-        StringConditionInspector b = getCondition(new Values<>("Toni"),
-                "!=");
+    void test003() throws Exception {
+        StringConditionInspector a = getStringCondition(field, new Values<>("Toni", "Michael", "Eder"), "in");
+        StringConditionInspector b = getStringCondition(field, new Values<>("Toni"), "!=");
 
         assertThat(a.overlaps(b)).isTrue();
         assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
-    void test004() throws
-            Exception {
-        StringConditionInspector a = getCondition(new Values<>("Toni",
-                        "Michael",
-                        "Eder"),
-                "in");
-        StringConditionInspector b = getCondition(new Values<>("Toni"),
-                "==");
+    void test004() throws Exception {
+        StringConditionInspector a = getStringCondition(field, new Values<>("Toni", "Michael", "Eder"), "in");
+        StringConditionInspector b = getStringCondition(field, new Values<>("Toni"), "==");
 
         assertThat(a.overlaps(b)).isTrue();
         assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
-    void test005() throws
-            Exception {
-        StringConditionInspector a = getCondition(new Values<>("Toni",
-                        "Michael"),
-                "in");
-        StringConditionInspector b = getCondition(new Values<>("Eder"),
-                "==");
+    void test005() throws Exception {
+        StringConditionInspector a = getStringCondition(field, new Values<>("Toni", "Michael"), "in");
+        StringConditionInspector b = getStringCondition(field, new Values<>("Eder"), "==");
 
         assertThat(a.overlaps(b)).isFalse();
         assertThat(b.overlaps(a)).isFalse();
     }
 
     @Test
-    void test006() throws
-            Exception {
-        StringConditionInspector a = getCondition(new Values<>("Toni",
-                        "Michael"),
-                "in");
-        StringConditionInspector b = getCondition(new Values<>("Eder"),
-                "!=");
+    void test006() throws Exception {
+        StringConditionInspector a = getStringCondition(field, new Values<>("Toni", "Michael"), "in");
+        StringConditionInspector b = getStringCondition(field, new Values<>("Eder"), "!=");
 
         assertThat(a.overlaps(b)).isTrue();
         assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
-    void test007() throws
-            Exception {
-        StringConditionInspector a = getCondition(new Values<>("Toni",
-                        "Michael"),
-                "in");
-        StringConditionInspector b = getCondition(new Values<>("Eder",
-                        "John"),
-                "in");
+    void test007() throws Exception {
+        StringConditionInspector a = getStringCondition(field, new Values<>("Toni", "Michael"), "in");
+        StringConditionInspector b = getStringCondition(field, new Values<>("Eder", "John"), "in");
 
         assertThat(a.overlaps(b)).isFalse();
         assertThat(b.overlaps(a)).isFalse();
     }
 
     @Test
-    void test008() throws
-            Exception {
-        StringConditionInspector a = getCondition(new Values<>("Toni",
-                        "Michael"),
-                "in");
-        StringConditionInspector b = getCondition(new Values<>("Toni",
-                        "Eder"),
-                "in");
+    void test008() throws Exception {
+        StringConditionInspector a = getStringCondition(field, new Values<>("Toni", "Michael"), "in");
+        StringConditionInspector b = getStringCondition(field, new Values<>("Toni", "Eder"), "in");
 
         assertThat(a.overlaps(b)).isTrue();
         assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
-    void test009() throws
-            Exception {
-        StringConditionInspector a = getCondition(new Values<>("Toni"),
-                "in");
-        StringConditionInspector b = getCondition(new Values<>("Eder",
-                        "Toni"),
-                "in");
+    void test009() throws Exception {
+        StringConditionInspector a = getStringCondition(field, new Values<>("Toni"), "in");
+        StringConditionInspector b = getStringCondition(field, new Values<>("Eder", "Toni"), "in");
 
         assertThat(a.overlaps(b)).isTrue();
         assertThat(b.overlaps(a)).isTrue();
     }
 
     @Test
-    void test010() throws
-            Exception {
-        StringConditionInspector a = getCondition(new Values<>(""),
-                "==");
-        StringConditionInspector b = getCondition(new Values<>(""),
-                "==");
+    void test010() throws Exception {
+        StringConditionInspector a = getStringCondition(field, new Values<>(""), "==");
+        StringConditionInspector b = getStringCondition(field, new Values<>(""), "==");
 
         assertThat(a.overlaps(b)).isFalse();
         assertThat(b.overlaps(a)).isFalse();
     }
 
     @Test
-    void test011() throws
-            Exception {
-        StringConditionInspector a = getCondition(new Values<>("Toni"),
-                "==");
-        StringConditionInspector b = getCondition(new Values<>("Toni"),
-                "==");
+    void test011() throws Exception {
+        StringConditionInspector a = getStringCondition(field, new Values<>("Toni"), "==");
+        StringConditionInspector b = getStringCondition(field, new Values<>("Toni"), "==");
 
         assertThat(a.overlaps(b)).isTrue();
         assertThat(b.overlaps(a)).isTrue();
     }
 
-    private StringConditionInspector getCondition(final Values values,
-                                                  final String operator) {
-        AnalyzerConfigurationMock configurationMock = new AnalyzerConfigurationMock();
-        return new StringConditionInspector(new FieldCondition<String>(field,
-                                                                       mock(Column.class),
-                                                                       operator,
-                                                                       values,
-                                                                       configurationMock),
-                                            configurationMock);
-    }
 }

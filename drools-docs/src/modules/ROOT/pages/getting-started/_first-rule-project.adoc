@@ -113,9 +113,9 @@ Execute a query named `FindColor`. When you execute a query, rules that are matc
 
 [source,java]
 ----
-        instance.dispose();
+        instance.close();
 ----
-At the end, call `dispose()` to release resources retained by the `RuleUnitInstance`.
+At the end, call `close()` to release resources retained by the `RuleUnitInstance`.
 
 Let's run the test with `mvn clean test`.
 ----

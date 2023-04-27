@@ -50,24 +50,17 @@ public class KeyTreeMapMergeTest {
     private AnalyzerConfigurationMock configuration;
 
     @BeforeEach
-    public void setUp() throws
-            Exception {
+    public void setUp() throws Exception {
 
         configuration = new AnalyzerConfigurationMock();
 
-        treeMap = new KeyTreeMap<>(NAME_KEY_DEFINITION,
-                                   AGE_KEY_DEFINITION);
-        pat = new Person("Pat",
-                         10);
-        add(treeMap,
-            pat);
+        treeMap = new KeyTreeMap<>(NAME_KEY_DEFINITION, AGE_KEY_DEFINITION);
+        pat = new Person("Pat", 10);
+        add(treeMap, pat);
 
-        otherKeyTreeMap = new KeyTreeMap<>(NAME_KEY_DEFINITION,
-                                           AGE_KEY_DEFINITION);
-        mat = new Person("mat",
-                         15);
-        add(otherKeyTreeMap,
-            mat);
+        otherKeyTreeMap = new KeyTreeMap<>(NAME_KEY_DEFINITION, AGE_KEY_DEFINITION);
+        mat = new Person("mat", 15);
+        add(otherKeyTreeMap, mat);
     }
 
     private void add(final KeyTreeMap<Person> treeMap,
@@ -76,54 +69,47 @@ public class KeyTreeMapMergeTest {
     }
 
     @Test
-    void testMergeToEmptyMap() throws
-            Exception {
+    void testMergeToEmptyMap() throws Exception {
         final KeyTreeMap<Person> empty = new KeyTreeMap<>(UUIDKey.UNIQUE_UUID,
                 NAME_KEY_DEFINITION,
                 AGE_KEY_DEFINITION);
         empty.merge(otherKeyTreeMap);
 
-        assertThat(empty.get(nameMatcher.getKeyDefinition())
-                .allValues()
-                .size()).isEqualTo(1);
+        assertThat(empty.get(nameMatcher.getKeyDefinition()).allValues()).hasSize(1);
     }
 
     @Test
-    void testNames() throws
-            Exception {
+    void testNames() throws Exception {
         treeMap.merge(otherKeyTreeMap);
 
         final MultiMap<Value, Person, List<Person>> multiMap = treeMap.get(nameMatcher.getKeyDefinition());
 
-        assertThat(multiMap.allValues()
-                .size()).isEqualTo(2);
+        assertThat(multiMap.allValues()).hasSize(2);
     }
 
     @Test
-    void testAge() throws
-            Exception {
+    void testAge() throws Exception {
         treeMap.merge(otherKeyTreeMap);
 
-        assertThat(allPersons(treeMap).size()).isEqualTo(2);
+        assertThat(allPersons(treeMap)).hasSize(2);
     }
 
     @Test
-    void testRetract() throws
-            Exception {
+    void testRetract() throws Exception {
         KeyTreeMap<Person> thirdKeyTreeMap = new KeyTreeMap<>(NAME_KEY_DEFINITION,
                 AGE_KEY_DEFINITION);
         thirdKeyTreeMap.merge(treeMap);
         thirdKeyTreeMap.merge(otherKeyTreeMap);
 
-        assertThat(allPersons(thirdKeyTreeMap).size()).isEqualTo(2);
-        assertThat(allPersons(treeMap).size()).isEqualTo(1);
-        assertThat(allPersons(otherKeyTreeMap).size()).isEqualTo(1);
+        assertThat(allPersons(thirdKeyTreeMap)).hasSize(2);
+        assertThat(allPersons(treeMap)).hasSize(1);
+        assertThat(allPersons(otherKeyTreeMap)).hasSize(1);
 
         pat.uuidKey.retract();
 
-        assertThat(allPersons(thirdKeyTreeMap).size()).isEqualTo(1);
-        assertThat(allPersons(treeMap).size()).isEqualTo(0);
-        assertThat(allPersons(otherKeyTreeMap).size()).isEqualTo(1);
+        assertThat(allPersons(thirdKeyTreeMap)).hasSize(1);
+        assertThat(allPersons(treeMap)).isEmpty();
+        assertThat(allPersons(otherKeyTreeMap)).hasSize(1);
     }
 
     private Collection<Person> allPersons(final KeyTreeMap<Person> personKeyTreeMap) {
@@ -145,8 +131,7 @@ public class KeyTreeMapMergeTest {
         private Integer age;
         private UUIDKey uuidKey = configuration.getUUID(this);
 
-        public Person(final String name,
-                      final Integer age) {
+        public Person(final String name, final Integer age) {
             this.name = name;
             this.age = age;
         }

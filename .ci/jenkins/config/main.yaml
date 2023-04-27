@@ -4,6 +4,10 @@ ecosystem:
   - name: drools
     regexs:
     - drools.*
+  - name: kie-benchmarks
+    ignore_release: true
+    regexs:
+    - kie-benchmarks.*  
 git:
   branches:
   - name: main
