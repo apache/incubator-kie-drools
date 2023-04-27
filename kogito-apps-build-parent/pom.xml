@@ -46,7 +46,7 @@
         <container.image.integration-tests-trusty-service-quarkus>org.kie.kogito/integration-tests-trusty-service-quarkus:${project.version}</container.image.integration-tests-trusty-service-quarkus>
 
         <!-- OptaPlanner version -->
-        <version.org.optaplanner>8.35.0.Final</version.org.optaplanner>
+        <version.org.optaplanner>8.37.0.Final</version.org.optaplanner>
 
         <version.com.vladmihalcea.hibernate-types-55>2.12.1</version.com.vladmihalcea.hibernate-types-55>
         <version.org.apache.opennlp>1.9.2</version.org.apache.opennlp>
