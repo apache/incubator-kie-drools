@@ -702,10 +702,10 @@ public class RuleNetworkEvaluator {
             switch ( subnetworkTuple.getStagedTypeOnRight() ) {
                 // handle clash with already staged entries
                 case Tuple.INSERT:
-                    rightTuples.removeInsert( subnetworkTuple );
+                    rightTuples.removeInsert( subnetworkTuple.moveStagingFromLeftToRight() );
                     break;
                 case Tuple.UPDATE:
-                    rightTuples.removeUpdate( subnetworkTuple );
+                    rightTuples.removeUpdate( subnetworkTuple.moveStagingFromLeftToRight() );
                     break;
             }
 
@@ -807,8 +807,7 @@ public class RuleNetworkEvaluator {
         trgLeftTuples.addDelete( childLeftTuple );
     }
 
-    public static void doUpdatesReorderLeftMemory(BetaMemory bm,
-                                                  TupleSets<LeftTuple> srcLeftTuples) {
+    public static void doUpdatesReorderLeftMemory(BetaMemory bm, TupleSets<LeftTuple> srcLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
 
         // sides must first be re-ordered, to ensure iteration integrity
@@ -828,8 +827,7 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    public static void doUpdatesExistentialReorderLeftMemory(BetaMemory bm,
-                                                             TupleSets<LeftTuple> srcLeftTuples) {
+    public static void doUpdatesExistentialReorderLeftMemory(BetaMemory bm, TupleSets<LeftTuple> srcLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
 
         // sides must first be re-ordered, to ensure iteration integrity
@@ -855,8 +853,7 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    public static void doUpdatesReorderRightMemory(BetaMemory bm,
-                                                   TupleSets<RightTuple> srcRightTuples) {
+    public static void doUpdatesReorderRightMemory(BetaMemory bm, TupleSets<RightTuple> srcRightTuples) {
         TupleMemory rtm = bm.getRightTupleMemory();
 
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {

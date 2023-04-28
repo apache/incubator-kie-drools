@@ -28,11 +28,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
-public class Collect extends ConditionalElement
-    implements
-    PatternSource {
+public class Collect extends ConditionalElement implements PatternSource {
 
     private static final long         serialVersionUID = 510l;
 
@@ -44,15 +43,12 @@ public class Collect extends ConditionalElement
     public Collect() {
     }
 
-    public Collect(final Pattern sourcePattern,
-                   final Pattern resultPattern) {
-
+    public Collect(final Pattern sourcePattern, final Pattern resultPattern) {
         this.sourcePattern = sourcePattern;
         this.resultPattern = resultPattern;
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         sourcePattern = (Pattern) in.readObject();
         resultPattern = (Pattern) in.readObject();
     }
@@ -69,8 +65,7 @@ public class Collect extends ConditionalElement
         }
         Pattern clonedResultPattern = this.resultPattern.clone();
 
-        Collect collect = new Collect( this.sourcePattern.clone(),
-                                       clonedResultPattern );
+        Collect collect = new Collect( this.sourcePattern.clone(), clonedResultPattern );
         collect.getResultPattern().setSource( collect );
         
         if ( source == this ) {
@@ -101,17 +96,13 @@ public class Collect extends ConditionalElement
             }
             return this.cls.newInstance();
         } catch ( final ClassCastException cce ) {
-            throw new RuntimeException( "Collect CE requires a Collection implementation as return type",
-                                        cce );
+            throw new RuntimeException( "Collect CE requires a Collection implementation as return type", cce );
         } catch ( final InstantiationException e ) {
-            throw new RuntimeException( "Collect CE requires a non-argument constructor for the return type",
-                                        e );
+            throw new RuntimeException( "Collect CE requires a non-argument constructor for the return type", e );
         } catch ( final IllegalAccessException e ) {
-            throw new RuntimeException( "Collect CE requires an accessible constructor for the return type",
-                                        e );
+            throw new RuntimeException( "Collect CE requires an accessible constructor for the return type", e );
         } catch ( final ClassNotFoundException e ) {
-            throw new RuntimeException( "Collect CE could not resolve return result class '" + ((ClassObjectType) this.resultPattern.getObjectType()).getClassName() + "'",
-                                        e );
+            throw new RuntimeException("Collect CE could not resolve return result class '" + this.resultPattern.getObjectType().getClassName() + "'", e );
         }
     }
 
@@ -126,11 +117,13 @@ public class Collect extends ConditionalElement
     private String determineResultClassName(ClassObjectType objType) {
         String className = objType.getClassName();
         if ( List.class.getName().equals( className ) ) {
-            className = ArrayList.class.getName();
-        } else if ( Set.class.getName().equals( className ) ) {
-            className = HashSet.class.getName();
-        } else if ( Collection.class.getName().equals( className ) ) {
-            className = ArrayList.class.getName();
+            return ArrayList.class.getName();
+        }
+        if ( Set.class.getName().equals( className ) ) {
+            return HashSet.class.getName();
+        }
+        if ( Collection.class.getName().equals( className ) ) {
+            return ArrayList.class.getName();
         }
         return className;
     }
@@ -161,5 +154,22 @@ public class Collect extends ConditionalElement
     @Override
     public boolean requiresLeftActivation() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Collect collect = (Collect) o;
+        return Objects.equals(sourcePattern, collect.sourcePattern);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sourcePattern);
     }
 }
