@@ -34,7 +34,9 @@ public class LinkedWorkbookTest {
         InputStream dtableIs = this.getClass().getResourceAsStream("BZ967609-brokenExtLinkButValueCached.drl.xls");
         kieHelper.addResource(ResourceFactory.newInputStreamResource(dtableIs),
                 ResourceType.DTABLE);
+        
         KieBase kbase = kieHelper.build();
+        
         assertThat(kbase).isNotNull();
     }
 

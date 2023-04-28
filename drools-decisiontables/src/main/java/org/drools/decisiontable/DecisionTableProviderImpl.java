@@ -27,8 +27,8 @@ import java.util.Map;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.drl.extensions.DecisionTableProvider;
-import org.drools.util.StringUtils;
 import org.drools.template.parser.DecisionTableParseException;
+import org.drools.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.RuleTemplateConfiguration;

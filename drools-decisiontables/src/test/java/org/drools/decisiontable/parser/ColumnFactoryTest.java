@@ -20,44 +20,52 @@ import org.drools.template.parser.Column;
 import org.drools.template.parser.ColumnFactory;
 import org.drools.template.parser.LongColumn;
 import org.drools.template.parser.StringColumn;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class ColumnFactoryTest {
+    
+    private ColumnFactory f;
+
+    @Before
+    public void setUp() {
+        f = new ColumnFactory();
+    }
 
     @Test
     public void testGetColumn() {
-        ColumnFactory f = new ColumnFactory();
         Column column = f.getColumn("column");
-        assertThat(column instanceof StringColumn).isTrue();
+
+        assertThat(column).isInstanceOf(StringColumn.class);
         assertThat(column.getName()).isEqualTo("column");
     }
 
     @Test
     public void testGetStringArrayColumn() {
-        ColumnFactory f = new ColumnFactory();
         Column column = f.getColumn("column: String[]");
-        assertThat(column instanceof ArrayColumn).isTrue();
+
+        assertThat(column).isInstanceOf(ArrayColumn.class);
         assertThat(column.getName()).isEqualTo("column");
         assertThat(column.getCellType()).isEqualTo("StringCell");
     }
 
     @Test
     public void testGetLongArrayColumn() {
-        ColumnFactory f = new ColumnFactory();
         Column column = f.getColumn("column: Long[]");
-        assertThat(column instanceof ArrayColumn).isTrue();
+
+        assertThat(column).isInstanceOf(ArrayColumn.class);
         assertThat(column.getName()).isEqualTo("column");
         assertThat(column.getCellType()).isEqualTo("LongCell");
     }
 
     @Test
     public void testGetArrayColumnSimple() {
-        ColumnFactory f = new ColumnFactory();
         Column column = f.getColumn("column[]");
-        assertThat(column instanceof ArrayColumn).isTrue();
+
+        assertThat(column).isInstanceOf(ArrayColumn.class);
         assertThat(column.getName()).isEqualTo("column");
         assertThat(column.getCellType()).isEqualTo("StringCell");
 
@@ -65,21 +73,15 @@ public class ColumnFactoryTest {
 
     @Test
     public void testGetLongColumn() {
-        ColumnFactory f = new ColumnFactory();
         Column column = f.getColumn("column: Long");
-        assertThat(column instanceof LongColumn).isTrue();
+
+        assertThat(column).isInstanceOf(LongColumn.class);
         assertThat(column.getName()).isEqualTo("column");
     }
 
     @Test
     public void testInvalidGetColumn() {
-        try {
-            ColumnFactory f = new ColumnFactory();
-            f.getColumn("column$");
-            fail("IllegalArgumentException expected");
-        } catch (IllegalArgumentException expected) {
-
-        }
+        assertThatIllegalArgumentException().isThrownBy(() ->  f.getColumn("column$"));
     }
 
 }

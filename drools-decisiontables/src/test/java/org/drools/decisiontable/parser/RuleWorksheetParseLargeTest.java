@@ -51,17 +51,18 @@ public class RuleWorksheetParseLargeTest {
         //  Test removed until have streaming sorted in future. No one using Uber Tables just yet !
         InputStream stream = RuleWorksheetParseLargeTest.class.getResourceAsStream("/data/VeryLargeWorkbook.drl.xls");
 
-        startTimer( );
-        RuleSheetListener listener = RuleWorksheetParseTest.getRuleSheetListener( stream );
-        stopTimer( );
+        startTimer();
+        final InputStream stream1 = stream;
+        RuleSheetListener listener = RulesheetUtil.getRuleSheetListener(stream1);
+        stopTimer();
 
-        System.out.println( "Time to parse large table : " + getTime() + "ms" );
-        Package ruleset = listener.getRuleSet( );
+        System.out.println("Time to parse large table : " + getTime() + "ms");
+        Package ruleset = listener.getRuleSet();
         assertThat(ruleset).isNotNull();
 
 //        startTimer();
 //        String xml = ...;   // toXml() not in Package any more.
-//        System.out.println( xml );
+//        System.out.println(xml);
 //        stopTimer();
 //        System.out.println("Time taken for rendering: " + getTime() + "ms");
     }

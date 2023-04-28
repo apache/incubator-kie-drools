@@ -15,12 +15,12 @@
 
 package org.drools.decisiontable;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.junit.After;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -35,8 +35,17 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class FixedPatternTest {
 
+    private KieSession ksession;
+
+    @After
+    public void tearDown() {
+        if (ksession != null) {
+            ksession.dispose();
+        }
+    }
+    
     @Test
-    public void testFixedPattern() throws FileNotFoundException {
+    public void testFixedPattern() {
 
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType(DecisionTableInputType.XLS);
@@ -48,18 +57,16 @@ public class FixedPatternTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
         
-        KieSession ksession = kbase.newKieSession();
+        ksession = kbase.newKieSession();
 
-        List<Long> list = new ArrayList<Long>();
+        List<Long> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
         ksession.insert(1L);
         ksession.insert(2);
+        
         ksession.fireAllRules();
 
-        assertThat(list.size()).isEqualTo(1);
-        assertThat((long) list.get(0)).isEqualTo(1L);
-
-        ksession.dispose();
+        assertThat(list).hasSize(1).containsExactly(1L);
     }
 }

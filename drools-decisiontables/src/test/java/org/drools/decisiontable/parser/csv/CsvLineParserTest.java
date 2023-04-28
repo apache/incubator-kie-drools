@@ -28,36 +28,27 @@ public class CsvLineParserTest {
     public void testSimpleLineParse() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,b,c";
-        final List<String> list = parser.parse( s );
-        assertThat(list.size()).isEqualTo(3);
-
-        assertThat(list.get(0)).isEqualTo("a");
-        assertThat(list.get(1)).isEqualTo("b");
-        assertThat(list.get(2)).isEqualTo("c");
+        final List<String> list = parser.parse(s);
+        
+        assertThat(list).hasSize(3).containsExactly("a", "b", "c");
     }
 
     @Test
     public void testLineParse() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,\"b\",c";
-        final List<String> list = parser.parse( s );
-        assertThat(list.size()).isEqualTo(3);
-
-        assertThat(list.get(0)).isEqualTo("a");
-        assertThat(list.get(1)).isEqualTo("b");
-        assertThat(list.get(2)).isEqualTo("c");
+        final List<String> list = parser.parse(s);
+        
+        assertThat(list).hasSize(3).containsExactly("a", "b", "c");
     }
 
     @Test
     public void testDoubleQuotes() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,\"\"\"b\"\"\",c";
-        final List<String> list = parser.parse( s );
-        assertThat(list.size()).isEqualTo(3);
-
-        assertThat(list.get(0)).isEqualTo("a");
-        assertThat(list.get(1)).isEqualTo("\"b\"");
-        assertThat(list.get(2)).isEqualTo("c");
+        final List<String> list = parser.parse(s);
+        
+        assertThat(list).hasSize(3).containsExactly("a", "\"b\"", "c");
     }
 
 }

@@ -37,6 +37,7 @@ public class MakeSureMultiLinesWorkTest {
         kieHelper.addResource(ResourceFactory.newInputStreamResource(dtableIs),
                               ResourceType.DTABLE);
         KieBase kbase = kieHelper.build();
+        
         assertThat(kbase).isNotNull();
     }
 }

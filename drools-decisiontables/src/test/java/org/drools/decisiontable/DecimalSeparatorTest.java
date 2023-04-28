@@ -41,38 +41,42 @@ public class DecimalSeparatorTest {
         KieFileSystem kfs = ks.newKieFileSystem();
         KieModuleModel kmodule = ks.newKieModuleModel();
 
-        KieBaseModel baseModel = kmodule.newKieBaseModel( "defaultKBase" ).setDefault( true );
-        baseModel.newKieSessionModel( "defaultKSession" ).setDefault( true );
+        KieBaseModel baseModel = kmodule.newKieBaseModel("defaultKBase").setDefault(true);
+        baseModel.newKieSessionModel("defaultKSession").setDefault(true);
 
-        kfs.writeKModuleXML( kmodule.toXML() );
-        kfs.write( ks.getResources().newClassPathResource( "decimalSeparator.drl.xls",
-                                                           this.getClass() ) ); // README when path is set then test works
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
+        kfs.writeKModuleXML(kmodule.toXML());
+        kfs.write(ks.getResources().newClassPathResource("decimalSeparator.drl.xls",
+                                                           this.getClass())); // README when path is set then test works
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR)).isEmpty();
 
-        ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
+        ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
     }
 
     @After
-    public void clear() {
-        if ( ksession != null ) {
+    public void tearDown() {
+        if (ksession != null) {
             ksession.dispose();
         }
     }
 
     @Test
     public void testDecimalSeparatorInFrench() {
-        Locale.setDefault( Locale.FRENCH );
+        Locale.setDefault(Locale.FRENCH);
         init();
-        ksession.insert( "Hello" );
+        
+        ksession.insert("Hello");
+        
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
     public void testDecimalSeparatorInEnglish() {
-        Locale.setDefault( Locale.ENGLISH );
+        Locale.setDefault(Locale.ENGLISH);
         init();
-        ksession.insert( "Hello" );
+
+        ksession.insert("Hello");
+        
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 

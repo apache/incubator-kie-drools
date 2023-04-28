@@ -67,7 +67,8 @@ public class KModuleWithDecisionTablesTest {
 
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl.csv", csv );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertThat(results.getMessages().isEmpty()).isFalse();
+        
+        assertThat(results.getMessages()).isNotEmpty();
     }
 
     private void testNonEmptyKieBase(final String kieBaseName) throws Exception {
@@ -77,7 +78,7 @@ public class KModuleWithDecisionTablesTest {
        KieBase kieBase = kContainer.getKieBase(kieBaseName);
 
        assertThat(kieBase).as("KieBase not found").isNotNull();
-        assertThat(kieBase.getKiePackages().isEmpty()).as("Unexpected number of KiePackages in KieBase").isFalse();
+       assertThat(kieBase.getKiePackages()).as("Unexpected number of KiePackages in KieBase").isNotEmpty();
     }
     
 }

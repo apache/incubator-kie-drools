@@ -3,6 +3,7 @@ package org.drools.decisiontable;
 import com.sample.FactData;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.junit.After;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -16,6 +17,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public class LineBreakXLSTest {
+    
+    private KieSession ksession;
+
+    @After
+    public void tearDown() {
+        if (ksession != null) {
+            ksession.dispose();
+        }
+    }
 
     @Test
     public void makeSureAdditionalCodeLineEndsAreNotAdded() {
@@ -30,16 +40,14 @@ public class LineBreakXLSTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        KieSession ksession = kbase.newKieSession();
+        ksession = kbase.newKieSession();
 
         FactData fd = new FactData();
         fd.set値(-1);
         ksession.insert(fd);
         ksession.fireAllRules();
 
-        ksession.dispose();
-
-        assertThat(fd.getエラーメッセージ().contains("値には0以上を指定してください。\n指定された値：")).isTrue();
+        assertThat(fd.getエラーメッセージ()).contains("値には0以上を指定してください。\n指定された値：");
     }
 
     @Test
@@ -56,15 +64,13 @@ public class LineBreakXLSTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        KieSession ksession = kbase.newKieSession();
+        ksession = kbase.newKieSession();
 
         Person john = new Person("John");
         john.setAge(20);
         john.setAlive(true);
         ksession.insert(john);
         ksession.fireAllRules();
-
-        ksession.dispose();
 
         assertThat(john.getAge()).isEqualTo(30);
         assertThat(john.isAlive()).isFalse();
@@ -84,15 +90,13 @@ public class LineBreakXLSTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        KieSession ksession = kbase.newKieSession();
+        ksession = kbase.newKieSession();
 
         Person john = new Person("John");
         john.setAge(20);
         john.setAlive(true);
         ksession.insert(john);
         ksession.fireAllRules();
-
-        ksession.dispose();
 
         assertThat(john.getAge()).isEqualTo(30);
         assertThat(john.getName()).isEqualTo("ssss\nxxxx");

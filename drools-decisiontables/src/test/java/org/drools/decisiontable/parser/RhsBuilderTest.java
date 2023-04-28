@@ -23,49 +23,54 @@ public class RhsBuilderTest {
 
     @Test
     public void testConsBuilding() {
-        RhsBuilder builder = new RhsBuilder( ActionType.Code.ACTION, 9, 1, "foo");
-        builder.addTemplate( 10, 1, "setFoo($param)");
-        builder.addCellValue( 10,1, "42" );
+        RhsBuilder builder = new RhsBuilder(ActionType.Code.ACTION, 9, 1, "foo");
+        builder.addTemplate(10, 1, "setFoo($param)");
+        builder.addCellValue(10,1, "42");
 
 
         assertThat(builder.getResult()).isEqualTo("foo.setFoo(42);");
         
         builder.clearValues();
-        builder.addCellValue( 10, 1, "33" );
+        builder.addCellValue(10, 1, "33");
+        
         assertThat(builder.getResult()).isEqualTo("foo.setFoo(33);");
     }
     
     @Test
     public void testClassicMode() {
-        RhsBuilder builder = new RhsBuilder( ActionType.Code.ACTION, 9, 1, "");
-        builder.addTemplate( 10, 1, "p.setSomething($param);" );
-        builder.addTemplate( 10, 2, "drools.clearAgenda();" );
+        RhsBuilder builder = new RhsBuilder(ActionType.Code.ACTION, 9, 1, "");
+        builder.addTemplate(10, 1, "p.setSomething($param);");
+        builder.addTemplate(10, 2, "drools.clearAgenda();");
                 
-        builder.addCellValue( 12, 1, "42" );
+        builder.addCellValue(12, 1, "42");
 
         assertThat(builder.getResult()).isEqualTo("p.setSomething(42);");
                 
-        builder.addCellValue( 12, 2, "Y" );
+        builder.addCellValue(12, 2, "Y");
+
         assertThat(builder.getResult()).isEqualTo("p.setSomething(42);\ndrools.clearAgenda();");
     }
 
     @Test
     public void testMetadata() {
-        RhsBuilder builder = new RhsBuilder( ActionType.Code.METADATA, 9, 1, "");
-        builder.addTemplate( 10, 1, "Author($param)" );
+        RhsBuilder builder = new RhsBuilder(ActionType.Code.METADATA, 9, 1, "");
+        builder.addTemplate(10, 1, "Author($param)");
                 
-        builder.addCellValue( 12, 1, "A. U. Thor" );
-        assertThat(builder.getResult()).isEqualTo("Author(A. U. Thor)");
-        builder.clearValues();
+        builder.addCellValue(12, 1, "A. U. Thor");
         
+        assertThat(builder.getResult()).isEqualTo("Author(A. U. Thor)");
+        
+        builder.clearValues();
         builder.addCellValue( 13, 1, "P. G. Wodehouse" );
+        
         assertThat(builder.getResult()).isEqualTo("Author(P. G. Wodehouse)");
     }
 
     @Test
     public void testEmptyCellData() {
-        RhsBuilder builder = new RhsBuilder( ActionType.Code.ACTION, 9, 1, "Foo");
-        builder.addTemplate( 10, 1, "p.setSomething($param);" );
+        RhsBuilder builder = new RhsBuilder(ActionType.Code.ACTION, 9, 1, "Foo");
+        builder.addTemplate(10, 1, "p.setSomething($param);");
+        
         assertThat(builder.hasValues()).isFalse();
     }
     

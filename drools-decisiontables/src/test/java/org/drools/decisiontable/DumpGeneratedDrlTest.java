@@ -55,7 +55,7 @@ public class DumpGeneratedDrlTest {
     private String dumpDirPropOrigValue;
 
     @Before
-    public void setupAndCleanDumpDir() {
+    public void setUp() {
         dumpDir = new File("target/drools-dump-dir");
         // delete the dir before test to remove possible leftovers from previous runs
         // deleting the dir before the test and not after also helps with debugging - the dir stays there after
@@ -67,6 +67,14 @@ public class DumpGeneratedDrlTest {
         dumpDirPropOrigValue = System.getProperty(DumpDirOption.PROPERTY_NAME);
         System.setProperty(DumpDirOption.PROPERTY_NAME, dumpDir.getAbsolutePath());
     }
+
+    @After
+    public void tearDown() {
+        if (dumpDirPropOrigValue != null) {
+            System.setProperty(DumpDirOption.PROPERTY_NAME, dumpDirPropOrigValue);
+        }
+    }
+
 
     @Test
     public void testGeneratedDrlFromIsDumpedIfSpecified() {
@@ -102,13 +110,6 @@ public class DumpGeneratedDrlTest {
         assertGeneratedDrlExists(dumpDir, releaseId.getGroupId() + "_" + releaseId.getArtifactId() + "_" + "some_source_path_project-dtable.drl.csv.drl");
     }
 
-    @After
-    public void restoreConfig() {
-        if (dumpDirPropOrigValue != null) {
-            System.setProperty(DumpDirOption.PROPERTY_NAME, dumpDirPropOrigValue);
-        }
-    }
-
     private void assertGeneratedDrlExists(File dumpDir, String expectedFilename) {
         assertThat(dumpDir.exists()).as("Dump dir should exist!").isTrue();
         File[] generatedDrls = dumpDir.listFiles(new FilenameFilter() {
@@ -117,10 +118,11 @@ public class DumpGeneratedDrlTest {
                 return filename.endsWith(".drl");
             }
         });
-        assertThat(generatedDrls.length).as("There should be exactly one generated DRL file!").isEqualTo(1);
+        assertThat(generatedDrls).as("There should be exactly one generated DRL file!").hasSize(1);
         if (expectedFilename != null) {
             assertThat(generatedDrls[0].getName()).as("Unexpected name of the file with generated DRL!").isEqualTo(expectedFilename);
         }
     }
+    
 
 }

@@ -26,10 +26,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.util.IoUtils;
 import org.drools.decisiontable.parser.DecisionTableParser;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
+import org.drools.util.IoUtils;
 
 /**
  * Csv implementation. This implementation removes empty "cells" at the end of

@@ -18,9 +18,6 @@ package org.drools.decisiontable;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import org.kie.api.time.SessionPseudoClock;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +29,9 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.time.SessionPseudoClock;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CalendarTimerResourcesTest {
 
@@ -56,28 +56,29 @@ public class CalendarTimerResourcesTest {
         kfs.writeKModuleXML(kmodule.toXML());
         kfs.write(ks.getResources().newClassPathResource("calendar_timer.drl.xls", this.getClass())); // README when path is set then test works
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
+        
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR)).isEmpty();
 
         ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
-
         clock = ksession.getSessionClock();
     }
 
-    @Test
-    public void test() {
-
-        ksession.getCalendars().set("tuesday", TUESDAY);
-        clock.advanceTime(4, TimeUnit.DAYS); // README now it is set to monday (test fails with NPE), when is set to tuesday (rule should fire) then test works
-        ksession.fireAllRules();
-    }
-
     @After
-    public void clear() {
+    public void tearDown() {
 
         if (ksession != null) {
             ksession.dispose();
         }
     }
+
+    @Test
+    public void test() {
+        ksession.getCalendars().set("tuesday", TUESDAY);
+        clock.advanceTime(4, TimeUnit.DAYS); // README now it is set to monday (test fails with NPE), when is set to tuesday (rule should fire) then test works
+        
+        ksession.fireAllRules();
+    }
+
 
     private static final org.kie.api.time.Calendar TUESDAY = new org.kie.api.time.Calendar() {
 

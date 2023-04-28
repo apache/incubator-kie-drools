@@ -43,24 +43,24 @@ public class IncrementalCompilationTest {
         try {
 
             //Add XLS decision table
-            in1 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.drl.xls" );
-            kfs.write( "src/main/resources/incrementalBuild1.dtable.drl.xls",
-                       KieServices.Factory.get().getResources().newInputStreamResource( in1 ) );
+            in1 = this.getClass().getResourceAsStream("incrementalBuild.dtable.drl.xls");
+            kfs.write("src/main/resources/incrementalBuild1.dtable.drl.xls",
+                       KieServices.Factory.get().getResources().newInputStreamResource(in1));
 
             //Add the same XLS decision table again as a different resource
-            in2 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.drl.xls" );
-            kfs.write( "src/main/resources/incrementalBuild2.dtable.drl.xls",
-                       KieServices.Factory.get().getResources().newInputStreamResource( in2 ) );
+            in2 = this.getClass().getResourceAsStream("incrementalBuild.dtable.drl.xls");
+            kfs.write("src/main/resources/incrementalBuild2.dtable.drl.xls",
+                       KieServices.Factory.get().getResources().newInputStreamResource(in2));
 
             //Check errors on a full build
-            List<Message> messages = ks.newKieBuilder( kfs ).buildAll().getResults().getMessages();
+            List<Message> messages = ks.newKieBuilder(kfs).buildAll().getResults().getMessages();
             assertThat(messages.isEmpty()).isFalse();
 
         } finally {
-            if ( in1 != null ) {
+            if (in1 != null) {
                 in1.close();
             }
-            if ( in2 != null ) {
+            if (in2 != null) {
                 in2.close();
             }
         }
@@ -80,33 +80,33 @@ public class IncrementalCompilationTest {
         try {
 
             //Add XLS decision table
-            in1 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.drl.xls" );
-            kfs.write( "src/main/resources/incrementalBuild1.dtable.drl.xls",
-                       KieServices.Factory.get().getResources().newInputStreamResource( in1 ) );
+            in1 = this.getClass().getResourceAsStream("incrementalBuild.dtable.drl.xls");
+            kfs.write("src/main/resources/incrementalBuild1.dtable.drl.xls",
+                       KieServices.Factory.get().getResources().newInputStreamResource(in1));
 
             //Expect no errors
-            KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-            assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
+            KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+            assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR)).hasSize(0);
 
             //Add the same XLS decision table again as a different resource
-            in2 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.drl.xls" );
-            kfs.write( "src/main/resources/incrementalBuild2.dtable.drl.xls",
-                       KieServices.Factory.get().getResources().newInputStreamResource( in2 ) );
-            IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/incrementalBuild2.dtable.drl.xls" ).build();
+            in2 = this.getClass().getResourceAsStream("incrementalBuild.dtable.drl.xls");
+            kfs.write("src/main/resources/incrementalBuild2.dtable.drl.xls",
+                       KieServices.Factory.get().getResources().newInputStreamResource(in2));
+            IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/incrementalBuild2.dtable.drl.xls").build();
 
             //Expect duplicate rule errors
-            assertThat(addResults.getAddedMessages().size()).isEqualTo(1);
-            assertThat(addResults.getRemovedMessages().size()).isEqualTo(0);
+            assertThat(addResults.getAddedMessages()).hasSize(1);
+            assertThat(addResults.getRemovedMessages()).hasSize(0);
 
             //Check errors on a full build
-            List<Message> messages = ks.newKieBuilder( kfs ).buildAll().getResults().getMessages();
-            assertThat(messages.isEmpty()).isFalse();
+            List<Message> messages = ks.newKieBuilder(kfs).buildAll().getResults().getMessages();
+            assertThat(messages).isNotEmpty();
 
         } finally {
-            if ( in1 != null ) {
+            if (in1 != null) {
                 in1.close();
             }
-            if ( in2 != null ) {
+            if (in2 != null) {
                 in2.close();
             }
         }

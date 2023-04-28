@@ -16,6 +16,7 @@
 
 package org.drools.decisiontable.project;
 
+import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -28,6 +29,16 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultiKieBaseTest {
+    
+    private KieSession ksession;
+    
+    @After
+    public void tearDown() {
+
+        if (ksession != null) {
+            ksession.dispose();
+        }
+    }
 
     @Test
     public void testOK() {
@@ -35,10 +46,10 @@ public class MultiKieBaseTest {
         KieResources kr = ks.getResources();
 
         KieFileSystem kfs = ks.newKieFileSystem()
-                .write( "src/main/resources/org/drools/decisiontable/project/rules/Sample.drl",
-                        kr.newFileSystemResource( "src/test/resources/org/drools/decisiontable/project/rules/Sample.drl" ) )
-                .write( "src/main/resources/org/drools/decisiontable/project/dtable/CanDrink.drl.xls",
-                        kr.newFileSystemResource( "src/test/resources/org/drools/decisiontable/project/dtable/CanDrink.drl.xls" ) );
+                .write("src/main/resources/org/drools/decisiontable/project/rules/Sample.drl",
+                        kr.newFileSystemResource("src/test/resources/org/drools/decisiontable/project/rules/Sample.drl"))
+                .write("src/main/resources/org/drools/decisiontable/project/dtable/CanDrink.drl.xls",
+                        kr.newFileSystemResource("src/test/resources/org/drools/decisiontable/project/dtable/CanDrink.drl.xls"));
 
         KieModuleModel kproj = ks.newKieModuleModel();
         kproj.newKieBaseModel("rulesKB")
@@ -48,23 +59,26 @@ public class MultiKieBaseTest {
                 .addPackage("org.drools.decisiontable.project.dtable")
                 .newKieSessionModel("dtable");
 
-        kfs.writeKModuleXML( kproj.toXML() );
+        kfs.writeKModuleXML(kproj.toXML());
 
-        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+        KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
         KieContainer kc = ks.newKieContainer(kb.getKieModule().getReleaseId());
 
-        KieSession sessionRules = kc.newKieSession( "rules" );
+        ksession = kc.newKieSession("rules");
         Result res1 = new Result();
-        sessionRules.insert( res1 );
-        sessionRules.insert( new Person("Mario", 45) );
-        sessionRules.fireAllRules();
+        ksession.insert(res1);
+        ksession.insert(new Person("Mario", 45));
+        ksession.fireAllRules();
+        
         assertThat(res1.toString()).isEqualTo("Hello Mario");
 
-        KieSession sessionDtable = kc.newKieSession( "dtable" );
+        ksession = kc.newKieSession("dtable");
         Result res2 = new Result();
-        sessionDtable.insert( res2 );
-        sessionDtable.insert( new Person("Mario", 45) );
-        sessionDtable.fireAllRules();
+        ksession.insert(res2);
+        ksession.insert(new Person("Mario", 45));
+        
+        ksession.fireAllRules();
+        
         assertThat(res2.toString()).isEqualTo("Mario can drink");
     }
 
@@ -74,10 +88,10 @@ public class MultiKieBaseTest {
         KieResources kr = ks.getResources();
 
         KieFileSystem kfs = ks.newKieFileSystem()
-                .write( "src/main/resources/org/drools/decisiontable/projectwrong/rules/Sample.drl",
-                        kr.newFileSystemResource( "src/test/resources/org/drools/decisiontable/project/rules/Sample.drl" ) )
-                .write( "src/main/resources/org/drools/decisiontable/projectwrong/dtable/CanDrink.drl.xls",
-                        kr.newFileSystemResource( "src/test/resources/org/drools/decisiontable/project/dtable/CanDrink.drl.xls" ) );
+                .write("src/main/resources/org/drools/decisiontable/projectwrong/rules/Sample.drl",
+                        kr.newFileSystemResource("src/test/resources/org/drools/decisiontable/project/rules/Sample.drl"))
+                .write("src/main/resources/org/drools/decisiontable/projectwrong/dtable/CanDrink.drl.xls",
+                        kr.newFileSystemResource("src/test/resources/org/drools/decisiontable/project/dtable/CanDrink.drl.xls"));
 
         KieModuleModel kproj = ks.newKieModuleModel();
         kproj.newKieBaseModel("rulesKB")
@@ -87,23 +101,27 @@ public class MultiKieBaseTest {
                 .addPackage("org.drools.decisiontable.projectwrong.dtable")
                 .newKieSessionModel("dtable");
 
-        kfs.writeKModuleXML( kproj.toXML() );
+        kfs.writeKModuleXML(kproj.toXML());
 
-        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+        KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
         KieContainer kc = ks.newKieContainer(kb.getKieModule().getReleaseId());
 
-        KieSession sessionRules = kc.newKieSession( "rules" );
+        ksession = kc.newKieSession("rules");
         Result res1 = new Result();
-        sessionRules.insert( res1 );
-        sessionRules.insert( new Person("Mario", 45) );
-        sessionRules.fireAllRules();
+        ksession.insert(res1);
+        ksession.insert(new Person("Mario", 45));
+        
+        ksession.fireAllRules();
+        
         assertThat(res1.toString()).isNull();
 
-        KieSession sessionDtable = kc.newKieSession( "dtable" );
+        ksession = kc.newKieSession("dtable");
         Result res2 = new Result();
-        sessionDtable.insert( res2 );
-        sessionDtable.insert( new Person("Mario", 45) );
-        sessionDtable.fireAllRules();
+        ksession.insert(res2);
+        ksession.insert(new Person("Mario", 45));
+        
+        ksession.fireAllRules();
+        
         assertThat(res2.toString()).isNull();
     }
 }
