@@ -19,6 +19,7 @@ import org.kie.jenkins.jobdsl.Utils
 jenkins_path = '.ci/jenkins'
 
 Map getMultijobPRConfig(JenkinsFolder jobFolder) {
+    String defaultBuildMvnOptsCurrent = jobFolder.getDefaultEnvVarValue('BUILD_MVN_OPTS_CURRENT') ?: ''
     def jobConfig = [
         parallel: true,
         buildchain: true,
@@ -30,7 +31,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
                     ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
-                    BUILD_MVN_OPTS_CURRENT: jobFolder.getEnvironmentName() ? '' : '-Dvalidate-formatting', // Validate formatting only for default env
+                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${jobFolder.getEnvironmentName() ? '' : '-Dvalidate-formatting'}", // Validate formatting only for default env
                 ]
             ], [
                 id: 'kogito-quarkus-examples',
@@ -38,7 +39,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
-                    BUILD_MVN_OPTS_CURRENT: isProdEnv(jobFolder) ? '' : (isNative(jobFolder) ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream')
+                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${isProdEnv(jobFolder) ? '' : (isNative(jobFolder) ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream')}"
                 ],
             ], [
                 id: 'kogito-springboot-examples',
@@ -46,7 +47,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
-                    BUILD_MVN_OPTS_CURRENT: isProdEnv(jobFolder) ? '' : (isNative(jobFolder) ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream')
+                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${isProdEnv(jobFolder) ? '' : (isNative(jobFolder) ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream')}"
                 ],
             ], [
                 id: 'serverless-workflow-examples',
@@ -54,7 +55,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
-                    BUILD_MVN_OPTS_CURRENT: isProdEnv(jobFolder) ? '' : (isNative(jobFolder) ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream')
+                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${isProdEnv(jobFolder) ? '' : (isNative(jobFolder) ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream')}"
                 ],
             ]
         ]
