@@ -8,8 +8,12 @@ dependencies:
       dependencies:
         default:
           - source: development
+            target: main # should migrate to 9 before the build
+          - source: 8.x # does not migrate
             target: main
       dependant:
         default:
-          - source: main
+          - source: 9.x
+            target: development
+          - source: main # should migrate to 9 before the build
             target: development
