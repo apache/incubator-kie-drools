@@ -7,7 +7,6 @@ ci="${CI:-false}"
 
 rewrite_plugin_version=4.43.0
 quarkus_version=${QUARKUS_VERSION:-3.0.0.CR1}
-project_version='quarkus-3-SNAPSHOT'
 
 quarkus_file="${script_dir_path}/quarkus3.yml"
 patch_file="${script_dir_path}"/patches/0001_before_sh.patch
@@ -31,12 +30,6 @@ if [ "${ci}" = "true" ]; then
     ${mvn_cmd} clean install -Dquickly
 fi
 
-# Change version
-${mvn_cmd} -e -N -Dfull -DnewVersion=${project_version} -DallowSnapshots=true -DgenerateBackupPoms=false versions:set
-
-# Make sure artifacts are updated locally
-${mvn_cmd} clean install -Dquickly
-
 # Regenerate quarkus3 recipe
 cd ${script_dir_path}
 curl -Ls https://sh.jbang.dev | bash -s - jbang/CreateQuarkusDroolsMigrationRecipe.java
@@ -50,7 +43,7 @@ fi
 ${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:${rewrite_plugin_version}:run \
     -Drewrite.configLocation="${quarkus_file}" \
     -DactiveRecipes=io.quarkus.openrewrite.Quarkus \
-    -Drewrite.recipeArtifactCoordinates=org.kie:jpmml-migration-recipe:"${project_version}" \
+    -Drewrite.recipeArtifactCoordinates=org.kie:jpmml-migration-recipe:quarkus-3-SNAPSHOT \
     -Denforcer.skip \
     -fae \
     -Dexclusions=**/target \
