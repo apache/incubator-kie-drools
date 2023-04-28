@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import freemarker.template.Version;
 
 /**
  * To read it from XML, use {@link #createFromXmlResource(String)}.
@@ -435,7 +436,7 @@ public class PlannerBenchmarkConfig {
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlReader(Reader templateReader, Object model,
             ClassLoader classLoader) {
-        Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_32);
+        Configuration freemarkerConfiguration = new Configuration(new Version("2.3.31"));
         freemarkerConfiguration.setDefaultEncoding("UTF-8");
         freemarkerConfiguration.setNumberFormat("computer");
         freemarkerConfiguration.setDateFormat("yyyy-mm-dd");
