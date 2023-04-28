@@ -17,17 +17,17 @@
 
 package org.drools.modelcompiler.constraints;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Objects;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.SubnetworkTuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.Accumulator;
-import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.AccumulateFunction;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Objects;
 
 public abstract class LambdaAccumulator implements Accumulator {
 
@@ -140,26 +140,6 @@ public abstract class LambdaAccumulator implements Accumulator {
             } else {
                 return binding.evaluate(handle, tuple, reteEvaluator, declarations, innerDeclarations);
             }
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            if (!super.equals(o)) {
-                return false;
-            }
-            final LambdaAccumulator.BindingAcc that = (LambdaAccumulator.BindingAcc) o;
-            return Objects.equals(sourceVariables, that.sourceVariables);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(super.hashCode(), sourceVariables);
         }
     }
 

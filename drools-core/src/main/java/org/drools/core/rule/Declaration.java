@@ -15,21 +15,21 @@
 
 package org.drools.core.rule;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-
 import org.drools.core.base.AccessorKeySupplier;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.AcceptsReadAccessor;
 import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.TupleValueExtractor;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
 
 import static org.drools.util.ClassUtils.canonicalName;
 import static org.drools.util.ClassUtils.convertFromPrimitiveType;
@@ -61,9 +61,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
     // Constructors
     // ------------------------------------------------------------
     public Declaration() {
-        this( null,
-              null,
-              null );
+        this( null, null, null );
     }
 
     /**
@@ -74,12 +72,8 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
      * @param pattern
      *            The pattern this variable is declared in
      */
-    public Declaration(final String identifier,
-                       final Pattern pattern) {
-        this( identifier,
-              null,
-              pattern,
-              false );
+    public Declaration(final String identifier, final Pattern pattern) {
+        this( identifier, null, pattern, false );
     }
 
     /**
@@ -92,13 +86,8 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
      * @param pattern
      *            The pattern this variable is declared in
      */
-    public Declaration(final String identifier,
-                       final ReadAccessor extractor,
-                       final Pattern pattern) {
-        this( identifier,
-              extractor,
-              pattern,
-              false );
+    public Declaration(final String identifier, final ReadAccessor extractor, final Pattern pattern) {
+        this( identifier, extractor, pattern, false );
     }
 
     /**
@@ -114,10 +103,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
      *            True if this is an internal fact created by the engine, like a collection result
      *            of a collect CE
      */
-    public Declaration(final String identifier,
-                       final ReadAccessor extractor,
-                       final Pattern pattern,
-                       final boolean internalFact) {
+    public Declaration(final String identifier, final ReadAccessor extractor, final Pattern pattern, final boolean internalFact) {
         this.identifier = identifier;
         this.readAccessor = extractor;
         this.pattern = pattern;
@@ -361,7 +347,6 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         int result = 1;
         result = PRIME * result + this.pattern.getTupleIndex();
         result = PRIME * result + this.readAccessor.hashCode();
-        result = PRIME * result + this.identifier.hashCode();
         result = PRIME * result + this.xPathOffset;
         return result;
     }
@@ -379,7 +364,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         final Declaration other = (Declaration) object;
 
         return this.pattern.getPatternId() == other.pattern.getPatternId() &&
-               this.identifier.equals(other.identifier) && this.readAccessor.equals(other.readAccessor) &&
+               this.readAccessor.equals(other.readAccessor) &&
                this.xPathOffset == other.xPathOffset;
     }
 
