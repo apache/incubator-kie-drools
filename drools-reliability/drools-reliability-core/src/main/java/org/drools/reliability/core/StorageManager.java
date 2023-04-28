@@ -16,6 +16,7 @@
 package org.drools.reliability.core;
 
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.Storage;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
 import java.util.Set;

@@ -16,6 +16,7 @@
 
 package org.drools.reliability.core;
 
+import org.drools.core.common.Storage;
 import org.drools.core.rule.accessor.GlobalResolver;
 
 import java.util.HashMap;

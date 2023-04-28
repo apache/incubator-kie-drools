@@ -16,6 +16,7 @@
 package org.drools.reliability.core;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Storage;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.PropagationList;
 import org.drools.kiesession.agenda.DefaultAgenda;

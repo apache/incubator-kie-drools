@@ -16,7 +16,7 @@
 package org.drools.reliability.infinispan;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.reliability.core.Storage;
+import org.drools.core.common.Storage;
 import org.drools.util.FileUtils;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.commons.marshall.JavaSerializationMarshaller;

@@ -20,6 +20,7 @@ import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.Storage;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.time.TimerService;
@@ -29,7 +30,6 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static org.drools.reliability.core.ReliableSessionInitializer.initReliableSession;

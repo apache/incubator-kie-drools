@@ -20,6 +20,7 @@ import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.Storage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,11 +75,11 @@ public class SimpleReliableObjectStore extends IdentityObjectStore {
         StoredObject storedObject = handle.isEvent() ?
                 new StoredObject(object, reInitPropagated || propagated, ((EventFactHandle) handle).getStartTimestamp(), ((EventFactHandle) handle).getDuration()) :
                 new StoredObject(object, reInitPropagated || propagated);
-        storage.put(fhMap.get(object).getId(), storedObject);
+        storage.put(getHandleForObject(object).getId(), storedObject);
     }
 
     public void removeFromPersistedStorage(Object object) {
-        InternalFactHandle fh = fhMap.get(object);
+        InternalFactHandle fh = getHandleForObject(object);
         if (fh != null) {
             storage.remove(fh.getId());
         }

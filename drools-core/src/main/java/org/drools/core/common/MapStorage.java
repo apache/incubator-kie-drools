@@ -13,73 +13,66 @@
  * limitations under the License.
  */
 
-package org.drools.reliability.infinispan;
-
-import org.drools.core.common.Storage;
-import org.infinispan.commons.api.BasicCache;
+package org.drools.core.common;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
-public class InfinispanStorage<K, V> implements Storage<K, V> {
+public class MapStorage<K, V> implements Storage<K, V> {
 
-    BasicCache<K, V> cache;
+    private final Map<K, V> map;
 
-    public static <K1, V1> InfinispanStorage<K1, V1> fromCache(BasicCache<K1, V1> cache) {
-        return new InfinispanStorage<>(cache);
+    public MapStorage(Map<K, V> map) {
+        this.map = map;
     }
-
-    private InfinispanStorage(BasicCache<K, V> cache) {
-        this.cache = cache;
-    }
-
     @Override
     public V get(K key) {
-        return cache.get(key);
+        return map.get(key);
     }
 
     @Override
     public V getOrDefault(K key, V value) {
-        return cache.getOrDefault(key, value);
+        return map.getOrDefault(key, value);
     }
 
     @Override
     public V put(K key, V value) {
-        return cache.put(key, value);
+        return map.put(key, value);
     }
 
     @Override
     public boolean containsKey(K key) {
-        return cache.containsKey(key);
+        return map.containsKey(key);
     }
 
     @Override
     public V remove(K key) {
-        return cache.remove(key);
+        return map.remove(key);
     }
 
     @Override
     public void clear() {
-        cache.clear();
+        map.clear();
     }
 
     @Override
     public Collection<V> values() {
-        return cache.values();
+        return map.values();
     }
 
     @Override
     public Set<K> keySet() {
-        return cache.keySet();
+        return map.keySet();
     }
 
     @Override
     public int size() {
-        return cache.size();
+        return map.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return cache.isEmpty();
+        return map.isEmpty();
     }
 }

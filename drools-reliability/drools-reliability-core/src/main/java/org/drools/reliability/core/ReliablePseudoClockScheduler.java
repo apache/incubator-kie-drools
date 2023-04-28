@@ -16,6 +16,7 @@
 
 package org.drools.reliability.core;
 
+import org.drools.core.common.Storage;
 import org.drools.core.time.impl.PseudoClockScheduler;
 
 import java.util.PriorityQueue;
