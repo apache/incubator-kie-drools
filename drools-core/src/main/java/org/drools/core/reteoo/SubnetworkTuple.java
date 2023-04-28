@@ -16,20 +16,17 @@
 
 package org.drools.core.reteoo;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.common.ReteEvaluator;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
 
     private LeftTuple blocked;
     private LeftTuple tempBlocked;
-
-    private TupleMemory tempRightTupleMemory;
 
     private RightTuple tempNextRightTuple;
 
@@ -38,6 +35,9 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
 
     private boolean stagedOnRight;
     private short stagedTypeOnRight;
+    private Tuple stagedNextOnRight;
+    private Tuple stagedPreviousOnRight;
+
 
     public SubnetworkTuple() {
         // constructor needed for serialisation
@@ -141,14 +141,6 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
         this.tempNextRightTuple = tempNextRightTuple;
     }
 
-    public TupleMemory getTempRightTupleMemory() {
-        return tempRightTupleMemory;
-    }
-
-    public void setTempRightTupleMemory(TupleMemory tempRightTupleMemory) {
-        this.tempRightTupleMemory = tempRightTupleMemory;
-    }
-
     public boolean isStagedOnRight() {
         return stagedOnRight;
     }
@@ -181,7 +173,17 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
 
     public void moveStagingFromRightToLeft() {
         stagedTypeOnRight = getStagedType();
+        stagedPreviousOnRight = getStagedPrevious();
+        stagedNextOnRight = getStagedNext();
         clearStaged();
+    }
+
+    public SubnetworkTuple moveStagingFromLeftToRight() {
+        stagedPrevious = stagedPreviousOnRight;
+        stagedPreviousOnRight = null;
+        stagedNext = stagedNextOnRight;
+        stagedNextOnRight = null;
+        return this;
     }
 
     public short getStagedTypeOnRight() {
