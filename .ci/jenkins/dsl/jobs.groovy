@@ -12,6 +12,7 @@ import org.kie.jenkins.jobdsl.model.JenkinsFolder
 import org.kie.jenkins.jobdsl.model.JobType
 import org.kie.jenkins.jobdsl.utils.EnvUtils
 import org.kie.jenkins.jobdsl.utils.JobParamsUtils
+import org.kie.jenkins.jobdsl.utils.PrintUtils
 import org.kie.jenkins.jobdsl.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.KogitoJobUtils
 import org.kie.jenkins.jobdsl.Utils
@@ -19,6 +20,7 @@ import org.kie.jenkins.jobdsl.Utils
 jenkins_path = '.ci/jenkins'
 
 Map getMultijobPRConfig(JenkinsFolder jobFolder) {
+    String defaultBuildMvnOptsCurrent = jobFolder.getDefaultEnvVarValue('BUILD_MVN_OPTS_CURRENT') ?: ''
     def jobConfig = [
         parallel: true,
         buildchain: true,
@@ -30,7 +32,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
                     ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
-                    BUILD_MVN_OPTS_CURRENT: getRuntimesBuildMvnOptions(jobFolder).join(' '),
+                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${getRuntimesBuildMvnOptions(jobFolder).join(' ')}",
                 ]
             ], [
                 id: 'kogito-apps',
