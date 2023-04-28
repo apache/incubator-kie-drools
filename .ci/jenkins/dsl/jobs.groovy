@@ -98,7 +98,7 @@ void setupProjectReleaseJob() {
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 Map getMultijobPRConfig(JenkinsFolder jobFolder) {
-    String defaultBuildMvnOptsCurrent = jobFolder.getDefaultEnvVars().find { key, value -> "${key}" == "BUILD_MVN_OPTS_CURRENT" }?.value ?: ''
+    String defaultBuildMvnOptsCurrent = jobFolder.getDefaultEnvVarValue('BUILD_MVN_OPTS_CURRENT') ?: ''
     def jobConfig = [
         parallel: true,
         buildchain: true,
