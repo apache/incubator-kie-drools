@@ -24,8 +24,9 @@ disable:
   triggers: false
 repositories:
 - name: drools
-- name: drools-website
-- name: kie-benchmarks
+  branch: 8.38.x-prod
+productized_repositories:
+- name: drools
 git:
   author:
     name: kiegroup
