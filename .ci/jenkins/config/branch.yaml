@@ -4,50 +4,22 @@ environments:
       NATIVE: true
       BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
       ADDITIONAL_TIMEOUT: 720
+      BUILD_MVN_OPTS: '-Dproductized  '
     ids:
     - native
-  native-lts:
-    env_vars:
-      NATIVE: true
-      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
-      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
-      QUARKUS_BRANCH: '2.13'
-      ADDITIONAL_TIMEOUT: 720
-    ids:
-    - native
-    - prod
-  quarkus-main:
-    enabled: false
-    env_vars:
-      QUARKUS_BRANCH: main
-    ids:
-    - quarkus
-  quarkus-3:
-    pull_request_default_check: true
-    env_vars:
-      BUILD_MAVEN_TOOL: kie-maven-3.9.1
-      BUILD_JDK_TOOL: kie-jdk17
-      BUILD_MVN_OPTS: -Denforcer.skip
-    ids:
-    - quarkus
-    - quarkus3
-    enabled: false
+    enabled: true
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '2.16'
+      BUILD_MVN_OPTS: '-Dproductized  '
     ids:
     - quarkus
-  quarkus-lts:
-    pull_request_default_check: false
+    enabled: true
+  default:
+    enabled: true
     env_vars:
-      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
-      QUARKUS_BRANCH: '2.13'
-    ids:
-    - quarkus
-    - lts
-    - prod
-    enabled: false
-productized_branch: false
+      BUILD_MVN_OPTS: '-Dproductized  '
+productized_branch: true
 disable:
   triggers: false
 repositories:
@@ -105,3 +77,9 @@ jenkins:
   default_tools:
     jdk: kie-jdk11
     maven: kie-maven-3.8.7
+productized_repositories:
+- name: drools
+  branch: 8.38.x-prod
+  is_branch_config_repo: true
+generation_config:
+  missing_environment: ignore
