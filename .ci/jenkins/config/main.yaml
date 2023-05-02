@@ -6,6 +6,7 @@ ecosystem:
     - drools.*
   - name: kie-benchmarks
     ignore_release: true
+    ignore_productization: true
     regexs:
     - kie-benchmarks.*
 git:
