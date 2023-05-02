@@ -174,7 +174,9 @@ setupQuarkusIntegrationJob('quarkus-lts')
 setupQuarkusIntegrationJob('native-lts')
 setupQuarkusIntegrationJob('quarkus-3') { script ->
     def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
-    jobParams.env.put('BUILD_ENVIRONMENT_OPTIONS', 'rewrite')
+    jobParams.env.put('BUILD_ENVIRONMENT_OPTIONS', 'rewrite push_changes')
+    jobParams.env.put('INTEGRATION_BRANCH_CURRENT', '9.x.x.x')
+    JobParamsUtils.setupJobParamsDeployConfiguration(script, jobParams)
     return jobParams
 }
 

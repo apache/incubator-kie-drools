@@ -17,6 +17,7 @@ if [ "${ci}" = "true" ]; then
 fi
 
 rewrite=${1:-'none'}
+behavior=${2:-'none'}
 echo "rewrite "${rewrite}
 if [ "rewrite" != ${rewrite} ]; then
     echo "No rewrite to be done. Exited"
@@ -69,6 +70,13 @@ if [ "$(git status --porcelain ${patch_file})" != '' ]; then
     fi
     git add "${patch_file}"
     git commit -m '[Quarkus 3] Updated rewrite data'
+
+    if [ "${behavior}" = 'push_changes' ]; then
+        git_remote="${GIT_REMOTE:-origin}"
+        branch=$(git branch --show-current)
+        echo "Pushing changes to ${git_remote}/${branch}"
+        git push ${git_remote} ${branch}
+    fi
 fi
 
 # Reset all other changes as they will be applied next by the `patches/0001_before_sh.patch` file
