@@ -172,7 +172,11 @@ setupQuarkusIntegrationJob('quarkus-main', addFullProfileJobParamsGetter)
 setupQuarkusIntegrationJob('quarkus-branch', addFullProfileJobParamsGetter)
 setupQuarkusIntegrationJob('quarkus-lts')
 setupQuarkusIntegrationJob('native-lts')
-setupQuarkusIntegrationJob('quarkus-3')
+setupQuarkusIntegrationJob('quarkus-3') { script ->
+    def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
+    jobParams.env.put('BUILD_ENVIRONMENT_OPTIONS', 'rewrite')
+    return jobParams
+}
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
