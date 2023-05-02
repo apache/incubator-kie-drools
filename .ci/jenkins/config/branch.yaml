@@ -10,7 +10,7 @@ environments:
     enabled: true
   quarkus-branch:
     env_vars:
-      QUARKUS_BRANCH: '2.16'
+      QUARKUS_BRANCH: '2.13'
       BUILD_MVN_OPTS: '-Dproductized  '
     ids:
     - quarkus
