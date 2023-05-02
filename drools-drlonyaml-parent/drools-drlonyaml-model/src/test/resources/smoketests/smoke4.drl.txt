@@ -1,0 +1,19 @@
+// this is only syntactically valid DRL, so not ending with purely .drl
+rule "Fix the Service targetPort and the containerPort"
+when
+  $svc : Service( metadata.name != "kubernetes" )
+  $sPort : ServicePort() from $svc.spec.ports
+  $pod : Pod( mapContains(metadata.labels, $svc.spec.selector) )
+  not (
+    $c : Container() from $pod.spec.containers and
+    ContainerPort(containerPort == $sPort.targetPort.intVal) from $c.ports
+  )
+then
+  insert(new Advice("Fix the Service targetPort and the containerPort","Service " + 
+      $svc.getMetadata().getName() +
+      " targetPort: " +
+      $sPort.getTargetPort() +
+      " not found in any Container of related Pod: " +
+      $pod.getMetadata().getName()
+  ));
+end

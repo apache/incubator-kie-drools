@@ -1,0 +1,14 @@
+# only syntactically valid yaml.
+rules:
+- name: Fix the Service selector No Pod found for selector
+  when:
+  - given: Service
+    as: $svc
+    having:
+    - metadata.name != "kubernetes"
+  - not:
+    - given: Pod
+      having:
+      - "mapContains(metadata.labels, $svc.spec.selector)"
+  then: |
+    insert(new Advice("Fix the Service selector","Service "+$svc.getMetadata().getName()+" no Pod found for selector: "+$svc.getSpec().getSelector()));

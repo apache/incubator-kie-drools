@@ -1,0 +1,8 @@
+// this is only syntactically valid DRL, so not ending with purely .drl
+rule "Relax the ResourceQuota limits StatefulSet PENDING"
+when
+  $s : StatefulSet( spec.replicas != status.replicas )
+  Event(message contains "exceeded quota") from DroolsK8sClient.eventsFor($s)
+then
+  insert(new Advice("Relax the ResourceQuota limits","StatefulSet PENDING: "+$s.getMetadata().getName()));
+end

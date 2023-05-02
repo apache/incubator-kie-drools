@@ -1,0 +1,12 @@
+// this is only syntactically valid DRL, so not ending with purely .drl
+rule "Relax the ResourceQuota limits Deployment PENDING"
+when
+  $d : Deployment()
+  exists(
+    DeploymentCondition(type == "Available", status == "False") from $d.status.conditions
+    and
+    DeploymentCondition(message contains "exceeded quota") from $d.status.conditions
+  )
+then
+  insert(new Advice("Relax the ResourceQuota limits","Deployment PENDING: "+$d.getMetadata().getName()));
+end

@@ -1053,6 +1053,30 @@
         <artifactId>kie-drl-kiesession-local-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
+      
+      <!-- drlonyaml -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drlonyaml-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drlonyaml-model</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drlonyaml-todrl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drlonyaml-todrl</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

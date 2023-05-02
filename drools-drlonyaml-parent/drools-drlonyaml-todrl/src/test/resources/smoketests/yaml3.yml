@@ -1,0 +1,14 @@
+# only syntactically valid yaml.
+rules:
+- name: Relax the ResourceQuota limits StatefulSet PENDING
+  when:
+  - given: StatefulSet
+    as: $s
+    having:
+    - spec.replicas != status.replicas
+  - given: Event
+    having:
+    - message contains "exceeded quota"
+    from: DroolsK8sClient.eventsFor($s)
+  then: |
+    insert(new Advice("Relax the ResourceQuota limits","StatefulSet PENDING: "+$s.getMetadata().getName()));
