@@ -36,15 +36,15 @@ jobs:
     name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
     steps:
       - name: Clean Disk Space
-        uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
+        uses: kiegroup/kie-ci/.ci/actions/ubuntu-disk-space@main
       - name: Java and Maven Setup
-        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
+        uses: kiegroup/kie-ci/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Productized Build Chain
-        uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
+        uses: kiegroup/kie-ci/.ci/actions/build-chain@main
         env:
           # maven-assembly-plugin occasionally fails on heap space when building the ZIP in optaplanner-docs
           MAVEN_OPTS: "-Xmx2048m"
@@ -54,7 +54,7 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           starting-project: kiegroup/optaplanner
       - name: Surefire Report
-        uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
+        uses: kiegroup/kie-ci/.ci/actions/surefire-report@main
         if: ${{ always() }}
         with:
           report_paths: '**/*-reports/TEST-*.xml'
