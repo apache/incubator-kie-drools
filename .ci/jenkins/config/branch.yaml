@@ -21,7 +21,7 @@ environments:
       BUILD_MVN_OPTS: '-Dproductized  '
 productized_branch: true
 disable:
-  triggers: false
+  triggers: true
 repositories:
 - name: drools
   branch: 8.38.x-prod
