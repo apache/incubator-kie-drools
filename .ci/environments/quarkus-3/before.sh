@@ -6,7 +6,7 @@ mvn_cmd="mvn ${BUILD_MVN_OPTS:-} ${BUILD_MVN_OPTS_QUARKUS_UPDATE:-}"
 ci="${CI:-false}"
 
 rewrite_plugin_version=4.43.0
-quarkus_version=${QUARKUS_VERSION:-3.0.0.Final}
+quarkus_version=${QUARKUS_VERSION:-3.0.0.CR1}
 
 quarkus_recipe_file="${script_dir_path}/quarkus3.yml"
 patch_file="${script_dir_path}"/patches/0001_before_sh.patch
@@ -66,7 +66,6 @@ git reset
 if [ "$(git status --porcelain ${patch_file})" != '' ]; then
     if [ "$(git status --porcelain ${quarkus_recipe_file})" != '' ]; then
         git add "${quarkus_recipe_file}" # We suppose that if the recipe has changed, the patch file as well
-        git commit -m '[Quarkus 3 migration] Update Openrewrite recipe'
     fi
     git add "${patch_file}"
     git commit -m '[Quarkus 3] Updated rewrite data'
