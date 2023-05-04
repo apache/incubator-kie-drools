@@ -105,11 +105,15 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
         try {
             String eventString = json.writeValueAsString(event);
             logger.debug("Event payload '{}'", eventString);
-
-            emitter.send(eventString);
-            logger.debug("Successfully published event {} to topic {}", event, topic);
+            emitter.send(eventString).whenComplete((v, t) -> {
+                if (t == null) {
+                    logger.debug("Successfully published event {} to topic {}", event, topic);
+                } else {
+                    logger.error("Error while publishing event to topic {} for event {}", topic, event, t);
+                }
+            });
         } catch (Exception e) {
-            logger.error("Error while publishing event to topic {} for event {}", topic, event, e);
+            logger.error("Error while creating event to topic {} for event {}", topic, event, e);
         }
     }
 }
