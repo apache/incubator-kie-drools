@@ -4113,7 +4113,7 @@ index 8f99b7d8c8..b4e5e7069f 100644
                                 min,
                                 max,
 diff --git a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java
-index 29e0f7b7d0..ff3005526b 100644
+index 29e0f7b7d0..606759ffdc 100644
 --- a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java
 +++ b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java
 @@ -122,4 +122,14 @@ public class TestModel extends Model {
@@ -4126,7 +4126,7 @@ index 29e0f7b7d0..ff3005526b 100644
 +        return null;
 +    }
 +
-+    @ForkJoin
++    @Override
 +    public MiningSchema requireMiningSchema() {
 +        return null;
 +    }
