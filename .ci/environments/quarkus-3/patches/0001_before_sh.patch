@@ -330,7 +330,7 @@ index 97a45fea4d..4ac46a1860 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index aa06497e9f..84ea1c8314 100644
+index aa06497e9f..633ee84f50 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,22 +16,22 @@
@@ -389,7 +389,7 @@ index aa06497e9f..84ea1c8314 100644
      <version.io.serverlessworkflow>4.0.3.Final</version.io.serverlessworkflow>
      <!-- Aligned with Quarkus 2.7 (LTS) - see https://issues.redhat.com/browse/KOGITO-7971 -->
 -    <version.io.smallrye-open-api>3.1.1</version.io.smallrye-open-api>
-+    <version.io.smallrye-open-api>3.3.1</version.io.smallrye-open-api>
++    <version.io.smallrye-open-api>3.3.2</version.io.smallrye-open-api>
      <version.org.awaitility>4.2.0</version.org.awaitility>
  
 -    <version.io.smallrye.reactive.mutiny-vertx-web-client>2.30.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
@@ -767,7 +767,7 @@ index 99ac64a6af..e6918f15e5 100644
          <executions>
            <execution>
 diff --git a/quarkus/addons/events/process/runtime/src/main/java/org/kie/kogito/events/process/ReactiveMessagingEventPublisher.java b/quarkus/addons/events/process/runtime/src/main/java/org/kie/kogito/events/process/ReactiveMessagingEventPublisher.java
-index 00874a436d..ecc02ada63 100644
+index 728c565f61..a7dda6c73b 100644
 --- a/quarkus/addons/events/process/runtime/src/main/java/org/kie/kogito/events/process/ReactiveMessagingEventPublisher.java
 +++ b/quarkus/addons/events/process/runtime/src/main/java/org/kie/kogito/events/process/ReactiveMessagingEventPublisher.java
 @@ -18,8 +18,8 @@ package org.kie.kogito.events.process;
