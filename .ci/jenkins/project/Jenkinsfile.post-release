@@ -55,6 +55,19 @@ pipeline {
                 }
             }
         }
+        
+        stage('Prepare for post-release') {
+            steps {
+                script {
+                    dir(optaplannerRepository) {
+                        checkoutTag(optaplannerRepository, getProjectVersion(), stableBranchName)
+                    }
+                    dir(quickstartsRepository) {
+                        checkoutTag(quickstartsRepository, getGitTag(), stableBranchName)
+                    }
+                }
+            }
+        }
 
         stage('Reset Quickstarts stable branch') {
             when {
@@ -63,7 +76,6 @@ pipeline {
             steps {
                 script {
                     dir(quickstartsRepository) {
-                        checkoutTag(quickstartsRepository, getGitTag(), stableBranchName)
                         removeJbossNexusFromMavenAndGradle()
                         commitAndForcePushBranch(quickstartsRepository, stableBranchName)
                     }
@@ -74,11 +86,7 @@ pipeline {
         stage('Upload OptaPlanner distribution from Quickstarts') {
             steps {
                 script {
-                    dir(optaplannerRepository) {
-                        checkoutTag(optaplannerRepository, getProjectVersion(), stableBranchName)
-                        getMavenCommand().withProperty('quickly').withProperty('full').run('clean install')
-                    }
-
+                    getMavenCommand().inDirectory(optaplannerRepository).withProperty('quickly').withProperty('full').run('clean install')
                     getMavenCommand().inDirectory(quickstartsRepository).skipTests(true).withProperty('full').run('clean install')
                     uploadDistribution(quickstartsRepository)
                 }
