@@ -16,10 +16,9 @@
 package org.drools.reliability.infinispan;
 
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.Storage;
 import org.drools.util.FileUtils;
-import org.infinispan.Cache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.commons.api.BasicCache;
 import org.infinispan.commons.marshall.JavaSerializationMarshaller;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.Configuration;
@@ -33,27 +32,27 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Paths;
 import java.util.Set;
 
-import static org.drools.reliability.core.CacheManager.createCacheId;
-import static org.drools.reliability.infinispan.InfinispanCacheManagerFactory.*;
+import static org.drools.reliability.core.StorageManager.createStorageId;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.*;
 import static org.drools.util.Config.getConfig;
 
-public class EmbeddedCacheManager implements InfinispanCacheManager {
+public class EmbeddedStorageManager implements InfinispanStorageManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EmbeddedCacheManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EmbeddedStorageManager.class);
 
-    public static final String GLOBAL_STATE_DIR = getConfig(RELIABILITY_CACHE_DIRECTORY, "global/state");
+    public static final String GLOBAL_STATE_DIR = getConfig(INFINISPAN_STORAGE_DIRECTORY, "global/state");
 
-    static final EmbeddedCacheManager INSTANCE = new EmbeddedCacheManager();
+    static final EmbeddedStorageManager INSTANCE = new EmbeddedStorageManager();
 
     private DefaultCacheManager embeddedCacheManager;
     private Configuration cacheConfiguration;
 
     public static final String CACHE_DIR = "cache";
 
-    private EmbeddedCacheManager() {}
+    private EmbeddedStorageManager() {}
 
     @Override
-    public void initCacheManager() {
+    public void initStorageManager() {
         LOG.info("Using Embedded Cache Manager");
 
         // Set up a clustered Cache Manager.
@@ -61,7 +60,7 @@ public class EmbeddedCacheManager implements InfinispanCacheManager {
         global.serialization()
               .marshaller(new JavaSerializationMarshaller())
               .allowList()
-              .addRegexps(InfinispanCacheManager.getAllowedPackages());
+              .addRegexps(InfinispanStorageManager.getAllowedPackages());
         global.globalState()
               .enable()
               .persistentLocation(GLOBAL_STATE_DIR)
@@ -87,13 +86,13 @@ public class EmbeddedCacheManager implements InfinispanCacheManager {
     }
 
     @Override
-    public <k, V> Cache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
-        return embeddedCacheManager.administration().getOrCreateCache(createCacheId(reteEvaluator, cacheName), cacheConfiguration);
+    public <k, V> Storage<k, V> getOrCreateStorageForSession(ReteEvaluator reteEvaluator, String cacheName) {
+        return InfinispanStorage.fromCache(embeddedCacheManager.administration().getOrCreateCache(createStorageId(reteEvaluator, cacheName), cacheConfiguration));
     }
 
     @Override
-    public <k, V> BasicCache<k, V> getOrCreateSharedCache(String cacheName) {
-        return embeddedCacheManager.administration().getOrCreateCache(SHARED_CACHE_PREFIX + cacheName, cacheConfiguration);
+    public <k, V> Storage<k, V> getOrCreateSharedStorage(String cacheName) {
+        return InfinispanStorage.fromCache(embeddedCacheManager.administration().getOrCreateCache(SHARED_STORAGE_PREFIX + cacheName, cacheConfiguration));
     }
 
     @Override
@@ -102,30 +101,30 @@ public class EmbeddedCacheManager implements InfinispanCacheManager {
     }
 
     @Override
-    public void removeCache(String cacheName) {
-        if (embeddedCacheManager.cacheExists(cacheName)) {
-            embeddedCacheManager.removeCache(cacheName);
+    public void removeStorage(String storageName) {
+        if (embeddedCacheManager.cacheExists(storageName)) {
+            embeddedCacheManager.removeCache(storageName);
         }
     }
 
     @Override
-    public void removeCachesBySessionId(String sessionId) {
+    public void removeStoragesBySessionId(String sessionId) {
         embeddedCacheManager.getCacheNames()
                             .stream()
-                            .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX + sessionId + DELIMITER))
-                            .forEach(this::removeCache);
+                            .filter(cacheName -> cacheName.startsWith(SESSION_STORAGE_PREFIX + sessionId + DELIMITER))
+                            .forEach(this::removeStorage);
     }
 
     @Override
-    public void removeAllSessionCaches() {
+    public void removeAllSessionStorages() {
         embeddedCacheManager.getCacheNames()
                             .stream()
-                            .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX))
-                            .forEach(this::removeCache);
+                            .filter(cacheName -> cacheName.startsWith(SESSION_STORAGE_PREFIX))
+                            .forEach(this::removeStorage);
     }
 
     @Override
-    public Set<String> getCacheNames() {
+    public Set<String> getStorageNames() {
         return embeddedCacheManager.getCacheNames();
     }
 
@@ -144,7 +143,7 @@ public class EmbeddedCacheManager implements InfinispanCacheManager {
         cacheConfiguration = null;
 
         // Reboot
-        initCacheManager();
+        initStorageManager();
     }
 
     @Override
@@ -158,7 +157,7 @@ public class EmbeddedCacheManager implements InfinispanCacheManager {
         cleanUpGlobalStateAndFileStore();
 
         // Reboot
-        initCacheManager();
+        initStorageManager();
     }
 
     @Override

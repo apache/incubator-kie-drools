@@ -20,6 +20,7 @@ import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.Storage;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.time.TimerService;
@@ -29,7 +30,6 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static org.drools.reliability.core.ReliableSessionInitializer.initReliableSession;
@@ -43,12 +43,11 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
     private final AgendaFactory agendaFactory = ReliableAgendaFactory.getInstance();
 
     public ReliableRuntimeComponentFactoryImpl() {
-        refreshReliableSessionsCounterUsingCache();
+        refreshReliableSessionsCounterUsingStorage();
     }
 
-    private static void refreshReliableSessionsCounterUsingCache() {
-        Map<String, Long> sessionsCounter = CacheManagerFactory.get().getCacheManager().getOrCreateSharedCache("sessionsCounter");
-        // computeIfAbsent is not supported by RemoteCache
+    private static void refreshReliableSessionsCounterUsingStorage() {
+        Storage<String, Long> sessionsCounter = StorageManagerFactory.get().getStorageManager().getOrCreateSharedStorage("sessionsCounter");
         if (sessionsCounter.containsKey(NEXT_SESSION_ID)) {
             RELIABLE_SESSIONS_COUNTER.set(sessionsCounter.get(NEXT_SESSION_ID));
         } else {
@@ -76,7 +75,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
     }
 
     private void updateSessionsCounter() {
-        Map<String, Long> sessionsCounter = CacheManagerFactory.get().getCacheManager().getOrCreateSharedCache("sessionsCounter");
+        Storage<String, Long> sessionsCounter = StorageManagerFactory.get().getStorageManager().getOrCreateSharedStorage("sessionsCounter");
         sessionsCounter.put(NEXT_SESSION_ID, RELIABLE_SESSIONS_COUNTER.get());
     }
 
@@ -85,7 +84,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         if (!reteEvaluator.getSessionConfiguration().hasPersistedSessionOption()) {
             return super.createGlobalResolver(reteEvaluator, environment);
         }
-        return new ReliableGlobalResolver(CacheManagerFactory.get().getCacheManager().getOrCreateCacheForSession(reteEvaluator, "globals"));
+        return new ReliableGlobalResolver(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, "globals"));
     }
 
     @Override
@@ -93,7 +92,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         if (!reteEvaluator.getSessionConfiguration().hasPersistedSessionOption()) {
             return super.createTimerService(reteEvaluator);
         }
-        return new ReliablePseudoClockScheduler(CacheManagerFactory.get().getCacheManager().getOrCreateCacheForSession(reteEvaluator, "timer"));
+        return new ReliablePseudoClockScheduler(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, "timer"));
     }
 
     private InternalWorkingMemory internalInitSession(InternalKnowledgeBase kbase, SessionConfiguration sessionConfig, InternalWorkingMemory session) {
@@ -117,8 +116,8 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
     }
 
     // test purpose to simulate fail-over
-    public static void refreshCounterUsingCache() {
-        refreshReliableSessionsCounterUsingCache();
+    public static void refreshCounterUsingStorage() {
+        refreshReliableSessionsCounterUsingStorage();
     }
 
     @Override

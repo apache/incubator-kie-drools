@@ -16,49 +16,50 @@
 
 package org.drools.reliability.core;
 
+import org.drools.core.common.Storage;
 import org.drools.core.rule.accessor.GlobalResolver;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ReliableGlobalResolver implements GlobalResolver {
-    private final Map<String, Object> cache;
+    private final Storage<String, Object> storage;
 
     private final Map<String, Object> toBeRefreshed = new HashMap<>();
 
-    public ReliableGlobalResolver(Map<String, Object> cache) {
-        this.cache = cache;
+    public ReliableGlobalResolver(Storage<String, Object> storage) {
+        this.storage = storage;
     }
 
     @Override
     public Object resolveGlobal(String identifier) {
-        // Use an in-memory global reference. Avoid getting a stale object from cache
+        // Use an in-memory global reference. Avoid getting a stale object from storage
         if (toBeRefreshed.containsKey(identifier)) {
             return toBeRefreshed.get(identifier);
         }
-        Object global = cache.get(identifier);
+        Object global = storage.get(identifier);
         toBeRefreshed.put(identifier, global);
         return global;
     }
 
     @Override
     public void setGlobal(String identifier, Object value) {
-        cache.put(identifier, value);
+        storage.put(identifier, value);
     }
 
     @Override
     public void removeGlobal(String identifier) {
-        cache.remove(identifier);
+        storage.remove(identifier);
     }
 
     @Override
     public void clear() {
-        cache.clear();
+        storage.clear();
     }
 
-    public void updateCache() {
+    public void updateStorage() {
         if (!toBeRefreshed.isEmpty()) {
-            toBeRefreshed.forEach(cache::put);
+            toBeRefreshed.forEach(storage::put);
             toBeRefreshed.clear();
         }
     }

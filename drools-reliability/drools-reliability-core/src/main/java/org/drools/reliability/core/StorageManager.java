@@ -16,31 +16,31 @@
 package org.drools.reliability.core;
 
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.Storage;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
-import java.util.Map;
 import java.util.Set;
 
-public interface CacheManager {
+public interface StorageManager {
 
-    void initCacheManager();
+    void initStorageManager();
 
-    <k, V> Map<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName);
+    <K, V> Storage<K, V> getOrCreateStorageForSession(ReteEvaluator reteEvaluator, String storageName);
 
-    <k, V> Map<k, V> getOrCreateSharedCache(String cacheName);
+    <K, V> Storage<K, V> getOrCreateSharedStorage(String storageName);
 
     void close();
 
-    void removeCache(String cacheName);
+    void removeStorage(String storageName);
 
-    void removeCachesBySessionId(String sessionId);
+    void removeStoragesBySessionId(String sessionId);
 
-    void removeAllSessionCaches();
+    void removeAllSessionStorages();
 
-    Set<String> getCacheNames();
+    Set<String> getStorageNames();
 
-    static String createCacheId(ReteEvaluator reteEvaluator, String cacheName) {
-        return CacheManagerFactory.SESSION_CACHE_PREFIX + getSessionIdentifier(reteEvaluator) + CacheManagerFactory.DELIMITER + cacheName;
+    static String createStorageId(ReteEvaluator reteEvaluator, String storageName) {
+        return StorageManagerFactory.SESSION_STORAGE_PREFIX + getSessionIdentifier(reteEvaluator) + StorageManagerFactory.DELIMITER + storageName;
     }
 
     private static long getSessionIdentifier(ReteEvaluator reteEvaluator) {

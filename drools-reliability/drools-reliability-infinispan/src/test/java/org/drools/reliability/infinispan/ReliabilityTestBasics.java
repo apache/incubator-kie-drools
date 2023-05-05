@@ -16,9 +16,9 @@
 package org.drools.reliability.infinispan;
 
 import org.drools.core.ClassObjectFilter;
-import org.drools.reliability.core.CacheManagerFactory;
+import org.drools.reliability.core.StorageManagerFactory;
 import org.drools.reliability.core.ReliableRuntimeComponentFactoryImpl;
-import org.drools.reliability.core.TestableCacheManager;
+import org.drools.reliability.core.TestableStorageManager;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.server.test.core.InfinispanContainer;
 import org.junit.jupiter.api.AfterEach;
@@ -63,12 +63,12 @@ public abstract class ReliabilityTestBasics {
 
     @BeforeEach
     public void setUp() {
-        if (((TestableCacheManager)CacheManagerFactory.get().getCacheManager()).isRemote()) {
+        if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
             LOG.info("Starting InfinispanContainer");
             container = new InfinispanContainer();
             container.start();
             LOG.info("InfinispanContainer started"); // takes about 10 seconds
-            InfinispanCacheManager cacheManager = (InfinispanCacheManager) CacheManagerFactory.get().getCacheManager();
+            InfinispanStorageManager cacheManager = (InfinispanStorageManager) StorageManagerFactory.get().getStorageManager();
             RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(cacheManager.provideAdditionalRemoteConfigurationBuilder());
             cacheManager.setRemoteCacheManager(remoteCacheManager);
         }
@@ -76,28 +76,28 @@ public abstract class ReliabilityTestBasics {
 
     @AfterEach
     public void tearDown() {
-        if (((TestableCacheManager)CacheManagerFactory.get().getCacheManager()).isRemote()) {
-            CacheManagerFactory.get().getCacheManager().close(); // close remoteCacheManager
+        if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
+            StorageManagerFactory.get().getStorageManager().close(); // close remoteCacheManager
             container.stop(); // stop remote infinispan
         } else {
             // clean up embedded Infinispan including GlobalState and FireStore so that test methods can be isolated
-            ((TestableCacheManager)CacheManagerFactory.get().getCacheManager()).restartWithCleanUp();
+            ((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).restartWithCleanUp();
         }
         ReliableRuntimeComponentFactoryImpl.resetCounter();
     }
 
     public void failover() {
-        if (((TestableCacheManager)CacheManagerFactory.get().getCacheManager()).isRemote()) {
+        if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
             // fail-over means restarting Drools instance. Assuming remote infinispan keeps alive
-            CacheManagerFactory.get().getCacheManager().close(); // close remoteCacheManager
+            StorageManagerFactory.get().getStorageManager().close(); // close remoteCacheManager
             // Reclaim RemoteCacheManager
-            InfinispanCacheManager cacheManager = (InfinispanCacheManager) CacheManagerFactory.get().getCacheManager();
+            InfinispanStorageManager cacheManager = (InfinispanStorageManager) StorageManagerFactory.get().getStorageManager();
             RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(cacheManager.provideAdditionalRemoteConfigurationBuilder());
             cacheManager.setRemoteCacheManager(remoteCacheManager);
         } else {
-            ((TestableCacheManager)CacheManagerFactory.get().getCacheManager()).restart(); // restart embedded infinispan cacheManager. GlobalState and FireStore are kept
+            ((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).restart(); // restart embedded infinispan cacheManager. GlobalState and FireStore are kept
         }
-        ReliableRuntimeComponentFactoryImpl.refreshCounterUsingCache();
+        ReliableRuntimeComponentFactoryImpl.refreshCounterUsingStorage();
     }
 
     protected FactHandle insertString(String str) {

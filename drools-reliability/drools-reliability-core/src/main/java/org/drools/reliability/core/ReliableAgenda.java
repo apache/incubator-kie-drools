@@ -16,13 +16,10 @@
 package org.drools.reliability.core;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Storage;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.PropagationList;
 import org.drools.kiesession.agenda.DefaultAgenda;
-import org.drools.reliability.core.CacheManagerFactory;
-import org.drools.reliability.core.ReliablePropagationList;
-
-import java.util.Map;
 
 public class ReliableAgenda extends DefaultAgenda {
 
@@ -43,11 +40,11 @@ public class ReliableAgenda extends DefaultAgenda {
 
     @Override
     protected PropagationList createPropagationList() {
-        Map<String, Object> componentsCache = CacheManagerFactory.get().getCacheManager().getOrCreateCacheForSession(workingMemory, "components");
-        ReliablePropagationList propagationList = (ReliablePropagationList) componentsCache.get("PropagationList");
+        Storage<String, Object> componentsStorage = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(workingMemory, "components");
+        ReliablePropagationList propagationList = (ReliablePropagationList) componentsStorage.get("PropagationList");
         if (propagationList == null) {
             propagationList = new ReliablePropagationList(workingMemory);
-            componentsCache.put("PropagationList", propagationList);
+            componentsStorage.put("PropagationList", propagationList);
         } else {
             propagationList = new ReliablePropagationList(workingMemory, propagationList);
         }

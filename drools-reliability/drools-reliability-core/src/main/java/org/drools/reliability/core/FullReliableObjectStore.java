@@ -17,12 +17,11 @@ package org.drools.reliability.core;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.MapObjectStore;
-
-import java.util.Map;
+import org.drools.core.common.Storage;
 
 public class FullReliableObjectStore extends MapObjectStore {
 
-    public FullReliableObjectStore(Map<Object, InternalFactHandle> fhCache) {
-        super(fhCache);
+    public FullReliableObjectStore(Storage<Object, InternalFactHandle> fhStorage) {
+        super(fhStorage);
     }
 }

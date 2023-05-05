@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
-import static org.drools.reliability.core.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_ALLOWED_PACKAGES;
 
 public class BeforeAllMethodExtension implements BeforeAllCallback {
 
@@ -42,8 +42,8 @@ public class BeforeAllMethodExtension implements BeforeAllCallback {
             return;
         }
         initialized = true;
-        System.setProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES, "org.test.domain");
-        FileUtils.deleteDirectory(Path.of(EmbeddedCacheManager.GLOBAL_STATE_DIR));
-        LOG.info("### Deleted directory {}", EmbeddedCacheManager.GLOBAL_STATE_DIR);
+        System.setProperty(INFINISPAN_STORAGE_ALLOWED_PACKAGES, "org.test.domain");
+        FileUtils.deleteDirectory(Path.of(EmbeddedStorageManager.GLOBAL_STATE_DIR));
+        LOG.info("### Deleted directory {}", EmbeddedStorageManager.GLOBAL_STATE_DIR);
     }
 }

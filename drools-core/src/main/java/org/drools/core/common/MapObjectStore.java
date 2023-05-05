@@ -31,35 +31,40 @@ import static java.util.stream.Collectors.toList;
 
 public abstract class MapObjectStore implements Externalizable, ObjectStore {
 
-    protected Map<Object, InternalFactHandle> fhMap;
+    private Storage<Object, InternalFactHandle> fhStorage;
 
     protected MapObjectStore(Map<Object, InternalFactHandle> fhMap) {
-        this.fhMap = fhMap;
+        this.fhStorage = Storage.fromMap(fhMap);
+    }
+
+    protected MapObjectStore(Storage<Object, InternalFactHandle> fhStorage) {
+        this.fhStorage = fhStorage;
     }
 
     @Override
     public void writeExternal(ObjectOutput out ) throws IOException {
-        out.writeObject(fhMap);
+        out.writeObject(fhStorage);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in ) throws IOException, ClassNotFoundException {
-        fhMap = (Map<Object, InternalFactHandle>) in.readObject();
+        fhStorage = (Storage<Object, InternalFactHandle>) in.readObject();
     }
 
     @Override
     public int size() {
-        return fhMap.size();
+        return fhStorage.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return fhMap.isEmpty();
+        return fhStorage.isEmpty();
     }
 
     @Override
     public void clear() {
-        fhMap.clear();
+        fhStorage.clear();
     }
 
     @Override
@@ -70,13 +75,13 @@ public abstract class MapObjectStore implements Externalizable, ObjectStore {
 
     @Override
     public InternalFactHandle reconnect( InternalFactHandle handle ) {
-        InternalFactHandle reconnectedHandle = fhMap.values().stream().filter( fh -> fh.getId() == handle.getId() ).findFirst().orElse( null );
+        InternalFactHandle reconnectedHandle = fhStorage.values().stream().filter( fh -> fh.getId() == handle.getId() ).findFirst().orElse( null );
         return reconnectedHandle != null && handle.getIdentityHashCode() == reconnectedHandle.getIdentityHashCode() ? reconnectedHandle : null;
     }
 
     @Override
     public InternalFactHandle getHandleForObject( Object object ) {
-        return fhMap.get( object );
+        return fhStorage.get( object );
 
     }
 
@@ -89,32 +94,32 @@ public abstract class MapObjectStore implements Externalizable, ObjectStore {
 
     @Override
     public void addHandle( InternalFactHandle handle, Object object ) {
-        fhMap.put( object, handle );
+        fhStorage.put( object, handle );
     }
 
     @Override
     public void removeHandle( InternalFactHandle handle ) {
-        fhMap.remove( handle.getObject() );
+        fhStorage.remove( handle.getObject() );
     }
 
     @Override
     public Iterator<Object> iterateObjects() {
-        return fhMap.keySet().iterator();
+        return fhStorage.keySet().iterator();
     }
 
     @Override
     public Iterator<Object> iterateObjects(ObjectFilter filter ) {
-        return fhMap.keySet().stream().filter( filter::accept ).iterator();
+        return fhStorage.keySet().stream().filter( filter::accept ).iterator();
     }
 
     @Override
     public Iterator<InternalFactHandle> iterateFactHandles() {
-        return fhMap.values().iterator();
+        return fhStorage.values().iterator();
     }
 
     @Override
     public Iterator<InternalFactHandle> iterateFactHandles( ObjectFilter filter ) {
-        return fhMap.values().stream().filter( fh -> filter.accept( fh.getObject() ) ).iterator();
+        return fhStorage.values().stream().filter( fh -> filter.accept( fh.getObject() ) ).iterator();
     }
 
     @Override
@@ -135,8 +140,8 @@ public abstract class MapObjectStore implements Externalizable, ObjectStore {
     @Override
     public boolean clearClassStore(Class<?> clazz) {
         ObjectFilter filter = new ClassObjectFilter( clazz );
-        List<Object> toBeRemoved = fhMap.keySet().stream().filter( filter::accept ).collect( toList() );
-        toBeRemoved.forEach( fhMap::remove );
+        List<Object> toBeRemoved = fhStorage.keySet().stream().filter( filter::accept ).collect( toList() );
+        toBeRemoved.forEach( fhStorage::remove );
         return !toBeRemoved.isEmpty();
     }
 
@@ -151,7 +156,7 @@ public abstract class MapObjectStore implements Externalizable, ObjectStore {
         @Override
         public Iterator<InternalFactHandle> iterator() {
             ObjectFilter filter = new ClassObjectFilter( clazz );
-            return fhMap.values().stream().filter( fh -> filter.accept( fh.getObject() ) ).collect( toList() ).iterator();
+            return fhStorage.values().stream().filter( fh -> filter.accept( fh.getObject() ) ).collect( toList() ).iterator();
         }
     }
 }

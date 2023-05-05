@@ -1,6 +1,6 @@
 package org.drools.reliability.core;
 
-public interface TestableCacheManager extends CacheManager {
+public interface TestableStorageManager extends StorageManager {
 
     void restart();
 

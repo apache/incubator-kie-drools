@@ -15,7 +15,7 @@
 
 package org.drools.reliability.infinispan;
 
-import org.drools.reliability.core.CacheManagerFactory;
+import org.drools.reliability.core.StorageManagerFactory;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ import org.test.domain.Person;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.reliability.core.CacheManagerFactory.SESSION_CACHE_PREFIX;
+import static org.drools.reliability.core.StorageManagerFactory.SESSION_STORAGE_PREFIX;
 
 /**
  * This class is an integration test with Infinispan embedded and remote cache manager to verify cache persistence.
@@ -51,9 +51,9 @@ class CachePersistenceTest extends ReliabilityTestBasics {
 
         failover();
 
-        assertThat(CacheManagerFactory.get().getCacheManager().getCacheNames()).contains(SESSION_CACHE_PREFIX + "0_epDEFAULT", SESSION_CACHE_PREFIX + "0_globals"); // CacheManager knows cache names even after failover
+        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames()).contains(SESSION_STORAGE_PREFIX + "0_epDEFAULT", SESSION_STORAGE_PREFIX + "0_globals"); // CacheManager knows cache names even after failover
 
-        CacheManagerFactory.get().getCacheManager().removeAllSessionCaches(); // must remove all session caches
+        StorageManagerFactory.get().getStorageManager().removeAllSessionStorages(); // must remove all session caches
 
         restoreSession(EMPTY_RULE, strategy); // restored but no objects in the cache
 
@@ -71,7 +71,7 @@ class CachePersistenceTest extends ReliabilityTestBasics {
 
         disposeSession(); // This should clean up session's cache
 
-        assertThat(CacheManagerFactory.get().getCacheManager().getCacheNames()).allMatch(name -> !name.startsWith(SESSION_CACHE_PREFIX));
+        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames()).allMatch(name -> !name.startsWith(SESSION_STORAGE_PREFIX));
     }
 
     @ParameterizedTest

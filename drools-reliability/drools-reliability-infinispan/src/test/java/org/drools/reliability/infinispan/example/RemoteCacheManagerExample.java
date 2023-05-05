@@ -1,6 +1,6 @@
 package org.drools.reliability.infinispan.example;
 
-import org.drools.reliability.core.CacheManagerFactory;
+import org.drools.reliability.infinispan.InfinispanStorageManagerFactory;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
@@ -13,7 +13,6 @@ import org.test.domain.Person;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drools.reliability.core.CacheManagerFactory.RELIABILITY_CACHE_ALLOWED_PACKAGES;
 
 /**
  * Example class to demonstrate how to use RemoteCacheManager.
@@ -53,13 +52,13 @@ public class RemoteCacheManagerExample {
     }
 
     public static KieSession getKieSession(PersistedSessionOption option) {
-        System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_MODE, "REMOTE");
-        System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_HOST, "localhost");
-        System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PORT, "11222");
-        System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_USER, "admin");
-        System.setProperty(CacheManagerFactory.RELIABILITY_CACHE_REMOTE_PASS, "secret");
+        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MODE, "REMOTE");
+        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_HOST, "localhost");
+        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_PORT, "11222");
+        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_USER, "admin");
+        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_PASS, "secret");
 
-        System.setProperty(RELIABILITY_CACHE_ALLOWED_PACKAGES, "org.test.domain");
+        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_ALLOWED_PACKAGES, "org.test.domain");
 
         KieBase kbase = new KieHelper().addContent(BASIC_RULE, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
