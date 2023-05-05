@@ -38,25 +38,15 @@ public interface Storage<K, V> {
 
     Set<K> keySet();
 
-    default Collection<V> values() {
-        return keySet().stream().map(this::get).collect(Collectors.toList());
-    }
+    Collection<V> values();
 
-    default void clear() {
-        keySet().forEach(this::remove);
-    }
+    void clear();
 
-    default int size() {
-        return keySet().size();
-    }
+    int size();
 
-    default boolean isEmpty() {
-        return values().isEmpty();
-    }
+    boolean isEmpty();
 
-    default V getOrDefault(K key, V value) {
-        return containsKey(key) ? get(key): value;
-    }
+    V getOrDefault(K key, V value);
 
     static <K, V> Storage<K,V> fromMap(Map<K, V> input) {
         return new MapStorage<>(input);
