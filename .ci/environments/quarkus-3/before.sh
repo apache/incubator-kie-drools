@@ -34,8 +34,12 @@ project_version=$(${mvn_cmd} -q -Dexpression=project.version -DforceStdout help:
 
 # Regenerate quarkus3 recipe
 cd ${script_dir_path}
-curl -Ls https://sh.jbang.dev | bash -s - jbang/CreateQuarkusDroolsMigrationRecipe.java
+curl -Ls https://sh.jbang.dev | \
+    bash -s - jbang/CreateKieQuarkusProjectMigrationRecipe.java \
+        -v version.io.quarkus=${quarkus_version} 
 cd -
+
+exit 0
 
 # Launch Quarkus 3 Openrewrite
 ${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:${rewrite_plugin_version}:run \
