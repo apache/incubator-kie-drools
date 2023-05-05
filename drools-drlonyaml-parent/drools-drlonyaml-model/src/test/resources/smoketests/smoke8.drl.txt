@@ -1,0 +1,8 @@
+// this is only syntactically valid DRL, so not ending with purely .drl
+rule "Fix the Service selector sounds like Pod name but not an exact match"
+when
+  $svc : Service( metadata.name != "kubernetes", $selectorName: spec!.selector["app.kubernetes.io/name"] )
+  $pod : Pod( metadata.labels["app.kubernetes.io/name"] != $selectorName, metadata.labels["app.kubernetes.io/name"] soundslike $selectorName )
+then
+  insert(new Advice("Service selector hint","Service "+$svc.getMetadata().getName()+" selector sounds-like Pod "+$pod.getMetadata().getName()+", but not an exact match: "+$pod.getMetadata().getLabels()));
+end

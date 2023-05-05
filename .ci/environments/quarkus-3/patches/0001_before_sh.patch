@@ -1,95 +1,8 @@
-diff --git a/bom/drools-bom/pom.xml b/bom/drools-bom/pom.xml
-index 97310e1c0d..76efd8fa5a 100644
---- a/bom/drools-bom/pom.xml
-+++ b/bom/drools-bom/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-core-bom</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../kie-core-bom/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/bom/kie-core-bom/pom.xml b/bom/kie-core-bom/pom.xml
-index 2c6f2c9cf4..0a0152da37 100644
---- a/bom/kie-core-bom/pom.xml
-+++ b/bom/kie-core-bom/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../../pom.xml</relativePath>
-   </parent>
- 
-diff --git a/bom/kie-dmn-bom/pom.xml b/bom/kie-dmn-bom/pom.xml
-index 961f4e1a99..22599301b9 100644
---- a/bom/kie-dmn-bom/pom.xml
-+++ b/bom/kie-dmn-bom/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-core-bom</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../kie-core-bom/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/bom/kie-efesto-bom/pom.xml b/bom/kie-efesto-bom/pom.xml
-index 288b9f7d64..eaaa77842d 100644
---- a/bom/kie-efesto-bom/pom.xml
-+++ b/bom/kie-efesto-bom/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-core-bom</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../kie-core-bom/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/bom/kie-pmml-bom/pom.xml b/bom/kie-pmml-bom/pom.xml
-index 00993e1e32..382dfe6ef4 100644
---- a/bom/kie-pmml-bom/pom.xml
-+++ b/bom/kie-pmml-bom/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-core-bom</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../kie-core-bom/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/bom/pom.xml b/bom/pom.xml
-index 5eb9f6d4e3..b59aea0f31 100644
---- a/bom/pom.xml
-+++ b/bom/pom.xml
-@@ -5,7 +5,7 @@
-     <parent>
-         <artifactId>drools-parent</artifactId>
-         <groupId>org.kie</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/build-parent/pom.xml b/build-parent/pom.xml
-index 75f0fe90b9..c3b40f02eb 100644
+index 649f596b3d..a8935c1167 100644
 --- a/build-parent/pom.xml
 +++ b/build-parent/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>drools-parent</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-@@ -54,9 +54,9 @@
+@@ -55,9 +55,9 @@
      <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
      <version.guru.nidi>0.18.0</version.guru.nidi>
      <version.info.picocli>4.7.1</version.info.picocli>
@@ -98,11 +11,11 @@ index 75f0fe90b9..c3b40f02eb 100644
 -    <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
 +    <version.io.micrometer>1.10.5</version.io.micrometer>
 +    <version.io.quarkus>3.0.0.Final</version.io.quarkus>
-+    <version.io.smallrye.openapi.core>3.3.1</version.io.smallrye.openapi.core>
++    <version.io.smallrye.openapi.core>3.3.2</version.io.smallrye.openapi.core>
      <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
      <version.junit>4.13.1</version.junit>
      <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
-@@ -69,39 +69,39 @@
+@@ -70,40 +70,40 @@
      <version.org.apache.httpcomponents.httpcore>4.4.15</version.org.apache.httpcomponents.httpcore>
      <version.org.apache.maven>3.8.6</version.org.apache.maven>
      <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
@@ -113,12 +26,13 @@ index 75f0fe90b9..c3b40f02eb 100644
 +    <version.org.apache.tomcat.tomcat-dbcp>10.1.7</version.org.apache.tomcat.tomcat-dbcp>
      <version.org.assertj>3.23.1</version.org.assertj>
      <version.org.eclipse.jdt>3.18.0</version.org.eclipse.jdt>
+     <version.org.freemarker>2.3.32</version.org.freemarker>
 -    <version.org.glassfish.jaxb>2.3.6</version.org.glassfish.jaxb>
 +    <version.org.glassfish.jaxb>4.0.2</version.org.glassfish.jaxb>
      <!--This needs to be in sync with JUnit-->
      <version.org.hamcrest>1.3</version.org.hamcrest>
 -    <version.org.hibernate>5.6.12.Final</version.org.hibernate>
-+    <version.org.hibernate>6.2.0.CR4</version.org.hibernate>
++    <version.org.hibernate>6.2.0.Final</version.org.hibernate>
      <version.org.hsqldb>2.3.0</version.org.hsqldb>
      <version.org.javassist>3.26.0-GA</version.org.javassist>
 -    <version.org.jboss.narayana.tomcat>5.13.1.Final</version.org.jboss.narayana.tomcat>
@@ -163,7 +77,7 @@ index 75f0fe90b9..c3b40f02eb 100644
      <version.org.junit>5.9.2</version.org.junit>
      <version.org.mvel>2.4.15.Final</version.org.mvel>
      <version.org.powermock>2.0.7</version.org.powermock>
-@@ -130,7 +130,7 @@
+@@ -132,7 +132,7 @@
      <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
      <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
      <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
@@ -172,7 +86,7 @@ index 75f0fe90b9..c3b40f02eb 100644
      <!-- Version of JMH -->
      <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
  
-@@ -149,10 +149,10 @@
+@@ -151,10 +151,10 @@
      <version.surefire.plugin>2.22.1</version.surefire.plugin>
      <!-- Add for kie-maven-plugin -->
      <version.plugin.plugin>3.6.4</version.plugin.plugin>
@@ -185,7 +99,7 @@ index 75f0fe90b9..c3b40f02eb 100644
      <version.common.exec>1.3</version.common.exec>
      <!-- -->
      <!-- Jacoco plugin configurations -->
-@@ -180,14 +180,14 @@
+@@ -182,14 +182,14 @@
  
      <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
  
@@ -203,7 +117,7 @@ index 75f0fe90b9..c3b40f02eb 100644
  
      <!-- JaCoCo coverage data file location -->
      <!--suppress UnresolvedMavenProperty -->
-@@ -263,7 +263,7 @@
+@@ -265,7 +265,7 @@
        </dependency>
        <dependency>
          <groupId>com.fasterxml.jackson.module</groupId>
@@ -212,7 +126,7 @@ index 75f0fe90b9..c3b40f02eb 100644
          <version>${version.com.fasterxml.jackson.annotations}</version>
        </dependency>
        <dependency>
-@@ -272,8 +272,8 @@
+@@ -274,8 +274,8 @@
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
@@ -223,7 +137,7 @@ index 75f0fe90b9..c3b40f02eb 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -335,9 +335,9 @@
+@@ -362,9 +362,9 @@
          <version>${version.com.sun.xml.bind}</version>
        </dependency>
        <dependency>
@@ -236,7 +150,7 @@ index 75f0fe90b9..c3b40f02eb 100644
        </dependency>
        <dependency>
          <groupId>com.sun.xml.bind</groupId>
-@@ -387,8 +387,8 @@
+@@ -414,8 +414,8 @@
        </dependency>
  
        <dependency>
@@ -247,7 +161,7 @@ index 75f0fe90b9..c3b40f02eb 100644
          <version>${version.jakarta.json}</version>
        </dependency>
        <dependency>
-@@ -423,8 +423,8 @@
+@@ -450,8 +450,8 @@
        </dependency>
  
        <dependency>
@@ -258,7 +172,7 @@ index 75f0fe90b9..c3b40f02eb 100644
          <version>${version.jakarta.activation}</version>
        </dependency>
        <dependency>
-@@ -749,12 +749,12 @@
+@@ -782,12 +782,12 @@
        </dependency>
  
        <dependency>
@@ -273,7 +187,7 @@ index 75f0fe90b9..c3b40f02eb 100644
          <artifactId>hibernate-jpamodelgen</artifactId>
          <version>${version.org.hibernate}</version>
          <exclusions>
-@@ -1073,7 +1073,7 @@
+@@ -1106,7 +1106,7 @@
        </dependency>
  
        <dependency>
@@ -282,7 +196,7 @@ index 75f0fe90b9..c3b40f02eb 100644
          <artifactId>hibernate-core</artifactId>
          <version>${version.org.hibernate}</version>
          <exclusions>
-@@ -1095,31 +1095,16 @@
+@@ -1128,31 +1128,16 @@
            </exclusion>
          </exclusions>
        </dependency>
@@ -319,45 +233,6 @@ index 75f0fe90b9..c3b40f02eb 100644
 +        <version>3.0.2</version>
          <classifier>sources</classifier>
        </dependency>
- 
-diff --git a/drools-alphanetwork-compiler/pom.xml b/drools-alphanetwork-compiler/pom.xml
-index 7047ebc86d..8fbe5d93b2 100644
---- a/drools-alphanetwork-compiler/pom.xml
-+++ b/drools-alphanetwork-compiler/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-beliefs/pom.xml b/drools-beliefs/pom.xml
-index d653acc6c3..8f02534b46 100644
---- a/drools-beliefs/pom.xml
-+++ b/drools-beliefs/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-commands/pom.xml b/drools-commands/pom.xml
-index d713b393d7..f082ce3a61 100644
---- a/drools-commands/pom.xml
-+++ b/drools-commands/pom.xml
-@@ -7,7 +7,7 @@
-     <parent>
-         <groupId>org.kie</groupId>
-         <artifactId>drools-build-parent</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-         <relativePath>../build-parent/pom.xml</relativePath>
-     </parent>
  
 diff --git a/drools-commands/src/main/java/org/drools/commands/GetVariableCommand.java b/drools-commands/src/main/java/org/drools/commands/GetVariableCommand.java
 index 281582bfd3..800ec105c3 100644
@@ -1725,18 +1600,9 @@ index 19c566794f..984f218d5f 100644
  import org.drools.core.common.DisconnectedFactHandle;
  import org.kie.api.command.ExecutableCommand;
 diff --git a/drools-compiler/pom.xml b/drools-compiler/pom.xml
-index 75e3076c32..80b1b6620f 100644
+index 6fa0038964..41fae72f34 100644
 --- a/drools-compiler/pom.xml
 +++ b/drools-compiler/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
 @@ -104,9 +104,10 @@
        <scope>provided</scope>
      </dependency>
@@ -1766,18 +1632,9 @@ index 9b15d3e9d7..e195ed0c0a 100644
  import com.sun.codemodel.CodeWriter;
  import com.sun.codemodel.JCodeModel;
 diff --git a/drools-core/pom.xml b/drools-core/pom.xml
-index d75b9e122d..2a3a44f044 100644
+index 3d0edc10d7..bf7f9bdab3 100644
 --- a/drools-core/pom.xml
 +++ b/drools-core/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
 @@ -72,9 +72,10 @@
        <scope>provided</scope>
      </dependency>
@@ -1995,97 +1852,6 @@ index 5cd6e541a5..b38cf3801b 100644
  
  /**
   * Provides a abstract base implementation that an object can extend so that it can be used in a LinkedList.
-diff --git a/drools-decisiontables/pom.xml b/drools-decisiontables/pom.xml
-index 63c33fb175..ce22016d1e 100644
---- a/drools-decisiontables/pom.xml
-+++ b/drools-decisiontables/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-distribution/pom.xml b/drools-distribution/pom.xml
-index 220cb9c30a..906f2b725c 100644
---- a/drools-distribution/pom.xml
-+++ b/drools-distribution/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-docs/pom.xml b/drools-docs/pom.xml
-index c3c492fcaa..9dbb4d0d06 100755
---- a/drools-docs/pom.xml
-+++ b/drools-docs/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-drl-ast/pom.xml b/drools-drl-ast/pom.xml
-index 8193f780a0..f54710dd8b 100644
---- a/drools-drl-ast/pom.xml
-+++ b/drools-drl-ast/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-drl-extensions/pom.xml b/drools-drl-extensions/pom.xml
-index efb75da523..ba005bf54e 100644
---- a/drools-drl-extensions/pom.xml
-+++ b/drools-drl-extensions/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.kie</groupId>
-         <artifactId>drools-build-parent</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-         <relativePath>../build-parent/pom.xml</relativePath>
-     </parent>
- 
-diff --git a/drools-drl-parser/pom.xml b/drools-drl-parser/pom.xml
-index ccc2fe2585..dfa3bd73f5 100644
---- a/drools-drl-parser/pom.xml
-+++ b/drools-drl-parser/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.kie</groupId>
-         <artifactId>drools-build-parent</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-         <relativePath>../build-parent/pom.xml</relativePath>
-     </parent>
- 
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/pom.xml
-index ff839bcbfb..8514792b8e 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/pom.xml
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-       <artifactId>drools-drl-quarkus-extension</artifactId>
--      <version>8.38.0-SNAPSHOT</version>
-+      <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-   <name>Drools :: Quarkus Extension :: Deployment</name>
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
 index 75848ee1fe..9b879819ef 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
@@ -2099,19 +1865,6 @@ index 75848ee1fe..9b879819ef 100644
  
  import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
  import io.quarkus.deployment.annotations.BuildProducer;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/pom.xml
-index 10545d799a..d567219c0c 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/pom.xml
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-drl-quarkus-examples</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <name>Drools :: Quarkus Extension :: Examples :: Reactive</name>
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
 index 728bf58c32..f8d77a3717 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
@@ -2125,19 +1878,6 @@ index 728bf58c32..f8d77a3717 100644
  
  import io.quarkus.test.junit.QuarkusTest;
  import org.drools.ruleunits.api.DataHandle;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/pom.xml
-index 8f5d54f3aa..fc64515120 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/pom.xml
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-drl-quarkus-examples</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <name>Drools :: Quarkus Extension :: Examples :: Reactive</name>
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
 index bf39868231..8d6faa6145 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
@@ -2191,32 +1931,6 @@ index 6e1f058eef..79b6bb074c 100644
  import org.eclipse.microprofile.reactive.messaging.spi.Connector;
  import org.junit.jupiter.api.Test;
  
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/pom.xml
-index 0ae1035aa5..e4ac297aa8 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/pom.xml
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-drl-quarkus-extension</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <name>Drools :: Quarkus Extension :: Examples</name>
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/pom.xml
-index caf9b889e8..b5ba3ee774 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/pom.xml
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-drl-quarkus-extension</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <name>Drools :: Quarkus Extension :: Integration Test :: Hotreload</name>
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
 index 8d34b05084..9043abe090 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
@@ -2240,19 +1954,6 @@ index 8d34b05084..9043abe090 100644
  
  import org.kie.api.runtime.KieRuntimeBuilder;
  import org.kie.api.runtime.KieSession;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/pom.xml
-index 5fa5ed460d..1863e46f6d 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/pom.xml
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-drl-quarkus-extension</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <name>Drools :: Quarkus Extension :: Integration Test</name>
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
 index f1008d7c1a..14c0de94bb 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
@@ -2285,19 +1986,6 @@ index 541d798fb4..c8aff28b7b 100644
  import java.util.List;
  import java.util.stream.Collectors;
  
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/pom.xml
-index 59b6270dd6..96f4c2f195 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/pom.xml
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-drl-quarkus-extension</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <name>Drools :: Quarkus Extension :: Quickstart Integration Test</name>
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
 index f93f6ed055..0c671401fc 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
@@ -2339,19 +2027,6 @@ index 1eef910ed3..637bc75cf5 100644
  
  import io.quarkus.test.junit.QuarkusTest;
  import org.drools.quarkus.quickstart.test.model.Alert;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/pom.xml
-index 202a81ec38..4250fff4d7 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/pom.xml
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-drl-quarkus-extension</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <name>Drools :: Quarkus Extension :: Integration Test with Rule Unit</name>
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
 index e956f4e318..29a8932f7f 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
@@ -2397,32 +2072,10 @@ index b683dcef38..5e7d100d4c 100644
  
  import static org.junit.jupiter.api.Assertions.assertEquals;
  
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-util-deployment/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus-util-deployment/pom.xml
-index 64d9a2fcc2..48612e7f81 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-util-deployment/pom.xml
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-util-deployment/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-drl-quarkus-extension</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <name>Drools :: Quarkus Extension :: Util :: Deployment</name>
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml
-index 7a10ca0c24..97e6402761 100644
+index 73dc57993d..1c03a58929 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml
 +++ b/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-drl-quarkus-extension</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <name>Drools :: Quarkus Extension :: Runtime</name>
 @@ -83,7 +83,7 @@
          <plugins>
              <plugin>
@@ -2432,19 +2085,6 @@ index 7a10ca0c24..97e6402761 100644
                  <version>${version.io.quarkus}</version>
                  <executions>
                      <execution>
-diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/pom.xml b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/pom.xml
-index f3b46b16fa..4890fa57ec 100644
---- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/pom.xml
-+++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/pom.xml
-@@ -4,7 +4,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-drl-quarkus-extension</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <name>Drools :: Quarkus Testing Extension Example :: Deployment</name>
 diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/main/java/org/drools/drl/quarkus/testext/deployment/DroolsTestExtAssetsProcessor.java b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/main/java/org/drools/drl/quarkus/testext/deployment/DroolsTestExtAssetsProcessor.java
 index 7912b11dda..9d79d13914 100644
 --- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/main/java/org/drools/drl/quarkus/testext/deployment/DroolsTestExtAssetsProcessor.java
@@ -2472,18 +2112,9 @@ index be6385b9ac..b67a1b17ac 100644
  import org.drools.drl.quarkus.testext.deployment.OtnClassesSingleton;
  import org.drools.quarkus.examples.otn.model.ASubclassOfMeasurement;
 diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
-index b23404087d..47a7192ff1 100644
+index 4072891e4f..6126c1d048 100644
 --- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
 +++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
-@@ -4,7 +4,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-drl-quarkus-extension</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <name>Drools :: Quarkus Testing Extension Example :: Runtime</name>
 @@ -37,7 +37,7 @@
              </plugin>
              <plugin>
@@ -2508,370 +2139,6 @@ index 21a9a01650..8860daacad 100644
  
  import org.slf4j.Logger;
  import org.slf4j.LoggerFactory;
-diff --git a/drools-drl-quarkus-extension/pom.xml b/drools-drl-quarkus-extension/pom.xml
-index 7c13528a2e..5f37f6294b 100644
---- a/drools-drl-quarkus-extension/pom.xml
-+++ b/drools-drl-quarkus-extension/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-ecj/pom.xml b/drools-ecj/pom.xml
-index cb5f480ebf..34a8f8e81f 100644
---- a/drools-ecj/pom.xml
-+++ b/drools-ecj/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.kie</groupId>
-         <artifactId>drools-build-parent</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-         <relativePath>../build-parent/pom.xml</relativePath>
-     </parent>
- 
-diff --git a/drools-engine-classic/pom.xml b/drools-engine-classic/pom.xml
-index ead7d1f533..60eb2cfd06 100644
---- a/drools-engine-classic/pom.xml
-+++ b/drools-engine-classic/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-engine/pom.xml b/drools-engine/pom.xml
-index 9ec943c298..8b78b6589e 100644
---- a/drools-engine/pom.xml
-+++ b/drools-engine/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-examples-api/default-kiesession-from-file/pom.xml b/drools-examples-api/default-kiesession-from-file/pom.xml
-index 05908178f5..1878b67441 100644
---- a/drools-examples-api/default-kiesession-from-file/pom.xml
-+++ b/drools-examples-api/default-kiesession-from-file/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-examples-api</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>default-kiesession-from-file</artifactId>
-diff --git a/drools-examples-api/default-kiesession/pom.xml b/drools-examples-api/default-kiesession/pom.xml
-index 0daa0402b7..655095667d 100644
---- a/drools-examples-api/default-kiesession/pom.xml
-+++ b/drools-examples-api/default-kiesession/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-examples-api</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>default-kiesession</artifactId>
-diff --git a/drools-examples-api/kie-module-from-multiple-files/pom.xml b/drools-examples-api/kie-module-from-multiple-files/pom.xml
-index fdc4efeb43..75f288a442 100644
---- a/drools-examples-api/kie-module-from-multiple-files/pom.xml
-+++ b/drools-examples-api/kie-module-from-multiple-files/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-examples-api</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kie-module-from-multiple-files</artifactId>
-diff --git a/drools-examples-api/kiebase-inclusion/pom.xml b/drools-examples-api/kiebase-inclusion/pom.xml
-index af85a39c54..75372395a6 100644
---- a/drools-examples-api/kiebase-inclusion/pom.xml
-+++ b/drools-examples-api/kiebase-inclusion/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-examples-api</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kiebase-inclusion</artifactId>
-diff --git a/drools-examples-api/kiecontainer-from-kierepo/pom.xml b/drools-examples-api/kiecontainer-from-kierepo/pom.xml
-index ad7d035e71..00697ba92d 100644
---- a/drools-examples-api/kiecontainer-from-kierepo/pom.xml
-+++ b/drools-examples-api/kiecontainer-from-kierepo/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-examples-api</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kiecontainer-from-kierepo</artifactId>
-diff --git a/drools-examples-api/kiefilesystem-example/pom.xml b/drools-examples-api/kiefilesystem-example/pom.xml
-index 3cb0e43fae..9cbd38892c 100644
---- a/drools-examples-api/kiefilesystem-example/pom.xml
-+++ b/drools-examples-api/kiefilesystem-example/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-examples-api</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kiefilesystem-example</artifactId>
-diff --git a/drools-examples-api/kiemodulemodel-example/pom.xml b/drools-examples-api/kiemodulemodel-example/pom.xml
-index 5d9a0b2b11..9ff0c25939 100644
---- a/drools-examples-api/kiemodulemodel-example/pom.xml
-+++ b/drools-examples-api/kiemodulemodel-example/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-examples-api</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kiemodulemodel-example</artifactId>
-diff --git a/drools-examples-api/multiple-kbases/pom.xml b/drools-examples-api/multiple-kbases/pom.xml
-index ec07cdde96..b29d93646c 100644
---- a/drools-examples-api/multiple-kbases/pom.xml
-+++ b/drools-examples-api/multiple-kbases/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-examples-api</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>multiple-kbases</artifactId>
-diff --git a/drools-examples-api/named-kiesession-from-file/pom.xml b/drools-examples-api/named-kiesession-from-file/pom.xml
-index b38767549a..cc6817d8f1 100644
---- a/drools-examples-api/named-kiesession-from-file/pom.xml
-+++ b/drools-examples-api/named-kiesession-from-file/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-examples-api</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <name>Drools :: API examples :: Named KieSession from File</name>
-diff --git a/drools-examples-api/named-kiesession/pom.xml b/drools-examples-api/named-kiesession/pom.xml
-index f0d6872cf6..bfd1c75850 100644
---- a/drools-examples-api/named-kiesession/pom.xml
-+++ b/drools-examples-api/named-kiesession/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-examples-api</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>named-kiesession</artifactId>
-diff --git a/drools-examples-api/pom.xml b/drools-examples-api/pom.xml
-index 1b2eb79569..4f2f70ec5b 100644
---- a/drools-examples-api/pom.xml
-+++ b/drools-examples-api/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-examples-api/reactive-kiesession/pom.xml b/drools-examples-api/reactive-kiesession/pom.xml
-index f98c31521e..2026b4c0e2 100644
---- a/drools-examples-api/reactive-kiesession/pom.xml
-+++ b/drools-examples-api/reactive-kiesession/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-examples-api</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>reactive-kiesession</artifactId>
-diff --git a/drools-examples/pom.xml b/drools-examples/pom.xml
-index c56dd84987..b36552ac4b 100644
---- a/drools-examples/pom.xml
-+++ b/drools-examples/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-fastutil/pom.xml b/drools-fastutil/pom.xml
-index 4613e59419..c8e6746ef2 100644
---- a/drools-fastutil/pom.xml
-+++ b/drools-fastutil/pom.xml
-@@ -7,7 +7,7 @@
-     <parent>
-         <groupId>org.kie</groupId>
-         <artifactId>drools-build-parent</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-         <relativePath>../build-parent/pom.xml</relativePath>
-     </parent>
- 
-diff --git a/drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-common/pom.xml b/drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-common/pom.xml
-index b27d09f77f..edf4fb1e2b 100644
---- a/drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-common/pom.xml
-+++ b/drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-common/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>drools-impact-analysis-graph</artifactId>
-     <groupId>org.drools</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-graphviz/pom.xml b/drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-graphviz/pom.xml
-index dc3914132f..5e99acb7b7 100644
---- a/drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-graphviz/pom.xml
-+++ b/drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-graphviz/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>drools-impact-analysis-graph</artifactId>
-     <groupId>org.drools</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-impact-analysis/drools-impact-analysis-graph/pom.xml b/drools-impact-analysis/drools-impact-analysis-graph/pom.xml
-index 5ef0e126a2..9e1cdcea08 100644
---- a/drools-impact-analysis/drools-impact-analysis-graph/pom.xml
-+++ b/drools-impact-analysis/drools-impact-analysis-graph/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>drools-impact-analysis</artifactId>
-     <groupId>org.drools</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-impact-analysis/drools-impact-analysis-itests/pom.xml b/drools-impact-analysis/drools-impact-analysis-itests/pom.xml
-index 4ed5f219e0..b9530ac4d4 100644
---- a/drools-impact-analysis/drools-impact-analysis-itests/pom.xml
-+++ b/drools-impact-analysis/drools-impact-analysis-itests/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>drools-impact-analysis</artifactId>
-     <groupId>org.drools</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-impact-analysis/drools-impact-analysis-model/pom.xml b/drools-impact-analysis/drools-impact-analysis-model/pom.xml
-index 3f90006593..d31485f844 100644
---- a/drools-impact-analysis/drools-impact-analysis-model/pom.xml
-+++ b/drools-impact-analysis/drools-impact-analysis-model/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>drools-impact-analysis</artifactId>
-     <groupId>org.drools</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-impact-analysis/drools-impact-analysis-parser/pom.xml b/drools-impact-analysis/drools-impact-analysis-parser/pom.xml
-index 05f679a941..5fe986e971 100644
---- a/drools-impact-analysis/drools-impact-analysis-parser/pom.xml
-+++ b/drools-impact-analysis/drools-impact-analysis-parser/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>drools-impact-analysis</artifactId>
-     <groupId>org.drools</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-impact-analysis/pom.xml b/drools-impact-analysis/pom.xml
-index ac7e8a5213..011963c8eb 100644
---- a/drools-impact-analysis/pom.xml
-+++ b/drools-impact-analysis/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-io/pom.xml b/drools-io/pom.xml
-index 81ecf14fbd..fb5b992280 100644
---- a/drools-io/pom.xml
-+++ b/drools-io/pom.xml
-@@ -7,7 +7,7 @@
-     <parent>
-         <groupId>org.kie</groupId>
-         <artifactId>drools-build-parent</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-         <relativePath>../build-parent/pom.xml</relativePath>
-     </parent>
- 
-diff --git a/drools-kiesession/pom.xml b/drools-kiesession/pom.xml
-index 127865e799..aee17e5289 100644
---- a/drools-kiesession/pom.xml
-+++ b/drools-kiesession/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-legacy-test-util/pom.xml b/drools-legacy-test-util/pom.xml
-index 19a436d968..3aee9a9167 100644
---- a/drools-legacy-test-util/pom.xml
-+++ b/drools-legacy-test-util/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.kie</groupId>
-         <artifactId>drools-build-parent</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-         <relativePath>../build-parent/pom.xml</relativePath>
-     </parent>
- 
 diff --git a/drools-legacy-test-util/src/test/java/org/drools/mvel/compiler/Person.java b/drools-legacy-test-util/src/test/java/org/drools/mvel/compiler/Person.java
 index 5a84459c4d..51a3bfa074 100644
 --- a/drools-legacy-test-util/src/test/java/org/drools/mvel/compiler/Person.java
@@ -2887,123 +2154,10 @@ index 5a84459c4d..51a3bfa074 100644
  import java.io.Serializable;
  import java.math.BigDecimal;
  import java.math.BigInteger;
-diff --git a/drools-metric/pom.xml b/drools-metric/pom.xml
-index 00fd015360..aab74b865e 100644
---- a/drools-metric/pom.xml
-+++ b/drools-metric/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-model/drools-canonical-model/pom.xml b/drools-model/drools-canonical-model/pom.xml
-index 82253c37fe..9531898fa2 100644
---- a/drools-model/drools-canonical-model/pom.xml
-+++ b/drools-model/drools-canonical-model/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-model</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <name>Drools :: Canonical Model</name>
-diff --git a/drools-model/drools-codegen-common/pom.xml b/drools-model/drools-codegen-common/pom.xml
-index 15bcf8f285..fa28fc8f9b 100644
---- a/drools-model/drools-codegen-common/pom.xml
-+++ b/drools-model/drools-codegen-common/pom.xml
-@@ -7,7 +7,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-model</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <groupId>org.drools</groupId>
-diff --git a/drools-model/drools-model-codegen/pom.xml b/drools-model/drools-model-codegen/pom.xml
-index c57400dbde..aa5f68df3a 100644
---- a/drools-model/drools-model-codegen/pom.xml
-+++ b/drools-model/drools-model-codegen/pom.xml
-@@ -7,7 +7,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-model</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <groupId>org.drools</groupId>
-diff --git a/drools-model/drools-model-compiler/pom.xml b/drools-model/drools-model-compiler/pom.xml
-index 432f00454d..ef537140d2 100644
---- a/drools-model/drools-model-compiler/pom.xml
-+++ b/drools-model/drools-model-compiler/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-model</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <name>Drools :: Model :: Compiler</name>
-diff --git a/drools-model/drools-mvel-compiler/pom.xml b/drools-model/drools-mvel-compiler/pom.xml
-index 00724fae66..a421297789 100644
---- a/drools-model/drools-mvel-compiler/pom.xml
-+++ b/drools-model/drools-mvel-compiler/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-model</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <name>Drools :: MVEL Compiler</name>
-diff --git a/drools-model/drools-mvel-parser/pom.xml b/drools-model/drools-mvel-parser/pom.xml
-index ec20a3e90b..ad3032246e 100644
---- a/drools-model/drools-mvel-parser/pom.xml
-+++ b/drools-model/drools-mvel-parser/pom.xml
-@@ -4,7 +4,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-model</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <name>Drools :: MVEL Parser</name>
-diff --git a/drools-model/pom.xml b/drools-model/pom.xml
-index 3e9629c098..36c0916e70 100644
---- a/drools-model/pom.xml
-+++ b/drools-model/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
 diff --git a/drools-mvel/pom.xml b/drools-mvel/pom.xml
-index a73ce30ac2..fd10d3df90 100644
+index 43e86d38f5..04bcbce50f 100644
 --- a/drools-mvel/pom.xml
 +++ b/drools-mvel/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.kie</groupId>
-         <artifactId>drools-build-parent</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-         <relativePath>../build-parent/pom.xml</relativePath>
-     </parent>
- 
 @@ -70,9 +70,10 @@
              <scope>provided</scope>
          </dependency>
@@ -3033,18 +2187,9 @@ index a356782f80..77d00fc4fa 100644
  import java.math.BigDecimal;
  import java.math.BigInteger;
 diff --git a/drools-persistence/drools-persistence-api/pom.xml b/drools-persistence/drools-persistence-api/pom.xml
-index 52bd43fa83..54e48e7df8 100644
+index b51fb2a956..4fd67d1ccf 100644
 --- a/drools-persistence/drools-persistence-api/pom.xml
 +++ b/drools-persistence/drools-persistence-api/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-persistence</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-persistence-api</artifactId>
 @@ -41,9 +41,10 @@
        <artifactId>drools-commands</artifactId>
      </dependency>
@@ -3201,18 +2346,9 @@ index 228078eec7..267c2fca72 100644
  import org.drools.commands.impl.AbstractInterceptor;
  import org.drools.persistence.api.OrderedTransactionSynchronization;
 diff --git a/drools-persistence/drools-persistence-jpa/pom.xml b/drools-persistence/drools-persistence-jpa/pom.xml
-index 4ec842ac24..3ee68d68da 100644
+index bebd8b56e8..a7b98aa59e 100644
 --- a/drools-persistence/drools-persistence-jpa/pom.xml
 +++ b/drools-persistence/drools-persistence-jpa/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-persistence</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-persistence-jpa</artifactId>
 @@ -103,9 +103,10 @@
        <artifactId>drools-mvel</artifactId>
      </dependency>
@@ -3616,45 +2752,10 @@ index 31038d2afa..775f3f19dc 100644
  import org.drools.core.base.MapGlobalResolver;
  import org.drools.core.impl.EnvironmentFactory;
  import org.kie.api.runtime.Environment;
-diff --git a/drools-persistence/pom.xml b/drools-persistence/pom.xml
-index ad9a1b7e25..645d5bd0f1 100644
---- a/drools-persistence/pom.xml
-+++ b/drools-persistence/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-reliability/drools-reliability-core/pom.xml b/drools-reliability/drools-reliability-core/pom.xml
-index 36713ed817..5d2cb983ce 100644
---- a/drools-reliability/drools-reliability-core/pom.xml
-+++ b/drools-reliability/drools-reliability-core/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-reliability</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/drools-reliability/drools-reliability-infinispan/pom.xml b/drools-reliability/drools-reliability-infinispan/pom.xml
-index 079d1ff8dc..7efb57660a 100644
+index 6aa2824192..58825724b7 100644
 --- a/drools-reliability/drools-reliability-infinispan/pom.xml
 +++ b/drools-reliability/drools-reliability-infinispan/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-reliability</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 @@ -34,11 +34,11 @@
    <dependencies>
      <dependency>
@@ -3669,318 +2770,6 @@ index 079d1ff8dc..7efb57660a 100644
      </dependency>
      <dependency>
        <groupId>org.drools</groupId>
-diff --git a/drools-reliability/pom.xml b/drools-reliability/pom.xml
-index 5e29be8765..7f154a0627 100644
---- a/drools-reliability/pom.xml
-+++ b/drools-reliability/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-diff --git a/drools-retediagram/pom.xml b/drools-retediagram/pom.xml
-index 12b3dfbd33..2ba3187153 100644
---- a/drools-retediagram/pom.xml
-+++ b/drools-retediagram/pom.xml
-@@ -4,7 +4,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-ruleunits/drools-ruleunits-api/pom.xml b/drools-ruleunits/drools-ruleunits-api/pom.xml
-index 85a80e0b8f..0d2c5353e6 100755
---- a/drools-ruleunits/drools-ruleunits-api/pom.xml
-+++ b/drools-ruleunits/drools-ruleunits-api/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-ruleunits</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <groupId>org.drools</groupId>
-diff --git a/drools-ruleunits/drools-ruleunits-dsl/pom.xml b/drools-ruleunits/drools-ruleunits-dsl/pom.xml
-index 9a959b9776..c667fc9819 100755
---- a/drools-ruleunits/drools-ruleunits-dsl/pom.xml
-+++ b/drools-ruleunits/drools-ruleunits-dsl/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-ruleunits</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <groupId>org.drools</groupId>
-diff --git a/drools-ruleunits/drools-ruleunits-engine/pom.xml b/drools-ruleunits/drools-ruleunits-engine/pom.xml
-index 6d5f05cc12..e167cc1e3a 100644
---- a/drools-ruleunits/drools-ruleunits-engine/pom.xml
-+++ b/drools-ruleunits/drools-ruleunits-engine/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-ruleunits</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-ruleunits-engine</artifactId>
-diff --git a/drools-ruleunits/drools-ruleunits-impl/pom.xml b/drools-ruleunits/drools-ruleunits-impl/pom.xml
-index ba29f08fb9..6ae12b5c88 100755
---- a/drools-ruleunits/drools-ruleunits-impl/pom.xml
-+++ b/drools-ruleunits/drools-ruleunits-impl/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-ruleunits</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <groupId>org.drools</groupId>
-diff --git a/drools-ruleunits/pom.xml b/drools-ruleunits/pom.xml
-index b834a8fd45..5953be4ad6 100644
---- a/drools-ruleunits/pom.xml
-+++ b/drools-ruleunits/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-scenario-simulation/drools-scenario-simulation-api/pom.xml b/drools-scenario-simulation/drools-scenario-simulation-api/pom.xml
-index 5ceb89e63f..d7ae7a1769 100644
---- a/drools-scenario-simulation/drools-scenario-simulation-api/pom.xml
-+++ b/drools-scenario-simulation/drools-scenario-simulation-api/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>drools-scenario-simulation</artifactId>
-     <groupId>org.drools</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-scenario-simulation/drools-scenario-simulation-backend/pom.xml b/drools-scenario-simulation/drools-scenario-simulation-backend/pom.xml
-index 650a459385..c87d17004c 100644
---- a/drools-scenario-simulation/drools-scenario-simulation-backend/pom.xml
-+++ b/drools-scenario-simulation/drools-scenario-simulation-backend/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>drools-scenario-simulation</artifactId>
-     <groupId>org.drools</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-scenario-simulation/drools-scenario-simulation-integrationtest/pom.xml b/drools-scenario-simulation/drools-scenario-simulation-integrationtest/pom.xml
-index 9702f9c5fb..ab0fcb471a 100644
---- a/drools-scenario-simulation/drools-scenario-simulation-integrationtest/pom.xml
-+++ b/drools-scenario-simulation/drools-scenario-simulation-integrationtest/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>drools-scenario-simulation</artifactId>
-     <groupId>org.drools</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-scenario-simulation/pom.xml b/drools-scenario-simulation/pom.xml
-index b1950532e3..4e57f21b25 100644
---- a/drools-scenario-simulation/pom.xml
-+++ b/drools-scenario-simulation/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-serialization-protobuf/pom.xml b/drools-serialization-protobuf/pom.xml
-index 08012ded11..d9ee62f95d 100644
---- a/drools-serialization-protobuf/pom.xml
-+++ b/drools-serialization-protobuf/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.kie</groupId>
-         <artifactId>drools-build-parent</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-         <relativePath>../build-parent/pom.xml</relativePath>
-     </parent>
- 
-diff --git a/drools-templates/pom.xml b/drools-templates/pom.xml
-index 5ae72ccea1..1b12abb7aa 100644
---- a/drools-templates/pom.xml
-+++ b/drools-templates/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-test-coverage/pom.xml b/drools-test-coverage/pom.xml
-index cd754f3c5e..f23dc37a52 100644
---- a/drools-test-coverage/pom.xml
-+++ b/drools-test-coverage/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-test-coverage/standalone/kie-ci-with-domain/pom.xml b/drools-test-coverage/standalone/kie-ci-with-domain/pom.xml
-index 278dbc7a2c..313b72c09a 100644
---- a/drools-test-coverage/standalone/kie-ci-with-domain/pom.xml
-+++ b/drools-test-coverage/standalone/kie-ci-with-domain/pom.xml
-@@ -8,7 +8,7 @@
-   <parent>
-     <groupId>org.drools.testcoverage</groupId>
-     <artifactId>drools-standalone-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-kie-ci-with-domain-parent</artifactId>
-diff --git a/drools-test-coverage/standalone/kie-ci-with-domain/test-domain/pom.xml b/drools-test-coverage/standalone/kie-ci-with-domain/test-domain/pom.xml
-index 12e4f58147..73bc0858b8 100644
---- a/drools-test-coverage/standalone/kie-ci-with-domain/test-domain/pom.xml
-+++ b/drools-test-coverage/standalone/kie-ci-with-domain/test-domain/pom.xml
-@@ -8,7 +8,7 @@
-   <parent>
-     <groupId>org.drools.testcoverage</groupId>
-     <artifactId>drools-kie-ci-with-domain-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-kie-ci-with-domain-test-domain</artifactId>
-diff --git a/drools-test-coverage/standalone/kie-ci-with-domain/test-kjar/pom.xml b/drools-test-coverage/standalone/kie-ci-with-domain/test-kjar/pom.xml
-index c065c6390c..a879cc9349 100644
---- a/drools-test-coverage/standalone/kie-ci-with-domain/test-kjar/pom.xml
-+++ b/drools-test-coverage/standalone/kie-ci-with-domain/test-kjar/pom.xml
-@@ -8,7 +8,7 @@
-   <parent>
-     <groupId>org.drools.testcoverage</groupId>
-     <artifactId>drools-kie-ci-with-domain-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-kie-ci-with-domain-test-kjar</artifactId>
-diff --git a/drools-test-coverage/standalone/kie-ci-with-domain/tests/pom.xml b/drools-test-coverage/standalone/kie-ci-with-domain/tests/pom.xml
-index e8b59bbfef..484ccb1ebe 100644
---- a/drools-test-coverage/standalone/kie-ci-with-domain/tests/pom.xml
-+++ b/drools-test-coverage/standalone/kie-ci-with-domain/tests/pom.xml
-@@ -8,7 +8,7 @@
-   <parent>
-     <groupId>org.drools.testcoverage</groupId>
-     <artifactId>drools-kie-ci-with-domain-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-kie-ci-with-domain-tests</artifactId>
-diff --git a/drools-test-coverage/standalone/kie-ci-without-domain/pom.xml b/drools-test-coverage/standalone/kie-ci-without-domain/pom.xml
-index c348391eb4..75f4d062ef 100644
---- a/drools-test-coverage/standalone/kie-ci-without-domain/pom.xml
-+++ b/drools-test-coverage/standalone/kie-ci-without-domain/pom.xml
-@@ -8,7 +8,7 @@
-   <parent>
-     <groupId>org.drools.testcoverage</groupId>
-     <artifactId>drools-standalone-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-kie-ci-without-domain-parent</artifactId>
-diff --git a/drools-test-coverage/standalone/kie-ci-without-domain/test-domain/pom.xml b/drools-test-coverage/standalone/kie-ci-without-domain/test-domain/pom.xml
-index 55f53b9dd6..327a24496d 100644
---- a/drools-test-coverage/standalone/kie-ci-without-domain/test-domain/pom.xml
-+++ b/drools-test-coverage/standalone/kie-ci-without-domain/test-domain/pom.xml
-@@ -8,7 +8,7 @@
-   <parent>
-     <groupId>org.drools.testcoverage</groupId>
-     <artifactId>drools-kie-ci-without-domain-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-kie-ci-without-domain-test-domain</artifactId>
-diff --git a/drools-test-coverage/standalone/kie-ci-without-domain/test-kjar/pom.xml b/drools-test-coverage/standalone/kie-ci-without-domain/test-kjar/pom.xml
-index 589bf0d252..0616d62fc4 100644
---- a/drools-test-coverage/standalone/kie-ci-without-domain/test-kjar/pom.xml
-+++ b/drools-test-coverage/standalone/kie-ci-without-domain/test-kjar/pom.xml
-@@ -8,7 +8,7 @@
-   <parent>
-     <groupId>org.drools.testcoverage</groupId>
-     <artifactId>drools-kie-ci-without-domain-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-kie-ci-without-domain-test-kjar</artifactId>
-diff --git a/drools-test-coverage/standalone/kie-ci-without-domain/tests/pom.xml b/drools-test-coverage/standalone/kie-ci-without-domain/tests/pom.xml
-index 54d3e66563..f19b856724 100644
---- a/drools-test-coverage/standalone/kie-ci-without-domain/tests/pom.xml
-+++ b/drools-test-coverage/standalone/kie-ci-without-domain/tests/pom.xml
-@@ -8,7 +8,7 @@
-   <parent>
-     <groupId>org.drools.testcoverage</groupId>
-     <artifactId>drools-kie-ci-without-domain-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-kie-ci-without-domain-tests</artifactId>
-diff --git a/drools-test-coverage/standalone/pom.xml b/drools-test-coverage/standalone/pom.xml
-index b6df7a535e..39a6b407e1 100644
---- a/drools-test-coverage/standalone/pom.xml
-+++ b/drools-test-coverage/standalone/pom.xml
-@@ -8,7 +8,7 @@
-   <parent>
-     <groupId>org.drools.testcoverage</groupId>
-     <artifactId>drools-test-coverage-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-standalone-parent</artifactId>
-diff --git a/drools-test-coverage/test-compiler-integration/pom.xml b/drools-test-coverage/test-compiler-integration/pom.xml
-index 3f6331d506..1fcf018110 100644
---- a/drools-test-coverage/test-compiler-integration/pom.xml
-+++ b/drools-test-coverage/test-compiler-integration/pom.xml
-@@ -21,7 +21,7 @@
-   <parent>
-     <artifactId>drools-test-coverage-parent</artifactId>
-     <groupId>org.drools.testcoverage</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/compiler/Person.java b/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/compiler/Person.java
 index a356782f80..77d00fc4fa 100644
 --- a/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/compiler/Person.java
@@ -4010,18 +2799,9 @@ index 89b51fcb2b..3c35815740 100644
  import org.drools.core.QueryResultsImpl;
  import org.drools.core.base.ClassObjectType;
 diff --git a/drools-test-coverage/test-integration-nomvel/pom.xml b/drools-test-coverage/test-integration-nomvel/pom.xml
-index 50797c060b..41523a536b 100644
+index f01b0a974c..e985ea72cd 100644
 --- a/drools-test-coverage/test-integration-nomvel/pom.xml
 +++ b/drools-test-coverage/test-integration-nomvel/pom.xml
-@@ -21,7 +21,7 @@
-     <parent>
-         <artifactId>drools-test-coverage-parent</artifactId>
-         <groupId>org.drools.testcoverage</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
- 
 @@ -102,9 +102,10 @@
              <scope>test</scope>
          </dependency>
@@ -4035,110 +2815,10 @@ index 50797c060b..41523a536b 100644
          </dependency>
          <dependency>
              <groupId>jakarta.xml.bind</groupId>
-diff --git a/drools-test-coverage/test-integration-notms/pom.xml b/drools-test-coverage/test-integration-notms/pom.xml
-index a82573f0e0..ee73efc07f 100644
---- a/drools-test-coverage/test-integration-notms/pom.xml
-+++ b/drools-test-coverage/test-integration-notms/pom.xml
-@@ -21,7 +21,7 @@
-     <parent>
-         <artifactId>drools-test-coverage-parent</artifactId>
-         <groupId>org.drools.testcoverage</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-test-coverage/test-integration-noxml/pom.xml b/drools-test-coverage/test-integration-noxml/pom.xml
-index 1f12d0292d..987aaea4a4 100644
---- a/drools-test-coverage/test-integration-noxml/pom.xml
-+++ b/drools-test-coverage/test-integration-noxml/pom.xml
-@@ -21,7 +21,7 @@
-     <parent>
-         <artifactId>drools-test-coverage-parent</artifactId>
-         <groupId>org.drools.testcoverage</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-test-coverage/test-integration-ruleunits/pom.xml b/drools-test-coverage/test-integration-ruleunits/pom.xml
-index 30091c2a3b..8f7aa831d0 100644
---- a/drools-test-coverage/test-integration-ruleunits/pom.xml
-+++ b/drools-test-coverage/test-integration-ruleunits/pom.xml
-@@ -14,7 +14,7 @@
-   <parent>
-     <artifactId>drools-test-coverage-parent</artifactId>
-     <groupId>org.drools.testcoverage</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-test-coverage/test-integration-ruleunits/test-integration-ruleunits-jar/pom.xml b/drools-test-coverage/test-integration-ruleunits/test-integration-ruleunits-jar/pom.xml
-index 684c0caa88..05db4856f6 100644
---- a/drools-test-coverage/test-integration-ruleunits/test-integration-ruleunits-jar/pom.xml
-+++ b/drools-test-coverage/test-integration-ruleunits/test-integration-ruleunits-jar/pom.xml
-@@ -14,7 +14,7 @@
-   <parent>
-     <artifactId>test-integration-ruleunits</artifactId>
-     <groupId>org.drools.testcoverage</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-test-coverage/test-integration-ruleunits/test-integration-ruleunits-tests/pom.xml b/drools-test-coverage/test-integration-ruleunits/test-integration-ruleunits-tests/pom.xml
-index a173cccc7d..014e204083 100644
---- a/drools-test-coverage/test-integration-ruleunits/test-integration-ruleunits-tests/pom.xml
-+++ b/drools-test-coverage/test-integration-ruleunits/test-integration-ruleunits-tests/pom.xml
-@@ -14,7 +14,7 @@
-   <parent>
-     <artifactId>test-integration-ruleunits</artifactId>
-     <groupId>org.drools.testcoverage</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-test-coverage/test-suite/pom.xml b/drools-test-coverage/test-suite/pom.xml
-index e19771f309..5fdfc242cf 100644
---- a/drools-test-coverage/test-suite/pom.xml
-+++ b/drools-test-coverage/test-suite/pom.xml
-@@ -8,7 +8,7 @@
-   <parent>
-     <groupId>org.drools.testcoverage</groupId>
-     <artifactId>drools-test-coverage-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-test-suite</artifactId>
-diff --git a/drools-tms/pom.xml b/drools-tms/pom.xml
-index 84e097e1ab..fb4f8a2c97 100644
---- a/drools-tms/pom.xml
-+++ b/drools-tms/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
 diff --git a/drools-traits/pom.xml b/drools-traits/pom.xml
-index b30cfdd3c6..61ab520225 100644
+index b32b511903..c5c0337d6d 100644
 --- a/drools-traits/pom.xml
 +++ b/drools-traits/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
 @@ -138,8 +138,8 @@
      </dependency>
  
@@ -4191,97 +2871,10 @@ index aaf01f00a2..9d634ec94c 100644
  
  import org.drools.core.base.MapGlobalResolver;
  import org.drools.core.impl.EnvironmentFactory;
-diff --git a/drools-util/pom.xml b/drools-util/pom.xml
-index da3b7b4cc8..4353607227 100644
---- a/drools-util/pom.xml
-+++ b/drools-util/pom.xml
-@@ -7,7 +7,7 @@
-     <parent>
-         <groupId>org.kie</groupId>
-         <artifactId>drools-build-parent</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-         <relativePath>../build-parent/pom.xml</relativePath>
-     </parent>
- 
-diff --git a/drools-verifier/drools-verifier-api/pom.xml b/drools-verifier/drools-verifier-api/pom.xml
-index abb6ab634e..f4a612997b 100644
---- a/drools-verifier/drools-verifier-api/pom.xml
-+++ b/drools-verifier/drools-verifier-api/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-verifier</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-verifier/drools-verifier-core/pom.xml b/drools-verifier/drools-verifier-core/pom.xml
-index d6a9e49d2a..7addf98119 100644
---- a/drools-verifier/drools-verifier-core/pom.xml
-+++ b/drools-verifier/drools-verifier-core/pom.xml
-@@ -5,7 +5,7 @@
-     <parent>
-         <artifactId>drools-verifier</artifactId>
-         <groupId>org.drools</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/drools-verifier/drools-verifier-drl/pom.xml b/drools-verifier/drools-verifier-drl/pom.xml
-index 284fa3fe48..b1fbfed29a 100644
---- a/drools-verifier/drools-verifier-drl/pom.xml
-+++ b/drools-verifier/drools-verifier-drl/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-verifier</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>drools-verifier-drl</artifactId>
-diff --git a/drools-verifier/pom.xml b/drools-verifier/pom.xml
-index ee8ea11428..3295851e79 100644
---- a/drools-verifier/pom.xml
-+++ b/drools-verifier/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-wiring/drools-wiring-api/pom.xml b/drools-wiring/drools-wiring-api/pom.xml
-index cec4e48daa..6ffac2952a 100755
---- a/drools-wiring/drools-wiring-api/pom.xml
-+++ b/drools-wiring/drools-wiring-api/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-wiring</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <groupId>org.drools</groupId>
 diff --git a/drools-wiring/drools-wiring-dynamic/pom.xml b/drools-wiring/drools-wiring-dynamic/pom.xml
-index 71acd71409..0f303c289b 100755
+index f73db5d30d..2cb1d3d8be 100755
 --- a/drools-wiring/drools-wiring-dynamic/pom.xml
 +++ b/drools-wiring/drools-wiring-dynamic/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-wiring</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <groupId>org.drools</groupId>
 @@ -34,9 +34,10 @@
        <scope>provided</scope>
      </dependency>
@@ -4295,45 +2888,6 @@ index 71acd71409..0f303c289b 100755
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
-diff --git a/drools-wiring/drools-wiring-static/pom.xml b/drools-wiring/drools-wiring-static/pom.xml
-index 4cee58cc2e..b9a692fb20 100755
---- a/drools-wiring/drools-wiring-static/pom.xml
-+++ b/drools-wiring/drools-wiring-static/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.drools</groupId>
-     <artifactId>drools-wiring</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <groupId>org.drools</groupId>
-diff --git a/drools-wiring/pom.xml b/drools-wiring/pom.xml
-index b775f1f9b5..4492408320 100644
---- a/drools-wiring/pom.xml
-+++ b/drools-wiring/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/drools-xml-support/pom.xml b/drools-xml-support/pom.xml
-index 7dd97033be..3961530748 100644
---- a/drools-xml-support/pom.xml
-+++ b/drools-xml-support/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
 diff --git a/drools-xml-support/src/test/java/org/drools/xml/support/CommandSerializationTest.java b/drools-xml-support/src/test/java/org/drools/xml/support/CommandSerializationTest.java
 index 0599915ec9..41b607324f 100644
 --- a/drools-xml-support/src/test/java/org/drools/xml/support/CommandSerializationTest.java
@@ -4351,188 +2905,6 @@ index 0599915ec9..41b607324f 100644
  
  import org.drools.core.ClassObjectFilter;
  import org.drools.core.ClassObjectSerializationFilter;
-diff --git a/efesto/efesto-common-utils/pom.xml b/efesto/efesto-common-utils/pom.xml
-index 96f3b519f4..d2731cd367 100644
---- a/efesto/efesto-common-utils/pom.xml
-+++ b/efesto/efesto-common-utils/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>efesto</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>efesto-common-utils</artifactId>
-diff --git a/efesto/efesto-core/efesto-common-api/pom.xml b/efesto/efesto-core/efesto-common-api/pom.xml
-index 061f46973f..14fd6e36da 100644
---- a/efesto/efesto-core/efesto-common-api/pom.xml
-+++ b/efesto/efesto-core/efesto-common-api/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>efesto-core</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>efesto-common-api</artifactId>
-diff --git a/efesto/efesto-core/efesto-common-core/pom.xml b/efesto/efesto-core/efesto-common-core/pom.xml
-index a57ab685c7..bbefb77bf1 100644
---- a/efesto/efesto-core/efesto-common-core/pom.xml
-+++ b/efesto/efesto-core/efesto-common-core/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>efesto-core</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>efesto-common-core</artifactId>
-diff --git a/efesto/efesto-core/efesto-compilation-manager/efesto-compilation-manager-api/pom.xml b/efesto/efesto-core/efesto-compilation-manager/efesto-compilation-manager-api/pom.xml
-index 75df4f0d94..15f9fa0511 100644
---- a/efesto/efesto-core/efesto-compilation-manager/efesto-compilation-manager-api/pom.xml
-+++ b/efesto/efesto-core/efesto-compilation-manager/efesto-compilation-manager-api/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>efesto-compilation-manager</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>efesto-compilation-manager-api</artifactId>
-diff --git a/efesto/efesto-core/efesto-compilation-manager/efesto-compilation-manager-core/pom.xml b/efesto/efesto-core/efesto-compilation-manager/efesto-compilation-manager-core/pom.xml
-index 52dd8ec46b..403531ab39 100644
---- a/efesto/efesto-core/efesto-compilation-manager/efesto-compilation-manager-core/pom.xml
-+++ b/efesto/efesto-core/efesto-compilation-manager/efesto-compilation-manager-core/pom.xml
-@@ -19,7 +19,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>efesto-compilation-manager</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>efesto-compilation-manager-core</artifactId>
-diff --git a/efesto/efesto-core/efesto-compilation-manager/pom.xml b/efesto/efesto-core/efesto-compilation-manager/pom.xml
-index 2313e4db50..7afcc75e39 100644
---- a/efesto/efesto-core/efesto-compilation-manager/pom.xml
-+++ b/efesto/efesto-core/efesto-compilation-manager/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>efesto-core</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <packaging>pom</packaging>
- 
-diff --git a/efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-api/pom.xml b/efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-api/pom.xml
-index 3b9784ac25..610c06e771 100644
---- a/efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-api/pom.xml
-+++ b/efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-api/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>efesto-runtime-manager</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-  <artifactId>efesto-runtime-manager-api</artifactId>
-diff --git a/efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-core/pom.xml b/efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-core/pom.xml
-index 85453567d4..1c18c4e136 100644
---- a/efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-core/pom.xml
-+++ b/efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-core/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>efesto-runtime-manager</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>efesto-runtime-manager-core</artifactId>
-diff --git a/efesto/efesto-core/efesto-runtime-manager/pom.xml b/efesto/efesto-core/efesto-runtime-manager/pom.xml
-index 9476055b78..add8a2ee46 100644
---- a/efesto/efesto-core/efesto-runtime-manager/pom.xml
-+++ b/efesto/efesto-core/efesto-runtime-manager/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>efesto-core</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <packaging>pom</packaging>
- 
-diff --git a/efesto/efesto-core/pom.xml b/efesto/efesto-core/pom.xml
-index 3a649e1a9e..14c32a2ef1 100644
---- a/efesto/efesto-core/pom.xml
-+++ b/efesto/efesto-core/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>efesto</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <packaging>pom</packaging>
- 
-diff --git a/efesto/efesto-dependencies/pom.xml b/efesto/efesto-dependencies/pom.xml
-index 3ed82fa4dc..1f5ef4aa76 100644
---- a/efesto/efesto-dependencies/pom.xml
-+++ b/efesto/efesto-dependencies/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>efesto</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/efesto/pom.xml b/efesto/pom.xml
-index 3412c93947..215ee45998 100644
---- a/efesto/pom.xml
-+++ b/efesto/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/jpmml-migration-recipe/pom.xml b/jpmml-migration-recipe/pom.xml
-index 9de0f99f3e..2f1eae8811 100644
---- a/jpmml-migration-recipe/pom.xml
-+++ b/jpmml-migration-recipe/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/kie-api/pom.xml b/kie-api/pom.xml
-index c5978c4035..818c8d111e 100644
---- a/kie-api/pom.xml
-+++ b/kie-api/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
 diff --git a/kie-api/src/main/java/org/kie/api/pmml/AbstractOutput.java b/kie-api/src/main/java/org/kie/api/pmml/AbstractOutput.java
 index cb33ba3dc3..5748494ac9 100644
 --- a/kie-api/src/main/java/org/kie/api/pmml/AbstractOutput.java
@@ -4750,136 +3122,6 @@ index f37ba2607c..737985a4db 100644
  
  
  @XmlType
-diff --git a/kie-archetypes/kie-drools-dmn-archetype/pom.xml b/kie-archetypes/kie-drools-dmn-archetype/pom.xml
-index db8bbb07ae..9fef597fdb 100644
---- a/kie-archetypes/kie-drools-dmn-archetype/pom.xml
-+++ b/kie-archetypes/kie-drools-dmn-archetype/pom.xml
-@@ -4,7 +4,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-archetypes</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kie-drools-dmn-archetype</artifactId>
-diff --git a/kie-archetypes/kie-drools-exec-model-archetype/pom.xml b/kie-archetypes/kie-drools-exec-model-archetype/pom.xml
-index 3614125879..861fb5848a 100644
---- a/kie-archetypes/kie-drools-exec-model-archetype/pom.xml
-+++ b/kie-archetypes/kie-drools-exec-model-archetype/pom.xml
-@@ -4,7 +4,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-archetypes</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kie-drools-exec-model-archetype</artifactId>
-diff --git a/kie-archetypes/kie-drools-exec-model-ruleunit-archetype/pom.xml b/kie-archetypes/kie-drools-exec-model-ruleunit-archetype/pom.xml
-index 50dbab466b..bb998fce45 100644
---- a/kie-archetypes/kie-drools-exec-model-ruleunit-archetype/pom.xml
-+++ b/kie-archetypes/kie-drools-exec-model-ruleunit-archetype/pom.xml
-@@ -4,7 +4,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-archetypes</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kie-drools-exec-model-ruleunit-archetype</artifactId>
-diff --git a/kie-archetypes/pom.xml b/kie-archetypes/pom.xml
-index 4e2f294539..22d033d0c2 100644
---- a/kie-archetypes/pom.xml
-+++ b/kie-archetypes/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/kie-ci/pom.xml b/kie-ci/pom.xml
-index 2830af20de..cee1515373 100644
---- a/kie-ci/pom.xml
-+++ b/kie-ci/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/kie-dmn/kie-dmn-api/pom.xml b/kie-dmn/kie-dmn-api/pom.xml
-index 022bc158a3..296be0da5d 100644
---- a/kie-dmn/kie-dmn-api/pom.xml
-+++ b/kie-dmn/kie-dmn-api/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kie-dmn-api</artifactId>
-diff --git a/kie-dmn/kie-dmn-backend/pom.xml b/kie-dmn/kie-dmn-backend/pom.xml
-index 565c29f0e2..2b5ee0ebae 100644
---- a/kie-dmn/kie-dmn-backend/pom.xml
-+++ b/kie-dmn/kie-dmn-backend/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kie-dmn-backend</artifactId>
-diff --git a/kie-dmn/kie-dmn-core-jsr223-jq/pom.xml b/kie-dmn/kie-dmn-core-jsr223-jq/pom.xml
-index 4db7f43a36..770a8cace9 100644
---- a/kie-dmn/kie-dmn-core-jsr223-jq/pom.xml
-+++ b/kie-dmn/kie-dmn-core-jsr223-jq/pom.xml
-@@ -3,7 +3,7 @@
-     <parent>
-         <groupId>org.kie</groupId>
-         <artifactId>kie-dmn</artifactId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <artifactId>kie-dmn-core-jsr223-jq</artifactId>
-     <name>KIE :: Decision Model Notation :: JSR-223 JQ ScriptEngine</name>
-diff --git a/kie-dmn/kie-dmn-core-jsr223/pom.xml b/kie-dmn/kie-dmn-core-jsr223/pom.xml
-index f6ab62f4b2..287cd08926 100644
---- a/kie-dmn/kie-dmn-core-jsr223/pom.xml
-+++ b/kie-dmn/kie-dmn-core-jsr223/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <artifactId>kie-dmn-core-jsr223</artifactId>
-   <name>KIE :: Decision Model Notation :: Core JSR-223</name>
-diff --git a/kie-dmn/kie-dmn-core/pom.xml b/kie-dmn/kie-dmn-core/pom.xml
-index 7f624533cd..b2ce230683 100644
---- a/kie-dmn/kie-dmn-core/pom.xml
-+++ b/kie-dmn/kie-dmn-core/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <artifactId>kie-dmn</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kie-dmn-core</artifactId>
 diff --git a/kie-dmn/kie-dmn-core/src/main/java/org/kie/dmn/core/pmml/DMNImportPMMLInfo.java b/kie-dmn/kie-dmn-core/src/main/java/org/kie/dmn/core/pmml/DMNImportPMMLInfo.java
 index 7c3bb1c197..d7053e68a3 100644
 --- a/kie-dmn/kie-dmn-core/src/main/java/org/kie/dmn/core/pmml/DMNImportPMMLInfo.java
@@ -4934,19 +3176,6 @@ index e272189c00..a2cc46881c 100644
          }
          return new PMMLModelInfo(pm.getModelName(), pm.getClass().getSimpleName(), inputFields, targetFields, outputFields);
      }
-diff --git a/kie-dmn/kie-dmn-feel/pom.xml b/kie-dmn/kie-dmn-feel/pom.xml
-index 347b74aaa1..21e7bf6bc5 100644
---- a/kie-dmn/kie-dmn-feel/pom.xml
-+++ b/kie-dmn/kie-dmn-feel/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kie-dmn-feel</artifactId>
 diff --git a/kie-dmn/kie-dmn-feel/src/test/java/org/kie/dmn/feel/jandex/AbstractJandexTest.java b/kie-dmn/kie-dmn-feel/src/test/java/org/kie/dmn/feel/jandex/AbstractJandexTest.java
 index 1e4a002044..0f043b9da0 100644
 --- a/kie-dmn/kie-dmn-feel/src/test/java/org/kie/dmn/feel/jandex/AbstractJandexTest.java
@@ -4965,18 +3194,9 @@ index 1e4a002044..0f043b9da0 100644
  import org.jboss.jandex.ClassInfo;
  import org.jboss.jandex.DotName;
 diff --git a/kie-dmn/kie-dmn-legacy-tests/pom.xml b/kie-dmn/kie-dmn-legacy-tests/pom.xml
-index dd5452f22a..c80f3d87f5 100644
+index 35e4ac525b..fcf9d3565e 100644
 --- a/kie-dmn/kie-dmn-legacy-tests/pom.xml
 +++ b/kie-dmn/kie-dmn-legacy-tests/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <artifactId>kie-dmn-legacy-tests</artifactId>
-   
 @@ -100,9 +100,10 @@
        <scope>provided</scope>
      </dependency>
@@ -4990,19 +3210,6 @@ index dd5452f22a..c80f3d87f5 100644
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
-diff --git a/kie-dmn/kie-dmn-model/pom.xml b/kie-dmn/kie-dmn-model/pom.xml
-index d9725794d5..25bf7998b4 100644
---- a/kie-dmn/kie-dmn-model/pom.xml
-+++ b/kie-dmn/kie-dmn-model/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <artifactId>kie-dmn</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
- 
-   <artifactId>kie-dmn-model</artifactId>
 diff --git a/kie-dmn/kie-dmn-model/src/main/java/org/kie/dmn/model/v1_2/dmndi/DMNDiagram.java b/kie-dmn/kie-dmn-model/src/main/java/org/kie/dmn/model/v1_2/dmndi/DMNDiagram.java
 index 0667ee8e9e..f89f066949 100644
 --- a/kie-dmn/kie-dmn-model/src/main/java/org/kie/dmn/model/v1_2/dmndi/DMNDiagram.java
@@ -5073,18 +3280,9 @@ index 14c47f65e8..4004e43729 100644
  import org.jboss.jandex.ClassInfo;
  import org.jboss.jandex.DotName;
 diff --git a/kie-dmn/kie-dmn-openapi/pom.xml b/kie-dmn/kie-dmn-openapi/pom.xml
-index 60cc434b38..afeb7587a6 100644
+index 1991d2a714..39e7e2a337 100644
 --- a/kie-dmn/kie-dmn-openapi/pom.xml
 +++ b/kie-dmn/kie-dmn-openapi/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <artifactId>kie-dmn-openapi</artifactId>
-   
 @@ -62,9 +62,10 @@
        <scope>provided</scope>
      </dependency>
@@ -5098,32 +3296,10 @@ index 60cc434b38..afeb7587a6 100644
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
-diff --git a/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests-trusty/pom.xml b/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests-trusty/pom.xml
-index bfa821d763..878ec41496 100644
---- a/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests-trusty/pom.xml
-+++ b/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests-trusty/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>kie-dmn-pmml-tests-parent</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml b/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
-index 46d7c11895..f40a06c75a 100644
+index e0b43c20d3..67b85eb1eb 100644
 --- a/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
 +++ b/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>kie-dmn-pmml-tests-parent</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 @@ -62,9 +62,10 @@
        <scope>provided</scope>
      </dependency>
@@ -5137,45 +3313,6 @@ index 46d7c11895..f40a06c75a 100644
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
-diff --git a/kie-dmn/kie-dmn-pmml-tests-parent/pom.xml b/kie-dmn/kie-dmn-pmml-tests-parent/pom.xml
-index 754a2588db..8a7e9b7719 100644
---- a/kie-dmn/kie-dmn-pmml-tests-parent/pom.xml
-+++ b/kie-dmn/kie-dmn-pmml-tests-parent/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>kie-dmn</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <packaging>pom</packaging>
-diff --git a/kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn-cli/pom.xml b/kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn-cli/pom.xml
-index eaacb09e28..af906101e4 100644
---- a/kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn-cli/pom.xml
-+++ b/kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn-cli/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn-ruleset2dmn-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <artifactId>kie-dmn-ruleset2dmn-cli</artifactId>
-   
-diff --git a/kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/pom.xml b/kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/pom.xml
-index 37132dc7fe..5285845191 100644
---- a/kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/pom.xml
-+++ b/kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn-ruleset2dmn-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <artifactId>kie-dmn-ruleset2dmn</artifactId>
- 
 diff --git a/kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/main/java/org/kie/dmn/ruleset2dmn/Converter.java b/kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/main/java/org/kie/dmn/ruleset2dmn/Converter.java
 index 17887354ff..97309c1dda 100644
 --- a/kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/main/java/org/kie/dmn/ruleset2dmn/Converter.java
@@ -5240,84 +3377,6 @@ index f5b19f4e05..25171444d1 100644
              }
          }
      }
-diff --git a/kie-dmn/kie-dmn-ruleset2dmn-parent/pom.xml b/kie-dmn/kie-dmn-ruleset2dmn-parent/pom.xml
-index ecd1cd5cab..bae9957081 100644
---- a/kie-dmn/kie-dmn-ruleset2dmn-parent/pom.xml
-+++ b/kie-dmn/kie-dmn-ruleset2dmn-parent/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <artifactId>kie-dmn-ruleset2dmn-parent</artifactId>
-   <packaging>pom</packaging>
-diff --git a/kie-dmn/kie-dmn-signavio/pom.xml b/kie-dmn/kie-dmn-signavio/pom.xml
-index 75cac2c823..10f3a82470 100644
---- a/kie-dmn/kie-dmn-signavio/pom.xml
-+++ b/kie-dmn/kie-dmn-signavio/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <artifactId>kie-dmn-signavio</artifactId>
-   
-diff --git a/kie-dmn/kie-dmn-tck/pom.xml b/kie-dmn/kie-dmn-tck/pom.xml
-index 0840673d53..73b2306f4e 100644
---- a/kie-dmn/kie-dmn-tck/pom.xml
-+++ b/kie-dmn/kie-dmn-tck/pom.xml
-@@ -21,7 +21,7 @@
-   <parent>
-     <artifactId>kie-dmn</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <packaging>pom</packaging>
-diff --git a/kie-dmn/kie-dmn-trisotech/pom.xml b/kie-dmn/kie-dmn-trisotech/pom.xml
-index cb723c537c..9ea869f5cc 100644
---- a/kie-dmn/kie-dmn-trisotech/pom.xml
-+++ b/kie-dmn/kie-dmn-trisotech/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <artifactId>kie-dmn-trisotech</artifactId>
- 
-diff --git a/kie-dmn/kie-dmn-validation-bootstrap/pom.xml b/kie-dmn/kie-dmn-validation-bootstrap/pom.xml
-index f56a65850d..524a4974bf 100644
---- a/kie-dmn/kie-dmn-validation-bootstrap/pom.xml
-+++ b/kie-dmn/kie-dmn-validation-bootstrap/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <artifactId>kie-dmn-validation-bootstrap</artifactId>
- 
-diff --git a/kie-dmn/kie-dmn-validation/pom.xml b/kie-dmn/kie-dmn-validation/pom.xml
-index 0bffcca7ef..67fc9df2a7 100644
---- a/kie-dmn/kie-dmn-validation/pom.xml
-+++ b/kie-dmn/kie-dmn-validation/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <artifactId>kie-dmn-validation</artifactId>
-     <packaging>jar</packaging>
 diff --git a/kie-dmn/kie-dmn-validation/src/main/java/org/kie/dmn/validation/dtanalysis/mcdc/MCDC2TCKGenerator.java b/kie-dmn/kie-dmn-validation/src/main/java/org/kie/dmn/validation/dtanalysis/mcdc/MCDC2TCKGenerator.java
 index 17147f54a7..4a32d87f94 100644
 --- a/kie-dmn/kie-dmn-validation/src/main/java/org/kie/dmn/validation/dtanalysis/mcdc/MCDC2TCKGenerator.java
@@ -5445,188 +3504,10 @@ index f6c8310e3a..9b27fa3be2 100644
  
 -import javax.xml.bind.annotation.XmlNs;
 +import jakarta.xml.bind.annotation.XmlNs;
-diff --git a/kie-dmn/kie-dmn-xls2dmn-cli/pom.xml b/kie-dmn/kie-dmn-xls2dmn-cli/pom.xml
-index dd75d47cb9..80b377ee98 100644
---- a/kie-dmn/kie-dmn-xls2dmn-cli/pom.xml
-+++ b/kie-dmn/kie-dmn-xls2dmn-cli/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-dmn</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <artifactId>kie-dmn-xls2dmn-cli</artifactId>
-   <packaging>jar</packaging>
-diff --git a/kie-dmn/pom.xml b/kie-dmn/pom.xml
-index 928066451c..9f59b0d2b3 100644
---- a/kie-dmn/pom.xml
-+++ b/kie-dmn/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/kie-drl/kie-drl-api/pom.xml b/kie-drl/kie-drl-api/pom.xml
-index 92818c94d1..4c8693726d 100644
---- a/kie-drl/kie-drl-api/pom.xml
-+++ b/kie-drl/kie-drl-api/pom.xml
-@@ -5,7 +5,7 @@
-     <parent>
-         <artifactId>kie-drl</artifactId>
-         <groupId>org.kie</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-drl/kie-drl-compilation-common/pom.xml b/kie-drl/kie-drl-compilation-common/pom.xml
-index 087fc4dd54..d179018bb4 100644
---- a/kie-drl/kie-drl-compilation-common/pom.xml
-+++ b/kie-drl/kie-drl-compilation-common/pom.xml
-@@ -5,7 +5,7 @@
-     <parent>
-         <artifactId>kie-drl</artifactId>
-         <groupId>org.kie</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-drl/kie-drl-implementations/kie-drl-kiesession-local/kie-drl-kiesession-local-runtime/pom.xml b/kie-drl/kie-drl-implementations/kie-drl-kiesession-local/kie-drl-kiesession-local-runtime/pom.xml
-index 3db6f1b26b..41a4f2d4b2 100644
---- a/kie-drl/kie-drl-implementations/kie-drl-kiesession-local/kie-drl-kiesession-local-runtime/pom.xml
-+++ b/kie-drl/kie-drl-implementations/kie-drl-kiesession-local/kie-drl-kiesession-local-runtime/pom.xml
-@@ -5,7 +5,7 @@
-     <parent>
-         <artifactId>kie-drl-kiesession-local</artifactId>
-         <groupId>org.kie</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-drl/kie-drl-implementations/kie-drl-kiesession-local/pom.xml b/kie-drl/kie-drl-implementations/kie-drl-kiesession-local/pom.xml
-index e499292a36..f3a5236d45 100644
---- a/kie-drl/kie-drl-implementations/kie-drl-kiesession-local/pom.xml
-+++ b/kie-drl/kie-drl-implementations/kie-drl-kiesession-local/pom.xml
-@@ -5,7 +5,7 @@
-     <parent>
-         <artifactId>kie-drl-implementations</artifactId>
-         <groupId>org.kie</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
-     <packaging>pom</packaging>
-diff --git a/kie-drl/kie-drl-implementations/kie-drl-map-input/kie-drl-map-input-runtime/pom.xml b/kie-drl/kie-drl-implementations/kie-drl-map-input/kie-drl-map-input-runtime/pom.xml
-index 49f6dfb9b0..26b29dff15 100644
---- a/kie-drl/kie-drl-implementations/kie-drl-map-input/kie-drl-map-input-runtime/pom.xml
-+++ b/kie-drl/kie-drl-implementations/kie-drl-map-input/kie-drl-map-input-runtime/pom.xml
-@@ -6,7 +6,7 @@
-     <parent>
-         <artifactId>kie-drl-map-input</artifactId>
-         <groupId>org.kie</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <artifactId>kie-drl-map-input-runtime</artifactId>
-diff --git a/kie-drl/kie-drl-implementations/kie-drl-map-input/pom.xml b/kie-drl/kie-drl-implementations/kie-drl-map-input/pom.xml
-index 5b9ce91351..9992c784af 100644
---- a/kie-drl/kie-drl-implementations/kie-drl-map-input/pom.xml
-+++ b/kie-drl/kie-drl-implementations/kie-drl-map-input/pom.xml
-@@ -5,7 +5,7 @@
-     <parent>
-         <artifactId>kie-drl-implementations</artifactId>
-         <groupId>org.kie</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
-     <packaging>pom</packaging>
-diff --git a/kie-drl/kie-drl-implementations/pom.xml b/kie-drl/kie-drl-implementations/pom.xml
-index 52698fe699..31b1330f3c 100644
---- a/kie-drl/kie-drl-implementations/pom.xml
-+++ b/kie-drl/kie-drl-implementations/pom.xml
-@@ -7,7 +7,7 @@
-     <parent>
-         <artifactId>kie-drl</artifactId>
-         <groupId>org.kie</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
- 
-     <name>KIE :: DRL :: Implementations</name>
-diff --git a/kie-drl/kie-drl-runtime-common/pom.xml b/kie-drl/kie-drl-runtime-common/pom.xml
-index c09c02e6ea..232ec121fc 100644
---- a/kie-drl/kie-drl-runtime-common/pom.xml
-+++ b/kie-drl/kie-drl-runtime-common/pom.xml
-@@ -5,7 +5,7 @@
-     <parent>
-         <artifactId>kie-drl</artifactId>
-         <groupId>org.kie</groupId>
--        <version>8.38.0-SNAPSHOT</version>
-+        <version>quarkus-3-SNAPSHOT</version>
-     </parent>
-     <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-drl/kie-drl-tests-without-index-file/pom.xml b/kie-drl/kie-drl-tests-without-index-file/pom.xml
-index 5968ec9dca..258c41fb26 100644
---- a/kie-drl/kie-drl-tests-without-index-file/pom.xml
-+++ b/kie-drl/kie-drl-tests-without-index-file/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>kie-drl</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-drl/kie-drl-tests/pom.xml b/kie-drl/kie-drl-tests/pom.xml
-index ab0524cce0..1825c4018a 100644
---- a/kie-drl/kie-drl-tests/pom.xml
-+++ b/kie-drl/kie-drl-tests/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>kie-drl</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-drl/pom.xml b/kie-drl/pom.xml
-index 5f44c5809c..46fc1c0eef 100644
---- a/kie-drl/pom.xml
-+++ b/kie-drl/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
 diff --git a/kie-internal/pom.xml b/kie-internal/pom.xml
-index 35beb2be1d..4639416802 100644
+index 807caec8f1..ee3f922421 100644
 --- a/kie-internal/pom.xml
 +++ b/kie-internal/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
 @@ -76,9 +76,10 @@
         <scope>provided</scope>
      </dependency>
@@ -6102,71 +3983,6 @@ index 29f8b7e2f8..65e66814a9 100644
  
  import org.junit.Test;
  import org.kie.internal.runtime.conf.DeploymentDescriptor;
-diff --git a/kie-maven-plugin/pom.xml b/kie-maven-plugin/pom.xml
-index 1f31d5ac27..272e0b37c0 100644
---- a/kie-maven-plugin/pom.xml
-+++ b/kie-maven-plugin/pom.xml
-@@ -7,7 +7,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/kie-memory-compiler/pom.xml b/kie-memory-compiler/pom.xml
-index 056f1feb12..4dfb261706 100644
---- a/kie-memory-compiler/pom.xml
-+++ b/kie-memory-compiler/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-api/pom.xml b/kie-pmml-trusty/kie-pmml-api/pom.xml
-index 007a022307..fd6ad3e0b6 100644
---- a/kie-pmml-trusty/kie-pmml-api/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-api/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>kie-pmml-trusty</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-commons/pom.xml b/kie-pmml-trusty/kie-pmml-commons/pom.xml
-index ce69d7d05f..415a62dfa5 100644
---- a/kie-pmml-trusty/kie-pmml-commons/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-commons/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-trusty</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/pom.xml b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/pom.xml
-index 0a9205f4e3..6556511e3a 100644
---- a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-compiler</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/main/java/org/kie/pmml/compiler/api/dto/CommonCompilationDTO.java b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/main/java/org/kie/pmml/compiler/api/dto/CommonCompilationDTO.java
 index faeebf018f..ab667a71c9 100644
 --- a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/main/java/org/kie/pmml/compiler/api/dto/CommonCompilationDTO.java
@@ -6852,19 +4668,6 @@ index 8dd030ef3d..28334005b7 100644
          RESULT_FEATURE expectedResultFeature = RESULT_FEATURE.byName(toConvert.getResultFeature().value());
          assertThat(retrieved.getResultFeature()).isEqualTo(expectedResultFeature);
          toConvert.setOpType(null);
-diff --git a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/pom.xml b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/pom.xml
-index 62c6ef469d..a07dd3a607 100644
---- a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-compiler</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/main/java/org/kie/pmml/compiler/commons/codegenfactories/KiePMMLDerivedFieldFactory.java b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/main/java/org/kie/pmml/compiler/commons/codegenfactories/KiePMMLDerivedFieldFactory.java
 index b0a57eebda..4aee65cbc7 100644
 --- a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/main/java/org/kie/pmml/compiler/commons/codegenfactories/KiePMMLDerivedFieldFactory.java
@@ -8098,19 +5901,6 @@ index d27ff4c447..aab94e8f8c 100644
          assertThat(targetField.getUsageType().value()).isEqualTo("target");
      }
  
-diff --git a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/pom.xml b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/pom.xml
-index b2568c570b..cd44b0fef3 100644
---- a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-compiler</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/java/org/kie/pmml/compiler/testingutils/TestingModel.java b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/java/org/kie/pmml/compiler/testingutils/TestingModel.java
 index 626fd4316e..7470fe4047 100644
 --- a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/java/org/kie/pmml/compiler/testingutils/TestingModel.java
@@ -8131,97 +5921,6 @@ index 626fd4316e..7470fe4047 100644
 +
  
  }
-diff --git a/kie-pmml-trusty/kie-pmml-compiler/pom.xml b/kie-pmml-trusty/kie-pmml-compiler/pom.xml
-index 941c85ae49..6ed7983250 100644
---- a/kie-pmml-trusty/kie-pmml-compiler/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-compiler/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-trusty</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-dependencies/pom.xml b/kie-pmml-trusty/kie-pmml-dependencies/pom.xml
-index 541c099c81..9210be83de 100644
---- a/kie-pmml-trusty/kie-pmml-dependencies/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-dependencies/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-trusty</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-api/pom.xml b/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-api/pom.xml
-index 8a419e8fb2..e69f71ca67 100644
---- a/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-api/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-api/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-evaluator</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-core/pom.xml b/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-core/pom.xml
-index b27a2a7528..72db7b8214 100644
---- a/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-core/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-core/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-evaluator</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-utils/pom.xml b/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-utils/pom.xml
-index c25b038c1e..b9772e04f1 100644
---- a/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-utils/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-utils/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>kie-pmml-evaluator</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-evaluator/pom.xml b/kie-pmml-trusty/kie-pmml-evaluator/pom.xml
-index 73fa85412e..8f83d38471 100644
---- a/kie-pmml-trusty/kie-pmml-evaluator/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-evaluator/pom.xml
-@@ -4,7 +4,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-trusty</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <packaging>pom</packaging>
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/pom.xml
-index f8b51107cc..63635a3781 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-clustering</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/main/java/org/kie/pmml/models/clustering/compiler/factories/KiePMMLClusteringModelFactory.java b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/main/java/org/kie/pmml/models/clustering/compiler/factories/KiePMMLClusteringModelFactory.java
 index 7b7ca55b9e..e760d10cfb 100644
 --- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/main/java/org/kie/pmml/models/clustering/compiler/factories/KiePMMLClusteringModelFactory.java
@@ -8292,71 +5991,6 @@ index 5fbfa7f31d..8f102e47c4 100644
          assertThat(retrieved.getFieldWeight()).isEqualTo(clusteringField.getFieldWeight());
          assertThat(retrieved.getCenterField()).isEqualTo(isCenterField);
          assertThat(retrieved.getCompareFunction()).isPresent();
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-evaluator/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-evaluator/pom.xml
-index 2ddfe419af..ce3bb00f91 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-evaluator/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-evaluator/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-clustering</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-model/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-model/pom.xml
-index 86c9df95a7..ab800687d3 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-model/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-model/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-clustering</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/pom.xml
-index 2cdd399c10..8f66234a7d 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-clustering</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/pom.xml
-index 35dccd9c62..d0c08cf052 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <packaging>pom</packaging>
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-common/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-common/pom.xml
-index 285f206730..a79a5f5c07 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-common/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-common/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-drools</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-common/src/main/java/org/kie/pmml/models/drools/ast/factories/KiePMMLDataDictionaryASTFactory.java b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-common/src/main/java/org/kie/pmml/models/drools/ast/factories/KiePMMLDataDictionaryASTFactory.java
 index 06274037a0..4719245241 100644
 --- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-common/src/main/java/org/kie/pmml/models/drools/ast/factories/KiePMMLDataDictionaryASTFactory.java
@@ -8711,19 +6345,6 @@ index 28fdafd02a..d9955b6c0e 100644
          dataDictionary.addDataFields(new DataField(targetFieldName, OpType.CONTINUOUS, DataType.DOUBLE));
          String modelName = "ModelName";
          TreeModel model = new TreeModel();
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-compiler/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-compiler/pom.xml
-index e630076522..4b30a79fde 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-compiler/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-compiler/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-drools-scorecard</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-compiler/src/test/java/org/kie/pmml/models/drools/scorecard/compiler/factories/KiePMMLScorecardModelCharacteristicASTFactoryTest.java b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-compiler/src/test/java/org/kie/pmml/models/drools/scorecard/compiler/factories/KiePMMLScorecardModelCharacteristicASTFactoryTest.java
 index 16d50cd211..af24a2d2f8 100644
 --- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-compiler/src/test/java/org/kie/pmml/models/drools/scorecard/compiler/factories/KiePMMLScorecardModelCharacteristicASTFactoryTest.java
@@ -8736,71 +6357,6 @@ index 16d50cd211..af24a2d2f8 100644
 +                .orElseThrow(() -> new RuntimeException("Failed to find DataField for " +simplePredicate.getField()));
          return getCorrectlyFormattedResult(simplePredicate.getValue(), dataType);
      }
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-evaluator/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-evaluator/pom.xml
-index c7a83d61df..19545e07ac 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-evaluator/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-evaluator/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-drools-scorecard</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-model/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-model/pom.xml
-index 13eab68930..1e2bf41e8e 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-model/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-model/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-drools-scorecard</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-tests/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-tests/pom.xml
-index 7c274b68fa..fea8ef195f 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-tests/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/kie-pmml-models-drools-scorecard-tests/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-drools-scorecard</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/pom.xml
-index a438ae877d..d59cecb70d 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-scorecard/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-drools</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <packaging>pom</packaging>
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-compiler/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-compiler/pom.xml
-index e4f23ca07e..bc912fa629 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-compiler/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-compiler/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-drools-tree</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
  
 diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-compiler/src/test/java/org/kie/pmml/models/drools/tree/compiler/factories/KiePMMLTreeModelFactoryTest.java b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-compiler/src/test/java/org/kie/pmml/models/drools/tree/compiler/factories/KiePMMLTreeModelFactoryTest.java
 index 22d3cb65c1..d48aff5c66 100644
@@ -8815,84 +6371,6 @@ index 22d3cb65c1..d48aff5c66 100644
      }
  
      @Test
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-evaluator/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-evaluator/pom.xml
-index 934d96234e..46a8672ff0 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-evaluator/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-evaluator/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-drools-tree</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-model/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-model/pom.xml
-index 72f88dad96..afedade79c 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-model/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-model/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-drools-tree</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-tests/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-tests/pom.xml
-index b949f66a16..0ecba47e76 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-tests/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-tests/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-drools-tree</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/pom.xml
-index 133033aaea..a30386b98f 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-drools</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <packaging>pom</packaging>
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/pom.xml
-index 2f48f7e0b0..fca692fd41 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/pom.xml
-index 53ab718006..2eed1f2863 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-mining</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/java/org/kie/pmml/models/mining/compiler/factories/AbstractKiePMMLFactoryTest.java b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/java/org/kie/pmml/models/mining/compiler/factories/AbstractKiePMMLFactoryTest.java
 index 01fd1ef0c7..393c4f4343 100644
 --- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/java/org/kie/pmml/models/mining/compiler/factories/AbstractKiePMMLFactoryTest.java
@@ -8945,71 +6423,6 @@ index 87c89db11f..bbd01cae21 100644
  
  import org.dmg.pmml.mining.MiningModel;
  import org.junit.jupiter.api.BeforeAll;
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-evaluator/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-evaluator/pom.xml
-index 905bfa1c2a..92fea65eea 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-evaluator/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-evaluator/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-mining</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-model/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-model/pom.xml
-index 84d10ecda3..3395029f43 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-model/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-model/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-mining</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/pom.xml
-index 70b66107b6..6e78a92b42 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-mining</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/pom.xml
-index 761cec44cf..62a2bdf44d 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <packaging>pom</packaging>
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/pom.xml
-index 1334254d63..53ccc1ee7d 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-regression</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/main/java/org/kie/pmml/models/regression/compiler/executor/RegressionModelImplementationProvider.java b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/main/java/org/kie/pmml/models/regression/compiler/executor/RegressionModelImplementationProvider.java
 index d843728fb0..7de61d608c 100644
 --- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/main/java/org/kie/pmml/models/regression/compiler/executor/RegressionModelImplementationProvider.java
@@ -9359,71 +6772,6 @@ index ba88fb6bd1..2ef89a689d 100644
      }
  
      private void commonEvaluateCategoryPredictors(final BlockStmt toVerify,
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-evaluator/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-evaluator/pom.xml
-index e4a0e4d732..c2f5b79378 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-evaluator/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-evaluator/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-regression</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-model/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-model/pom.xml
-index 8884e121b3..5c218754fd 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-model/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-model/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-regression</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-tests/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-tests/pom.xml
-index ade948b530..8d6b906018 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-tests/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-tests/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-regression</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/pom.xml
-index 75fdab6b7a..d4d4f2dabc 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <packaging>pom</packaging>
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/pom.xml
-index 12fe7ee83f..6890fd5909 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-scorecard</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
 diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/java/org/kie/pmml/models/scorecard/compiler/factories/KiePMMLComplexPartialScoreFactoryTest.java b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/java/org/kie/pmml/models/scorecard/compiler/factories/KiePMMLComplexPartialScoreFactoryTest.java
 index f39bd5ffe9..e9f3daa345 100644
 --- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/java/org/kie/pmml/models/scorecard/compiler/factories/KiePMMLComplexPartialScoreFactoryTest.java
@@ -9472,175 +6820,6 @@ index f39bd5ffe9..e9f3daa345 100644
                  apply.getFunction(),
                  apply.getInvalidValueTreatment().value(),
                  variableName));
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-evaluator/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-evaluator/pom.xml
-index 3400b87349..3d22cf9f80 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-evaluator/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-evaluator/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-scorecard</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-model/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-model/pom.xml
-index ae75ee2a04..98e4e3a54f 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-model/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-model/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-scorecard</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-tests/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-tests/pom.xml
-index b57f91381b..00834ab108 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-tests/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-tests/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-scorecard</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/pom.xml
-index 9fa8e86c0e..aad59254ee 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <packaging>pom</packaging>
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tests/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tests/pom.xml
-index a4fcb27df6..def9e2ecc0 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tests/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tests/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <artifactId>kie-pmml-models</artifactId>
-     <groupId>org.kie</groupId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/pom.xml
-index 8cb3ce1034..bc44e2f137 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-tree</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-evaluator/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-evaluator/pom.xml
-index 9d4d2653e4..ee3575fc6a 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-evaluator/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-evaluator/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-tree</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-model/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-model/pom.xml
-index c826d3b033..9d01619f2d 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-model/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-model/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-tree</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-tests/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-tests/pom.xml
-index 94c73200f0..c18761915a 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-tests/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-tests/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models-tree</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/pom.xml b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/pom.xml
-index 075c6df7bd..9ab75aa72b 100644
---- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-models</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <packaging>pom</packaging>
-diff --git a/kie-pmml-trusty/kie-pmml-models/pom.xml b/kie-pmml-trusty/kie-pmml-models/pom.xml
-index d007a4306e..60ec4df0ec 100644
---- a/kie-pmml-trusty/kie-pmml-models/pom.xml
-+++ b/kie-pmml-trusty/kie-pmml-models/pom.xml
-@@ -3,7 +3,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-pmml-trusty</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-pmml-trusty/pom.xml b/kie-pmml-trusty/pom.xml
-index 16c2ba6557..43feb93094 100644
---- a/kie-pmml-trusty/pom.xml
-+++ b/kie-pmml-trusty/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/kie-test-util/pom.xml b/kie-test-util/pom.xml
-index 6471775427..9205ce3ba0 100644
---- a/kie-test-util/pom.xml
-+++ b/kie-test-util/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
 diff --git a/kie-test-util/src/main/java/org/kie/test/util/db/PersistenceUtil.java b/kie-test-util/src/main/java/org/kie/test/util/db/PersistenceUtil.java
 index ed1536f056..b939672ad0 100644
 --- a/kie-test-util/src/main/java/org/kie/test/util/db/PersistenceUtil.java
@@ -9688,68 +6867,3 @@ index 1a396881d8..3e2b39fd96 100755
  
  import com.arjuna.ats.jta.common.jtaPropertyManager;
  import org.apache.tomcat.dbcp.dbcp2.managed.BasicManagedDataSource;
-diff --git a/kie-util/kie-util-maven-integration/pom.xml b/kie-util/kie-util-maven-integration/pom.xml
-index 851263bf4f..b068a15e3e 100644
---- a/kie-util/kie-util-maven-integration/pom.xml
-+++ b/kie-util/kie-util-maven-integration/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-util</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-util/kie-util-maven-support/pom.xml b/kie-util/kie-util-maven-support/pom.xml
-index ca6383e92d..7510ec81a7 100644
---- a/kie-util/kie-util-maven-support/pom.xml
-+++ b/kie-util/kie-util-maven-support/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-util</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-util/kie-util-xml/pom.xml b/kie-util/kie-util-xml/pom.xml
-index 60336524bb..0710891b0b 100644
---- a/kie-util/kie-util-xml/pom.xml
-+++ b/kie-util/kie-util-xml/pom.xml
-@@ -5,7 +5,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>kie-util</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
- 
-diff --git a/kie-util/pom.xml b/kie-util/pom.xml
-index f2ea698f02..a24a8d96de 100644
---- a/kie-util/pom.xml
-+++ b/kie-util/pom.xml
-@@ -6,7 +6,7 @@
-   <parent>
-     <groupId>org.kie</groupId>
-     <artifactId>drools-build-parent</artifactId>
--    <version>8.38.0-SNAPSHOT</version>
-+    <version>quarkus-3-SNAPSHOT</version>
-     <relativePath>../build-parent/pom.xml</relativePath>
-   </parent>
- 
-diff --git a/pom.xml b/pom.xml
-index 397f2f7414..ca02454a64 100644
---- a/pom.xml
-+++ b/pom.xml
-@@ -13,7 +13,7 @@
-   <groupId>org.kie</groupId>
-   <artifactId>drools-parent</artifactId>
-   <packaging>pom</packaging>
--  <version>8.38.0-SNAPSHOT</version>
-+  <version>quarkus-3-SNAPSHOT</version>
- 
-   <name>Drools :: Parent</name>
-   <description>

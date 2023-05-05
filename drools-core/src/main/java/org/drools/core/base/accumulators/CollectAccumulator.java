@@ -16,27 +16,25 @@
 
 package org.drools.core.base.accumulators;
 
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.Collect;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.accessor.Accumulator;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
-
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.rule.Collect;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Accumulator;
-import org.drools.core.reteoo.Tuple;
+import java.util.Objects;
 
 /**
  * An accumulator to execute "collect" CEs
  */
-public class CollectAccumulator
-    implements
-    Accumulator,
-    Externalizable {
+public class CollectAccumulator implements Accumulator, Externalizable {
 
     private static final long                          serialVersionUID = 510l;
     private Collect collect;
@@ -125,5 +123,22 @@ public class CollectAccumulator
     public Object createWorkingMemoryContext() {
         // no working memory context needed
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CollectAccumulator that = (CollectAccumulator) o;
+        return unwrapHandle == that.unwrapHandle && Objects.equals(collect, that.collect);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(collect, unwrapHandle);
     }
 }

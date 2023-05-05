@@ -1,0 +1,10 @@
+// this is only syntactically valid DRL, so not ending with purely .drl
+function boolean mapContains(Map left, Map right) {
+    if (left == null) {
+      return right == null;
+    }
+    if (right == null) {
+      return false;
+    }
+    return left.entrySet().containsAll(right.entrySet());
+}

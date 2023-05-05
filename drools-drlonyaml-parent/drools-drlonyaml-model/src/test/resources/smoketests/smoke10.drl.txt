@@ -1,0 +1,9 @@
+// this is only syntactically valid DRL, so not ending with purely .drl
+rule "Fix the PersistentVolume Claim Pod PENDING"
+when
+  $pvc : PersistentVolumeClaim( status.phase == "Pending" )
+  $pod : Pod( status.phase == "Pending" )
+  Volume( persistentVolumeClaim!.claimName == $pvc.metadata.name ) from $pod.spec.volumes
+then
+  insert(new Advice("Fix the PersistentVolume","Pod PENDING: "+$pod.getMetadata().getName() + " pvc PENDING: "+$pvc.getMetadata().getName()));
+end

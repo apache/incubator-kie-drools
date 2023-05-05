@@ -1,0 +1,18 @@
+# only syntactically valid yaml.
+rules:
+- name: Fix the PersistentVolume Claim Pod PENDING
+  when:
+  - given: PersistentVolumeClaim
+    as: $pvc
+    having:
+    - status.phase == "Pending"
+  - given: Pod
+    as: $pod
+    having:
+    - status.phase == "Pending"
+  - given: Volume
+    having:
+    - persistentVolumeClaim!.claimName == $pvc.metadata.name
+    from: $pod.spec.volumes
+  then: |
+    insert(new Advice("Fix the PersistentVolume","Pod PENDING: "+$pod.getMetadata().getName() + " pvc PENDING: "+$pvc.getMetadata().getName()));

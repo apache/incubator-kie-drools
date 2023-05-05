@@ -23,7 +23,7 @@ environments:
     ids:
     - quarkus
   quarkus-3:
-    pull_request_default_check: true
+    pull_request_default_check: false
     env_vars:
       BUILD_MAVEN_TOOL: kie-maven-3.9.1
       BUILD_JDK_TOOL: kie-jdk17
@@ -52,6 +52,8 @@ repositories:
 - name: drools
 - name: drools-website
 - name: kie-benchmarks
+productized_repositories:
+- name: drools
 git:
   author:
     name: kiegroup
