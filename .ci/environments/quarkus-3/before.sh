@@ -39,8 +39,6 @@ curl -Ls https://sh.jbang.dev | \
         -v version.io.quarkus=${quarkus_version} 
 cd -
 
-exit 0
-
 # Launch Quarkus 3 Openrewrite
 ${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:${rewrite_plugin_version}:run \
     -Drewrite.configLocation="${quarkus_recipe_file}" \
