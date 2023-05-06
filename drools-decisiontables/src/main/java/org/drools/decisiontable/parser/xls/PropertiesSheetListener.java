@@ -140,7 +140,9 @@ public class PropertiesSheetListener implements DataListener {
 
         private List<String> getList( String key, int index ) {
             List<String[]> pcList  = getPropertyCell( key );
-            if( pcList == null ) return null;
+            if( pcList == null ) {
+                return null;
+            }
             List<String> r = new ArrayList<>();
             for( String[] pc: pcList ){
                 r.add( pc[index] );
@@ -158,7 +160,9 @@ public class PropertiesSheetListener implements DataListener {
 
         private String getSingle( String key, int index ){
             List<String[]> r  = getPropertyCell( key );
-            if( r == null || r.size() == 0 ) return null;
+            if( r == null || r.size() == 0 ) {
+                return null;
+            }
             return r.get( 0 )[index];
         }
 
@@ -172,7 +176,9 @@ public class PropertiesSheetListener implements DataListener {
 
         public String getSingleProperty( String key, String defaultValue ){
             String r = getSingleProperty( key );
-            if( r == null || "".equals( r ) ) r = defaultValue;
+            if( r == null || "".equals( r ) ) {
+                r = defaultValue;
+            }
             return r;
         }
 

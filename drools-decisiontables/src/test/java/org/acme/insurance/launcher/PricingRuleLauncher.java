@@ -43,19 +43,19 @@ public class PricingRuleLauncher {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-        dtconf.setInputType( DecisionTableInputType.XLS );
+        dtconf.setInputType(DecisionTableInputType.XLS);
 
-        kbuilder.add( ResourceFactory.newClassPathResource("/data/ExamplePolicyPricing.drl.xls", getClass() ),
+        kbuilder.add(ResourceFactory.newClassPathResource("/data/ExamplePolicyPricing.drl.xls", getClass()),
                               ResourceType.DTABLE,
-                              dtconf );
+                              dtconf);
 
-        if ( kbuilder.hasErrors() ) {
-            throw new RuntimeException( kbuilder.getErrors().toString() );
+        if (kbuilder.hasErrors()) {
+            throw new RuntimeException(kbuilder.getErrors().toString());
         }
 
         //BUILD RULEBASE
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         //NEW WORKING MEMORY
         final KieSession session = kbase.newKieSession();
@@ -64,13 +64,13 @@ public class PricingRuleLauncher {
         Driver driver = new Driver();
         Policy policy = new Policy();
 
-        session.insert( driver );
-        session.insert( policy );
+        session.insert(driver);
+        session.insert(policy);
 
         session.fireAllRules();
 
-        System.out.println( "BASE PRICE IS: " + policy.getBasePrice() );
-        System.out.println( "DISCOUNT IS: " + policy.getDiscountPercent() );
+        System.out.println("BASE PRICE IS: " + policy.getBasePrice());
+        System.out.println("DISCOUNT IS: " + policy.getDiscountPercent());
 
         return policy.getBasePrice();
 

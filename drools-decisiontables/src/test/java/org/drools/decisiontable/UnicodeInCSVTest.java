@@ -15,13 +15,13 @@
 
 package org.drools.decisiontable;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.junit.After;
 import org.junit.Test;
 import org.kie.api.command.Command;
 import org.kie.api.io.ResourceType;
@@ -37,9 +37,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public class UnicodeInCSVTest {
+    
+    private KieSession ksession;
 
-	@Test
-    public void testUnicodeCSVDecisionTable() throws FileNotFoundException {
+    @After
+    public void tearDown() {
+        if (ksession != null) {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testUnicodeCSVDecisionTable() {
 
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType(DecisionTableInputType.CSV);
@@ -53,10 +62,10 @@ public class UnicodeInCSVTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
         
-        KieSession ksession = kbase.newKieSession();
+        ksession = kbase.newKieSession();
         
-        List<Command<?>> commands = new ArrayList<Command<?>>();
-        List<Člověk> dospělí = new ArrayList<Člověk>();
+        List<Command<?>> commands = new ArrayList<>();
+        List<Člověk> dospělí = new ArrayList<>();
         commands.add(CommandFactory.newSetGlobal("dospělí", dospělí));
         Člověk Řehoř = new Člověk();
         Řehoř.setVěk(30);
@@ -68,17 +77,15 @@ public class UnicodeInCSVTest {
 
         // people with age greater than 18 should be added to list of adults
         assertThat(kbase.getRule("org.drools.decisiontable", "přidej k dospělým")).isNotNull();
-        assertThat(5).isEqualTo(dospělí.size());
-        assertThat("Řehoř").isEqualTo(dospělí.iterator().next().getJméno());
+        assertThat(dospělí).hasSize(5);
+        assertThat(dospělí.iterator().next().getJméno()).isEqualTo("Řehoř");
 
         assertThat(kbase.getRule("org.drools.decisiontable", "привет мир")).isNotNull();
         assertThat(kbase.getRule("org.drools.decisiontable", "你好世界")).isNotNull();
         assertThat(kbase.getRule("org.drools.decisiontable", "hallå världen")).isNotNull();
         assertThat(kbase.getRule("org.drools.decisiontable", "مرحبا العالم")).isNotNull();
-
-        ksession.dispose();
     }
-	
+    
     public static class Člověk {
 
         private int věk;

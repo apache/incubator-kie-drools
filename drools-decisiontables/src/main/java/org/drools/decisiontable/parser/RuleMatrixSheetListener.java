@@ -19,11 +19,11 @@ package org.drools.decisiontable.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.util.StringUtils;
 import org.drools.template.model.Condition;
 import org.drools.template.model.Consequence;
 import org.drools.template.model.Rule;
 import org.drools.template.model.SnippetBuilder;
+import org.drools.util.StringUtils;
 
 /**
  *         href="mailto:michael.neale@gmail.com"> Michael Neale </a>

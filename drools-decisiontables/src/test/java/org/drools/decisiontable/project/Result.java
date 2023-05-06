@@ -25,7 +25,7 @@ public class Result {
         // empty constructor.
     }
 
-    public Result( Object value ) {
+    public Result(Object value) {
         this.value = value;
     }
 
@@ -33,15 +33,15 @@ public class Result {
         return value;
     }
 
-    public void setValue( Object value ) {
+    public void setValue(Object value) {
         this.value = value;
     }
 
-    public void addValue( Object value ) {
+    public void addValue(Object value) {
         if (!(this.value instanceof Collection)) {
             this.value = new ArrayList<>();
         }
-        ( ( Collection ) this.value ).add(value);
+        ((Collection) this.value).add(value);
     }
 
     @Override
@@ -50,11 +50,15 @@ public class Result {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
-        Result result = ( Result ) o;
-        return value != null ? value.equals( result.value ) : result.value == null;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Result result = (Result) o;
+        return value != null ? value.equals(result.value) : result.value == null;
     }
 
     @Override

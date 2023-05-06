@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.junit.After;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -18,6 +19,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public class IgnoreNumericFormatTest {
+
+    private KieSession ksession;
+
+    @After
+    public void tearDown() {
+        if (ksession != null) {
+            ksession.dispose();
+        }
+    }
+    
 
     @Test
     public void testPercentAndCurrencyFormat() throws IOException {
@@ -44,7 +55,7 @@ public class IgnoreNumericFormatTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        KieSession ksession = kbase.newKieSession();
+        ksession = kbase.newKieSession();
 
         ValueHolder a = new ValueHolder("A");
         ValueHolder b = new ValueHolder("B");
@@ -55,6 +66,7 @@ public class IgnoreNumericFormatTest {
         ksession.insert(b);
         ksession.insert(c);
         ksession.insert(d);
+        
         ksession.fireAllRules();
 
         assertThat(a.getPercentValue()).isEqualTo(new BigDecimal("0.0"));
@@ -84,7 +96,5 @@ public class IgnoreNumericFormatTest {
         assertThat(d.getCurrencyValue3()).isEqualTo(new BigDecimal("100.0"));
         assertThat(d.getIntValue()).isEqualTo(100);
         assertThat(d.getDoubleValue()).isEqualTo(100);
-
-        ksession.dispose();
     }
 }

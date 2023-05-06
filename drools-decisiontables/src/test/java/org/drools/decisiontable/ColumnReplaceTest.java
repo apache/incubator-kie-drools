@@ -15,11 +15,6 @@
 
 package org.drools.decisiontable;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
-import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
@@ -36,9 +31,9 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class ColumnReplaceTest {
 
-	@Test
-	public void testAutoFocusToLockOnActiveReplacement () throws FileNotFoundException {
-		
+    @Test
+    public void testAutoFocusToLockOnActiveReplacement(){
+        
         DecisionTableConfiguration dTableConfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dTableConfiguration.setInputType( DecisionTableInputType.CSV );
 
@@ -49,7 +44,7 @@ public class ColumnReplaceTest {
             System.out.println(kbuilder.getErrors());
             fail("Knowledge builder cannot compile package!");
         }
-        System.out.println(DecisionTableFactory.loadFromInputStream(new FileInputStream("src/test/resources/org/drools/decisiontable/columnReplaceTest.drl.csv"), dTableConfiguration));
+
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
 
@@ -60,5 +55,5 @@ public class ColumnReplaceTest {
         assertThat(((RuleImpl) kbase.getRule("org.drools.decisiontable", "lockOnActiveRule")).getAutoFocus()).isFalse();
         // auto-focus was set to be true, so it should be true
         assertThat(((RuleImpl) kbase.getRule("org.drools.decisiontable", "autoFocusRule")).getAutoFocus()).isTrue();
-	}
+    }
 }

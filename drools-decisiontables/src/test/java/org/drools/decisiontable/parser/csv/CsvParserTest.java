@@ -19,10 +19,11 @@ package org.drools.decisiontable.parser.csv;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.template.parser.DataListener;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.drools.template.parser.DataListener;
+import static org.drools.template.parser.DataListener.NON_MERGED;
 
 public class CsvParserTest {
 
@@ -30,22 +31,16 @@ public class CsvParserTest {
     public void testCsv() {
         final MockSheetListener listener = new MockSheetListener();
         final CsvLineParser lineParser = new CsvLineParser();
-        final CsvParser parser = new CsvParser( listener,
-                                                lineParser );
+        final CsvParser parser = new CsvParser(listener, lineParser);
 
-        parser.parseFile( getClass().getResourceAsStream("/data/TestCsv.drl.csv") );
-        assertThat(listener.getCell(0,
-                0)).isEqualTo("A");
-        assertThat(listener.getCell(0,
-                1)).isEqualTo("B");
-        assertThat(listener.getCell(2,
-                0)).isEqualTo("");
-        assertThat(listener.getCell(1,
-                0)).isEqualTo("C");
-        assertThat(listener.getCell(1,
-                1)).isEqualTo("D");
-        assertThat(listener.getCell(1,
-                3)).isEqualTo("E");
+        parser.parseFile(getClass().getResourceAsStream("/data/TestCsv.drl.csv"));
+        
+        assertThat(listener.getCell(0, 0)).isEqualTo("A");
+        assertThat(listener.getCell(0, 1)).isEqualTo("B");
+        assertThat(listener.getCell(2, 0)).isEqualTo("");
+        assertThat(listener.getCell(1, 0)).isEqualTo("C");
+        assertThat(listener.getCell(1, 1)).isEqualTo("D");
+        assertThat(listener.getCell(1, 3)).isEqualTo("E");
 
     }
 
@@ -54,42 +49,26 @@ public class CsvParserTest {
      */
     @Test
     public void testCellMergeHandling() {
-        CsvParser parser = new CsvParser( (DataListener) null,
-                                          null );
-        assertThat(parser.calcStartMerge(DataListener.NON_MERGED,
-                1,
-                "foo")).isEqualTo(DataListener.NON_MERGED);
-        assertThat(parser.calcStartMerge(DataListener.NON_MERGED,
-                42,
-                "...")).isEqualTo(42);
+        CsvParser parser = new CsvParser((DataListener) null, null);
+        assertThat(parser.calcStartMerge(NON_MERGED, 1, "foo")).isEqualTo(NON_MERGED);
+        assertThat(parser.calcStartMerge(NON_MERGED, 42, "...")).isEqualTo(42);
 
-        assertThat(parser.calcStartMerge(42,
-                43,
-                "...")).isEqualTo(42);
+        assertThat(parser.calcStartMerge(42, 43, "...")).isEqualTo(42);
 
-        assertThat(parser.calcStartMerge(42,
-                44,
-                "VanHalen")).isEqualTo(DataListener.NON_MERGED);
+        assertThat(parser.calcStartMerge(42, 44, "VanHalen")).isEqualTo(NON_MERGED);
 
-        assertThat(parser.calcCellText(DataListener.NON_MERGED,
-                "VanHalen")).isEqualTo("VanHalen");
-        assertThat(parser.calcCellText(42,
-                "VanHalen...")).isEqualTo("VanHalen");
-        assertThat(parser.calcCellText(42,
-                "...")).isEqualTo("");
-
+        assertThat(parser.calcCellText(NON_MERGED, "VanHalen")).isEqualTo("VanHalen");
+        assertThat(parser.calcCellText(42, "VanHalen...")).isEqualTo("VanHalen");
+        assertThat(parser.calcCellText(42, "...")).isEqualTo("");
     }
 
-    static class MockSheetListener
-        implements
-        DataListener {
+    static class MockSheetListener implements DataListener {
 
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
 
         public String getCell(final int row,
                               final int col) {
-            return this.data.get( cellKey( row,
-                                           col ) );
+            return this.data.get(cellKey(row, col));
         }
 
         public void startSheet(final String name) {
@@ -108,13 +87,10 @@ public class CsvParserTest {
                             final String value,
                             final int mergeCellStart) {
 
-            this.data.put( cellKey( row,
-                                    column ),
-                           value );
+            this.data.put(cellKey(row, column), value);
         }
 
-        String cellKey(final int row,
-                       final int column) {
+        String cellKey(final int row, final int column) {
             return "R" + row + "C" + column;
         }
     }

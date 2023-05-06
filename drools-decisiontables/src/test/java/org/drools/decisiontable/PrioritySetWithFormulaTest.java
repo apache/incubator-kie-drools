@@ -37,16 +37,14 @@ public class PrioritySetWithFormulaTest {
         KieFileSystem kfs = ks.newKieFileSystem();
         KieModuleModel kmodule = ks.newKieModuleModel();
 
-        kfs.writeKModuleXML( kmodule.toXML() );
-        kfs.write( ks.getResources().newClassPathResource(
-                "prioritySetWithFormula.drl.xls", this.getClass() ) );
+        kfs.writeKModuleXML(kmodule.toXML());
+        kfs.write(ks.getResources().newClassPathResource("prioritySetWithFormula.drl.xls", getClass()));
 
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
 
-        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR)).isEmpty();
 
-        kieBase = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() )
-                .getKieBase();
+        kieBase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
 
     }
 
@@ -59,6 +57,7 @@ public class PrioritySetWithFormulaTest {
 
         // RULE CheeseWorld_12 has salience "=ROW()"
         RuleImpl cheeseWorld12 = (RuleImpl) kieBase.getRule( "test", "CheeseWorld_12" );
+        
         assertThat(cheeseWorld12.getSalience().getValue()).isEqualTo(12);
 
     }

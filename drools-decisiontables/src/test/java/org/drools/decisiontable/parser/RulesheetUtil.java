@@ -18,7 +18,6 @@ package org.drools.decisiontable.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,19 +31,16 @@ public class RulesheetUtil {
      * Utility method showing how to get a rule sheet listener from a stream.
      */
     public static RuleSheetListener getRuleSheetListener(final InputStream stream) throws IOException {
-        final Map<String, List<DataListener>> sheetListeners = new HashMap<String, List<DataListener>>();
-        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final Map<String, List<DataListener>> sheetListeners = new HashMap<>();
         final RuleSheetListener listener = new DefaultRuleSheetListener();
-        listeners.add(listener);
-        sheetListeners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
-                      listeners );
-        final ExcelParser parser = new ExcelParser( sheetListeners );
+        final List<DataListener> listeners = List.of(listener);
+        sheetListeners.put(ExcelParser.DEFAULT_RULESHEET_NAME, listeners);
+        final ExcelParser parser = new ExcelParser(sheetListeners);
         try {
-            parser.parseFile( stream );
+            parser.parseFile(stream);
         } finally {
             stream.close();
         }
-        stream.close();
         return listener;
     }
 }

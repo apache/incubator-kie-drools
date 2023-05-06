@@ -16,10 +16,10 @@
 
 package org.drools.decisiontable.parser;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,9 +35,9 @@ import org.drools.template.model.Package;
 import org.drools.template.model.Rule;
 import org.drools.template.parser.DecisionTableParseException;
 
-import static org.drools.util.StringUtils.replaceOutOfQuotes;
 import static org.drools.decisiontable.parser.ActionType.Code;
 import static org.drools.template.model.Rule.MAX_ROWS;
+import static org.drools.util.StringUtils.replaceOutOfQuotes;
 
 /**
  * An object of this class is prepared to receive calls passing it the
@@ -309,7 +309,9 @@ implements RuleSheetListener {
      */
     public void newRow(final int rowNumber,
             final int columns) {
-        if ( _currentRule != null ) flushRule();
+        if ( _currentRule != null ) {
+            flushRule();
+        }
         // nothing to see here... these aren't the droids your looking for..
         // move along...
     }

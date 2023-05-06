@@ -51,7 +51,9 @@ public class RuleSheetParserUtil {
      */
     public static List<Import> getImportList(final List<String> importCells) {
         final List<Import> importList = new ArrayList<>();
-        if ( importCells == null ) return importList;
+        if ( importCells == null ) {
+            return importList;
+        }
 
         for( String importCell: importCells ){
             final StringTokenizer tokens = new StringTokenizer( importCell, "," );
@@ -71,7 +73,9 @@ public class RuleSheetParserUtil {
      */
     public static List<Global> getVariableList( final List<String> variableCells ){
         final List<Global> variableList = new ArrayList<>();
-        if ( variableCells == null ) return variableList;
+        if ( variableCells == null ) {
+            return variableList;
+        }
 
         for( String variableCell: variableCells ){
             final StringTokenizer tokens = new StringTokenizer( variableCell, "," );

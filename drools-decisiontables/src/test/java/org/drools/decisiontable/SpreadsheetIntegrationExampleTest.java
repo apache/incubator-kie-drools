@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.acme.insurance.launcher.PricingRuleLauncher;
+import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -38,6 +39,15 @@ import org.kie.internal.utils.KieHelper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SpreadsheetIntegrationExampleTest {
+    
+    private KieSession ksession;
+
+    @After
+    public void tearDown() {
+        if (ksession != null) {
+            ksession.dispose();
+        }
+    }
 
     @Test
     public void testExecuteUsingKieAPI() throws Exception {
@@ -45,74 +55,64 @@ public class SpreadsheetIntegrationExampleTest {
         Resource dt = ResourceFactory.newClassPathResource("/data/IntegrationExampleTest.drl.xls", getClass());
         
         // create the builder
-        KieSession ksession = getKieSession( dt );
+        ksession = getKieSession(dt);
 
-        ksession.insert( new Cheese( "stilton",
-                                    42 ) );
-        ksession.insert( new Person( "michael",
-                                    "stilton",
-                                    42 ) );
-        final List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list",
-                           list );
+        ksession.insert(new Cheese("stilton", 42));
+        ksession.insert(new Person("michael", "stilton", 42));
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+        
         ksession.fireAllRules();
-        assertThat(list.size()).isEqualTo(1);
-        assertThat(list.get(0)).isEqualTo("Old man stilton");
+       
+        assertThat(list).hasSize(1).containsExactly("Old man stilton");
     }
 
     private KieSession getKieSession(Resource dt) {
         KieServices ks = KieServices.Factory.get();
 
-        KieFileSystem kfs = ks.newKieFileSystem().write( dt );
-        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
-        assertThat(kb.getResults().getMessages().isEmpty()).isTrue();
+        KieFileSystem kfs = ks.newKieFileSystem().write(dt);
+        KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
+        
+        assertThat(kb.getResults().getMessages()).isEmpty();
 
         // get the session
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
-        return ksession;
+        return ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
     }
 
     @Test
     public void testExecuteJBRULES3005() throws Exception {
-        Resource dt = ResourceFactory.newClassPathResource("/data/IntegrationExampleTest.drl.xls", getClass() );
-        KieSession ksession = getKieSession( dt );
+        Resource dt = ResourceFactory.newClassPathResource("/data/IntegrationExampleTest.drl.xls", getClass());
+        ksession = getKieSession(dt);
 
         //ASSERT AND FIRE
-        ksession.insert( new Cheese( "stilton",
-                                    42 ) );
-        ksession.insert( new Person( "michael",
-                                    "stilton",
-                                    42 ) );
-        final List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list",
-                           list );
+        ksession.insert(new Cheese("stilton", 42));
+        ksession.insert(new Person("michael", "stilton", 42));
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+        
         ksession.fireAllRules();
-        assertThat(list.size()).isEqualTo(1);
-        assertThat(list.get(0)).isEqualTo("Old man stilton");
+        
+        assertThat(list).hasSize(1).containsExactly("Old man stilton");
     }
     
     @Test 
     public void testNamedWorksheet() throws Exception {
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-        dtconf.setInputType( DecisionTableInputType.XLS );
-        dtconf.setWorksheetName( "Tables_2" );
+        dtconf.setInputType(DecisionTableInputType.XLS);
+        dtconf.setWorksheetName("Tables_2");
 
-        Resource dt = ResourceFactory.newClassPathResource("/data/IntegrationExampleTest.drl.xls", getClass() )
-                                     .setConfiguration( dtconf );
-        KieSession ksession = getKieSession( dt );
+        Resource dt = ResourceFactory.newClassPathResource("/data/IntegrationExampleTest.drl.xls", getClass())
+                                     .setConfiguration(dtconf);
+        ksession = getKieSession(dt);
 
         //ASSERT AND FIRE
-        ksession.insert( new Cheese( "cheddar",
-                                    42 ) );
-        ksession.insert( new Person( "michael",
-                                    "stilton",
-                                    25 ) );
-        final List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list",
-                           list );
+        ksession.insert(new Cheese("cheddar", 42));
+        ksession.insert(new Person("michael", "stilton", 25));
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
         ksession.fireAllRules();
-        assertThat(list.size()).isEqualTo(1);
-        assertThat(list.get(0)).isEqualTo("Young man cheddar");
+        
+        assertThat(list).hasSize(1).containsExactly("Young man cheddar");
     }
 
     /**
@@ -127,10 +127,10 @@ public class SpreadsheetIntegrationExampleTest {
     @Test
     public void testBooleanField() throws Exception {
         Resource dt = ResourceFactory.newClassPathResource("/data/ShopRules.drl.xls", getClass());
-        KieSession ksession = getKieSession( dt );
+        ksession = getKieSession(dt);
 
-        Person p = new Person( "michael", "stilton", 42 );
-        ksession.insert( p );
+        Person p = new Person("michael", "stilton", 42);
+        ksession.insert(p);
 
         ksession.fireAllRules();
 
@@ -139,19 +139,19 @@ public class SpreadsheetIntegrationExampleTest {
 
     @Test
     public void testHeadingWhitespace() throws Exception {
-        System.setProperty( "drools.trimCellsInDTable", "false" );
+        System.setProperty("drools.trimCellsInDTable", "false");
         try {
-            Resource dt = ResourceFactory.newClassPathResource("/data/HeadingWhitespace.drl.xls", getClass() );
-            KieSession ksession = getKieSession( dt );
+            Resource dt = ResourceFactory.newClassPathResource("/data/HeadingWhitespace.drl.xls", getClass());
+            ksession = getKieSession(dt);
 
-            Person p = new Person( " me" );
-            ksession.insert( p );
+            Person p = new Person(" me");
+            ksession.insert(p);
 
             ksession.fireAllRules();
 
             assertThat(p.getCanBuyAlcohol()).isTrue();
         } finally {
-            System.clearProperty( "drools.trimCellsInDTable" );
+            System.clearProperty("drools.trimCellsInDTable");
         }
     }
 
@@ -161,14 +161,14 @@ public class SpreadsheetIntegrationExampleTest {
         KieServices ks = KieServices.get();
 
         KieModuleModel kmodel = ks.newKieModuleModel();
-        kmodel.newKieBaseModel( "kbase1" )
-                .addPackage( "org.drools.simple.candrink" )
-                .setDefault( true );
+        kmodel.newKieBaseModel("kbase1")
+                .addPackage("org.drools.simple.candrink")
+                .setDefault(true);
 
-        KieBase kbase = new KieHelper().setKieModuleModel( kmodel )
-                .addResource( ks.getResources().newClassPathResource("/data/CanNotDrink2.drl.xls", getClass() ), ResourceType.DTABLE )
+        KieBase kbase = new KieHelper().setKieModuleModel(kmodel)
+                .addResource(ks.getResources().newClassPathResource("/data/CanNotDrink2.drl.xls", getClass()), ResourceType.DTABLE)
                 .build();
 
-        assertThat(kbase.getKiePackage("org.drools.simple.candrink").getRules().size()).isEqualTo(2);
+        assertThat(kbase.getKiePackage("org.drools.simple.candrink").getRules()).hasSize(2);
     }
 }
