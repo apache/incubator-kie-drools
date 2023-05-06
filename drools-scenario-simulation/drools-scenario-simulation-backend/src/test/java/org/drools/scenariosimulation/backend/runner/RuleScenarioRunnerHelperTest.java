@@ -17,8 +17,6 @@
 package org.drools.scenariosimulation.backend.runner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -66,13 +64,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assertions.within;
+import static org.drools.scenariosimulation.api.model.FactMappingValueStatus.FAILED_WITH_EXCEPTION;
+import static org.drools.scenariosimulation.api.model.FactMappingValueStatus.SUCCESS;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.COVERAGE_LISTENER;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.RULES_AVAILABLE;
@@ -190,72 +188,87 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         backgroundData2 = background.addData();
         backgroundData2.addMappingValue(personFactIdentifier, firstNameGivenExpressionIdentifier, NAME);
     }
+    
+    @Test
+    public void extractGivenValues_scenario1() {
+        List<InstanceGiven> scenario1Inputs = extractGivenValuesForScenario1();
+        
+        assertThat(scenario1Inputs).hasSize(1);
+
+    }
 
     @Test
-    public void extractGivenValuesTest() {
-        List<InstanceGiven> scenario1Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
-                                                                              scenario1.getUnmodifiableFactMappingValues(),
-                                                                              classLoader,
-                                                                              expressionEvaluatorFactory);
-        assertThat(scenario1Inputs.size()).isEqualTo(1);
+    public void extractGivenValues_scenario2() {
+        List<InstanceGiven> scenario2Inputs = extractGivenValuesForScenario2();
+        
+        assertThat(scenario2Inputs).hasSize(2);
 
-        List<InstanceGiven> scenario2Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
-                                                                              scenario2.getUnmodifiableFactMappingValues(),
-                                                                              classLoader,
-                                                                              expressionEvaluatorFactory);
-        assertThat(scenario2Inputs.size()).isEqualTo(2);
-
+    }
+    
+    @Test
+    public void extractGivenValues_scenario2_addOrUpdateMappingValue() {
         // add expression
         scenario2.addOrUpdateMappingValue(disputeFactIdentifier, expressionGivenExpressionIdentifier, "# new org.drools.scenariosimulation.backend.model.Dispute(\"dispute description\", 10)");
 
-        scenario2Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
-                                                          scenario2.getUnmodifiableFactMappingValues(),
-                                                          classLoader,
-                                                          expressionEvaluatorFactory);
-        assertThat(scenario2Inputs.size()).isEqualTo(2);
+        List<InstanceGiven> scenario2Inputs = extractGivenValuesForScenario2();
+        
+        assertThat(scenario2Inputs).hasSize(2);
         Optional<Dispute> disputeGivenOptional = scenario2Inputs.stream()
                 .filter(elem -> elem.getValue() instanceof Dispute)
                 .map(elem -> (Dispute) elem.getValue())
                 .findFirst();
-        assertThat(disputeGivenOptional.isPresent()).isTrue();
+        assertThat(disputeGivenOptional).isPresent();
         assertThat(disputeGivenOptional.get().getDescription()).isEqualTo("dispute description");
-
+    }
+    
+    @Test
+    public void extractGivenValues_scenario2_addOrUpdateMappingValue_wrongValue() {
         scenario2.addOrUpdateMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "WrongValue");
-        assertThatThrownBy(() -> runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
-                                                                 scenario2.getUnmodifiableFactMappingValues(),
-                                                                 classLoader,
-                                                                 expressionEvaluatorFactory))
+
+        assertThatThrownBy(() -> extractGivenValuesForScenario2())
                 .isInstanceOf(ScenarioException.class)
                 .hasMessage("Error in GIVEN data");
-    }
+    }    
+
 
     @Test
-    public void extractExpectedValuesTest() {
+    public void extractExpectedValues_scenario1() {
         List<ScenarioExpect> scenario1Outputs = runnerHelper.extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
-        assertThat(scenario1Outputs.size()).isEqualTo(1);
 
+        assertThat(scenario1Outputs).hasSize(1);
+    }
+    
+    @Test
+    public void extractExpectedValues_scenario2_addOrUpdateMappingValue() {
         scenario2.addOrUpdateMappingValue(FactIdentifier.create("TEST", String.class.getCanonicalName()),
                                           ExpressionIdentifier.create("TEST", FactMappingType.EXPECT),
                                           "TEST");
+        
         List<ScenarioExpect> scenario2Outputs = runnerHelper.extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
-        assertThat(scenario2Outputs.size()).isEqualTo(3);
+    
+        assertThat(scenario2Outputs).hasSize(3);
         assertThat(scenario2Outputs.stream().filter(ScenarioExpect::isNewFact).count()).isEqualTo(1);
-
+    }    
+    
+    @Test
+    public void extractExpectedValues_scenario2_addOrUpdateMappingValue_givenAndExpect() {
         /* A Given "TEST" fact with null rawValue should works as the previous case, i.e. to not consider the GIVEN fact with empty data */
+        scenario2.addOrUpdateMappingValue(FactIdentifier.create("TEST", String.class.getCanonicalName()),
+                                          ExpressionIdentifier.create("TEST", FactMappingType.EXPECT),
+                                          "TEST");
         scenario2.addOrUpdateMappingValue(FactIdentifier.create("TEST", String.class.getCanonicalName()),
                                           ExpressionIdentifier.create("TEST", FactMappingType.GIVEN),
                                           null);
+
         List<ScenarioExpect> scenario2aOutputs = runnerHelper.extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
-        assertThat(scenario2aOutputs.size()).isEqualTo(3);
+        
+        assertThat(scenario2aOutputs).hasSize(3);
         assertThat(scenario2aOutputs.stream().filter(ScenarioExpect::isNewFact).count()).isEqualTo(1);
     }
 
     @Test
-    public void verifyConditionsTest() {
-        List<InstanceGiven> scenario1Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
-                                                                              scenario1.getUnmodifiableFactMappingValues(),
-                                                                              classLoader,
-                                                                              expressionEvaluatorFactory);
+    public void verifyConditions_scenario1() {
+        List<InstanceGiven> scenario1Inputs = extractGivenValuesForScenario1();
         List<ScenarioExpect> scenario1Outputs = runnerHelper.extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
 
         ScenarioRunnerData scenarioRunnerData1 = new ScenarioRunnerData();
@@ -266,12 +279,12 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                                       scenarioRunnerData1,
                                       expressionEvaluatorFactory,
                                       null);
-        assertThat(scenarioRunnerData1.getResults().size()).isEqualTo(1);
-
-        List<InstanceGiven> scenario2Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
-                                                                              scenario2.getUnmodifiableFactMappingValues(),
-                                                                              classLoader,
-                                                                              expressionEvaluatorFactory);
+        assertThat(scenarioRunnerData1.getResults()).hasSize(1);
+    }
+    
+    @Test
+    public void verifyConditions_scenario2() {
+        List<InstanceGiven> scenario2Inputs = extractGivenValuesForScenario2();
         List<ScenarioExpect> scenario2Outputs = runnerHelper.extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
 
         ScenarioRunnerData scenarioRunnerData2 = new ScenarioRunnerData();
@@ -282,47 +295,42 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                                       scenarioRunnerData2,
                                       expressionEvaluatorFactory,
                                       null);
-        assertThat(scenarioRunnerData2.getResults().size()).isEqualTo(2);
+
+        assertThat(scenarioRunnerData2.getResults()).hasSize(2);
     }
 
     @Test
     public void getScenarioResultsTest() {
-        List<InstanceGiven> scenario1Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
-                                                                              scenario1.getUnmodifiableFactMappingValues(),
-                                                                              classLoader,
-                                                                              expressionEvaluatorFactory);
+        List<InstanceGiven> scenario1Inputs = extractGivenValuesForScenario1();
         List<ScenarioExpect> scenario1Outputs = runnerHelper.extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
 
-        assertThat(scenario1Inputs.size() > 0).isTrue();
+        assertThat(scenario1Inputs).isNotEmpty();
 
         InstanceGiven input1 = scenario1Inputs.get(0);
 
         scenario1Outputs = scenario1Outputs.stream().filter(elem -> elem.getFactIdentifier().equals(input1.getFactIdentifier())).collect(toList());
         List<ScenarioResult> scenario1Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getScesimModelDescriptor(), scenario1Outputs, input1, expressionEvaluatorFactory);
 
-        assertThat(scenario1Results.size()).isEqualTo(1);
-        assertThat(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
+        assertThat(scenario1Results).hasSize(1);
+        assertThat(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus()).isEqualTo(SUCCESS);
 
-        List<InstanceGiven> scenario2Inputs = runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
-                                                                              scenario2.getUnmodifiableFactMappingValues(),
-                                                                              classLoader,
-                                                                              expressionEvaluatorFactory);
+        List<InstanceGiven> scenario2Inputs = extractGivenValuesForScenario2();
         List<ScenarioExpect> scenario2Outputs = runnerHelper.extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
 
-        assertThat(scenario2Inputs.size() > 0).isTrue();
+        assertThat(scenario2Inputs).isNotEmpty();
 
         InstanceGiven input2 = scenario2Inputs.get(0);
 
         scenario2Outputs = scenario2Outputs.stream().filter(elem -> elem.getFactIdentifier().equals(input2.getFactIdentifier())).collect(toList());
         List<ScenarioResult> scenario2Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getScesimModelDescriptor(), scenario2Outputs, input2, expressionEvaluatorFactory);
 
-        assertThat(scenario2Results.size()).isEqualTo(1);
-        assertThat(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
+        assertThat(scenario2Results).hasSize(1);
+        assertThat(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus()).isEqualTo(SUCCESS);
 
-        List<ScenarioExpect> newFact = singletonList(new ScenarioExpect(personFactIdentifier, emptyList(), true));
+        List<ScenarioExpect> newFact = List.of(new ScenarioExpect(personFactIdentifier, List.of(), true));
         List<ScenarioResult> scenario2NoResults = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getScesimModelDescriptor(), newFact, input2, expressionEvaluatorFactory);
 
-        assertThat(scenario2NoResults.size()).isEqualTo(0);
+        assertThat(scenario2NoResults).hasSize(0);
 
         Person person = new Person();
         person.setFirstName("ANOTHER STRING");
@@ -331,11 +339,11 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         List<ScenarioResult> scenario3Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getScesimModelDescriptor(), scenario1Outputs, newInput, expressionEvaluatorFactory);
         assertThat(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR);
 
-        assertThat(scenario3Results.size()).isEqualTo(1);
+        assertThat(scenario3Results).hasSize(1);
         assertThat(scenario3Results.get(0).getResultValue().get()).isEqualTo(person.getFirstName());
         assertThat(scenario3Results.get(0).getFactMappingValue().getRawValue()).isEqualTo("NAME");
     }
-
+ 
     @Test
     public void validateAssertionTest() {
         List<ScenarioResult> scenarioFailResult = new ArrayList<>();
@@ -394,23 +402,24 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
     @Test
     public void groupByFactIdentifierAndFilterTest() {
         Map<FactIdentifier, List<FactMappingValue>> scenario1Given = runnerHelper.groupByFactIdentifierAndFilter(scenario1.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN);
+        assertThat(scenario1Given).hasSize(1);
+        assertThat(scenario1Given.get(personFactIdentifier)).hasSize(1);
+
         Map<FactIdentifier, List<FactMappingValue>> scenario1Expected = runnerHelper.groupByFactIdentifierAndFilter(scenario1.getUnmodifiableFactMappingValues(), FactMappingType.EXPECT);
+        assertThat(scenario1Expected).hasSize(1);
+        assertThat(scenario1Expected.get(personFactIdentifier)).hasSize(1);
+
         Map<FactIdentifier, List<FactMappingValue>> scenario2Given = runnerHelper.groupByFactIdentifierAndFilter(scenario2.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN);
+        assertThat(scenario2Given).hasSize(2);
+        assertThat(scenario2Given.get(disputeFactIdentifier)).hasSize(1);
+        
         Map<FactIdentifier, List<FactMappingValue>> scenario2Expected = runnerHelper.groupByFactIdentifierAndFilter(scenario2.getUnmodifiableFactMappingValues(), FactMappingType.EXPECT);
-
-        assertThat(scenario1Given.keySet().size()).isEqualTo(1);
-        assertThat(scenario1Expected.keySet().size()).isEqualTo(1);
-        assertThat(scenario2Given.keySet().size()).isEqualTo(2);
-        assertThat(scenario2Expected.keySet().size()).isEqualTo(2);
-
-        assertThat(scenario1Given.get(personFactIdentifier).size()).isEqualTo(1);
-        assertThat(scenario1Expected.get(personFactIdentifier).size()).isEqualTo(1);
-        assertThat(scenario2Given.get(disputeFactIdentifier).size()).isEqualTo(1);
-        assertThat(scenario2Expected.get(disputeFactIdentifier).size()).isEqualTo(1);
+        assertThat(scenario2Expected).hasSize(2);
+        assertThat(scenario2Expected.get(disputeFactIdentifier)).hasSize(1);
 
         Scenario scenario = new Scenario();
         scenario.addMappingValue(FactIdentifier.EMPTY, ExpressionIdentifier.DESCRIPTION, null);
-        assertThat(runnerHelper.groupByFactIdentifierAndFilter(scenario.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN).size()).isEqualTo(0);
+        assertThat(runnerHelper.groupByFactIdentifierAndFilter(scenario.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN)).hasSize(0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -423,7 +432,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
     }
 
     @Test
-    public void createExtractorFunctionTest() {
+    public void createExtractorFunction() {
         String personName = "Test";
         FactMappingValue factMappingValue = new FactMappingValue(personFactIdentifier, firstNameGivenExpressionIdentifier, personName);
         Function<Object, ValueWrapper> extractorFunction = runnerHelper.createExtractorFunction(expressionEvaluator, factMappingValue, simulation.getScesimModelDescriptor());
@@ -445,9 +454,8 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         assertThat(nullValue.getValue()).isNull();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
-    public void getParamsForBeanTest() {
+    public void getParamsForBean() {
         List<FactMappingValue> factMappingValues = new ArrayList<>();
         FactMappingValue factMappingValue1 = spy(new FactMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "NOT PARSABLE"));
         FactMappingValue factMappingValue2 = spy(new FactMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "NOT PARSABLE"));
@@ -461,32 +469,20 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 .hasMessage("Error in one or more input values");
 
         factMappingValues.forEach(fmv -> verify(fmv, times(2)).getRawValue());
-
-        assertThat(factMappingValue1.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
-        assertThat(factMappingValue2.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
-        assertThat(factMappingValue3.getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
+        
+        assertThat(factMappingValues).extracting(x -> x.getStatus()).containsExactly(FAILED_WITH_EXCEPTION, FAILED_WITH_EXCEPTION, SUCCESS);
     }
 
     @Test
-    public void directMappingTest() {
+    public void getDirectMapping() {
+        assertThat(runnerHelper.getDirectMapping(Map.of(List.of(), 1)).getValue()).isEqualTo(1);
+
         Map<List<String>, Object> paramsToSet = new HashMap<>();
-        paramsToSet.put(emptyList(), "Test");
-
-        assertThat(runnerHelper.getDirectMapping(paramsToSet).getValue()).isEqualTo("Test");
-
-        paramsToSet.clear();
-        paramsToSet.put(emptyList(), 1);
-
-        assertThat(runnerHelper.getDirectMapping(paramsToSet).getValue()).isEqualTo(1);
-
-        paramsToSet.clear();
-        paramsToSet.put(emptyList(), null);
+        paramsToSet.put(List.of(), null);
 
         assertThat(runnerHelper.getDirectMapping(paramsToSet).getValue()).isNull();
 
-        paramsToSet.clear();
-
-        ValueWrapper<Object> directMapping = runnerHelper.getDirectMapping(paramsToSet);
+        ValueWrapper<Object> directMapping = runnerHelper.getDirectMapping(Map.of());
         assertThat(directMapping.isValid()).isFalse();
         assertThat(directMapping.getErrorMessage().get()).isEqualTo("No direct mapping available");
     }
@@ -494,16 +490,12 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
     @Test
     public void createObject() {
         Map<List<String>, Object> params = new HashMap<>();
-        params.put(singletonList("firstName"), "TestName");
-        params.put(singletonList("age"), 10);
+        params.put(List.of("firstName"), "TestName");
+        params.put(List.of("age"), 10);
 
         ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
-        Object objectRaw = runnerHelper.createObject(
-                initialInstance,
-                Person.class.getCanonicalName(),
-                params,
-                this.getClass().getClassLoader());
-        assertThat(objectRaw instanceof Person).isTrue();
+        Object objectRaw = runnerHelper.createObject(initialInstance, Person.class.getCanonicalName(), params, getClass().getClassLoader());
+        assertThat(objectRaw).isInstanceOf(Person.class);
 
         Person object = (Person) objectRaw;
         assertThat(object.getAge()).isEqualTo(10);
@@ -514,52 +506,37 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
     public void createObjectDirectMappingSimpleType() {
         Map<List<String>, Object> params = new HashMap<>();
         String directMappingSimpleTypeValue = "TestName";
-        params.put(Collections.emptyList(), directMappingSimpleTypeValue);
+        params.put(List.of(), directMappingSimpleTypeValue);
 
         ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
-        Object objectRaw = runnerHelper.createObject(
-                initialInstance,
-                String.class.getCanonicalName(),
-                params,
-                this.getClass().getClassLoader());
+        Object objectRaw = runnerHelper.createObject(initialInstance, String.class.getCanonicalName(), params, getClass().getClassLoader());
 
-        assertThat(objectRaw instanceof String).isTrue();
-
-        assertThat(objectRaw).isEqualTo(directMappingSimpleTypeValue);
+        assertThat(objectRaw).isInstanceOf(String.class).isEqualTo(directMappingSimpleTypeValue);
     }
 
     @Test
     public void createObjectDirectMappingSimpleTypeNull() {
         Map<List<String>, Object> params = new HashMap<>();
-        params.put(emptyList(), null);
+        params.put(List.of(), null);
 
         ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
-        Object objectRaw = runnerHelper.createObject(
-                initialInstance,
-                String.class.getCanonicalName(),
-                params,
-                this.getClass().getClassLoader());
+        Object objectRaw = runnerHelper.createObject( initialInstance, String.class.getCanonicalName(), params, getClass().getClassLoader());
 
         assertThat(objectRaw).isNull();
     }
-
-    @SuppressWarnings("unchecked")
+    
     @Test
     public void createObjectDirectMappingComplexType() {
         Map<List<String>, Object> params = new HashMap<>();
         Person directMappingComplexTypeValue = new Person();
         directMappingComplexTypeValue.setFirstName("TestName");
-        params.put(emptyList(), directMappingComplexTypeValue);
-        params.put(singletonList("age"), 10);
+        params.put(List.of(), directMappingComplexTypeValue);
+        params.put(List.of("age"), 10);
 
         ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
-        Object objectRaw = runnerHelper.createObject(
-                initialInstance,
-                Map.class.getCanonicalName(),
-                params,
-                this.getClass().getClassLoader());
+        Object objectRaw = runnerHelper.createObject( initialInstance, Map.class.getCanonicalName(), params, getClass().getClassLoader());
 
-        assertThat(objectRaw instanceof Person).isTrue();
+        assertThat(objectRaw).isInstanceOf(Person.class);
 
         Person object = (Person) objectRaw;
         assertThat(object.getAge()).isEqualTo(10);
@@ -585,17 +562,16 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         ScenarioResultMetadata scenarioResultMetadata = runnerHelper.extractResultMetadata(requestContext, scenarioWithIndexMock);
 
         assertThat(scenarioResultMetadata.getScenarioWithIndex()).isEqualTo(scenarioWithIndexMock);
-        assertThat(scenarioResultMetadata.getAvailable().size()).isEqualTo(2);
-        assertThat(scenarioResultMetadata.getExecuted().size()).isEqualTo(2);
-        assertThat(scenarioResultMetadata.getExecutedWithCounter().get("rule1")).isEqualTo((Integer) 2);
-        assertThat(scenarioResultMetadata.getExecutedWithCounter().get("rule2")).isEqualTo((Integer) 2);
+        assertThat(scenarioResultMetadata.getAvailable()).hasSize(2);
+        assertThat(scenarioResultMetadata.getExecuted()).hasSize(2);
+        assertThat(scenarioResultMetadata.getExecutedWithCounter()).containsEntry("rule1", 2).containsEntry("rule2", 2);
         List<String> expectedMessages = new ArrayList<>();
-        commonAddMessageString(Arrays.asList("rule1", "rule2"), expectedMessages);
+        commonAddMessageString(List.of("rule1", "rule2"), expectedMessages);
 
         final List<AuditLogLine> auditLogLines = scenarioResultMetadata.getAuditLogLines();
-        assertThat(auditLogLines.size()).isEqualTo(expectedMessages.size());
+        assertThat(auditLogLines).hasSameSizeAs(expectedMessages);
         for (int i = 0; i < expectedMessages.size(); i++) {
-            commonCheckAuditLogLine(auditLogLines.get(i), expectedMessages.get(i), ConstantsHolder.EXECUTED, null);
+            commonCheckAuditLogLine(auditLogLines.get(i), expectedMessages.get(i), ConstantsHolder.EXECUTED);
         }
     }
 
@@ -606,19 +582,19 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         List<InstanceGiven> emptyBackgroundGivens = runnerHelper.extractBackgroundValues(emptyBackground,
                                                                                          classLoader,
                                                                                          expressionEvaluatorFactory);
-        assertThat(emptyBackgroundGivens.size()).isEqualTo(0);
+        assertThat(emptyBackgroundGivens).hasSize(0);
 
         emptyBackground.addData();
         emptyBackgroundGivens = runnerHelper.extractBackgroundValues(emptyBackground,
                                                                      classLoader,
                                                                      expressionEvaluatorFactory);
-        assertThat(emptyBackgroundGivens.size()).isEqualTo(0);
+        assertThat(emptyBackgroundGivens).hasSize(0);
 
         // TEST 1 - background correct
         List<InstanceGiven> backgroundGivens = runnerHelper.extractBackgroundValues(this.background,
                                                                                     classLoader,
                                                                                     expressionEvaluatorFactory);
-        assertThat(backgroundGivens.size()).isEqualTo(3);
+        assertThat(backgroundGivens).hasSize(3);
         for (InstanceGiven backgroundGiven : backgroundGivens) {
             if (backgroundGiven.getFactIdentifier().equals(personFactIdentifier)) {
                 assertThat(backgroundGiven.getFactIdentifier()).isEqualTo(personFactIdentifier);
@@ -645,10 +621,10 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 .isInstanceOf(ScenarioException.class)
                 .hasMessage("Error in BACKGROUND data");
 
-        assertThat(notValid1.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
-        assertThat(notValid1.getExceptionMessage().startsWith("Impossible to parse")).isTrue();
-        assertThat(notValid2.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
-        assertThat(notValid2.getExceptionMessage().startsWith("Impossible to parse")).isTrue();
+        assertThat(notValid1.getStatus()).isEqualTo(FAILED_WITH_EXCEPTION);
+        assertThat(notValid1.getExceptionMessage()).startsWith("Impossible to parse");
+        assertThat(notValid2.getStatus()).isEqualTo(FAILED_WITH_EXCEPTION);
+        assertThat(notValid2.getExceptionMessage()).startsWith("Impossible to parse");
     }
 
     @Test
@@ -660,8 +636,8 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         scenarioRunnerData.addBackground(new InstanceGiven(disputeFactIdentifier, new Dispute()));
         scenarioRunnerData.addGiven(new InstanceGiven(personFactIdentifier, new Person()));
         FactMappingValue factMappingValue = new FactMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, NAME);
-        scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), false));
-        scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), true));
+        scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, List.of(factMappingValue), false));
+        scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, List.of(factMappingValue), true));
 
         int inputObjects = scenarioRunnerData.getBackgrounds().size() + scenarioRunnerData.getGivens().size();
 
@@ -680,7 +656,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         verify(ruleScenarioExecutableBuilderMock, times(1)).addInternalCondition(eq(Person.class), any(), any());
         verify(ruleScenarioExecutableBuilderMock, times(1)).run();
 
-        assertThat(scenarioRunnerData.getResults().size()).isEqualTo(1);
+        assertThat(scenarioRunnerData.getResults()).hasSize(1);
 
         // test not rule error
         settings.setType(ScenarioSimulationModel.Type.DMN);
@@ -690,7 +666,22 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
     }
 
     private void commonAddMessageString(List<String> ruleNames, List<String> expectedMessages) {
-        ruleNames.forEach(ruleName ->
-                                  IntStream.range(1, 3).forEach(index -> expectedMessages.add(ruleName)));
+        ruleNames.forEach(ruleName -> IntStream.range(1, 3).forEach(index -> expectedMessages.add(ruleName)));
     }
+    
+
+	private List<InstanceGiven> extractGivenValuesForScenario1() {
+		return runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
+                                                                              scenario1.getUnmodifiableFactMappingValues(),
+                                                                              classLoader,
+                                                                              expressionEvaluatorFactory);
+	}
+
+	private List<InstanceGiven> extractGivenValuesForScenario2() {
+		return runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),
+                                                                 scenario2.getUnmodifiableFactMappingValues(),
+                                                                 classLoader,
+                                                                 expressionEvaluatorFactory);
+	}
+    
 }

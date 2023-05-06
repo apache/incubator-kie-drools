@@ -16,9 +16,6 @@
 package org.drools.scenariosimulation.backend.fluent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,42 +35,32 @@ public class RuleScenarioExecutableBuilderTest {
 
     @Test
     public void createBuilder() {
-        RuleScenarioExecutableBuilder builder = RuleScenarioExecutableBuilder.createBuilder(null, null, true);
-        assertThat(builder instanceof RuleStatelessScenarioExecutableBuilder).isTrue();
+        RuleScenarioExecutableBuilder statelessBuilder = RuleScenarioExecutableBuilder.createBuilder(null, null, true);
+        assertThat(statelessBuilder).isInstanceOf(RuleStatelessScenarioExecutableBuilder.class);;
 
-        builder = RuleScenarioExecutableBuilder.createBuilder(null, null, false);
-        assertThat(builder instanceof RuleStatefulScenarioExecutableBuilder).isTrue();
+        RuleScenarioExecutableBuilder statefulBuilder1 = RuleScenarioExecutableBuilder.createBuilder(null, null, false);
+        assertThat(statefulBuilder1).isInstanceOf(RuleStatefulScenarioExecutableBuilder.class);;
 
-        builder = RuleScenarioExecutableBuilder.createBuilder(null);
-        assertThat(builder instanceof RuleStatefulScenarioExecutableBuilder).isTrue();
+        RuleScenarioExecutableBuilder statefulBuilder2 = RuleScenarioExecutableBuilder.createBuilder(null);
+        assertThat(statefulBuilder2).isInstanceOf(RuleStatefulScenarioExecutableBuilder.class);;
     }
 
     @Test
     public void getAvailableRules() {
-        Map<String, List<String>> packagesToRules = new HashMap<>();
-        packagesToRules.put("package1", Arrays.asList("rule1", "rule2", "rule3"));
-        packagesToRules.put("package2", Arrays.asList("rule4", "rule5", "rule6"));
-
-        Map<String, List<String>> queryToRules = new HashMap<>();
-        queryToRules.put("package1", Arrays.asList("query1", "query2"));
-        queryToRules.put("package2", Collections.emptyList());
-
-        Map<String, String> ruleToAgendaGroup = new HashMap<>();
-        ruleToAgendaGroup.put("rule1", "agenda1");
-        ruleToAgendaGroup.put("rule2", "agenda1");
-        ruleToAgendaGroup.put("rule3", "agenda1");
-        ruleToAgendaGroup.put("rule4", "agenda2");
+        Map<String, List<String>> packagesToRules = Map.of("package1", List.of("rule1", "rule2", "rule3"), "package2", List.of("rule4", "rule5", "rule6"));
+        Map<String, List<String>> queryToRules = Map.of("package1", List.of("query1", "query2"), "package2", List.of());
+        Map<String, String> ruleToAgendaGroup = Map.of("rule1", "agenda1", "rule2", "agenda1", "rule3", "agenda1", "rule4", "agenda2");
 
         RuleScenarioExecutableBuilder builder = RuleScenarioExecutableBuilder.createBuilder(null, null, false);
 
         Set<String> agenda1 = builder.getAvailableRules(createKieBaseMock(packagesToRules, ruleToAgendaGroup, queryToRules), "agenda1");
-        assertThat(agenda1.size()).isEqualTo(5);
+        assertThat(agenda1).hasSize(5);
 
         Set<String> agenda2 = builder.getAvailableRules(createKieBaseMock(packagesToRules, ruleToAgendaGroup, queryToRules), "agenda2");
-        assertThat(agenda2.size()).isEqualTo(3);
+        assertThat(agenda2).hasSize(3);
 
         Set<String> noAgenda = builder.getAvailableRules(createKieBaseMock(packagesToRules, ruleToAgendaGroup, queryToRules), null);
-        assertThat(noAgenda.size()).isEqualTo(2);
+        assertThat(noAgenda).hasSize(2);
     }
 
     private KieBase createKieBaseMock(Map<String, List<String>> packagesToRules, Map<String, String> ruleToAgendaGroup, Map<String, List<String>> packagesToQueries) {

@@ -60,17 +60,10 @@ public class BaseExpressionOperatorTest {
 
     @Test
     public void findOperator() {
-        String rawValue = "Test";
-        assertThat(BaseExpressionOperator.findOperator(rawValue)).isEqualTo(EQUALS);
-
-        rawValue = " Test ";
-        assertThat(BaseExpressionOperator.findOperator(rawValue)).isEqualTo(EQUALS);
-
-        rawValue = "= Test ";
-        assertThat(BaseExpressionOperator.findOperator(rawValue)).isEqualTo(EQUALS);
-
-        rawValue = "!= Test ";
-        assertThat(BaseExpressionOperator.findOperator(rawValue)).isEqualTo(NOT_EQUALS);
+        assertThat(BaseExpressionOperator.findOperator("Test")).isEqualTo(EQUALS);
+        assertThat(BaseExpressionOperator.findOperator(" Test ")).isEqualTo(EQUALS);
+        assertThat(BaseExpressionOperator.findOperator("= Test ")).isEqualTo(EQUALS);
+        assertThat(BaseExpressionOperator.findOperator("!= Test ")).isEqualTo(NOT_EQUALS);
     }
 
     @Test

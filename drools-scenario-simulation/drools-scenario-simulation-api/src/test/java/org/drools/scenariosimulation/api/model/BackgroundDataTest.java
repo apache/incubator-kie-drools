@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class BackgroundDataTest {
 
@@ -42,51 +43,85 @@ public class BackgroundDataTest {
     @Test
     public void removeFactMappingValueByIdentifiersTest() {
         backgroundData.addMappingValue(factIdentifier, expressionIdentifier, "test value");
-        Optional<FactMappingValue> retrieved = backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertThat(retrieved.isPresent()).isTrue();
+        
         backgroundData.removeFactMappingValueByIdentifiers(factIdentifier, expressionIdentifier);
-        retrieved = backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertThat(retrieved.isPresent()).isFalse();
+        
+        assertThat(backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier)).isNotPresent();
     }
 
     @Test
     public void removeFactMappingValue() {
         backgroundData.addMappingValue(factIdentifier, expressionIdentifier, "test value");
-        Optional<FactMappingValue> retrieved = backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertThat(retrieved.isPresent()).isTrue();
-        backgroundData.removeFactMappingValue(retrieved.get());
-        retrieved = backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertThat(retrieved.isPresent()).isFalse();
-    }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void addMappingValueTest() {
-        backgroundData.addMappingValue(factIdentifier, expressionIdentifier, "test value");
-        // Should fail
-        backgroundData.addMappingValue(factIdentifier, expressionIdentifier, "test value");
+        Optional<FactMappingValue> retrieved = backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier);
+        backgroundData.removeFactMappingValue(retrieved.get());
+        
+        assertThat(backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier)).isNotPresent();
     }
 
     @Test
-    public void getDescriptionTest() {
-        assertThat(backgroundData.getDescription()).isEqualTo("");
+    public void addOMappingValue() {
+        FactMappingValue factMappingValue = backgroundData.addMappingValue(factIdentifier, expressionIdentifier, "test value");
+        
+        assertThat((Object) "test value").isEqualTo(factMappingValue.getRawValue());
+    }
+    
 
-        String description = "Test Description";
-        backgroundData.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, description);
-        assertThat(backgroundData.getDescription()).isEqualTo(description);
+    
+    @Test
+    public void addMappingValue_multipleInvocationsFail() {
+        backgroundData.addMappingValue(factIdentifier, expressionIdentifier, "test value");
 
-        BackgroundData scenarioWithDescriptionNull = background.addData();
-        scenarioWithDescriptionNull.setDescription(null);
-        assertThat(scenarioWithDescriptionNull.getDescription()).isEqualTo("");
+        assertThatIllegalArgumentException().isThrownBy(() -> backgroundData.addMappingValue(factIdentifier, expressionIdentifier, "test value"));
+    }
+    
+    @Test
+    public void addMappingValue_singleInvocationSucceed() {
+        backgroundData.addMappingValue(factIdentifier, expressionIdentifier, "test value");
+        
+        assertThat(backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier)).isPresent();
     }
 
+    @Test
+    public void getDescription_initialEmptyDescription() {
+        assertThat(backgroundData.getDescription()).isEqualTo("");
+    }
+
+    @Test
+    public void getDescription_descriptionSetToNullValue() {
+        backgroundData.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, null);
+        
+        assertThat(backgroundData.getDescription()).isEqualTo("");
+    }
+
+    @Test
+    public void getDescription_descriptionSetToNonNullValue() {
+        backgroundData.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, "Test Description");
+        
+        assertThat(backgroundData.getDescription()).isEqualTo("Test Description");
+    }
+    
+    @Test
+    public void setDescription_nullValue() {
+        backgroundData.setDescription(null);
+        
+        assertThat(backgroundData.getDescription()).isEqualTo("");
+    }
+    
+    @Test
+    public void setDescription_nonNullValue() {
+        backgroundData.setDescription("Test Description");
+        
+        assertThat(backgroundData.getDescription()).isEqualTo("Test Description");
+    }
+    
     @Test
     public void addOrUpdateMappingValue() {
-        Object value1 = "Test 1";
-        Object value2 = "Test 2";
-        FactMappingValue factMappingValue = backgroundData.addMappingValue(factIdentifier, expressionIdentifier, value1);
-        assertThat(value1).isEqualTo(factMappingValue.getRawValue());
-        FactMappingValue factMappingValue1 = backgroundData.addOrUpdateMappingValue(factIdentifier, expressionIdentifier, value2);
-        assertThat(factMappingValue1).isEqualTo(factMappingValue);
-        assertThat(value2).isEqualTo(factMappingValue1.getRawValue());
+        FactMappingValue oldMappingValue = backgroundData.addMappingValue(factIdentifier, expressionIdentifier, "Test 1");
+        
+        FactMappingValue newMappingValue = backgroundData.addOrUpdateMappingValue(factIdentifier, expressionIdentifier, "Test 2");
+
+        assertThat(newMappingValue).isEqualTo(oldMappingValue);
+        assertThat(newMappingValue.getRawValue()).isEqualTo("Test 2");
     }
 }

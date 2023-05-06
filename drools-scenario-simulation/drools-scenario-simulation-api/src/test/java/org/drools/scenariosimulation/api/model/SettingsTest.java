@@ -52,6 +52,7 @@ public class SettingsTest {
     @Test
     public void cloneEmptySettings() {
         final Settings cloneSettings = new Settings().cloneSettings();
+        
         assertThat(cloneSettings.getDmoSession()).isNull();
         assertThat(cloneSettings.getDmnFilePath()).isNull();
         assertThat(cloneSettings.getDmnName()).isNull();
@@ -95,6 +96,7 @@ public class SettingsTest {
         settings.setFileName("cl" + FILENAME);
         settings.setKieBase("cl" + KIE_BASE);
         settings.setKieSession("cl" + KIE_SESSION);
+        
         assertThat(cloneSettings.getDmoSession()).isNotEqualTo(settings.getDmoSession());
         assertThat(cloneSettings.getDmnFilePath()).isNotEqualTo(settings.getDmnFilePath());
         assertThat(cloneSettings.getDmnName()).isNotEqualTo(settings.getDmnName());

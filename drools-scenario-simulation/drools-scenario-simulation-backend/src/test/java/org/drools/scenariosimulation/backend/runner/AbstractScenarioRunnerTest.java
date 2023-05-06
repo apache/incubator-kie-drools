@@ -89,18 +89,18 @@ public class AbstractScenarioRunnerTest {
     public void getDescriptionForScenario() {
         final Scenario scenario = scenarioRunnerDTOLocal.getScenarioWithIndices().get(2).getScesimData();
         Description retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.empty(), 1, scenario.getDescription());
+        
         commonVerifyDescriptionForScenario(retrieved, 1, scenario.getDescription(), AbstractScenarioRunner.class.getSimpleName());
+
         retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.of("src/test/Test.scesim"), 1, scenario.getDescription());
+       
         commonVerifyDescriptionForScenario(retrieved, 1, scenario.getDescription(), "Test");
     }
 
     @Test
     public void getSpecificRunnerProvider() {
         // all existing types should have a dedicated runner
-        for (ScenarioSimulationModel.Type value : ScenarioSimulationModel.Type.values()) {
-            final ScenarioRunnerProvider retrieved = AbstractScenarioRunner.getSpecificRunnerProvider(value);
-            assertThat(retrieved).isNotNull();
-        }
+    	assertThat(ScenarioSimulationModel.Type.values()).extracting(x -> AbstractScenarioRunner.getSpecificRunnerProvider(x)).isNotNull();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -140,14 +140,14 @@ public class AbstractScenarioRunnerTest {
         verify(runNotifier, times(SCENARIO_DATA)).fireTestFinished(isA(Description.class));
 
         List<Failure> capturedFailures = failureArgumentCaptor.getAllValues();
-        assertThat(capturedFailures.get(0).getException().getMessage()).isEqualTo(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Failed assertion", 1, "INDEX-0", "test"));
-        assertThat(capturedFailures.get(0).getException() instanceof IndexedScenarioAssertionError).isTrue();
-        assertThat(capturedFailures.get(1).getException().getMessage()).isEqualTo(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Generic exception", 2, "INDEX-1", "test"));
-        assertThat(capturedFailures.get(1).getException() instanceof IndexedScenarioException).isTrue();
-        assertThat(capturedFailures.get(2).getException().getMessage()).isEqualTo(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Wrong argument", 3, "INDEX-2", "test"));
-        assertThat(capturedFailures.get(2).getException() instanceof IndexedScenarioException).isTrue();
-        assertThat(capturedFailures.get(3).getException().getMessage()).isEqualTo(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Unknown exception", 4, "INDEX-3", "test"));
-        assertThat(capturedFailures.get(3).getException() instanceof IndexedScenarioException).isTrue();
+        assertThat(capturedFailures.get(0).getException()).hasMessage(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Failed assertion", 1, "INDEX-0", "test"));
+        assertThat(capturedFailures.get(0).getException()).isInstanceOf(IndexedScenarioAssertionError.class);
+        assertThat(capturedFailures.get(1).getException()).hasMessage(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Generic exception", 2, "INDEX-1", "test"));
+        assertThat(capturedFailures.get(1).getException()).isInstanceOf(IndexedScenarioException.class);
+        assertThat(capturedFailures.get(2).getException()).hasMessage(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Wrong argument", 3, "INDEX-2", "test"));
+        assertThat(capturedFailures.get(2).getException()).isInstanceOf(IndexedScenarioException.class);
+        assertThat(capturedFailures.get(3).getException()).hasMessage(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Unknown exception", 4, "INDEX-3", "test"));
+        assertThat(capturedFailures.get(3).getException()).isInstanceOf(IndexedScenarioException.class);
     }
 
     @Test
@@ -162,7 +162,7 @@ public class AbstractScenarioRunnerTest {
     private void commonVerifyDescriptionForSimulation(final Description retrieved, final String className) {
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getDisplayName()).isEqualTo(className);
-        assertThat(retrieved.getChildren().size()).isEqualTo(SCENARIO_DATA);
+        assertThat(retrieved.getChildren()).hasSize(SCENARIO_DATA);
         assertThat(retrieved.getTestClass()).isNull();
         assertThat(retrieved.getClassName()).isEqualTo(className);
         IntStream.range(0, SCENARIO_DATA).forEach(index -> {

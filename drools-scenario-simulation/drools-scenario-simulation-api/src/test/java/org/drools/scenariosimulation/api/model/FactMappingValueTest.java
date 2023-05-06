@@ -19,6 +19,7 @@ package org.drools.scenariosimulation.api.model;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +27,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
 public class FactMappingValueTest {
+
+    private FactMappingValue value;
+    
+    @Before
+    public void setUp() throws Exception {
+        value = new FactMappingValue();
+    }
 
     @Test
     public void emptyFactMappingValue() {
@@ -40,8 +48,8 @@ public class FactMappingValueTest {
 
     @Test
     public void resetStatus() {
-        FactMappingValue value = new FactMappingValue();
         value.resetStatus();
+        
         assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
         assertThat(value.getExceptionMessage()).isNull();
         assertThat(value.getErrorValue()).isNull();
@@ -50,8 +58,8 @@ public class FactMappingValueTest {
 
     @Test
     public void setErrorValue() {
-        FactMappingValue value = new FactMappingValue();
         value.setErrorValue(VALUE);
+        
         assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR);
         assertThat(value.getExceptionMessage()).isNull();
         assertThat(value.getCollectionPathToValue()).isNull();
@@ -61,8 +69,9 @@ public class FactMappingValueTest {
     @Test
     public void setExceptionMessage() {
         String exceptionValue = "Exception";
-        FactMappingValue value = new FactMappingValue();
+        
         value.setExceptionMessage(exceptionValue);
+        
         assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
         assertThat(value.getExceptionMessage()).isEqualTo(exceptionValue);
         assertThat(value.getErrorValue()).isNull();
@@ -72,8 +81,9 @@ public class FactMappingValueTest {
     @Test
     public void setPathToValue() {
         List<String> path = Arrays.asList("Step1", "Step2");
-        FactMappingValue value = new FactMappingValue();
+        
         value.setCollectionPathToValue(path);
+        
         assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR);
         assertThat(value.getExceptionMessage()).isNull();
         assertThat(value.getErrorValue()).isNull();
