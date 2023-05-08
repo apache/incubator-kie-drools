@@ -56,6 +56,8 @@ public abstract class AbstractReactiveMessagingJobsService implements JobsServic
 
     private Emitter<String> eventsEmitter;
 
+    private ObjectMapper objectMapper;
+
     protected AbstractReactiveMessagingJobsService() {
     }
 
@@ -64,6 +66,7 @@ public abstract class AbstractReactiveMessagingJobsService implements JobsServic
             Emitter<String> eventsEmitter) {
         this.serviceUrl = serviceUrl;
         this.eventsEmitter = eventsEmitter;
+        this.objectMapper = objectMapper;
         this.serializer = new JobCloudEventSerializer(objectMapper);
     }
 
@@ -74,7 +77,7 @@ public abstract class AbstractReactiveMessagingJobsService implements JobsServic
 
     @Override
     public String scheduleProcessInstanceJob(ProcessInstanceJobDescription description) {
-        Job job = buildCallbackPatternJob(description, buildCallbackURI(description, serviceUrl.toString()));
+        Job job = buildCallbackPatternJob(description, buildCallbackURI(description, serviceUrl.toString()), objectMapper);
         LOGGER.debug("scheduleProcessInstanceJob job: {}", job);
         CreateJobEvent event = CreateJobEvent.builder()
                 .source(serviceUrl)

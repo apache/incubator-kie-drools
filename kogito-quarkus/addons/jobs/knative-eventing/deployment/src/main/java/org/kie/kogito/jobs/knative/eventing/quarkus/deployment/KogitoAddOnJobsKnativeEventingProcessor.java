@@ -16,6 +16,7 @@
 
 package org.kie.kogito.jobs.knative.eventing.quarkus.deployment;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,6 @@ import org.kie.kogito.event.cloudevents.CloudEventMeta;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
 import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
-import org.kie.kogito.jobs.service.api.utils.ReflectionUtils;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
 import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 import org.kie.kogito.quarkus.extensions.spi.deployment.HasWorkflowExtension;
@@ -57,10 +57,13 @@ public class KogitoAddOnJobsKnativeEventingProcessor extends OneOfCapabilityKogi
 
     @BuildStep
     public ReflectiveClassBuildItem jobsApiReflection() {
+        List<Class<?>> reflectiveClasses = new ArrayList<>();
+        reflectiveClasses.addAll(org.kie.kogito.jobs.api.utils.ReflectionUtils.apiReflectiveClasses());
+        reflectiveClasses.addAll(org.kie.kogito.jobs.service.api.utils.ReflectionUtils.apiReflectiveClasses());
         return new ReflectiveClassBuildItem(true,
                 true,
                 true,
-                ReflectionUtils.apiReflectiveClasses().toArray(new Class[] {}));
+                reflectiveClasses.toArray(new Class[] {}));
     }
 
     @BuildStep(onlyIfNot = IsTest.class, onlyIf = HasWorkflowExtension.class)

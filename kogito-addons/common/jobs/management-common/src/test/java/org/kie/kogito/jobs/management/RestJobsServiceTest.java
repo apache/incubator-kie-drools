@@ -24,12 +24,14 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.jobs.api.JobCallbackPayload;
 import org.kie.kogito.jobs.service.api.Job;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -46,6 +48,7 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
     public static final String ROOT_PROCESS_INSTANCE_ID = "ROOT_PROCESS_INSTANCE_ID";
     public static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
     public static final ZonedDateTime EXPIRATION_TIME = ZonedDateTime.parse("2023-01-13T10:20:30.000001+01:00[Europe/Madrid]");
+    public static final JsonNode JSON_PAYLOAD = new ObjectMapper().valueToTree(new JobCallbackPayload(JOB_ID));
 
     protected T tested;
 

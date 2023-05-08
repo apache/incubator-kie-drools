@@ -121,7 +121,7 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
     @Test
     void jobsApiReflection() {
         ReflectiveClassBuildItem reflectiveClassBuildItem = new KogitoAddOnJobsKnativeEventingProcessor().jobsApiReflection();
-        assertThat(reflectiveClassBuildItem.getClassNames()).hasSize(20);
+        assertThat(reflectiveClassBuildItem.getClassNames()).hasSize(21);
     }
 
     @Test

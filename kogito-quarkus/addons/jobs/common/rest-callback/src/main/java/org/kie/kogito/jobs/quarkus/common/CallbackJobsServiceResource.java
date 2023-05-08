@@ -29,7 +29,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.kie.kogito.Application;
-import org.kie.kogito.jobs.api.JobCallbackResourceDef;
+import org.kie.kogito.jobs.api.JobCallbackPayload;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.services.jobs.impl.TriggerJobCommand;
@@ -76,7 +76,7 @@ public class CallbackJobsServiceResource {
         String correlationId = null;
         if (payload != null && !payload.isBlank()) {
             try {
-                JobCallbackResourceDef.JobCallbackPayload jobPayload = objectMapper.readValue(payload, JobCallbackResourceDef.JobCallbackPayload.class);
+                JobCallbackPayload jobPayload = objectMapper.readValue(payload, JobCallbackPayload.class);
                 correlationId = jobPayload.getCorrelationId();
             } catch (Exception e) {
                 return Response.status(Status.BAD_REQUEST).entity("Invalid payload: " + payload + ". " + e.getMessage()).build();

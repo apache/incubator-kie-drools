@@ -38,6 +38,6 @@ class KogitoAddOnJobsMessagingProcessorTest {
         assertThat(buildItem.isConstructors()).isTrue();
         assertThat(buildItem.isMethods()).isTrue();
         assertThat(buildItem.isFields()).isTrue();
-        assertThat(buildItem.getClassNames()).hasSize(20);
+        assertThat(buildItem.getClassNames()).hasSize(21);
     }
 }

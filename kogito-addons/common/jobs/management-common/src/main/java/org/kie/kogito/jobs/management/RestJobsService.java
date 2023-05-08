@@ -23,6 +23,8 @@ import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.api.URIBuilder;
 import org.kie.kogito.jobs.service.api.Job;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.buildCallbackPatternJob;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.buildCallbackURI;
 
@@ -33,10 +35,12 @@ public abstract class RestJobsService implements JobsService {
 
     private URI jobsServiceUri;
     private String callbackEndpoint;
+    private ObjectMapper objectMapper;
 
-    public RestJobsService(String jobServiceUrl, String callbackEndpoint) {
+    public RestJobsService(String jobServiceUrl, String callbackEndpoint, ObjectMapper objectMapper) {
         this.jobsServiceUri = Objects.nonNull(jobServiceUrl) ? buildJobsServiceURI(jobServiceUrl) : null;
         this.callbackEndpoint = callbackEndpoint;
+        this.objectMapper = objectMapper;
     }
 
     public String getCallbackEndpoint(ProcessInstanceJobDescription description) {
@@ -52,6 +56,6 @@ public abstract class RestJobsService implements JobsService {
     }
 
     public Job buildJob(ProcessInstanceJobDescription description, String callback) {
-        return buildCallbackPatternJob(description, callback);
+        return buildCallbackPatternJob(description, callback, objectMapper);
     }
 }

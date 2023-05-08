@@ -28,8 +28,7 @@ import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadDa
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
-import static org.kie.kogito.jobs.service.api.serlialization.SerializationUtils.DEFAULT_OBJECT_MAPPER;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Common definitions for add-ons implementations based on the Jobs Service to Runtime rest callback pattern.
@@ -56,26 +55,6 @@ public class JobCallbackResourceDef {
 
     public static final String JOBS_CALLBACK_POST_URI = "{" + PROCESS_ID + "}/instances/{" + PROCESS_INSTANCE_ID + "}/timers/{" + TIMER_ID + "}";
 
-    public static class JobCallbackPayload {
-        private String correlationId;
-
-        public JobCallbackPayload() {
-            // marshalling constructor.
-        }
-
-        public JobCallbackPayload(String correlationId) {
-            this.correlationId = correlationId;
-        }
-
-        public String getCorrelationId() {
-            return correlationId;
-        }
-
-        public void setCorrelationId(String correlationId) {
-            this.correlationId = correlationId;
-        }
-    }
-
     private JobCallbackResourceDef() {
     }
 
@@ -90,19 +69,20 @@ public class JobCallbackResourceDef {
                 .toString();
     }
 
-    public static org.kie.kogito.jobs.service.api.Job buildCallbackPatternJob(ProcessInstanceJobDescription description, String callback) {
+    public static org.kie.kogito.jobs.service.api.Job buildCallbackPatternJob(ProcessInstanceJobDescription description,
+            String callback, ObjectMapper objectMapper) {
         return org.kie.kogito.jobs.service.api.Job.builder()
                 .id(description.id())
                 .correlationId(description.id())
-                .recipient(buildRecipient(description, callback))
+                .recipient(buildRecipient(description, callback, objectMapper))
                 .schedule(buildSchedule(description))
                 .build();
     }
 
-    private static HttpRecipient<HttpRecipientJsonPayloadData> buildRecipient(ProcessInstanceJobDescription description, String callback) {
+    private static HttpRecipient<HttpRecipientJsonPayloadData> buildRecipient(ProcessInstanceJobDescription description, String callback, ObjectMapper objectMapper) {
         return HttpRecipient.builder()
                 .forJsonPayload()
-                .payload(HttpRecipientJsonPayloadData.from(buildPayload(description)))
+                .payload(HttpRecipientJsonPayloadData.from(buildPayload(description, objectMapper)))
                 .url(callback)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .header(PROCESS_ID, description.processId())
@@ -113,8 +93,8 @@ public class JobCallbackResourceDef {
                 .build();
     }
 
-    private static JsonNode buildPayload(ProcessInstanceJobDescription description) {
-        return DEFAULT_OBJECT_MAPPER.valueToTree(new JobCallbackPayload(description.id()));
+    private static JsonNode buildPayload(ProcessInstanceJobDescription description, ObjectMapper objectMapper) {
+        return objectMapper.valueToTree(new JobCallbackPayload(description.id()));
     }
 
     private static TimerSchedule buildSchedule(ProcessInstanceJobDescription description) {

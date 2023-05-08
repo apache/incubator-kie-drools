@@ -20,11 +20,14 @@ import javax.enterprise.inject.Instance;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.api.JobCallbackPayload;
 import org.kie.kogito.jobs.management.RestJobsServiceTest;
 import org.kie.kogito.jobs.service.api.Job;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -55,11 +58,14 @@ class VertxJobsServiceTest extends RestJobsServiceTest<VertxJobsService> {
     @Mock
     private HttpRequest<Buffer> request;
 
+    @Mock
+    private ObjectMapper objectMapper;
+
     @Override
     public VertxJobsService createJobService(String jobServiceUrl, String callbackUrl) {
         when(instance.isResolvable()).thenReturn(true);
         when(instance.get()).thenReturn(webClient);
-        VertxJobsService jobsService = new VertxJobsService(jobServiceUrl, callbackUrl, vertx, instance);
+        VertxJobsService jobsService = new VertxJobsService(jobServiceUrl, callbackUrl, vertx, instance, objectMapper);
         jobsService.initialize();
         return jobsService;
     }
@@ -68,7 +74,7 @@ class VertxJobsServiceTest extends RestJobsServiceTest<VertxJobsService> {
     void initialize() {
         reset(instance);
         when(instance.isResolvable()).thenReturn(false);
-        tested = new VertxJobsService(JOB_SERVICE_URL, CALLBACK_URL, vertx, instance);
+        tested = new VertxJobsService(JOB_SERVICE_URL, CALLBACK_URL, vertx, instance, objectMapper);
         tested.initialize();
         verify(instance, never()).get();
     }
@@ -76,6 +82,7 @@ class VertxJobsServiceTest extends RestJobsServiceTest<VertxJobsService> {
     @Test
     void scheduleProcessInstanceJob() {
         when(webClient.post(anyString())).thenReturn(request);
+        when(objectMapper.valueToTree(any(JobCallbackPayload.class))).thenReturn(JSON_PAYLOAD);
         ProcessInstanceJobDescription processInstanceJobDescription = buildProcessInstanceJobDescription();
         tested.scheduleProcessInstanceJob(processInstanceJobDescription);
         verify(webClient).post("/v2/jobs");

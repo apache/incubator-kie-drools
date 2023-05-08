@@ -16,7 +16,9 @@
 
 package org.kie.kogito.jobs.messaging.quarkus.deployment;
 
-import org.kie.kogito.jobs.service.api.utils.ReflectionUtils;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
 import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 
@@ -39,9 +41,12 @@ class KogitoAddOnJobsMessagingProcessor extends OneOfCapabilityKogitoAddOnProces
 
     @BuildStep
     public ReflectiveClassBuildItem jobsApiReflection() {
+        List<Class<?>> reflectiveClasses = new ArrayList<>();
+        reflectiveClasses.addAll(org.kie.kogito.jobs.api.utils.ReflectionUtils.apiReflectiveClasses());
+        reflectiveClasses.addAll(org.kie.kogito.jobs.service.api.utils.ReflectionUtils.apiReflectiveClasses());
         return new ReflectiveClassBuildItem(true,
                 true,
                 true,
-                ReflectionUtils.apiReflectiveClasses().toArray(new Class[] {}));
+                reflectiveClasses.toArray(new Class[] {}));
     }
 }

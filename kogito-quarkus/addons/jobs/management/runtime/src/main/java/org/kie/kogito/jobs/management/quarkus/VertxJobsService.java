@@ -56,14 +56,15 @@ public class VertxJobsService extends RestJobsService {
     public VertxJobsService(@ConfigProperty(name = "kogito.jobs-service.url") String jobServiceUrl,
             @ConfigProperty(name = "kogito.service.url") String callbackEndpoint,
             Vertx vertx,
-            Instance<WebClient> providedWebClient) {
-        super(jobServiceUrl, callbackEndpoint);
+            Instance<WebClient> providedWebClient,
+            ObjectMapper objectMapper) {
+        super(jobServiceUrl, callbackEndpoint, objectMapper);
         this.vertx = vertx;
         this.providedWebClient = providedWebClient;
     }
 
     VertxJobsService() {
-        this(null, null, null, null);
+        this(null, null, null, null, null);
     }
 
     @PostConstruct

@@ -30,6 +30,7 @@ import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsServiceException;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.jobs.api.JobCallbackPayload;
 import org.kie.kogito.jobs.service.api.Job;
 import org.kie.kogito.jobs.service.api.JobLookupId;
 import org.kie.kogito.jobs.service.api.TemporalUnit;
@@ -43,6 +44,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,6 +75,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
             + "/instances/" + PROCESS_INSTANCE_ID + "/timers/" + TIMER_ID;
     protected static final String ERROR = "ERROR";
     protected static final String FATAL_ERROR = "FATAL_ERROR";
+    protected static final JsonNode JSON_PAYLOAD = new ObjectMapper().valueToTree(new JobCallbackPayload(JOB_ID));
 
     protected EmitterMock eventsEmitter;
 
@@ -103,6 +106,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
         ProcessInstanceJobDescription description = mockProcessInstanceJobDescription();
         CreateJobEvent expectedEvent = mockExpectedCreateJobEvent();
         doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CreateJobEvent.class));
+        doReturn(JSON_PAYLOAD).when(objectMapper).valueToTree(any(JobCallbackPayload.class));
 
         jobsService.scheduleProcessInstanceJob(description);
 
@@ -114,6 +118,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
     protected void scheduleProcessInstanceJobWithFailure() throws Exception {
         ProcessInstanceJobDescription description = mockProcessInstanceJobDescription();
         CreateJobEvent expectedEvent = mockExpectedCreateJobEvent();
+        doReturn(JSON_PAYLOAD).when(objectMapper).valueToTree(any(JobCallbackPayload.class));
         executeScheduleProcessInstanceJobWithFailure(description);
         verifyCreateJobEventWasCreated(1, expectedEvent);
         verifyEmitterWasInvoked(1, SERIALIZED_EVENT);
@@ -123,6 +128,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
     protected void scheduleProcessInstanceJobWithFailureAndContinue() throws Exception {
         ProcessInstanceJobDescription description = mockProcessInstanceJobDescription();
         CreateJobEvent expectedEvent = mockExpectedCreateJobEvent();
+        doReturn(JSON_PAYLOAD).when(objectMapper).valueToTree(any(JobCallbackPayload.class));
         // First execution fails
         executeScheduleProcessInstanceJobWithFailure(description);
 
@@ -150,6 +156,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
     protected void scheduleProcessInstanceJobWithFatalFailure() throws Exception {
         ProcessInstanceJobDescription description = mockProcessInstanceJobDescription();
         CreateJobEvent expectedEvent = mockExpectedCreateJobEvent();
+        doReturn(JSON_PAYLOAD).when(objectMapper).valueToTree(any(JobCallbackPayload.class));
         executeScheduleProcessInstanceJobWithFataFailure(description);
         verifyCreateJobEventWasCreated(1, expectedEvent);
         verifyEmitterWasInvoked(1, SERIALIZED_EVENT);
@@ -159,6 +166,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
     protected void scheduleProcessInstanceJobWithFatalFailureAndContinue() throws Exception {
         ProcessInstanceJobDescription description = mockProcessInstanceJobDescription();
         CreateJobEvent expectedEvent = mockExpectedCreateJobEvent();
+        doReturn(JSON_PAYLOAD).when(objectMapper).valueToTree(any(JobCallbackPayload.class));
         // First execution fails
         executeScheduleProcessInstanceJobWithFataFailure(description);
 
@@ -298,7 +306,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
                         .delayUnit(TemporalUnit.MILLIS)
                         .build())
                 .recipient(HttpRecipient.builder().forJsonPayload()
-                        .payload(HttpRecipientJsonPayloadData.from(new ObjectMapper().createObjectNode().put("correlationId", JOB_ID)))
+                        .payload(HttpRecipientJsonPayloadData.from(JSON_PAYLOAD))
                         .url(CALLBACK_ENDPOINT)
                         .header("processInstanceId", PROCESS_INSTANCE_ID)
                         .header("rootProcessInstanceId", ROOT_PROCESS_INSTANCE_ID)

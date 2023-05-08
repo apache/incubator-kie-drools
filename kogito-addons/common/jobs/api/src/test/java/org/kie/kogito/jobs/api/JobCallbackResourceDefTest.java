@@ -27,6 +27,7 @@ import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
+import org.kie.kogito.jobs.service.api.serlialization.SerializationUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -58,7 +59,7 @@ class JobCallbackResourceDefTest {
 
     @Test
     void buildCallbackPatternJob() {
-        org.kie.kogito.jobs.service.api.Job job = JobCallbackResourceDef.buildCallbackPatternJob(mockProcessInstanceJobDescription(), CALLBACK);
+        org.kie.kogito.jobs.service.api.Job job = JobCallbackResourceDef.buildCallbackPatternJob(mockProcessInstanceJobDescription(), CALLBACK, SerializationUtils.DEFAULT_OBJECT_MAPPER);
         assertThat(job).isNotNull();
         assertThat(job.getId()).isEqualTo(JOB_ID);
         assertThat(job.getRecipient())
