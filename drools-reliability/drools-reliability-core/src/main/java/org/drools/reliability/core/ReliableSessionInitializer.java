@@ -20,6 +20,7 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.Storage;
 import org.drools.core.phreak.PropagationEntry;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
@@ -107,7 +108,32 @@ public class ReliableSessionInitializer {
 
         @Override
         public InternalWorkingMemory init(InternalWorkingMemory session, PersistedSessionOption persistedSessionOption) {
+
+            //session.setWorkingMemoryActionListener(entry -> onWorkingMemoryAction(session, entry));
+            session.getRuleRuntimeEventSupport().addEventListener(new FullReliableSessionInitializer.FullStoreRuntimeEventListener(session));
             return session;
+        }
+        static class FullStoreRuntimeEventListener implements RuleRuntimeEventListener {
+
+            private final Storage<Object, Object> componentsCache;
+            private final ReliablePropagationList propagationList;
+
+            FullStoreRuntimeEventListener(InternalWorkingMemory session) {
+                this.componentsCache = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(session, "components");
+                this.propagationList = (ReliablePropagationList) ((ReliableAgenda) session.getAgenda()).getPropagationList();
+            }
+
+            public void objectInserted(ObjectInsertedEvent ev) {
+                componentsCache.put("PropagationList", propagationList);
+            }
+
+            public void objectDeleted(ObjectDeletedEvent ev) {
+                componentsCache.put("PropagationList", propagationList);
+            }
+
+            public void objectUpdated(ObjectUpdatedEvent ev) {
+                componentsCache.put("PropagationList", propagationList);
+            }
         }
     }
 }

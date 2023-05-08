@@ -60,6 +60,9 @@ public abstract class ReliabilityTestBasics {
     static Stream<PersistedSessionOption.Strategy> strategyProviderStoresOnly() {
         return Stream.of(PersistedSessionOption.Strategy.STORES_ONLY);
     }
+    static Stream<PersistedSessionOption.Strategy> strategyProviderFull() {
+        return Stream.of(PersistedSessionOption.Strategy.FULL);
+    }
 
     @BeforeEach
     public void setUp() {

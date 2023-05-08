@@ -46,7 +46,8 @@ public class ReliableAgenda extends DefaultAgenda {
             propagationList = new ReliablePropagationList(workingMemory);
             componentsStorage.put("PropagationList", propagationList);
         } else {
-            propagationList = new ReliablePropagationList(workingMemory, propagationList);
+            //propagationList = new ReliablePropagationList(workingMemory, propagationList);
+            propagationList.setReteEvaluator(workingMemory);
         }
         return propagationList;
     }
