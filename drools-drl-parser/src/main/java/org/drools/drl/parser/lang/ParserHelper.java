@@ -48,6 +48,7 @@ import org.drools.drl.ast.dsl.FieldDescrBuilder;
 import org.drools.drl.ast.dsl.ForallDescrBuilder;
 import org.drools.drl.ast.dsl.FunctionDescrBuilder;
 import org.drools.drl.ast.dsl.GlobalDescrBuilder;
+import org.drools.drl.ast.dsl.GroupByDescrBuilder;
 import org.drools.drl.ast.dsl.ImportDescrBuilder;
 import org.drools.drl.ast.dsl.NamedConsequenceDescrBuilder;
 import org.drools.drl.ast.dsl.PackageDescrBuilder;
@@ -594,6 +595,11 @@ public class ParserHelper {
                 CollectDescrBuilder< ? > collect = ((PatternDescrBuilder< ? >) ctxBuilder).from().collect();
                 setStart( collect );
                 return (T) collect;
+            } else if ( GroupByDescrBuilder.class.isAssignableFrom(clazz) ) {
+                // GroupBy extends Accumulate and thus need to be before it
+                GroupByDescrBuilder< ? > groupBy = ((PatternDescrBuilder< ? >) ctxBuilder).from().groupBy();
+                setStart( groupBy );
+                return (T) groupBy;
             } else if ( AccumulateDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 AccumulateDescrBuilder< ? > accumulate = ((PatternDescrBuilder< ? >) ctxBuilder).from().accumulate();
                 setStart( accumulate );

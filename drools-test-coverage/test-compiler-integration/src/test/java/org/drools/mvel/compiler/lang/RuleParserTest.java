@@ -46,6 +46,7 @@ import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
+import org.drools.drl.ast.descr.GroupByDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.NotDescr;
@@ -2034,6 +2035,35 @@ public class RuleParserTest {
         final PatternDescr p = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
 
         assertThat(p.getObjectType()).isEqualTo("com.cheeseco.Cheese");
+    }
+
+    @Test
+    public void testGroupBy() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                "groupBy.drl" );
+
+        assertThat(pkg.getRules().size()).isEqualTo(1);
+        final RuleDescr rule = pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final GroupByDescr groupBy = (GroupByDescr) outPattern.getSource();
+        assertEqualsIgnoreWhitespace( "$age",
+                groupBy.getGroupingFunction() );
+        assertThat(groupBy.getActionCode()).isNull();
+        assertThat(groupBy.getReverseCode()).isNull();
+        assertThat(groupBy.getFunctions()).hasSize(1);
+        assertEqualsIgnoreWhitespace( "average",
+                groupBy.getFunctions().get(0).getFunction() );
+
+        assertThat(groupBy.getFunctions().get(0).getParams()).hasSize(1);
+        assertEqualsIgnoreWhitespace("$salary",
+                groupBy.getFunctions().get(0).getParams()[0]);
+
+        assertThat(groupBy.isExternalFunction()).isTrue();
+
+        final PatternDescr pattern = groupBy.getInputPattern();
+        assertThat(pattern.getObjectType()).isEqualTo("Person");
     }
 
     @Test
