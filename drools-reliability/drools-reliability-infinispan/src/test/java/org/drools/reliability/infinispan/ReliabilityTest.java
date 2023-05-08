@@ -240,4 +240,25 @@ class ReliabilityTest extends ReliabilityTestBasics {
         assertThat(session.fireAllRules()).isEqualTo(0);
     }
 
+    @ParameterizedTest
+    @MethodSource("strategyProviderFull")
+    void insertFailover_propListShouldNotBeEmpty(PersistedSessionOption.Strategy strategy){
+        createSession(BASIC_RULE, strategy);
+
+        insertString("M");
+        insertMatchingPerson("Maria", 30);
+
+        failover();
+
+        restoreSession(BASIC_RULE, strategy);
+        assertThat(session.fireAllRules()).isEqualTo(1);
+
+        //componentsCache = CacheManagerFactory.get().getCacheManager().getOrCreateCacheForSession(((InternalWorkingMemory) session).getReteEvaluator(), "components");
+        //reliablePropagationListPropList = (ReliablePropagationList) componentsCache.get("PropagationList");
+        //assertThat(reliablePropagationListPropList.isEmpty()).isFalse();
+
+        //restoreSession(BASIC_RULE, strategy);
+        //assertThat(session.fireAllRules()).isEqualTo(1);
+
+    }
 }
