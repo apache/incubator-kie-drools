@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ConfigValueExpanderTest {
 
     @ParameterizedTest
-    @ValueSource(strings = { "kubernetes:v1/pod/kie/kogito", "openshift:v1/pod/kie/kogito", "knative:kie/kogito" })
+    @ValueSource(strings = { "kubernetes:pods.v1/kie/kogito", "openshift:pods.v1/kie/kogito", "knative:kie/kogito" })
     void expandable(String expandableValues) {
         String expectedValue = "https://localhost/8080";
 

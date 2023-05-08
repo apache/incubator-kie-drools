@@ -24,6 +24,7 @@ import java.util.function.Function;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.kogito.addons.quarkus.k8s.discovery.GVK;
 import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceDiscovery;
 import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceUri;
 import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
@@ -45,19 +46,18 @@ final class KnativeServiceRegistry {
         this.vanillaKubernetesResourceDiscovery = vanillaKubernetesResourceDiscovery;
     }
 
-    Optional<URI> getServiceAddress(String serviceName) {
-        String[] splitServiceName = serviceName.split("/");
-        final Function<String, Optional<URI>> function;
-        switch (splitServiceName.length) {
-            case 1:
-                function = k -> knativeServiceDiscovery.query(new KnativeServiceUri(null, serviceName));
-                break;
-            case 2:
-                function = k -> knativeServiceDiscovery.query(new KnativeServiceUri(splitServiceName[0], splitServiceName[1]));
-                break;
-            default:
-                function = k -> vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse(k));
+    Optional<URI> getServiceAddress(String key) {
+        String[] splitKey = key.split("/");
+        Function<String, Optional<URI>> function;
+
+        if (splitKey.length == 1) {
+            function = k -> knativeServiceDiscovery.query(new KnativeServiceUri(null, k));
+        } else if (GVK.isValid(splitKey[0])) {
+            function = k -> vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse(k));
+        } else {
+            function = k -> knativeServiceDiscovery.query(new KnativeServiceUri(splitKey[0], splitKey[1]));
         }
-        return Optional.ofNullable(services.computeIfAbsent(serviceName, k -> function.apply(k).orElse(null)));
+
+        return Optional.ofNullable(services.computeIfAbsent(key, k -> function.apply(k).orElse(null)));
     }
 }

@@ -67,7 +67,7 @@ class KubeDiscoveryConfigCacheUpdaterTest {
 
     @Test
     void knativeResource() {
-        assertThat(kubeDiscoveryConfigCacheUpdater.update("knative:serving.knative.dev/v1/Service/test/serverless-workflow-greeting-quarkus"))
+        assertThat(kubeDiscoveryConfigCacheUpdater.update("knative:services.v1.serving.knative.dev/test/serverless-workflow-greeting-quarkus"))
                 .hasValue(URI.create(remoteServiceUrl));
     }
 }

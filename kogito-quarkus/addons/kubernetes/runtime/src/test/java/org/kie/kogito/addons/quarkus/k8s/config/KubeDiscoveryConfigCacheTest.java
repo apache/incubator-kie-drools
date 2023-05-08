@@ -35,7 +35,7 @@ class KubeDiscoveryConfigCacheTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "kubernetes:v1/service/myservice", "openshift:v1/service/myservice" })
+    @ValueSource(strings = { "kubernetes:services.v1/myservice", "openshift:services.v1/myservice" })
     void validURIShouldBeCached(String validURI) {
         String cachedUri = "cached_uri";
         KubeDiscoveryConfigCacheUpdater kResource = new ConstantKubeDiscoveryConfigCacheUpdater(cachedUri);

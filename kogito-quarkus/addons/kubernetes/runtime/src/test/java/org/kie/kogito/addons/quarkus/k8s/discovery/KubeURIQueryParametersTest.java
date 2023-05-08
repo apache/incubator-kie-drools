@@ -26,9 +26,9 @@ public class KubeURIQueryParametersTest {
 
     @Test
     public void testQueryParameterCustomPortName() {
-        StringBuilder kubernetesKubeURIBuilder = new StringBuilder("v1/Service/serverless-workflow-greeting-quarkus/process-quarkus-example-pod-service");
-        StringBuilder knativeKubeURIBuilder = new StringBuilder("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
-        StringBuilder ocpKubeURIBuilder = new StringBuilder("apps.openshift.io/v1/deploymentConfig/serverless-workflow-greeting-quarkus/example-deployment-no-service");
+        StringBuilder kubernetesKubeURIBuilder = new StringBuilder("services.v1/serverless-workflow-greeting-quarkus/process-quarkus-example-pod-service");
+        StringBuilder knativeKubeURIBuilder = new StringBuilder("services.v1/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
+        StringBuilder ocpKubeURIBuilder = new StringBuilder("deploymentconfigs.v1.apps.openshift.io/serverless-workflow-greeting-quarkus/example-deployment-no-service");
 
         kubernetesKubeURIBuilder
                 .append("?")
@@ -56,9 +56,9 @@ public class KubeURIQueryParametersTest {
 
     @Test
     public void testQueryParameterCustomPortNameAndNumber() {
-        StringBuilder kubernetesKubeURIBuilder = new StringBuilder("v1/Service/serverless-workflow-greeting-quarkus/process-quarkus-example-pod-service");
-        StringBuilder knativeKubeURIBuilder = new StringBuilder("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
-        StringBuilder ocpKubeURIBuilder = new StringBuilder("apps.openshift.io/v1/deploymentConfig/serverless-workflow-greeting-quarkus/example-deployment-no-service");
+        StringBuilder kubernetesKubeURIBuilder = new StringBuilder("services.v1/serverless-workflow-greeting-quarkus/process-quarkus-example-pod-service");
+        StringBuilder knativeKubeURIBuilder = new StringBuilder("services.v1/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
+        StringBuilder ocpKubeURIBuilder = new StringBuilder("deploymentconfigs.v1.apps.openshift.io/serverless-workflow-greeting-quarkus/example-deployment-no-service");
 
         kubernetesKubeURIBuilder
                 .append("?")
@@ -95,9 +95,9 @@ public class KubeURIQueryParametersTest {
 
     @Test
     public void testQueryParameterCustomLabel() {
-        StringBuilder kubernetesKubeURIBuilder = new StringBuilder("v1/Service/serverless-workflow-greeting-quarkus/process-quarkus-example-pod-service");
-        StringBuilder knativeKubeURIBuilder = new StringBuilder("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
-        StringBuilder ocpKubeURIBuilder = new StringBuilder("apps.openshift.io/v1/deploymentConfig/serverless-workflow-greeting-quarkus/example-deployment-no-service");
+        StringBuilder kubernetesKubeURIBuilder = new StringBuilder("services.v1/serverless-workflow-greeting-quarkus/process-quarkus-example-pod-service");
+        StringBuilder knativeKubeURIBuilder = new StringBuilder("services.v1/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
+        StringBuilder ocpKubeURIBuilder = new StringBuilder("deploymentconfigs.v1.apps.openshift.io/serverless-workflow-greeting-quarkus/example-deployment-no-service");
 
         kubernetesKubeURIBuilder
                 .append("?")
@@ -132,9 +132,9 @@ public class KubeURIQueryParametersTest {
 
     @Test
     public void testQueryParameterAllCustomParameters() {
-        StringBuilder kubernetesKubeURIBuilder = new StringBuilder("v1/Service/serverless-workflow-greeting-quarkus/process-quarkus-example-pod-service");
-        StringBuilder knativeKubeURIBuilder = new StringBuilder("v1/Service/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
-        StringBuilder ocpKubeURIBuilder = new StringBuilder("apps.openshift.io/v1/deploymentConfig/serverless-workflow-greeting-quarkus/example-deployment-no-service");
+        StringBuilder kubernetesKubeURIBuilder = new StringBuilder("services.v1/serverless-workflow-greeting-quarkus/process-quarkus-example-pod-service");
+        StringBuilder knativeKubeURIBuilder = new StringBuilder("services.v1/serverless-workflow-greeting-quarkus/greeting-quarkus-cli");
+        StringBuilder ocpKubeURIBuilder = new StringBuilder("deploymentconfigs.v1.apps.openshift.io/serverless-workflow-greeting-quarkus/example-deployment-no-service");
 
         kubernetesKubeURIBuilder
                 .append("?")

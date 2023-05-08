@@ -39,7 +39,8 @@ public final class KnativeWorkItemHandler extends WorkflowWorkItemHandler {
 
     @Override
     protected Object internalExecute(KogitoWorkItem workItem, Map<String, Object> arguments) {
-        return customFunction.execute(workItem.getProcessInstanceStringId(), workItem.getNodeInstance().getNode().getMetaData(), arguments);
+        var operation = (String) workItem.getNodeInstance().getNode().getMetaData().get(OPERATION_PROPERTY_NAME);
+        return customFunction.execute(workItem.getProcessInstanceStringId(), operation, arguments);
     }
 
     @Override

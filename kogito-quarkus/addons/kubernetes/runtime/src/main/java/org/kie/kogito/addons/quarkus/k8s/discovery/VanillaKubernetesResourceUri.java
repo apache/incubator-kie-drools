@@ -18,6 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.discovery;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.addons.quarkus.k8s.KubeConstants;
@@ -96,6 +97,27 @@ public final class VanillaKubernetesResourceUri {
                 .withResourceName(resourceName);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        VanillaKubernetesResourceUri that = (VanillaKubernetesResourceUri) o;
+        return gvk == that.gvk
+                && Objects.equals(namespace, that.namespace)
+                && Objects.equals(resourceName, that.resourceName)
+                && Objects.equals(customPortName, that.customPortName)
+                && Objects.equals(customLabel, that.customLabel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(gvk, namespace, resourceName, customPortName, customLabel);
+    }
+
     public static class Builder {
 
         private GVK gvk;
@@ -117,30 +139,15 @@ public final class VanillaKubernetesResourceUri {
             String[] values = rawUri.split("/");
 
             switch (values.length) {
-                case 5:
-                    builder.withGvk(GVK.from(values[0], values[1], values[2]));
-                    builder.withNamespace(values[3]);
-                    builder.withResourceName(values[4]);
+                case 2:
+                    builder.withGvk(GVK.from(values[0]));
+                    builder.withResourceName(values[1]);
                     break;
-
-                case 4:
-                    // GVK can be g/v/k or v/k
-                    // for now only v1 api version is supported
-                    if (values[0].equals("v1")) {
-                        builder.withGvk(GVK.from(values[0], values[1]));
-                        builder.withNamespace(values[2]);
-                    } else {
-                        builder.withGvk(GVK.from(values[0], values[1], values[2]));
-                    }
-                    builder.withResourceName(values[3]);
-                    break;
-
                 case 3:
-                    // GVK is only v/k
-                    builder.withGvk(GVK.from(values[0], values[1]));
+                    builder.withGvk(GVK.from(values[0]));
+                    builder.withNamespace(values[1]);
                     builder.withResourceName(values[2]);
                     break;
-
                 default:
                     logger.error("rawUri {} is not valid", rawUri);
             }

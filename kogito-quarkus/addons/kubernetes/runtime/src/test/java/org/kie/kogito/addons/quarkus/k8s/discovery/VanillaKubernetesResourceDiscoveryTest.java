@@ -50,7 +50,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
 
     @Test
     public void testServiceNodePort() {
-        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/" + namespace + "/process-quarkus-example-pod-service");
+        var kubeURI = VanillaKubernetesResourceUri.parse("services.v1/" + namespace + "/process-quarkus-example-pod-service");
 
         Service service = mockServer.getClient().services().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).get();
@@ -63,7 +63,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
 
     @Test
     public void testServiceNodePortCustomPortName() {
-        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/" + namespace + "/custom-port-name-service?port-name=my-custom-port");
+        var kubeURI = VanillaKubernetesResourceUri.parse("services.v1/" + namespace + "/custom-port-name-service?port-name=my-custom-port");
 
         Service service = mockServer.getClient().services().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).get();
@@ -78,7 +78,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
 
     @Test
     public void testServiceClusterIP() {
-        var kubeURI = VanillaKubernetesResourceUri.parse("v1/service/" + namespace + "/process-quarkus-example-pod-clusterip-svc");
+        var kubeURI = VanillaKubernetesResourceUri.parse("services.v1/" + namespace + "/process-quarkus-example-pod-clusterip-svc");
 
         Service service = mockServer.getClient().services().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).get();
@@ -90,7 +90,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
 
     @Test
     public void testServiceExternalName() {
-        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/" + namespace + "/process-quarkus-example-pod");
+        var kubeURI = VanillaKubernetesResourceUri.parse("services.v1/" + namespace + "/process-quarkus-example-pod");
 
         Service service = mockServer.getClient().services().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("service/service-external-name.yaml")).get();
@@ -107,7 +107,7 @@ public class VanillaKubernetesResourceDiscoveryTest {
         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
         assertEquals(Optional.empty(),
-                vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse("v1/service/" + namespace + "/service-1")));
+                vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse("services.v1/" + namespace + "/service-1")));
     }
 
     @Test
@@ -118,12 +118,12 @@ public class VanillaKubernetesResourceDiscoveryTest {
         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
         assertEquals(Optional.empty(),
-                vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse("v1/service/" + namespace + "/process-quarkus-example-pod-clusterip-svc")));
+                vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse("services.v1/" + namespace + "/process-quarkus-example-pod-clusterip-svc")));
     }
 
     @Test
     public void testServiceWithoutNamespace() {
-        var kubeURI = VanillaKubernetesResourceUri.parse("v1/Service/process-quarkus-example-pod-service");
+        var kubeURI = VanillaKubernetesResourceUri.parse("services.v1/process-quarkus-example-pod-service");
 
         Service service = mockServer.getClient().services().inNamespace("test")
                 .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).get();
@@ -144,12 +144,12 @@ public class VanillaKubernetesResourceDiscoveryTest {
         knativeClient.services().inNamespace(namespace).create(service);
 
         assertEquals(Optional.empty(),
-                vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse("serving.knative.dev/v1/Service/" + namespace + "/invalid")));
+                vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse("services.v1.serving.knative.dev/" + namespace + "/invalid")));
     }
 
     @Test
     public void testKnativeService() {
-        var kubeURI = VanillaKubernetesResourceUri.parse("serving.knative.dev/v1/Service/" + namespace + "/serverless-workflow-greeting-quarkus");
+        var kubeURI = VanillaKubernetesResourceUri.parse("services.v1.serving.knative.dev/" + namespace + "/serverless-workflow-greeting-quarkus");
 
         KnativeClient knativeClient = mockServer.getClient().adapt(KnativeClient.class);
         io.fabric8.knative.serving.v1.Service kService = knativeClient.services().inNamespace(namespace)

@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import org.kie.kogito.addons.quarkus.k8s.KubernetesProtocol;
+import org.kie.kogito.addons.quarkus.k8s.discovery.GVK;
 import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceDiscovery;
 import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceUri;
 import org.kie.kogito.addons.quarkus.k8s.discovery.OpenShiftResourceDiscovery;
@@ -62,7 +63,11 @@ class KubeDiscoveryConfigCacheUpdater {
                     case 1:
                         return knativeServiceDiscovery.query(new KnativeServiceUri(null, splitValues[0]));
                     case 2:
-                        return knativeServiceDiscovery.query(new KnativeServiceUri(splitValues[0], splitValues[1]));
+                        if (GVK.isValid(splitValues[0])) {
+                            return vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse(protoAndValues[1]));
+                        } else {
+                            return knativeServiceDiscovery.query(new KnativeServiceUri(splitValues[0], splitValues[1]));
+                        }
                     default:
                         return vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse(protoAndValues[1]));
                 }

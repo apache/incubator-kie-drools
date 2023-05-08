@@ -25,8 +25,6 @@ import org.kie.kogito.process.workitem.WorkItemExecutionException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeWorkItemHandler.OPERATION_PROPERTY_NAME;
-
 /**
  * Implementation of a Serverless Workflow custom function to invoke Knative services.
  * 
@@ -34,10 +32,6 @@ import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.Knat
  */
 @ApplicationScoped
 final class KnativeServerlessWorkflowCustomFunction {
-
-    static final String CLOUD_EVENT_PROPERTY_NAME = "asCloudEvent";
-
-    static final String PATH_PROPERTY_NAME = "path";
 
     private final KnativeServiceRegistry knativeServiceRegistry;
 
@@ -51,20 +45,23 @@ final class KnativeServerlessWorkflowCustomFunction {
 
     }
 
-    JsonNode execute(String processInstanceId, Map<String, Object> metadata, Map<String, Object> arguments) {
-        URI serviceAddress = getServiceAddress((String) metadata.get(OPERATION_PROPERTY_NAME));
-        String path = metadata.getOrDefault(PATH_PROPERTY_NAME, "/").toString();
+    JsonNode execute(String processInstanceId, String operationString, Map<String, Object> arguments) {
+        URI serviceAddress = getServiceAddress(operationString);
 
-        return knativeServiceRequestClientResolver.resolve(metadata).execute(
+        Operation operation = Operation.parse(operationString);
+
+        return knativeServiceRequestClientResolver.resolve(operation).execute(
                 processInstanceId,
                 serviceAddress,
-                path,
+                operation.getPath(),
                 arguments);
     }
 
-    private URI getServiceAddress(String knativeServiceName) {
-        return knativeServiceRegistry.getServiceAddress(knativeServiceName)
-                .orElseThrow(() -> new WorkItemExecutionException("The Knative service '" + knativeServiceName
+    private URI getServiceAddress(String operation) {
+        String service = operation.split("\\?")[0];
+
+        return knativeServiceRegistry.getServiceAddress(service)
+                .orElseThrow(() -> new WorkItemExecutionException("The Knative service '" + service
                         + "' could not be found."));
     }
 }

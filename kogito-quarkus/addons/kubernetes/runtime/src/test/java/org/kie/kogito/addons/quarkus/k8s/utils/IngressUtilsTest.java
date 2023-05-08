@@ -57,12 +57,12 @@ public class IngressUtilsTest {
         mockServer.getClient().resource(ingress).inNamespace(namespace).createOrReplace();
 
         assertEquals(Optional.empty(),
-                discovery.query(VanillaKubernetesResourceUri.parse("networking.k8s.io/v1/ingress/" + namespace + "/invalid")));
+                discovery.query(VanillaKubernetesResourceUri.parse("ingresses.v1.networking.k8s.io/" + namespace + "/invalid")));
     }
 
     @Test
     public void testIngressWithIP() {
-        var kubeURI = VanillaKubernetesResourceUri.parse("networking.k8s.io/v1/ingress/" + namespace + "/process-quarkus-ingress");
+        var kubeURI = VanillaKubernetesResourceUri.parse("ingresses.v1.networking.k8s.io/" + namespace + "/process-quarkus-ingress");
 
         Ingress ingress = mockServer.getClient().network().v1().ingresses().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("ingress/ingress-with-ip.yaml")).get();
@@ -75,7 +75,7 @@ public class IngressUtilsTest {
 
     @Test
     public void testIngressWithTLS() {
-        var kubeURI = VanillaKubernetesResourceUri.parse("networking.k8s.io/v1/ingress/" + namespace + "/hello-app-ingress-tls");
+        var kubeURI = VanillaKubernetesResourceUri.parse("ingresses.v1.networking.k8s.io/" + namespace + "/hello-app-ingress-tls");
 
         Ingress ingress = mockServer.getClient().network().v1().ingresses().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("ingress/ingress-with-tls-and-host.yaml")).get();

@@ -32,47 +32,47 @@ public class KubeURIParserGVKTest {
 
     @Test
     public void testValidGVK() {
-        VanillaKubernetesResourceUri address = VanillaKubernetesResourceUri.parse("apps/v1/deployment/default/kogito-app-1");
+        VanillaKubernetesResourceUri address = VanillaKubernetesResourceUri.parse("deployments.v1.apps/default/kogito-app-1");
         assertThat(address.getGvk()).isEqualTo(DEPLOYMENT);
         Assertions.assertEquals("kogito-app-1", address.getResourceName());
 
-        VanillaKubernetesResourceUri url1 = VanillaKubernetesResourceUri.parse("apps.openshift.io/v1/deploymentconfig/default/kogito-app-1");
+        VanillaKubernetesResourceUri url1 = VanillaKubernetesResourceUri.parse("deploymentconfigs.v1.apps.openshift.io/default/kogito-app-1");
         assertThat(url1.getGvk()).isEqualTo(DEPLOYMENT_CONFIG);
         Assertions.assertEquals("kogito-app-1", url1.getResourceName());
 
-        VanillaKubernetesResourceUri address2 = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/namespace2/kogito-app-1");
+        VanillaKubernetesResourceUri address2 = VanillaKubernetesResourceUri.parse("statefulsets.v1.apps/namespace2/kogito-app-1");
         Assertions.assertEquals(STATEFUL_SET, address2.getGvk());
         Assertions.assertEquals("kogito-app-1", address2.getResourceName());
 
-        VanillaKubernetesResourceUri address3 = VanillaKubernetesResourceUri.parse("apps/v1/statefulset/namespace2/kogito-app-1");
+        VanillaKubernetesResourceUri address3 = VanillaKubernetesResourceUri.parse("statefulsets.v1.apps/namespace2/kogito-app-1");
         Assertions.assertEquals(STATEFUL_SET, address3.getGvk());
         Assertions.assertEquals("kogito-app-1", address3.getResourceName());
 
-        VanillaKubernetesResourceUri address4 = VanillaKubernetesResourceUri.parse("v1/Service/namespace2/kogito-app-1");
+        VanillaKubernetesResourceUri address4 = VanillaKubernetesResourceUri.parse("services.v1/namespace2/kogito-app-1");
         Assertions.assertEquals(SERVICE, address4.getGvk());
         Assertions.assertEquals("kogito-app-1", address4.getResourceName());
 
-        VanillaKubernetesResourceUri address5 = VanillaKubernetesResourceUri.parse("v1/service/namespace2/kogito-app-1");
+        VanillaKubernetesResourceUri address5 = VanillaKubernetesResourceUri.parse("services.v1/namespace2/kogito-app-1");
         Assertions.assertEquals(SERVICE, address5.getGvk());
         Assertions.assertEquals("kogito-app-1", address5.getResourceName());
 
-        VanillaKubernetesResourceUri address6 = VanillaKubernetesResourceUri.parse("route.openshift.io/v1/route/namespace10/kogito-app-1");
+        VanillaKubernetesResourceUri address6 = VanillaKubernetesResourceUri.parse("routes.v1.route.openshift.io/namespace10/kogito-app-1");
         Assertions.assertEquals(ROUTE, address6.getGvk());
         Assertions.assertEquals("kogito-app-1", address6.getResourceName());
 
-        VanillaKubernetesResourceUri address7 = VanillaKubernetesResourceUri.parse("networking.k8s.io/v1/ingress/namespace9/kogito-app-1");
+        VanillaKubernetesResourceUri address7 = VanillaKubernetesResourceUri.parse("ingresses.v1.networking.k8s.io/namespace9/kogito-app-1");
         Assertions.assertEquals(INGRESS, address7.getGvk());
         Assertions.assertEquals("kogito-app-1", address7.getResourceName());
 
-        VanillaKubernetesResourceUri address8 = VanillaKubernetesResourceUri.parse("v1/pod/namespace9/kogito-app-1");
+        VanillaKubernetesResourceUri address8 = VanillaKubernetesResourceUri.parse("pods.v1/namespace9/kogito-app-1");
         Assertions.assertEquals(POD, address8.getGvk());
         Assertions.assertEquals("kogito-app-1", address8.getResourceName());
 
-        VanillaKubernetesResourceUri url9 = VanillaKubernetesResourceUri.parse("apps.openshift.io/v1/deploymentConfig/default/kogito-app-1");
+        VanillaKubernetesResourceUri url9 = VanillaKubernetesResourceUri.parse("deploymentconfigs.v1.apps.openshift.io/default/kogito-app-1");
         Assertions.assertEquals(DEPLOYMENT_CONFIG, url9.getGvk());
         Assertions.assertEquals("kogito-app-1", url9.getResourceName());
 
-        VanillaKubernetesResourceUri url10 = VanillaKubernetesResourceUri.parse("serving.knative.dev/v1/service/default/knative-app-1");
+        VanillaKubernetesResourceUri url10 = VanillaKubernetesResourceUri.parse("services.v1.serving.knative.dev/default/knative-app-1");
         Assertions.assertEquals(KNATIVE_SERVICE, url10.getGvk());
         Assertions.assertEquals("knative-app-1", url10.getResourceName());
     }
@@ -92,25 +92,25 @@ public class KubeURIParserGVKTest {
         });
 
         Assertions.assertThrowsExactly(IllegalArgumentException.class, () -> {
-            VanillaKubernetesResourceUri.parse("apps.openshift.io/v1/deploymentconfigs/default/kogito-app2");
+            VanillaKubernetesResourceUri.parse("deploymentconfigs.v1.apps.openshift.ios/default/kogito-app2");
         });
     }
 
     @Test
     public void testValidGVKWithNoNamespace() {
-        VanillaKubernetesResourceUri url = VanillaKubernetesResourceUri.parse("apps/v1/deployment/kogito-app-1");
+        VanillaKubernetesResourceUri url = VanillaKubernetesResourceUri.parse("deployments.v1.apps/kogito-app-1");
         Assertions.assertEquals(DEPLOYMENT, url.getGvk());
         Assertions.assertEquals("kogito-app-1", url.getResourceName());
 
-        VanillaKubernetesResourceUri url1 = VanillaKubernetesResourceUri.parse("v1/Service/kogito-app-2");
+        VanillaKubernetesResourceUri url1 = VanillaKubernetesResourceUri.parse("services.v1/kogito-app-2");
         Assertions.assertEquals(SERVICE, url1.getGvk());
         Assertions.assertEquals("kogito-app-2", url1.getResourceName());
 
-        VanillaKubernetesResourceUri url2 = VanillaKubernetesResourceUri.parse("v1/Service/kogito-app-2");
+        VanillaKubernetesResourceUri url2 = VanillaKubernetesResourceUri.parse("services.v1/kogito-app-2");
         Assertions.assertEquals(SERVICE, url2.getGvk());
         Assertions.assertEquals("kogito-app-2", url2.getResourceName());
 
-        VanillaKubernetesResourceUri url3 = VanillaKubernetesResourceUri.parse("apps.openshift.io/v1/deploymentconfig/kogito-app-3");
+        VanillaKubernetesResourceUri url3 = VanillaKubernetesResourceUri.parse("deploymentconfigs.v1.apps.openshift.io/kogito-app-3");
         Assertions.assertEquals(DEPLOYMENT_CONFIG, url3.getGvk());
         Assertions.assertEquals("kogito-app-3", url3.getResourceName());
 

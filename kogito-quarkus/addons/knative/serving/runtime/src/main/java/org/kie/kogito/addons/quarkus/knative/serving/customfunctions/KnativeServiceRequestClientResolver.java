@@ -15,12 +15,8 @@
  */
 package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
-import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeServerlessWorkflowCustomFunction.CLOUD_EVENT_PROPERTY_NAME;
 
 @ApplicationScoped
 class KnativeServiceRequestClientResolver {
@@ -36,15 +32,7 @@ class KnativeServiceRequestClientResolver {
         this.plainJsonClient = plainJsonClient;
     }
 
-    KnativeServiceRequestClient resolve(Map<String, Object> metadata) {
-        if (isCloudEvent(metadata)) {
-            return cloudEventClient;
-        } else {
-            return plainJsonClient;
-        }
-    }
-
-    private static boolean isCloudEvent(Map<String, Object> metadata) {
-        return Boolean.parseBoolean(metadata.getOrDefault(CLOUD_EVENT_PROPERTY_NAME, "false").toString());
+    KnativeServiceRequestClient resolve(Operation operation) {
+        return operation.isCloudEvent() ? cloudEventClient : plainJsonClient;
     }
 }
