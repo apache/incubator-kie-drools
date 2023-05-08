@@ -34,11 +34,15 @@ import java.util.stream.Collectors;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeadlineHelper {
 
     private DeadlineHelper() {
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(DeadlineHelper.class);
 
     private static final Pattern deadLineSeparatorPattern = Pattern.compile("\\^");
     private static final Pattern listSeparatorPattern = Pattern.compile(",");
@@ -89,6 +93,7 @@ public class DeadlineHelper {
     private static <T> Collection<DeadlineInfo<T>> parseDeadlines(Object text,
             Function<String, T> notificationFunction,
             Function<String, Collection<ScheduleInfo>> scheduleFunction) {
+        logger.debug("Parsing deadlines for text {}", text);
         return text == null ? Collections.emptySet()
                 : deadLineSeparatorPattern.splitAsStream(text.toString().trim()).map(
                         t -> parseDeadline(t, notificationFunction, scheduleFunction)).collect(Collectors.toSet());

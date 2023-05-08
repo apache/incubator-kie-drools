@@ -17,6 +17,7 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.jbpm.compiler.xml.Parser;
 import org.jbpm.process.core.Work;
@@ -38,6 +39,9 @@ public class UserTaskHandler extends TaskHandler {
         return HumanTaskNode.class;
     }
 
+    private static final Set<String> taskParameters = Set.of(
+            "NotStartedNotify", "NotCompletedNotify", "NotCompletedReassign", "NotStartedReassign", "Description", "Comment", "ActorId", "GroupId", "Priority", "Skippable", "Content");
+
     @Override
     protected Node handleNode(final Node node, final Element element, final String uri,
             final String localName, final Parser parser) throws SAXException {
@@ -46,13 +50,7 @@ public class UserTaskHandler extends TaskHandler {
         Work work = humanTaskNode.getWork();
         work.setName("Human Task");
 
-        setParameter(work, "Description", humanTaskNode.getIoSpecification().getDataInputAssociation());
-        setParameter(work, "Comment", humanTaskNode.getIoSpecification().getDataInputAssociation());
-        setParameter(work, "ActorId", humanTaskNode.getIoSpecification().getDataInputAssociation());
-        setParameter(work, "GroupId", humanTaskNode.getIoSpecification().getDataInputAssociation());
-        setParameter(work, "Priority", humanTaskNode.getIoSpecification().getDataInputAssociation());
-        setParameter(work, "Skippable", humanTaskNode.getIoSpecification().getDataInputAssociation());
-        setParameter(work, "Content", humanTaskNode.getIoSpecification().getDataInputAssociation());
+        taskParameters.forEach(p -> setParameter(work, p, humanTaskNode.getIoSpecification().getDataInputAssociation()));
 
         List<String> owners = new ArrayList<>();
         org.w3c.dom.Node xmlNode = element.getFirstChild();
