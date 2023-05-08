@@ -611,6 +611,66 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testBigDecimalLowerThanCompareTo() {
+        test("{ " +
+                        "    BigDecimal sum = 0;\n" +
+                        "    BigDecimal money = 10;\n" +
+                        "    if(sum.compareTo(money) < 0) {}\n" +
+                        "}",
+                "{ " +
+                        "    java.math.BigDecimal sum = new java.math.BigDecimal(0);\n" +
+                        "    java.math.BigDecimal money = new java.math.BigDecimal(10);\n" +
+                        "    if (sum.compareTo(money) < 0) {\n" +
+                        "    }\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalLowerThan() {
+        test("{ " +
+                        "    BigDecimal sum = 0;\n" +
+                        "    BigDecimal money = 10;\n" +
+                        "    if(sum < money) {}\n" +
+                        "}",
+                "{ " +
+                        "    java.math.BigDecimal sum = new java.math.BigDecimal(0);\n" +
+                        "    java.math.BigDecimal money = new java.math.BigDecimal(10);\n" +
+                        "    if (sum.compareTo(money) < 0) {\n" +
+                        "    }\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalEquals() {
+        test("{ " +
+                        "    BigDecimal sum = 0;\n" +
+                        "    BigDecimal money = 10;\n" +
+                        "    if(sum == 23) {}\n" +
+                        "}",
+                "{ " +
+                        "    java.math.BigDecimal sum = new java.math.BigDecimal(0);\n" +
+                        "    java.math.BigDecimal money = new java.math.BigDecimal(10);\n" +
+                        "    if (sum.compareTo(new java.math.BigDecimal(23)) == 0) {\n" +
+                        "    }\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalNotEquals() {
+        test("{ " +
+                        "    BigDecimal sum = 0;\n" +
+                        "    BigDecimal money = 10;\n" +
+                        "    if(sum != 23) {}\n" +
+                        "}",
+                "{ " +
+                        "    java.math.BigDecimal sum = new java.math.BigDecimal(0);\n" +
+                        "    java.math.BigDecimal money = new java.math.BigDecimal(10);\n" +
+                        "    if (sum.compareTo(new java.math.BigDecimal(23)) != 0) {\n" +
+                        "    }\n" +
+                        "}");
+    }
+
+    @Test
     public void testBigDecimal() {
         test("{ " +
                      "    BigDecimal sum = 0;\n" +
