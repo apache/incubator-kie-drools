@@ -65,7 +65,7 @@ public class TimerDelegateJobScheduler extends BaseTimerJobScheduler {
             @ConfigProperty(name = "kogito.jobs-service.backoffRetryMillis", defaultValue = "1000") long backoffRetryMillis,
             @ConfigProperty(name = "kogito.jobs-service.maxIntervalLimitToRetryMillis", defaultValue = "60000") long maxIntervalLimitToRetryMillis,
             @ConfigProperty(name = "kogito.jobs-service.schedulerChunkInMinutes", defaultValue = "10") long schedulerChunkInMinutes,
-            @ConfigProperty(name = "kogito.jobs-service.forceExecuteExpiredJobs", defaultValue = "false") boolean forceExecuteExpiredJobs,
+            @ConfigProperty(name = "kogito.jobs-service.forceExecuteExpiredJobs", defaultValue = "true") boolean forceExecuteExpiredJobs,
             JobExecutorResolver jobExecutorResolver, VertxTimerServiceScheduler delegate,
             JobStreams jobStreams) {
         super(jobRepository, backoffRetryMillis, maxIntervalLimitToRetryMillis, schedulerChunkInMinutes, forceExecuteExpiredJobs);
