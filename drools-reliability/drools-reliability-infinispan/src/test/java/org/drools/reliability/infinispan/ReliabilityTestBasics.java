@@ -44,6 +44,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MARSHALLER;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MODE;
+import static org.drools.util.Config.getConfig;
+
 @ExtendWith(BeforeAllMethodExtension.class)
 public abstract class ReliabilityTestBasics {
 
@@ -59,6 +63,10 @@ public abstract class ReliabilityTestBasics {
 
     static Stream<PersistedSessionOption.Strategy> strategyProviderStoresOnly() {
         return Stream.of(PersistedSessionOption.Strategy.STORES_ONLY);
+    }
+
+    static boolean isProtoStream() {
+        return "PROTOSTREAM".equalsIgnoreCase(getConfig(INFINISPAN_STORAGE_MARSHALLER));
     }
 
     @BeforeEach

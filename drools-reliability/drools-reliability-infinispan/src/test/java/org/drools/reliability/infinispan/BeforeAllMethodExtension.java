@@ -49,9 +49,6 @@ public class BeforeAllMethodExtension implements BeforeAllCallback {
         FileUtils.deleteDirectory(Path.of(EmbeddedStorageManager.GLOBAL_STATE_DIR));
         LOG.info("### Deleted directory {}", EmbeddedStorageManager.GLOBAL_STATE_DIR);
 
-//        System.setProperty(INFINISPAN_STORAGE_MODE, "REMOTE"); // force REMOTE for this PR test
-//        System.setProperty(INFINISPAN_STORAGE_MARSHALLER, "PROTOSTREAM"); // force PROTOSTREAM for this PR test
-//        System.setProperty(INFINISPAN_STORAGE_SERIALIZATION_CONTEXT_INITIALIZER, "org.drools.reliability.infinispan.TestProtoStreamSchemaImpl");
         LOG.info("### Set marshaller to {}", System.getProperty(INFINISPAN_STORAGE_MARSHALLER));
         LOG.info("### Set initializer to {}", System.getProperty(INFINISPAN_STORAGE_SERIALIZATION_CONTEXT_INITIALIZER));
     }

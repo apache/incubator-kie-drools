@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.drools.reliability.infinispan;
+package org.drools.reliability.infinispan.proto;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -23,6 +23,7 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.reliability.core.StorageManagerFactory;
 import org.drools.reliability.core.StoredObject;
+import org.drools.reliability.infinispan.InfinispanStorageManager;
 import org.infinispan.protostream.ProtobufUtil;
 import org.infinispan.protostream.SerializationContext;
 import org.infinispan.protostream.annotations.ProtoFactory;

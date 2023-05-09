@@ -197,7 +197,7 @@
               <systemPropertyVariables>
                 <drools.reliability.storage.infinispan.mode>REMOTE</drools.reliability.storage.infinispan.mode>
                 <drools.reliability.storage.infinispan.marshaller>PROTOSTREAM</drools.reliability.storage.infinispan.marshaller>
-                <drools.reliability.storage.infinispan.serialization.context.initializer>org.drools.reliability.infinispan.TestProtoStreamSchemaImpl</drools.reliability.storage.infinispan.serialization.context.initializer>
+                <drools.reliability.storage.infinispan.serialization.context.initializer>org.drools.reliability.infinispan.proto.TestProtoStreamSchemaImpl</drools.reliability.storage.infinispan.serialization.context.initializer>
               </systemPropertyVariables>
             </configuration>
           </plugin>

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.drools.reliability.infinispan;
+package org.drools.reliability.infinispan.proto;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;

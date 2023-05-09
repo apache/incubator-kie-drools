@@ -6,6 +6,7 @@ import org.drools.reliability.core.SimpleReliableObjectStoreFactory;
 import org.drools.reliability.core.SimpleSerializationReliableObjectStore;
 import org.drools.reliability.core.StorageManagerFactory;
 import org.drools.reliability.core.StoredObject;
+import org.drools.reliability.infinispan.proto.SimpleProtoStreamReliableObjectStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

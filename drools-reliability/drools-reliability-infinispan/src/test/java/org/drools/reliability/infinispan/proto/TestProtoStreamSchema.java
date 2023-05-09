@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.drools.reliability.infinispan;
+package org.drools.reliability.infinispan.proto;
 
 import org.infinispan.protostream.GeneratedSchema;
 import org.infinispan.protostream.annotations.AutoProtoSchemaBuilder;
