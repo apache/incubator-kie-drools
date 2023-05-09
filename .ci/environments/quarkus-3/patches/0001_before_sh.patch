@@ -1,5 +1,5 @@
 diff --git a/addons/common/jobs/api/src/main/java/org/kie/kogito/jobs/api/JobCallbackResourceDef.java b/addons/common/jobs/api/src/main/java/org/kie/kogito/jobs/api/JobCallbackResourceDef.java
-index 89006af2e6..e732a407c8 100644
+index e62f05047a..28c4533641 100644
 --- a/addons/common/jobs/api/src/main/java/org/kie/kogito/jobs/api/JobCallbackResourceDef.java
 +++ b/addons/common/jobs/api/src/main/java/org/kie/kogito/jobs/api/JobCallbackResourceDef.java
 @@ -18,8 +18,8 @@ package org.kie.kogito.jobs.api;
@@ -14,7 +14,7 @@ index 89006af2e6..e732a407c8 100644
  import org.kie.kogito.jobs.ProcessInstanceJobDescription;
  import org.kie.kogito.jobs.service.api.TemporalUnit;
 diff --git a/addons/common/jobs/api/src/test/java/org/kie/kogito/jobs/api/JobCallbackResourceDefTest.java b/addons/common/jobs/api/src/test/java/org/kie/kogito/jobs/api/JobCallbackResourceDefTest.java
-index 3c7708be2b..3b3c12b152 100644
+index ebc9d7f80b..b877b40ce6 100644
 --- a/addons/common/jobs/api/src/test/java/org/kie/kogito/jobs/api/JobCallbackResourceDefTest.java
 +++ b/addons/common/jobs/api/src/test/java/org/kie/kogito/jobs/api/JobCallbackResourceDefTest.java
 @@ -18,8 +18,8 @@ package org.kie.kogito.jobs.api;
@@ -529,7 +529,7 @@ index aa06497e9f..633ee84f50 100644
        </dependency>
        <dependency>
 diff --git a/kogito-build/kogito-kie-bom/pom.xml b/kogito-build/kogito-kie-bom/pom.xml
-index 8abcd45354..31b7020647 100644
+index 8abcd45354..bffa9ba738 100644
 --- a/kogito-build/kogito-kie-bom/pom.xml
 +++ b/kogito-build/kogito-kie-bom/pom.xml
 @@ -18,7 +18,7 @@
@@ -537,7 +537,7 @@ index 8abcd45354..31b7020647 100644
  
    <properties>
 -    <version.org.kie>8.39.0-SNAPSHOT</version.org.kie>
-+    <version.org.kie>quarkus-3-SNAPSHOT</version.org.kie>
++    <version.org.kie>9.39.0-SNAPSHOT</version.org.kie>
    </properties>
  
    <dependencyManagement>
@@ -863,7 +863,7 @@ index fac920d739..cdbc8756bc 100644
  import org.kie.kogito.Application;
  import org.kie.kogito.explainability.model.PredictInput;
 diff --git a/quarkus/addons/jobs/common/rest-callback/src/main/java/org/kie/kogito/jobs/quarkus/common/CallbackJobsServiceResource.java b/quarkus/addons/jobs/common/rest-callback/src/main/java/org/kie/kogito/jobs/quarkus/common/CallbackJobsServiceResource.java
-index 270cb5fa8a..58f1702b6e 100644
+index cdd80a9626..dbb1159652 100644
 --- a/quarkus/addons/jobs/common/rest-callback/src/main/java/org/kie/kogito/jobs/quarkus/common/CallbackJobsServiceResource.java
 +++ b/quarkus/addons/jobs/common/rest-callback/src/main/java/org/kie/kogito/jobs/quarkus/common/CallbackJobsServiceResource.java
 @@ -16,17 +16,17 @@
@@ -894,7 +894,7 @@ index 270cb5fa8a..58f1702b6e 100644
 +import jakarta.ws.rs.core.Response.Status;
  
  import org.kie.kogito.Application;
- import org.kie.kogito.jobs.api.JobCallbackResourceDef;
+ import org.kie.kogito.jobs.api.JobCallbackPayload;
 diff --git a/quarkus/addons/jobs/common/rest-callback/src/test/java/org/kie/kogito/jobs/quarkus/common/CallbackJobsServiceResourceTest.java b/quarkus/addons/jobs/common/rest-callback/src/test/java/org/kie/kogito/jobs/quarkus/common/CallbackJobsServiceResourceTest.java
 index 5fcd29c913..cc568d7493 100644
 --- a/quarkus/addons/jobs/common/rest-callback/src/test/java/org/kie/kogito/jobs/quarkus/common/CallbackJobsServiceResourceTest.java
@@ -991,7 +991,7 @@ index 9586b68e7c..ebfd4516dd 100644
  import com.fasterxml.jackson.databind.ObjectMapper;
  
 diff --git a/quarkus/addons/jobs/management/runtime/src/main/java/org/kie/kogito/jobs/management/quarkus/VertxJobsService.java b/quarkus/addons/jobs/management/runtime/src/main/java/org/kie/kogito/jobs/management/quarkus/VertxJobsService.java
-index 708c3279f2..26025e6473 100644
+index 61aed9a036..0e7184b72f 100644
 --- a/quarkus/addons/jobs/management/runtime/src/main/java/org/kie/kogito/jobs/management/quarkus/VertxJobsService.java
 +++ b/quarkus/addons/jobs/management/runtime/src/main/java/org/kie/kogito/jobs/management/quarkus/VertxJobsService.java
 @@ -17,11 +17,11 @@ package org.kie.kogito.jobs.management.quarkus;
@@ -1011,7 +1011,7 @@ index 708c3279f2..26025e6473 100644
  import org.kie.kogito.jobs.ProcessInstanceJobDescription;
  import org.kie.kogito.jobs.ProcessJobDescription;
 diff --git a/quarkus/addons/jobs/management/runtime/src/test/java/org/kie/kogito/jobs/management/quarkus/VertxJobsServiceTest.java b/quarkus/addons/jobs/management/runtime/src/test/java/org/kie/kogito/jobs/management/quarkus/VertxJobsServiceTest.java
-index 6f994f007e..a01b931f2a 100644
+index 9801125c62..c6e24c6e37 100644
 --- a/quarkus/addons/jobs/management/runtime/src/test/java/org/kie/kogito/jobs/management/quarkus/VertxJobsServiceTest.java
 +++ b/quarkus/addons/jobs/management/runtime/src/test/java/org/kie/kogito/jobs/management/quarkus/VertxJobsServiceTest.java
 @@ -15,7 +15,7 @@
@@ -1109,7 +1109,7 @@ index c866764f09..0170c64c61 100644
  import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
  import org.slf4j.Logger;
 diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java
-index 0022f01e9a..505e0768be 100644
+index 53f200af34..6cf07e38db 100644
 --- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java
 +++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java
 @@ -18,8 +18,8 @@ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
@@ -1124,7 +1124,7 @@ index 0022f01e9a..505e0768be 100644
  import org.kie.kogito.process.workitem.WorkItemExecutionException;
  
 diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRegistry.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRegistry.java
-index 88dff7860d..0af6882dbd 100644
+index 0df2e5a15c..6c6832f18e 100644
 --- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRegistry.java
 +++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRegistry.java
 @@ -21,8 +21,8 @@ import java.util.Optional;
@@ -1136,25 +1136,25 @@ index 88dff7860d..0af6882dbd 100644
 +import jakarta.enterprise.context.ApplicationScoped;
 +import jakarta.inject.Inject;
  
+ import org.kie.kogito.addons.quarkus.k8s.discovery.GVK;
  import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceDiscovery;
- import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceUri;
 diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRequestClientResolver.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRequestClientResolver.java
-index 1c6fa88a1e..bdc0dfbfca 100644
+index 458a914716..da4c6009e3 100644
 --- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRequestClientResolver.java
 +++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRequestClientResolver.java
-@@ -17,8 +17,8 @@ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
- 
- import java.util.Map;
+@@ -15,8 +15,8 @@
+  */
+ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
  
 -import javax.enterprise.context.ApplicationScoped;
 -import javax.inject.Inject;
 +import jakarta.enterprise.context.ApplicationScoped;
 +import jakarta.inject.Inject;
  
- import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeServerlessWorkflowCustomFunction.CLOUD_EVENT_PROPERTY_NAME;
- 
+ @ApplicationScoped
+ class KnativeServiceRequestClientResolver {
 diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandler.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandler.java
-index 67d55fef67..f9a5bb8caf 100644
+index d1a65e0487..39f51e465e 100644
 --- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandler.java
 +++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandler.java
 @@ -17,8 +17,8 @@ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
@@ -1205,7 +1205,7 @@ index 9d9609c7f1..f1c1626716 100644
  import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
  import org.slf4j.Logger;
 diff --git a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
-index 15cf23aefc..8e277efd86 100644
+index 605edd5f66..29b9e54f93 100644
 --- a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
 +++ b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
 @@ -19,7 +19,7 @@ import java.time.Instant;
@@ -1378,7 +1378,7 @@ index 78e7e9818c..1e9cabca8c 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.addons.k8s.Endpoint;
 diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
-index b32817818f..bab0b6063b 100644
+index d9ba80e8f8..d575fbe354 100644
 --- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
 +++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
 @@ -17,7 +17,7 @@ package org.kie.kogito.addons.quarkus.k8s.config;
@@ -1404,7 +1404,7 @@ index ecf4a968c1..84fc2e3971 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.addons.quarkus.k8s.test.utils.KnativeResourceDiscoveryTestUtil;
 diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java
-index fbc32b14b9..ed2cdd327f 100644
+index 96fe341880..8304a33f66 100644
 --- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java
 +++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java
 @@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.discovery;
@@ -1417,7 +1417,7 @@ index fbc32b14b9..ed2cdd327f 100644
  import org.junit.jupiter.api.Test;
  
 diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java
-index 64f8829788..3cb4a476cc 100644
+index 6026390ef3..234e3690da 100644
 --- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java
 +++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java
 @@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.discovery;
@@ -1430,7 +1430,7 @@ index 64f8829788..3cb4a476cc 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.addons.quarkus.k8s.KubeConstants;
 diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java
-index 4de2fbe358..aa596d14dc 100644
+index 6652e9dfb0..879b7e35ed 100644
 --- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java
 +++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java
 @@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
@@ -1443,7 +1443,7 @@ index 4de2fbe358..aa596d14dc 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
 diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java
-index 710a84c91f..96c433021d 100644
+index 97706a3ed4..451e59b9dc 100644
 --- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java
 +++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java
 @@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
@@ -1456,7 +1456,7 @@ index 710a84c91f..96c433021d 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
 diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java
-index 0d03a40313..ff030d1066 100644
+index 940ea50864..3f370ba130 100644
 --- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java
 +++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java
 @@ -19,7 +19,7 @@ import java.net.URI;
@@ -1469,7 +1469,7 @@ index 0d03a40313..ff030d1066 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
 diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java
-index e559e1f2d9..10b356868b 100644
+index 65fa7fb56b..aca5216de2 100644
 --- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java
 +++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java
 @@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
@@ -4350,7 +4350,7 @@ index ec8e361691..0abe916c34 100644
      <dependency>
        <groupId>org.slf4j</groupId>
 diff --git a/springboot/addons/jobs/src/main/java/org/kie/kogito/jobs/management/springboot/SpringRestJobsService.java b/springboot/addons/jobs/src/main/java/org/kie/kogito/jobs/management/springboot/SpringRestJobsService.java
-index 58c9dec473..40f39725ab 100644
+index 5c27e4c987..81e7c521de 100644
 --- a/springboot/addons/jobs/src/main/java/org/kie/kogito/jobs/management/springboot/SpringRestJobsService.java
 +++ b/springboot/addons/jobs/src/main/java/org/kie/kogito/jobs/management/springboot/SpringRestJobsService.java
 @@ -15,8 +15,7 @@

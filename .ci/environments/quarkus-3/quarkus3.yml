@@ -3,8 +3,12 @@ description: Update Quarkus version and refactor imports and resources if needed
 type: specs.openrewrite.org/v1beta/recipe
 recipeList:
 - org.openrewrite.maven.ChangePropertyValue: {
-    newValue: 3.0.0.Final,
-    key: version.io.quarkus
+    key: version.io.quarkus,
+    newValue: 3.0.0.Final
+  }
+- org.openrewrite.maven.ChangePropertyValue: {
+    key: version.org.kie,
+    newValue: 9.39.0-SNAPSHOT
   }
 - org.kie.kogito.Quarkus3Migration
 - org.kie.ManagedDependencies
@@ -63,10 +67,6 @@ type: specs.openrewrite.org/v1beta/recipe
 name: org.kie.kogito.Quarkus3Migration
 displayName: All Quarkus 3 Migration for Kogito Runtimes project
 recipeList:
-- org.openrewrite.maven.ChangePropertyValue: {
-    key: version.org.kie,
-    newValue: quarkus-3-SNAPSHOT
-  }
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.org.springframework.boot,
     newValue: 3.0.5

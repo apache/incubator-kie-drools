@@ -19,9 +19,6 @@ name: org.kie.kogito.Quarkus3Migration
 displayName: All Quarkus 3 Migration for Kogito Runtimes project
 recipeList: 
   - org.openrewrite.maven.ChangePropertyValue:
-      key: version.org.kie
-      newValue: quarkus-3-SNAPSHOT
-  - org.openrewrite.maven.ChangePropertyValue:
       key: version.org.springframework.boot
       newValue: 3.0.5
   - org.openrewrite.maven.ChangePropertyValue:
