@@ -14,6 +14,45 @@
 
 package org.drools.model.codegen.execmodel;
 
+import org.apache.commons.math3.util.Pair;
+import org.drools.core.base.accumulators.CollectListAccumulateFunction;
+import org.drools.core.base.accumulators.CountAccumulateFunction;
+import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
+import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.accessor.Accumulator;
+import org.drools.model.DSL;
+import org.drools.model.Global;
+import org.drools.model.Index;
+import org.drools.model.Model;
+import org.drools.model.PatternDSL;
+import org.drools.model.Rule;
+import org.drools.model.Variable;
+import org.drools.model.codegen.execmodel.domain.Child;
+import org.drools.model.codegen.execmodel.domain.Parent;
+import org.drools.model.codegen.execmodel.domain.Person;
+import org.drools.model.consequences.ConsequenceBuilder;
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.accumulate.GroupKey;
+import org.drools.model.impl.ModelImpl;
+import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.ViewItem;
+import org.drools.modelcompiler.KieBaseBuilder;
+import org.drools.modelcompiler.dsl.pattern.D;
+import org.drools.modelcompiler.util.EvaluationUtil;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
+import org.kie.internal.event.rule.RuleEventListener;
+import org.kie.internal.event.rule.RuleEventManager;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,45 +64,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.ToIntFunction;
-
-import org.apache.commons.math3.util.Pair;
-import org.drools.core.base.accumulators.CollectListAccumulateFunction;
-import org.drools.core.base.accumulators.CountAccumulateFunction;
-import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
-import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Accumulator;
-import org.drools.core.reteoo.Tuple;
-import org.drools.model.DSL;
-import org.drools.model.Global;
-import org.drools.model.Index;
-import org.drools.model.Model;
-import org.drools.model.PatternDSL;
-import org.drools.model.Rule;
-import org.drools.model.Variable;
-import org.drools.model.consequences.ConsequenceBuilder;
-import org.drools.model.functions.Function1;
-import org.drools.model.functions.accumulate.GroupKey;
-import org.drools.model.impl.ModelImpl;
-import org.drools.model.view.ExprViewItem;
-import org.drools.model.view.ViewItem;
-import org.drools.modelcompiler.KieBaseBuilder;
-import org.drools.model.codegen.execmodel.domain.Child;
-import org.drools.model.codegen.execmodel.domain.Parent;
-import org.drools.model.codegen.execmodel.domain.Person;
-import org.drools.modelcompiler.dsl.pattern.D;
-import org.drools.modelcompiler.util.EvaluationUtil;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.Match;
-import org.kie.internal.event.rule.RuleEventListener;
-import org.kie.internal.event.rule.RuleEventManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.from;
@@ -77,6 +77,8 @@ public class GroupByTest {
         Variable<String> var_$key = D.declarationOf(String.class);
         Variable<Person> var_$p = D.declarationOf(Person.class);
         Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+
+        // groupby( $p: Person () by $key : $p.getName().substring(0, 1); $sumOfAges : sum($p.getAge()) )
 
         Rule rule1 = D.rule("R1").build(
               D.groupBy(
@@ -295,6 +297,8 @@ public class GroupByTest {
         Variable<Person> var_$p = D.declarationOf(Person.class);
         Variable<List> var_$list = D.declarationOf(List.class);
 
+        // groupby( $p: Person (); $key : $p.getName().substring(0, 1) )
+
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
                         // Patterns
@@ -355,7 +359,7 @@ public class GroupByTest {
         Variable<Integer> var_$age = D.declarationOf(Integer.class);
         Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
 
-        // groupby ( $p : Person ( $age : age ); $p.name.substring(0, 1); $sum : sum( $age ) )
+        // groupby ( $p : Person ( $age : age ); $key : $p.name.substring(0, 1); $sum : sum( $age ) )
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
@@ -416,6 +420,8 @@ public class GroupByTest {
         Variable<Person> var_$p = D.declarationOf(Person.class);
         Variable<Integer> var_$age = D.declarationOf(Integer.class);
         Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+
+        // groupby ( $p : Person ( $age : age ); $key : $p.name.substring(0, 1); $sum : sum( $age ); $sum > $key.length() )
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
@@ -479,6 +485,10 @@ public class GroupByTest {
         final Variable<Person> var_$p = D.declarationOf(Person.class);
         final Variable<Integer> var_$age = D.declarationOf(Integer.class);
         final Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+
+        // groupby ( $p : Person ( $age : age, $initial : getName().substring(0, 1) ) and exists( String( this == $initial ) );
+        //           $key : $p.name.substring(0, 1);
+        //           $sum : sum( $age ); $sum > 10 )
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
@@ -676,7 +686,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroupBy2Vars() throws Exception {
+    public void testGroupBy2Vars() {
         final Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
 
         final Variable<String> var_$key = D.declarationOf(String.class);
@@ -685,6 +695,10 @@ public class GroupByTest {
         final Variable<String> var_$s = D.declarationOf(String.class);
         final Variable<Integer> var_$l = D.declarationOf(Integer.class);
         final Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+
+        // groupby ( $p : Person ( $age : age ) and $s : String( $l : length );
+        //           $key : $p.name.substring(0, 1) + $l;
+        //           $sum : sum( $age ); $sum > 10 )
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
@@ -798,7 +812,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testCompositeKey() throws Exception {
+    public void testCompositeKey() {
         Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
 
         Variable<CompositeKey> var_$key = D.declarationOf(CompositeKey.class);
@@ -808,6 +822,8 @@ public class GroupByTest {
 
         // Define key1 with from
         Variable<Object> var_$key1 = D.declarationOf( Object.class );
+
+        // groupby ( $p : Person ( $age : age ); $key : new CompositeKey( $p.getName().substring(0, 1), 1 ); $sum : sum( $age ); $sum > 10 )
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
@@ -1040,6 +1056,11 @@ public class GroupByTest {
         Variable<Integer> var_$age = D.declarationOf(Integer.class);
         Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
         Variable<Long> var_$countOfPersons = D.declarationOf(Long.class);
+
+        // groupby( $p: Person ();
+        //          $key : $p.getName().substring(0, 1);
+        //          $sumOfAges : sum($p.getAge()), $countOfPersons : count();
+        //          $sumOfAges > 10 )
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
