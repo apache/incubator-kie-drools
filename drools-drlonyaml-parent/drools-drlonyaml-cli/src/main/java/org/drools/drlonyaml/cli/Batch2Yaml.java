@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +44,11 @@ public class Batch2Yaml implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         inputDir.toPath();
-        Files.walk(inputDir.toPath().toAbsolutePath())
-            .filter(Files::isRegularFile)
-            .filter(p -> p.getFileName().toString().endsWith(".drl"))
-            .forEach(p -> convertFile(p.toAbsolutePath()));
+        try (Stream<Path> walk = Files.walk(inputDir.toPath().toAbsolutePath()) ) {
+            walk.filter(Files::isRegularFile)
+                .filter(p -> p.getFileName().toString().endsWith(".drl"))
+                .forEach(p -> convertFile(p.toAbsolutePath()));
+        }
         return 0;
     }
     
