@@ -33,7 +33,7 @@ public class FileWriteStrategy implements Consumer<String> {
     @Override
     public void accept(String t) {
         try {
-            Files.write(f.toPath(), t.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(f.toPath(), t.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
