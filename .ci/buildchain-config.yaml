@@ -15,10 +15,10 @@ default:
     before:
       current: |
         export INTEGRATION_BRANCH=${{ env.INTEGRATION_BRANCH_CURRENT }}
-        bash -c "if [ ! -z '${{ env.BUILD_ENVIRONMENT }}' ] && [ -f .ci/environments/update.sh ]; then .ci/environments/update.sh "${{ env.BUILD_ENVIRONMENT }}"; fi"
+        bash -c "if [ ! -z '${{ env.BUILD_ENVIRONMENT }}' ] && [ -f .ci/environments/update.sh ]; then .ci/environments/update.sh ${{ env.BUILD_ENVIRONMENT }} ${{ env.BUILD_ENVIRONMENT_OPTIONS_CURRENT }}; fi"
       upstream: |
         export INTEGRATION_BRANCH=${{ env.INTEGRATION_BRANCH_UPSTREAM }}
-        bash -c "if [ ! -z '${{ env.BUILD_ENVIRONMENT }}' ] && [ -f .ci/environments/update.sh ]; then .ci/environments/update.sh "${{ env.BUILD_ENVIRONMENT }}"; fi"
+        bash -c "if [ ! -z '${{ env.BUILD_ENVIRONMENT }}' ] && [ -f .ci/environments/update.sh ]; then .ci/environments/update.sh ${{ env.BUILD_ENVIRONMENT }} ${{ env.BUILD_ENVIRONMENT_OPTIONS_UPSTREAM }}; fi"
     current: |
       mvn clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }}
     upstream: |

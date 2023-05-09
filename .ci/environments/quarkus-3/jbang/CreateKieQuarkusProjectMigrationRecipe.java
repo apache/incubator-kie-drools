@@ -4,8 +4,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.io.IOUtils;
 
@@ -13,10 +15,14 @@ import io.quarkus.devtools.project.BuildTool;
 import io.quarkus.devtools.project.update.QuarkusUpdateRecipe;
 import io.quarkus.devtools.project.update.QuarkusUpdateRecipeIO;
 import io.quarkus.devtools.project.update.operations.UpdatePropertyOperation;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 // Version to be changed when needed
 //DEPS io.quarkus:quarkus-devtools-common:3.0.0.Final
+//DEPS info.picocli:picocli:4.5.0
 
 /*
  * This script will generate the final `quarkus3.yml` file based on:
@@ -29,36 +35,43 @@ import io.quarkus.devtools.project.update.operations.UpdatePropertyOperation;
  *   - Reads all modified direct dependencies from the Quarkus recipe
  *   - Generates one managed dependency rule for each of them
  */
-class CreateQuarkusProjectMigrationRecipe {
+@Command(name = "migrationrecipecli", mixinStandardHelpOptions = true, version = "migrationrecipecli 0.1",
+        description = "migrationrecipecli to create the Q3 migration recipe for a project")
+ class CreateKieQuarkusProjectMigrationRecipeCli implements Callable<Integer> {
 
-    static final String QUARKUS_VERSION = "3.0.0.Final";
+    @Option(names={ "-d", "--download-quarkus-recipe"}, description = "Download quarkus update recipe for final recipe generation")
+    private boolean downloadQuarkusRecipe = false;
+
+    @Option(names={ "-v", "--property-version"}, description = "(multi). Add a dynamic property version to the final recipe")
+    private Map<String, String> versionProperties = new HashMap<>();
+
     static final String QUARKUS_UPDATES_BASE_URL = "https://raw.githubusercontent.com/quarkusio/quarkus-updates/1.0.0/recipes/src/main/resources/quarkus-updates/core/3alpha.yaml";
 
     static final Path quarkus3DownloadedRecipePath = Paths.get("quarkus3-base-recipe.yml");
     static final Path quarkus3GeneratedRecipePath = Paths.get("quarkus3.yml");
     static final Path projectBaseRecipePath = Paths.get("project-recipe.yml");
 
-    public static void main(String... args) throws Exception {
-        boolean downloadQuarkusRecipe = false;
-        if (args.length > 0) {
-            downloadQuarkusRecipe = Boolean.parseBoolean(args[0]);
-        }
-
+    @Override
+    public Integer call() throws Exception { // your business logic goes here...
         if (downloadQuarkusRecipe) {
+            System.out.println("Downloading recipe from Quarkus");
             Files.write(quarkus3DownloadedRecipePath, new URL(QUARKUS_UPDATES_BASE_URL).openStream().readAllBytes());
         }
 
         if (!Files.exists(quarkus3DownloadedRecipePath)) {
             System.out.println("The Quarkus base recipe (" + quarkus3DownloadedRecipePath.getFileName()
                     + ") does not exist into the folder. Please download it manually or add the `true` parameter to the script call !");
-            System.exit(1);
+            return 1;
         }
 
         List<Object> quarkusRecipes = QuarkusUpdateRecipeIO
                 .readRecipesYaml(Files.readString(quarkus3DownloadedRecipePath));
         QuarkusUpdateRecipe mainRecipe = new QuarkusUpdateRecipe()
-                .buildTool(BuildTool.MAVEN)
-                .addOperation(new UpdatePropertyOperation("version.io.quarkus", QUARKUS_VERSION));
+                .buildTool(BuildTool.MAVEN);
+        versionProperties.forEach((property, version) -> {
+            System.out.println("Add Property '" + property + "' with value '" + version + "'");
+            mainRecipe.addOperation(new UpdatePropertyOperation(property, version));
+        });
 
         if (Files.exists(projectBaseRecipePath)) {
             System.out.println("Adding Project base recipe(s)");
@@ -81,9 +94,17 @@ class CreateQuarkusProjectMigrationRecipe {
 
         System.out.println("Writing main recipe");
         QuarkusUpdateRecipeIO.write(quarkus3GeneratedRecipePath, mainRecipe);
+
+        return 0;
     }
 
-    private static List<Object> retrieveAllChangeDependencyRecipesToManagedDependency(List<Object> recipes) {
+
+    public static void main(String... args) throws Exception {
+        int exitCode = new CommandLine(new CreateKieQuarkusProjectMigrationRecipeCli()).execute(args);
+        System.exit(exitCode);
+    }
+
+    private List<Object> retrieveAllChangeDependencyRecipesToManagedDependency(List<Object> recipes) {
         List<Object> changeDependencyRecipeList = new ArrayList<>();
         recipes.forEach(r -> {
             if (r instanceof Map) {

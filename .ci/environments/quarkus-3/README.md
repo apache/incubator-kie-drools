@@ -56,7 +56,7 @@ There are 3 recipe files:
 - `project-recipe.yml` is the recipe file to update in case you need a new recipe
 - `quarkus3-base-recipe.yml` is the base recipe setup by Quarkus team in https://github.com/quarkusio/quarkus-updates. You should not modify it !
 - `quarkus3.yml` is the final recipe file and is a compute of the previous 2 files, plus some processing.  
-  See also comments in [Jbang script](jbang/CreateQuarkusDroolsMigrationRecipe.java) for more details on the generation.
+  See also comments in [Jbang script](jbang/CreateKieQuarkusProjectMigrationRecipe.java) for more details on the generation.
 
 ### How to reset the quarkus3.yaml recipe file ?
 
@@ -65,17 +65,17 @@ The `before.sh` script should handle the reset of the `quarkus3.yml` recipe file
 In case you want to do manually, just run:
 
 ```bash
-cd .ci/environments/quarkus-3 && curl -Ls https://sh.jbang.dev | bash -s - jbang/CreateQuarkusDroolsMigrationRecipe.java; cd -
+cd .ci/environments/quarkus-3 && curl -Ls https://sh.jbang.dev | bash -s - jbang/CreateKieQuarkusProjectMigrationRecipe.java; cd -
 ```
   
 ### How to update the Quarkus version ?
 
 If you are setting a new Quarkus version:
 
-1. Update `quarkus-devtools-common` version in `jbang/CreateQuarkusDroolsMigrationRecipe.java` file
-2. Update `QUARKUS_VERSION` in `jbang/CreateQuarkusDroolsMigrationRecipe.java` file
+1. Update `quarkus-devtools-common` version in `jbang/CreateKieQuarkusProjectMigrationRecipe.java` file
+2. Update `QUARKUS_VERSION` in `jbang/CreateKieQuarkusProjectMigrationRecipe.java` file
 3. Update `QUARKUS_UPDATES_BASE_URL` with the corresponding released version of https://github.com/quarkusio/quarkus-updates recipe file
 4. Run the jbang script to update the `quarkus3.yml` file
   ```bash
-  cd .ci/environments/quarkus-3 && curl -Ls https://sh.jbang.dev | bash -s - jbang/CreateQuarkusDroolsMigrationRecipe.java true; cd -
+  cd .ci/environments/quarkus-3 && curl -Ls https://sh.jbang.dev | bash -s - jbang/CreateKieQuarkusProjectMigrationRecipe.java true; cd -
   ```
