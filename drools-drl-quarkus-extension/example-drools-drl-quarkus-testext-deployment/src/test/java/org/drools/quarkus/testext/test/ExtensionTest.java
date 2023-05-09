@@ -17,7 +17,7 @@ package org.drools.quarkus.testext.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.drools.drl.quarkus.testext.deployment.OtnClassesSingleton;
 import org.drools.quarkus.examples.otn.model.ASubclassOfMeasurement;

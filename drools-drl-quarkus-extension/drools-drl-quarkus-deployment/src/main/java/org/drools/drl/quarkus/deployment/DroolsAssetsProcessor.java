@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;

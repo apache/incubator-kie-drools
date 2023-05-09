@@ -41,7 +41,6 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.assertj.core.data.Offset;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
@@ -111,7 +110,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         regressionModel.setModelName(getGeneratedClassName("RegressionModel"));
         String targetField = "targetField";
         DataField dataField = new DataField();
-        dataField.setName(FieldName.create(targetField));
+        dataField.setName(targetField);
         dataField.setOpType(OpType.CATEGORICAL);
         DataDictionary dataDictionary = new DataDictionary();
         dataDictionary.addDataFields(dataField);
@@ -154,7 +153,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         regressionModel.setModelName(getGeneratedClassName("RegressionModel"));
         String targetField = "targetField";
         DataField dataField = new DataField();
-        dataField.setName(FieldName.create(targetField));
+        dataField.setName(targetField);
         dataField.setOpType(OpType.CATEGORICAL);
         DataDictionary dataDictionary = new DataDictionary();
         dataDictionary.addDataFields(dataField);
@@ -192,7 +191,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         regressionModel.setModelName(getGeneratedClassName("RegressionModel"));
         String targetField = "targetField";
         DataField dataField = new DataField();
-        dataField.setName(FieldName.create(targetField));
+        dataField.setName(targetField);
         dataField.setOpType(OpType.CATEGORICAL);
         DataDictionary dataDictionary = new DataDictionary();
         dataDictionary.addDataFields(dataField);
@@ -231,7 +230,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         regressionModel.setModelName(getGeneratedClassName("RegressionModel"));
         String targetField = "targetField";
         DataField dataField = new DataField();
-        dataField.setName(FieldName.create(targetField));
+        dataField.setName(targetField);
         dataField.setOpType(OpType.CATEGORICAL);
         DataDictionary dataDictionary = new DataDictionary();
         dataDictionary.addDataFields(dataField);
@@ -316,7 +315,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         Map<String, SerializableFunction<String, Double>> retrieved =
                 KiePMMLRegressionTableFactory.getCategoricalPredictorsMap(categoricalPredictors);
         final Map<String, List<CategoricalPredictor>> groupedCollectors = categoricalPredictors.stream()
-                .collect(groupingBy(categoricalPredictor -> categoricalPredictor.getField().getValue()));
+                .collect(groupingBy(categoricalPredictor ->categoricalPredictor.getField()));
         assertThat(retrieved).hasSameSizeAs(groupedCollectors);
         groupedCollectors.keySet().forEach(predictName -> assertThat(retrieved).containsKey(predictName));
     }
@@ -355,7 +354,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         assertThat(retrieved).hasSameSizeAs(predictorTerms);
         IntStream.range(0, predictorTerms.size()).forEach(index -> {
             PredictorTerm predictorTerm = predictorTerms.get(index);
-            assertThat(retrieved).containsKey(predictorTerm.getName().getValue());
+            assertThat(retrieved).containsKey(predictorTerm.getName());
         });
     }
 
@@ -392,7 +391,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         regressionModel.setModelName(getGeneratedClassName("RegressionModel"));
         String targetField = "targetField";
         DataField dataField = new DataField();
-        dataField.setName(FieldName.create(targetField));
+        dataField.setName(targetField);
         dataField.setOpType(OpType.CATEGORICAL);
         DataDictionary dataDictionary = new DataDictionary();
         dataDictionary.addDataFields(dataField);
@@ -531,7 +530,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                         "variableName");
         assertThat(retrieved).hasSize(3);
         final Map<String, List<CategoricalPredictor>> groupedCollectors = categoricalPredictors.stream()
-                .collect(groupingBy(categoricalPredictor -> categoricalPredictor.getField().getValue()));
+                .collect(groupingBy(categoricalPredictor ->categoricalPredictor.getField()));
 
         groupedCollectors.values().forEach(categoricalPredictors12 -> commonEvaluateCategoryPredictors(body,
                 categoricalPredictors12, "variableName"));
@@ -586,7 +585,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         assertThat(retrieved).hasSameSizeAs(predictorTerms);
         IntStream.range(0, predictorTerms.size()).forEach(index -> {
             PredictorTerm predictorTerm = predictorTerms.get(index);
-            assertThat(retrieved).containsKey(predictorTerm.getName().getValue());
+            assertThat(retrieved).containsKey(predictorTerm.getName());
         });
     }
 
@@ -607,17 +606,17 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     private void commonEvaluateRegressionTable(KiePMMLRegressionTable retrieved, RegressionTable source) {
         Map<String, SerializableFunction<Double, Double>> numericFunctionMap = retrieved.getNumericFunctionMap();
         assertThat(numericFunctionMap).hasSameSizeAs(source.getNumericPredictors());
-        source.getNumericPredictors().forEach(numericPredictor -> assertThat(numericFunctionMap).containsKey(numericPredictor.getName().getValue()));
+        source.getNumericPredictors().forEach(numericPredictor -> assertThat(numericFunctionMap).containsKey(numericPredictor.getField()));
         Map<String, SerializableFunction<String, Double>> categoricalFunctionMap =
                 retrieved.getCategoricalFunctionMap();
         Map<String, List<CategoricalPredictor>> groupedCollectors = categoricalPredictors.stream()
-                .collect(groupingBy(categoricalPredictor -> categoricalPredictor.getField().getValue()));
+                .collect(groupingBy(categoricalPredictor ->categoricalPredictor.getField()));
         assertThat(categoricalFunctionMap).hasSameSizeAs(groupedCollectors);
         groupedCollectors.keySet().forEach(categorical -> assertThat(categoricalFunctionMap).containsKey(categorical));
         Map<String, SerializableFunction<Map<String, Object>, Double>> predictorTermsFunctionMap =
                 retrieved.getPredictorTermsFunctionMap();
         assertThat(predictorTermsFunctionMap).hasSameSizeAs(source.getPredictorTerms());
-        source.getPredictorTerms().forEach(predictorTerm -> assertThat(predictorTermsFunctionMap).containsKey(predictorTerm.getName().getValue()));
+        source.getPredictorTerms().forEach(predictorTerm -> assertThat(predictorTermsFunctionMap).containsKey(predictorTerm.getName()));
     }
 
     private void commonEvaluateCategoryPredictors(final BlockStmt toVerify,

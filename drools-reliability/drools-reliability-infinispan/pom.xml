@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-reliability</artifactId>
-    <version>8.39.0-SNAPSHOT</version>
+    <version>quarkus-3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -16,7 +16,7 @@
 
   <properties>
     <java.module.name>org.drools.reliability.infinispan</java.module.name>
-    <version.infinispan>14.0.6.Final</version.infinispan>
+    <version.infinispan>14.0.7.Final</version.infinispan>
   </properties>
 
   <dependencyManagement>
@@ -34,11 +34,11 @@
   <dependencies>
     <dependency>
       <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-core</artifactId>
+      <artifactId>infinispan-core-jakarta</artifactId>
     </dependency>
     <dependency>
       <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-client-hotrod</artifactId>
+      <artifactId>infinispan-client-hotrod-jakarta</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -104,6 +104,13 @@
           <artifactId>infinispan-jboss-marshalling</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <!-- Added for now because of https://issues.redhat.com/browse/ISPN-14512 -->
+    <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>javax.transaction-api</artifactId>
+      <version>1.3</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.infinispan</groupId>

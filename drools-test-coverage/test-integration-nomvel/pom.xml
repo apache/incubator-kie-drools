@@ -21,7 +21,7 @@
     <parent>
         <artifactId>drools-test-coverage-parent</artifactId>
         <groupId>org.drools.testcoverage</groupId>
-        <version>8.39.0-SNAPSHOT</version>
+        <version>quarkus-3-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -102,9 +102,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
             <scope>test</scope>
+            <version>4.0.2</version>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>

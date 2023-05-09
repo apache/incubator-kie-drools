@@ -62,7 +62,7 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
             final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
             PMMLHeaderInfo h = PMMLInfo.pmmlToHeaderInfo(pmml, pmml.getHeader());
             for (DataField df : pmml.getDataDictionary().getDataFields()) {
-                String dfName = df.getName().getValue();
+                String dfName =df.getName();
                 BuiltInType ft = getBuiltInTypeByDataType(df.getDataType());
                 List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
                 DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
@@ -118,7 +118,7 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
                 // register <import name>.<pmml MODEL name>, being a composite type of the different model outputs fields
                 Map<String, DMNType> typeMap = new HashMap<>();
                 outputFields.stream().forEach(field -> {
-                    String fieldName = field.getName().getValue();
+                    String fieldName =field.getName();
                     BuiltInType ft = getBuiltInTypeByDataType(field.getDataType());
                     DMNType type = new SimpleTypeImpl(i.getNamespace(), fieldName, null, false, null, dmnModel.getTypeRegistry().resolveType(dmnModel.getDefinitions().getURIFEEL(), ft.getName()), ft);
                     typeMap.put(fieldName, type);

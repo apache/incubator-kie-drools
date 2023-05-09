@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-wiring</artifactId>
-    <version>8.39.0-SNAPSHOT</version>
+    <version>quarkus-3-SNAPSHOT</version>
   </parent>
 
   <groupId>org.drools</groupId>
@@ -34,9 +34,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
       <scope>provided</scope>
+      <version>4.0.2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.xml.bind</groupId>

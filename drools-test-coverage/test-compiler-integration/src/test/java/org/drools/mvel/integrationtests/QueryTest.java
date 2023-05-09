@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javax.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBContext;
 
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.base.ClassObjectType;
