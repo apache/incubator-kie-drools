@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 import io.restassured.path.json.JsonPath;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.test.TestUtils.assertProcessInstanceHasFinished;
-import static org.kie.kogito.test.TestUtils.newProcessInstanceAndGetId;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.assertProcessInstanceHasFinished;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.newProcessInstanceAndGetId;
 
 public abstract class BaseSwitchStateTimeoutsIT {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+package org.kie.kogito.it.jobs;
 
-@SpringBootApplication(scanBasePackages = { "org.kie.kogito.**", "org.acme.travels.**", "org.acme.processes.**" })
-public class KogitoApplication {
+import org.kie.kogito.test.resources.JobServiceTestResource;
 
-    public static void main(String[] args) {
-        SpringApplication.run(KogitoApplication.class, args);
+import io.quarkus.test.junit.QuarkusIntegrationTest;
+
+import static org.kie.kogito.test.resources.JobServiceCompositeQuarkusTestResource.JOBS_SERVICE_URL;
+
+@QuarkusIntegrationTest
+@JobServiceTestResource
+class MultipleTimerInstancesIT extends BaseMultipleTimerInstancesQuarkusIT {
+
+    @Override
+    public String jobServiceUrl() {
+        return System.getProperty(JOBS_SERVICE_URL);
     }
 }

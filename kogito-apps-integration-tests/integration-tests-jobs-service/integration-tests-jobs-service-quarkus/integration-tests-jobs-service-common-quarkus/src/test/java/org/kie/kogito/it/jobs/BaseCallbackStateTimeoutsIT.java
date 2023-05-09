@@ -18,9 +18,9 @@ package org.kie.kogito.it.jobs;
 
 import org.junit.jupiter.api.Test;
 
-import static org.kie.kogito.test.TestUtils.assertProcessInstanceExists;
-import static org.kie.kogito.test.TestUtils.assertProcessInstanceHasFinished;
-import static org.kie.kogito.test.TestUtils.newProcessInstanceAndGetId;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.assertProcessInstanceExists;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.assertProcessInstanceHasFinished;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.newProcessInstanceAndGetId;
 
 public abstract class BaseCallbackStateTimeoutsIT {
 
