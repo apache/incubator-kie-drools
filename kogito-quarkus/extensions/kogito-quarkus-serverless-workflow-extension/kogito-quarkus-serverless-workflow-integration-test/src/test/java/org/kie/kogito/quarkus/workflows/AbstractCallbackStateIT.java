@@ -38,12 +38,12 @@ import io.restassured.path.json.JsonPath;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.quarkus.workflows.ExternalServiceMock.GENERATE_ERROR_QUERY;
 import static org.kie.kogito.quarkus.workflows.ExternalServiceMock.SUCCESSFUL_QUERY;
-import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessInstanceExists;
-import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessInstanceHasFinished;
-import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessInstanceNotExists;
-import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.newProcessInstance;
-import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.newProcessInstanceAndGetId;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.waitForKogitoProcessInstanceEvent;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.assertProcessInstanceExists;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.assertProcessInstanceHasFinished;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.assertProcessInstanceNotExists;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.newProcessInstance;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.newProcessInstanceAndGetId;
 
 abstract class AbstractCallbackStateIT {
 

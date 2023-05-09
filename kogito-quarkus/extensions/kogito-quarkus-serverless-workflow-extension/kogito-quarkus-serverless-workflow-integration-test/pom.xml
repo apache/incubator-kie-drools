@@ -66,6 +66,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-devtools-testing</artifactId>
       <scope>test</scope>
@@ -225,6 +230,7 @@
                     <include>switch-state-event-condition-timeouts-transition.sw.json</include>
                     <include>switch-state-event-condition-timeouts-transition2.sw.json</include>
                     <include>switch-state-event-condition-timeouts-end.sw.json</include>
+                    <include>multiple-timer-instances-event-state-timeouts.sw.json</include>
                   </includes>
                 </resource>
                 <resource>

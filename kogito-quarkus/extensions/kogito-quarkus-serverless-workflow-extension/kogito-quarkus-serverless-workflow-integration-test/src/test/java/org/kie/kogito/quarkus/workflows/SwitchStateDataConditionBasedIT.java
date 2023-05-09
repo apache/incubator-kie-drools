@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.path.json.JsonPath;
 
-import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.newProcessInstance;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.newProcessInstance;
 
 @QuarkusIntegrationTest
 class SwitchStateDataConditionBasedIT extends AbstractSwitchStateIT {

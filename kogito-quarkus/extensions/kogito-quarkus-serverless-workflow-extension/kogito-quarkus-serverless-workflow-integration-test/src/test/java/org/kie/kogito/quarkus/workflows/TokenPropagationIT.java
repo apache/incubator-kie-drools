@@ -34,7 +34,7 @@ import static org.kie.kogito.quarkus.workflows.TokenPropagationExternalServicesM
 import static org.kie.kogito.quarkus.workflows.TokenPropagationExternalServicesMock.SERVICE3_HEADER_TO_PROPAGATE;
 import static org.kie.kogito.quarkus.workflows.TokenPropagationExternalServicesMock.SERVICE4_AUTHORIZATION_TOKEN;
 import static org.kie.kogito.quarkus.workflows.TokenPropagationExternalServicesMock.SERVICE4_HEADER_TO_PROPAGATE;
-import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.newProcessInstance;
+import static org.kie.kogito.test.utils.ProcessInstancesRESTTestUtils.newProcessInstance;
 
 @QuarkusTestResource(TokenPropagationExternalServicesMock.class)
 @QuarkusTestResource(KeycloakServiceMock.class)

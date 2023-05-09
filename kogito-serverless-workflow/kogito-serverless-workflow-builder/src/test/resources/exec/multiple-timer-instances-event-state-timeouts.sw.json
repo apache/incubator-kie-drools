@@ -1,0 +1,87 @@
+{
+  "id": "multiple_timer_instances_event_state_timeouts",
+  "version": "1.0",
+  "name": "Multiple Timer Instances Event State Timeouts",
+  "description": "The objective of this sw is to have a reproducer for KOGITO-9007, please don't use for other purposes.",
+  "start": "PrintStartMessage",
+  "events": [
+    {
+      "name": "multiple_timer_instances_event_state_timeouts_event",
+      "source": "",
+      "type": "multiple_timer_instances_event_state_timeouts_event_type"
+    }
+  ],
+  "functions": [
+    {
+      "name": "systemOut",
+      "type": "custom",
+      "operation": "sysout"
+    }
+  ],
+  "states": [
+    {
+      "name": "PrintStartMessage",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "printSystemOut",
+          "functionRef": {
+            "refName": "systemOut",
+            "arguments": {
+              "message": "${\"multiple_timer_instances_event_state_timeouts_event_state_timeouts: \" + $WORKFLOW.instanceId + \" has started.\"}"
+            }
+          }
+        }
+      ],
+      "transition": "WaitForEvent"
+    },
+    {
+      "name": "WaitForEvent",
+      "type": "event",
+      "onEvents": [
+        {
+          "eventRefs": [
+            "multiple_timer_instances_event_state_timeouts_event"
+          ],
+          "eventDataFilter": {
+            "data": "${ \"The multiple_timer_instances_event_state_timeouts_event was received.\" }",
+            "toStateData": "${ .exitMessage }"
+          },
+          "actions": [
+            {
+              "name": "printAfterEvent",
+              "functionRef": {
+                "refName": "systemOut",
+                "arguments": {
+                  "message": "${\"multiple_timer_instances_event_state_timeouts: \" + $WORKFLOW.instanceId + \" executing actions for multiple_timer_instances_event_state_timeouts_event.\"}"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "timeouts": {
+        "eventTimeout": "PT10S"
+      },
+      "transition": "PrintExitMessage"
+    },
+    {
+      "name": "PrintExitMessage",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "printSystemOut",
+          "functionRef": {
+            "refName": "systemOut",
+            "arguments": {
+              "message": "${\"multiple_timer_instances_event_state_timeouts: \" + \"has finalized.\" }"
+            }
+          }
+        }
+      ],
+      "end": {
+        "terminate": true
+      }
+    }
+  ]
+}
