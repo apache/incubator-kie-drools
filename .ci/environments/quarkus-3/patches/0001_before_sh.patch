@@ -1,5 +1,5 @@
 diff --git a/build-parent/pom.xml b/build-parent/pom.xml
-index 649f596b3d..534d8f953b 100644
+index 649f596b3d..a8935c1167 100644
 --- a/build-parent/pom.xml
 +++ b/build-parent/pom.xml
 @@ -55,9 +55,9 @@
@@ -56,9 +56,7 @@ index 649f596b3d..534d8f953b 100644
      <version.jakarta.servlet.jsp.jstl-api>2.0.0</version.jakarta.servlet.jsp.jstl-api>
 -    <version.jakarta.transaction-api>1.3.3</version.jakarta.transaction-api>
 -    <version.jakarta.ws.rs-api>2.1.6</version.jakarta.ws.rs-api>
-+    <version.jakarta.transaction-api>2.0.1</version.jakarta.transaction-api>
-+    <version.jakarta.ws.rs-api>3.1.0</version.jakarta.ws.rs-api>
-     <version.jakarta.xml.ws-api>2.3.3</version.jakarta.xml.ws-api>
+-    <version.jakarta.xml.ws-api>2.3.3</version.jakarta.xml.ws-api>
 -    <version.jakarta.persistence-api>2.2.3</version.jakarta.persistence-api>
 -    <version.jakarta.servlet-api>4.0.3</version.jakarta.servlet-api>
 -    <version.jakarta.xml.bind-api>2.3.3</version.jakarta.xml.bind-api>
@@ -66,6 +64,9 @@ index 649f596b3d..534d8f953b 100644
 -    <version.jakarta.json>1.1.6</version.jakarta.json>
 -    <version.jakarta.json-api>1.1.6</version.jakarta.json-api>
 -    <version.org.jpmml.model>1.5.1</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
++    <version.jakarta.transaction-api>2.0.1</version.jakarta.transaction-api>
++    <version.jakarta.ws.rs-api>3.1.0</version.jakarta.ws.rs-api>
++    <version.jakarta.xml.ws-api>4.0.0</version.jakarta.xml.ws-api>
 +    <version.jakarta.persistence-api>3.1.0</version.jakarta.persistence-api>
 +    <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
 +    <version.jakarta.xml.bind-api>4.0.0</version.jakarta.xml.bind-api>
@@ -2752,7 +2753,7 @@ index 31038d2afa..775f3f19dc 100644
  import org.drools.core.impl.EnvironmentFactory;
  import org.kie.api.runtime.Environment;
 diff --git a/drools-reliability/drools-reliability-infinispan/pom.xml b/drools-reliability/drools-reliability-infinispan/pom.xml
-index 6aa2824192..58825724b7 100644
+index 6c7dc785a0..bb0d6822f8 100644
 --- a/drools-reliability/drools-reliability-infinispan/pom.xml
 +++ b/drools-reliability/drools-reliability-infinispan/pom.xml
 @@ -34,11 +34,11 @@
