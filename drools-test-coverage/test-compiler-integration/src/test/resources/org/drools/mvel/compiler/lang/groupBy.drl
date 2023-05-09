@@ -15,8 +15,10 @@
 
 rule "GroupByParserTest"
 when
-     groupby( Person( $age: age, $salary: salary ),
-              key $age,
-              average($salary) );
+    groupby( $p: Person ( $age : age < 30 );           // SOURCE_PATTERN
+             $initial : $p.getName().substring(0, 1);  // GROUPING_FUNCTION
+             $sumOfAges : sum($age),                   // 2 ACC_FUNCTIONS, one summing the ages of the persons in the group
+             $countOfPersons : count();                // and the other simply counting them
+             $sumOfAges > 10 )                         // CONSTRAINT filtering away groups
 then
 end

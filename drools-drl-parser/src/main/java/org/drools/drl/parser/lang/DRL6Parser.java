@@ -3291,10 +3291,9 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return result;
     }
 
-    // TODO: Finalize Syntax
     /**
      * lhsGroupBy := GROUPBY LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
-     *                      groupByKeyBinding (COMMA groupByKeyBinding)*
+     *                      groupByKeyBinding SEMICOLON
      *                      accumulateFunctionBinding (COMMA accumulateFunctionBinding)*
      *                      (SEMICOLON constraints)?
      *                  RIGHT_PAREN SEMICOLON?
@@ -3391,17 +3390,20 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 }
 
                 // grouping functions
-                groupByKeyFunctionBinding(groupBy);
-                while (input.LA(1) == DRL6Lexer.COMMA && input.LT(2).getText().equals(DroolsSoftKeywords.KEY)) {
-                    match(input,
-                          DRL6Lexer.COMMA,
-                          null,
-                          null,
-                          DroolsEditorType.SYMBOL);
-                    groupByKeyFunctionBinding(groupBy);
-                }
+                groupByKeyFunction(groupBy);
+                if (state.failed)
+                    return null;
+
+                match(input,
+                        DRL6Lexer.SEMICOLON,
+                        null,
+                        null,
+                        DroolsEditorType.SYMBOL);
+                if (state.failed)
+                    return null;
 
                 // accumulate functions
+                accumulateFunctionBinding(groupBy);
                 while (input.LA(1) == DRL6Lexer.COMMA) {
                     match(input,
                             DRL6Lexer.COMMA,
@@ -4399,23 +4401,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    // TODO: Finalize Syntax
-    /**
-     * groupByKeyBinding := KEY groupByKeyFunction
-     * @param groupBy
-     * @throws org.antlr.runtime.RecognitionException
-     */
-    private void groupByKeyFunctionBinding( GroupByDescrBuilder<?> groupBy ) throws RecognitionException {
-        match(input,
-              DRL6Lexer.ID,
-              DroolsSoftKeywords.KEY,
-              null,
-              DroolsEditorType.KEYWORD);
-
-        groupByKeyFunction( groupBy );
-    }
-
-    // TODO: Finalize Syntax
     /**
      * groupByKeyFunction := (label COLON)? lhsExpression
      * @param groupBy
@@ -4430,6 +4415,8 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                           null,
                           DroolsEditorType.IDENTIFIER)
                     .getText();
+            if (state.failed)
+                return;
             match(input,
                   DRL6Lexer.COLON,
                   null,
@@ -4437,14 +4424,9 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                   DroolsEditorType.SYMBOL);
         }
 
-        DRL6Expressions.expression_return groupingFunctionExpression = exprParser.expression();
-        int expressionTokenLength = groupingFunctionExpression.stop.getTokenIndex() - groupingFunctionExpression.start.getTokenIndex() + 1;
-
-        StringBuilder groupingFunctionBuilder = new StringBuilder();
-        for (int i = -expressionTokenLength; i < 0; i++) {
-            groupingFunctionBuilder.append(input.LT(i).getText());
-        }
-        String groupingFunction = groupingFunctionBuilder.toString();
+        String groupingFunction = conditionalExpression();
+        if (state.failed)
+            return;
 
         if (label != null) {
             groupBy.groupingFunction(groupingFunction, label);

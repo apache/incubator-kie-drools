@@ -34,7 +34,6 @@ public class DroolsSoftKeywords {
     public static final String FOCUS        = "focus";
     public static final String ACTIVATION   = "activation";
     public static final String GROUP        = "group";
-    public static final String KEY          = "key";
     public static final String GROUPBY      = "groupby";
     public static final String AGENDA       = "agenda";
     public static final String RULEFLOW     = "ruleflow";
