@@ -330,7 +330,7 @@ index 97a45fea4d..4ac46a1860 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index aa06497e9f..633ee84f50 100644
+index 257aee5892..af509e1a3f 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,22 +16,22 @@
@@ -422,13 +422,15 @@ index aa06497e9f..633ee84f50 100644
      <version.org.keycloak>20.0.2</version.org.keycloak>
      <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
      <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
-@@ -100,18 +100,18 @@
+@@ -100,19 +100,19 @@
      <version.org.junit.vintage>5.9.2</version.org.junit.vintage>
      <version.org.junit.platform>1.9.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
      <version.org.junit.pioneer>1.5.0</version.org.junit.pioneer>
 -    <version.org.mockito>4.11.0</version.org.mockito>
 +    <version.org.mockito>5.2.0</version.org.mockito>
      <version.org.testcontainers>1.17.6</version.org.testcontainers>
+-    <version.io.rest-assured>4.5.1</version.io.rest-assured>
++    <version.io.rest-assured>5.3.0</version.io.rest-assured>
  
      <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
  
@@ -445,7 +447,7 @@ index aa06497e9f..633ee84f50 100644
      <version.maven.invoker>3.2.0</version.maven.invoker>
  
      <version.plexus>1.6</version.plexus>
-@@ -240,8 +240,8 @@
+@@ -241,8 +241,8 @@
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
@@ -456,7 +458,7 @@ index aa06497e9f..633ee84f50 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -251,7 +251,7 @@
+@@ -252,7 +252,7 @@
        </dependency>
        <dependency>
          <groupId>com.fasterxml.jackson.module</groupId>
@@ -465,7 +467,7 @@ index aa06497e9f..633ee84f50 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -500,9 +500,9 @@
+@@ -520,9 +520,9 @@
        </dependency>
  
        <dependency>
@@ -478,7 +480,7 @@ index aa06497e9f..633ee84f50 100644
        </dependency>
        <dependency>
          <groupId>com.sun.xml.bind</groupId>
-@@ -510,19 +510,19 @@
+@@ -530,19 +530,19 @@
          <version>${version.com.sun.xml.bind.core}</version>
        </dependency>
        <dependency>
@@ -506,7 +508,7 @@ index aa06497e9f..633ee84f50 100644
        </dependency>
        <dependency>
          <groupId>javax.inject</groupId>
-@@ -530,9 +530,9 @@
+@@ -550,9 +550,9 @@
          <version>${version.javax.inject}</version>
        </dependency>
        <dependency>
@@ -519,7 +521,7 @@ index aa06497e9f..633ee84f50 100644
        </dependency>
        <dependency>
          <groupId>org.eclipse.microprofile.openapi</groupId>
-@@ -578,7 +578,7 @@
+@@ -598,7 +598,7 @@
        </dependency>
        <dependency>
          <groupId>org.infinispan</groupId>
@@ -3818,7 +3820,7 @@ index a28a8819d5..654097b817 100644
  
  public class TokenPropagationExternalServicesMock implements QuarkusTestResourceLifecycleManager {
 diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/java/org/kie/kogito/quarkus/workflows/TokenPropagationIT.java b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/java/org/kie/kogito/quarkus/workflows/TokenPropagationIT.java
-index 2f155e5d3b..52c71870de 100644
+index c8cbb16e26..13b3381075 100644
 --- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/java/org/kie/kogito/quarkus/workflows/TokenPropagationIT.java
 +++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/java/org/kie/kogito/quarkus/workflows/TokenPropagationIT.java
 @@ -19,7 +19,7 @@ package org.kie.kogito.quarkus.workflows;
