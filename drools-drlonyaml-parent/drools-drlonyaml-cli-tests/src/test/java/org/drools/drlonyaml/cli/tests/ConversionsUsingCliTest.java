@@ -29,8 +29,8 @@ public class ConversionsUsingCliTest {
         InputStream generatedResource = this.getClass().getResourceAsStream("/converted.test1.yml");
         assertThat(generatedResource).isNotNull();
         
-        String ymlContent = new String(generatedResource.readAllBytes());
-        String expectedContent = new String(this.getClass().getResourceAsStream("/expected/test1.yml").readAllBytes());
+        String ymlContent = new String(generatedResource.readAllBytes()).trim();
+        String expectedContent = new String(this.getClass().getResourceAsStream("/expected/test1.yml").readAllBytes()).trim();
         assertThat(ymlContent).as("the converted Yaml matches the expected content)")
             .isEqualTo(expectedContent);
     }
@@ -40,8 +40,8 @@ public class ConversionsUsingCliTest {
         InputStream generatedResource = this.getClass().getResourceAsStream("/converted.test2.drl");
         assertThat(generatedResource).isNotNull();
         
-        String ymlContent = new String(generatedResource.readAllBytes());
-        String expectedContent = new String(this.getClass().getResourceAsStream("/expected/test2.drl.txt").readAllBytes());
+        String ymlContent = new String(generatedResource.readAllBytes()).trim();
+        String expectedContent = new String(this.getClass().getResourceAsStream("/expected/test2.drl.txt").readAllBytes()).trim();
         assertThat(ymlContent).as("the converted DRL matches the expected content)")
             .isEqualTo(expectedContent);
     }
