@@ -327,6 +327,7 @@ void setupPrQuarkus3RewriteJob() {
 void setupStandaloneQuarkus3RewriteJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools.quarkus-3.rewrite', JobType.TOOLS, "${jenkins_path}/Jenkinsfile.quarkus-3.rewrite.standalone", 'Drools Quarkus 3 rewrite patch regeneration')
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    jobParams.env.putAll(EnvUtils.getEnvironmentEnvVars(this, 'quarkus-3'))
     jobParams.env.putAll([
         AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
