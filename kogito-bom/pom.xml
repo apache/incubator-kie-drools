@@ -339,12 +339,6 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-quarkus-knative-serving</artifactId>
-        <version>${project.version}</version>
-        <classifier>javadoc</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-addons-quarkus-knative-serving-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1838,12 +1832,7 @@
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-serverless-workflow-executor</artifactId>
         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-serverless-workflow-executor</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
+        <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
