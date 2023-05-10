@@ -86,8 +86,8 @@ public abstract class ReliabilityTestBasics {
     static boolean isProtoStream() {
         return "PROTOSTREAM".equalsIgnoreCase(getConfig(INFINISPAN_STORAGE_MARSHALLER));
     }
-    static Stream<PersistedSessionOption.Strategy> strategyProviderFull() {
-        return Stream.of(PersistedSessionOption.Strategy.FULL);
+    static Stream<PersistedSessionOption.PersistenceStrategy> strategyProviderFull() {
+        return Stream.of(PersistedSessionOption.PersistenceStrategy.FULL);
     }
 
     @BeforeEach

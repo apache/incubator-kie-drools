@@ -242,7 +242,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
     @ParameterizedTest
     @MethodSource("strategyProviderFull")
-    void insertFailover_propListShouldNotBeEmpty(PersistedSessionOption.Strategy strategy){
+    void insertFailover_propListShouldNotBeEmpty(PersistedSessionOption.PersistenceStrategy strategy){
         createSession(BASIC_RULE, strategy);
 
         insertString("M");
