@@ -41,7 +41,6 @@
         <container.image.data-index-service-inmemory>org.kie.kogito/data-index-service-inmemory:${project.version}</container.image.data-index-service-inmemory>
         <container.image.trusty-service-infinispan>org.kie.kogito/trusty-service-infinispan:${project.version}</container.image.trusty-service-infinispan>
         <container.image.trusty-service>org.kie.kogito/trusty-service:${project.version}</container.image.trusty-service>
-        <container.image.task-assigning-service>org.kie.kogito/task-assigning-service:${project.version}</container.image.task-assigning-service>
         <container.image.trusty-ui>org.kie.kogito/trusty-ui:${project.version}</container.image.trusty-ui>
         <container.image.integration-tests-trusty-service-quarkus>org.kie.kogito/integration-tests-trusty-service-quarkus:${project.version}</container.image.integration-tests-trusty-service-quarkus>
 
@@ -98,7 +97,6 @@
                             <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
                             <container.image.explainability-service-messaging>${container.image.explainability-service-messaging}</container.image.explainability-service-messaging>
                             <container.image.trusty-service-infinispan>${container.image.trusty-service-infinispan}</container.image.trusty-service-infinispan>
-                            <container.image.task-assigning-service>${container.image.task-assigning-service}</container.image.task-assigning-service>
                             <quarkus.http.test-port>${tests.quarkus.http.port}</quarkus.http.test-port>
                         </systemPropertyVariables>
                         <classesDirectory>${project.build.outputDirectory}</classesDirectory>

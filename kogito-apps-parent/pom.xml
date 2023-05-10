@@ -53,7 +53,6 @@
         <module>task-console</module>
         <module>explainability</module>
         <module>trusty</module>
-        <module>task-assigning</module>
         <module>jitexecutor</module>
         <module>apps-integration-tests</module>
         <module>runtime-tools-quarkus-extension-parent</module>
@@ -87,13 +86,7 @@
         <module>kogito-apps-bom</module>
         <module>kogito-apps-build-parent</module>
         <module>explainability</module>
-        <module>task-assigning</module>
         <module>trusty</module>
-        <module>apps-integration-tests</module>
-        <!-- Used by task assigning integration tests -->
-        <module>persistence-commons</module>
-        <module>data-index</module>
-        <!-- Used by task assigning integration tests -->
       </modules>
     </profile>
   </profiles>

@@ -21,19 +21,6 @@
         <module>integration-tests-trusty-audit</module>
         <module>integration-tests-trusty-service</module>
         <module>integration-tests-data-index-service</module>
-        <module>integration-tests-task-assigning-service</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>optaplanner-downstream</id>
-      <activation>
-        <property>
-          <name>optaplanner</name>
-        </property>
-      </activation>
-      <modules>
-        <module>integration-tests-data-index-service</module>
-        <module>integration-tests-task-assigning-service</module>
       </modules>
     </profile>
   </profiles>

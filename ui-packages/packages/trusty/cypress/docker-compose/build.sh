@@ -46,8 +46,6 @@ clean() {
         'org.kie.kogito/jobs-service-infinispan'
         'org.kie.kogito/jobs-service-common'
         'org.kie.kogito/integration-tests-trusty-service-springboot'
-        'org.kie.kogito/integration-tests-task-assigning-service-processes'
-        'org.kie.kogito/task-assigning-service'
         'org.kie.kogito/data-index-service-inmemory'
         'org.kie.kogito/jobs-service-inmemory'
     )

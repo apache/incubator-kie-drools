@@ -25,17 +25,6 @@
         <module>integration-tests-data-index-service-springboot</module>
       </modules>
     </profile>
-    <profile>
-      <id>optaplanner-downstream</id>
-      <activation>
-        <property>
-          <name>optaplanner</name>
-        </property>
-      </activation>
-      <modules>
-        <module>integration-tests-data-index-service-common</module>
-      </modules>
-    </profile>
   </profiles>
 
   <dependencyManagement>
