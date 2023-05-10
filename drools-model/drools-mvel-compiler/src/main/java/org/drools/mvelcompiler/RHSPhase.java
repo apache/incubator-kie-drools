@@ -74,7 +74,6 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.drools.mvelcompiler.util.TypeUtils;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
@@ -98,6 +97,23 @@ import static org.drools.util.ClassUtils.classFromType;
  *
  */
 public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
+
+    private static final List<BinaryExpr.Operator> arithmeticOperators = asList(
+            BinaryExpr.Operator.PLUS,
+            BinaryExpr.Operator.MINUS,
+            BinaryExpr.Operator.MULTIPLY,
+            BinaryExpr.Operator.DIVIDE,
+            BinaryExpr.Operator.REMAINDER
+    );
+
+    private static final List<BinaryExpr.Operator> relationalOperators = asList(
+            BinaryExpr.Operator.EQUALS,
+            BinaryExpr.Operator.NOT_EQUALS,
+            BinaryExpr.Operator.LESS,
+            BinaryExpr.Operator.GREATER,
+            BinaryExpr.Operator.LESS_EQUALS,
+            BinaryExpr.Operator.GREATER_EQUALS
+    );
 
     private final MethodCallExprVisitor methodCallExprVisitor;
 
@@ -246,21 +262,8 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Type typeLeft = optTypeLeft.get();
         Type typeRight = optTypeRight.get();
 
-        boolean binaryOperatorNeedArithmeticBigDecimalConversion = asList(BinaryExpr.Operator.PLUS,
-                                                                BinaryExpr.Operator.DIVIDE,
-                                                                BinaryExpr.Operator.MINUS,
-                                                                BinaryExpr.Operator.MULTIPLY,
-                                                                BinaryExpr.Operator.REMAINDER
-        ).contains(operator);
-
-        boolean binaryOperatorNeedRelationalBigDecimalConversion = asList(BinaryExpr.Operator.LESS,
-                                                                          BinaryExpr.Operator.LESS_EQUALS,
-                                                                          BinaryExpr.Operator.GREATER,
-                                                                          BinaryExpr.Operator.GREATER_EQUALS,
-                                                                          BinaryExpr.Operator.EQUALS,
-                                                                          BinaryExpr.Operator.NOT_EQUALS
-        ).contains(operator);
-
+        boolean binaryOperatorNeedArithmeticBigDecimalConversion = arithmeticOperators.contains(operator);
+        boolean binaryOperatorNeedRelationalBigDecimalConversion = relationalOperators.contains(operator);
         boolean isStringConcatenation = operator == BinaryExpr.Operator.PLUS &&
                 (typeLeft == String.class || typeRight == String.class);
 
