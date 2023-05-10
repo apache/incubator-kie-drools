@@ -48,6 +48,7 @@ import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.YieldStmt;
+import org.drools.mvelcompiler.ast.BigDecimalRelationalExprT;
 import org.drools.util.ClassUtils;
 import org.drools.util.MethodUtils.NullType;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
@@ -245,31 +246,39 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Type typeLeft = optTypeLeft.get();
         Type typeRight = optTypeRight.get();
 
-        boolean binaryOperatorNeedBigDecimalConversion = asList(BinaryExpr.Operator.PLUS,
+        boolean binaryOperatorNeedArithmeticBigDecimalConversion = asList(BinaryExpr.Operator.PLUS,
                                                                 BinaryExpr.Operator.DIVIDE,
                                                                 BinaryExpr.Operator.MINUS,
                                                                 BinaryExpr.Operator.MULTIPLY,
-                                                                BinaryExpr.Operator.REMAINDER,
-                                                                BinaryExpr.Operator.EQUALS,
-                                                                BinaryExpr.Operator.NOT_EQUALS
+                                                                BinaryExpr.Operator.REMAINDER
+        ).contains(operator);
+
+        boolean binaryOperatorNeedRelationalBigDecimalConversion = asList(BinaryExpr.Operator.LESS,
+                                                                          BinaryExpr.Operator.LESS_EQUALS,
+                                                                          BinaryExpr.Operator.GREATER,
+                                                                          BinaryExpr.Operator.GREATER_EQUALS,
+                                                                          BinaryExpr.Operator.EQUALS,
+                                                                          BinaryExpr.Operator.NOT_EQUALS
         ).contains(operator);
 
         boolean isStringConcatenation = operator == BinaryExpr.Operator.PLUS &&
                 (typeLeft == String.class || typeRight == String.class);
 
-        if (binaryOperatorNeedBigDecimalConversion && !isStringConcatenation) {
-
-            boolean shouldNegate = operator == BinaryExpr.Operator.NOT_EQUALS;
-
+        if (binaryOperatorNeedArithmeticBigDecimalConversion && !isStringConcatenation) {
             if (typeLeft == BigDecimal.class && typeRight == BigDecimal.class) { // do not convert
-                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator),
-                                                     left, right, shouldNegate);
+                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), left, right);
             } else if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
-                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator),
-                                                     new BigDecimalConvertedExprT(left), right, shouldNegate);
+                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), new BigDecimalConvertedExprT(left), right);
             } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) { // convert right
-                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator),
-                                                     left, new BigDecimalConvertedExprT(right), shouldNegate);
+                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), left, new BigDecimalConvertedExprT(right));
+            }
+        } else if (binaryOperatorNeedRelationalBigDecimalConversion) {
+            if (typeLeft == BigDecimal.class && typeRight == BigDecimal.class) { // do not convert
+                return new BigDecimalRelationalExprT(operator, left, right);
+            } else if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
+                return new BigDecimalRelationalExprT(operator, new BigDecimalConvertedExprT(left), right);
+            } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) { // convert right
+                return new BigDecimalRelationalExprT(operator, left, new BigDecimalConvertedExprT(right));
             }
         }
 

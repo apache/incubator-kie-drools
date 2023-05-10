@@ -627,6 +627,92 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void bigDecimalLowerThan() {
+        test("{ " +
+                     "    BigDecimal zero = 0;\n" +
+                     "    BigDecimal ten = 10;\n" +
+                     "    if(zero < ten) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal zero = new java.math.BigDecimal(0);\n" +
+                     "    java.math.BigDecimal ten = new java.math.BigDecimal(10);\n" +
+                     "    if (zero.compareTo(ten) < 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
+    public void bigDecimalLowerOrEqual() {
+        test("{ " +
+                     "    BigDecimal zero = 0;\n" +
+                     "    BigDecimal ten = 10;\n" +
+                     "    if(zero <= ten) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal zero = new java.math.BigDecimal(0);\n" +
+                     "    java.math.BigDecimal ten = new java.math.BigDecimal(10);\n" +
+                     "    if (zero.compareTo(ten) <= 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
+    public void bigDecimalGreaterThan() {
+        test("{ " +
+                     "    BigDecimal zero = 0;\n" +
+                     "    BigDecimal ten = 10;\n" +
+                     "    if(zero > ten) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal zero = new java.math.BigDecimal(0);\n" +
+                     "    java.math.BigDecimal ten = new java.math.BigDecimal(10);\n" +
+                     "    if (zero.compareTo(ten) > 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
+    public void bigDecimalGreaterOrEqual() {
+        test("{ " +
+                     "    BigDecimal zero = 0;\n" +
+                     "    BigDecimal ten = 10;\n" +
+                     "    if(zero >= ten) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal zero = new java.math.BigDecimal(0);\n" +
+                     "    java.math.BigDecimal ten = new java.math.BigDecimal(10);\n" +
+                     "    if (zero.compareTo(ten) >= 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
+    public void bigDecimalEquals() {
+        test("{ " +
+                     "    BigDecimal zero = 0;\n" +
+                     "    if(zero == 23) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal zero = new java.math.BigDecimal(0);\n" +
+                     "    if (zero.compareTo(new java.math.BigDecimal(23)) == 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
+    public void bigDecimalNotEquals() {
+        test("{ " +
+                     "    BigDecimal zero = 0;\n" +
+                     "    if(zero != 23) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal zero = new java.math.BigDecimal(0);\n" +
+                     "    if (zero.compareTo(new java.math.BigDecimal(23)) != 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
     public void testBigDecimalCompoundOperatorOnField() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ " +
