@@ -35,7 +35,7 @@ public class StringThen extends AbstractThen {
 
     public static StringThen from(String then) {
         StringThen result = new StringThen();
-        result.then = then.trim();
+        result.then = then;
         return result;
     }
 

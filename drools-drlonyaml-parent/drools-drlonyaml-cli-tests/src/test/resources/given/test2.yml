@@ -10,4 +10,5 @@ rules:
     as: $p
     having:
     - age >= 18
-  then: System.out.println("Hello World from YAML!");
+  then: |
+    System.out.println("Hello World from YAML!");

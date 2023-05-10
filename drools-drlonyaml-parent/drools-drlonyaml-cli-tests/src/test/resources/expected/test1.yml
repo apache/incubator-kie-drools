@@ -10,4 +10,5 @@ rules:
     as: $p
     having:
     - age >= 18
-  then: System.out.println("Hello World from DRL!");
+  then: |
+    System.out.println("Hello World from DRL!");
