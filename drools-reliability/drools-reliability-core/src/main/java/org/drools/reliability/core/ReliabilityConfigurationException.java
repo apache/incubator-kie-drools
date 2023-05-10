@@ -21,4 +21,7 @@ public class ReliabilityConfigurationException extends RuntimeException {
         super(message);
     }
 
+    public ReliabilityConfigurationException(Throwable cause) {
+        super(cause);
+    }
 }

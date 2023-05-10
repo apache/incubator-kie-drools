@@ -71,7 +71,7 @@ class CachePersistenceTest extends ReliabilityTestBasics {
 
         disposeSession(); // This should clean up session's cache
 
-        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames()).allMatch(name -> !name.startsWith(SESSION_STORAGE_PREFIX));
+        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames()).allMatch(name -> !name.startsWith(SESSION_STORAGE_PREFIX + savedSessionId));
     }
 
     @ParameterizedTest

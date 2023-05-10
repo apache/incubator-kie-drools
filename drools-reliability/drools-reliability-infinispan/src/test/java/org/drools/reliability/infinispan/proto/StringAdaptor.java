@@ -13,21 +13,23 @@
  * limitations under the License.
  */
 
-package org.drools.reliability.core;
+package org.drools.reliability.infinispan.proto;
 
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.infinispan.protostream.annotations.ProtoAdapter;
+import org.infinispan.protostream.annotations.ProtoFactory;
+import org.infinispan.protostream.annotations.ProtoField;
+import org.test.domain.Person;
 
-public interface StoredObject {
+@ProtoAdapter(String.class)
+public class StringAdaptor {
 
-    boolean isEvent();
+    @ProtoFactory
+    String create(String value) {
+        return new String(value);
+    }
 
-    boolean isPropagated();
-
-    Object getObject();
-
-    long getTimestamp();
-
-    long getDuration();
-
-    void repropagate(InternalWorkingMemoryEntryPoint ep);
+    @ProtoField(1)
+    String getvalue(String value) {
+        return value;
+    }
 }

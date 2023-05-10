@@ -15,19 +15,17 @@
 
 package org.drools.reliability.core;
 
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.Storage;
 
-public interface StoredObject {
+public class SimpleSerializationReliableObjectStoreFactory implements SimpleReliableObjectStoreFactory {
 
-    boolean isEvent();
+    static final SimpleSerializationReliableObjectStoreFactory INSTANCE = new SimpleSerializationReliableObjectStoreFactory();
 
-    boolean isPropagated();
+    public static SimpleSerializationReliableObjectStoreFactory get() {
+        return INSTANCE;
+    }
 
-    Object getObject();
-
-    long getTimestamp();
-
-    long getDuration();
-
-    void repropagate(InternalWorkingMemoryEntryPoint ep);
+    public SimpleReliableObjectStore createSimpleReliableObjectStore(Storage<Long, StoredObject> storage) {
+        return new SimpleSerializationReliableObjectStore(storage);
+    }
 }

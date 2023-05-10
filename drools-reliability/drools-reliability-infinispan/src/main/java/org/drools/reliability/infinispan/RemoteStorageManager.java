@@ -19,10 +19,14 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.Storage;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.commons.marshall.JavaSerializationMarshaller;
+import org.infinispan.commons.marshall.ProtoStreamMarshaller;
 import org.infinispan.manager.DefaultCacheManager;
+import org.infinispan.protostream.SerializationContext;
+import org.infinispan.protostream.SerializationContextInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.Set;
 
 import static org.drools.reliability.core.StorageManager.createStorageId;
@@ -39,6 +43,10 @@ public class RemoteStorageManager implements InfinispanStorageManager {
 
     private org.infinispan.client.hotrod.RemoteCacheManager remoteCacheManager;
 
+    private MarshallerType marshallerType;
+    private Optional<ProtoStreamMarshaller> protoMarshaller;
+    private Optional<SerializationContextInitializer> serializationContextInitializer;
+
     private RemoteStorageManager() {
     }
 
@@ -50,19 +58,42 @@ public class RemoteStorageManager implements InfinispanStorageManager {
         String port = getConfig(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_PORT);
         String user = getConfig(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_USER);
         String pass = getConfig(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_PASS);
+
+        marshallerType = InfinispanStorageManager.getMarshallerType();
+
         if (host == null || port == null) {
             LOG.info("Remote Cache Manager host '{}' and port '{}' not set. So not creating a default RemoteCacheManager." +
                              " You will need to set a RemoteCacheManager with setRemoteCacheManager() method.", host, port);
             return;
         }
+
+        //--- Create a RemoteCacheManager with provided properties
+
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.addServer().host(host).port(Integer.parseInt(port));
         if (user != null && pass != null) {
             builder.security().authentication().username(user).password(pass);
         }
-        builder.marshaller(new JavaSerializationMarshaller())
-                .addJavaSerialAllowList(InfinispanStorageManager.getAllowedPackages());
+
+        configureMarshaller(builder);
+
         remoteCacheManager = new org.infinispan.client.hotrod.RemoteCacheManager(builder.build());
+    }
+
+    private void configureMarshaller(ConfigurationBuilder builder) {
+        if (marshallerType == MarshallerType.JAVA) {
+            builder.marshaller(new JavaSerializationMarshaller())
+                    .addJavaSerialAllowList(InfinispanStorageManager.getAllowedPackages());
+        } else if (marshallerType == MarshallerType.PROTOSTREAM) {
+            protoMarshaller = Optional.of(new ProtoStreamMarshaller());
+            serializationContextInitializer = findSerializationContextInitializer();
+            if (serializationContextInitializer.isEmpty()) {
+                throw new IllegalStateException("ProtoStream serialization context initializer not found");
+            }
+            builder.marshaller(protoMarshaller.get()).addContextInitializer(serializationContextInitializer.get());
+        } else {
+            throw new IllegalStateException("Unknown MarshallerType: " + marshallerType);
+        }
     }
 
     @Override
@@ -113,6 +144,11 @@ public class RemoteStorageManager implements InfinispanStorageManager {
         this.remoteCacheManager = remoteCacheManager;
     }
 
+    @Override
+    public boolean isProtoStream() {
+        return marshallerType == MarshallerType.PROTOSTREAM;
+    }
+
     //--- test purpose
 
     @Override
@@ -146,10 +182,15 @@ public class RemoteStorageManager implements InfinispanStorageManager {
 
     @Override
     public ConfigurationBuilder provideAdditionalRemoteConfigurationBuilder() {
+        // Used for externally provided RemoteCacheManager, especially for InfinispanContainer tests
         ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.marshaller(new JavaSerializationMarshaller())
-                .addJavaSerialAllowList(InfinispanStorageManager.getAllowedPackages());
+        configureMarshaller(builder);
         return builder;
+    }
+
+    @Override
+    public SerializationContext getSerializationContext() {
+        return protoMarshaller.get().getSerializationContext();
     }
 
     @Override

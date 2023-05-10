@@ -15,73 +15,18 @@
 
 package org.drools.reliability.core;
 
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.IdentityObjectStore;
+import java.util.List;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.Storage;
+import org.drools.core.common.ObjectStore;
 
-import java.util.ArrayList;
-import java.util.List;
+public interface SimpleReliableObjectStore extends ObjectStore {
 
-public class SimpleReliableObjectStore extends IdentityObjectStore {
+    List<StoredObject> reInit(InternalWorkingMemory session, InternalWorkingMemoryEntryPoint ep);
 
-    private final Storage<Long, StoredObject> storage;
+    void putIntoPersistedStorage(InternalFactHandle handle, boolean propagated);
 
-    private boolean reInitPropagated = false;
-
-    public SimpleReliableObjectStore(Storage<Long, StoredObject> storage) {
-        super();
-        this.storage = storage;
-    }
-
-    @Override
-    public void addHandle(InternalFactHandle handle, Object object) {
-        super.addHandle(handle, object);
-        putIntoPersistedStorage(handle, handle.hasMatches());
-    }
-
-    @Override
-    public void removeHandle(InternalFactHandle handle) {
-        removeFromPersistedStorage(handle.getObject());
-        super.removeHandle(handle);
-    }
-
-    public List<StoredObject> reInit(InternalWorkingMemory session, InternalWorkingMemoryEntryPoint ep) {
-        reInitPropagated = true;
-        List<StoredObject> propagated = new ArrayList<>();
-        List<StoredObject> notPropagated = new ArrayList<>();
-        for (StoredObject entry : storage.values()) {
-            if (entry.isPropagated()) {
-                propagated.add(entry);
-            } else {
-                notPropagated.add(entry);
-            }
-        }
-        storage.clear();
-
-        // fact handles with a match have been already propagated in the original session, so they shouldn't fire
-        propagated.forEach(obj -> obj.repropagate(ep));
-        session.fireAllRules(match -> false);
-        reInitPropagated = false;
-
-        // fact handles without any match have never been propagated in the original session, so they should fire
-        return notPropagated;
-    }
-
-    public void putIntoPersistedStorage(InternalFactHandle handle, boolean propagated) {
-        Object object = handle.getObject();
-        StoredObject storedObject = handle.isEvent() ?
-                new StoredObject(object, reInitPropagated || propagated, ((EventFactHandle) handle).getStartTimestamp(), ((EventFactHandle) handle).getDuration()) :
-                new StoredObject(object, reInitPropagated || propagated);
-        storage.put(getHandleForObject(object).getId(), storedObject);
-    }
-
-    public void removeFromPersistedStorage(Object object) {
-        InternalFactHandle fh = getHandleForObject(object);
-        if (fh != null) {
-            storage.remove(fh.getId());
-        }
-    }
+    void removeFromPersistedStorage(Object object);
 }

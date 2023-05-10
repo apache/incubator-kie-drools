@@ -15,6 +15,9 @@
 
 package org.drools.reliability.infinispan;
 
+import java.nio.file.Paths;
+import java.util.Set;
+
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.Storage;
 import org.drools.util.FileUtils;
@@ -29,11 +32,11 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Paths;
-import java.util.Set;
-
 import static org.drools.reliability.core.StorageManager.createStorageId;
-import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.*;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.DELIMITER;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_DIRECTORY;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.SESSION_STORAGE_PREFIX;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.SHARED_STORAGE_PREFIX;
 import static org.drools.util.Config.getConfig;
 
 public class EmbeddedStorageManager implements InfinispanStorageManager {
@@ -77,10 +80,11 @@ public class EmbeddedStorageManager implements InfinispanStorageManager {
                .shared(false)
                .dataLocation(CACHE_DIR + "/data")
                .indexLocation(CACHE_DIR + "/index");
-        builder.clustering()
-               .cacheMode(CacheMode.LOCAL);
 
         builder.unsafe().unreliableReturnValues(true);
+
+        builder.clustering()
+               .cacheMode(CacheMode.LOCAL);
 
         cacheConfiguration = builder.build();
     }

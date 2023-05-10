@@ -26,6 +26,8 @@ public class InfinispanStorageManagerFactory implements StorageManagerFactory {
     public static final String INFINISPAN_STORAGE_ALLOWED_PACKAGES = INFINISPAN_STORAGE_PREFIX + ".allowedpackages";
     public static final String INFINISPAN_STORAGE_DIRECTORY = INFINISPAN_STORAGE_PREFIX + ".dir";
     public static final String INFINISPAN_STORAGE_MODE = INFINISPAN_STORAGE_PREFIX + ".mode";
+    public static final String INFINISPAN_STORAGE_MARSHALLER = INFINISPAN_STORAGE_PREFIX + ".marshaller";
+    public static final String INFINISPAN_STORAGE_SERIALIZATION_CONTEXT_INITIALIZER = INFINISPAN_STORAGE_PREFIX + ".serialization.context.initializer";
     public static final String INFINISPAN_STORAGE_REMOTE_HOST = INFINISPAN_STORAGE_PREFIX + ".remote.host";
     public static final String INFINISPAN_STORAGE_REMOTE_PORT = INFINISPAN_STORAGE_PREFIX + ".remote.port";
     public static final String INFINISPAN_STORAGE_REMOTE_USER = INFINISPAN_STORAGE_PREFIX + ".remote.user";

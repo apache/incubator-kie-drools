@@ -15,15 +15,18 @@
 
 package org.drools.reliability.infinispan;
 
+import java.nio.file.Path;
+
 import org.drools.util.FileUtils;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
-
 import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_ALLOWED_PACKAGES;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MARSHALLER;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MODE;
+import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_SERIALIZATION_CONTEXT_INITIALIZER;
 
 public class BeforeAllMethodExtension implements BeforeAllCallback {
 
@@ -45,5 +48,8 @@ public class BeforeAllMethodExtension implements BeforeAllCallback {
         System.setProperty(INFINISPAN_STORAGE_ALLOWED_PACKAGES, "org.test.domain");
         FileUtils.deleteDirectory(Path.of(EmbeddedStorageManager.GLOBAL_STATE_DIR));
         LOG.info("### Deleted directory {}", EmbeddedStorageManager.GLOBAL_STATE_DIR);
+
+        LOG.info("### Set marshaller to {}", System.getProperty(INFINISPAN_STORAGE_MARSHALLER));
+        LOG.info("### Set initializer to {}", System.getProperty(INFINISPAN_STORAGE_SERIALIZATION_CONTEXT_INITIALIZER));
     }
 }
