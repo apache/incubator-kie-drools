@@ -262,30 +262,40 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Type typeLeft = optTypeLeft.get();
         Type typeRight = optTypeRight.get();
 
-        boolean binaryOperatorNeedArithmeticBigDecimalConversion = arithmeticOperators.contains(operator);
-        boolean binaryOperatorNeedRelationalBigDecimalConversion = relationalOperators.contains(operator);
         boolean isStringConcatenation = operator == BinaryExpr.Operator.PLUS &&
                 (typeLeft == String.class || typeRight == String.class);
 
-        if (binaryOperatorNeedArithmeticBigDecimalConversion && !isStringConcatenation) {
-            if (typeLeft == BigDecimal.class && typeRight == BigDecimal.class) { // do not convert
-                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), left, right);
-            } else if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
-                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), new BigDecimalConvertedExprT(left), right);
-            } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) { // convert right
-                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), left, new BigDecimalConvertedExprT(right));
-            }
-        } else if (binaryOperatorNeedRelationalBigDecimalConversion) {
-            if (typeLeft == BigDecimal.class && typeRight == BigDecimal.class) { // do not convert
-                return new BigDecimalRelationalExprT(operator, left, right);
-            } else if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
-                return new BigDecimalRelationalExprT(operator, new BigDecimalConvertedExprT(left), right);
-            } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) { // convert right
-                return new BigDecimalRelationalExprT(operator, left, new BigDecimalConvertedExprT(right));
-            }
+        if (arithmeticOperators.contains(operator) && !isStringConcatenation) {
+            return convertToBigDecimalArithmeticExprTIfNeeded(left, right, operator, typeLeft, typeRight);
+        } else if (relationalOperators.contains(operator)) {
+            return convertToBigDecimalRelationalExprTIfNeeded(left, right, operator, typeLeft, typeRight);
         }
 
         return new BinaryExprT(left, right, operator);
+    }
+
+    private TypedExpression convertToBigDecimalArithmeticExprTIfNeeded(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator, Type typeLeft, Type typeRight) {
+        if (typeLeft == BigDecimal.class && typeRight == BigDecimal.class) { // do not convert
+            return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), left, right);
+        } else if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
+            return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), new BigDecimalConvertedExprT(left), right);
+        } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) { // convert right
+            return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), left, new BigDecimalConvertedExprT(right));
+        } else {
+            return new BinaryExprT(left, right, operator);
+        }
+    }
+
+    private TypedExpression convertToBigDecimalRelationalExprTIfNeeded(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator, Type typeLeft, Type typeRight) {
+        if (typeLeft == BigDecimal.class && typeRight == BigDecimal.class) { // do not convert
+            return new BigDecimalRelationalExprT(operator, left, right);
+        } else if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
+            return new BigDecimalRelationalExprT(operator, new BigDecimalConvertedExprT(left), right);
+        } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) { // convert right
+            return new BigDecimalRelationalExprT(operator, left, new BigDecimalConvertedExprT(right));
+        } else {
+            return new BinaryExprT(left, right, operator);
+        }
     }
 
     @Override
