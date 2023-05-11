@@ -2753,15 +2753,19 @@ index 31038d2afa..775f3f19dc 100644
  import org.drools.core.impl.EnvironmentFactory;
  import org.kie.api.runtime.Environment;
 diff --git a/drools-reliability/drools-reliability-infinispan/pom.xml b/drools-reliability/drools-reliability-infinispan/pom.xml
-index 6c7dc785a0..bb0d6822f8 100644
+index ab4124a131..93bec031c0 100644
 --- a/drools-reliability/drools-reliability-infinispan/pom.xml
 +++ b/drools-reliability/drools-reliability-infinispan/pom.xml
-@@ -34,11 +34,11 @@
+@@ -34,7 +34,7 @@
    <dependencies>
      <dependency>
        <groupId>org.infinispan</groupId>
 -      <artifactId>infinispan-core</artifactId>
 +      <artifactId>infinispan-core-jakarta</artifactId>
+     </dependency>
+     <dependency>
+       <groupId>org.infinispan.protostream</groupId>
+@@ -43,7 +43,7 @@
      </dependency>
      <dependency>
        <groupId>org.infinispan</groupId>
