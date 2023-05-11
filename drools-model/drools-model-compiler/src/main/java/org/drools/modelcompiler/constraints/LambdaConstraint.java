@@ -17,23 +17,17 @@
 
 package org.drools.modelcompiler.constraints;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-
-import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.ObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.PropertySpecificUtil;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.FieldValue;
 import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.base.ObjectType;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.TupleValueExtractor;
 import org.drools.core.time.Interval;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
@@ -53,6 +47,11 @@ import org.drools.model.functions.Function4;
 import org.drools.model.functions.PredicateInformation;
 import org.kie.api.KieBaseConfiguration;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+
 import static org.drools.core.base.ValueType.determineValueType;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
@@ -65,6 +64,11 @@ public class LambdaConstraint extends AbstractConstraint {
     private FieldValue field;
     private ReadAccessor readAccessor;
     private AbstractIndexValueExtractor indexExtractor;
+
+    public LambdaConstraint(){
+        this.evaluator=null;
+        this.predicateInformation=null;
+    }
 
     public LambdaConstraint(ConstraintEvaluator evaluator,
                             PredicateInformation predicateInformation) {

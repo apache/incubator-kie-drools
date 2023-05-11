@@ -239,7 +239,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
     @ParameterizedTest
     @MethodSource("strategyProviderFull")
-    @Disabled("RuleExecutor, line#407, NullPointerException (consequence is null)")
+    @Disabled("LambdaConstraint.evaluator is null, line#225")
     void insertFailover_propListShouldNotBeEmpty(PersistedSessionOption.Strategy strategy){
         createSession(BASIC_RULE, strategy);
 
@@ -250,6 +250,19 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         restoreSession(BASIC_RULE, strategy);
         assertThat(session.fireAllRules()).isEqualTo(1);
-
     }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderFull")
+    void insertFire_NoFailover(PersistedSessionOption.Strategy strategy){
+        createSession(BASIC_RULE, strategy);
+
+        insertString("M");
+        FactHandle maria = insertMatchingPerson("Maria", 30);
+
+        session.fireAllRules();
+        assertThat(getResults()).contains("Maria");
+    }
+
+
 }

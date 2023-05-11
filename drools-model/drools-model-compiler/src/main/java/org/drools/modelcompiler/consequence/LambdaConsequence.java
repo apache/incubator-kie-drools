@@ -16,22 +16,26 @@
 
 package org.drools.modelcompiler.consequence;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.reteoo.Tuple;
 import org.drools.model.Variable;
 
-public class LambdaConsequence implements Consequence {
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class LambdaConsequence implements Consequence, Externalizable {
 
     // Enable the optimization to extract from the activation tuple the arguments to be passed to this
     // consequence in linear time by traversing the tuple only once.
@@ -46,6 +50,11 @@ public class LambdaConsequence implements Consequence {
     private Object[]            facts;
 
     private FactHandleLookup    fhLookup;
+
+    public LambdaConsequence(){
+        this.consequence = null;
+        this.enabledTupleOptimization=false;
+    }
 
     public LambdaConsequence( org.drools.model.Consequence consequence, boolean enabledTupleOptimization) {
         this.consequence = consequence;
@@ -219,6 +228,22 @@ public class LambdaConsequence implements Consequence {
             this.fhLookup = fhLookup;
         }
         return facts;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(requiredDeclarations);
+        out.writeObject(factSuppliers);
+        out.writeObject(globalSuppliers);
+        out.writeObject(facts);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.requiredDeclarations = (Declaration[] ) in.readObject();
+        this.factSuppliers = (TupleFactSupplier[]) in.readObject();
+        this.globalSuppliers = (GlobalSupplier[]) in.readObject();
+        this.facts = (Object[]) in.readObject();
     }
 
     private static class GlobalSupplier implements Comparable<GlobalSupplier> {
