@@ -36,4 +36,8 @@ public interface JobContext extends Serializable {
     default Optional<InternalKnowledgeRuntime> getInternalKnowledgeRuntime() {
         return getReteEvaluator() instanceof InternalWorkingMemory ? Optional.ofNullable(((InternalWorkingMemory)getReteEvaluator()).getKnowledgeRuntime()) : Optional.empty();
     }
+
+    default boolean isNew() {
+        return false;
+    }
 }
