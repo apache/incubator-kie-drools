@@ -48,7 +48,7 @@ environments:
     enabled: false
 productized_branch: false
 disable:
-  triggers: false
+  triggers: true
 repositories:
 - name: drools
   branch: 8.37.x
