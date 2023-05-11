@@ -513,7 +513,8 @@ public class ConstraintParser {
                     .setRightLiteral(rightLiteral)
                     .setStatic(typedExpression.isStatic())
                     .setTemporal( isTemporal )
-                    .setIsPredicate(true);
+                    .setIsPredicate(true)
+                    .setNullSafeExpressions(typedExpressionResult.getNullSafeExpressions());
         }).orElseGet( () -> new DrlxParseFail( new ParseExpressionErrorResult(pointFreeExpr) ));
     }
 
