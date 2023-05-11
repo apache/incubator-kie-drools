@@ -18,7 +18,6 @@ package org.drools.core.common;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * This interface represents the minimal abstraction to store data. It might be merged into ObjectStore in the long run.
@@ -31,6 +30,8 @@ public interface Storage<K, V> {
     V get(K key);
 
     V put(K key, V value);
+
+    void putAll(Map<? extends K, ? extends V> otherMap);
 
     boolean containsKey(K key);
 
@@ -47,6 +48,8 @@ public interface Storage<K, V> {
     boolean isEmpty();
 
     V getOrDefault(K key, V value);
+
+    default void flush() { }
 
     static <K, V> Storage<K,V> fromMap(Map<K, V> input) {
         return new MapStorage<>(input);

@@ -15,15 +15,15 @@
 
 package org.drools.reliability.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SimpleSerializationReliableObjectStore extends IdentityObjectStore implements SimpleReliableObjectStore {
 
@@ -74,10 +74,22 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
     @Override
     public void putIntoPersistedStorage(InternalFactHandle handle, boolean propagated) {
         Object object = handle.getObject();
-        StoredObject storedObject = handle.isEvent() ?
-                new SerializableStoredObject(object, reInitPropagated || propagated, ((EventFactHandle) handle).getStartTimestamp(), ((EventFactHandle) handle).getDuration()) :
-                new SerializableStoredObject(object, reInitPropagated || propagated);
+        StoredObject storedObject = factHandleToStoredObject(handle, reInitPropagated || propagated, object);
         storage.put(getHandleForObject(object).getId(), storedObject);
+    }
+
+    private StoredObject factHandleToStoredObject(InternalFactHandle handle, boolean propagated, Object object) {
+        return handle.isEvent() ?
+                createStoredObject(propagated, object, ((EventFactHandle) handle).getStartTimestamp(), ((EventFactHandle) handle).getDuration()) :
+                createStoredObject(propagated, object);
+    }
+
+    protected StoredObject createStoredObject(boolean propagated, Object object) {
+        return new SerializableStoredObject(object, propagated);
+    }
+
+    protected StoredObject createStoredObject(boolean propagated, Object object, long timestamp, long duration) {
+        return new SerializableStoredObject(object, propagated, timestamp, duration);
     }
 
     @Override
@@ -86,5 +98,10 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
         if (fh != null) {
             storage.remove(fh.getId());
         }
+    }
+
+    @Override
+    public void safepoint() {
+        storage.flush();
     }
 }

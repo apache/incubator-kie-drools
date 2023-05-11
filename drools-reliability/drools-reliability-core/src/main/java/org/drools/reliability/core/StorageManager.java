@@ -25,7 +25,11 @@ public interface StorageManager {
 
     void initStorageManager();
 
-    <K, V> Storage<K, V> getOrCreateStorageForSession(ReteEvaluator reteEvaluator, String storageName);
+    default <K, V> Storage<K, V> getOrCreateStorageForSession(ReteEvaluator reteEvaluator, String storageName) {
+        return getOrCreateStorageForSession(reteEvaluator, reteEvaluator.getSessionConfiguration().getPersistedSessionOption().getSafepointStrategy(), storageName);
+    }
+
+    <K, V> Storage<K, V> getOrCreateStorageForSession(ReteEvaluator reteEvaluator, PersistedSessionOption.SafepointStrategy safepointStrategy, String storageName);
 
     <K, V> Storage<K, V> getOrCreateSharedStorage(String storageName);
 

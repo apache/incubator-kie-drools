@@ -21,8 +21,9 @@ import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.conf.PersistedSessionOption;
 
-public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl {
+public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl implements ReliableKieSession {
 
     public ReliableStatefulKnowledgeSessionImpl() {
     }
@@ -65,6 +66,14 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
         super.endOperation(operationType);
         if (operationType == InternalOperationType.FIRE) {
             ((ReliableGlobalResolver) getGlobalResolver()).updateStorage();
+            if (getSessionConfiguration().getPersistedSessionOption().getSafepointStrategy() == PersistedSessionOption.SafepointStrategy.ON_FIRING) {
+                safepoint();
+            }
         }
+    }
+
+    @Override
+    public void safepoint() {
+        getEntryPoints().stream().map(ReliableNamedEntryPoint.class::cast).forEach(ReliableNamedEntryPoint::safepoint);
     }
 }

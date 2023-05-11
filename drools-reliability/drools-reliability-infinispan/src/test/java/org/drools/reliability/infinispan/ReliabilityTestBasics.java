@@ -16,14 +16,16 @@
 package org.drools.reliability.infinispan;
 
 import org.drools.core.ClassObjectFilter;
-import org.drools.reliability.core.StorageManagerFactory;
+import org.drools.reliability.core.ReliableKieSession;
 import org.drools.reliability.core.ReliableRuntimeComponentFactoryImpl;
+import org.drools.reliability.core.StorageManagerFactory;
 import org.drools.reliability.core.TestableStorageManager;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.server.test.core.InfinispanContainer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.provider.Arguments;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.conf.KieBaseOption;
@@ -45,8 +47,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MARSHALLER;
-import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MODE;
 import static org.drools.util.Config.getConfig;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 public abstract class ReliabilityTestBasics {
@@ -56,13 +58,21 @@ public abstract class ReliabilityTestBasics {
     private InfinispanContainer container;
     protected long savedSessionId;
     protected KieSession session;
+    protected PersistedSessionOption.SafepointStrategy safepointStrategy;
 
-    static Stream<PersistedSessionOption.Strategy> strategyProvider() {
-        return Stream.of(PersistedSessionOption.Strategy.STORES_ONLY, PersistedSessionOption.Strategy.FULL);
+    static Stream<PersistedSessionOption.PersistenceStrategy> strategyProvider() {
+        return Stream.of(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.PersistenceStrategy.FULL);
     }
 
-    static Stream<PersistedSessionOption.Strategy> strategyProviderStoresOnly() {
-        return Stream.of(PersistedSessionOption.Strategy.STORES_ONLY);
+    static Stream<Arguments> strategyProviderStoresOnly() {
+        return Stream.of(arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY));
+    }
+
+    static Stream<Arguments> strategyProviderStoresOnlyWithSafepoints() {
+        return Stream.of(
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.ALWAYS),
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.EXPLICIT)
+        );
     }
 
     static boolean isProtoStream() {
@@ -96,6 +106,10 @@ public abstract class ReliabilityTestBasics {
     }
 
     public void failover() {
+        if (safepointStrategy == PersistedSessionOption.SafepointStrategy.EXPLICIT) {
+            ((ReliableKieSession) session).safepoint();
+        }
+
         if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
             // fail-over means restarting Drools instance. Assuming remote infinispan keeps alive
             StorageManagerFactory.get().getStorageManager().close(); // close remoteCacheManager
@@ -141,14 +155,22 @@ public abstract class ReliabilityTestBasics {
         ((List<Object>) session.getGlobal("results")).clear();
     }
 
-    protected KieSession createSession(String drl, PersistedSessionOption.Strategy strategy, Option... options) {
-        getKieSession(drl, strategy != null ? PersistedSessionOption.newSession(strategy) : null, options);
+    protected KieSession createSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, Option... options) {
+        return createSession(drl, persistenceStrategy, PersistedSessionOption.SafepointStrategy.ALWAYS, options);
+    }
+
+    protected KieSession createSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
+        getKieSession(drl, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy) : null, options);
         savedSessionId = session.getIdentifier();
         return session;
     }
 
-    protected KieSession restoreSession(String drl, PersistedSessionOption.Strategy strategy, Option... options) {
-        return getKieSession(drl, PersistedSessionOption.fromSession(savedSessionId, strategy), options);
+    protected KieSession restoreSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, Option... options) {
+        return restoreSession(drl, persistenceStrategy, PersistedSessionOption.SafepointStrategy.ALWAYS, options);
+    }
+
+    protected KieSession restoreSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
+        return getKieSession(drl, PersistedSessionOption.fromSession(savedSessionId).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
     }
 
     protected void disposeSession() {
@@ -161,6 +183,7 @@ public abstract class ReliabilityTestBasics {
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         if (persistedSessionOption != null) {
             conf.setOption(persistedSessionOption);
+            safepointStrategy = persistedSessionOption.getSafepointStrategy();
         }
         Stream.of(optionsFilter.getKieSessionOption()).forEach(conf::setOption);
         session = kbase.newKieSession(conf, null);

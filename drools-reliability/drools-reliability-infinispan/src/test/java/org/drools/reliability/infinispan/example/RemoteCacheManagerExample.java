@@ -54,7 +54,7 @@ public class RemoteCacheManagerExample {
                     "end";
 
     public static void main(String[] args) {
-        KieSession session = getKieSession(PersistedSessionOption.newSession(PersistedSessionOption.Strategy.STORES_ONLY));
+        KieSession session = getKieSession(PersistedSessionOption.newSession().withPersistenceStrategy(PersistedSessionOption.PersistenceStrategy.STORES_ONLY));
 
         long savedSessionId = session.getIdentifier();
         System.out.println("savedSessionId = " + savedSessionId);

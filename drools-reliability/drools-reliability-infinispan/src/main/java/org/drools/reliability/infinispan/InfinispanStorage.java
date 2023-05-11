@@ -16,17 +16,24 @@
 package org.drools.reliability.infinispan;
 
 import org.drools.core.common.Storage;
+import org.drools.reliability.core.BatchingStorageDecorator;
 import org.infinispan.commons.api.BasicCache;
+import org.kie.api.runtime.conf.PersistedSessionOption;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 public class InfinispanStorage<K, V> implements Storage<K, V> {
 
-    BasicCache<K, V> cache;
+    private BasicCache<K, V> cache;
 
-    public static <K1, V1> InfinispanStorage<K1, V1> fromCache(BasicCache<K1, V1> cache) {
-        return new InfinispanStorage<>(cache);
+    public static <K1, V1> Storage<K1, V1> fromCache(BasicCache<K1, V1> cache, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+        Storage<K1, V1> storage = new InfinispanStorage<>(cache);
+        if (safepointStrategy.useSafepoints()) {
+            storage = new BatchingStorageDecorator<>(storage);
+        }
+        return storage;
     }
 
     private InfinispanStorage(BasicCache<K, V> cache) {
@@ -46,6 +53,11 @@ public class InfinispanStorage<K, V> implements Storage<K, V> {
     @Override
     public V put(K key, V value) {
         return cache.put(key, value);
+    }
+
+    @Override
+    public void putAll(Map<? extends K, ? extends V> otherMap) {
+        cache.putAll(otherMap);
     }
 
     @Override

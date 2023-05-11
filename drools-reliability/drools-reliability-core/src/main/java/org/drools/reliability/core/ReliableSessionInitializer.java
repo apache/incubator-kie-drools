@@ -34,13 +34,13 @@ import java.util.Map;
 
 public class ReliableSessionInitializer {
 
-    private static final Map<PersistedSessionOption.Strategy, SessionInitializer> initializersMap = Map.of(
-            PersistedSessionOption.Strategy.STORES_ONLY, new StoresOnlySessionInitializer(),
-            PersistedSessionOption.Strategy.FULL, new FullReliableSessionInitializer());
+    private static final Map<PersistedSessionOption.PersistenceStrategy, SessionInitializer> initializersMap = Map.of(
+            PersistedSessionOption.PersistenceStrategy.STORES_ONLY, new StoresOnlySessionInitializer(),
+            PersistedSessionOption.PersistenceStrategy.FULL, new FullReliableSessionInitializer());
 
     public static InternalWorkingMemory initReliableSession(SessionConfiguration sessionConfig, InternalWorkingMemory session) {
         PersistedSessionOption persistedSessionOption = sessionConfig.getPersistedSessionOption();
-        return initializersMap.get(persistedSessionOption.getStrategy()).init(session, persistedSessionOption);
+        return initializersMap.get(persistedSessionOption.getPersistenceStrategy()).init(session, persistedSessionOption);
     }
 
     interface SessionInitializer {

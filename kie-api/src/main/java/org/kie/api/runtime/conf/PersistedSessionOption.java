@@ -24,8 +24,16 @@ import java.util.Objects;
  */
 public class PersistedSessionOption implements SingleValueKieSessionOption {
 
-    public enum Strategy {
+    public enum PersistenceStrategy {
         FULL, STORES_ONLY
+    }
+
+    public enum SafepointStrategy {
+        ALWAYS, ON_FIRING, EXPLICIT;
+
+        public boolean useSafepoints() {
+            return this != ALWAYS;
+        }
     }
 
     /**
@@ -35,39 +43,24 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
 
     private final long sessionId;
 
-    private final Strategy strategy;
+    private PersistenceStrategy persistenceStrategy = PersistenceStrategy.FULL;
+
+    private SafepointStrategy safepointStrategy = SafepointStrategy.ALWAYS;
 
     private PersistedSessionOption() {
         this(-1L);
     }
 
     private PersistedSessionOption(long sessionId) {
-        this(sessionId, Strategy.FULL);
-    }
-
-    private PersistedSessionOption(Strategy strategy) {
-        this(-1, strategy);
-    }
-
-    private PersistedSessionOption(long sessionId, Strategy strategy) {
         this.sessionId = sessionId;
-        this.strategy = strategy;
     }
 
     public static PersistedSessionOption newSession() {
         return new PersistedSessionOption();
     }
 
-    public static PersistedSessionOption newSession(Strategy strategy) {
-        return new PersistedSessionOption(strategy);
-    }
-
     public static PersistedSessionOption fromSession(long sessionId) {
         return new PersistedSessionOption(sessionId);
-    }
-
-    public static PersistedSessionOption fromSession(long sessionId, Strategy strategy) {
-        return new PersistedSessionOption(sessionId, strategy);
     }
 
     /**
@@ -81,8 +74,22 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
         return sessionId;
     }
 
-    public Strategy getStrategy() {
-        return strategy;
+    public PersistenceStrategy getPersistenceStrategy() {
+        return persistenceStrategy;
+    }
+
+    public PersistedSessionOption withPersistenceStrategy(PersistenceStrategy persistenceStrategy) {
+        this.persistenceStrategy = persistenceStrategy;
+        return this;
+    }
+
+    public SafepointStrategy getSafepointStrategy() {
+        return safepointStrategy;
+    }
+
+    public PersistedSessionOption withSafepointStrategy(SafepointStrategy safepointStrategy) {
+        this.safepointStrategy = safepointStrategy;
+        return this;
     }
 
     public boolean isNewSession() {

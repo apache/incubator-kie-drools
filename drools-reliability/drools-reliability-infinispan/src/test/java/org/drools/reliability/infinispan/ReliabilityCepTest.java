@@ -15,8 +15,6 @@
 
 package org.drools.reliability.infinispan;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,6 +24,8 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.time.SessionPseudoClock;
 import org.test.domain.StockTick;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,10 +44,10 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
             "end\n";
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
-    void insertAdvanceInsertFailoverFire_shouldRecoverFromFailover(PersistedSessionOption.Strategy strategy) {
+    @MethodSource("strategyProviderStoresOnlyWithSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void insertAdvanceInsertFailoverFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
-        createSession(CEP_RULE, strategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
 
         SessionPseudoClock clock = session.getSessionClock();
 
@@ -58,7 +58,7 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
         //-- ksession and kbase are lost. CacheManager is recreated. Client knows only "id"
         failover();
-        restoreSession(CEP_RULE, strategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        restoreSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         clock = session.getSessionClock();
 
         assertThat(session.fireAllRules()).isEqualTo(1);
