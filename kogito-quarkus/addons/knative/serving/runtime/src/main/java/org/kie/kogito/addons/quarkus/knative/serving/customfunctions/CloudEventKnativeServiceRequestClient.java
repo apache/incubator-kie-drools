@@ -18,7 +18,6 @@ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 import java.net.URI;
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -45,6 +44,8 @@ class CloudEventKnativeServiceRequestClient extends KnativeServiceRequestClient 
 
     private static final Logger logger = LoggerFactory.getLogger(CloudEventKnativeServiceRequestClient.class);
 
+    private static final String ID = "id";
+
     private final WebClient webClient;
 
     private final Duration requestTimeout;
@@ -58,8 +59,6 @@ class CloudEventKnativeServiceRequestClient extends KnativeServiceRequestClient 
 
     @Override
     protected JsonNode sendRequest(String processInstanceId, URI serviceAddress, String path, Map<String, Object> cloudEvent) {
-        validateCloudEvent(cloudEvent);
-
         HttpRequest<Buffer> request;
         if (serviceAddress.getPort() >= 0) {
             request = webClient.post(serviceAddress.getPort(), serviceAddress.getHost(), path);
@@ -69,7 +68,13 @@ class CloudEventKnativeServiceRequestClient extends KnativeServiceRequestClient 
         request.putHeader("Content-Type", APPLICATION_CLOUDEVENTS_JSON_CHARSET_UTF_8)
                 .ssl("https".equals(serviceAddress.getScheme()));
 
-        JsonObject body = new JsonObject(createCloudEventWithGeneratedId(cloudEvent, processInstanceId));
+        if (cloudEvent.get(ID) == null) {
+            cloudEvent = createCloudEventWithGeneratedId(cloudEvent, processInstanceId);
+        }
+
+        CloudEventUtils.validateCloudEvent(cloudEvent);
+
+        JsonObject body = new JsonObject(cloudEvent);
 
         logger.debug("Sending request with CloudEvent - host: {}, port: {}, path: {}, CloudEvent: {}",
                 serviceAddress.getHost(), serviceAddress.getPort(), path, body);
@@ -79,28 +84,18 @@ class CloudEventKnativeServiceRequestClient extends KnativeServiceRequestClient 
         return responseAsJsonObject(response);
     }
 
-    private static HashMap<String, Object> createCloudEventWithGeneratedId(Map<String, Object> cloudEvent, String processInstanceId) {
-        HashMap<String, Object> modifiableCloudEvent = new HashMap<>(cloudEvent);
-        Object oldIdValue = modifiableCloudEvent.put("id", generateCloudEventId(processInstanceId, cloudEvent.get("source").toString()));
-
-        if (oldIdValue != null) {
-            logger.warn("CloudEvent id should not be set. Ignoring id {}. A generated value will be used instead.", oldIdValue);
-        }
+    private static Map<String, Object> createCloudEventWithGeneratedId(Map<String, Object> cloudEvent, String processInstanceId) {
+        Map<String, Object> modifiableCloudEvent = ensureModifiable(cloudEvent);
+        modifiableCloudEvent.put(ID, generateCloudEventId(processInstanceId, cloudEvent));
         return modifiableCloudEvent;
     }
 
-    private static String generateCloudEventId(String processInstanceId, String source) {
-        return source + '_' + processInstanceId;
+    private static Map<String, Object> ensureModifiable(Map<String, Object> map) {
+        return map instanceof HashMap ? map : new HashMap<>(map);
     }
 
-    private void validateCloudEvent(Map<String, Object> cloudEvent) {
-        List<String> missingAttributes = CloudEventUtils.getMissingAttributes(cloudEvent);
-        missingAttributes.remove("id");
-
-        if (!missingAttributes.isEmpty()) {
-            throw new IllegalArgumentException("Invalid CloudEvent. The following mandatory attributes are missing: "
-                    + String.join(", ", missingAttributes));
-        }
+    static String generateCloudEventId(String processInstanceId, Map<String, Object> cloudEvent) {
+        return processInstanceId + "_" + cloudEvent.hashCode();
     }
 
     @PreDestroy

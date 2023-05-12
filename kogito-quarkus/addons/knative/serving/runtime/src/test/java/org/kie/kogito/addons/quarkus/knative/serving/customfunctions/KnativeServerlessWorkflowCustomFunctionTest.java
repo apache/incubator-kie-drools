@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.kogito.event.cloudevents.utils.InvalidCloudEventException;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -301,7 +302,7 @@ class KnativeServerlessWorkflowCustomFunctionTest {
         assertThat(output).hasToString(expected.toString());
 
         wireMockServer.verify(postRequestedFor(urlEqualTo(CLOUD_EVENT_PATH))
-                .withRequestBody(matchingJsonPath("$.id", equalTo(source + "_" + processInstanceId)))
+                .withRequestBody(matchingJsonPath("$.id", equalTo("42")))
                 .withHeader("Content-Type", equalTo(APPLICATION_CLOUDEVENTS_JSON_CHARSET_UTF_8)));
     }
 
@@ -329,16 +330,15 @@ class KnativeServerlessWorkflowCustomFunctionTest {
     void executeWithInvalidCloudEvent() {
         Map<String, Object> cloudEvent = Map.of(
                 CloudEventV1.SPECVERSION, SpecVersion.V1.toString(),
-                "type", "org.kie.kogito.test",
+                "source", "https://localhost:8080",
                 "data", Map.of(
                         "org", "Acme",
                         "project", "Kogito"));
 
         String operation = SERVICENAME + "?asCloudEvent=true&path=" + CLOUD_EVENT_PATH;
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> knativeServerlessWorkflowCustomFunction.execute(UNUSED, operation, cloudEvent))
-                .withMessage("Invalid CloudEvent. The following mandatory attributes are missing: source");
+        assertThatExceptionOfType(InvalidCloudEventException.class)
+                .isThrownBy(() -> knativeServerlessWorkflowCustomFunction.execute(UNUSED, operation, cloudEvent));
     }
 
     @ParameterizedTest
