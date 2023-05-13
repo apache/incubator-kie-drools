@@ -1093,10 +1093,10 @@ index 75a9ffdb38..38a5c63ae8 100644
                  <executions>
                      <execution>
 diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClient.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClient.java
-index c866764f09..0170c64c61 100644
+index 09d0df7cdf..29d493857c 100644
 --- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClient.java
 +++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClient.java
-@@ -22,10 +22,10 @@ import java.util.List;
+@@ -21,10 +21,10 @@ import java.util.HashMap;
  import java.util.Map;
  import java.util.Optional;
  
@@ -1206,8 +1206,21 @@ index 9d9609c7f1..f1c1626716 100644
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
  import org.slf4j.Logger;
+diff --git a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClientTest.java b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClientTest.java
+index 98e2c18678..6bcb3bd7ef 100644
+--- a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClientTest.java
++++ b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClientTest.java
+@@ -19,7 +19,7 @@ import java.net.URI;
+ import java.util.HashMap;
+ import java.util.Map;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.assertj.core.api.Assertions;
+ import org.junit.jupiter.api.AfterAll;
 diff --git a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
-index 605edd5f66..29b9e54f93 100644
+index b554f93b7e..7fb931af5a 100644
 --- a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
 +++ b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
 @@ -19,7 +19,7 @@ import java.time.Instant;
