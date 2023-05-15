@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -48,15 +49,13 @@ import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.YieldStmt;
-import org.drools.mvelcompiler.ast.BigDecimalRelationalExprT;
-import org.drools.util.ClassUtils;
-import org.drools.util.MethodUtils.NullType;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
+import org.drools.mvelcompiler.ast.BigDecimalRelationalExprT;
 import org.drools.mvelcompiler.ast.BigIntegerConvertedExprT;
 import org.drools.mvelcompiler.ast.BinaryExprT;
 import org.drools.mvelcompiler.ast.BooleanLiteralExpressionT;
@@ -74,13 +73,14 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.drools.util.ClassUtils;
+import org.drools.util.MethodUtils.NullType;
 
-import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT.toBigDecimalMethod;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
-import static org.drools.util.ClassUtils.getAccessor;
 import static org.drools.util.ClassUtils.classFromType;
+import static org.drools.util.ClassUtils.getAccessor;
 
 /**
  * This phase processes the right hand side of a Java Expression and creates a new AST
@@ -98,7 +98,7 @@ import static org.drools.util.ClassUtils.classFromType;
  */
 public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
 
-    private static final List<BinaryExpr.Operator> arithmeticOperators = asList(
+    private static final Set<BinaryExpr.Operator> arithmeticOperators = Set.of(
             BinaryExpr.Operator.PLUS,
             BinaryExpr.Operator.MINUS,
             BinaryExpr.Operator.MULTIPLY,
@@ -106,7 +106,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
             BinaryExpr.Operator.REMAINDER
     );
 
-    private static final List<BinaryExpr.Operator> relationalOperators = asList(
+    private static final Set<BinaryExpr.Operator> relationalOperators = Set.of(
             BinaryExpr.Operator.EQUALS,
             BinaryExpr.Operator.NOT_EQUALS,
             BinaryExpr.Operator.LESS,
