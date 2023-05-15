@@ -1016,4 +1016,61 @@ public class IndexingTest {
             ksession.dispose();
         }
     }
+
+    @Test
+    public void betaIndexWithBigDecimalAndInt() {
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint("salary == $p1.salary, age == $p1.age", false);
+    }
+
+    @Test
+    public void betaIndexWithIntAndBigDecimal() {
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint("age == $p1.age, salary == $p1.salary", false);
+    }
+
+    @Test
+    public void betaIndexWithBigDecimalOnly() {
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint("salary == $p1.salary", true);
+    }
+
+    @Test
+    public void betaIndexWithIntInequalityAndBigDecimal() {
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint("age > $p1.age, salary == $p1.salary", false);
+    }
+
+    private void betaIndexWithBigDecimalWithAdditionalBetaConstraint(String constraints, boolean shouldMatch) {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           "global java.util.List list\n" +
+                           "rule R1\n" +
+                           "    when\n" +
+                           "        $p1 : Person( name == \"John\" )\n" +
+                           "        $p2 : Person( name == \"Paul\", " + constraints + " )\n" +
+                           "    then\n" +
+                           "        list.add(\"R1\");\n" +
+                           "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+            Person john = new Person("John", 30);
+            john.setSalary(new BigDecimal("10"));
+            Person paul = new Person("Paul", 28);
+            paul.setSalary(new BigDecimal("10"));
+            ksession.insert(john);
+            ksession.insert(paul);
+            ksession.fireAllRules();
+
+            if (shouldMatch) {
+                assertThat(list).as("These constraints should match : " + constraints).containsExactly("R1");
+            } else {
+                assertThat(list).as("These constraints should not match : " + constraints).isEmpty();
+            }
+        } finally {
+            ksession.dispose();
+        }
+    }
 }
