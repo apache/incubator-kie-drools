@@ -627,7 +627,7 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
-    public void bigDecimalLowerThan() {
+    public void bigDecimalLessThan() {
         test("{ " +
                      "    BigDecimal zero = 0;\n" +
                      "    BigDecimal ten = 10;\n" +
@@ -642,7 +642,7 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
-    public void bigDecimalLowerOrEqual() {
+    public void bigDecimalLessThanOrEqual() {
         test("{ " +
                      "    BigDecimal zero = 0;\n" +
                      "    BigDecimal ten = 10;\n" +
@@ -672,7 +672,7 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
-    public void bigDecimalGreaterOrEqual() {
+    public void bigDecimalGreaterThanOrEqual() {
         test("{ " +
                      "    BigDecimal zero = 0;\n" +
                      "    BigDecimal ten = 10;\n" +
