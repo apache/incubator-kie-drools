@@ -9,27 +9,34 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-serverless-workflow-executor</artifactId>
-  <name>Kogito :: Serverless Workflow :: Executor</name>
-  <description>Dependencies for execution of a workflow without code generation</description>
-  <packaging>pom</packaging>
+  <artifactId>kogito-serverless-workflow-executor-service</artifactId>
+  <name>Kogito :: Serverless Workflow :: Executor:: Service</name>
+  <description>Classes for execution of a Java service within a workflow without code generation</description>
 
   <dependencies>
-     <dependency>
+    <dependency>
        <groupId>org.kie.kogito</groupId>
        <artifactId>kogito-serverless-workflow-executor-core</artifactId>
     </dependency>
     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-serverless-workflow-executor-rest</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-serverless-workflow-executor-service</artifactId>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
        <groupId>org.kie.kogito</groupId>
        <artifactId>kogito-serverless-workflow-fluent</artifactId>
+       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
    </dependencies>
 </project>

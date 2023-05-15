@@ -15,14 +15,10 @@
  */
 package org.kie.kogito.serverless.workflow.executor;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.jbpm.compiler.canonical.ReflectionUtils;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
@@ -35,7 +31,7 @@ import static org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler
 import static org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler.WORKITEM_OPERATION;
 import static org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler.WORKITEM_OPERATION_IMPL;
 
-public class StaticServiceWorkItemHandler extends WorkflowWorkItemHandler {
+public abstract class ServiceWorkItemHandler extends WorkflowWorkItemHandler {
 
     private static final Collection<String> keysToRemove = Set.of(SERVICE_IMPL_KEY, WORKITEM_OPERATION_IMPL, WORKITEM_INTERFACE_IMPL);
 
@@ -58,13 +54,7 @@ public class StaticServiceWorkItemHandler extends WorkflowWorkItemHandler {
         }
     }
 
-    private Object invoke(String className, String methodName, Object... parameters) throws ReflectiveOperationException {
-        Class<?> clazz = Class.forName(className);
-        Object instance = clazz.getConstructor().newInstance();
-        ClassLoader cls = Thread.currentThread().getContextClassLoader();
-        Method method = ReflectionUtils.getMethod(cls, clazz, methodName, Stream.of(parameters).map(Object::getClass).map(Class::getName).collect(Collectors.toList()));
-        return method.invoke(instance, parameters);
-    }
+    protected abstract Object invoke(String className, String methodName, Object... parameters) throws ReflectiveOperationException;
 
     @Override
     public String getName() {

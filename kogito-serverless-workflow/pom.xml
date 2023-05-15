@@ -26,6 +26,7 @@
     <module>kogito-serverless-workflow-runtime</module>
     <module>kogito-serverless-workflow-executor</module>
     <module>kogito-serverless-workflow-executor-core</module>
+    <module>kogito-serverless-workflow-executor-service</module>
     <module>kogito-serverless-workflow-executor-rest</module>
     <module>kogito-serverless-workflow-executor-grpc</module>
     <module>kogito-serverless-workflow-executor-tests</module>

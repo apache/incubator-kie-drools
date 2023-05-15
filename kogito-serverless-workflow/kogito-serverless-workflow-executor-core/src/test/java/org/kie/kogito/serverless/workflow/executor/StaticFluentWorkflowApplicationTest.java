@@ -139,24 +139,6 @@ public class StaticFluentWorkflowApplicationTest {
     }
 
     @Test
-    void testService() {
-        final String DOUBLE = "double";
-        final String PRODUCT = "product";
-        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            Workflow workflow = workflow("ServiceTest").function(java(DOUBLE, StaticFluentWorkflowApplicationTest.class.getName(), "duplicate"))
-                    .function(java(PRODUCT, StaticFluentWorkflowApplicationTest.class.getName(), "multiply"))
-                    .start(parallel()
-                            .newBranch().action(call(DOUBLE, ".one").outputFilter(".double")).endBranch()
-                            .newBranch().action(call(PRODUCT, jsonObject().put("one", ".one").put("two", ".two")).outputFilter(".product")).endBranch())
-                    .end().build();
-            Process<JsonNodeModel> process = application.process(workflow);
-            JsonNode result = application.execute(process, Map.of("one", 4, "two", 8)).getWorkflowdata();
-            assertThat(result.get("double").asInt()).isEqualTo(8);
-            assertThat(result.get("product").asInt()).isEqualTo(32);
-        }
-    }
-
-    @Test
     void testJava() {
         final String DOUBLE = "double";
         final String HALF = "half";
