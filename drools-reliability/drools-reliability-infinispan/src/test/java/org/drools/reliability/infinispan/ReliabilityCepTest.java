@@ -44,7 +44,7 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
             "end\n";
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
     void insertAdvanceInsertFailoverFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
         createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);

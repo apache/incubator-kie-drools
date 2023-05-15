@@ -29,7 +29,7 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
     }
 
     public enum SafepointStrategy {
-        ALWAYS, ON_FIRING, EXPLICIT;
+        ALWAYS, AFTER_FIRE, EXPLICIT;
 
         public boolean useSafepoints() {
             return this != ALWAYS;

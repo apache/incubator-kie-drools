@@ -66,7 +66,7 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
         super.endOperation(operationType);
         if (operationType == InternalOperationType.FIRE) {
             ((ReliableGlobalResolver) getGlobalResolver()).updateStorage();
-            if (getSessionConfiguration().getPersistedSessionOption().getSafepointStrategy() == PersistedSessionOption.SafepointStrategy.ON_FIRING) {
+            if (getSessionConfiguration().getPersistedSessionOption().getSafepointStrategy() == PersistedSessionOption.SafepointStrategy.AFTER_FIRE) {
                 safepoint();
             }
         }

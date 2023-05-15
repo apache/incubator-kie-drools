@@ -68,10 +68,18 @@ public abstract class ReliabilityTestBasics {
         return Stream.of(arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY));
     }
 
-    static Stream<Arguments> strategyProviderStoresOnlyWithSafepoints() {
+    static Stream<Arguments> strategyProviderStoresOnlyWithExplicitSafepoints() {
         return Stream.of(
                 arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.ALWAYS),
                 arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.EXPLICIT)
+        );
+    }
+
+    static Stream<Arguments> strategyProviderStoresOnlyWithAllSafepoints() {
+        return Stream.of(
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.ALWAYS),
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.EXPLICIT),
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.AFTER_FIRE)
         );
     }
 
