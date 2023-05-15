@@ -102,6 +102,8 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
 
     @Override
     public void safepoint() {
-        storage.flush();
+        if (storage.requiresFlush()) {
+            storage.flush();
+        }
     }
 }

@@ -29,7 +29,15 @@ public interface StorageManager {
         return getOrCreateStorageForSession(reteEvaluator, reteEvaluator.getSessionConfiguration().getPersistedSessionOption().getSafepointStrategy(), storageName);
     }
 
-    <K, V> Storage<K, V> getOrCreateStorageForSession(ReteEvaluator reteEvaluator, PersistedSessionOption.SafepointStrategy safepointStrategy, String storageName);
+    default <K, V> Storage<K, V> getOrCreateStorageForSession(ReteEvaluator reteEvaluator, PersistedSessionOption.SafepointStrategy safepointStrategy, String storageName) {
+        Storage<K, V> storage = internalGetOrCreateStorageForSession(reteEvaluator, storageName);
+        if (safepointStrategy.useSafepoints()) {
+            storage = new BatchingStorageDecorator<>(storage);
+        }
+        return storage;
+    }
+
+    <K, V> Storage<K, V> internalGetOrCreateStorageForSession(ReteEvaluator reteEvaluator, String storageName);
 
     <K, V> Storage<K, V> getOrCreateSharedStorage(String storageName);
 

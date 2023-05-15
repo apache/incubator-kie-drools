@@ -99,15 +99,15 @@ public class RemoteStorageManager implements InfinispanStorageManager {
     }
 
     @Override
-    public <k, V> Storage<k, V> getOrCreateStorageForSession(ReteEvaluator reteEvaluator, PersistedSessionOption.SafepointStrategy safepointStrategy, String cacheName) {
+    public <k, V> Storage<k, V> internalGetOrCreateStorageForSession(ReteEvaluator reteEvaluator, String cacheName) {
         RemoteCache<k, V> cache = remoteCacheManager.administration().getOrCreateCache(createStorageId(reteEvaluator, cacheName), (String) null);
-        return InfinispanStorage.fromCache(cache, safepointStrategy);
+        return InfinispanStorage.fromCache(cache);
     }
 
     @Override
     public <k, V> Storage<k, V> getOrCreateSharedStorage(String cacheName) {
         RemoteCache<k, V> cache = remoteCacheManager.administration().getOrCreateCache(SHARED_STORAGE_PREFIX + cacheName, (String) null);
-        return InfinispanStorage.fromCache(cache, PersistedSessionOption.SafepointStrategy.ALWAYS);
+        return InfinispanStorage.fromCache(cache);
     }
 
     @Override

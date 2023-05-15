@@ -49,7 +49,13 @@ public interface Storage<K, V> {
 
     V getOrDefault(K key, V value);
 
-    default void flush() { }
+    default boolean requiresFlush() {
+        return false;
+    }
+
+    default void flush() {
+        throw new UnsupportedOperationException();
+    }
 
     static <K, V> Storage<K,V> fromMap(Map<K, V> input) {
         return new MapStorage<>(input);

@@ -23,9 +23,9 @@ public class BatchingStorageDecorator<K, V> implements Storage<K, V> {
 
     private final Storage<K, V> storage;
 
-    private Map<K, V> batchingMap = new HashMap<>();
+    private final Map<K, V> batchingMap = new HashMap<>();
 
-    private Set<K> batchingRemoveSet = new HashSet<>();
+    private final Set<K> batchingRemoveSet = new HashSet<>();
 
 
     public BatchingStorageDecorator(Storage<K, V> storage) {
@@ -104,6 +104,11 @@ public class BatchingStorageDecorator<K, V> implements Storage<K, V> {
     @Override
     public boolean isEmpty() {
         return size() == 0;
+    }
+
+    @Override
+    public boolean requiresFlush() {
+        return true;
     }
 
     @Override
