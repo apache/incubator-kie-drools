@@ -232,8 +232,7 @@ pipeline {
 
         stage('Push a temporary operator image to a registry') {
             when {
-                // TODO: switch to 9 when the operator is migrated to Quarkus 3
-                expression { return isRelease() && isStream8() }
+                expression { return isRelease() }
             }
             steps {
                 script {

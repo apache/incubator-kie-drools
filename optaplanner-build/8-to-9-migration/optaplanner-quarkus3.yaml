@@ -16,6 +16,9 @@ recipeList:
       key: version.io.quarkus
       newValue: 3.0.0.Final
   - org.openrewrite.maven.ChangePropertyValue:
+      key: version.io.quarkus.override
+      newValue: 3.0.0.Final
+  - org.openrewrite.maven.ChangePropertyValue:
       key: version.org.slf4j
       newValue: 2.0.6
   - org.openrewrite.maven.ChangePropertyValue:
@@ -27,6 +30,10 @@ recipeList:
   - org.openrewrite.maven.RemoveDependency:
       groupId: org.hibernate
       artifactId: hibernate-core
+  - org.openrewrite.maven.UpgradeDependencyVersion:
+      groupId: io.quarkiverse.operatorsdk
+      artifactId: quarkus-operator-sdk
+      newVersion: 6.0.x
   - io.quarkus.openrewrite.Quarkus3
   - org.optaplanner.migration.jakarta.JakartaJsonMigrationRecipe
   - org.openrewrite.maven.ChangePropertyValue:
