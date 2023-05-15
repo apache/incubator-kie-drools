@@ -1,0 +1,472 @@
+commit b3519544891e7c4326d462661d471680c654be5e
+Author: radtriste <radtriste@jenkins.redhat>
+Date:   Fri May 5 14:12:51 2023 +0200
+
+    Set back Quarkus documentation (revert #2973)
+
+diff --git a/README.md b/README.md
+index 74ac93ca1e..a39979cd21 100644
+--- a/README.md
++++ b/README.md
+@@ -35,7 +35,7 @@ The official guides for Kogito can be found at our main website, these include g
+ If you want to read more about Quarkus:
+ 
+ - [Quarkus - Getting Started](https://quarkus.io/get-started/) - Quarkus Getting Started guide
+-- [Quarkus - Using Kogito to add business automation capabilities to an application](https://quarkus.io/version/2.13/guides/kogito) - A simple quick start hosted on the Quarkus web site.
++- [Quarkus - Using Kogito to add business automation capabilities to an application](https://quarkus.io/guides/kogito) - A simple quick start hosted on the Quarkus web site.
+ 
+ ## Building and Contributing to Kogito
+ All contributions are welcome! Before you start please read the [contribution guide](CONTRIBUTING.md).
+diff --git a/quarkus/addons/events/decisions/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/events/decisions/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 38ca9fdcd2..a707c2be80 100644
+--- a/quarkus/addons/events/decisions/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/events/decisions/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+     - decisions
+     - DMN
+     - Kafka
+-  guide: https://quarkus.io/version/2.13/guides/kogito-dmn
++  guide: https://quarkus.io/guides/kogito-dmn
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/events/mongodb/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/events/mongodb/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 2aa143b5af..9c32f218dc 100644
+--- a/quarkus/addons/events/mongodb/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/events/mongodb/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -7,6 +7,6 @@ metadata:
+     - mongodb
+     - events
+     - process
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/events/predictions/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/events/predictions/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 4ed47b5281..9d43a12fa9 100644
+--- a/quarkus/addons/events/predictions/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/events/predictions/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+     - predictions
+     - PMML
+     - Kafka
+-  guide: https://quarkus.io/version/2.13/guides/kogito-pmml
++  guide: https://quarkus.io/guides/kogito-pmml
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/events/process/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/events/process/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 82c3537442..3d53e9b605 100644
+--- a/quarkus/addons/events/process/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/events/process/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -7,6 +7,6 @@ metadata:
+     - process
+     - events
+   # TODO: add process guide
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/events/rules/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/events/rules/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index f7cbb9e5cf..566da45d4c 100644
+--- a/quarkus/addons/events/rules/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/events/rules/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -7,6 +7,6 @@ metadata:
+     - drools
+     - DRL
+     - Kafka
+-  guide: https://quarkus.io/version/2.13/guides/kogito-drl
++  guide: https://quarkus.io/guides/kogito-drl
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/explainability/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/explainability/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 5589f87b7e..f1125e0897 100644
+--- a/quarkus/addons/explainability/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/explainability/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,7 +6,7 @@ metadata:
+     - decisions
+     - dmn
+     - explainability
+-  guide: https://quarkus.io/version/2.13/guides/kogito-dmn
++  guide: https://quarkus.io/guides/kogito-dmn
+   categories:
+     - "business-automation"
+   unlisted: true
+diff --git a/quarkus/addons/jobs/knative-eventing/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/jobs/knative-eventing/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index fa673e00f8..b94387f587 100644
+--- a/quarkus/addons/jobs/knative-eventing/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/jobs/knative-eventing/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -7,6 +7,6 @@ metadata:
+     - bpmn
+     - jobs
+   # TODO: add processes guide
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/jobs/management/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/jobs/management/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index e086c75906..2549c1e5d4 100644
+--- a/quarkus/addons/jobs/management/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/jobs/management/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -7,6 +7,6 @@ metadata:
+     - bpmn
+     - jobs
+   # TODO: add processes guide
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/jobs/messaging/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/jobs/messaging/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index e4c37bec6a..a51ad525b9 100644
+--- a/quarkus/addons/jobs/messaging/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/jobs/messaging/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -7,6 +7,6 @@ metadata:
+     - bpmn
+     - jobs
+   # TODO: add processes guide
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/knative/eventing/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/knative/eventing/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 3568220622..ef91bfd215 100644
+--- a/quarkus/addons/knative/eventing/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/knative/eventing/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -13,6 +13,6 @@ metadata:
+     - eventing
+     - cloudevents
+   # TODO: add processes guide
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/kubernetes/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/kubernetes/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 56f1de9447..c4387cdc80 100644
+--- a/quarkus/addons/kubernetes/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/kubernetes/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -5,6 +5,6 @@ metadata:
+     - kogito
+     - kubernetes
+     - knative
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/mail/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/mail/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 7d5f6724db..3a84bf3876 100644
+--- a/quarkus/addons/mail/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/mail/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -9,6 +9,6 @@ metadata:
+     - tasks
+     - notification
+   # TODO: add processes guide
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/messaging/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/messaging/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 87ceed4e06..4c92f9ea2f 100644
+--- a/quarkus/addons/messaging/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/messaging/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -8,6 +8,6 @@ metadata:
+     - cloudevents
+     - bpmn
+   # TODO: add processes guide
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/monitoring/elastic/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/monitoring/elastic/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 466a06b039..e8eec39aa3 100644
+--- a/quarkus/addons/monitoring/elastic/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/monitoring/elastic/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -5,6 +5,6 @@ metadata:
+     - kogito
+     - elasticsearch
+     - monitoring
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/monitoring/prometheus/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/monitoring/prometheus/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index fc173e7579..2616e19b03 100644
+--- a/quarkus/addons/monitoring/prometheus/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/monitoring/prometheus/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -5,6 +5,6 @@ metadata:
+     - kogito
+     - prometheus
+     - monitoring
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/persistence/filesystem/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/persistence/filesystem/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index f89e506432..76f231f55b 100644
+--- a/quarkus/addons/persistence/filesystem/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/persistence/filesystem/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+     - persistence
+     - filesystem
+     - process
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/persistence/infinispan/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/persistence/infinispan/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 1443b30951..99613f5f90 100644
+--- a/quarkus/addons/persistence/infinispan/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/persistence/infinispan/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+     - persistence
+     - infinispan
+     - process
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/persistence/jdbc/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/persistence/jdbc/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 2de320e5e9..6dab3070a5 100644
+--- a/quarkus/addons/persistence/jdbc/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/persistence/jdbc/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+     - persistence
+     - jdbc
+     - process
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/persistence/kafka/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/persistence/kafka/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 626e8f9668..b5f7249aef 100644
+--- a/quarkus/addons/persistence/kafka/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/persistence/kafka/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+     - persistence
+     - kafka
+     - process
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/persistence/mongodb/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/persistence/mongodb/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 737b1cb4ca..8e4ea6d493 100644
+--- a/quarkus/addons/persistence/mongodb/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/persistence/mongodb/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+     - persistence
+     - mongodb
+     - process
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/persistence/postgresql/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/persistence/postgresql/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 883f0fd05a..a8faf4cff2 100644
+--- a/quarkus/addons/persistence/postgresql/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/persistence/postgresql/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+     - persistence
+     - postgresql
+     - process
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/persistence/rocksdb/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/persistence/rocksdb/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 30d57c1aa6..cece71a619 100644
+--- a/quarkus/addons/persistence/rocksdb/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/persistence/rocksdb/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+     - persistence
+     - rocksdb
+     - process
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/process-management/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/process-management/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index b760274e7b..8751a13242 100644
+--- a/quarkus/addons/process-management/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/process-management/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -5,6 +5,6 @@ metadata:
+     - kogito
+     - process
+     - management
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/process-svg/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/process-svg/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 033c2fada9..fa6cdea31e 100644
+--- a/quarkus/addons/process-svg/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/process-svg/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -5,6 +5,6 @@ metadata:
+     - kogito
+     - process
+     - svg
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/task-management/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/task-management/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 42902eaadb..fcfcadf73f 100644
+--- a/quarkus/addons/task-management/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/task-management/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -5,6 +5,6 @@ metadata:
+     - kogito
+     - process
+     - task
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/task-notification/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/task-notification/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index 38b9c63f92..6aa5870708 100644
+--- a/quarkus/addons/task-notification/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/task-notification/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -7,6 +7,6 @@ metadata:
+     - task
+     - notification
+     - BPMN
+-  guide: https://quarkus.io/version/2.13/guides/kogito
++  guide: https://quarkus.io/guides/kogito
+   categories:
+     - "business-automation"
+diff --git a/quarkus/addons/tracing-decision/runtime/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/addons/tracing-decision/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+index bf3df66a72..a74b38409f 100644
+--- a/quarkus/addons/tracing-decision/runtime/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/addons/tracing-decision/runtime/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+     - decisions
+     - dmn
+     - tracing
+-  guide: https://quarkus.io/version/2.13/guides/kogito-dmn
++  guide: https://quarkus.io/guides/kogito-dmn
+   categories:
+     - "business-automation"
+diff --git a/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/codestarts/quarkus/kogito-dmn-codestart/base/README.tpl.qute.md b/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/codestarts/quarkus/kogito-dmn-codestart/base/README.tpl.qute.md
+index 277cfe3139..55f69a9b87 100644
+--- a/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/codestarts/quarkus/kogito-dmn-codestart/base/README.tpl.qute.md
++++ b/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/codestarts/quarkus/kogito-dmn-codestart/base/README.tpl.qute.md
+@@ -1,7 +1,7 @@
+ {#include readme-header /}
+ 
+-This Kogito DMN Quarkus codestart contains a sample DMN model as described in the [Quarkus Kogito DMN guide](https://quarkus.io/version/2.13/guides/kogito-dmn).
++This Kogito DMN Quarkus codestart contains a sample DMN model as described in the [Quarkus Kogito DMN guide](https://quarkus.io/guides/kogito-dmn).
+ The goal is to showcase automatic REST endpoint codegen, based on the content of the model.
+ The `pricing.dmn` DMN model calculates a base price quotation based on some criteria provided as input.
+ 
+-You can reference the [full guide on the Quarkus website](https://quarkus.io/version/2.13/guides/kogito-dmn).
++You can reference the [full guide on the Quarkus website](https://quarkus.io/guides/kogito-dmn).
+diff --git a/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/codestarts/quarkus/kogito-dmn-codestart/codestart.yml b/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/codestarts/quarkus/kogito-dmn-codestart/codestart.yml
+index 73c1a99e25..09301522e6 100644
+--- a/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/codestarts/quarkus/kogito-dmn-codestart/codestart.yml
++++ b/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/codestarts/quarkus/kogito-dmn-codestart/codestart.yml
+@@ -5,7 +5,7 @@ tags: extension-codestart
+ metadata:
+   title: Kogito DMN codestart
+   description: This is an example Kogito DMN Quarkus codestart, it contains a sample DMN model for REST code generation based on the model definition.
+-  related-guide-section: https://quarkus.io/version/2.13/guides/kogito-dmn
++  related-guide-section: https://quarkus.io/guides/kogito-dmn
+ language:
+   base:
+     test-dependencies:
+diff --git a/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/resources/META-INF/quarkus-extension.yaml
+index 05050ca2be..b6233ee55d 100644
+--- a/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,7 +6,7 @@ metadata:
+   - "drools"
+   - "decisions"
+   - "DMN"
+-  guide: "https://quarkus.io/version/2.13/guides/kogito-dmn"
++  guide: "https://quarkus.io/guides/kogito-dmn"
+   categories:
+   - "business-automation"
+   codestart:
+diff --git a/quarkus/extensions/kogito-quarkus-extension/kogito-quarkus/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/extensions/kogito-quarkus-extension/kogito-quarkus/src/main/resources/META-INF/quarkus-extension.yaml
+index 859eb73178..9d624d3cec 100644
+--- a/quarkus/extensions/kogito-quarkus-extension/kogito-quarkus/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/extensions/kogito-quarkus-extension/kogito-quarkus/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -9,6 +9,6 @@ metadata:
+   - "rules"
+   - "decisions"
+   - "DMN"
+-  guide: "https://quarkus.io/version/2.13/guides/kogito"
++  guide: "https://quarkus.io/guides/kogito"
+   categories:
+   - "business-automation"
+diff --git a/quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions/src/main/resources/META-INF/quarkus-extension.yaml
+index 79c04c828c..ca859c2d86 100644
+--- a/quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+   - "drools"
+   - "predictions"
+   - "PMML"
+-  guide: "https://quarkus.io/version/2.13/guides/kogito-pmml"
++  guide: "https://quarkus.io/guides/kogito-pmml"
+   categories:
+   - "business-automation"
+diff --git a/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes/src/main/resources/META-INF/quarkus-extension.yaml
+index 1f00fdbee7..7eff6432ac 100644
+--- a/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -8,6 +8,6 @@ metadata:
+   - "bpm"
+   - "bpmn"
+   - "BPMN2"
+-  guide: "https://quarkus.io/version/2.13/guides/kogito"
++  guide: "https://quarkus.io/guides/kogito"
+   categories:
+   - "business-automation"
+diff --git a/quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules/src/main/resources/META-INF/quarkus-extension.yaml
+index 367c188841..9e2c2fd18b 100644
+--- a/quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -6,6 +6,6 @@ metadata:
+   - "drools"
+   - "rules"
+   - "DRL"
+-  guide: "https://quarkus.io/version/2.13/guides/kogito-drl"
++  guide: "https://quarkus.io/guides/kogito-drl"
+   categories:
+   - "business-automation"
+diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/codestarts/quarkus/kogito-serverless-workflow-codestart/base/README.tpl.qute.md b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/codestarts/quarkus/kogito-serverless-workflow-codestart/base/README.tpl.qute.md
+index 5a6afd82f9..f15cc96ff3 100644
+--- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/codestarts/quarkus/kogito-serverless-workflow-codestart/base/README.tpl.qute.md
++++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/codestarts/quarkus/kogito-serverless-workflow-codestart/base/README.tpl.qute.md
+@@ -1,7 +1,7 @@
+ {#include readme-header /}
+ 
+-This Kogito Serverless Workflow project contains a sample workflow definition as described in the [Quarkus Kogito guide](https://quarkus.io/version/2.13/guides/kogito).
++This Kogito Serverless Workflow project contains a sample workflow definition as described in the [Quarkus Kogito guide](https://quarkus.io/guides/kogito).
+ The goal is to showcase automatic REST endpoint codegen, based on the content of the model.
+ The `greet.sw.json` workflow will greet users in different languages based on the input.
+ 
+-You can reference the [full guide on the Quarkus website](https://quarkus.io/version/2.13/guides/kogito).
++You can reference the [full guide on the Quarkus website](https://quarkus.io/guides/kogito).
+diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/codestarts/quarkus/kogito-serverless-workflow-codestart/codestart.yml b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/codestarts/quarkus/kogito-serverless-workflow-codestart/codestart.yml
+index e8678aaeb2..774a2e2237 100644
+--- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/codestarts/quarkus/kogito-serverless-workflow-codestart/codestart.yml
++++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/codestarts/quarkus/kogito-serverless-workflow-codestart/codestart.yml
+@@ -5,7 +5,7 @@ tags: extension-codestart
+ metadata:
+   title: Kogito Serverless Workflow codestart
+   description: This is an example Kogito Serverless Workflow Quarkus codestart, it contains a sample Serverless Workflow definition for REST code generation.
+-  related-guide-section: https://quarkus.io/version/2.13/guides/kogito
++  related-guide-section: https://quarkus.io/guides/kogito
+ language:
+   base:
+     dependencies:
+diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/resources/META-INF/quarkus-extension.yaml b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/resources/META-INF/quarkus-extension.yaml
+index 1fa30d99a1..d0ae242db9 100644
+--- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/resources/META-INF/quarkus-extension.yaml
++++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/resources/META-INF/quarkus-extension.yaml
+@@ -7,7 +7,7 @@ metadata:
+     - "serverless"
+     - "workflow"
+     - "SW"
+-  guide: "https://quarkus.io/version/2.13/guides/kogito"
++  guide: "https://quarkus.io/guides/kogito"
+   categories:
+     - "business-automation"
+   status: "preview"

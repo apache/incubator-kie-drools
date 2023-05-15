@@ -13,6 +13,6 @@ metadata:
     - eventing
     - cloudevents
   # TODO: add processes guide
-  guide: https://quarkus.io/guides/kogito
+  guide: https://quarkus.io/version/2.13/guides/kogito
   categories:
     - "business-automation"
