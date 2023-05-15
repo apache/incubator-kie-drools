@@ -42,6 +42,11 @@ public class MapStorage<K, V> implements Storage<K, V> {
     }
 
     @Override
+    public void putAll(Map<? extends K, ? extends V> otherMap) {
+        map.putAll(otherMap);
+    }
+
+    @Override
     public boolean containsKey(K key) {
         return map.containsKey(key);
     }

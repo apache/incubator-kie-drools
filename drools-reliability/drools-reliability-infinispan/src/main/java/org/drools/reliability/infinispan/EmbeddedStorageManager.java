@@ -15,12 +15,10 @@
 
 package org.drools.reliability.infinispan;
 
-import java.nio.file.Paths;
-import java.util.Set;
-
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.Storage;
 import org.drools.util.FileUtils;
+import org.infinispan.Cache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.commons.marshall.JavaSerializationMarshaller;
 import org.infinispan.configuration.cache.CacheMode;
@@ -29,8 +27,12 @@ import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.globalstate.ConfigurationStorage;
 import org.infinispan.manager.DefaultCacheManager;
+import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.file.Paths;
+import java.util.Set;
 
 import static org.drools.reliability.core.StorageManager.createStorageId;
 import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.DELIMITER;
@@ -90,13 +92,15 @@ public class EmbeddedStorageManager implements InfinispanStorageManager {
     }
 
     @Override
-    public <k, V> Storage<k, V> getOrCreateStorageForSession(ReteEvaluator reteEvaluator, String cacheName) {
-        return InfinispanStorage.fromCache(embeddedCacheManager.administration().getOrCreateCache(createStorageId(reteEvaluator, cacheName), cacheConfiguration));
+    public <k, V> Storage<k, V> internalGetOrCreateStorageForSession(ReteEvaluator reteEvaluator, String cacheName) {
+        Cache<k, V> cache = embeddedCacheManager.administration().getOrCreateCache(createStorageId(reteEvaluator, cacheName), cacheConfiguration);
+        return InfinispanStorage.fromCache(cache);
     }
 
     @Override
     public <k, V> Storage<k, V> getOrCreateSharedStorage(String cacheName) {
-        return InfinispanStorage.fromCache(embeddedCacheManager.administration().getOrCreateCache(SHARED_STORAGE_PREFIX + cacheName, cacheConfiguration));
+        Cache<k, V> cache = embeddedCacheManager.administration().getOrCreateCache(SHARED_STORAGE_PREFIX + cacheName, cacheConfiguration);
+        return InfinispanStorage.fromCache(cache);
     }
 
     @Override

@@ -45,7 +45,7 @@ public class ReliabilityTestUpdateInDrl extends ReliabilityTestBasics {
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
-    void updateInRHS_insertFireFailoverFire_shouldMatchUpdatesFromFirstSession(PersistedSessionOption.Strategy strategy){
+    void updateInRHS_insertFireFailoverFire_shouldMatchUpdatesFromFirstSession(PersistedSessionOption.PersistenceStrategy strategy){
 
         createSession(RULE_UPDATE, strategy);
 

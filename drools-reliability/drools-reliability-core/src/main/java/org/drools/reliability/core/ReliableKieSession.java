@@ -15,20 +15,8 @@
 
 package org.drools.reliability.core;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.ObjectStore;
+import org.kie.api.runtime.KieSession;
 
-import java.util.List;
-
-public interface SimpleReliableObjectStore extends ObjectStore {
-
-    List<StoredObject> reInit(InternalWorkingMemory session, InternalWorkingMemoryEntryPoint ep);
-
-    void putIntoPersistedStorage(InternalFactHandle handle, boolean propagated);
-
-    void removeFromPersistedStorage(Object object);
-
+public interface ReliableKieSession extends KieSession {
     void safepoint();
 }

@@ -19,13 +19,14 @@ import org.drools.core.common.Storage;
 import org.infinispan.commons.api.BasicCache;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 public class InfinispanStorage<K, V> implements Storage<K, V> {
 
-    BasicCache<K, V> cache;
+    private BasicCache<K, V> cache;
 
-    public static <K1, V1> InfinispanStorage<K1, V1> fromCache(BasicCache<K1, V1> cache) {
+    public static <K1, V1> Storage<K1, V1> fromCache(BasicCache<K1, V1> cache) {
         return new InfinispanStorage<>(cache);
     }
 
@@ -46,6 +47,11 @@ public class InfinispanStorage<K, V> implements Storage<K, V> {
     @Override
     public V put(K key, V value) {
         return cache.put(key, value);
+    }
+
+    @Override
+    public void putAll(Map<? extends K, ? extends V> otherMap) {
+        cache.putAll(otherMap);
     }
 
     @Override

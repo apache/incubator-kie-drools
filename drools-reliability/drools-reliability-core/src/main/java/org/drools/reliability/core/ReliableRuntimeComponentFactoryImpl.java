@@ -84,7 +84,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         if (!reteEvaluator.getSessionConfiguration().hasPersistedSessionOption()) {
             return super.createGlobalResolver(reteEvaluator, environment);
         }
-        return new ReliableGlobalResolver(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, "globals"));
+        return new ReliableGlobalResolver(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, PersistedSessionOption.SafepointStrategy.ALWAYS, "globals"));
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         if (!reteEvaluator.getSessionConfiguration().hasPersistedSessionOption()) {
             return super.createTimerService(reteEvaluator);
         }
-        return new ReliablePseudoClockScheduler(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, "timer"));
+        return new ReliablePseudoClockScheduler(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, PersistedSessionOption.SafepointStrategy.ALWAYS, "timer"));
     }
 
     private InternalWorkingMemory internalInitSession(InternalKnowledgeBase kbase, SessionConfiguration sessionConfig, InternalWorkingMemory session) {
@@ -104,7 +104,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
 
     @Override
     public AgendaFactory getAgendaFactory(SessionConfiguration sessionConfig) {
-        if (!sessionConfig.hasPersistedSessionOption() || sessionConfig.getPersistedSessionOption().getStrategy() == PersistedSessionOption.Strategy.STORES_ONLY) {
+        if (!sessionConfig.hasPersistedSessionOption() || sessionConfig.getPersistedSessionOption().getPersistenceStrategy() == PersistedSessionOption.PersistenceStrategy.STORES_ONLY) {
             return super.getAgendaFactory(sessionConfig);
         }
         return agendaFactory;

@@ -15,8 +15,6 @@
 
 package org.drools.reliability.infinispan.proto;
 
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Storage;
 import org.drools.reliability.core.SimpleSerializationReliableObjectStore;
 import org.drools.reliability.core.StoredObject;
@@ -28,11 +26,12 @@ public class SimpleProtoStreamReliableObjectStore extends SimpleSerializationRel
     }
 
     @Override
-    public void putIntoPersistedStorage(InternalFactHandle handle, boolean propagated) {
-        Object object = handle.getObject();
-        StoredObject storedObject = handle.isEvent() ?
-                new ProtoStreamStoredObject(object, reInitPropagated || propagated, ((EventFactHandle) handle).getStartTimestamp(), ((EventFactHandle) handle).getDuration()) :
-                new ProtoStreamStoredObject(object, reInitPropagated || propagated);
-        storage.put(getHandleForObject(object).getId(), storedObject);
+    protected StoredObject createStoredObject(boolean propagated, Object object) {
+        return new ProtoStreamStoredObject(object, propagated);
+    }
+
+    @Override
+    protected StoredObject createStoredObject(boolean propagated, Object object, long timestamp, long duration) {
+        return new ProtoStreamStoredObject(object, propagated, timestamp, duration);
     }
 }

@@ -15,6 +15,7 @@
 
 package org.drools.reliability.infinispan;
 
+import org.drools.reliability.core.ReliableKieSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -54,9 +55,9 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
-    void insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.Strategy strategy) {
-        createSession(BASIC_RULE, strategy);
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+        createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
 		insertString("M");
 		insertMatchingPerson("Matching Person One", 37);
@@ -65,7 +66,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
         //-- ksession and kbase are lost. CacheManager is recreated. Client knows only "id"
         failover();
 
-        restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
 		insertNonMatchingPerson("Toshiya", 35);
         insertMatchingPerson("Matching Person Two", 40);
@@ -77,15 +78,18 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly") // With Remote, FULL fails with "ReliablePropagationList; no valid constructor" even without failover
-    void noFailover(PersistedSessionOption.Strategy strategy) {
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // With Remote, FULL fails with "ReliablePropagationList; no valid constructor" even without failover
+    void noFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
-        createSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
 		insertString("M");
 		insertMatchingPerson("Matching Person One", 37);
 
-        restoreSession(BASIC_RULE, strategy);
+        if (safepointStrategy == PersistedSessionOption.SafepointStrategy.EXPLICIT) {
+            ((ReliableKieSession) session).safepoint();
+        }
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
 		insertNonMatchingPerson("Toshiya", 41);
 		insertMatchingPerson("Matching Person Two", 40);
@@ -97,10 +101,10 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
-    void insertFireInsertFailoverInsertFire_shouldMatchFactInsertedBeforeFailover(PersistedSessionOption.Strategy strategy) {
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void insertFireInsertFailoverInsertFire_shouldMatchFactInsertedBeforeFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
-        createSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
 		insertString("M");
 		insertMatchingPerson("Matching Person One", 37);
@@ -111,7 +115,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         failover();
 
-        restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
         clearResults();
 
         insertNonMatchingPerson("Toshiya", 35);
@@ -123,9 +127,9 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
-    void insertFireFailoverInsertFire_shouldNotRepeatFiredMatch(PersistedSessionOption.Strategy strategy) {
-        createSession(BASIC_RULE, strategy);
+    @MethodSource("strategyProviderStoresOnlyWithAllSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void insertFireFailoverInsertFire_shouldNotRepeatFiredMatch(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+        createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
 		insertString("M");
 		insertMatchingPerson("Matching Person One", 37);
@@ -134,7 +138,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         failover();
 
-        restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
         insertNonMatchingPerson("Toshiya", 35);
 		insertMatchingPerson("Matching Person Two", 40);
@@ -145,10 +149,10 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
-    void updateBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.Strategy strategy) {
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void updateBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
-        createSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
         insertString("M");
         Person p1 = new Person("Mario", 49);
@@ -165,13 +169,13 @@ class ReliabilityTest extends ReliabilityTestBasics {
         session.update(fh2, p2);
 
         failover();
-        restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
         assertThat(session.fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder("Mario", "MegaToshiya");
 
         failover();
-        restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
         clearResults();
 
         assertThat(session.fireAllRules()).isEqualTo(0);
@@ -179,10 +183,10 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly") // FULL fails with "ReliablePropagationList; no valid constructor"
-    void deleteBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.Strategy strategy) {
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void deleteBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
-        createSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
         FactHandle fhString = insertString("M");
         insertMatchingPerson("Matching Person One",37);
@@ -194,7 +198,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
         session.delete(fhString);
 
         failover();
-        restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
         clearResults();
 
         insertMatchingPerson("Matching Person Two",40);
@@ -205,17 +209,17 @@ class ReliabilityTest extends ReliabilityTestBasics {
         insertString("T");
 
         failover();
-        restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
         assertThat(session.fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder("Toshiya");
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly")
-    void updateByObjectBeforeFailover_shouldMatchUpdatedFact(PersistedSessionOption.Strategy strategy){
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
+    void updateByObjectBeforeFailover_shouldMatchUpdatedFact(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy){
 
-        createSession(BASIC_RULE, strategy);
+        createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
         insertString("M");
         insertMatchingPerson("Mark", 37);
@@ -227,7 +231,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         failover();
 
-        restoreSession(BASIC_RULE, strategy);
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
         assertThat(session.fireAllRules()).isEqualTo(1);
 

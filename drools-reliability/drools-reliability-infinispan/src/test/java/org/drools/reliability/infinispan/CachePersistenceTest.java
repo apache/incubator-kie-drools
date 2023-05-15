@@ -45,7 +45,7 @@ class CachePersistenceTest extends ReliabilityTestBasics {
     @DisabledOnOs(OS.WINDOWS) // temporarily disabled until DROOLS-7393 is fixed
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
-    void removeAllSessionCaches_shouldRemoveAllSessionCachesEvenAfterFailover(PersistedSessionOption.Strategy strategy) {
+    void removeAllSessionCaches_shouldRemoveAllSessionCachesEvenAfterFailover(PersistedSessionOption.PersistenceStrategy strategy) {
         createSession(EMPTY_RULE, strategy); // savedSessionId = 0, sessionId = 0
         insertNonMatchingPerson("Toshiya", 10);
 
@@ -63,7 +63,7 @@ class CachePersistenceTest extends ReliabilityTestBasics {
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
-    void ksessionDispose_shouldRemoveCache(PersistedSessionOption.Strategy strategy){
+    void ksessionDispose_shouldRemoveCache(PersistedSessionOption.PersistenceStrategy strategy){
 
         createSession(EMPTY_RULE, strategy); // sessionId = 0. This creates session_0_epDEFAULT and session_0_globals
 
@@ -76,7 +76,7 @@ class CachePersistenceTest extends ReliabilityTestBasics {
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
-    void missingDispose_shouldNotReuseOrphanedCache(PersistedSessionOption.Strategy strategy) {
+    void missingDispose_shouldNotReuseOrphanedCache(PersistedSessionOption.PersistenceStrategy strategy) {
         createSession(EMPTY_RULE, strategy); // sessionId = 0
         insertNonMatchingPerson("Toshiya", 10);
 
@@ -98,7 +98,7 @@ class CachePersistenceTest extends ReliabilityTestBasics {
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
-    void reliableSessionCounter_shouldNotHaveTheSameIdAsPreviousKsession(PersistedSessionOption.Strategy strategy) {
+    void reliableSessionCounter_shouldNotHaveTheSameIdAsPreviousKsession(PersistedSessionOption.PersistenceStrategy strategy) {
         createSession(EMPTY_RULE, strategy); // new session. sessionId = 0
         long firstSessionId = session.getIdentifier();
 

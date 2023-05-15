@@ -17,12 +17,14 @@ package org.drools.reliability.infinispan;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.Storage;
+import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.commons.marshall.JavaSerializationMarshaller;
 import org.infinispan.commons.marshall.ProtoStreamMarshaller;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.protostream.SerializationContext;
 import org.infinispan.protostream.SerializationContextInitializer;
+import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,13 +99,15 @@ public class RemoteStorageManager implements InfinispanStorageManager {
     }
 
     @Override
-    public <k, V> Storage<k, V> getOrCreateStorageForSession(ReteEvaluator reteEvaluator, String cacheName) {
-        return InfinispanStorage.fromCache(remoteCacheManager.administration().getOrCreateCache(createStorageId(reteEvaluator, cacheName), (String) null));
+    public <k, V> Storage<k, V> internalGetOrCreateStorageForSession(ReteEvaluator reteEvaluator, String cacheName) {
+        RemoteCache<k, V> cache = remoteCacheManager.administration().getOrCreateCache(createStorageId(reteEvaluator, cacheName), (String) null);
+        return InfinispanStorage.fromCache(cache);
     }
 
     @Override
     public <k, V> Storage<k, V> getOrCreateSharedStorage(String cacheName) {
-        return InfinispanStorage.fromCache(remoteCacheManager.administration().getOrCreateCache(SHARED_STORAGE_PREFIX + cacheName, (String) null));
+        RemoteCache<k, V> cache = remoteCacheManager.administration().getOrCreateCache(SHARED_STORAGE_PREFIX + cacheName, (String) null);
+        return InfinispanStorage.fromCache(cache);
     }
 
     @Override
