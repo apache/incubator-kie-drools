@@ -69,6 +69,42 @@ public class ConstraintParserTest {
     }
 
     @Test
+    public void testNullSafeExpressionsWithIn() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "address!.city in (\"Milan\", \"Tokyo\")");
+
+        List<Expression> nullSafeExpressions = result.getNullSafeExpressions();
+        assertThat(nullSafeExpressions).hasSize(1);
+        assertThat(nullSafeExpressions.get(0).toString()).isEqualTo("_this.getAddress() != null");
+
+        // null check is done after the first constraint
+        assertThat(result.getExpr().toString()).isEqualTo("D.eval(org.drools.model.operators.InOperator.INSTANCE, _this.getAddress().getCity(), \"Milan\", \"Tokyo\")");
+    }
+
+    @Test
+    public void testNullSafeExpressionsWithNotIn() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "address!.city not in (\"Milan\", \"Tokyo\")");
+
+        List<Expression> nullSafeExpressions = result.getNullSafeExpressions();
+        assertThat(nullSafeExpressions).hasSize(1);
+        assertThat(nullSafeExpressions.get(0).toString()).isEqualTo("_this.getAddress() != null");
+
+        // null check is done after the first constraint
+        assertThat(result.getExpr().toString()).isEqualTo("!D.eval(org.drools.model.operators.InOperator.INSTANCE, _this.getAddress().getCity(), \"Milan\", \"Tokyo\")");
+    }
+
+    @Test
+    public void testNullSafeExpressionsWithContains() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "address!.city contains (\"Mi\")");
+
+        List<Expression> nullSafeExpressions = result.getNullSafeExpressions();
+        assertThat(nullSafeExpressions).hasSize(1);
+        assertThat(nullSafeExpressions.get(0).toString()).isEqualTo("_this.getAddress() != null");
+
+        // null check is done after the first constraint
+        assertThat(result.getExpr().toString()).isEqualTo("D.eval(org.drools.model.operators.ContainsOperator.INSTANCE, _this.getAddress().getCity(), \"Mi\")");
+    }
+
+    @Test
     public void testImplicitCastExpression() {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Object.class, "$o", "this#Person.name == \"Mark\"");
 
