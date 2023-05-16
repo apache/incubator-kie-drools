@@ -284,6 +284,7 @@ void setupPrQuarkus3RewriteJob() {
 
 void setupStandaloneQuarkus3RewriteJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-runtimes.quarkus-3.rewrite', JobType.TOOLS, "${jenkins_path}/Jenkinsfile.quarkus-3.rewrite.standalone", 'Kogito Runtimes Quarkus 3 rewrite patch regeneration')
+    jobParams.env.putAll(EnvUtils.getEnvironmentEnvVars(this, 'quarkus-3'))
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",

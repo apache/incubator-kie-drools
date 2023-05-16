@@ -27,6 +27,9 @@ recipeList:
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.ch.qos.logback
       newValue: 1.4.7
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: version.org.keycloak
+      newValue: 21.0.1
   # TODO to update once sdk-java provides a library compatible with jakarta
   # cf https://github.com/serverlessworkflow/sdk-java/issues/225
   - org.openrewrite.maven.ChangePropertyValue:

@@ -13,7 +13,9 @@ patch_file="${script_dir_path}"/patches/0001_before_sh.patch
 
 if [ "${ci}" = "true" ]; then
     # In CI we need the main branch snapshot artifacts deployed locally
+    set -x
     ${mvn_cmd} clean install -Dquickly
+    set +x
 fi
 
 rewrite=${1:-'none'}
