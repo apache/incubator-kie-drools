@@ -16,6 +16,7 @@
 package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -31,6 +32,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.event.cloudevents.utils.InvalidCloudEventException;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -155,6 +157,18 @@ class KnativeServerlessWorkflowCustomFunctionTest {
                                         .put("String", "Knowledge is everything")))));
     }
 
+    private void mockExecuteWithArray() {
+        wireMockServer.stubFor(post(urlEqualTo("/"))
+                .withRequestBody(equalToJson(JsonNodeFactory.instance.arrayNode()
+                        .add("Javierito")
+                        .add("Pepito")
+                        .toString()))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withJsonBody(JsonNodeFactory.instance.arrayNode().add(23).add(24))));
+    }
+
     private void mockExecuteCloudEventWithParametersEndpoint() {
         wireMockServer.stubFor(post(urlEqualTo(CLOUD_EVENT_PATH))
                 .willReturn(aResponse()
@@ -209,6 +223,14 @@ class KnativeServerlessWorkflowCustomFunctionTest {
                         .put("String", "Knowledge is everything"));
 
         assertThat(output).hasToString(expected.toString());
+    }
+
+    @ParameterizedTest
+    @MethodSource("possibleUriFormats")
+    void executeWithArray(String operation) {
+        mockExecuteWithArray();
+        assertThat(knativeServerlessWorkflowCustomFunction.execute(UNUSED, operation, Map.of(
+                SWFConstants.CONTENT_DATA, List.of("Javierito", "Pepito")))).hasToString(JsonNodeFactory.instance.arrayNode().add(23).add(24).toString());
     }
 
     @ParameterizedTest

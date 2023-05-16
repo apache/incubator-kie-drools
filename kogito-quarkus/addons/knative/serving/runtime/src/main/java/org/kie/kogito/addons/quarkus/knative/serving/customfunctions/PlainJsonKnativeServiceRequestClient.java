@@ -39,6 +39,8 @@ import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
 
+import static org.kie.kogito.serverless.workflow.SWFConstants.CONTENT_DATA;
+
 @ApplicationScoped
 class PlainJsonKnativeServiceRequestClient extends KnativeServiceRequestClient {
 
@@ -76,14 +78,18 @@ class PlainJsonKnativeServiceRequestClient extends KnativeServiceRequestClient {
 
             response = request.send().await().atMost(requestTimeout);
         } else {
-            validatePayload(payload);
-
-            JsonObject body = new JsonObject(payload);
+            Object body;
+            if (payload.size() == 1 && payload.containsKey(CONTENT_DATA)) {
+                body = payload.get(CONTENT_DATA);
+            } else {
+                validatePayload(payload);
+                body = new JsonObject(payload);
+            }
 
             logger.debug("Sending request with body - host: {}, port: {}, path: {}, body: {}", serviceAddress.getHost(),
                     serviceAddress.getPort(), path, body);
 
-            response = request.sendJsonObject(body).await().atMost(requestTimeout);
+            response = request.sendJson(body).await().atMost(requestTimeout);
         }
 
         return responseAsJsonObject(response);

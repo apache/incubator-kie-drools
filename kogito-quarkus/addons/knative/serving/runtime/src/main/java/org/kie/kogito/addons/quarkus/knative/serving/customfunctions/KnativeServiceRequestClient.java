@@ -20,12 +20,16 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
@@ -57,14 +61,28 @@ abstract class KnativeServiceRequestClient {
     }
 
     protected final JsonNode responseAsJsonObject(HttpResponse<Buffer> response) {
-        JsonObject responseBody = response.bodyAsJsonObject();
-
-        logger.debug("Response - status code: {}, body: {}", response.statusCode(), responseBody);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Response - status code: {}, body: {}", response.statusCode(), response.bodyAsString());
+        }
 
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
             throw new WorkItemExecutionException(Integer.toString(response.statusCode()), response.statusMessage());
         } else {
-            return JsonObjectUtils.fromValue(responseBody.getMap());
+            return getJsonNode(Json.decodeValue(response.body().getDelegate()));
+        }
+    }
+
+    private JsonNode getJsonNode(Object json) {
+        if (json instanceof JsonObject) {
+            return JsonObjectUtils.fromValue(((JsonObject) json).getMap());
+        } else if (json instanceof JsonArray) {
+            ArrayNode jsonArray = ObjectMapperFactory.listenerAware().createArrayNode();
+            for (Object item : ((JsonArray) json)) {
+                jsonArray.add(getJsonNode(item));
+            }
+            return jsonArray;
+        } else {
+            return JsonObjectUtils.fromValue(json);
         }
     }
 
