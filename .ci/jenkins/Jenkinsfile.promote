@@ -64,10 +64,23 @@ pipeline {
                         checkoutRepo()
                         mergeAndPush(getDeployPrLink())
                         tagLatest()
+                    }
+                }
+            }
+        }
+        stage('Create release') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    dir(getRepoName()) {
+                        checkoutRepo()
                         if(githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
                             githubscm.deleteRelease(getGitTag(), getGitAuthorCredsID())
                         }
-                        githubscm.createRelease(getGitTag(), getBuildBranch(), "Release ${getGitTag()}", getGitAuthorCredsID())
+                        createReleaseNotesFile()
+                        githubscm.createReleaseWithReleaseNotes(getGitTag(), getBuildBranch(), getReleaseNotesFile(), getGitAuthorCredsID())
                     }
                 }
             }
@@ -83,7 +96,7 @@ pipeline {
 
                         maven.mvnVersionsSet(getMavenCommand(), getSnapshotVersion(), true)
                         maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie', getDroolsSnapshotVersion())
-                        
+
                         // Need artifacts available locally
                         getMavenCommand().withProperty('quickly').run('clean install')
                         maven.mvnSetVersionProperty(getMavenCommand(getWorkflowCommonDeploymentRelativePath()), "data-index-ephemeral.image", "${getCurrentNightlyImage()}" )
@@ -228,6 +241,22 @@ String getSnapshotBranch() {
     return "${getSnapshotVersion().toLowerCase()}-${env.BOT_BRANCH_HASH}"
 }
 
+String getReleaseNotesFile(){
+    return "RELEASE_NOTES_${getGitTag()}"
+}
+
+String createReleaseNotesFile(){
+    sh """
+        #!/bin/bash
+        echo "Release Notes" > ${getReleaseNotesFile()}
+        echo "" >> ${getReleaseNotesFile()}
+        git log --pretty='%s' ${getPreviousTag()}..HEAD | sed -e '/KOGITO/!d'| sed -e 's/\\[//g' -e 's/\\]//g' -e 's/\\://g' | sed -r 's/(KOGITO-[0-9]*)( .*)/\\[\\1\\](https\\:\\/\\/issues\\.redhat\\.com\\/browse\\/\\1)\\2/g' >> ${getReleaseNotesFile()}
+        echo "" >> ${getReleaseNotesFile()}
+        echo "*****************************************************" >> ${getReleaseNotesFile()}
+        echo "" >> ${getReleaseNotesFile()}
+    """
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // Git
 //////////////////////////////////////////////////////////////////////////////
@@ -250,6 +279,10 @@ void tagLatest() {
     if (getGitTag()) {
         githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorCredsID(), env.BUILD_TAG, true)
     }
+}
+
+String getPreviousTag(){
+    return sh(script: "git describe --abbrev=0 --tags `git rev-list --tags --skip=1  --max-count=1`", returnStdout: true).trim()
 }
 
 void prepareForPR() {
