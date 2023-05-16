@@ -17,17 +17,6 @@
     <skip.jdepend>false</skip.jdepend>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-runtime-manager-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>tests</classifier>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
@@ -36,11 +25,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>efesto-common-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>efesto-runtime-manager-api</artifactId>
-      <classifier>tests</classifier>
     </dependency>
   </dependencies>
 
