@@ -1,0 +1,14 @@
+---
+name: mypkg
+imports:
+- java.lang.Number
+- java.lang.Long
+rules:
+- name: R1
+  when:
+  - given: Person
+    as: $p
+    having:
+    - age >= 18
+  then: |
+    System.out.println("Hello World from DRL!");

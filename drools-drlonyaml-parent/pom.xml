@@ -14,5 +14,7 @@
     <module>drools-drlonyaml-schemagen</module>
     <module>drools-drlonyaml-model</module>
     <module>drools-drlonyaml-todrl</module>
+    <module>drools-drlonyaml-cli</module>
+    <module>drools-drlonyaml-cli-tests</module>
   </modules>
 </project>

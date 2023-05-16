@@ -1,0 +1,12 @@
+// this is only syntactically valid DRL, so not ending with purely .drl
+package mypkg;
+
+import java.lang.Number;
+import java.lang.Long;
+
+rule R1
+when
+    $p : Person( age >= 18 )
+then
+    System.out.println("Hello World from DRL!");
+end

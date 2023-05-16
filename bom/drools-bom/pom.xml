@@ -1077,6 +1077,17 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drlonyaml-cli</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drlonyaml-cli</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
