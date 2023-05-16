@@ -43,7 +43,6 @@ public class DataTypeResolver {
         dataTypes.put(Integer.class, new IntegerDataType());
         dataTypes.put(Float.class, new FloatDataType());
         dataTypes.put(Collection.class, new ListDataType());
-        dataTypes.put(Enum.class, new EnumDataType());
         string2Class.put("java.lang.String", String.class);
         string2Class.put("java.lang.Boolean", Boolean.class);
         string2Class.put("java.lang.Integer", Integer.class);
@@ -58,7 +57,11 @@ public class DataTypeResolver {
     }
 
     public static DataType fromClass(Class<?> clazz) {
-        return from(clazz).orElse(new ObjectDataType(clazz));
+        return from(clazz).orElse(newType(clazz));
+    }
+
+    private static DataType newType(Class<?> clazz) {
+        return Enum.class.isAssignableFrom(clazz) ? new EnumDataType(clazz.asSubclass(Enum.class)) : new ObjectDataType(clazz);
     }
 
     public static DataType fromObject(Object value) {

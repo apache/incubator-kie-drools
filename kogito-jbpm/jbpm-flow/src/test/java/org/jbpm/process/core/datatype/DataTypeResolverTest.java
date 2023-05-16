@@ -37,6 +37,13 @@ public class DataTypeResolverTest {
         VALENCIA
     }
 
+    private enum Others {
+        SEVILLA,
+        REAL_MADRID,
+        F_C_BARCELONA,
+        OSASUNA
+    }
+
     @Test
     public void testDataType() {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -46,13 +53,19 @@ public class DataTypeResolverTest {
         assertThat(DataTypeResolver.fromObject(23.2f)).isInstanceOf(FloatDataType.class);
         assertThat(DataTypeResolver.fromObject(Arrays.asList("1", "2", "3"))).isInstanceOf(ListDataType.class);
         assertThat(DataTypeResolver.fromObject(new byte[0])).isInstanceOf(ObjectDataType.class);
-        assertThat(DataTypeResolver.fromObject(Champions.BETIS)).isInstanceOf(EnumDataType.class);
+        DataType enumDataType = DataTypeResolver.fromObject(Champions.BETIS);
+        assertThat(enumDataType).isInstanceOf(EnumDataType.class);
+        assertThat(enumDataType.readValue("BETIS")).isEqualTo(Champions.BETIS);
+        assertThat(enumDataType.verifyDataType(Champions.DEPORTIVO)).isTrue();
+        assertThat(enumDataType.getStringType()).isEqualTo(Champions.class.getName());
+        assertThat(enumDataType.getObjectClass()).isEqualTo(Champions.class);
+        assertThat(enumDataType.verifyDataType(Others.F_C_BARCELONA)).isFalse();
         assertThat(DataTypeResolver.fromType("String", cl)).isInstanceOf(StringDataType.class);
         assertThat(DataTypeResolver.fromType("Boolean", cl)).isInstanceOf(BooleanDataType.class);
         assertThat(DataTypeResolver.fromType("Integer", cl)).isInstanceOf(IntegerDataType.class);
         assertThat(DataTypeResolver.fromType("Float", cl)).isInstanceOf(FloatDataType.class);
         assertThat(DataTypeResolver.fromType("java.util.List", cl)).isInstanceOf(ListDataType.class);
         assertThat(DataTypeResolver.fromType("Object", cl)).isInstanceOf(ObjectDataType.class);
-
+        assertThat(DataTypeResolver.fromType(Others.class.getName(), cl)).isInstanceOf(EnumDataType.class);
     }
 }

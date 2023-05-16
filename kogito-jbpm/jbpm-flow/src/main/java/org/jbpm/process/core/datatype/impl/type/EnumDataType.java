@@ -18,10 +18,6 @@ package org.jbpm.process.core.datatype.impl.type;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import org.jbpm.process.core.datatype.DataType;
@@ -32,43 +28,51 @@ import org.jbpm.process.core.datatype.DataType;
 public class EnumDataType implements DataType {
 
     private static final long serialVersionUID = 4L;
-
-    private String className;
-    private transient Map<String, Object> valueMap;
+    private Class<? extends Enum> enumClass;
 
     public EnumDataType() {
+        this.enumClass = Enum.class;
     }
 
+    /**
+     * @deprecated use constructor that accepts enum class
+     */
+    @Deprecated
     public EnumDataType(String className) {
-        setClassName(className);
+        try {
+            this.enumClass = Class.forName(className).asSubclass(Enum.class);
+        } catch (ClassNotFoundException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
+    public EnumDataType(Class<? extends Enum> enumClass) {
+        this.enumClass = enumClass;
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        className = (String) in.readObject();
+        String className = (String) in.readObject();
+        enumClass = className == null ? Enum.class : Class.forName(className).asSubclass(Enum.class);
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(className);
+        out.writeObject(enumClass.getName());
     }
 
     @Override
     public boolean verifyDataType(final Object value) {
-        return value == null || getValueMap().containsValue(value);
+        return value == null || enumClass.isAssignableFrom(value.getClass());
     }
 
     @Override
     public Object readValue(String value) {
-        return getValueMap(null).get(value);
+        try {
+            return Enum.valueOf(enumClass, value);
+        } catch (IllegalArgumentException | NullPointerException ex) {
+            return null;
+        }
     }
 
     @Override
@@ -78,60 +82,7 @@ public class EnumDataType implements DataType {
 
     @Override
     public String getStringType() {
-        return className == null ? "java.lang.Object" : className;
-    }
-
-    public Object[] getValues(ClassLoader classLoader) {
-        return getValueMap(classLoader).values().toArray();
-    }
-
-    public Object[] getValues() {
-        return getValues(null);
-    }
-
-    public String[] getValueNames(ClassLoader classLoader) {
-        return getValueMap(classLoader).keySet().toArray(new String[0]);
-    }
-
-    public String[] getValueNames() {
-        return getValueNames(null);
-    }
-
-    public Map<String, Object> getValueMap() {
-        return getValueMap(null);
-    }
-
-    public Map<String, Object> getValueMap(ClassLoader classLoader) {
-        if (this.valueMap == null) {
-            try {
-                this.valueMap = new HashMap<>();
-                if (className == null) {
-                    return Collections.emptyMap();
-                }
-                Class<?> clazz = classLoader == null ? Class.forName(className) : Class.forName(className, true, classLoader);
-                if (!clazz.isEnum()) {
-                    return Collections.emptyMap();
-                }
-                Object[] values = (Object[]) clazz.getMethod("values", null).invoke(clazz, null);
-                for (Object value : values) {
-                    this.valueMap.put(value.toString(), value);
-                }
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(
-                        "Could not find data type " + className);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException(
-                        "IllegalAccessException " + e);
-            } catch (InvocationTargetException e) {
-                throw new IllegalArgumentException(
-                        "InvocationTargetException " + e);
-            } catch (NoSuchMethodException e) {
-                throw new IllegalArgumentException(
-                        "NoSuchMethodException " + e);
-            }
-
-        }
-        return this.valueMap;
+        return enumClass.getName();
     }
 
     @Override
@@ -143,16 +94,16 @@ public class EnumDataType implements DataType {
             return false;
         }
         EnumDataType that = (EnumDataType) o;
-        return Objects.equals(className, that.className);
+        return Objects.equals(enumClass, that.enumClass);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(className);
+        return Objects.hash(enumClass);
     }
 
     @Override
     public Class<?> getObjectClass() {
-        return Enum.class;
+        return enumClass;
     }
 }
