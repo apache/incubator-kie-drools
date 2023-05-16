@@ -197,7 +197,7 @@ public class IndexUtil {
         indexable[0] = true;
     }
 
-    private static boolean isEqualIndexable(BetaNodeFieldConstraint constraint) {
+    static boolean isEqualIndexable(BetaNodeFieldConstraint constraint) {
         return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).getConstraintType() == ConstraintType.EQUAL && !isBigDecimalEqualityConstraint((IndexableConstraint)constraint);
     }
 
@@ -346,15 +346,6 @@ public class IndexUtil {
                                    createRightMemory(config, indexSpec),
                                    createContext(constraints),
                                    nodeType );
-        }
-
-        private static boolean containsBigDecimalEqualityConstraint(BetaNodeFieldConstraint[] constraints) {
-            for (BetaNodeFieldConstraint constraint : constraints) {
-                if (constraint instanceof IndexableConstraint && isBigDecimalEqualityConstraint((IndexableConstraint) constraint)) {
-                    return true;
-                }
-            }
-            return false;
         }
 
         private static TupleMemory createRightMemory(RuleBaseConfiguration config, IndexSpec indexSpec) {
