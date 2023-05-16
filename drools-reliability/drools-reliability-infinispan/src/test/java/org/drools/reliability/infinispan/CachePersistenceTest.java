@@ -42,7 +42,6 @@ class CachePersistenceTest extends ReliabilityTestBasics {
                     "then\n" +
                     "end";
 
-    //@DisabledOnOs(OS.WINDOWS) // temporarily disabled until DROOLS-7393 is fixed
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
     void removeAllSessionCaches_shouldRemoveAllSessionCachesEvenAfterFailover(PersistedSessionOption.PersistenceStrategy strategy) {

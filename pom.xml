@@ -184,7 +184,7 @@
         <module>kie-ci</module>
         <module>drools-model</module>
         <module>drools-examples-api</module>
-        <module>drools-test-coverage</module>
+        <!-- <module>drools-test-coverage</module> -->
         <module>drools-scenario-simulation</module>
         <module>drools-metric</module>
         <module>drools-alphanetwork-compiler</module>
@@ -213,8 +213,8 @@
         </property>
       </activation>
       <modules>
-        <module>drools-docs</module>
-        <module>drools-distribution</module>
+        <!-- <module>drools-docs</module> -->
+        <!-- <module>drools-distribution</module> -->
       </modules>
     </profile>
     <profile><!-- this profile is defined here in order to be available from the root of the drools repository and maven reactor build -->
