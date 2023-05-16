@@ -72,7 +72,7 @@ public class FullReliableObjectStore extends IdentityObjectStore {
     void putIntoPersistedCache(InternalFactHandle handle, boolean propagated) {
         Object object = handle.getObject();
         boolean reInitPropagated = false; // temp
-        StoredObject storedObject = new StoredObject(object, propagated);
+        StoredObject storedObject = new StoredObject(object, propagated); //SerializableStoredObject
         storage.put(getHandleForObject(object).getId(), storedObject);
     }
 
