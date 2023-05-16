@@ -89,7 +89,7 @@ public abstract class ReliabilityTestBasics {
 
     @BeforeEach
     public void setUp() {
-        LOG.info("## setUp 1");
+        LOG.info("## setUp 2");
         if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
             LOG.info("Starting InfinispanContainer");
             container = new InfinispanContainer();
