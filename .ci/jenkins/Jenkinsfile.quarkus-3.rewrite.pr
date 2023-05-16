@@ -38,7 +38,12 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
-                        sh '.ci/environments/quarkus-3/before.sh rewrite'
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                            env.BUILD_MVN_OPTS = "${env.BUILD_MVN_OPTS ?: ''} -s ${MAVEN_SETTINGS_FILE} -Dmaven.wagon.http.ssl.insecure=true -Dmaven.test.failure.ignore=true"
+                            echo "BUILD_MVN_OPTS = ${BUILD_MVN_OPTS}"
+
+                            sh '.ci/environments/quarkus-3/before.sh rewrite'
+                        }
                     }
                 }
             }
