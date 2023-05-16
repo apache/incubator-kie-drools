@@ -1,0 +1,37 @@
+commit 1f48cf1b6cfeda47e05d1a64363ccb60787fe4df
+Author: radtriste <tradisso@redhat.com>
+Date:   Wed May 3 15:47:07 2023 +0200
+
+    patch: mutiny update
+
+diff --git a/persistence-commons/persistence-commons-infinispan/src/main/java/org/kie/kogito/persistence/infinispan/cache/InfinispanStorage.java b/persistence-commons/persistence-commons-infinispan/src/main/java/org/kie/kogito/persistence/infinispan/cache/InfinispanStorage.java
+index 598223d1b..e94a35074 100644
+--- a/persistence-commons/persistence-commons-infinispan/src/main/java/org/kie/kogito/persistence/infinispan/cache/InfinispanStorage.java
++++ b/persistence-commons/persistence-commons-infinispan/src/main/java/org/kie/kogito/persistence/infinispan/cache/InfinispanStorage.java
+@@ -76,7 +76,7 @@ public class InfinispanStorage<K, V> implements Storage<K, V> {
+         UnicastProcessor<V> processor = UnicastProcessor.create();
+         CacheObjectCreatedListener<K, V> listener = new CacheObjectCreatedListener<>(delegate, v -> processor.onNext(v));
+         return processor
+-                .onSubscribe().invoke(s -> delegate.addClientListener(listener))
++                .onSubscription().invoke(s -> delegate.addClientListener(listener))
+                 .onTermination().invoke(() -> delegate.removeClientListener(listener));
+     }
+ 
+@@ -86,7 +86,7 @@ public class InfinispanStorage<K, V> implements Storage<K, V> {
+         UnicastProcessor<V> processor = UnicastProcessor.create();
+         CacheObjectUpdatedListener<K, V> listener = new CacheObjectUpdatedListener<>(delegate, v -> processor.onNext(v));
+         return processor
+-                .onSubscribe().invoke(s -> delegate.addClientListener(listener))
++                .onSubscription().invoke(s -> delegate.addClientListener(listener))
+                 .onTermination().invoke(() -> delegate.removeClientListener(listener));
+     }
+ 
+@@ -96,7 +96,7 @@ public class InfinispanStorage<K, V> implements Storage<K, V> {
+         UnicastProcessor<K> processor = UnicastProcessor.create();
+         CacheObjectRemovedListener<K> listener = new CacheObjectRemovedListener<>(v -> processor.onNext(v));
+         return processor
+-                .onSubscribe().invoke(s -> delegate.addClientListener(listener))
++                .onSubscription().invoke(s -> delegate.addClientListener(listener))
+                 .onTermination().invoke(() -> delegate.removeClientListener(listener));
+     }
+ 

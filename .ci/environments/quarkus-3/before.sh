@@ -5,45 +5,86 @@ script_dir_path=$(cd `dirname "${BASH_SOURCE[0]}"`; pwd -P)
 mvn_cmd="mvn ${BUILD_MVN_OPTS:-} ${BUILD_MVN_OPTS_QUARKUS_UPDATE:-}"
 ci="${CI:-false}"
 
-quarkus_version=${QUARKUS_VERSION:-3.0.0.Alpha5}
-quarkus_file="${script_dir_path}/quarkus3.yml"
-project_version='quarkus-3-SNAPSHOT'
+rewrite_plugin_version=4.43.0
+quarkus_version=${QUARKUS_VERSION:-3.0.0.Final}
+
+quarkus_recipe_file="${script_dir_path}/quarkus3.yml"
+patch_file="${script_dir_path}"/patches/0001_before_sh.patch
+
+if [ "${ci}" = "true" ]; then
+    # In CI we need the main branch snapshot artifacts deployed locally
+    set -x
+    ${mvn_cmd} clean install -Dquickly
+    set +x
+fi
+
+rewrite=${1:-'none'}
+behavior=${2:-'none'}
+echo "rewrite "${rewrite}
+if [ "rewrite" != ${rewrite} ]; then
+    echo "No rewrite to be done. Exited"
+    exit 0
+fi
+
+export MAVEN_OPTS="-Xmx16192m"
 
 echo "Update project with Quarkus version ${quarkus_version}"
 
 set -x
 
-# No quarkus version to update on this repository
+# Retrieve Drools version used
+optaplanner_version=$(mvn -q -pl :kogito-apps-build-parent -Dexpression=version.org.optaplanner -DforceStdout help:evaluate)
+# New drools version is based on current drools version and increment the Major => (M+1).m.y
+new_optaplanner_version=$(echo ${optaplanner_version} | awk -F. -v OFS=. '{$1 += 1 ; print}')
 
-# In CI we need the main branch snapshot artifacts deployed locally
-if [ "${ci}" = "true" ]; then
-    ${mvn_cmd} clean install -Dquickly
-fi
-
-# Use a different version to not enter in conflict locally with other artifacts
-${mvn_cmd} -fae -N -e versions:update-parent -Dfull -DparentVersion="[${project_version}]" -DallowSnapshots=true -DgenerateBackupPoms=false
-${mvn_cmd} -fae -N -e versions:update-child-modules -Dfull -DallowSnapshots=true -DgenerateBackupPoms=false
-
-# Make sure artifacts are updated locally
-${mvn_cmd} clean install -Dquickly
+# Regenerate quarkus3 recipe
+cd ${script_dir_path}
+curl -Ls https://sh.jbang.dev | \
+    bash -s - jbang/CreateKieQuarkusProjectMigrationRecipe.java \
+        -v version.io.quarkus=${quarkus_version} \
+        -v version.org.optaplanner=${new_optaplanner_version}
+cd -
 
 # Launch Quarkus 3 Openrewrite
-${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:4.36.0:run \
-    -Drewrite.configLocation="${quarkus_file}" \
-    -DactiveRecipes=io.quarkus.openrewrite.Quarkus3 \
+${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:${rewrite_plugin_version}:run \
+    -Drewrite.configLocation="${quarkus_recipe_file}" \
+    -DactiveRecipes=io.quarkus.openrewrite.Quarkus \
     -Denforcer.skip \
+    -DskipUI \
     -fae \
     -Dexclusions=**/target \
     -DplainTextMasks=**/kmodule.xml
 
 # Update dependencies with Quarkus 3 bom
 ${mvn_cmd} \
-    -pl :kogito-dependencies-bom \
-    -pl :kogito-build-parent \
-    -pl :kogito-quarkus-bom \
-    -pl :kogito-build-no-bom-parent \
+    -pl :kogito-apps-build-parent \
     -DremotePom=io.quarkus:quarkus-bom:${quarkus_version} \
     -DupdatePropertyVersions=true \
     -DupdateDependencies=true \
     -DgenerateBackupPoms=false \
     versions:compare-dependencies
+
+# Create the `patches/0001_before_sh.patch` file
+git add .
+git reset "${quarkus_recipe_file}" # Do not include recipe file
+git diff --cached > "${patch_file}"
+git reset
+
+# Commit the change on patch
+if [ "$(git status --porcelain ${patch_file})" != '' ]; then
+    if [ "$(git status --porcelain ${quarkus_recipe_file})" != '' ]; then
+        git add "${quarkus_recipe_file}" # We suppose that if the recipe has changed, the patch file as well
+    fi
+    git add "${patch_file}"
+    git commit -m '[Quarkus 3] Updated rewrite data'
+
+    if [ "${behavior}" = 'push_changes' ]; then
+        git_remote="${GIT_REMOTE:-origin}"
+        branch=$(git branch --show-current)
+        echo "Pushing changes to ${git_remote}/${branch}"
+        git push ${git_remote} ${branch}
+    fi
+fi
+
+# Reset all other changes as they will be applied next by the `patches/0001_before_sh.patch` file
+git reset --hard

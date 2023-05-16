@@ -1,0 +1,20 @@
+diff --git a/explainability/explainability-service-messaging/src/main/java/org/kie/kogito/explainability/messaging/ExplainabilityMessagingHandler.java b/explainability/explainability-service-messaging/src/main/java/org/kie/kogito/explainability/messaging/ExplainabilityMessagingHandler.java
+index bb7a91dca..607b814d5 100644
+--- a/explainability/explainability-service-messaging/src/main/java/org/kie/kogito/explainability/messaging/ExplainabilityMessagingHandler.java
++++ b/explainability/explainability-service-messaging/src/main/java/org/kie/kogito/explainability/messaging/ExplainabilityMessagingHandler.java
+@@ -24,6 +24,7 @@ import java.util.concurrent.CompletionStage;
+ 
+ import jakarta.enterprise.context.ApplicationScoped;
+ import jakarta.inject.Inject;
++import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
+ 
+ import org.eclipse.microprofile.reactive.messaging.Incoming;
+ import org.eclipse.microprofile.reactive.messaging.Message;
+@@ -130,6 +131,6 @@ public class ExplainabilityMessagingHandler {
+ 
+     @Outgoing("trusty-explainability-result")
+     public Publisher<String> getEventPublisher() {
+-        return eventSubject.toHotStream();
++        return AdaptersToReactiveStreams.publisher(eventSubject.toHotStream());
+     }
+ }

@@ -1,0 +1,100 @@
+commit 3897fefbcbca59cc79a3d5631dbef8787fe5f971
+Author: radtriste <tradisso@redhat.com>
+Date:   Thu May 4 11:06:26 2023 +0200
+
+    patch: solve arc changes
+
+diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/OracleStorageService.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/OracleStorageService.java
+index a11b9fe52..d0fa23be0 100644
+--- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/OracleStorageService.java
++++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/OracleStorageService.java
+@@ -15,7 +15,9 @@
+  */
+ package org.kie.kogito.index.oracle.storage;
+ 
++import jakarta.annotation.Priority;
+ import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Alternative;
+ import jakarta.inject.Inject;
+ 
+ import org.kie.kogito.index.model.Job;
+@@ -24,14 +26,14 @@ import org.kie.kogito.index.model.UserTaskInstance;
+ import org.kie.kogito.persistence.api.Storage;
+ import org.kie.kogito.persistence.api.StorageService;
+ 
+-import io.quarkus.arc.AlternativePriority;
+ import io.quarkus.arc.properties.IfBuildProperty;
+ 
+ import static java.lang.String.format;
+ import static org.kie.kogito.persistence.api.factory.Constants.PERSISTENCE_TYPE_PROPERTY;
+ import static org.kie.kogito.persistence.oracle.Constants.ORACLE_STORAGE;
+ 
+-@AlternativePriority(1)
++@Alternative
++@Priority(1)
+ @ApplicationScoped
+ @IfBuildProperty(name = PERSISTENCE_TYPE_PROPERTY, stringValue = ORACLE_STORAGE)
+ public class OracleStorageService implements StorageService {
+diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlStorageService.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlStorageService.java
+index 969d73231..cae9875a1 100644
+--- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlStorageService.java
++++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlStorageService.java
+@@ -15,7 +15,9 @@
+  */
+ package org.kie.kogito.index.postgresql.storage;
+ 
++import jakarta.annotation.Priority;
+ import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Alternative;
+ import jakarta.inject.Inject;
+ 
+ import org.kie.kogito.index.model.Job;
+@@ -24,14 +26,14 @@ import org.kie.kogito.index.model.UserTaskInstance;
+ import org.kie.kogito.persistence.api.Storage;
+ import org.kie.kogito.persistence.api.StorageService;
+ 
+-import io.quarkus.arc.AlternativePriority;
+ import io.quarkus.arc.properties.IfBuildProperty;
+ 
+ import static java.lang.String.format;
+ import static org.kie.kogito.persistence.api.factory.Constants.PERSISTENCE_TYPE_PROPERTY;
+ import static org.kie.kogito.persistence.postgresql.Constants.POSTGRESQL_STORAGE;
+ 
+-@AlternativePriority(1)
++@Alternative
++@Priority(1)
+ @ApplicationScoped
+ @IfBuildProperty(name = PERSISTENCE_TYPE_PROPERTY, stringValue = POSTGRESQL_STORAGE)
+ public class PostgreSqlStorageService implements StorageService {
+diff --git a/trusty/trusty-storage/trusty-storage-postgresql/src/main/java/org/kie/kogito/trusty/storage/postgresql/PostgresStorageService.java b/trusty/trusty-storage/trusty-storage-postgresql/src/main/java/org/kie/kogito/trusty/storage/postgresql/PostgresStorageService.java
+index ee4e19533..3aca96e3e 100644
+--- a/trusty/trusty-storage/trusty-storage-postgresql/src/main/java/org/kie/kogito/trusty/storage/postgresql/PostgresStorageService.java
++++ b/trusty/trusty-storage/trusty-storage-postgresql/src/main/java/org/kie/kogito/trusty/storage/postgresql/PostgresStorageService.java
+@@ -16,7 +16,9 @@
+ 
+ package org.kie.kogito.trusty.storage.postgresql;
+ 
++import jakarta.annotation.Priority;
+ import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Alternative;
+ import jakarta.inject.Inject;
+ 
+ import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
+@@ -27,7 +29,6 @@ import org.kie.kogito.persistence.api.StorageService;
+ import org.kie.kogito.trusty.storage.api.model.decision.DMNModelWithMetadata;
+ import org.kie.kogito.trusty.storage.api.model.decision.Decision;
+ 
+-import io.quarkus.arc.AlternativePriority;
+ import io.quarkus.arc.properties.IfBuildProperty;
+ 
+ import static java.lang.String.format;
+@@ -35,7 +36,8 @@ import static org.kie.kogito.persistence.api.factory.Constants.PERSISTENCE_TYPE_
+ import static org.kie.kogito.persistence.postgresql.Constants.POSTGRESQL_STORAGE;
+ 
+ @ApplicationScoped
+-@AlternativePriority(1)
++@Alternative
++@Priority(1)
+ @IfBuildProperty(name = PERSISTENCE_TYPE_PROPERTY, stringValue = POSTGRESQL_STORAGE)
+ public class PostgresStorageService implements StorageService {
+ 

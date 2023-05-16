@@ -1,0 +1,75 @@
+commit 2dffd8637aba3a41e2a0184496a0ba10d270463e
+Author: radtriste <tradisso@redhat.com>
+Date:   Tue May 9 16:41:46 2023 +0200
+
+    patch: data index reactive streams
+
+diff --git a/data-index/data-index-common/pom.xml b/data-index/data-index-common/pom.xml
+index 672d4d350..cf73e37d2 100644
+--- a/data-index/data-index-common/pom.xml
++++ b/data-index/data-index-common/pom.xml
+@@ -41,6 +41,10 @@
+       <groupId>com.graphql-java</groupId>
+       <artifactId>graphql-java-extended-scalars</artifactId>
+     </dependency>
++    <dependency>
++     <groupId>io.smallrye.reactive</groupId>
++     <artifactId>mutiny-zero-flow-adapters</artifactId>
++    </dependency>
+     <dependency>
+       <groupId>io.quarkus</groupId>
+       <artifactId>quarkus-junit5</artifactId>
+diff --git a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
+index ca80a4a63..ff458fadc 100644
+--- a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
++++ b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
+@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
+ import java.util.function.Supplier;
+ 
+ import jakarta.enterprise.context.ApplicationScoped;
+-
++import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
+ import jakarta.annotation.PostConstruct;
+ import org.kie.kogito.index.graphql.AbstractGraphQLSchemaManager;
+ import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
+@@ -319,11 +319,11 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
+     }
+ 
+     private DataFetcher<Publisher<ObjectNode>> objectCreatedPublisher(Supplier<Storage> cache) {
+-        return env -> cache.get().objectCreatedListener();
++        return env -> AdaptersToReactiveStreams.publisher(cache.get().objectCreatedListener());
+     }
+ 
+     private DataFetcher<Publisher<ObjectNode>> objectUpdatedPublisher(Supplier<Storage> cache) {
+-        return env -> cache.get().objectUpdatedListener();
++        return env -> AdaptersToReactiveStreams.publisher(cache.get().objectUpdatedListener());
+     }
+ 
+     private Supplier<DataIndexServiceException> cacheNotFoundException(String processId) {
+@@ -331,11 +331,11 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
+     }
+ 
+     protected DataFetcher<Publisher<ObjectNode>> getDomainModelUpdatedDataFetcher(String processId) {
+-        return env -> Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectUpdatedListener();
++        return env -> AdaptersToReactiveStreams.publisher(Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectUpdatedListener());
+     }
+ 
+     protected DataFetcher<Publisher<ObjectNode>> getDomainModelAddedDataFetcher(String processId) {
+-        return env -> Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectCreatedListener();
++        return env -> AdaptersToReactiveStreams.publisher(Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectCreatedListener());
+     }
+ 
+     protected DataFetcher<Collection<ObjectNode>> getDomainModelDataFetcher(String processId) {
+diff --git a/kogito-apps-build-parent/pom.xml b/kogito-apps-build-parent/pom.xml
+index 816e42955..031600e8e 100644
+--- a/kogito-apps-build-parent/pom.xml
++++ b/kogito-apps-build-parent/pom.xml
+@@ -52,7 +52,7 @@
+         <version.org.apache.opennlp>1.9.2</version.org.apache.opennlp>
+         <version.org.apache.commons.csv>1.8</version.org.apache.commons.csv>
+         <version.org.jredisearch>2.0.0</version.org.jredisearch>
+-        <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
++        <version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
+         <version.org.skyscreamer>1.5.0</version.org.skyscreamer>
+         <version.com.graphql-java-extended-scalars>19.0</version.com.graphql-java-extended-scalars>
+ 

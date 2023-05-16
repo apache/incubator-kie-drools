@@ -7,4 +7,12 @@ source <(curl -s https://raw.githubusercontent.com/kiegroup/kogito-pipelines/mai
 
 echo "Update project with Quarkus version ${QUARKUS_VERSION}"
 
-echo "Nothing to be done on this project ..."
+# Update with Quarkus version and commit
+${mvn_cmd} \
+    -pl :kogito-apps-build-parent \
+    -DremotePom=io.quarkus:quarkus-bom:${QUARKUS_VERSION} \
+    -DupdatePropertyVersions=true \
+    -DupdateDependencies=true \
+    -DgenerateBackupPoms=false \
+    versions:compare-dependencies
+
