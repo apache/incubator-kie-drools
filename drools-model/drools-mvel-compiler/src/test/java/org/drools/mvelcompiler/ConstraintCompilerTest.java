@@ -39,13 +39,13 @@ public class ConstraintCompilerTest implements CompilerTest {
     @Test
     public void testBigDecimalStringEquality() {
         testExpression(c -> c.setRootPatternPrefix(Person.class, "_this"), "salary == \"90\"",
-                       "_this.getSalary().equals(new java.math.BigDecimal(\"90\"))");
+                       "_this.getSalary().compareTo(new java.math.BigDecimal(\"90\")) == 0");
     }
 
     @Test
     public void testBigDecimalStringNonEquality() {
         testExpression(c -> c.setRootPatternPrefix(Person.class, "_this"), "salary != \"90\"",
-                       "!(_this.getSalary().equals(new java.math.BigDecimal(\"90\")))");
+                       "_this.getSalary().compareTo(new java.math.BigDecimal(\"90\")) != 0");
     }
 
     @Test
