@@ -45,6 +45,7 @@ class CachePersistenceTest extends ReliabilityTestBasics {
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
     void removeAllSessionCaches_shouldRemoveAllSessionCachesEvenAfterFailover(PersistedSessionOption.PersistenceStrategy strategy) {
+        System.out.println("### removeAllSessionCaches_shouldRemoveAllSessionCachesEvenAfterFailover");
         createSession(EMPTY_RULE, strategy); // savedSessionId = 0, sessionId = 0
         insertNonMatchingPerson("Toshiya", 10);
 
@@ -63,7 +64,7 @@ class CachePersistenceTest extends ReliabilityTestBasics {
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
     void ksessionDispose_shouldRemoveCache(PersistedSessionOption.PersistenceStrategy strategy){
-
+        System.out.println("### ksessionDispose_shouldRemoveCache");
         createSession(EMPTY_RULE, strategy); // sessionId = 0. This creates session_0_epDEFAULT and session_0_globals
 
         insertNonMatchingPerson("Toshiya", 10);
@@ -76,6 +77,7 @@ class CachePersistenceTest extends ReliabilityTestBasics {
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
     void missingDispose_shouldNotReuseOrphanedCache(PersistedSessionOption.PersistenceStrategy strategy) {
+        System.out.println("### missingDispose_shouldNotReuseOrphanedCache");
         createSession(EMPTY_RULE, strategy); // sessionId = 0
         insertNonMatchingPerson("Toshiya", 10);
 
@@ -98,6 +100,7 @@ class CachePersistenceTest extends ReliabilityTestBasics {
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
     void reliableSessionCounter_shouldNotHaveTheSameIdAsPreviousKsession(PersistedSessionOption.PersistenceStrategy strategy) {
+        System.out.println("### reliableSessionCounter_shouldNotHaveTheSameIdAsPreviousKsession");
         createSession(EMPTY_RULE, strategy); // new session. sessionId = 0
         long firstSessionId = session.getIdentifier();
 

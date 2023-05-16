@@ -89,6 +89,7 @@ public abstract class ReliabilityTestBasics {
 
     @BeforeEach
     public void setUp() {
+        LOG.info("## setUp");
         if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
             LOG.info("Starting InfinispanContainer");
             container = new InfinispanContainer();
@@ -98,10 +99,12 @@ public abstract class ReliabilityTestBasics {
             RemoteCacheManager remoteCacheManager = container.getRemoteCacheManager(cacheManager.provideAdditionalRemoteConfigurationBuilder());
             cacheManager.setRemoteCacheManager(remoteCacheManager);
         }
+        LOG.info("## setUp done");
     }
 
     @AfterEach
     public void tearDown() {
+        LOG.info("## tearDown");
         if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
             StorageManagerFactory.get().getStorageManager().removeAllSessionStorages();
             StorageManagerFactory.get().getStorageManager().close(); // close remoteCacheManager
@@ -111,9 +114,11 @@ public abstract class ReliabilityTestBasics {
             ((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).restartWithCleanUp();
         }
         ReliableRuntimeComponentFactoryImpl.resetCounter();
+        LOG.info("## tearDown done");
     }
 
     public void failover() {
+        LOG.info("## failover");
         if (safepointStrategy == PersistedSessionOption.SafepointStrategy.EXPLICIT) {
             ((ReliableKieSession) session).safepoint();
         }
@@ -129,6 +134,7 @@ public abstract class ReliabilityTestBasics {
             ((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).restart(); // restart embedded infinispan cacheManager. GlobalState and FireStore are kept
         }
         ReliableRuntimeComponentFactoryImpl.refreshCounterUsingStorage();
+        LOG.info("## failover done");
     }
 
     protected FactHandle insertString(String str) {
