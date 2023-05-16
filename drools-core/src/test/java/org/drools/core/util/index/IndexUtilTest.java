@@ -110,7 +110,7 @@ public class IndexUtilTest {
         FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeInternalReadAccessor(ValueType.STRING_TYPE));
         BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{intEqualsConstraint, stringEqualsConstraint};
         boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
-        assertThat(indexed).containsExactlyInAnyOrder(true, true);
+        assertThat(indexed).containsExactly(true, true);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class IndexUtilTest {
         FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeInternalReadAccessor(ValueType.STRING_TYPE));
         BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{intEqualsConstraint, bigDecimalEqualsConstraint, stringEqualsConstraint};
         boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
-        assertThat(indexed).as("BigDecimal is sorted to the last").containsExactlyInAnyOrder(true, true, false);
+        assertThat(indexed).as("BigDecimal is sorted to the last").containsExactly(true, true, false);
     }
 
     @Test
@@ -130,7 +130,7 @@ public class IndexUtilTest {
         FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeInternalReadAccessor(ValueType.BIG_DECIMAL_TYPE));
         BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{bigDecimalEqualsConstraint};
         boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
-        assertThat(indexed).as("BigDecimal is not indexed").containsExactlyInAnyOrder(false);
+        assertThat(indexed).as("BigDecimal is not indexed").containsExactly(false);
     }
 
     static class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint,
