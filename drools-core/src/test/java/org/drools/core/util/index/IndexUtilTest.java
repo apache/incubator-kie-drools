@@ -41,6 +41,7 @@ import org.drools.core.util.AbstractHashTable.DoubleCompositeIndex;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.junit.Test;
+import org.kie.internal.conf.IndexPrecedenceOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -102,14 +103,43 @@ public class IndexUtilTest {
         assertThat(rightFieldIndex1.getRightExtractor().getValueType()).isEqualTo(ValueType.STRING_TYPE);
     }
 
+    @Test
+    public void isIndexableForNodeWithIntAndString() {
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeInternalReadAccessor(ValueType.PINTEGER_TYPE));
+        FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeInternalReadAccessor(ValueType.STRING_TYPE));
+        BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{intEqualsConstraint, stringEqualsConstraint};
+        boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
+        assertThat(indexed).containsExactlyInAnyOrder(true, true);
+    }
+
+    @Test
+    public void isIndexableForNodeWithIntAndBigDecimalAndString() {
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeInternalReadAccessor(ValueType.PINTEGER_TYPE));
+        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeInternalReadAccessor(ValueType.BIG_DECIMAL_TYPE));
+        FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeInternalReadAccessor(ValueType.STRING_TYPE));
+        BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{intEqualsConstraint, bigDecimalEqualsConstraint, stringEqualsConstraint};
+        boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
+        assertThat(indexed).as("BigDecimal is sorted to the last").containsExactlyInAnyOrder(true, true, false);
+    }
+
+    @Test
+    public void isIndexableForNodeWithBigDecimal() {
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeInternalReadAccessor(ValueType.BIG_DECIMAL_TYPE));
+        BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{bigDecimalEqualsConstraint};
+        boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
+        assertThat(indexed).as("BigDecimal is not indexed").containsExactlyInAnyOrder(false);
+    }
+
     static class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint,
-                                                        IndexableConstraint {
+                                             IndexableConstraint {
 
         private IndexUtil.ConstraintType constraintType;
         private InternalReadAccessor fieldExtractor;
 
-        public FakeBetaNodeFieldConstraint() {
-        }
+        public FakeBetaNodeFieldConstraint() {}
 
         public FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType constraintType, InternalReadAccessor fieldExtractor) {
             this.constraintType = constraintType;
@@ -122,8 +152,7 @@ public class IndexUtilTest {
         }
 
         @Override
-        public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
-        }
+        public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {}
 
         @Override
         public Constraint clone() {
@@ -141,12 +170,10 @@ public class IndexUtilTest {
         }
 
         @Override
-        public void writeExternal(ObjectOutput out) throws IOException {
-        }
+        public void writeExternal(ObjectOutput out) throws IOException {}
 
         @Override
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        }
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {}
 
         @Override
         public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
