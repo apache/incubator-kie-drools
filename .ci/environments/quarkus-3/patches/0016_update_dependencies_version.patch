@@ -1,5 +1,5 @@
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index bef7b999d1..01250bec8d 100644
+index 050c913b64..1f079bf094 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -39,7 +39,7 @@
@@ -22,12 +22,8 @@ index bef7b999d1..01250bec8d 100644
      <version.io.serverlessworkflow>4.0.3.Final</version.io.serverlessworkflow>
      <!-- Aligned with Quarkus 2.7 (LTS) - see https://issues.redhat.com/browse/KOGITO-7971 -->
      <version.io.smallrye-open-api>3.3.2</version.io.smallrye-open-api>
-@@ -82,10 +82,10 @@
-     <!-- consider migrating to 3.x JDK 9: https://jakarta.ee/specifications/restful-ws/ -->
-     <version.jakarta.ws.rs>3.1.0</version.jakarta.ws.rs>
-     <version.org.jboss.resteasy>6.2.1.Final</version.org.jboss.resteasy>
--    <version.org.keycloak>20.0.2</version.org.keycloak>
-+    <version.org.keycloak>21.0.1</version.org.keycloak>
+@@ -85,7 +85,7 @@
+     <version.org.keycloak>21.0.1</version.org.keycloak>
      <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
      <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
 -    <version.org.mongo>4.6.1</version.org.mongo>
@@ -44,7 +40,7 @@ index bef7b999d1..01250bec8d 100644
      <version.org.junit>5.${version.org.junit.minor}</version.org.junit>
      <version.org.junit.jupiter>5.9.2</version.org.junit.jupiter>
      <version.org.junit.vintage>5.9.2</version.org.junit.vintage>
-@@ -108,13 +108,13 @@
+@@ -109,13 +109,13 @@
      <version.org.mvel>2.4.15.Final</version.org.mvel>
      <version.org.reactivestreams>1.0.4</version.org.reactivestreams>
      <version.org.reflections>0.9.11</version.org.reflections>
