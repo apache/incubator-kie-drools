@@ -32,6 +32,7 @@ setupProjectNightlyJob()
 
 // Release jobs
 setupProjectReleaseJob()
+setupProjectPostReleaseJob()
 
 // Tools
 KogitoJobUtils.createQuarkusPlatformUpdateToolsJob(this, 'drools')
@@ -89,6 +90,26 @@ void setupProjectReleaseJob() {
             stringParam('DROOLS_VERSION', '', 'Drools version to release as Major.minor.micro')
 
             booleanParam('SKIP_TESTS', false, 'Skip all tests')
+        }
+    }
+}
+
+void setupProjectPostReleaseJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools-post-release', JobType.RELEASE, "${jenkins_path_project}/Jenkinsfile.post-release", 'Drools Post Release')
+    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('DROOLS_VERSION', '', 'Drools version to release as Major.minor.micro')
+
+            stringParam('RELEASE_NOTES_NUMBER', '', 'number of JIRA release notes')
         }
     }
 }
