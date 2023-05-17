@@ -330,7 +330,7 @@ index 97a45fea4d..4ac46a1860 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index 257aee5892..af509e1a3f 100644
+index 257aee5892..032ea20d56 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,22 +16,22 @@
@@ -404,7 +404,7 @@ index 257aee5892..af509e1a3f 100644
  
      <version.io.swagger.parser.v3>2.0.26</version.io.swagger.parser.v3>
  
-@@ -75,13 +75,13 @@
+@@ -75,14 +75,14 @@
  
      <version.org.graalvm.nativeimage>22.3.0</version.org.graalvm.nativeimage>
  
@@ -417,11 +417,13 @@ index 257aee5892..af509e1a3f 100644
      <!-- consider migrating to 3.x JDK 9: https://jakarta.ee/specifications/restful-ws/ -->
 -    <version.jakarta.ws.rs>2.1.6</version.jakarta.ws.rs>
 -    <version.org.jboss.resteasy>4.7.7.Final</version.org.jboss.resteasy>
+-    <version.org.keycloak>20.0.2</version.org.keycloak>
 +    <version.jakarta.ws.rs>3.1.0</version.jakarta.ws.rs>
 +    <version.org.jboss.resteasy>6.2.1.Final</version.org.jboss.resteasy>
-     <version.org.keycloak>20.0.2</version.org.keycloak>
++    <version.org.keycloak>21.0.1</version.org.keycloak>
      <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
      <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
+     <version.org.mongo>4.6.1</version.org.mongo>
 @@ -100,19 +100,19 @@
      <version.org.junit.vintage>5.9.2</version.org.junit.vintage>
      <version.org.junit.platform>1.9.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
@@ -1189,7 +1191,7 @@ index e78681c3b8..74ec97bc65 100644
  
  @ApplicationScoped
 diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/PlainJsonKnativeServiceRequestClient.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/PlainJsonKnativeServiceRequestClient.java
-index 9d9609c7f1..f1c1626716 100644
+index 1cd2b07fba..6cab0cd0e0 100644
 --- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/PlainJsonKnativeServiceRequestClient.java
 +++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/PlainJsonKnativeServiceRequestClient.java
 @@ -21,10 +21,10 @@ import java.util.List;
@@ -1220,10 +1222,10 @@ index 98e2c18678..6bcb3bd7ef 100644
  import org.assertj.core.api.Assertions;
  import org.junit.jupiter.api.AfterAll;
 diff --git a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
-index b554f93b7e..7fb931af5a 100644
+index 2e0c9ed888..6c624e2654 100644
 --- a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
 +++ b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
-@@ -19,7 +19,7 @@ import java.time.Instant;
+@@ -20,7 +20,7 @@ import java.util.List;
  import java.util.Map;
  import java.util.stream.Stream;
  
