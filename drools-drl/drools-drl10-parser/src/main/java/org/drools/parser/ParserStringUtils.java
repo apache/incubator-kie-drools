@@ -1,6 +1,7 @@
 package org.drools.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
 
 /**
@@ -22,6 +23,7 @@ public class ParserStringUtils {
     }
 
     public static String getTextPreservingWhitespace(ParserRuleContext ctx) {
+        // Using raw CharStream
         int startIndex = ctx.start.getStartIndex();
         int stopIndex = ctx.stop.getStopIndex();
         if (startIndex > stopIndex) {
@@ -30,5 +32,10 @@ public class ParserStringUtils {
         }
         Interval interval = new Interval(startIndex, stopIndex);
         return ctx.start.getTokenSource().getInputStream().getText(interval);
+    }
+
+    public static String getTokenTextPreservingWhitespace(ParserRuleContext ctx, TokenStream tokenStream) {
+        // tokenStream is required to get hidden channel token (e.g. whitespace). Unlike getTextPreservingWhitespace, this method reflects Lexer normalizeString
+        return tokenStream.getText(ctx.start, ctx.stop);
     }
 }
