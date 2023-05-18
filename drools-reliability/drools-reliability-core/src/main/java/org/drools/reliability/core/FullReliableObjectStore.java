@@ -17,13 +17,7 @@ package org.drools.reliability.core;
 
 import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
-import org.drools.kiesession.agenda.DefaultAgenda;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FullReliableObjectStore extends IdentityObjectStore {
 
@@ -46,33 +40,9 @@ public class FullReliableObjectStore extends IdentityObjectStore {
         super.removeHandle(handle);
     }
 
-
-    List<StoredObject> reInit(InternalWorkingMemory session, InternalWorkingMemoryEntryPoint ep) {
-        List<StoredObject> propagated = new ArrayList<>();
-        List<StoredObject> notPropagated = new ArrayList<>();
-        ReliablePropagationList reliablePropagationList = (ReliablePropagationList) ((DefaultAgenda) session.getAgenda()).getPropagationList();
-
-        for (StoredObject entry : storage.values()) {
-            if (!reliablePropagationList.entryInTheList(entry)) { // entry.isPropagated()
-                propagated.add(entry);
-            } else {
-                notPropagated.add(entry);
-            }
-        }
-        storage.clear();
-
-        // fact handles with a match have been already propagated in the original session, so they shouldn't fire
-        propagated.forEach(obj -> obj.repropagate(ep));
-        session.fireAllRules(match -> false);
-
-        // fact handles without any match have never been propagated in the original session, so they should fire
-        return notPropagated;
-    }
-
     void putIntoPersistedCache(InternalFactHandle handle, boolean propagated) {
         Object object = handle.getObject();
-        boolean reInitPropagated = false; // temp
-        StoredObject storedObject = new StoredObject(object, propagated); //SerializableStoredObject
+        StoredObject storedObject = new SerializableStoredObject(object, propagated);
         storage.put(getHandleForObject(object).getId(), storedObject);
     }
 

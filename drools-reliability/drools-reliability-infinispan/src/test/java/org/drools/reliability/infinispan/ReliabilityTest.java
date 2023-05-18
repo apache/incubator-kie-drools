@@ -251,14 +251,8 @@ class ReliabilityTest extends ReliabilityTestBasics {
         failover();
 
         restoreSession(BASIC_RULE, strategy);
+
         assertThat(session.fireAllRules()).isEqualTo(1);
-
-        //componentsCache = CacheManagerFactory.get().getCacheManager().getOrCreateCacheForSession(((InternalWorkingMemory) session).getReteEvaluator(), "components");
-        //reliablePropagationListPropList = (ReliablePropagationList) componentsCache.get("PropagationList");
-        //assertThat(reliablePropagationListPropList.isEmpty()).isFalse();
-
-        //restoreSession(BASIC_RULE, strategy);
-        //assertThat(session.fireAllRules()).isEqualTo(1);
-
     }
+    
 }
