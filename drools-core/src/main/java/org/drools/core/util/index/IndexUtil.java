@@ -190,8 +190,8 @@ public class IndexUtil {
         indexable[0] = true;
     }
 
-    private static boolean isEqualIndexable(BetaNodeFieldConstraint constraint) {
-        return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).getConstraintType() == ConstraintType.EQUAL;
+    static boolean isEqualIndexable(BetaNodeFieldConstraint constraint) {
+        return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).getConstraintType() == ConstraintType.EQUAL && !isBigDecimalEqualityConstraint((IndexableConstraint)constraint);
     }
 
     private static void swap(BetaNodeFieldConstraint[] constraints, int p1, int p2) {

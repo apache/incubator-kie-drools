@@ -26,6 +26,7 @@ import java.util.Map;
 import org.drools.ancompiler.CompiledNetwork;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
@@ -41,7 +42,6 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.util.FastIterator;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
@@ -290,7 +290,6 @@ public class IndexingTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
         final StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) kbase.newKieSession();
-        ReteDumper.dumpRete( wm );
         try {
             final List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
             ObjectTypeNode node = null;
@@ -1097,5 +1096,81 @@ public class IndexingTest {
         } finally {
             ksession.dispose();
         }
+    }
+
+    public void betaIndexWithBigDecimalAndInt() {
+        String constraints = "salary == $p1.salary, age == $p1.age";
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 30, new BigDecimal("10")), true, 1);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), false, 1);
+    }
+
+    @Test
+    public void betaIndexWithIntAndBigDecimal() {
+        String constraints = "age == $p1.age, salary == $p1.salary";
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 30, new BigDecimal("10")), true, 1);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), false, 1);
+    }
+
+    @Test
+    public void betaIndexWithIntAndBigDecimalAndString() {
+        String constraints = "age == $p1.age, salary == $p1.salary, likes == $p1.likes";
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10"), "dog"), new Person("Paul", 30, new BigDecimal("10"), "dog"), true, 2);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10"), "dog"), new Person("Paul", 30, new BigDecimal("10"), "cat"), false, 2);
+    }
+
+    @Test
+    public void betaIndexWithIntInequalityAndBigDecimal() {
+        String constraints = "age > $p1.age, salary == $p1.salary";
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 40, new BigDecimal("10")), true, 0);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), false, 0);
+    }
+
+    @Test
+    public void betaIndexWithBigDecimalOnly() {
+        String constraints = "salary == $p1.salary";
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), true, 0);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("20")), false, 0);
+    }
+
+    private void betaIndexWithBigDecimalWithAdditionalBetaConstraint(String constraints, Person firstPerson, Person secondPerson, boolean shouldMatch, int expectedIndexCount) {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           "global java.util.List list\n" +
+                           "rule R1\n" +
+                           "    when\n" +
+                           "        $p1 : Person( name == \"John\" )\n" +
+                           "        $p2 : Person( name == \"Paul\", " + constraints + " )\n" +
+                           "    then\n" +
+                           "        list.add(\"R1\");\n" +
+                           "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+
+        assertBetaIndex(kbase, Person.class, expectedIndexCount);
+
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+            ksession.insert(firstPerson);
+            ksession.insert(secondPerson);
+            ksession.fireAllRules();
+
+            if (shouldMatch) {
+                assertThat(list).as("These constraints should match : " + constraints).containsExactly("R1");
+            } else {
+                assertThat(list).as("These constraints should not match : " + constraints).isEmpty();
+            }
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    private void assertBetaIndex(KieBase kbase, Class<?> clazz, int expectedIndexCount) {
+        final JoinNode joinNode = KieUtil.getJoinNode(kbase, clazz);
+        BetaConstraints betaConstraints = joinNode.getRawConstraints();
+        assertThat(betaConstraints.getIndexCount()).as("IndexCount represents how many constrains are indexed").isEqualTo(expectedIndexCount);
     }
 }
