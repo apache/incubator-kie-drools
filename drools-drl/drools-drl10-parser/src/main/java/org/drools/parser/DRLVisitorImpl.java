@@ -2,14 +2,13 @@ package org.drools.parser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
@@ -30,10 +29,18 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.UnitDescr;
 
 import static org.drools.parser.DRLParserHelper.getTextWithoutErrorNode;
+import static org.drools.parser.ParserStringUtils.getTextPreservingWhitespace;
+import static org.drools.parser.ParserStringUtils.getTokenTextPreservingWhitespace;
 import static org.drools.parser.ParserStringUtils.safeStripStringDelimiters;
 import static org.drools.util.StringUtils.unescapeJava;
 
 public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
+
+    private TokenStream tokenStream;
+
+    public DRLVisitorImpl(TokenStream tokenStream) {
+        this.tokenStream = tokenStream;
+    }
 
     @Override
     public PackageDescr visitCompilationUnit(DRLParser.CompilationUnitContext ctx) {
@@ -119,7 +126,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 functionDescr.addParameter(typeTypeContext.getText(), variableDeclaratorIdContext.getText());
             });
         }
-        functionDescr.setBody(ParserStringUtils.getTextPreservingWhitespace(ctx.block()));
+        functionDescr.setBody(getTextPreservingWhitespace(ctx.block()));
         return functionDescr;
     }
 
@@ -145,7 +152,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
         if (ctx.rhs() != null) {
             ruleDescr.setConsequenceLocation(ctx.rhs().getStart().getLine(), ctx.rhs().getStart().getCharPositionInLine()); // location of "then"
-            ruleDescr.setConsequence(ParserStringUtils.getTextPreservingWhitespace(ctx.rhs().consequence()));
+            ruleDescr.setConsequence(getTextPreservingWhitespace(ctx.rhs().consequence()));
         }
 
         return ruleDescr;
@@ -342,31 +349,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     // leaves of constraint concatenate return Strings
-    private String visitConstraintChildren(RuleNode node) {
-        return ((ParserRuleContext) node).children.stream()
-                .map(c -> c instanceof TerminalNode ? c : c.accept(this))
-                .filter(Objects::nonNull)
-                .map(Object::toString)
-                .collect(Collectors.joining(" "));
-    }
-
-    @Override
-    public Object visitChildren(RuleNode node) {
-        if (hasConstraintAsAncestor(node)) {
-            return visitConstraintChildren(node);
-        }
-        return super.visitChildren(node);
-    }
-
-    private boolean hasConstraintAsAncestor(RuleNode node) {
-        ParseTree parent = node.getParent();
-        if (parent instanceof DRLParser.ConstraintContext) {
-            return true;
-        } else if (parent == null) {
-            return false;
-        } else {
-            return hasConstraintAsAncestor((RuleNode) parent);
-        }
+    private String visitConstraintChildren(ParserRuleContext ctx) {
+        return getTokenTextPreservingWhitespace(ctx, tokenStream);
     }
 
     private Optional<BaseDescr> visitFirstDescrChild(RuleNode node) {

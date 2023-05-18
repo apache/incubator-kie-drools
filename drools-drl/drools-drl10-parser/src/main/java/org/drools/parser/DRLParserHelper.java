@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -15,11 +16,8 @@ public class DRLParserHelper {
     }
 
     public static PackageDescr parse(String drl) {
-        return compilationUnitContext2PackageDescr(createParseTree(drl));
-    }
-
-    public static DRLParser.CompilationUnitContext createParseTree(String drl) {
-        return createDrlParser(drl).compilationUnit();
+        DRLParser drlParser = createDrlParser(drl);
+        return compilationUnitContext2PackageDescr(drlParser.compilationUnit(), drlParser.getTokenStream());
     }
 
     public static DRLParser createDrlParser(String drl) {
@@ -29,8 +27,8 @@ public class DRLParserHelper {
         return new DRLParser(commonTokenStream);
     }
 
-    public static PackageDescr compilationUnitContext2PackageDescr(DRLParser.CompilationUnitContext ctx) {
-        DRLVisitorImpl visitor = new DRLVisitorImpl();
+    public static PackageDescr compilationUnitContext2PackageDescr(DRLParser.CompilationUnitContext ctx, TokenStream tokenStream) {
+        DRLVisitorImpl visitor = new DRLVisitorImpl(tokenStream);
         Object descr = visitor.visit(ctx);
         if (descr instanceof PackageDescr) {
             return (PackageDescr) descr;

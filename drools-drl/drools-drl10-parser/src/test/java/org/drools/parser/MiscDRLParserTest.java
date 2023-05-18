@@ -3114,7 +3114,6 @@ class MiscDRLParserTest {
         assertThat(ecd.getExpression()).isEqualTo("bigDecimal < 50B");
     }
 
-    @Disabled("Priority : High | Failed to parse binding with ||")
     @Test
     public void parse_BindingComposite() throws Exception {
         final String text = "rule X when Person( $name : name == \"Bob\" || $loc : location == \"Montreal\" ) then end";
@@ -3130,7 +3129,6 @@ class MiscDRLParserTest {
         assertThat(((ExprConstraintDescr) constraints.get(0)).getExpression()).isEqualTo("$name : name == \"Bob\" || $loc : location == \"Montreal\"");
     }
 
-    @Disabled("Priority : High | Failed to parse binding with ||")
     @Test
     public void parse_BindingCompositeWithMethods() throws Exception {
         final String text = "rule X when Person( $name : name.toUpperCase() == \"Bob\" || $loc : location[0].city == \"Montreal\" ) then end";
