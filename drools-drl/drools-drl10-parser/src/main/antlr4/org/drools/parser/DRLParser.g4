@@ -67,14 +67,14 @@ lhsPattern : xpathPrimary (OVER patternFilter)? |
 lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN positionalConstraints? constraints? RPAREN (DRL_FROM patternSource)? ;
 positionalConstraints : constraint (COMMA constraint)* SEMI ;
 constraints : constraint (COMMA constraint)* ;
-constraint : label? ( nestedConstraint | conditionalOrExpression ) ;
+constraint : ( nestedConstraint | conditionalOrExpression ) ;
 nestedConstraint : ( IDENTIFIER ( DOT | HASH ) )* IDENTIFIER DOT LPAREN constraints RPAREN ;
 conditionalOrExpression : left=conditionalAndExpression (OR right=conditionalAndExpression)* ;
 conditionalAndExpression : left=inclusiveOrExpression (AND right=inclusiveOrExpression)* ;
 inclusiveOrExpression : left=exclusiveOrExpression (BITOR right=exclusiveOrExpression)* ;
 exclusiveOrExpression : left=andExpression (CARET right=andExpression)* ;
 andExpression : left=equalityExpression (BITAND right=equalityExpression)* ;
-equalityExpression : left=instanceOfExpression ( ( op=EQUAL | op=NOTEQUAL ) right=instanceOfExpression )* ;
+equalityExpression : label? left=instanceOfExpression ( ( op=EQUAL | op=NOTEQUAL ) right=instanceOfExpression )* ;
 instanceOfExpression : left=inExpression ( 'instanceof' right=type )? ;
 inExpression : left=relationalExpression ( 'not'? 'in' LPAREN drlExpression (COMMA drlExpression)* RPAREN )? ;
 relationalExpression : left=drlExpression (right=orRestriction)* ;
