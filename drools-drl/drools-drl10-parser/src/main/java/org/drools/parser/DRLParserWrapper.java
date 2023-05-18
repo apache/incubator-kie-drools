@@ -26,7 +26,7 @@ public class DRLParserWrapper {
         errors.addAll(errorListener.getErrors());
 
         try {
-            return compilationUnitContext2PackageDescr(cxt);
+            return compilationUnitContext2PackageDescr(cxt, drlParser.getTokenStream());
         } catch (Exception e) {
             LOGGER.error("Exception while creating PackageDescr", e);
             errors.add(new DRLParserError(e));
