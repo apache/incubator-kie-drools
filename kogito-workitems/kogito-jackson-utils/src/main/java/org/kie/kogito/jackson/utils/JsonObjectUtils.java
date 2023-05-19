@@ -71,8 +71,8 @@ public class JsonObjectUtils {
             return BigIntegerNode.valueOf((BigInteger) value);
         } else if (value instanceof byte[]) {
             return BinaryNode.valueOf((byte[]) value);
-        } else if (value instanceof Iterable) {
-            return mapToArray((Iterable<?>) value);
+        } else if (value instanceof Collection) {
+            return mapToArray((Collection<?>) value);
         } else if (value instanceof Map) {
             return mapToNode((Map<String, Object>) value);
         } else {
@@ -180,12 +180,12 @@ public class JsonObjectUtils {
         return objectNode;
     }
 
-    private static ArrayNode mapToArray(Iterable<?> iterable) {
-        return mapToArray(iterable, ObjectMapperFactory.listenerAware().createArrayNode());
+    private static ArrayNode mapToArray(Collection<?> collection) {
+        return mapToArray(collection, ObjectMapperFactory.listenerAware().createArrayNode());
     }
 
-    private static ArrayNode mapToArray(Iterable<?> iterable, ArrayNode arrayNode) {
-        for (Object item : iterable) {
+    private static ArrayNode mapToArray(Collection<?> collection, ArrayNode arrayNode) {
+        for (Object item : collection) {
             arrayNode.add(fromValue(item));
         }
         return arrayNode;

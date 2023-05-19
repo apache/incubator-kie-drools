@@ -1,0 +1,37 @@
+{
+  "id": "forEachRest",
+  "version": "1.0",
+  "name": "For each with custom rest",
+  "description": "Test for each state with rest workitem handler",
+  "start": "start",
+  "functions": [
+    {
+      "name": "division",
+      "type": "custom",
+      "operation": "rest:get:/division"
+    }
+  ],
+  "states": [ {
+      "name": "start",
+      "type": "foreach",
+      "iterationParam" : "item",
+      "inputCollection": ".input",
+      "outputCollection": ".output",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "division",
+            "arguments": {
+              "QUERY_dividend": ".item",
+              "QUERY_divisor" : ".divisor"
+             }
+          }, 
+           "actionDataFilter" : {
+              "results" : ".result+1"
+           }
+         }
+       ],
+       "end": true
+     }
+  ]
+}
