@@ -13,6 +13,9 @@
   <groupId>org.kie</groupId>
   <artifactId>drools-parent</artifactId>
   <packaging>pom</packaging>
+  <modules>
+    <module>kie-ci/kie-ci-test-jar</module>
+  </modules>
   <version>8.39.0-SNAPSHOT</version>
 
   <name>Drools :: Parent</name>

@@ -176,6 +176,32 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <configuration>
+          <mergeUserSettings>true</mergeUserSettings>
+          <streamLogs>true</streamLogs>
+          <pomIncludes>
+            <pomInclude>kie-ci-test-jars/pom.xml</pomInclude>
+          </pomIncludes>
+          <projectsDirectory>${project.basedir}</projectsDirectory>
+          <goals>clean install</goals>
+          <properties>
+            <kie.maven.settings.custom>${project.build.testOutputDirectory}/kie-ci-tests-custom-settings.xml</kie.maven.settings.custom>
+          </properties>
+          <localRepositoryPath>${project.build.directory}/testing-maven-repo</localRepositoryPath>
+        </configuration>
+        <executions>
+          <execution>
+            <id>build-kie-ci-test-jars</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
