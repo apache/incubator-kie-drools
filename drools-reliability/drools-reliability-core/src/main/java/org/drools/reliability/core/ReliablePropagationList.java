@@ -15,8 +15,8 @@
 
 package org.drools.reliability.core;
 
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.Storage;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.SynchronizedPropagationList;
 
@@ -41,23 +41,12 @@ public class ReliablePropagationList extends SynchronizedPropagationList impleme
         this.tail = originalList.tail;
     }
 
-    public boolean entryInTheList(Object entry){
-
-        boolean inTheList=false;
-
-        PropagationEntry current = this.head;
-
-        while (current!=null && !inTheList){
-            if (current instanceof  PropagationEntry.Insert){
-                InternalFactHandle fh = ((PropagationEntry.Insert) current).getHandle();
-                inTheList = fh.getObject().equals(entry);
-            }else if (entry instanceof PropagationEntry.Update){
-
-            }
-            current = current.getNext();
-        }
-
-        return inTheList;
+    @Override
+    public synchronized PropagationEntry takeAll() {
+        PropagationEntry p = super.takeAll();
+        Storage<String, Object> componentsStorage = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(this.reteEvaluator, "components");
+        componentsStorage.put("PropagationList", this);
+        return p;
     }
 
     @Override

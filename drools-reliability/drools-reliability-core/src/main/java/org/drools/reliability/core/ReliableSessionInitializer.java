@@ -108,11 +108,24 @@ public class ReliableSessionInitializer {
 
         @Override
         public InternalWorkingMemory init(InternalWorkingMemory session, PersistedSessionOption persistedSessionOption) {
-
+            if (!persistedSessionOption.isNewSession()) {
+                // re-propagate objects from the storage to the new session
+                populateSessionFromStorage(session);
+            }
             //session.setWorkingMemoryActionListener(entry -> onWorkingMemoryAction(session, entry));
             session.getRuleRuntimeEventSupport().addEventListener(new FullReliableSessionInitializer.FullStoreRuntimeEventListener(session));
             return session;
         }
+
+        private void populateSessionFromStorage(InternalWorkingMemory session) {
+            Map<InternalWorkingMemoryEntryPoint, List<StoredObject>> objects = new HashMap<>();
+
+            for (EntryPoint ep : session.getEntryPoints()) {
+                FullReliableObjectStore store = (FullReliableObjectStore) ((WorkingMemoryEntryPoint) ep).getObjectStore();
+                store.reInit(session, (InternalWorkingMemoryEntryPoint) ep);
+            }
+        }
+
         static class FullStoreRuntimeEventListener implements RuleRuntimeEventListener {
 
             private final Storage<Object, Object> componentsCache;
@@ -121,6 +134,7 @@ public class ReliableSessionInitializer {
             FullStoreRuntimeEventListener(InternalWorkingMemory session) {
                 this.componentsCache = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(session, "components");
                 this.propagationList = (ReliablePropagationList) ((ReliableAgenda) session.getAgenda()).getPropagationList();
+                //propagationList = (ReliablePropagationList) componentsCache.get("PropagationList");
             }
 
             public void objectInserted(ObjectInsertedEvent ev) {

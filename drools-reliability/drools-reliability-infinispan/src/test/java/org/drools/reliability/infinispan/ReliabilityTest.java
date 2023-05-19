@@ -252,7 +252,58 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         restoreSession(BASIC_RULE, strategy);
 
+
         assertThat(session.fireAllRules()).isEqualTo(1);
     }
-    
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderFull")
+    void insertFireFailover_shouldNotRepeatFiredMatch(PersistedSessionOption.PersistenceStrategy strategy){
+        createSession(BASIC_RULE, strategy);
+
+        insertString("M");
+        insertMatchingPerson("Maria", 30);
+
+        session.fireAllRules();
+
+        failover();
+
+        restoreSession(BASIC_RULE, strategy);
+
+        assertThat(session.fireAllRules()).isEqualTo(0);
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderFull")
+    void insertUpdateFailover_shouldNotFiredMatch(PersistedSessionOption.PersistenceStrategy strategy){
+        createSession(BASIC_RULE, strategy);
+
+        insertString("M");
+        FactHandle fhMaria = insertMatchingPerson("Maria", 30);
+
+        updateWithNonMatchingPerson(fhMaria, new Person("Nicole", 32));
+
+        failover();
+
+        restoreSession(BASIC_RULE, strategy);
+
+        assertThat(session.fireAllRules()).isEqualTo(0);
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderFull")
+    void insertNonMatching_Failover_UpdateWithMatching_ShouldFiredMatch(PersistedSessionOption.PersistenceStrategy strategy){
+        createSession(BASIC_RULE, strategy);
+
+        insertString("N");
+        FactHandle fhMaria = insertMatchingPerson("Maria", 30);
+
+        failover();
+
+        restoreSession(BASIC_RULE, strategy);
+
+        updateWithMatchingPerson(fhMaria, new Person("Nicole",32));
+
+        assertThat(session.fireAllRules()).isEqualTo(1);
+    }
 }

@@ -300,6 +300,7 @@ public interface PropagationEntry {
             out.writeObject(next);
             out.writeObject(handle);
             out.writeObject(context);
+            //out.writeObject(objectTypeConf);
         }
 
         @Override
@@ -307,13 +308,16 @@ public interface PropagationEntry {
             this.next = (PropagationEntry) in.readObject();
             this.handle = (InternalFactHandle) in.readObject();
             this.context = (PropagationContext) in.readObject();
+            //this.objectTypeConf = (ObjectTypeConf) in.readObject();
         }
     }
 
-    class Update extends AbstractPropagationEntry {
-        private final InternalFactHandle handle;
-        private final PropagationContext context;
-        private final ObjectTypeConf objectTypeConf;
+    class Update extends AbstractPropagationEntry implements Externalizable {
+        private InternalFactHandle handle;
+        private PropagationContext context;
+        private ObjectTypeConf objectTypeConf;
+
+        public Update(){}
 
         public Update(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf) {
             this.handle = handle;
@@ -326,6 +330,10 @@ public interface PropagationEntry {
         }
 
         public static void execute(InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, ReteEvaluator reteEvaluator) {
+            if (objectTypeConf == null) {
+                // it can be null after deserialization
+                objectTypeConf = handle.getEntryPoint(reteEvaluator).getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(handle.getEntryPointId(), handle.getObject());
+            }
             // make a reference to the previous tuples, then null then on the handle
             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.detachLinkedTuples() );
             ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
@@ -351,6 +359,20 @@ public interface PropagationEntry {
         @Override
         public String toString() {
             return "Update of " + handle.getObject();
+        }
+
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(next);
+            out.writeObject(handle);
+            out.writeObject(context);
+        }
+
+        @Override
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            this.next = (PropagationEntry) in.readObject();
+            this.handle = (InternalFactHandle) in.readObject();
+            this.context = (PropagationContext) in.readObject();
         }
     }
 
