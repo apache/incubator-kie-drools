@@ -33,6 +33,7 @@ public class OperationStateBuilder extends StateBuilder<OperationStateBuilder, O
 
     public OperationStateBuilder action(ActionBuilder builder) {
         builder.getFunction().ifPresent(functionDefinitions::add);
+        builder.getEvent().ifPresent(eventDefinitions::add);
         actions.add(builder.build());
         return this;
     }

@@ -38,6 +38,7 @@ public class TransitionBuilder<T> {
 
     public TransitionBuilder<T> next(StateBuilder<?, ?> stateBuilder) {
         workflow.addFunctions(stateBuilder.getFunctions());
+        workflow.addEvents(stateBuilder.getEvents());
         next(stateBuilder.build());
         return this;
     }

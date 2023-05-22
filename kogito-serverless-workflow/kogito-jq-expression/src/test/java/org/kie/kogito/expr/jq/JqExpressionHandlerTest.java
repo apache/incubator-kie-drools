@@ -18,9 +18,7 @@ package org.kie.kogito.expr.jq;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -33,8 +31,8 @@ import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.serverless.workflow.test.MockBuilder;
-import org.kie.kogito.serverless.workflow.utils.ConfigResolver;
 import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
+import org.kie.kogito.serverless.workflow.utils.MapConfigResolver;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -49,17 +47,9 @@ class JqExpressionHandlerTest {
 
     @BeforeAll
     public static void setConfigResolver() {
-        Map<String, Object> configMap = new HashMap<>();
-        configMap.put("lettersonly", "secretlettersonly");
-        configMap.put("dot.secret", "secretdotsecret");
-        configMap.put("dash-secret", "secretdashsecret");
-
-        ConfigResolverHolder.setConfigResolver(new ConfigResolver() {
-            @Override
-            public <T> Optional<T> getConfigProperty(String name, Class<T> clazz) {
-                return Optional.ofNullable((T) configMap.get(name));
-            }
-        });
+        ConfigResolverHolder.setConfigResolver(new MapConfigResolver(Map.of("lettersonly", "secretlettersonly",
+                "dot.secret", "secretdotsecret",
+                "dash-secret", "secretdashsecret")));
     }
 
     @Test

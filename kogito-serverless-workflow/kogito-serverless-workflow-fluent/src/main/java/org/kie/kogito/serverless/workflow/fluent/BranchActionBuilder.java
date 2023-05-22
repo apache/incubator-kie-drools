@@ -39,6 +39,7 @@ public class BranchActionBuilder {
 
     public BranchActionBuilder action(ActionBuilder action) {
         action.getFunction().ifPresent(parent.getFunctions()::add);
+        action.getEvent().ifPresent(parent.getEvents()::add);
         actions.add(action.build());
         return this;
     }

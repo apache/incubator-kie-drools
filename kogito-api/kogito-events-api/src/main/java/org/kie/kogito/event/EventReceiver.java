@@ -26,7 +26,7 @@ import java.util.function.Function;
  * @see EventUnmarshaller
  * @see CloudEventUnmarshaller
  */
-public interface EventReceiver {
+public interface EventReceiver extends AutoCloseable {
 
     /**
      * Subscribe an event consumer for a receiver. The implementation will receive the event (in some format) from the external service, transform it
@@ -36,4 +36,8 @@ public interface EventReceiver {
      * @param dataClass the model object class wrapped into the data event
      */
     <T> void subscribe(Function<DataEvent<T>, CompletionStage<?>> consumer, Class<T> dataClass);
+
+    @Override
+    default void close() throws Exception {
+    }
 }

@@ -25,13 +25,13 @@ import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
 
-import org.kie.kogito.addon.cloudevents.Subscription;
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.event.CloudEventUnmarshallerFactory;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.KogitoEventStreams;
+import org.kie.kogito.event.Subscription;
 import org.kie.kogito.event.impl.CloudEventConverter;
 import org.kie.kogito.event.impl.DataEventConverter;
 import org.slf4j.Logger;

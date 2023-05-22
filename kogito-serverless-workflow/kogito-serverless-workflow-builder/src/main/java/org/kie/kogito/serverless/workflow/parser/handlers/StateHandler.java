@@ -130,7 +130,7 @@ public abstract class StateHandler<S extends State> {
             String data,
             String defaultWorkflowVar) {
         return NodeFactoryUtils.sendEventNode(
-                actionNode.action(new ProduceEventActionSupplier(workflow, data)),
+                actionNode.action(new ProduceEventActionSupplier(workflow, eventDefinition.getType(), defaultWorkflowVar, data)),
                 eventDefinition,
                 defaultWorkflowVar);
     }

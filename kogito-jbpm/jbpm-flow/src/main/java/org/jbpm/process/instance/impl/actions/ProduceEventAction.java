@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.impl.Action;
-import org.kie.kogito.event.impl.AbstractMessageProducer;
+import org.kie.kogito.event.impl.MessageProducer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
@@ -31,9 +31,9 @@ public class ProduceEventAction<T> implements Action, Serializable {
 
     private final String varName;
     private final String triggerName;
-    private final Supplier<AbstractMessageProducer<T>> supplier;
+    private final Supplier<MessageProducer<T>> supplier;
 
-    public ProduceEventAction(String triggerName, String varName, Supplier<AbstractMessageProducer<T>> supplier) {
+    public ProduceEventAction(String triggerName, String varName, Supplier<MessageProducer<T>> supplier) {
         this.triggerName = triggerName;
         this.varName = varName;
         this.supplier = supplier;

@@ -43,6 +43,7 @@ public class ForEachStateBuilder extends StateBuilder<ForEachStateBuilder, ForEa
 
     public ForEachStateBuilder action(ActionBuilder builder) {
         builder.getFunction().ifPresent(functionDefinitions::add);
+        builder.getEvent().ifPresent(eventDefinitions::add);
         actions.add(builder.build());
         return this;
     }

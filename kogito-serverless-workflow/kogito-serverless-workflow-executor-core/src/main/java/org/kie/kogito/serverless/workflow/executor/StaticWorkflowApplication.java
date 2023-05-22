@@ -15,12 +15,19 @@
  */
 package org.kie.kogito.serverless.workflow.executor;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeoutException;
 
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.SubProcessNode;
@@ -30,6 +37,8 @@ import org.kie.kogito.Model;
 import org.kie.kogito.StaticApplication;
 import org.kie.kogito.StaticConfig;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
+import org.kie.kogito.config.StaticConfigBean;
+import org.kie.kogito.event.impl.EventFactoryUtils;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -37,6 +46,10 @@ import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
+import org.kie.kogito.serverless.workflow.utils.MultiSourceConfigResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -60,21 +73,41 @@ import io.serverlessworkflow.api.Workflow;
  */
 public class StaticWorkflowApplication extends StaticApplication implements AutoCloseable {
 
+    private static final Logger logger = LoggerFactory.getLogger(StaticWorkflowApplication.class);
     private final StaticWorkflowProcesses processes = new StaticWorkflowProcesses();
     private Collection<KogitoWorkItemHandler> handlers = new ArrayList<>();
     private Iterable<StaticApplicationRegister> applicationRegisters;
     private Iterable<StaticWorkflowRegister> workflowRegisters;
+    private Iterable<StaticProcessRegister> processRegisters;
+    private Collection<AutoCloseable> closeables = new ArrayList<>();
+    private Map<String, ProcessInstance<JsonNodeModel>> processInstances = new HashMap<>();
 
     public static StaticWorkflowApplication create() {
-        StaticWorkflowApplication application = new StaticWorkflowApplication();
+        Properties properties = new Properties();
+        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties")) {
+            if (is != null) {
+                properties.load(is);
+            }
+        } catch (IOException io) {
+            logger.warn("Error loading application.properties from classpath", io);
+        }
+        return create((Map) properties);
+    }
+
+    public static StaticWorkflowApplication create(Map<String, Object> properties) {
+        StaticWorkflowApplication application = new StaticWorkflowApplication(properties);
         application.applicationRegisters.forEach(register -> register.register(application));
         return application;
     }
 
-    private StaticWorkflowApplication() {
-        super(new StaticConfig(new Addons(Collections.emptySet()), new StaticProcessConfig()));
+    private StaticWorkflowApplication(Map<String, Object> properties) {
+        super(new StaticConfig(new Addons(Collections.emptySet()), new StaticProcessConfig(), new StaticConfigBean()));
+        if (!properties.isEmpty()) {
+            ConfigResolverHolder.setConfigResolver(MultiSourceConfigResolver.withSystemProperties(properties));
+        }
         applicationRegisters = ServiceLoader.load(StaticApplicationRegister.class);
         workflowRegisters = ServiceLoader.load(StaticWorkflowRegister.class);
+        processRegisters = ServiceLoader.load(StaticProcessRegister.class);
     }
 
     /**
@@ -135,6 +168,9 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
     public JsonNodeModel execute(Process<JsonNodeModel> process, JsonNodeModel model) {
         ProcessInstance<JsonNodeModel> processInstance = process.createInstance(model);
         processInstance.start();
+        if (!isFinish(processInstance)) {
+            processInstances.put(processInstance.id(), processInstance);
+        }
         return processInstance.variables();
     }
 
@@ -153,10 +189,52 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
         handlers.add(handler);
     }
 
+    public void registerCloseable(AutoCloseable closeable) {
+        closeables.add(closeable);
+    }
+
+    public Optional<JsonNodeModel> variables(String id) {
+        return Optional.ofNullable(processInstances.get(id)).map(ProcessInstance::variables);
+    }
+
+    public Optional<JsonNodeModel> waitForFinish(String id, Duration duration) throws InterruptedException, TimeoutException {
+        return waitForFinish(id, duration, Duration.ofMillis(750));
+    }
+
+    public Optional<JsonNodeModel> waitForFinish(String id, Duration duration, Duration pollInterval) throws InterruptedException, TimeoutException {
+        if (duration.compareTo(pollInterval) < 0) {
+            throw new IllegalArgumentException("Duration " + duration + " is lower than poll interval " + pollInterval);
+        }
+        ProcessInstance<JsonNodeModel> pi = processInstances.get(id);
+        if (pi == null) {
+            return Optional.empty();
+        }
+        Duration time = Duration.ZERO;
+        while (!isFinish(pi)) {
+            Thread.sleep(pollInterval.toMillis());
+            time = time.plus(pollInterval);
+            if (time.compareTo(duration) > 0) {
+                throw new TimeoutException("Elapsed time " + time + " Max time " + duration);
+            }
+        }
+        if (isFinish(pi)) {
+            processInstances.remove(id);
+        }
+        JsonNodeModel model = pi.variables();
+        logger.info("Process finished {}", model);
+        return Optional.of(model);
+    }
+
+    private boolean isFinish(ProcessInstance<JsonNodeModel> pi) {
+        int status = pi.status();
+        return status == ProcessInstance.STATE_COMPLETED || status == ProcessInstance.STATE_ERROR || status == ProcessInstance.STATE_ABORTED;
+    }
+
     private Process<JsonNodeModel> createProcess(Workflow workflow) {
-        workflowRegisters.forEach(register -> register.register(this, workflow));
+        workflowRegisters.forEach(r -> r.register(this, workflow));
         StaticWorkflowProcess process = new StaticWorkflowProcess(this, handlers, ServerlessWorkflowParser
                 .of(workflow, JavaKogitoBuildContext.builder().withApplicationProperties(System.getProperties()).build()).getProcessInfo().info());
+        processRegisters.forEach(r -> r.register(this, workflow, process));
         WorkflowProcessImpl workflowProcess = (WorkflowProcessImpl) process.get();
         workflowProcess.getNodesRecursively().forEach(node -> {
             if (node instanceof SubProcessNode) {
@@ -164,6 +242,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
                 subProcess.setSubProcessFactory(new StaticSubprocessFactory(processes.map.get(subProcess.getProcessId())));
             }
         });
+        EventFactoryUtils.ready();
         return process;
     }
 
@@ -191,7 +270,15 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
 
     @Override
     public void close() {
+        processRegisters.forEach(StaticProcessRegister::close);
         workflowRegisters.forEach(StaticWorkflowRegister::close);
         applicationRegisters.forEach(StaticApplicationRegister::close);
+        closeables.forEach(t -> {
+            try {
+                t.close();
+            } catch (Exception e) {
+                logger.warn("Error closing resource", e);
+            }
+        });
     }
 }

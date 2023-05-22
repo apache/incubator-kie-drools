@@ -77,7 +77,9 @@ public class AsyncAPITypeHandler implements FunctionTypeHandler {
     private NodeFactory<?, ?> buildPublishNode(Workflow workflow, ParserContext context, RuleFlowNodeContainerFactory<?, ?> factory, FunctionDefinition functionDef, FunctionRef functionRef,
             VariableInfo varInfo, AsyncChannelInfo entry) {
         JsonNode args = functionRef.getArguments();
-        return NodeFactoryUtils.sendEventNode(factory.actionNode(context.newId()).action(new ProduceEventActionSupplier(workflow, args != null ? args.toString() : null)), functionDef.getName(),
+        return NodeFactoryUtils.sendEventNode(
+                factory.actionNode(context.newId()).action(new ProduceEventActionSupplier(workflow, entry.getName(), varInfo.getInputVar(), args != null ? args.toString() : null)),
+                functionDef.getName(),
                 entry.getName(), varInfo.getInputVar());
     }
 }

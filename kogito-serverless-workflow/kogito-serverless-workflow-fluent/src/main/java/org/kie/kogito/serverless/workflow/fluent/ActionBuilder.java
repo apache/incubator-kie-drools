@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 
 import io.serverlessworkflow.api.actions.Action;
+import io.serverlessworkflow.api.events.EventRef;
 import io.serverlessworkflow.api.filters.ActionDataFilter;
 import io.serverlessworkflow.api.functions.FunctionRef;
 import io.serverlessworkflow.api.functions.SubFlowRef;
@@ -37,9 +38,14 @@ public class ActionBuilder {
 
     private Action action;
     private Optional<FunctionBuilder> functionDefinition = Optional.empty();
+    private Optional<EventDefBuilder> eventDefinition = Optional.empty();
 
     final Optional<FunctionBuilder> getFunction() {
         return functionDefinition;
+    }
+
+    final Optional<EventDefBuilder> getEvent() {
+        return eventDefinition;
     }
 
     public static ActionBuilder call(String functionName) {
@@ -52,6 +58,12 @@ public class ActionBuilder {
 
     public static ActionBuilder call(String functionName, Object args) {
         return call(functionName, JsonObjectUtils.fromValue(args));
+    }
+
+    public static ActionBuilder trigger(EventDefBuilder builder, String data) {
+        ActionBuilder actionBuilder = new ActionBuilder(new Action().withEventRef(new EventRef().withData(data).withTriggerEventRef(builder.getName())));
+        actionBuilder.eventDefinition = Optional.of(builder);
+        return actionBuilder;
     }
 
     public static ActionBuilder call(FunctionBuilder functionBuilder, JsonNode args) {
@@ -145,5 +157,4 @@ public class ActionBuilder {
         }
         return this;
     }
-
 }

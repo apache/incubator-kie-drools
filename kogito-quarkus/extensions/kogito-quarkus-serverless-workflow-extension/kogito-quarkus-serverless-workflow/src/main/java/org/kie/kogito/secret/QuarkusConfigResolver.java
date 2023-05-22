@@ -42,4 +42,9 @@ public class QuarkusConfigResolver implements ConfigResolver {
             return SecretKeys.doUnlocked(() -> config.getOptionalValue(key, clazz));
         }
     }
+
+    @Override
+    public Iterable<String> getPropertyNames() {
+        return config.getPropertyNames();
+    }
 }

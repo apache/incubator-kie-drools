@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
-import java.util.Optional;
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,13 +26,7 @@ public class BuildEvaluatorTest {
 
     @BeforeEach
     void setup() {
-        ConfigResolverHolder.setConfigResolver(new ConfigResolver() {
-
-            @Override
-            public <T> Optional<T> getConfigProperty(String name, Class<T> clazz) {
-                return name.equals("key") ? (Optional<T>) Optional.of("value") : Optional.empty();
-            }
-        });
+        ConfigResolverHolder.setConfigResolver(new MapConfigResolver(Collections.singletonMap("key", "value")));
     }
 
     @Test

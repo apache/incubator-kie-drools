@@ -15,23 +15,9 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
-import java.util.Optional;
-
 public class ConfigResolverHolder {
 
-    private static ConfigResolver configResolver = new ConfigResolver() {
-        @Override
-        public <T> Optional<T> getConfigProperty(String name, Class<T> clazz) {
-
-            Object value = null;
-            if (Integer.class.isAssignableFrom(clazz)) {
-                value = Integer.getInteger(name);
-            } else if (String.class.isAssignableFrom(clazz)) {
-                value = System.getProperty(name);
-            }
-            return Optional.ofNullable(clazz.cast(value));
-        }
-    };
+    private static ConfigResolver configResolver = new SystemPropertiesConfigResolver();
 
     public static void setConfigResolver(ConfigResolver secretResolver) {
         ConfigResolverHolder.configResolver = secretResolver;

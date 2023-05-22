@@ -30,7 +30,7 @@ states:
       - name: sendApprovedDisaResult
         eventRef:
           triggerEventRef: sendProcessResultEvent
-          data: '{ decision: \"Approved\" }'
+          data: "{ decision: \"Approved\" }"
     end: true
   - name: DeniedVisa
     type: operation
@@ -38,7 +38,7 @@ states:
       - name: sendDeniedVisaResult
         eventRef:
           triggerEventRef: sendProcessResultEvent
-          data: '{ decision: \"Denied\" }'
+          data: "{ decision: \"Denied\" }"
     end: true
   - name: HandleNoVisaDecision
     type: operation
@@ -46,5 +46,5 @@ states:
       - name: sendNoDecisionResult
         eventRef:
           triggerEventRef: sendProcessResultEvent
-          data: '{ decision: \"NoDecision\" }'
+          data: "{ decision: \"NoDecision\" }"
     end: true

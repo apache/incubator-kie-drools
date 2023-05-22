@@ -30,10 +30,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.events.EventDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.start.Start;
 import io.serverlessworkflow.api.states.DefaultState;
 import io.serverlessworkflow.api.workflow.Constants;
+import io.serverlessworkflow.api.workflow.Events;
 import io.serverlessworkflow.api.workflow.Functions;
 
 public class WorkflowBuilder {
@@ -50,6 +52,7 @@ public class WorkflowBuilder {
 
     private Workflow workflow;
     private List<FunctionDefinition> functions = new LinkedList<>();
+    private List<EventDefinition> events = new LinkedList<>();
     private Deque<DefaultState> states = new LinkedList<>();
 
     private WorkflowBuilder(String id, String name, String version) {
@@ -78,6 +81,7 @@ public class WorkflowBuilder {
 
     public TransitionBuilder<WorkflowBuilder> start(StateBuilder<?, ?> stateBuilder) {
         addFunctions(stateBuilder.getFunctions());
+        addEvents(stateBuilder.getEvents());
         startState(stateBuilder.build());
         return new TransitionBuilder<>(this, this);
     }
@@ -90,12 +94,19 @@ public class WorkflowBuilder {
     public Workflow build() {
         workflow.setStates((List) states);
         workflow.withFunctions(new Functions(functions));
+        workflow.withEvents(new Events(events));
         return workflow;
     }
 
     public final WorkflowBuilder function(FunctionBuilder functionBuilder) {
         FunctionDefinition function = functionBuilder.build();
         functions.add(function);
+        return this;
+    }
+
+    public final WorkflowBuilder event(EventDefBuilder eventBuilder) {
+        EventDefinition event = eventBuilder.build();
+        events.add(event);
         return this;
     }
 
@@ -117,5 +128,9 @@ public class WorkflowBuilder {
 
     void addFunctions(Collection<FunctionBuilder> functions) {
         functions.forEach(this::function);
+    }
+
+    void addEvents(Collection<EventDefBuilder> events) {
+        events.forEach(this::event);
     }
 }

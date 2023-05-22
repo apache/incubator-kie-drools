@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.addon.cloudevents;
+package org.kie.kogito.event;
 
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
-
-import org.kie.kogito.event.Converter;
 
 public class Subscription<T, S> {
     private final Function<T, CompletionStage<?>> consumer;

@@ -19,6 +19,7 @@
     <version.io.quarkus>2.16.6.Final</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
     <version.org.springframework.boot>2.6.6</version.org.springframework.boot>
+    <version.org.apache.kafka>3.3.2</version.org.apache.kafka>
 
     <!-- dependencies versions -->
     <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
@@ -202,6 +203,12 @@
         <groupId>com.github.javaparser</groupId>
         <artifactId>javaparser-symbol-solver-core</artifactId>
         <version>${version.com.github.javaparser}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka-clients</artifactId>
+        <version>${version.org.apache.kafka}</version>
       </dependency>
 
       <!-- marshalling -->
@@ -658,6 +665,11 @@
       <dependency>
         <groupId>io.cloudevents</groupId>
         <artifactId>cloudevents-json-jackson</artifactId>
+        <version>${version.io.cloudevents}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.cloudevents</groupId>
+        <artifactId>cloudevents-kafka</artifactId>
         <version>${version.io.cloudevents}</version>
       </dependency>
       <dependency>

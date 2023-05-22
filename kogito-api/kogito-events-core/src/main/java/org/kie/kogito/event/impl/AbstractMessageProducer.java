@@ -21,7 +21,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractMessageProducer<D> {
+public abstract class AbstractMessageProducer<D> implements MessageProducer<D> {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageProducer.class);
 
@@ -44,6 +44,7 @@ public abstract class AbstractMessageProducer<D> {
 
     }
 
+    @Override
     public void produce(KogitoProcessInstance pi, D eventData) {
         emitter.emit(DataEventFactory.from(eventData, trigger, pi))
                 .exceptionally(ex -> {

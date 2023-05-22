@@ -24,12 +24,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.addon.cloudevents.Subscription;
 import org.kie.kogito.event.CloudEventUnmarshallerFactory;
 import org.kie.kogito.event.Converter;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.event.EventUnmarshaller;
+import org.kie.kogito.event.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
