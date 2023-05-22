@@ -18,31 +18,24 @@ package org.kie.kogito.addons.quarkus.k8s.config;
 import java.net.URI;
 import java.util.Optional;
 
-import org.kie.kogito.addons.quarkus.k8s.KubernetesProtocol;
-import org.kie.kogito.addons.quarkus.k8s.discovery.GVK;
-import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceDiscovery;
-import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceUri;
-import org.kie.kogito.addons.quarkus.k8s.discovery.OpenShiftResourceDiscovery;
-import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
-import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceUri;
+import org.kie.kogito.addons.k8s.resource.catalog.KubernetesProtocol;
+import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalog;
+import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalogKey;
 import org.slf4j.LoggerFactory;
 
 class KubeDiscoveryConfigCacheUpdater {
 
-    private final VanillaKubernetesResourceDiscovery vanillaKubernetesResourceDiscovery;
+    private final KubernetesServiceCatalog kubernetesServiceCatalog;
 
-    private final OpenShiftResourceDiscovery openShiftResourceDiscovery;
-
-    private final KnativeServiceDiscovery knativeServiceDiscovery;
-
-    KubeDiscoveryConfigCacheUpdater(VanillaKubernetesResourceDiscovery vanillaKubernetesResourceDiscovery,
-            OpenShiftResourceDiscovery openShiftResourceDiscovery, KnativeServiceDiscovery knativeServiceDiscovery) {
-        this.vanillaKubernetesResourceDiscovery = vanillaKubernetesResourceDiscovery;
-        this.openShiftResourceDiscovery = openShiftResourceDiscovery;
-        this.knativeServiceDiscovery = knativeServiceDiscovery;
+    KubeDiscoveryConfigCacheUpdater(KubernetesServiceCatalog kubernetesServiceCatalog) {
+        this.kubernetesServiceCatalog = kubernetesServiceCatalog;
     }
 
     Optional<URI> update(String rawAddress) {
+        return kubernetesServiceCatalog.getServiceAddress(createServiceCatalogKey(rawAddress));
+    }
+
+    private static KubernetesServiceCatalogKey createServiceCatalogKey(String rawAddress) {
         String[] protoAndValues = rawAddress.split(":");
         if (protoAndValues.length <= 1) {
             LoggerFactory.getLogger(KubeDiscoveryConfigCacheUpdater.class.getName())
@@ -50,29 +43,8 @@ class KubeDiscoveryConfigCacheUpdater {
         }
 
         KubernetesProtocol protocol = KubernetesProtocol.from(protoAndValues[0]);
+        String coordinates = protoAndValues[1];
 
-        switch (protocol) {
-            case VANILLA_KUBERNETES:
-                return vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse(protoAndValues[1]));
-            case OPENSHIFT:
-                return openShiftResourceDiscovery.query(VanillaKubernetesResourceUri.parse(protoAndValues[1]));
-            case KNATIVE:
-                String[] splitValues = protoAndValues[1].split("/");
-
-                switch (splitValues.length) {
-                    case 1:
-                        return knativeServiceDiscovery.query(new KnativeServiceUri(null, splitValues[0]));
-                    case 2:
-                        if (GVK.isValid(splitValues[0])) {
-                            return vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse(protoAndValues[1]));
-                        } else {
-                            return knativeServiceDiscovery.query(new KnativeServiceUri(splitValues[0], splitValues[1]));
-                        }
-                    default:
-                        return vanillaKubernetesResourceDiscovery.query(VanillaKubernetesResourceUri.parse(protoAndValues[1]));
-                }
-            default:
-                throw new UnsupportedOperationException("Unsupported protocol: " + protocol);
-        }
+        return new KubernetesServiceCatalogKey(protocol, coordinates);
     }
 }

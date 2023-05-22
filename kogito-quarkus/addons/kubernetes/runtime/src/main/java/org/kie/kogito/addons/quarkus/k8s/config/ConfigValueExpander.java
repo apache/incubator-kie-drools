@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.addons.quarkus.k8s.config;
 
-import org.kie.kogito.addons.quarkus.k8s.KubernetesProtocol;
+import org.kie.kogito.addons.k8s.resource.catalog.KubernetesProtocol;
 
 import io.smallrye.config.ConfigValue;
 

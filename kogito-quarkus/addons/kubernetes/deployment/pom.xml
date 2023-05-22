@@ -14,11 +14,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-kubernetes-client-deployment</artifactId>
     </dependency>
-    <!-- this dependency will be made optional: https://issues.redhat.com/browse/KOGITO-7901 -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-openshift-client-deployment</artifactId>
-    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-cache-deployment</artifactId>
@@ -39,6 +34,11 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5-internal</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

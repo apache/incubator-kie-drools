@@ -19,8 +19,13 @@ import java.net.URI;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.kie.kogito.addons.k8s.resource.catalog.DefaultKubernetesServiceCatalogFactory;
+import org.kie.kogito.addons.k8s.resource.catalog.KubernetesProtocol;
+import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalog;
+import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalogKey;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,16 +38,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 @ApplicationScoped
 final class KnativeServerlessWorkflowCustomFunction {
 
-    private final KnativeServiceRegistry knativeServiceRegistry;
+    private final KubernetesServiceCatalog kubernetesServiceCatalog;
 
     private final KnativeServiceRequestClientResolver knativeServiceRequestClientResolver;
 
     @Inject
-    KnativeServerlessWorkflowCustomFunction(KnativeServiceRegistry knativeServiceRegistry,
+    KnativeServerlessWorkflowCustomFunction(Instance<KubernetesServiceCatalog> kubernetesServiceCatalog,
             KnativeServiceRequestClientResolver knativeServiceRequestClientResolver) {
-        this.knativeServiceRegistry = knativeServiceRegistry;
-        this.knativeServiceRequestClientResolver = knativeServiceRequestClientResolver;
+        this.kubernetesServiceCatalog = kubernetesServiceCatalog.isUnsatisfied()
+                ? DefaultKubernetesServiceCatalogFactory.createKubernetesServiceCatalog()
+                : kubernetesServiceCatalog.get();
 
+        this.knativeServiceRequestClientResolver = knativeServiceRequestClientResolver;
     }
 
     JsonNode execute(String processInstanceId, String operationString, Map<String, Object> arguments) {
@@ -60,7 +67,7 @@ final class KnativeServerlessWorkflowCustomFunction {
     private URI getServiceAddress(String operation) {
         String service = operation.split("\\?")[0];
 
-        return knativeServiceRegistry.getServiceAddress(service)
+        return kubernetesServiceCatalog.getServiceAddress(new KubernetesServiceCatalogKey(KubernetesProtocol.KNATIVE, service))
                 .orElseThrow(() -> new WorkItemExecutionException("The Knative service '" + service
                         + "' could not be found."));
     }

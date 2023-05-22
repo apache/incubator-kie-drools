@@ -47,13 +47,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-          <groupId>org.assertj</groupId>
-          <artifactId>assertj-core</artifactId>
-          <scope>test</scope>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-quarkus-kubernetes-test-utils</artifactId>
+            <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog-test-utils</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- this is used implicitly by Maven parallel builds so let's make Maven aware of it -->

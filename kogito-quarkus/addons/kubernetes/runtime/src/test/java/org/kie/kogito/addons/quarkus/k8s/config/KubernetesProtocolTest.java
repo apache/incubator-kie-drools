@@ -16,7 +16,7 @@
 package org.kie.kogito.addons.quarkus.k8s.config;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.addons.quarkus.k8s.KubernetesProtocol;
+import org.kie.kogito.addons.k8s.resource.catalog.KubernetesProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -24,9 +24,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class KubernetesProtocolTest {
 
     @Test
-    void parseVanillaKubernetes() {
+    void parseKubernetes() {
         assertThat(KubernetesProtocol.from("kubernetes"))
-                .isEqualTo(KubernetesProtocol.VANILLA_KUBERNETES);
+                .isEqualTo(KubernetesProtocol.KUBERNETES);
     }
 
     @Test

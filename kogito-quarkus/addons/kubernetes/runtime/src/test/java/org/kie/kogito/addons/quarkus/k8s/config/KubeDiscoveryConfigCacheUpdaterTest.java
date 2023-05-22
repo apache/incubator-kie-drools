@@ -21,9 +21,7 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceDiscovery;
-import org.kie.kogito.addons.quarkus.k8s.discovery.OpenShiftResourceDiscovery;
-import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
+import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalog;
 
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
@@ -45,18 +43,12 @@ class KubeDiscoveryConfigCacheUpdaterTest {
     final String remoteServiceUrl = "http://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io";
 
     @Inject
-    VanillaKubernetesResourceDiscovery vanillaDiscovery;
-
-    @Inject
-    OpenShiftResourceDiscovery openShiftDiscovery;
-
-    @Inject
-    KnativeServiceDiscovery knativeDiscovery;
+    KubernetesServiceCatalog kubernetesServiceCatalog;
 
     @BeforeEach
     void beforeEach() {
         createServiceIfNotExists(mockServer, remoteServiceUrl, "knative/quarkus-greeting.yaml", "test", "serverless-workflow-greeting-quarkus");
-        kubeDiscoveryConfigCacheUpdater = new KubeDiscoveryConfigCacheUpdater(vanillaDiscovery, openShiftDiscovery, knativeDiscovery);
+        kubeDiscoveryConfigCacheUpdater = new KubeDiscoveryConfigCacheUpdater(kubernetesServiceCatalog);
     }
 
     @Test

@@ -1,0 +1,54 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations:
+    serving.knative.dev/creator: minikube-user
+    serving.knative.dev/lastModifier: minikube-user
+  creationTimestamp: '2022-08-17T13:58:53Z'
+  generation: 1
+  name: serverless-workflow-greeting-quarkus
+  resourceVersion: '43817'
+  uid: 98530cb6-3274-4d0c-b654-a82645cda058
+spec:
+  template:
+    metadata:
+      annotations:
+        client.knative.dev/updateTimestamp: '2022-08-17T13:58:53Z'
+        client.knative.dev/user-image: kiegroup/serverless-workflow-greeting-quarkus:1.0
+      creationTimestamp:
+    spec:
+      containerConcurrency: 0
+      containers:
+        - image: kiegroup/serverless-workflow-greeting-quarkus:1.0
+          name: user-container
+          readinessProbe:
+            successThreshold: 1
+            tcpSocket:
+              port: 0
+          resources: { }
+      enableServiceLinks: false
+      timeoutSeconds: 300
+  traffic:
+    - latestRevision: true
+      percent: 100
+status:
+  address:
+    url: http://serverless-workflow-greeting-quarkus.test.svc.cluster.local
+  conditions:
+    - lastTransitionTime: '2022-08-17T13:59:00Z'
+      status: 'True'
+      type: ConfigurationsReady
+    - lastTransitionTime: '2022-08-17T13:59:00Z'
+      status: 'True'
+      type: Ready
+    - lastTransitionTime: '2022-08-17T13:59:00Z'
+      status: 'True'
+      type: RoutesReady
+  latestCreatedRevisionName: serverless-workflow-greeting-quarkus-00001
+  latestReadyRevisionName: serverless-workflow-greeting-quarkus-00001
+  observedGeneration: 1
+  traffic:
+    - latestRevision: true
+      percent: 100
+      revisionName: serverless-workflow-greeting-quarkus-00001
+  url: http://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io

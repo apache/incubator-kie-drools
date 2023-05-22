@@ -15,51 +15,52 @@
  */
 package org.kie.kogito.addons.quarkus.k8s.config;
 
-import java.lang.invoke.MethodHandles;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 
-import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceDiscovery;
-import org.kie.kogito.addons.quarkus.k8s.discovery.OpenShiftResourceDiscovery;
-import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.kogito.addons.k8s.resource.catalog.DefaultKubernetesServiceCatalogFactory;
+import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalog;
+import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalogProvider;
 
-import io.fabric8.knative.client.KnativeClient;
-import io.fabric8.kubernetes.client.ConfigBuilder;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
-import io.fabric8.openshift.client.OpenShiftClient;
-import io.fabric8.openshift.client.OpenShiftConfig;
 import io.smallrye.config.ConfigSourceInterceptor;
 import io.smallrye.config.ConfigSourceInterceptorContext;
 import io.smallrye.config.ConfigValue;
 
-public class KubeDiscoveryConfigSourceInterceptor implements ConfigSourceInterceptor {
+public final class KubeDiscoveryConfigSourceInterceptor implements ConfigSourceInterceptor {
 
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
+    static final String MULTIPLE_PROVIDERS_FOUND_MSG = "Multiple providers found for {0}: {1}";
 
     private final transient ConfigValueExpander configValueExpander;
 
     public KubeDiscoveryConfigSourceInterceptor() {
-        logger.debug("Configuring k8s client...");
-
-        OpenShiftConfig config = OpenShiftConfig.wrap(new ConfigBuilder().build());
-        config.setDisableApiGroupCheck(true); // Quarkus LTS 2.13 compatibility
-
-        var kubernetesClient = new DefaultKubernetesClient(config);
-
-        var knativeServiceDiscovery = new KnativeServiceDiscovery(kubernetesClient.adapt(KnativeClient.class));
-
-        var vanillaKubernetesResourceDiscovery = new VanillaKubernetesResourceDiscovery(kubernetesClient,
-                knativeServiceDiscovery);
-
-        var openShiftResourceDiscovery = new OpenShiftResourceDiscovery(kubernetesClient.adapt(OpenShiftClient.class),
-                vanillaKubernetesResourceDiscovery);
-
-        var kubeDiscoveryConfigCacheUpdater = new KubeDiscoveryConfigCacheUpdater(vanillaKubernetesResourceDiscovery,
-                openShiftResourceDiscovery, knativeServiceDiscovery);
-
+        KubernetesServiceCatalog kubernetesServiceCatalog = createKubernetesServiceCatalog(getKubernetesServiceCatalogProviders());
+        var kubeDiscoveryConfigCacheUpdater = new KubeDiscoveryConfigCacheUpdater(kubernetesServiceCatalog);
         var kubeDiscoveryConfigCache = new KubeDiscoveryConfigCache(kubeDiscoveryConfigCacheUpdater);
-
         this.configValueExpander = new ConfigValueExpander(kubeDiscoveryConfigCache);
+    }
+
+    private static List<KubernetesServiceCatalogProvider> getKubernetesServiceCatalogProviders() {
+        return ServiceLoader.load(KubernetesServiceCatalogProvider.class)
+                .stream()
+                .map(ServiceLoader.Provider::get)
+                .collect(Collectors.toList());
+    }
+
+    static KubernetesServiceCatalog createKubernetesServiceCatalog(List<KubernetesServiceCatalogProvider> providers) {
+        if (providers.size() == 1) {
+            return providers.get(0).create();
+        } else if (providers.isEmpty()) {
+            return DefaultKubernetesServiceCatalogFactory.createKubernetesServiceCatalog();
+        } else {
+            String providersNames = providers.stream()
+                    .map(provider -> provider.getClass().getName())
+                    .collect(Collectors.joining(", ", "[", "]"));
+
+            throw new IllegalStateException(MessageFormat.format(MULTIPLE_PROVIDERS_FOUND_MSG,
+                    KubernetesServiceCatalogProvider.class, providersNames));
+        }
     }
 
     @Override

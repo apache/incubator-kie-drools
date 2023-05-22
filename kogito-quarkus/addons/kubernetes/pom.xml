@@ -16,7 +16,6 @@
   <modules>
     <module>runtime</module>
     <module>deployment</module>
-    <module>test-utils</module>
   </modules>
 
 

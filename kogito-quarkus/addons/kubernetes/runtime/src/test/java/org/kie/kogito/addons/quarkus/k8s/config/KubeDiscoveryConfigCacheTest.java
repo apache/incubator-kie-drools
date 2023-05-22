@@ -53,7 +53,7 @@ class KubeDiscoveryConfigCacheTest {
         private final String alwaysReturnedValue;
 
         public ConstantKubeDiscoveryConfigCacheUpdater(String alwaysReturnedValue) {
-            super(null, null, null);
+            super(null);
             this.alwaysReturnedValue = alwaysReturnedValue;
         }
 

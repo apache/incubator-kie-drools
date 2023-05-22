@@ -25,6 +25,7 @@
     <module>source-files</module>
     <module>knative</module>
     <module>kubernetes</module>
+    <module>kubernetes-service-catalog</module>
   </modules>
 
   <profiles>
