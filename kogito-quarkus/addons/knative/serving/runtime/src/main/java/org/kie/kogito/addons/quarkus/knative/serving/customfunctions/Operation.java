@@ -23,8 +23,6 @@ class Operation {
 
     static final String CLOUD_EVENT_PARAMETER_NAME = "asCloudEvent";
 
-    static final String NAMESPACE_PARAMETER_NAME = "namespace";
-
     static final String PATH_PARAMETER_NAME = "path";
 
     private final String service;
@@ -33,13 +31,10 @@ class Operation {
 
     private final boolean isCloudEvent;
 
-    private final String namespace;
-
     private Operation(Builder builder) {
         this.service = Objects.requireNonNull(builder.service);
         this.path = builder.path != null ? builder.path : "/";
         this.isCloudEvent = builder.isCloudEvent;
-        this.namespace = builder.namespace;
     }
 
     String getService() {
@@ -52,10 +47,6 @@ class Operation {
 
     boolean isCloudEvent() {
         return isCloudEvent;
-    }
-
-    String getNamespace() {
-        return namespace;
     }
 
     static Operation parse(String value) {
@@ -72,7 +63,6 @@ class Operation {
                 .withService(parts[0])
                 .withPath(params.get("path"))
                 .withIsCloudEvent(Boolean.parseBoolean(params.get(CLOUD_EVENT_PARAMETER_NAME)))
-                .withNamespace(params.get(NAMESPACE_PARAMETER_NAME))
                 .build();
     }
 
@@ -91,13 +81,12 @@ class Operation {
         Operation operation = (Operation) o;
         return isCloudEvent == operation.isCloudEvent
                 && Objects.equals(service, operation.service)
-                && Objects.equals(path, operation.path)
-                && Objects.equals(namespace, operation.namespace);
+                && Objects.equals(path, operation.path);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(service, path, isCloudEvent, namespace);
+        return Objects.hash(service, path, isCloudEvent);
     }
 
     static class Builder {
@@ -107,8 +96,6 @@ class Operation {
         private String path;
 
         private boolean isCloudEvent;
-
-        private String namespace;
 
         private Builder() {
         }
@@ -125,11 +112,6 @@ class Operation {
 
         Builder withIsCloudEvent(boolean isCloudEvent) {
             this.isCloudEvent = isCloudEvent;
-            return this;
-        }
-
-        Builder withNamespace(String namespace) {
-            this.namespace = namespace;
             return this;
         }
 

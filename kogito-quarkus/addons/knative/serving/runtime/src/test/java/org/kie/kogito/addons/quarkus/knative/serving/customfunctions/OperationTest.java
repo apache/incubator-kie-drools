@@ -23,7 +23,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.Operation.CLOUD_EVENT_PARAMETER_NAME;
-import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.Operation.NAMESPACE_PARAMETER_NAME;
 import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.Operation.PATH_PARAMETER_NAME;
 
 class OperationTest {
@@ -38,20 +37,8 @@ class OperationTest {
 
                 Arguments.of("service?" + CLOUD_EVENT_PARAMETER_NAME + "=true", Operation.builder().withService("service").withIsCloudEvent(true).build()),
 
-                Arguments.of("service?" + NAMESPACE_PARAMETER_NAME + "=my_namespace", Operation.builder()
-                        .withService("service").withNamespace("my_namespace").build()),
-
-                Arguments.of("service?" + NAMESPACE_PARAMETER_NAME + "=my_namespace&" + PATH_PARAMETER_NAME + "=/my_path",
-                        Operation.builder().withService("service").withNamespace("my_namespace").withPath("/my_path").build()),
-
-                Arguments.of("service?" + NAMESPACE_PARAMETER_NAME + "=my_namespace&" + CLOUD_EVENT_PARAMETER_NAME + "=true",
-                        Operation.builder().withService("service").withNamespace("my_namespace").withIsCloudEvent(true).build()),
-
                 Arguments.of("service?" + PATH_PARAMETER_NAME + "=/my_path&" + CLOUD_EVENT_PARAMETER_NAME + "=true",
-                        Operation.builder().withService("service").withPath("/my_path").withIsCloudEvent(true).build()),
-
-                Arguments.of("service?" + NAMESPACE_PARAMETER_NAME + "=my_namespace&" + PATH_PARAMETER_NAME + "=/my_path&" + CLOUD_EVENT_PARAMETER_NAME + "=true",
-                        Operation.builder().withService("service").withNamespace("my_namespace").withPath("/my_path").withIsCloudEvent(true).build()));
+                        Operation.builder().withService("service").withPath("/my_path").withIsCloudEvent(true).build()));
     }
 
     @ParameterizedTest
