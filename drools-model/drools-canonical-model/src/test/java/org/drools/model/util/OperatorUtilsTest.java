@@ -26,51 +26,94 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OperatorUtilsTest {
 
     @Test
-    public void areEqual_sameType() {
-        assertThat(OperatorUtils.areEqual("100", String.valueOf(100))).isTrue();
+    public void areEqualWithNumbers() {
+        assertThat(OperatorUtils.areEqual(1, 1)).isTrue();
+        assertThat(OperatorUtils.areEqual(1L, 1L)).isTrue();
+        assertThat(OperatorUtils.areEqual(1.0f, 1.0f)).isTrue();
+        assertThat(OperatorUtils.areEqual(1.0, 1.0)).isTrue();
 
-        assertThat(OperatorUtils.areEqual("Hello", String.valueOf(100))).isFalse();
+        assertThat(OperatorUtils.areEqual(1, 2)).isFalse();
+        assertThat(OperatorUtils.areEqual(1L, 2L)).isFalse();
+        assertThat(OperatorUtils.areEqual(1.0f, 2.0f)).isFalse();
+        assertThat(OperatorUtils.areEqual(1.0, 2.0)).isFalse();
 
-        assertThat(OperatorUtils.areEqual(100, 100)).isTrue();
+        assertThat(OperatorUtils.areEqual(1, "1")).isFalse();
+        assertThat(OperatorUtils.areEqual(1L, "1")).isFalse();
+        assertThat(OperatorUtils.areEqual(1.0f, "1")).isFalse();
+        assertThat(OperatorUtils.areEqual(1.0, "1")).isFalse();
+
+        assertThat(OperatorUtils.areEqual(1, new BigDecimal("1"))).isTrue();
+        assertThat(OperatorUtils.areEqual(1, new BigDecimal("1.0"))).isTrue();
+        assertThat(OperatorUtils.areEqual(1, new BigDecimal("1.00"))).isTrue();
     }
 
     @Test
-    public void areEqual_differentTypes() {
-        assertThat(OperatorUtils.areEqual("100", 100)).isFalse();
+    public void areEqualWithObjects() {
+        assertThat(OperatorUtils.areEqual(null, null)).isTrue();
+        assertThat(OperatorUtils.areEqual("test", "test")).isTrue();
+
+        assertThat(OperatorUtils.areEqual(new Object(), new Object())).isFalse();
+        assertThat(OperatorUtils.areEqual(null, "test")).isFalse();
+        assertThat(OperatorUtils.areEqual("test", null)).isFalse();
+        assertThat(OperatorUtils.areEqual(new Object(), null)).isFalse();
+        assertThat(OperatorUtils.areEqual(null, new Object())).isFalse();
+        assertThat(OperatorUtils.areEqual(new Object(), "test")).isFalse();
+        assertThat(OperatorUtils.areEqual("test", new Object())).isFalse();
     }
 
     @Test
-    public void areNumericEqual_IntegerBigDecimal() {
+    public void areNumericEqualWithNumbers() {
+        assertThat(OperatorUtils.areNumericEqual(1, 1)).isTrue();
+        assertThat(OperatorUtils.areNumericEqual(1L, 1L)).isTrue();
+        assertThat(OperatorUtils.areNumericEqual(1.0f, 1.0f)).isTrue();
+        assertThat(OperatorUtils.areNumericEqual(1.0, 1.0)).isTrue();
+
+        assertThat(OperatorUtils.areNumericEqual(1, 2)).isFalse();
+        assertThat(OperatorUtils.areNumericEqual(1L, 2L)).isFalse();
+        assertThat(OperatorUtils.areNumericEqual(1.0f, 2.0f)).isFalse();
+        assertThat(OperatorUtils.areNumericEqual(1.0, 2.0)).isFalse();
+
         assertThat(OperatorUtils.areNumericEqual(1, new BigDecimal("1"))).isTrue();
         assertThat(OperatorUtils.areNumericEqual(1, new BigDecimal("1.0"))).isTrue();
         assertThat(OperatorUtils.areNumericEqual(1, new BigDecimal("1.00"))).isTrue();
-    }
 
-    @Test
-    public void areNumericEqual_BigDecimalWithDifferentScale() {
-        // DROOLS-7414
+        assertThat(OperatorUtils.areNumericEqual(BigDecimal.valueOf(0.1), BigDecimal.valueOf(0.1))).isTrue();
+        assertThat(OperatorUtils.areNumericEqual(BigDecimal.valueOf(0.1), BigDecimal.valueOf(0.100000001))).isFalse();
+
         assertThat(OperatorUtils.areNumericEqual(new BigDecimal("1.0"), new BigDecimal("1.00"))).isTrue();
     }
 
     @Test
-    public void compare_IntegerBigDecimal() {
-        assertThat(OperatorUtils.compare(1, new BigDecimal("0.99"))).isGreaterThan(0);
+    public void compareWithNumbers() {
+        assertThat(OperatorUtils.compare(1, 1)).isZero();
+        assertThat(OperatorUtils.compare(1L, 1L)).isZero();
+        assertThat(OperatorUtils.compare(1.0f, 1.0f)).isZero();
+        assertThat(OperatorUtils.compare(1.0, 1.0)).isZero();
+
+        assertThat(OperatorUtils.compare(1, 2)).isNegative();
+        assertThat(OperatorUtils.compare(1L, 2L)).isNegative();
+        assertThat(OperatorUtils.compare(1.0f, 2.0f)).isNegative();
+        assertThat(OperatorUtils.compare(1.0, 2.0)).isNegative();
+
+        assertThat(OperatorUtils.compare(2, 1)).isPositive();
+        assertThat(OperatorUtils.compare(2L, 1L)).isPositive();
+        assertThat(OperatorUtils.compare(2.0f, 1.0f)).isPositive();
+        assertThat(OperatorUtils.compare(2.0, 1.0)).isPositive();
+
+        assertThat(OperatorUtils.compare(1, new BigDecimal("0.99"))).isPositive();
         assertThat(OperatorUtils.compare(1, new BigDecimal("1.0"))).isZero();
-        assertThat(OperatorUtils.compare(1, new BigDecimal("1.01"))).isLessThan(0);
-    }
+        assertThat(OperatorUtils.compare(1, new BigDecimal("1.01"))).isNegative();
 
-    @Test
-    public void compare_BigDecimalWithDifferentScale() {
-        assertThat(OperatorUtils.compare(new BigDecimal("1.00"), new BigDecimal("0.99"))).isGreaterThan(0);
+        assertThat(OperatorUtils.compare(new BigDecimal("1.00"), new BigDecimal("0.99"))).isPositive();
         assertThat(OperatorUtils.compare(new BigDecimal("1.00"), new BigDecimal("1.0"))).isZero();
-        assertThat(OperatorUtils.compare(new BigDecimal("1.00"), new BigDecimal("1.01"))).isLessThan(0);
+        assertThat(OperatorUtils.compare(new BigDecimal("1.00"), new BigDecimal("1.01"))).isNegative();
     }
 
     @Test
-    public void compare_String() {
-        assertThat(OperatorUtils.compare("ABC", "AAA")).isGreaterThan(0);
+    public void compareWithString() {
+        assertThat(OperatorUtils.compare("ABC", "AAA")).isPositive();
         assertThat(OperatorUtils.compare("ABC", "ABC")).isZero();
-        assertThat(OperatorUtils.compare("ABC", "XYZ")).isLessThan(0);
+        assertThat(OperatorUtils.compare("ABC", "XYZ")).isNegative();
     }
 
     @Test
