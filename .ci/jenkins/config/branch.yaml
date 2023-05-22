@@ -31,6 +31,7 @@ environments:
     ids:
     - quarkus
     - quarkus3
+    enabled: false
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '2.16'
@@ -45,13 +46,16 @@ environments:
     - quarkus
     - lts
     - prod
-productized_branch: true
+    enabled: false
+productized_branch: false
 disable:
   triggers: false
 repositories:
 - name: drools
+  branch: 8.39.x
+  is_branch_config_repo: true
 - name: drools-website
-- name: kie-benchmarks
+  branch: 8.39.x
 productized_repositories:
 - name: drools
 git:
