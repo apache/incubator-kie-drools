@@ -15,7 +15,6 @@
  */
 package org.drools.quarkus.test;
 
-import org.drools.core.common.InternalFactHandle;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -113,14 +112,14 @@ public class TestableResource {
         FactHandle fh = ksession.insert("test");
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        Collection<FactHandle> ints = ksession.getFactHandles(new ClassObjectFilter(Integer.class));
+        Collection ints = ksession.getObjects(new ClassObjectFilter(Integer.class));
         assertThat(ints).hasSize(1);
-        assertThat(((InternalFactHandle) ints.iterator().next()).getObject()).isEqualTo(4);
+        assertThat(ints.iterator().next()).isEqualTo(4);
 
         ksession.delete(fh);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        ints = ksession.getFactHandles(new ClassObjectFilter(Integer.class));
+        ints = ksession.getObjects(new ClassObjectFilter(Integer.class));
         assertThat(ints).isEmpty();
 
         return Response.ok().build();
