@@ -15,12 +15,6 @@
 
 package org.kie.scanner;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.rule.TypeMetaInfo;
 import org.junit.Test;
@@ -35,6 +29,16 @@ import org.kie.api.definition.type.Role;
 import org.kie.maven.integration.MavenRepository;
 import org.kie.util.maven.support.DependencyFilter;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -42,11 +46,23 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml
 
 public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
+    private String junitVersion;
+
+    private synchronized String getJunitVersion() throws IOException {
+        if (junitVersion == null) {
+            final String propertiesPath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("versions.properties")).getPath();
+            final Properties versionProperties = new Properties();
+            versionProperties.load(new FileInputStream(propertiesPath));
+            junitVersion = versionProperties.getProperty("version.junit");
+        }
+        return junitVersion;
+    }
+
     @Test
     public void testKieModuleMetaData() throws Exception {
         KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(getTestDependencyJarReleaseId());
         checkDependency(kieModuleMetaData);
-        assertThat(("" + kieModuleMetaData.getPackages()).contains("junit")).isTrue();
+        assertThat((kieModuleMetaData.getPackages()).contains("org.junit")).isTrue();
     }
 
     @Test
@@ -54,7 +70,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(getTestDependencyJarReleaseId(),
                 new DependencyFilter.ExcludeScopeFilter("test"));
         checkDependency(kieModuleMetaData);
-        assertThat("" + kieModuleMetaData.getPackages()).doesNotContain("junit");
+        assertThat(kieModuleMetaData.getPackages()).doesNotContain("org.junit");
     }
 
     @Test
@@ -131,7 +147,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
     }
 
     @Test
-    public void testIncludeAllDeps() {
+    public void testIncludeAllDeps() throws IOException {
         final KieServices ks = KieServices.Factory.get();
 
         final KieFileSystem kfs = ks.newKieFileSystem();
@@ -143,7 +159,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
     }
 
     @Test
-    public void testExcludeTestDeps() {
+    public void testExcludeTestDeps() throws IOException {
         final KieServices ks = KieServices.Factory.get();
 
         final KieFileSystem kfs = ks.newKieFileSystem();
@@ -151,10 +167,10 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
         final KieModule kieModule = ks.newKieBuilder(kfs).getKieModule();
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule, new DependencyFilter.ExcludeScopeFilter("test"));
-        assertThat("" + kieModuleMetaData.getPackages()).doesNotContain("junit");
+        assertThat(kieModuleMetaData.getPackages()).doesNotContain("junit");
     }
 
-    private String getPomWithTestDependency() {
+    private String getPomWithTestDependency() throws IOException {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                 "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
@@ -168,7 +184,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
                 "      <dependency>\n" +
                 "        <groupId>junit</groupId>\n" +
                 "        <artifactId>junit</artifactId>\n" +
-                "        <version>4.11</version>\n" +
+                "        <version>" + getJunitVersion() + "</version>\n" +
                 "        <scope>test</scope>\n" +
                 "      </dependency>\n" +
                 "    </dependencies>\n" +
@@ -289,10 +305,10 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         }
     }
 
-    private void checkDependency(KieModuleMetaData kieModuleMetaData) {
+    private void checkDependency(KieModuleMetaData kieModuleMetaData) throws NoSuchMethodException {
         assertThat(kieModuleMetaData.getClasses("org.kie.ci.test.dep").size()).isEqualTo(1);
         Class<?> mainClass = kieModuleMetaData.getClass("org.kie.ci.test.dep", "Main");
-        assertThat(mainClass.getDeclaredMethods().length).isEqualTo(2);
+        assertThat(mainClass).hasDeclaredMethods("someCustomMethod");
     }
 
     private void testKieModuleMetaDataForDependenciesInMemory(boolean useTypeDeclaration) throws Exception {
