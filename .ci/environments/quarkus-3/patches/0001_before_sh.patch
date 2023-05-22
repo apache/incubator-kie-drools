@@ -533,15 +533,15 @@ index 257aee5892..032ea20d56 100644
        </dependency>
        <dependency>
 diff --git a/kogito-build/kogito-kie-bom/pom.xml b/kogito-build/kogito-kie-bom/pom.xml
-index 8abcd45354..bffa9ba738 100644
+index 23cb00f5ef..59e7ddb568 100644
 --- a/kogito-build/kogito-kie-bom/pom.xml
 +++ b/kogito-build/kogito-kie-bom/pom.xml
 @@ -18,7 +18,7 @@
    </description>
  
    <properties>
--    <version.org.kie>8.39.0-SNAPSHOT</version.org.kie>
-+    <version.org.kie>9.39.0-SNAPSHOT</version.org.kie>
+-    <version.org.kie>8.40.0-SNAPSHOT</version.org.kie>
++    <version.org.kie>9.40.0-SNAPSHOT</version.org.kie>
    </properties>
  
    <dependencyManagement>
@@ -631,6 +631,28 @@ index 2da06ff74e..b76f6aa336 100644
  import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
  
  @ApplicationScoped
+diff --git a/quarkus/addons/common/reactive-messaging/src/main/java/org/kie/kogito/addon/quarkus/common/reactive/messaging/MessageDecoratorProvider.java b/quarkus/addons/common/reactive-messaging/src/main/java/org/kie/kogito/addon/quarkus/common/reactive/messaging/MessageDecoratorProvider.java
+index edb289a8ee..2ce6d0582e 100644
+--- a/quarkus/addons/common/reactive-messaging/src/main/java/org/kie/kogito/addon/quarkus/common/reactive/messaging/MessageDecoratorProvider.java
++++ b/quarkus/addons/common/reactive-messaging/src/main/java/org/kie/kogito/addon/quarkus/common/reactive/messaging/MessageDecoratorProvider.java
+@@ -15,13 +15,13 @@
+  */
+ package org.kie.kogito.addon.quarkus.common.reactive.messaging;
+ 
++import jakarta.annotation.PostConstruct;
+ import java.util.Collection;
+ import java.util.stream.Collectors;
+ 
+-import javax.annotation.PostConstruct;
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Instance;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Instance;
++import jakarta.inject.Inject;
+ 
+ import org.eclipse.microprofile.reactive.messaging.Message;
+ 
 diff --git a/quarkus/addons/events/decisions/runtime/pom.xml b/quarkus/addons/events/decisions/runtime/pom.xml
 index 8eb1c309cd..575ee45565 100644
 --- a/quarkus/addons/events/decisions/runtime/pom.xml
@@ -758,10 +780,10 @@ index 1d0a6ec2a6..b5714777f2 100644
  import org.kie.kogito.config.ConfigBean;
  import org.kie.kogito.event.EventEmitter;
 diff --git a/quarkus/addons/events/process/runtime/pom.xml b/quarkus/addons/events/process/runtime/pom.xml
-index 99ac64a6af..e6918f15e5 100644
+index c128d47b8e..6eedd46d9d 100644
 --- a/quarkus/addons/events/process/runtime/pom.xml
 +++ b/quarkus/addons/events/process/runtime/pom.xml
-@@ -64,7 +64,7 @@
+@@ -68,7 +68,7 @@
        </plugin>
        <plugin>
          <groupId>io.quarkus</groupId>
@@ -771,20 +793,25 @@ index 99ac64a6af..e6918f15e5 100644
          <executions>
            <execution>
 diff --git a/quarkus/addons/events/process/runtime/src/main/java/org/kie/kogito/events/process/ReactiveMessagingEventPublisher.java b/quarkus/addons/events/process/runtime/src/main/java/org/kie/kogito/events/process/ReactiveMessagingEventPublisher.java
-index 728c565f61..a7dda6c73b 100644
+index 90e517d759..3eeb7c902e 100644
 --- a/quarkus/addons/events/process/runtime/src/main/java/org/kie/kogito/events/process/ReactiveMessagingEventPublisher.java
 +++ b/quarkus/addons/events/process/runtime/src/main/java/org/kie/kogito/events/process/ReactiveMessagingEventPublisher.java
-@@ -18,8 +18,8 @@ package org.kie.kogito.events.process;
- import java.util.Collection;
- import java.util.Optional;
+@@ -20,11 +20,11 @@ import java.util.Optional;
+ import java.util.concurrent.CompletableFuture;
+ import java.util.concurrent.CompletionStage;
  
+-import javax.annotation.PostConstruct;
+-import javax.enterprise.inject.Instance;
 -import javax.inject.Inject;
 -import javax.inject.Singleton;
++import jakarta.enterprise.inject.Instance;
 +import jakarta.inject.Inject;
 +import jakarta.inject.Singleton;
  
++import jakarta.annotation.PostConstruct;
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.eclipse.microprofile.reactive.messaging.Channel;
+ import org.eclipse.microprofile.reactive.messaging.Emitter;
 diff --git a/quarkus/addons/events/rules/runtime/pom.xml b/quarkus/addons/events/rules/runtime/pom.xml
 index 99b5870071..c74f928495 100644
 --- a/quarkus/addons/events/rules/runtime/pom.xml
@@ -866,6 +893,187 @@ index fac920d739..cdbc8756bc 100644
  
  import org.kie.kogito.Application;
  import org.kie.kogito.explainability.model.PredictInput;
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/pom.xml b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/pom.xml
+index 42c99a8df5..4b834c9a56 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/pom.xml
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/pom.xml
+@@ -70,7 +70,7 @@
+         <plugins>
+             <plugin>
+                 <groupId>io.quarkus</groupId>
+-                <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
++                <artifactId>quarkus-extension-maven-plugin</artifactId>
+                 <version>${version.io.quarkus}</version>
+                 <executions>
+                     <execution>
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/Fabric8KubernetesServiceCatalog.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/Fabric8KubernetesServiceCatalog.java
+index cd3dc1e86d..177be0b153 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/Fabric8KubernetesServiceCatalog.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/Fabric8KubernetesServiceCatalog.java
+@@ -21,8 +21,8 @@ import java.util.Optional;
+ import java.util.concurrent.ConcurrentHashMap;
+ import java.util.function.Function;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalog;
+ import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalogKey;
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeClientProducer.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeClientProducer.java
+index 609b486015..a76022a325 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeClientProducer.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeClientProducer.java
+@@ -15,9 +15,9 @@
+  */
+ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Produces;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Produces;
++import jakarta.inject.Inject;
+ 
+ import io.fabric8.knative.client.KnativeClient;
+ import io.fabric8.kubernetes.client.KubernetesClient;
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscovery.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscovery.java
+index ae4e02433a..067e27b670 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscovery.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscovery.java
+@@ -18,8 +18,8 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KubernetesResourceDiscovery.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KubernetesResourceDiscovery.java
+index 407230e76d..c119b1b4ef 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KubernetesResourceDiscovery.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KubernetesResourceDiscovery.java
+@@ -19,8 +19,8 @@ import java.net.URI;
+ import java.util.Optional;
+ import java.util.function.Supplier;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/OpenShiftResourceDiscovery.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/OpenShiftResourceDiscovery.java
+index f2193da323..672ee93723 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/OpenShiftResourceDiscovery.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/main/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/OpenShiftResourceDiscovery.java
+@@ -20,8 +20,8 @@ import java.net.URI;
+ import java.util.Optional;
+ import java.util.function.Supplier;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/DeploymentUtilsTest.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/DeploymentUtilsTest.java
+index 0f633000df..fbce47a8d7 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/DeploymentUtilsTest.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/DeploymentUtilsTest.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.Test;
+ 
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/IngressUtilsTest.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/IngressUtilsTest.java
+index dfd5f8c3c3..1005e06c49 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/IngressUtilsTest.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/IngressUtilsTest.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.Test;
+ 
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscoveryTest.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscoveryTest.java
+index 217b7d6108..b40d0ac686 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscoveryTest.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscoveryTest.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.addons.quarkus.k8s.test.utils.KnativeResourceDiscoveryTestUtil;
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KubernetesResourceDiscoveryTest.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KubernetesResourceDiscoveryTest.java
+index 8168d4786f..39f8409005 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KubernetesResourceDiscoveryTest.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KubernetesResourceDiscoveryTest.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.Test;
+ 
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/OpenShiftServiceDiscoveryTest.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/OpenShiftServiceDiscoveryTest.java
+index 76069c7866..ff6157d7c9 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/OpenShiftServiceDiscoveryTest.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/OpenShiftServiceDiscoveryTest.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.Test;
+ 
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/PodUtilsTest.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/PodUtilsTest.java
+index 2a2dfea3f6..228df7dbcc 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/PodUtilsTest.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/PodUtilsTest.java
+@@ -19,7 +19,7 @@ import java.net.URI;
+ import java.util.Map;
+ import java.util.Optional;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.Test;
+ 
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/StatefulSetUtilsTest.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/StatefulSetUtilsTest.java
+index d5584edc3d..8edc43c794 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/StatefulSetUtilsTest.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/StatefulSetUtilsTest.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
+ import java.net.URI;
+ import java.util.Optional;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.Test;
 diff --git a/quarkus/addons/jobs/common/rest-callback/src/main/java/org/kie/kogito/jobs/quarkus/common/CallbackJobsServiceResource.java b/quarkus/addons/jobs/common/rest-callback/src/main/java/org/kie/kogito/jobs/quarkus/common/CallbackJobsServiceResource.java
 index cdd80a9626..dbb1159652 100644
 --- a/quarkus/addons/jobs/common/rest-callback/src/main/java/org/kie/kogito/jobs/quarkus/common/CallbackJobsServiceResource.java
@@ -1082,10 +1290,10 @@ index 92771a52f3..1a2dfbd2cf 100644
  import org.eclipse.microprofile.health.HealthCheck;
  import org.eclipse.microprofile.health.HealthCheckResponse;
 diff --git a/quarkus/addons/knative/serving/runtime/pom.xml b/quarkus/addons/knative/serving/runtime/pom.xml
-index 75a9ffdb38..38a5c63ae8 100644
+index f57d7658ba..2661b409d8 100644
 --- a/quarkus/addons/knative/serving/runtime/pom.xml
 +++ b/quarkus/addons/knative/serving/runtime/pom.xml
-@@ -76,7 +76,7 @@
+@@ -81,7 +81,7 @@
          <plugins>
              <plugin>
                  <groupId>io.quarkus</groupId>
@@ -1113,35 +1321,22 @@ index 09d0df7cdf..29d493857c 100644
  import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
  import org.slf4j.Logger;
 diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java
-index 53f200af34..6cf07e38db 100644
+index adf00518c6..344fbcd995 100644
 --- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java
 +++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java
-@@ -18,8 +18,8 @@ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
+@@ -18,9 +18,9 @@ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
  import java.net.URI;
  import java.util.Map;
  
 -import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Instance;
 -import javax.inject.Inject;
 +import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Instance;
 +import jakarta.inject.Inject;
  
- import org.kie.kogito.process.workitem.WorkItemExecutionException;
- 
-diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRegistry.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRegistry.java
-index 0df2e5a15c..6c6832f18e 100644
---- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRegistry.java
-+++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRegistry.java
-@@ -21,8 +21,8 @@ import java.util.Optional;
- import java.util.concurrent.ConcurrentHashMap;
- import java.util.function.Function;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import org.kie.kogito.addons.quarkus.k8s.discovery.GVK;
- import org.kie.kogito.addons.quarkus.k8s.discovery.KnativeServiceDiscovery;
+ import org.kie.kogito.addons.k8s.resource.catalog.DefaultKubernetesServiceCatalogFactory;
+ import org.kie.kogito.addons.k8s.resource.catalog.KubernetesProtocol;
 diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRequestClientResolver.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRequestClientResolver.java
 index 458a914716..da4c6009e3 100644
 --- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRequestClientResolver.java
@@ -1248,10 +1443,10 @@ index e1549df41b..77a4491cbd 100644
  import org.jboss.shrinkwrap.api.ShrinkWrap;
  import org.jboss.shrinkwrap.api.spec.JavaArchive;
 diff --git a/quarkus/addons/kubernetes/runtime/pom.xml b/quarkus/addons/kubernetes/runtime/pom.xml
-index 8c2951cf09..3888092318 100644
+index 32ed7e88c9..f9df0a85c5 100644
 --- a/quarkus/addons/kubernetes/runtime/pom.xml
 +++ b/quarkus/addons/kubernetes/runtime/pom.xml
-@@ -71,7 +71,7 @@
+@@ -75,7 +75,7 @@
      <plugins>
        <plugin>
          <groupId>io.quarkus</groupId>
@@ -1304,68 +1499,6 @@ index 8e3a24887f..4471230cf3 100644
  
  import org.kie.kogito.addons.k8s.KnativeRouteEndpointDiscovery;
  import org.kie.kogito.addons.k8s.KubernetesServiceEndpointDiscovery;
-diff --git a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeClientProducer.java b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeClientProducer.java
-index b01598cfe5..fce0eb001e 100644
---- a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeClientProducer.java
-+++ b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeClientProducer.java
-@@ -15,9 +15,9 @@
-  */
- package org.kie.kogito.addons.quarkus.k8s.discovery;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.enterprise.inject.Produces;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.inject.Produces;
-+import jakarta.inject.Inject;
- 
- import io.fabric8.knative.client.KnativeClient;
- import io.fabric8.kubernetes.client.KubernetesClient;
-diff --git a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscovery.java b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscovery.java
-index 58290eb83d..a419e5ac98 100644
---- a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscovery.java
-+++ b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscovery.java
-@@ -18,8 +18,8 @@ package org.kie.kogito.addons.quarkus.k8s.discovery;
- import java.net.URI;
- import java.util.Optional;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import org.slf4j.Logger;
- import org.slf4j.LoggerFactory;
-diff --git a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftResourceDiscovery.java b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftResourceDiscovery.java
-index ebc6d05366..12a1f156ec 100644
---- a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftResourceDiscovery.java
-+++ b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftResourceDiscovery.java
-@@ -20,8 +20,8 @@ import java.net.URI;
- import java.util.Optional;
- import java.util.function.Supplier;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import org.kie.kogito.addons.quarkus.k8s.KubeConstants;
- import org.kie.kogito.addons.quarkus.k8s.discovery.utils.PodUtils;
-diff --git a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscovery.java b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscovery.java
-index 160cc0da22..a7f7ac1619 100644
---- a/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscovery.java
-+++ b/quarkus/addons/kubernetes/runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscovery.java
-@@ -19,8 +19,8 @@ import java.net.URI;
- import java.util.Optional;
- import java.util.function.Supplier;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import org.kie.kogito.addons.quarkus.k8s.discovery.utils.DeploymentUtils;
- import org.kie.kogito.addons.quarkus.k8s.discovery.utils.IngressUtils;
 diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/KnativeRouteEndpointDiscoveryTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/KnativeRouteEndpointDiscoveryTest.java
 index bab6850827..ff8268bd65 100644
 --- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/KnativeRouteEndpointDiscoveryTest.java
@@ -1395,103 +1528,12 @@ index 78e7e9818c..1e9cabca8c 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.addons.k8s.Endpoint;
 diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
-index d9ba80e8f8..d575fbe354 100644
+index 7d3d496374..f242c1c7ed 100644
 --- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
 +++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
 @@ -17,7 +17,7 @@ package org.kie.kogito.addons.quarkus.k8s.config;
  
  import java.net.URI;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import org.junit.jupiter.api.BeforeEach;
- import org.junit.jupiter.api.Test;
-diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscoveryTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscoveryTest.java
-index ecf4a968c1..84fc2e3971 100644
---- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscoveryTest.java
-+++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/KnativeServiceDiscoveryTest.java
-@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.discovery;
- import java.net.URI;
- import java.util.Optional;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import org.junit.jupiter.api.Test;
- import org.kie.kogito.addons.quarkus.k8s.test.utils.KnativeResourceDiscoveryTestUtil;
-diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java
-index 96fe341880..8304a33f66 100644
---- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java
-+++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/OpenShiftServiceDiscoveryTest.java
-@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.discovery;
- import java.net.URI;
- import java.util.Optional;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import org.junit.jupiter.api.Test;
- 
-diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java
-index 6026390ef3..234e3690da 100644
---- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java
-+++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/discovery/VanillaKubernetesResourceDiscoveryTest.java
-@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.discovery;
- import java.net.URI;
- import java.util.Optional;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import org.junit.jupiter.api.Test;
- import org.kie.kogito.addons.quarkus.k8s.KubeConstants;
-diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java
-index 6652e9dfb0..879b7e35ed 100644
---- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java
-+++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/DeploymentUtilsTest.java
-@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
- import java.net.URI;
- import java.util.Optional;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import org.junit.jupiter.api.Test;
- import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
-diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java
-index 97706a3ed4..451e59b9dc 100644
---- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java
-+++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/IngressUtilsTest.java
-@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
- import java.net.URI;
- import java.util.Optional;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import org.junit.jupiter.api.Test;
- import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
-diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java
-index 940ea50864..3f370ba130 100644
---- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java
-+++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/PodUtilsTest.java
-@@ -19,7 +19,7 @@ import java.net.URI;
- import java.util.Map;
- import java.util.Optional;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import org.junit.jupiter.api.Test;
- import org.kie.kogito.addons.quarkus.k8s.discovery.VanillaKubernetesResourceDiscovery;
-diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java
-index 65fa7fb56b..aca5216de2 100644
---- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java
-+++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/utils/StatefulSetUtilsTest.java
-@@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
- import java.net.URI;
- import java.util.Optional;
  
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
@@ -1553,7 +1595,7 @@ index 608b072048..26b16c3d65 100644
          <executions>
            <execution>
 diff --git a/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/AbstractQuarkusCloudEventEmitter.java b/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/AbstractQuarkusCloudEventEmitter.java
-index e1d5202e5b..49c8b27d0d 100644
+index 28596bb1fe..393f186353 100644
 --- a/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/AbstractQuarkusCloudEventEmitter.java
 +++ b/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/AbstractQuarkusCloudEventEmitter.java
 @@ -19,7 +19,7 @@ import java.io.IOException;
@@ -1564,7 +1606,7 @@ index e1d5202e5b..49c8b27d0d 100644
 +import jakarta.inject.Inject;
  
  import org.eclipse.microprofile.reactive.messaging.Message;
- import org.kie.kogito.addon.quarkus.messaging.common.message.MessageDecoratorProvider;
+ import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecoratorProvider;
 diff --git a/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/BackpressureKogitoEmitter.java b/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/BackpressureKogitoEmitter.java
 index 9c2a0d8000..2b0f7c6b8d 100644
 --- a/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/BackpressureKogitoEmitter.java
@@ -1749,7 +1791,7 @@ index eb4b1234d8..f71582eba9 100644
      }
  }
 diff --git a/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/message/CloudEventHttpOutgoingDecorator.java b/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/message/CloudEventHttpOutgoingDecorator.java
-index 81b9651a1f..4548d8224b 100644
+index 9de0c4cb5b..c4174c800b 100644
 --- a/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/message/CloudEventHttpOutgoingDecorator.java
 +++ b/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/message/CloudEventHttpOutgoingDecorator.java
 @@ -15,7 +15,7 @@
@@ -1760,29 +1802,9 @@ index 81b9651a1f..4548d8224b 100644
 +import jakarta.ws.rs.core.HttpHeaders;
  
  import org.eclipse.microprofile.reactive.messaging.Message;
- 
-diff --git a/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/message/MessageDecoratorProvider.java b/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/message/MessageDecoratorProvider.java
-index fcef35afc2..4cd718235d 100644
---- a/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/message/MessageDecoratorProvider.java
-+++ b/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/message/MessageDecoratorProvider.java
-@@ -18,11 +18,11 @@ package org.kie.kogito.addon.quarkus.messaging.common.message;
- import java.util.Collection;
- import java.util.stream.Collectors;
- 
--import javax.annotation.PostConstruct;
--import javax.enterprise.context.ApplicationScoped;
--import javax.enterprise.inject.Instance;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.inject.Instance;
-+import jakarta.inject.Inject;
- 
-+import jakarta.annotation.PostConstruct;
- import org.eclipse.microprofile.reactive.messaging.Message;
- 
- /**
+ import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecorator;
 diff --git a/quarkus/addons/messaging/common/src/test/java/org/kie/kogito/addon/quarkus/messaging/common/message/CloudEventHttpOutgoingDecoratorTest.java b/quarkus/addons/messaging/common/src/test/java/org/kie/kogito/addon/quarkus/messaging/common/message/CloudEventHttpOutgoingDecoratorTest.java
-index dbf71649a4..f3e727574f 100644
+index 871d017e77..8715facb83 100644
 --- a/quarkus/addons/messaging/common/src/test/java/org/kie/kogito/addon/quarkus/messaging/common/message/CloudEventHttpOutgoingDecoratorTest.java
 +++ b/quarkus/addons/messaging/common/src/test/java/org/kie/kogito/addon/quarkus/messaging/common/message/CloudEventHttpOutgoingDecoratorTest.java
 @@ -18,8 +18,8 @@ package org.kie.kogito.addon.quarkus.messaging.common.message;
