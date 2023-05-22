@@ -15,16 +15,16 @@
  */
 package org.drools.ruleunits.impl.factory;
 
-import java.io.Serializable;
-
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.factory.WorkingMemoryFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.ruleunits.impl.sessions.RuleUnitStatefulKnowledgeSessionImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.runtime.Environment;
+
+import java.io.Serializable;
 
 public class RuleUnitPhreakWorkingMemoryFactory implements WorkingMemoryFactory, Serializable {
 
@@ -35,11 +35,11 @@ public class RuleUnitPhreakWorkingMemoryFactory implements WorkingMemoryFactory,
     }
 
     public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, SessionConfiguration config, Environment environment) {
-        return new RuleUnitStatefulKnowledgeSessionImpl(id, kBase, true, config, environment);
+        return new StatefulKnowledgeSessionImpl(id, kBase, true, config, environment);
     }
 
     public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda,
             Environment environment) {
-        return new RuleUnitStatefulKnowledgeSessionImpl(id, kBase, handleFactory, propagationContext, config, agenda, environment);
+        return new StatefulKnowledgeSessionImpl(id, kBase, handleFactory, propagationContext, config, agenda, environment);
     }
 }

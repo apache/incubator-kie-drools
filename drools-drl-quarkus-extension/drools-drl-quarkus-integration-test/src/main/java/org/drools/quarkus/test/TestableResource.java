@@ -15,23 +15,26 @@
  */
 package org.drools.quarkus.test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import org.drools.core.common.InternalFactHandle;
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.KieRuntimeBuilder;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.time.SessionPseudoClock;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-import org.kie.api.KieBase;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.runtime.KieRuntimeBuilder;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.time.SessionPseudoClock;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @Path("/test")
 public class TestableResource {
@@ -96,9 +99,30 @@ public class TestableResource {
 
         List<String> pkgNames = kBase.getKiePackages().stream().map(KiePackage::getName).collect(Collectors.toList());
         assertThat(pkgNames)
-            .hasSize(5)
+            .hasSize(6)
             .contains("org.drools.quarkus.test","org.drools.drl","org.drools.dtable","org.drools.cep","org.drools.probe");
         
+        return Response.ok().build();
+    }
+
+    @GET
+    @Path("testTms")
+    public Response testTms() {
+        KieSession ksession = runtimeBuilder.newKieSession("tmsKS");
+
+        FactHandle fh = ksession.insert("test");
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        Collection<FactHandle> ints = ksession.getFactHandles(new ClassObjectFilter(Integer.class));
+        assertThat(ints).hasSize(1);
+        assertThat(((InternalFactHandle) ints.iterator().next()).getObject()).isEqualTo(4);
+
+        ksession.delete(fh);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        ints = ksession.getFactHandles(new ClassObjectFilter(Integer.class));
+        assertThat(ints).isEmpty();
+
         return Response.ok().build();
     }
 }
