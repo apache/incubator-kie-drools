@@ -17,19 +17,27 @@ package org.kie.kogito.events.process;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Message;
+import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecoratorProvider;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.smallrye.reactive.messaging.providers.locals.ContextAwareMessage;
 
 @Singleton
 public class ReactiveMessagingEventPublisher implements EventPublisher {
@@ -65,6 +73,16 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
     @Inject
     @ConfigProperty(name = "kogito.events.variables.enabled")
     Optional<Boolean> variablesEvents;
+
+    @Inject
+    Instance<MessageDecoratorProvider> decoratorProviderInstance;
+
+    private MessageDecoratorProvider decoratorProvider;
+
+    @PostConstruct
+    public void init() {
+        decoratorProvider = decoratorProviderInstance.isResolvable() ? decoratorProviderInstance.get() : null;
+    }
 
     @Override
     public void publish(DataEvent<?> event) {
@@ -105,15 +123,26 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
         try {
             String eventString = json.writeValueAsString(event);
             logger.debug("Event payload '{}'", eventString);
-            emitter.send(eventString).whenComplete((v, t) -> {
-                if (t == null) {
-                    logger.debug("Successfully published event {} to topic {}", event, topic);
-                } else {
-                    logger.error("Error while publishing event to topic {} for event {}", topic, event, t);
-                }
-            });
+            emitter.send(decorateMessage(ContextAwareMessage.of(eventString)
+                    .withAck(() -> onAck(event, topic))
+                    .withNack(reason -> onNack(reason, event, topic))));
+
         } catch (Exception e) {
             logger.error("Error while creating event to topic {} for event {}", topic, event, e);
         }
+    }
+
+    protected CompletionStage<Void> onAck(DataEvent<?> event, String topic) {
+        logger.debug("Successfully published event {} to topic {}", event, topic);
+        return CompletableFuture.completedFuture(null);
+    }
+
+    protected CompletionStage<Void> onNack(Throwable reason, DataEvent<?> event, String topic) {
+        logger.error("Error while publishing event to topic {} for event {}", topic, event, reason);
+        return CompletableFuture.completedFuture(null);
+    }
+
+    protected Message<String> decorateMessage(Message<String> message) {
+        return decoratorProvider != null ? decoratorProvider.decorate(message) : message;
     }
 }

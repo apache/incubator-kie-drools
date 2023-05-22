@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.addon.quarkus.messaging.common.message;
+package org.kie.kogito.addon.quarkus.common.reactive.messaging;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 

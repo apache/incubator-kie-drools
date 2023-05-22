@@ -41,10 +41,14 @@ import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.IsTest;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.GeneratedFileSystemResourceBuildItem;
+import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.smallrye.health.deployment.spi.HealthBuildItem;
+
+import static org.kie.kogito.addons.quarkus.knative.eventing.KnativeEventingConfigSourceFactory.INCLUDE_PROCESS_EVENTS;
 
 public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnProcessor {
 
@@ -59,6 +63,8 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
     private static final String TARGET_KUBERNETES = "kubernetes";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoAddOnKnativeEventingProcessor.class);
+
+    public static final String PROCESS_EVENTS_PUBLISHER_CLASS = "org.kie.kogito.events.process.ReactiveMessagingEventPublisher";
 
     EventingConfiguration config;
 
@@ -113,6 +119,13 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
             } else {
                 LOGGER.info("No events found in the Kogito resources defined in the project. Skipping Kogito Knative resources generation.");
             }
+        }
+    }
+
+    @BuildStep
+    void checkProcessEvents(BuildProducer<SystemPropertyBuildItem> systemProperties, CombinedIndexBuildItem indexBuildItem) {
+        if (indexBuildItem.getIndex().getClassByName(PROCESS_EVENTS_PUBLISHER_CLASS) != null) {
+            systemProperties.produce(new SystemPropertyBuildItem(INCLUDE_PROCESS_EVENTS, "true"));
         }
     }
 

@@ -16,6 +16,7 @@
 
   <modules>
     <module>deployment</module>
+    <module>reactive-messaging</module>
   </modules>
 
 </project>

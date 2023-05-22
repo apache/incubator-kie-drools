@@ -22,7 +22,7 @@ import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.addon.quarkus.messaging.common.message.MessageDecoratorProvider;
+import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecoratorProvider;
 import org.kie.kogito.event.CloudEventMarshaller;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventEmitter;

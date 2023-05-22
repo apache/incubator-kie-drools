@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.KogitoGAV;
+import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecoratorProvider;
 import org.kie.kogito.config.ConfigBean;
 
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;

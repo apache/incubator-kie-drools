@@ -18,6 +18,7 @@ package org.kie.kogito.addon.quarkus.messaging.common.message;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
+import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecorator;
 
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 

@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.addons.quarkus.knative.eventing;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
+import java.util.TreeMap;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.kie.kogito.event.KogitoEventStreams;
@@ -33,7 +33,15 @@ import static org.kie.kogito.addons.quarkus.knative.eventing.KnativeEventingConf
 
 public final class KnativeEventingConfigSourceFactory implements ConfigSourceFactory {
 
-    private static final String URL_CONFIG = "mp.messaging.outgoing." + KogitoEventStreams.OUTGOING + ".url";
+    public static final String INCLUDE_PROCESS_EVENTS = "org.kie.kogito.addons.quarkus.knative.eventing.includeProcessEvents";
+
+    private static final String PROCESS_INSTANCES_EVENTS = "kogito-processinstances-events";
+
+    private static final String USER_TASK_INSTANCES_EVENTS = "kogito-usertaskinstances-events";
+
+    private static final String VARIABLE_EVENTS = "kogito-variables-events";
+
+    private static final String QUARKUS_HTTP_CONNECTOR = "quarkus-http";
 
     /**
      * Default Knative Sink for local dev environments. Just a default endpoint, nothing in particular.
@@ -41,23 +49,28 @@ public final class KnativeEventingConfigSourceFactory implements ConfigSourceFac
      */
     private static final String DEFAULT_SINK_URL = "http://localhost:9090";
 
+    private static final String DEFAULT_SINK_URL_EXPRESSION = "${K_SINK:" + DEFAULT_SINK_URL + "}";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(KnativeEventingConfigSourceFactory.class);
 
     @Override
     public Iterable<ConfigSource> getConfigSources(ConfigSourceContext context) {
-        Map<String, String> configuration = new HashMap<>();
+        Map<String, String> configuration = new TreeMap<>();
 
-        configuration.put("mp.messaging.outgoing." + KogitoEventStreams.OUTGOING + ".connector", "quarkus-http");
+        addOutgoingConnector(configuration, KogitoEventStreams.OUTGOING);
 
-        // add the default configuration to fall back to a placeholder since the underlying connector will fail on
-        // bootstrap if either the env var is not defined or the URL is not valid.
-        // we handle the missing env var injected by knative via probe
-        configuration.put(URL_CONFIG, "${K_SINK:" + DEFAULT_SINK_URL + "}");
+        if (includeProcessEvents()) {
+            addOutgoingConnector(configuration, PROCESS_INSTANCES_EVENTS);
+            addOutgoingConnector(configuration, USER_TASK_INSTANCES_EVENTS);
+            addOutgoingConnector(configuration, VARIABLE_EVENTS);
+        }
 
         final String sinkUrl = context.getValue(K_SINK).getValue();
         if (sinkUrl == null || "".equals(sinkUrl)) {
             LOGGER.warn("{} variable is empty or doesn't exist. Please make sure that this service is a Knative Source or has a SinkBinding bound to it.", K_SINK);
         }
+
+        configuration.forEach((key, value) -> LOGGER.debug("Adding connector -> {} =  {}", key, value));
 
         return List.of(new KnativeEventingConfigSource(configuration));
     }
@@ -65,5 +78,25 @@ public final class KnativeEventingConfigSourceFactory implements ConfigSourceFac
     @Override
     public OptionalInt getPriority() {
         return OptionalInt.of(ORDINAL);
+    }
+
+    private static void addOutgoingConnector(Map<String, String> configuration, String name) {
+        configuration.put(buildOutgoingConnector(name), QUARKUS_HTTP_CONNECTOR);
+        // add the default configuration to fall back to a placeholder since the underlying connector will fail on
+        // bootstrap if either the env var is not defined or the URL is not valid.
+        // we handle the missing env var injected by knative via probe
+        configuration.put(buildOutgoingConnectorUrl(name), DEFAULT_SINK_URL_EXPRESSION);
+    }
+
+    private static String buildOutgoingConnector(String name) {
+        return "mp.messaging.outgoing." + name + ".connector";
+    }
+
+    private static String buildOutgoingConnectorUrl(String name) {
+        return "mp.messaging.outgoing." + name + ".url";
+    }
+
+    private boolean includeProcessEvents() {
+        return Boolean.parseBoolean(System.getProperty(INCLUDE_PROCESS_EVENTS));
     }
 }

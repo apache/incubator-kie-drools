@@ -16,22 +16,32 @@
 package org.kie.kogito.addons.quarkus.knative.eventing.deployment;
 
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.IndexView;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.EventKind;
 import org.kie.kogito.event.cloudevents.CloudEventMeta;
+import org.mockito.ArgumentCaptor;
 
 import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.GeneratedFileSystemResourceBuildItem;
+import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.kogito.addons.quarkus.knative.eventing.KnativeEventingConfigSourceFactory.INCLUDE_PROCESS_EVENTS;
+import static org.mockito.Mockito.*;
 
 class KogitoAddOnKnativeEventingProcessorTest {
 
@@ -134,6 +144,33 @@ class KogitoAddOnKnativeEventingProcessorTest {
         eventingProcessor.generate(outputTargetBuildItem, Optional.of(resourcesMetadataBuildItem), producer);
 
         assertNull(producer.getItem());
+    }
+
+    @Test
+    void checkProcessEventsWithEventPublisher() {
+        BuildProducer<SystemPropertyBuildItem> buildProducer = mock(BuildProducer.class);
+        IndexView indexView = mock(IndexView.class);
+        CombinedIndexBuildItem combinedIndex = new CombinedIndexBuildItem(indexView, null);
+        ArgumentCaptor<SystemPropertyBuildItem> systemPropertyCaptor = ArgumentCaptor.forClass(SystemPropertyBuildItem.class);
+        doReturn(ClassInfo.create(DotName.createSimple("MyEventPublisherClass"), null, (short) 1, new DotName[] {}, Collections.emptyMap(), false)).when(indexView)
+                .getClassByName(KogitoAddOnKnativeEventingProcessor.PROCESS_EVENTS_PUBLISHER_CLASS);
+
+        KogitoAddOnKnativeEventingProcessor eventingProcessor = new KogitoAddOnKnativeEventingProcessor();
+        eventingProcessor.checkProcessEvents(buildProducer, combinedIndex);
+        verify(buildProducer).produce(systemPropertyCaptor.capture());
+        assertThat(systemPropertyCaptor.getValue().getKey()).isEqualTo(INCLUDE_PROCESS_EVENTS);
+        assertThat(systemPropertyCaptor.getValue().getValue()).isEqualTo("true");
+    }
+
+    @Test
+    void checkProcessEventsWithoutEventPublisher() {
+        BuildProducer<SystemPropertyBuildItem> buildProducer = mock(BuildProducer.class);
+        IndexView indexView = mock(IndexView.class);
+        CombinedIndexBuildItem combinedIndex = new CombinedIndexBuildItem(indexView, null);
+
+        KogitoAddOnKnativeEventingProcessor eventingProcessor = new KogitoAddOnKnativeEventingProcessor();
+        eventingProcessor.checkProcessEvents(buildProducer, combinedIndex);
+        verify(buildProducer, never()).produce(any());
     }
 
     private KogitoAddOnKnativeEventingProcessor buildTestProcessorWithDefaultConfig() {
