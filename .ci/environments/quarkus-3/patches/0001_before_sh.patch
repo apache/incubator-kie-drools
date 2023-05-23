@@ -330,10 +330,10 @@ index 97a45fea4d..4ac46a1860 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index 257aee5892..032ea20d56 100644
+index 2297a4bbaa..df453632f8 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
-@@ -16,22 +16,22 @@
+@@ -16,23 +16,23 @@
  
    <properties>
      <!-- this version property is used in plugins but also in dependencies too -->
@@ -341,7 +341,9 @@ index 257aee5892..032ea20d56 100644
 +    <version.io.quarkus>3.0.0.Final</version.io.quarkus>
      <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
 -    <version.org.springframework.boot>2.6.6</version.org.springframework.boot>
+-    <version.org.apache.kafka>3.3.2</version.org.apache.kafka>
 +    <version.org.springframework.boot>3.0.5</version.org.springframework.boot>
++    <version.org.apache.kafka>3.4.0</version.org.apache.kafka>
  
      <!-- dependencies versions -->
      <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
@@ -363,7 +365,7 @@ index 257aee5892..032ea20d56 100644
      <version.com.github.java-json-tools>2.2.14</version.com.github.java-json-tools>
      <version.com.fasterxml.jackson.datatype>2.14.2</version.com.fasterxml.jackson.datatype>
      <version.com.github.erosb>1.14.1</version.com.github.erosb>
-@@ -42,31 +42,31 @@
+@@ -43,31 +43,31 @@
      <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
      <version.com.sun.xml.bind.core>2.3.0.1</version.com.sun.xml.bind.core>
      <version.com.sun.xml.bind.impl>2.3.5</version.com.sun.xml.bind.impl>
@@ -404,7 +406,7 @@ index 257aee5892..032ea20d56 100644
  
      <version.io.swagger.parser.v3>2.0.26</version.io.swagger.parser.v3>
  
-@@ -75,14 +75,14 @@
+@@ -76,14 +76,14 @@
  
      <version.org.graalvm.nativeimage>22.3.0</version.org.graalvm.nativeimage>
  
@@ -424,7 +426,7 @@ index 257aee5892..032ea20d56 100644
      <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
      <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
      <version.org.mongo>4.6.1</version.org.mongo>
-@@ -100,19 +100,19 @@
+@@ -101,19 +101,19 @@
      <version.org.junit.vintage>5.9.2</version.org.junit.vintage>
      <version.org.junit.platform>1.9.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
      <version.org.junit.pioneer>1.5.0</version.org.junit.pioneer>
@@ -449,7 +451,7 @@ index 257aee5892..032ea20d56 100644
      <version.maven.invoker>3.2.0</version.maven.invoker>
  
      <version.plexus>1.6</version.plexus>
-@@ -241,8 +241,8 @@
+@@ -248,8 +248,8 @@
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
@@ -460,7 +462,7 @@ index 257aee5892..032ea20d56 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -252,7 +252,7 @@
+@@ -259,7 +259,7 @@
        </dependency>
        <dependency>
          <groupId>com.fasterxml.jackson.module</groupId>
@@ -469,7 +471,7 @@ index 257aee5892..032ea20d56 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -520,9 +520,9 @@
+@@ -527,9 +527,9 @@
        </dependency>
  
        <dependency>
@@ -482,7 +484,7 @@ index 257aee5892..032ea20d56 100644
        </dependency>
        <dependency>
          <groupId>com.sun.xml.bind</groupId>
-@@ -530,19 +530,19 @@
+@@ -537,19 +537,19 @@
          <version>${version.com.sun.xml.bind.core}</version>
        </dependency>
        <dependency>
@@ -510,7 +512,7 @@ index 257aee5892..032ea20d56 100644
        </dependency>
        <dependency>
          <groupId>javax.inject</groupId>
-@@ -550,9 +550,9 @@
+@@ -557,9 +557,9 @@
          <version>${version.javax.inject}</version>
        </dependency>
        <dependency>
@@ -523,7 +525,7 @@ index 257aee5892..032ea20d56 100644
        </dependency>
        <dependency>
          <groupId>org.eclipse.microprofile.openapi</groupId>
-@@ -598,7 +598,7 @@
+@@ -605,7 +605,7 @@
        </dependency>
        <dependency>
          <groupId>org.infinispan</groupId>
@@ -4417,7 +4419,7 @@ index 97b9d51aac..1d51253270 100644
  import org.kie.kogito.event.cloudevents.extension.KogitoPredictionsExtension;
  import org.kie.kogito.event.cloudevents.extension.KogitoProcessExtension;
 diff --git a/springboot/addons/messaging/implementation/src/main/java/org/kie/kogito/addon/cloudevents/spring/SpringKafkaCloudEventReceiver.java b/springboot/addons/messaging/implementation/src/main/java/org/kie/kogito/addon/cloudevents/spring/SpringKafkaCloudEventReceiver.java
-index 496db7192a..67b4087b5a 100644
+index 6e5523f955..74f5aa9067 100644
 --- a/springboot/addons/messaging/implementation/src/main/java/org/kie/kogito/addon/cloudevents/spring/SpringKafkaCloudEventReceiver.java
 +++ b/springboot/addons/messaging/implementation/src/main/java/org/kie/kogito/addon/cloudevents/spring/SpringKafkaCloudEventReceiver.java
 @@ -23,8 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
@@ -4427,9 +4429,9 @@ index 496db7192a..67b4087b5a 100644
 -import javax.annotation.PostConstruct;
 -
 +import jakarta.annotation.PostConstruct;
- import org.kie.kogito.addon.cloudevents.Subscription;
  import org.kie.kogito.config.ConfigBean;
  import org.kie.kogito.event.CloudEventUnmarshallerFactory;
+ import org.kie.kogito.event.DataEvent;
 diff --git a/springboot/addons/monitoring/core/src/main/java/org/kie/kogito/monitoring/core/springboot/SpringbootMetricsInterceptor.java b/springboot/addons/monitoring/core/src/main/java/org/kie/kogito/monitoring/core/springboot/SpringbootMetricsInterceptor.java
 index 30ae90d94c..ec2410eacd 100644
 --- a/springboot/addons/monitoring/core/src/main/java/org/kie/kogito/monitoring/core/springboot/SpringbootMetricsInterceptor.java
