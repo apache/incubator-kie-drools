@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.jboss.jandex.DotName;
 import org.kie.kogito.addons.quarkus.knative.eventing.deployment.resources.KogitoSource;
 import org.kie.kogito.addons.quarkus.knative.eventing.deployment.resources.KogitoSourceSpec;
 import org.kie.kogito.event.EventKind;
@@ -64,7 +65,7 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoAddOnKnativeEventingProcessor.class);
 
-    public static final String PROCESS_EVENTS_PUBLISHER_CLASS = "org.kie.kogito.events.process.ReactiveMessagingEventPublisher";
+    public static final DotName PROCESS_EVENTS_PUBLISHER_CLASS = DotName.createSimple("org.kie.kogito.events.process.ReactiveMessagingEventPublisher");
 
     EventingConfiguration config;
 
