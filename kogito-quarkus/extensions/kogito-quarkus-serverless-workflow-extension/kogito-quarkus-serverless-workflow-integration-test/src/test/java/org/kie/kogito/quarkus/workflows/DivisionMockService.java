@@ -30,9 +30,9 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 
 public class DivisionMockService implements QuarkusTestResourceLifecycleManager {
 
-    private static WireMockServer server;
+    private WireMockServer server;
 
-    public static final String DIVISION_SERVICE_MOCK_PORT = "division-service-mock.port";
+    private static final String DIVISION_SERVICE_MOCK_PORT = "kogito.sw.functions.division.port";
 
     static final int[] dividends = { 2, 4, 6, 8, 10 };
     static final int divisor = 2;
