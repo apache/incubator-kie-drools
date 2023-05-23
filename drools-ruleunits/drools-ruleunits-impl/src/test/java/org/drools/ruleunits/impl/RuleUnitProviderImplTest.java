@@ -15,8 +15,6 @@
  */
 package org.drools.ruleunits.impl;
 
-import java.util.Objects;
-
 import org.drools.core.base.RuleNameStartsWithAgendaFilter;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.RuleUnitInstance;
@@ -28,6 +26,8 @@ import org.drools.ruleunits.impl.listener.TestRuleEventListener;
 import org.drools.ruleunits.impl.listener.TestRuleRuntimeEventListener;
 import org.junit.jupiter.api.Test;
 import org.kie.api.builder.CompilationErrorsException;
+
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -79,6 +79,19 @@ public class RuleUnitProviderImplTest {
         UpdateTestUnit unit = new UpdateTestUnit();
 
         try ( RuleUnitInstance<UpdateTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
+
+            unit.getPersons().add(new Person("Mario", 17));
+
+            assertThat(unitInstance.fire()).isEqualTo(2);
+            assertThat(unit.getResults()).containsExactly("ok");
+        }
+    }
+
+    @Test
+    public void updateNoDS() {
+        UpdateNoDSTestUnit unit = new UpdateNoDSTestUnit();
+
+        try ( RuleUnitInstance<UpdateNoDSTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
 
             unit.getPersons().add(new Person("Mario", 17));
 

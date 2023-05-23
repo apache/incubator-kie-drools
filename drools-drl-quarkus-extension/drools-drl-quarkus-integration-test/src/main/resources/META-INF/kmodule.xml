@@ -9,6 +9,9 @@
   <kbase name="cepKB" packages="org.drools.cep" eventProcessingMode="stream">
     <ksession name="cepKS" clockType="pseudo"/>
   </kbase>
+  <kbase name="tmsKB" packages="org.drools.tms">
+    <ksession name="tmsKS"/>
+  </kbase>
   <kbase name="probeKB" packages="org.drools.probe" eventProcessingMode="stream">
     <ksession name="probeKS"/>
   </kbase>
