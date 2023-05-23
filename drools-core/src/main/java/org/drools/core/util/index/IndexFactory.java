@@ -12,7 +12,7 @@ import static org.drools.core.util.index.IndexUtil.isBigDecimalEqualityConstrain
 public interface IndexFactory {
 
     static BetaMemory createBetaMemory(RuleBaseConfiguration config, short nodeType, BetaNodeFieldConstraint... constraints) {
-        if (config.getCompositeKeyDepth() < 1 || containsBigDecimalEqualityConstraint(constraints)) {
+        if (config.getCompositeKeyDepth() < 1) {
             return new BetaMemory( config.isSequential() ? null : new TupleList(),
                     new TupleList(),
                     createContext(constraints),
@@ -26,17 +26,8 @@ public interface IndexFactory {
                 nodeType );
     }
 
-    private static boolean containsBigDecimalEqualityConstraint(BetaNodeFieldConstraint[] constraints) {
-        for (BetaNodeFieldConstraint constraint : constraints) {
-            if (constraint instanceof IndexableConstraint && isBigDecimalEqualityConstraint((IndexableConstraint) constraint)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-        private static TupleMemory createRightMemory(RuleBaseConfiguration config, IndexSpec indexSpec) {
-        if ( !config.isIndexRightBetaMemory() || !indexSpec.getConstraintType().isIndexable() ) {
+    private static TupleMemory createRightMemory(RuleBaseConfiguration config, IndexSpec indexSpec) {
+        if ( !config.isIndexRightBetaMemory() || !indexSpec.getConstraintType().isIndexable() || indexSpec.getIndexes().length == 0 ) {
             return new TupleList();
         }
 
@@ -55,7 +46,7 @@ public interface IndexFactory {
         if (config.isSequential()) {
             return null;
         }
-        if ( !config.isIndexLeftBetaMemory() || !indexSpec.getConstraintType().isIndexable() ) {
+        if ( !config.isIndexLeftBetaMemory() || !indexSpec.getConstraintType().isIndexable() || indexSpec.getIndexes().length == 0 ) {
             return new TupleList();
         }
 

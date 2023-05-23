@@ -9,6 +9,8 @@ import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.AbstractHashTable;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
+import static org.drools.core.util.index.IndexUtil.isEqualIndexable;
+
 public class IndexSpec {
     private IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.UNKNOWN;
     private AbstractHashTable.FieldIndex[] indexes;
@@ -38,11 +40,13 @@ public class IndexSpec {
 
         if (constraintType == IndexUtil.ConstraintType.EQUAL) {
             List<AbstractHashTable.FieldIndex> indexList = new ArrayList<>();
-            indexList.add(((IndexableConstraint)constraints[firstIndexableConstraint]).getFieldIndex());
+            if (isEqualIndexable(constraints[firstIndexableConstraint])) {
+                indexList.add(((IndexableConstraint) constraints[firstIndexableConstraint]).getFieldIndex());
+            }
 
             // look for other EQUAL constraint to eventually add them to the index
             for (int i = firstIndexableConstraint+1; i < constraints.length && indexList.size() < keyDepth; i++) {
-                if ( IndexUtil.ConstraintType.getType(constraints[i]) == IndexUtil.ConstraintType.EQUAL && ! ((IndexableConstraint) constraints[i]).isUnification() ) {
+                if ( isEqualIndexable(constraints[i]) && ! ((IndexableConstraint) constraints[i]).isUnification() ) {
                     indexList.add(((IndexableConstraint)constraints[i]).getFieldIndex());
                 }
             }
