@@ -29,6 +29,7 @@
       <modules>
         <!-- TODO:Figure out Kafka containers, ports, resources -->
         <module>integration-tests-quarkus-rules</module>
+        <module>integration-tests-quarkus-legacy-rules</module>
         <module>integration-tests-quarkus-decisions</module>
         <!-- module>integration-tests-quarkus-predictions</module -->
         <module>integration-tests-quarkus-resteasy-classic</module>

@@ -1,0 +1,7 @@
+package org.kie.kogito.legacy.rules
+
+rule R when
+  $s : String( $l : length )
+then
+  insertLogical($l);
+end
