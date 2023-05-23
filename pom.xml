@@ -296,6 +296,49 @@
         <module>drools-reliability</module>
       </modules>
     </profile>
+    <profile>
+      <id>test-with-custom-binaries</id>
+      <activation>
+        <property>
+          <name>unpackbuild.version</name>
+        </property>
+        <file>
+          <exists>src/main/java</exists>
+        </file>
+      </activation>
+      <properties>
+        <maven.main.skip>true</maven.main.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${unpackbuild.version}</version>
+                  <type>${project.packaging}</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>target/classes</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+            <executions>
+              <execution>
+                <id>unpack-jar</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
 </project>
