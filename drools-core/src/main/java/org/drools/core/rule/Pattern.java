@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.drools.core.base.ClassObjectType;
@@ -52,21 +53,18 @@ import static org.drools.reflective.util.ClassUtils.isFinal;
 import static org.drools.reflective.util.ClassUtils.isInterface;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
 
-public class Pattern
-    implements
-    RuleConditionElement,
-    AcceptsClassObjectType,
-    Externalizable {
+public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Externalizable {
+
     private static final long serialVersionUID = 510l;
-    private ObjectType               objectType;
-    private List<Constraint>         constraints = Collections.EMPTY_LIST;
-    private Declaration              declaration;
+    private ObjectType objectType;
+    private List<Constraint> constraints = Collections.EMPTY_LIST;
+    private Declaration declaration;
     private Map<String, Declaration> declarations = Collections.EMPTY_MAP;
-    private int                      patternId;
-    private PatternSource            source;
-    private List<Behavior>           behaviors;
-    private Collection<String>       listenedProperties = new HashSet<>();
-    private boolean                  hasNegativeConstraint;
+    private int patternId;
+    private PatternSource source;
+    private List<Behavior> behaviors;
+    private Collection<String> listenedProperties = new HashSet<>();
+    private boolean hasNegativeConstraint;
 
     private transient XpathBackReference backRefDeclarations;
 
@@ -87,48 +85,22 @@ public class Pattern
     private BitMask negativeWatchMask;
 
     public Pattern() {
-        this(0,
-             null);
+        this(0, null);
     }
 
-    public Pattern(final int patternId,
-                   final ObjectType objectType) {
-        this(patternId,
-             0,
-             0,
-             objectType,
-             null);
+    public Pattern(final int patternId, final ObjectType objectType) {
+        this(patternId, 0, 0, objectType, null);
     }
 
-    public Pattern(final int patternId,
-                   final ObjectType objectType,
-                   final String identifier) {
-        this(patternId,
-             0,
-             0,
-             objectType,
-             identifier);
+    public Pattern(final int patternId, final ObjectType objectType, final String identifier) {
+        this(patternId, 0, 0, objectType, identifier);
     }
 
-    public Pattern(final int patternId,
-                   final int tupleIndex,
-                   final int objectIndex,
-                   final ObjectType objectType,
-                   final String identifier) {
-        this(patternId,
-             tupleIndex,
-             objectIndex,
-             objectType,
-             identifier,
-             false);
+    public Pattern(final int patternId, final int tupleIndex, final int objectIndex, final ObjectType objectType, final String identifier) {
+        this(patternId, tupleIndex, objectIndex, objectType, identifier, false);
     }
 
-    public Pattern(final int patternId,
-                   final int tupleIndex,
-                   final int objectIndex,
-                   final ObjectType objectType,
-                   final String identifier,
-                   final boolean isInternalFact) {
+    public Pattern(final int patternId, final int tupleIndex, final int objectIndex, final ObjectType objectType, final String identifier, final boolean isInternalFact) {
         this.patternId = patternId;
         this.tupleIndex = tupleIndex;
         this.objectIndex = objectIndex;
@@ -339,10 +311,6 @@ public class Pattern
         this.constraints.add(constraint);
     }
 
-    public void removeConstraint(Constraint constraint) {
-        this.constraints.remove(constraint);
-    }
-
     public boolean hasXPath() {
         return xPath != null;
     }
@@ -485,7 +453,7 @@ public class Pattern
         if (this.tupleIndex != other.tupleIndex) {
             return false;
         }
-        return (this.source == null) ? other.source == null : this.source.equals( other.source );
+        return Objects.equals(this.source, other.source);
     }
 
     public List<RuleConditionElement> getNestedElements() {

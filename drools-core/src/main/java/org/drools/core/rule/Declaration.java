@@ -61,9 +61,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
     // Constructors
     // ------------------------------------------------------------
     public Declaration() {
-        this( null,
-              null,
-              null );
+        this( null, null, null );
     }
 
     /**
@@ -74,12 +72,8 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
      * @param pattern
      *            The pattern this variable is declared in
      */
-    public Declaration(final String identifier,
-                       final Pattern pattern) {
-        this( identifier,
-              null,
-              pattern,
-              false );
+    public Declaration(final String identifier, final Pattern pattern) {
+        this( identifier, null, pattern, false );
     }
 
     /**
@@ -357,7 +351,6 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         int result = 1;
         result = PRIME * result + this.pattern.getTupleIndex();
         result = PRIME * result + this.readAccessor.hashCode();
-        result = PRIME * result + this.identifier.hashCode();
         result = PRIME * result + this.xPathOffset;
         return result;
     }
@@ -375,7 +368,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         final Declaration other = (Declaration) object;
 
         return this.pattern.getPatternId() == other.pattern.getPatternId() &&
-               this.identifier.equals(other.identifier) && this.readAccessor.equals(other.readAccessor) &&
+               this.readAccessor.equals(other.readAccessor) &&
                this.xPathOffset == other.xPathOffset;
     }
 
