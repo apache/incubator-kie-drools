@@ -36,13 +36,13 @@ jobs:
     timeout-minutes: 120
     steps:
       - name: Clean Disk Space
-        uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
+        uses: kiegroup/kie-ci/.ci/actions/ubuntu-disk-space@main
         if: ${{ matrix.os == 'ubuntu-latest' }}
       - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: kiegroup/kogito-pipelines/.ci/actions/long-paths@main
+        uses: kiegroup/kie-ci/.ci/actions/long-paths@main
       - name: Java and Maven Setup
-        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
+        uses: kiegroup/kie-ci/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
@@ -54,7 +54,7 @@ jobs:
         if: github.event_name == 'push'
         run: echo "FLOW_TYPE=branch" >> $GITHUB_ENV
       - name: Build Chain
-        uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
+        uses: kiegroup/kie-ci/.ci/actions/build-chain@main
         env:
           # maven-assembly-plugin occasionally fails on heap space when building the ZIP in optaplanner-docs
           MAVEN_OPTS: "-Xmx2048m"
@@ -65,7 +65,7 @@ jobs:
           flow-type: ${{ env.FLOW_TYPE }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Surefire Report
-        uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
+        uses: kiegroup/kie-ci/.ci/actions/surefire-report@main
         if: ${{ always() }}
         with:
           report_paths: '**/*-reports/TEST-*.xml'
