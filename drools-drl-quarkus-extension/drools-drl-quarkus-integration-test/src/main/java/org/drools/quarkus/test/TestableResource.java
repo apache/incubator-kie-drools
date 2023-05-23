@@ -17,7 +17,6 @@ package org.drools.quarkus.test;
 
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieRuntimeBuilder;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -98,8 +97,7 @@ public class TestableResource {
 
         List<String> pkgNames = kBase.getKiePackages().stream().map(KiePackage::getName).collect(Collectors.toList());
         assertThat(pkgNames)
-            .hasSize(6)
-            .contains("org.drools.quarkus.test","org.drools.drl","org.drools.dtable","org.drools.cep","org.drools.probe");
+            .containsExactlyInAnyOrder("org.drools.quarkus.test","org.drools.drl","org.drools.dtable","org.drools.cep","org.drools.tms","org.drools.probe");
         
         return Response.ok().build();
     }
@@ -112,14 +110,14 @@ public class TestableResource {
         FactHandle fh = ksession.insert("test");
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        Collection ints = ksession.getObjects(new ClassObjectFilter(Integer.class));
+        Collection ints = ksession.getObjects(Integer.class::isInstance);
         assertThat(ints).hasSize(1);
         assertThat(ints.iterator().next()).isEqualTo(4);
 
         ksession.delete(fh);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        ints = ksession.getObjects(new ClassObjectFilter(Integer.class));
+        ints = ksession.getObjects(Integer.class::isInstance);
         assertThat(ints).isEmpty();
 
         return Response.ok().build();
