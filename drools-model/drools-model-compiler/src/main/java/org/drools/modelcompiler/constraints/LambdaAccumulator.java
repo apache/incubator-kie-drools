@@ -142,26 +142,6 @@ public abstract class LambdaAccumulator implements Accumulator {
                 return binding.evaluate(handle, tuple, wm, declarations, innerDeclarations);
             }
         }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            if (!super.equals(o)) {
-                return false;
-            }
-            final LambdaAccumulator.BindingAcc that = (LambdaAccumulator.BindingAcc) o;
-            return Objects.equals(sourceVariables, that.sourceVariables);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(super.hashCode(), sourceVariables);
-        }
     }
 
     public static class NotBindingAcc extends LambdaAccumulator {
