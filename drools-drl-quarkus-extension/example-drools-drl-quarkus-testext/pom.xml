@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools-drl-quarkus-extension</artifactId>
-        <version>8.39.0.Final</version>
+        <version>8.39.1-SNAPSHOT</version>
     </parent>
 
     <name>Drools :: Quarkus Testing Extension Example :: Runtime</name>
