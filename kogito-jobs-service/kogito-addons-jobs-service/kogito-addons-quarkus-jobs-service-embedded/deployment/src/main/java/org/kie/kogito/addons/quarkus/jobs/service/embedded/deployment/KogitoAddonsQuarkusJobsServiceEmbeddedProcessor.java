@@ -21,7 +21,6 @@ import org.jboss.jandex.DotName;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
 import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 
-import io.agroal.api.AgroalDataSource;
 import io.quarkus.arc.deployment.AnnotationsTransformerBuildItem;
 import io.quarkus.arc.deployment.ExcludedTypeBuildItem;
 import io.quarkus.arc.processor.AnnotationsTransformer;
@@ -71,13 +70,14 @@ class KogitoAddonsQuarkusJobsServiceEmbeddedProcessor extends OneOfCapabilityKog
                 if (!(context.getTarget().kind() == AnnotationTarget.Kind.FIELD)) {
                     return;
                 }
-                if (indexBuildItem.getIndex().getClassByName(context.getTarget().asField().type().name().toString()) == null) {
+                DotName className = DotName.createSimple(context.getTarget().asField().type().name().toString());
+                if (indexBuildItem.getIndex().getClassByName(className) == null) {
                     return;
                 }
 
-                if (context.getTarget().asField().type().name().equals(DotName.createSimple(io.vertx.mutiny.pgclient.PgPool.class))) {
+                if (context.getTarget().asField().type().name().equals(DotName.createSimple("io.vertx.mutiny.pgclient.PgPool"))) {
                     context.transform().add(ReactiveDataSource.class, AnnotationValue.createStringValue("value", DATA_SOURCE_NAME)).done();
-                } else if (context.getTarget().asField().type().name().equals(DotName.createSimple(AgroalDataSource.class))) {
+                } else if (context.getTarget().asField().type().name().equals(DotName.createSimple("io.agroal.api.AgroalDataSource"))) {
                     context.transform().add(io.quarkus.agroal.DataSource.class, AnnotationValue.createStringValue("value", DATA_SOURCE_NAME)).done();
                 }
             }
@@ -92,7 +92,7 @@ class KogitoAddonsQuarkusJobsServiceEmbeddedProcessor extends OneOfCapabilityKog
 
     @BuildStep
     public void excludeEventPublisherJobStreams(CombinedIndexBuildItem indexBuildItem, BuildProducer<ExcludedTypeBuildItem> excludedBeans) {
-        if (indexBuildItem.getIndex().getClassByName(DATA_INDEX_EVENT_PUBLISHER) == null) {
+        if (indexBuildItem.getIndex().getClassByName(DotName.createSimple(DATA_INDEX_EVENT_PUBLISHER)) == null) {
             excludedBeans.produce(new ExcludedTypeBuildItem(DATA_INDEX_EVENT_PUBLISHER));
         }
     }

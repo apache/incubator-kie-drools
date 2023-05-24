@@ -17,6 +17,7 @@ package org.kie.kogito.addons.quarkus.jobs.service.embedded.deployment;
 
 import java.util.List;
 
+import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,9 +84,10 @@ class KogitoAddonsQuarkusJobsServiceEmbeddedProcessorTest {
     @Test
     void excludeEventPublisherJobStreams() {
         CombinedIndexBuildItem combinedIndexBuildItem = new CombinedIndexBuildItem(indexView, computingIndexView);
-        doReturn(null).when(indexView).getClassByName(DATA_INDEX_EVENT_PUBLISHER);
+        DotName className = DotName.createSimple(DATA_INDEX_EVENT_PUBLISHER);
+        doReturn(null).when(indexView).getClassByName(className);
         processor.excludeEventPublisherJobStreams(combinedIndexBuildItem, excludedBeansBuildProducer);
-        verify(indexView).getClassByName(DATA_INDEX_EVENT_PUBLISHER);
+        verify(indexView).getClassByName(className);
         verify(excludedBeansBuildProducer).produce(excludedTypeBuildItemCaptor.capture());
         assertThat(excludedTypeBuildItemCaptor.getValue()).isNotNull();
         assertThat(excludedTypeBuildItemCaptor.getValue().getMatch()).isEqualTo(DATA_INDEX_EVENT_PUBLISHER);
