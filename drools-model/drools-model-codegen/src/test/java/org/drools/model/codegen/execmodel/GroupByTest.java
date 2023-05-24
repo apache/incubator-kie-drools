@@ -50,10 +50,12 @@ public class GroupByTest extends BaseModelTest {
 
     @Test
     public void providedInstance() throws Exception {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
-        String str =
-                "import " + Person.class.getCanonicalName() + ";" +
-                "import " + Map.class.getCanonicalName() + ";" +
+        //Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        // TODO: class [Ljava.lang.Object; cannot be cast to class java.lang.Number
+        //       The array contains the tuple [sumOfAges, groupKey],
+        //       but only sumOfAges was expected in the code
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Map.class.getCanonicalName() + ";\n" +
                 "global Map<String, Integer> results;\n" +
                 "rule X when\n" +
                 "groupby( $p: Person (); " +

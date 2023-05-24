@@ -45,6 +45,7 @@ import org.drools.compiler.rule.builder.EntryPointBuilder;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.compiler.rule.builder.ForallBuilder;
 import org.drools.compiler.rule.builder.FromBuilder;
+import org.drools.compiler.rule.builder.GroupByBuilder;
 import org.drools.compiler.rule.builder.GroupElementBuilder;
 import org.drools.compiler.rule.builder.NamedConsequenceBuilder;
 import org.drools.compiler.rule.builder.PackageBuildContext;
@@ -75,6 +76,7 @@ import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ForallDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
+import org.drools.drl.ast.descr.GroupByDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.NamedConsequenceDescr;
 import org.drools.drl.ast.descr.NotDescr;
@@ -110,6 +112,7 @@ public class MVELDialect
     protected static final PatternBuilderForQuery QUERY_BUILDER = new PatternBuilderForQuery();
     protected static final PatternBuilderForQuery ABDUCTIVE_QUERY_BUILDER = new PatternBuilderForAbductiveQuery();
     protected static final MVELAccumulateBuilder ACCUMULATE_BUILDER = new MVELAccumulateBuilder();
+    protected static final MVELGroupByBuilder GROUP_BY_BUILDER = new MVELGroupByBuilder();
     protected static final SalienceBuilder SALIENCE_BUILDER = new MVELSalienceBuilder();
     protected static final EnabledBuilder ENABLED_BUILDER = new MVELEnabledBuilder();
     protected static final MVELEvalBuilder EVAL_BUILDER = new MVELEvalBuilder();
@@ -285,6 +288,9 @@ public class MVELDialect
 
         builders.put(AccumulateDescr.class,
                      ACCUMULATE_BUILDER);
+
+        builders.put(GroupByDescr.class,
+                     GROUP_BY_BUILDER);
 
         builders.put(EvalDescr.class,
                      EVAL_BUILDER);
@@ -679,6 +685,10 @@ public class MVELDialect
 
     public AccumulateBuilder getAccumulateBuilder() {
         return ACCUMULATE_BUILDER;
+    }
+
+    public GroupByBuilder getGroupByBuilder() {
+        return GROUP_BY_BUILDER;
     }
 
     public ConsequenceBuilder getConsequenceBuilder() {

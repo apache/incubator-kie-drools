@@ -20,21 +20,25 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
+import org.drools.core.reteoo.BaseLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.Accumulator;
 import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.accessor.ReturnValueExpression;
 import org.drools.core.rule.accessor.Wireable;
 import org.drools.core.util.index.TupleList;
 
 public class SingleAccumulate extends Accumulate {
     private Accumulator accumulator;
+    private ReturnValueExpression grouppingFunction;
 
     public SingleAccumulate() { }
 
@@ -50,14 +54,29 @@ public class SingleAccumulate extends Accumulate {
         this.accumulator = accumulator;
     }
 
+    public SingleAccumulate(final RuleConditionElement source,
+            final Declaration[] requiredDeclarations,
+            final ReturnValueExpression grouppingFunction,
+            final Accumulator accumulator ) {
+        super(source, requiredDeclarations);
+        this.grouppingFunction = grouppingFunction;
+        this.accumulator = accumulator;
+    }
+
     public void readExternal(ObjectInput in) throws IOException,
                                                     ClassNotFoundException {
         super.readExternal(in);
+        this.grouppingFunction = (ReturnValueExpression) in.readObject();
         this.accumulator = (Accumulator) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
+        if (CompiledInvoker.isCompiledInvoker(grouppingFunction)) {
+            out.writeObject(null);
+        } else {
+            out.writeObject(grouppingFunction);
+        }
         if (CompiledInvoker.isCompiledInvoker(accumulator)) {
             out.writeObject(null);
         } else {
@@ -77,6 +96,16 @@ public class SingleAccumulate extends Accumulate {
         return this.accumulator.createContext();
     }
 
+    private Object getKey( final InternalFactHandle handle, final Object context, final Tuple tuple, final ReteEvaluator reteEvaluator ) {
+        try {
+            Tuple keyTuple = new BaseLeftTuple(handle, (LeftTuple) tuple, tuple.getTupleSink());
+            Object out = grouppingFunction.evaluate(handle, keyTuple, requiredDeclarations, getInnerDeclarationCache(), reteEvaluator, grouppingFunction.createContext());
+            return out;
+        } catch (Exception e) {
+            throw new RuntimeException("The grouping function threw an exception", e);
+        }
+    }
+
     public Object init(final Object workingMemoryContext,
                        final Object accContext,
                        final Object funcContext, final Tuple leftTuple,
@@ -92,6 +121,13 @@ public class SingleAccumulate extends Accumulate {
                              final Tuple match,
                              final InternalFactHandle handle,
                              final ReteEvaluator reteEvaluator) {
+        if (context instanceof GroupByContext) {
+            GroupByContext groupByContext = ( GroupByContext ) context;
+            TupleList<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, this,
+                    match, getKey(handle, context, match, reteEvaluator), reteEvaluator);
+
+            return accumulate(workingMemoryContext, match, handle, groupByContext, tupleList, reteEvaluator);
+        }
         return this.accumulator.accumulate( workingMemoryContext,
                                             ((AccumulateContextEntry)context).getFunctionContext(),
                                             match,
@@ -104,7 +140,16 @@ public class SingleAccumulate extends Accumulate {
     @Override
     public Object accumulate(Object workingMemoryContext, Tuple match, InternalFactHandle childHandle,
                              GroupByContext groupByContext, TupleList<AccumulateContextEntry> tupleList, ReteEvaluator reteEvaluator) {
-        throw new UnsupportedOperationException("This should never be called, it's for LambdaGroupByAccumulate only.");
+        if (grouppingFunction == null) {
+            throw new UnsupportedOperationException("This should never be called when grouppingFunction is null");
+        }
+        groupByContext.moveToPropagateTupleList(tupleList);
+        return accumulate(workingMemoryContext, tupleList.getContext(), match, childHandle, reteEvaluator);
+    }
+
+    @Override
+    public boolean isGroupBy() {
+        return grouppingFunction != null;
     }
 
     @Override
@@ -145,17 +190,43 @@ public class SingleAccumulate extends Accumulate {
         RuleConditionElement clonedSource = source instanceof GroupElement ? ((GroupElement) source).cloneOnlyGroup() : source.clone();
         SingleAccumulate clone = new SingleAccumulate( clonedSource,
                                                        this.requiredDeclarations,
-                                                       this.accumulator );
+                                                       this.grouppingFunction,
+                                                       this.accumulator);
         registerClone(clone);
         return clone;
     }
 
     public void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
         accumulator.replaceDeclaration( declaration, resolved );
+        if (grouppingFunction != null) {
+            grouppingFunction.replaceDeclaration(declaration, resolved);
+        }
     }
 
     public Object createWorkingMemoryContext() {
         return this.accumulator.createWorkingMemoryContext();
+    }
+
+    public final class GrouppingFunctionWirer implements Wireable.Immutable, Serializable {
+        private static final long serialVersionUID = -9072646735174734614L;
+
+        private transient boolean initialized;
+
+        public GrouppingFunctionWirer( ) {
+        }
+
+        public void wire( Object object ) {
+            ReturnValueExpression expression = (ReturnValueExpression) object;
+            grouppingFunction = expression;
+            for ( Accumulate clone : cloned ) {
+                ((SingleAccumulate)clone).grouppingFunction = expression;
+            }
+            initialized = true;
+        }
+
+        public boolean isInitialized() {
+            return initialized;
+        }
     }
 
     public final class Wirer implements Wireable.Immutable, Serializable {
@@ -181,6 +252,7 @@ public class SingleAccumulate extends Accumulate {
         final int prime = 31;
         int result = 1;
         result = prime * result + accumulator.hashCode();
+        result = prime * result + Objects.hashCode(grouppingFunction);
         result = prime * result + Arrays.hashCode( requiredDeclarations );
         result = prime * result + Arrays.hashCode( innerDeclarationCache );
         result = prime * result + ((source == null) ? 0 : source.hashCode());
@@ -193,6 +265,7 @@ public class SingleAccumulate extends Accumulate {
         if ( getClass() != obj.getClass() ) return false;
         SingleAccumulate other = (SingleAccumulate) obj;
         if ( !accumulator.equals( other.accumulator ) ) return false;
+        if ( !Objects.equals(grouppingFunction, other.grouppingFunction) ) return false;
         if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) return false;
         if ( !Arrays.equals( innerDeclarationCache, other.innerDeclarationCache ) ) return false;
         if ( source == null ) {

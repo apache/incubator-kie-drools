@@ -24,6 +24,7 @@ import org.drools.compiler.rule.builder.EnabledBuilder;
 import org.drools.compiler.rule.builder.EngineElementBuilder;
 import org.drools.compiler.rule.builder.EntryPointBuilder;
 import org.drools.compiler.rule.builder.FromBuilder;
+import org.drools.compiler.rule.builder.GroupByBuilder;
 import org.drools.compiler.rule.builder.GroupElementBuilder;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
@@ -78,6 +79,8 @@ public interface Dialect {
     RuleConditionBuilder getEvalBuilder();
 
     AccumulateBuilder getAccumulateBuilder();
+
+    GroupByBuilder getGroupByBuilder();
 
     PredicateBuilder getPredicateBuilder();
 
@@ -246,6 +249,10 @@ public interface Dialect {
 
         @Override
         public AccumulateBuilder getAccumulateBuilder() {
+            return throwExceptionForMissingMvel();
+        }
+
+        public GroupByBuilder getGroupByBuilder() {
             return throwExceptionForMissingMvel();
         }
 

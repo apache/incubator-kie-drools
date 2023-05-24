@@ -34,6 +34,7 @@ import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.EnabledBuilder;
 import org.drools.compiler.rule.builder.EntryPointBuilder;
 import org.drools.compiler.rule.builder.FromBuilder;
+import org.drools.compiler.rule.builder.GroupByBuilder;
 import org.drools.compiler.rule.builder.GroupElementBuilder;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
@@ -304,6 +305,11 @@ public class PackageBuilderConfigurationTest {
         }
 
         public AccumulateBuilder getAccumulateBuilder() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public GroupByBuilder getGroupByBuilder() {
             // TODO Auto-generated method stub
             return null;
         }

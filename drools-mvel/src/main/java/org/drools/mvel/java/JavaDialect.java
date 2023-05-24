@@ -39,6 +39,7 @@ import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCacheEntry;
+import org.drools.compiler.rule.builder.GroupByBuilder;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -50,6 +51,7 @@ import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ForallDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
+import org.drools.drl.ast.descr.GroupByDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.NamedConsequenceDescr;
 import org.drools.drl.ast.descr.NotDescr;
@@ -123,6 +125,8 @@ public class JavaDialect implements Dialect {
     protected static final SalienceBuilder SALIENCE_BUILDER = new MVELSalienceBuilder();
     protected static final EnabledBuilder ENABLED_BUILDER = new MVELEnabledBuilder();
     protected static final JavaAccumulateBuilder ACCUMULATE_BUILDER = new JavaAccumulateBuilder();
+
+    protected static final JavaGroupByBuilder GROUP_BY_BUILDER = new JavaGroupByBuilder();
 
     protected static final RuleConditionBuilder EVAL_BUILDER = new ASMEvalStubBuilder();
     protected static final PredicateBuilder PREDICATE_BUILDER = new ASMPredicateStubBuilder();
@@ -241,6 +245,9 @@ public class JavaDialect implements Dialect {
         builders.put(AccumulateDescr.class,
                      ACCUMULATE_BUILDER);
 
+        builders.put(GroupByDescr.class,
+                     GROUP_BY_BUILDER);
+
         builders.put(EvalDescr.class,
                      EVAL_BUILDER);
 
@@ -358,6 +365,10 @@ public class JavaDialect implements Dialect {
 
     public AccumulateBuilder getAccumulateBuilder() {
         return ACCUMULATE_BUILDER;
+    }
+
+    public GroupByBuilder getGroupByBuilder() {
+        return GROUP_BY_BUILDER;
     }
 
     public RuleConditionBuilder getEvalBuilder() {

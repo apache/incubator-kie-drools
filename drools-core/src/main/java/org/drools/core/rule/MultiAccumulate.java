@@ -20,6 +20,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -30,11 +31,13 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.Accumulator;
 import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.accessor.ReturnValueExpression;
 import org.drools.core.rule.accessor.Wireable;
 import org.drools.core.util.index.TupleList;
 
 public class MultiAccumulate extends Accumulate {
     private Accumulator[] accumulators;
+    private ReturnValueExpression grouppingFunction;
     private int arraySize;
 
     public MultiAccumulate() { }
@@ -48,10 +51,22 @@ public class MultiAccumulate extends Accumulate {
         this.accumulators = accumulators;
     }
 
+    public MultiAccumulate(final RuleConditionElement source,
+            final Declaration[] requiredDeclarations,
+            final ReturnValueExpression grouppingFunction,
+            final Accumulator[] accumulators,
+            int arraySize) {
+        super(source, requiredDeclarations);
+        this.arraySize = arraySize;
+        this.grouppingFunction = grouppingFunction;
+        this.accumulators = accumulators;
+    }
+
     public void readExternal(ObjectInput in) throws IOException,
                                                     ClassNotFoundException {
         super.readExternal(in);
         arraySize = in.readInt();
+        grouppingFunction = (ReturnValueExpression) in.readObject();
         this.accumulators = new Accumulator[in.readInt()];
         for ( int i = 0; i < this.accumulators.length; i++ ) {
             this.accumulators[i] = (Accumulator) in.readObject();
@@ -61,6 +76,11 @@ public class MultiAccumulate extends Accumulate {
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeInt(arraySize);
+        if (CompiledInvoker.isCompiledInvoker(grouppingFunction)) {
+            out.writeObject(null);
+        } else {
+            out.writeObject(grouppingFunction);
+        }
         out.writeInt( accumulators.length );
         for (Accumulator acc : accumulators) {
             if (CompiledInvoker.isCompiledInvoker(acc)) {
@@ -68,6 +88,14 @@ public class MultiAccumulate extends Accumulate {
             } else {
                 out.writeObject(acc);
             }
+        }
+    }
+
+    private Object getKey( InternalFactHandle handle, Object context, Tuple tuple, ReteEvaluator reteEvaluator ) {
+        try {
+            return grouppingFunction.evaluate(handle, tuple, requiredDeclarations, requiredDeclarations, reteEvaluator, context);
+        } catch (Exception e) {
+            throw new RuntimeException("The grouping function threw an exception", e);
         }
     }
 
@@ -111,6 +139,13 @@ public class MultiAccumulate extends Accumulate {
                              final Tuple match,
                              final InternalFactHandle handle,
                              final ReteEvaluator reteEvaluator) {
+        if (context instanceof GroupByContext) {
+            GroupByContext groupByContext = ( GroupByContext ) context;
+            TupleList<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, this,
+                    match, getKey(handle, context, match, reteEvaluator), reteEvaluator);
+
+            return accumulate(workingMemoryContext, match, handle, groupByContext, tupleList, reteEvaluator);
+        }
         Object[] values = new Object[accumulators.length];
         for ( int i = 0; i < this.accumulators.length; i++ ) {
             Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
@@ -128,7 +163,11 @@ public class MultiAccumulate extends Accumulate {
     @Override
     public Object accumulate(Object workingMemoryContext, Tuple match, InternalFactHandle childHandle,
                              GroupByContext groupByContext, TupleList<AccumulateContextEntry> tupleList, ReteEvaluator reteEvaluator) {
-        throw new UnsupportedOperationException("This should never be called, it's for LambdaGroupByAccumulate only.");
+        if (grouppingFunction == null) {
+            throw new UnsupportedOperationException("This should never be called when grouppingFunction is null");
+        }
+        groupByContext.moveToPropagateTupleList(tupleList);
+        return accumulate(workingMemoryContext, tupleList.getContext(), match, childHandle, reteEvaluator);
     }
 
     @Override
@@ -155,6 +194,11 @@ public class MultiAccumulate extends Accumulate {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean isGroupBy() {
+        return grouppingFunction != null;
     }
 
     public boolean supportsReverse() {
@@ -206,6 +250,27 @@ public class MultiAccumulate extends Accumulate {
         return ctx;
     }
 
+    public final class GrouppingFunctionWirer implements Wireable.Immutable, Serializable {
+        private static final long serialVersionUID = -9072646735174734614L;
+
+        private transient boolean initialized;
+
+        public GrouppingFunctionWirer( ) {
+        }
+
+        public void wire( Object object ) {
+            ReturnValueExpression expression = (ReturnValueExpression) object;
+            for ( Accumulate clone : cloned ) {
+                ((MultiAccumulate)clone).grouppingFunction = expression;
+            }
+            initialized = true;
+        }
+
+        public boolean isInitialized() {
+            return initialized;
+        }
+    }
+
     public final class Wirer implements Wireable.Immutable, Serializable {
         private static final long serialVersionUID = -9072646735174734614L;
 
@@ -235,6 +300,7 @@ public class MultiAccumulate extends Accumulate {
         final int prime = 31;
         int result = 1;
         result = prime * result + Arrays.hashCode(accumulators);
+        result = prime * result + Objects.hashCode(grouppingFunction);
         result = prime * result + Arrays.hashCode( requiredDeclarations );
         result = prime * result + ((source == null) ? 0 : source.hashCode());
         return result;
@@ -246,6 +312,7 @@ public class MultiAccumulate extends Accumulate {
         if ( getClass() != obj.getClass() ) return false;
         MultiAccumulate other = (MultiAccumulate) obj;
         if ( !Arrays.equals( accumulators, other.accumulators ) ) return false;
+        if ( !Objects.equals( grouppingFunction, other.grouppingFunction ) ) return false;
         if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) return false;
         if ( source == null ) {
             return other.source == null;
