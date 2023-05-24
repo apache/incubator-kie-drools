@@ -20,8 +20,8 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
 
-import org.kie.kogito.jobs.service.resource.v2.http.recipient.BaseHttpRecipientPayloadTypesIT;
-import org.kie.kogito.jobs.service.resource.v2.sink.recipient.BaseSinkRecipientPayloadTypesIT;
+import org.kie.kogito.jobs.service.resource.v2.http.recipient.BaseHttpRecipientPayloadTypesTest;
+import org.kie.kogito.jobs.service.resource.v2.sink.recipient.BaseSinkRecipientPayloadTypesTest;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
@@ -101,46 +101,46 @@ public class ExternalResourcesMock implements QuarkusTestResourceLifecycleManage
      */
     private void setUpBaseHttpRecipientPayloadTypesIT() {
         // json payload invocation
-        stubFor(post(new UrlPathPattern(equalTo(BaseHttpRecipientPayloadTypesIT.EXTERNAL_RESOURCE_FOR_JSON_PAYLOAD), false))
+        stubFor(post(new UrlPathPattern(equalTo(BaseHttpRecipientPayloadTypesTest.EXTERNAL_RESOURCE_FOR_JSON_PAYLOAD), false))
                 .withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON))
-                .withHeader(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_1, equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_1_VALUE))
-                .withHeader(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_2, equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_2_VALUE))
-                .withQueryParam(BaseHttpRecipientPayloadTypesIT.HTTP_QUERY_PARAM_1, equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_QUERY_PARAM_1_VALUE))
+                .withHeader(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_1, equalTo(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_1_VALUE))
+                .withHeader(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_2, equalTo(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_2_VALUE))
+                .withQueryParam(BaseHttpRecipientPayloadTypesTest.HTTP_QUERY_PARAM_1, equalTo(BaseHttpRecipientPayloadTypesTest.HTTP_QUERY_PARAM_1_VALUE))
                 .withQueryParam(LIMIT_QUERY_PARAM, equalTo(LIMIT_QUERY_PARAM_VALUE))
-                .withRequestBody(equalToJson("{\"" + BaseHttpRecipientPayloadTypesIT.HTTP_PROPERTY_1 + "\" : \"" + BaseHttpRecipientPayloadTypesIT.HTTP_PROPERTY_1_VALUE + "\"}"))
+                .withRequestBody(equalToJson("{\"" + BaseHttpRecipientPayloadTypesTest.HTTP_PROPERTY_1 + "\" : \"" + BaseHttpRecipientPayloadTypesTest.HTTP_PROPERTY_1_VALUE + "\"}"))
                 .willReturn(aResponse()
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                         .withBody("{}")));
 
         // string payload invocation
-        stubFor(post(new UrlPathPattern(equalTo(BaseHttpRecipientPayloadTypesIT.EXTERNAL_RESOURCE_FOR_STRING_PAYLOAD), false))
+        stubFor(post(new UrlPathPattern(equalTo(BaseHttpRecipientPayloadTypesTest.EXTERNAL_RESOURCE_FOR_STRING_PAYLOAD), false))
                 .withHeader(CONTENT_TYPE, equalTo(TEXT_PLAIN))
-                .withHeader(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_1, equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_1_VALUE))
-                .withHeader(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_2, equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_2_VALUE))
-                .withQueryParam(BaseHttpRecipientPayloadTypesIT.HTTP_QUERY_PARAM_1, equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_QUERY_PARAM_1_VALUE))
+                .withHeader(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_1, equalTo(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_1_VALUE))
+                .withHeader(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_2, equalTo(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_2_VALUE))
+                .withQueryParam(BaseHttpRecipientPayloadTypesTest.HTTP_QUERY_PARAM_1, equalTo(BaseHttpRecipientPayloadTypesTest.HTTP_QUERY_PARAM_1_VALUE))
                 .withQueryParam(LIMIT_QUERY_PARAM, equalTo(LIMIT_QUERY_PARAM_VALUE))
-                .withRequestBody(equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_TEXT_PLAIN_VALUE))
+                .withRequestBody(equalTo(BaseHttpRecipientPayloadTypesTest.HTTP_TEXT_PLAIN_VALUE))
                 .willReturn(aResponse()
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                         .withBody("{}")));
 
         // binary payload invocation
-        stubFor(post(new UrlPathPattern(equalTo(BaseHttpRecipientPayloadTypesIT.EXTERNAL_RESOURCE_FOR_BINARY_PAYLOAD), false))
+        stubFor(post(new UrlPathPattern(equalTo(BaseHttpRecipientPayloadTypesTest.EXTERNAL_RESOURCE_FOR_BINARY_PAYLOAD), false))
                 .withHeader(CONTENT_TYPE, equalTo(APPLICATION_OCTET_STREAM))
-                .withHeader(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_1, equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_1_VALUE))
-                .withHeader(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_2, equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_HEADER_2_VALUE))
-                .withQueryParam(BaseHttpRecipientPayloadTypesIT.HTTP_QUERY_PARAM_1, equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_QUERY_PARAM_1_VALUE))
+                .withHeader(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_1, equalTo(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_1_VALUE))
+                .withHeader(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_2, equalTo(BaseHttpRecipientPayloadTypesTest.HTTP_HEADER_2_VALUE))
+                .withQueryParam(BaseHttpRecipientPayloadTypesTest.HTTP_QUERY_PARAM_1, equalTo(BaseHttpRecipientPayloadTypesTest.HTTP_QUERY_PARAM_1_VALUE))
                 .withQueryParam(LIMIT_QUERY_PARAM, equalTo(LIMIT_QUERY_PARAM_VALUE))
-                .withRequestBody(new BinaryEqualToPattern(BaseHttpRecipientPayloadTypesIT.HTTP_BINARY_VALUE))
+                .withRequestBody(new BinaryEqualToPattern(BaseHttpRecipientPayloadTypesTest.HTTP_BINARY_VALUE))
                 .willReturn(aResponse()
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                         .withBody("{}")));
 
         // job with custom timeout
-        stubFor(post(new UrlPathPattern(equalTo(BaseHttpRecipientPayloadTypesIT.EXTERNAL_RESOURCE_FOR_CUSTOM_TIMEOUT), false))
+        stubFor(post(new UrlPathPattern(equalTo(BaseHttpRecipientPayloadTypesTest.EXTERNAL_RESOURCE_FOR_CUSTOM_TIMEOUT), false))
                 .withHeader(CONTENT_TYPE, equalTo(TEXT_PLAIN))
                 .withQueryParam(LIMIT_QUERY_PARAM, equalTo(LIMIT_QUERY_PARAM_VALUE))
-                .withRequestBody(equalTo(BaseHttpRecipientPayloadTypesIT.HTTP_TEXT_PLAIN_VALUE))
+                .withRequestBody(equalTo(BaseHttpRecipientPayloadTypesTest.HTTP_TEXT_PLAIN_VALUE))
                 .willReturn(aResponse()
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                         .withBody("{}")));
@@ -151,29 +151,29 @@ public class ExternalResourcesMock implements QuarkusTestResourceLifecycleManage
      */
     private void setUpBaseSinkRecipientPayloadTypesIT() {
         // binary mode with json payload invocation
-        stubFor(applySinkRecipientBinaryModeCommonMappings(post(BaseSinkRecipientPayloadTypesIT.EXTERNAL_RESOURCE_FOR_BINARY_MODE_JSON_PAYLOAD))
-                .withRequestBody(equalToJson("{\"" + BaseSinkRecipientPayloadTypesIT.SINK_PROPERTY_1 + "\" : \"" + BaseSinkRecipientPayloadTypesIT.SINK_PROPERTY_1_VALUE + "\"}"))
+        stubFor(applySinkRecipientBinaryModeCommonMappings(post(BaseSinkRecipientPayloadTypesTest.EXTERNAL_RESOURCE_FOR_BINARY_MODE_JSON_PAYLOAD))
+                .withRequestBody(equalToJson("{\"" + BaseSinkRecipientPayloadTypesTest.SINK_PROPERTY_1 + "\" : \"" + BaseSinkRecipientPayloadTypesTest.SINK_PROPERTY_1_VALUE + "\"}"))
                 .willReturn(aResponse()
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                         .withBody("{}")));
 
         // binary mode with binary payload invocation
-        stubFor(applySinkRecipientBinaryModeCommonMappings(post(BaseSinkRecipientPayloadTypesIT.EXTERNAL_RESOURCE_FOR_BINARY_MODE_BINARY_PAYLOAD))
-                .withRequestBody(new BinaryEqualToPattern(BaseSinkRecipientPayloadTypesIT.SINK_BINARY_VALUE))
+        stubFor(applySinkRecipientBinaryModeCommonMappings(post(BaseSinkRecipientPayloadTypesTest.EXTERNAL_RESOURCE_FOR_BINARY_MODE_BINARY_PAYLOAD))
+                .withRequestBody(new BinaryEqualToPattern(BaseSinkRecipientPayloadTypesTest.SINK_BINARY_VALUE))
                 .willReturn(aResponse()
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                         .withBody("{}")));
 
         // structured mode with json payload invocation
-        stubFor(applySinkRecipientStructuredModeCommonMappings(post(BaseSinkRecipientPayloadTypesIT.EXTERNAL_RESOURCE_FOR_STRUCTURED_MODE_JSON_PAYLOAD))
-                .withRequestBody(matchingJsonPath("data." + BaseSinkRecipientPayloadTypesIT.SINK_PROPERTY_1, equalTo(BaseSinkRecipientPayloadTypesIT.SINK_PROPERTY_1_VALUE)))
+        stubFor(applySinkRecipientStructuredModeCommonMappings(post(BaseSinkRecipientPayloadTypesTest.EXTERNAL_RESOURCE_FOR_STRUCTURED_MODE_JSON_PAYLOAD))
+                .withRequestBody(matchingJsonPath("data." + BaseSinkRecipientPayloadTypesTest.SINK_PROPERTY_1, equalTo(BaseSinkRecipientPayloadTypesTest.SINK_PROPERTY_1_VALUE)))
                 .willReturn(aResponse()
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                         .withBody("{}")));
 
         // structured mode with binary payload invocation
-        stubFor(applySinkRecipientStructuredModeCommonMappings(post(BaseSinkRecipientPayloadTypesIT.EXTERNAL_RESOURCE_FOR_STRUCTURED_MODE_BINARY_PAYLOAD))
-                .withRequestBody(matchingJsonPath("data_base64", equalTo(Base64.getEncoder().encodeToString(BaseSinkRecipientPayloadTypesIT.SINK_BINARY_VALUE))))
+        stubFor(applySinkRecipientStructuredModeCommonMappings(post(BaseSinkRecipientPayloadTypesTest.EXTERNAL_RESOURCE_FOR_STRUCTURED_MODE_BINARY_PAYLOAD))
+                .withRequestBody(matchingJsonPath("data_base64", equalTo(Base64.getEncoder().encodeToString(BaseSinkRecipientPayloadTypesTest.SINK_BINARY_VALUE))))
                 .willReturn(aResponse()
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                         .withBody("{}")));
@@ -181,32 +181,32 @@ public class ExternalResourcesMock implements QuarkusTestResourceLifecycleManage
 
     private static MappingBuilder applySinkRecipientBinaryModeCommonMappings(MappingBuilder mappingBuilder) {
         return mappingBuilder
-                .withHeader(CONTENT_TYPE, equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_DATACONTENTTYPE))
-                .withHeader("ce-specversion", equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_SPECVERSION.toString()))
-                .withHeader("ce-type", equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_TYPE))
-                .withHeader("ce-dataschema", equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_DATASCHEMA.toString()))
-                .withHeader("ce-source", equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_SOURCE.toString()))
-                .withHeader("ce-subject", equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_SUBJECT))
-                .withHeader("ce-" + BaseSinkRecipientPayloadTypesIT.SINK_EXTENSION_1_NAME, equalTo(BaseSinkRecipientPayloadTypesIT.SINK_EXTENSION_1_VALUE))
-                .withHeader("ce-" + BaseSinkRecipientPayloadTypesIT.SINK_EXTENSION_2_NAME, equalTo(BaseSinkRecipientPayloadTypesIT.SINK_EXTENSION_2_VALUE))
+                .withHeader(CONTENT_TYPE, equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_DATACONTENTTYPE))
+                .withHeader("ce-specversion", equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_SPECVERSION.toString()))
+                .withHeader("ce-type", equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_TYPE))
+                .withHeader("ce-dataschema", equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_DATASCHEMA.toString()))
+                .withHeader("ce-source", equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_SOURCE.toString()))
+                .withHeader("ce-subject", equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_SUBJECT))
+                .withHeader("ce-" + BaseSinkRecipientPayloadTypesTest.SINK_EXTENSION_1_NAME, equalTo(BaseSinkRecipientPayloadTypesTest.SINK_EXTENSION_1_VALUE))
+                .withHeader("ce-" + BaseSinkRecipientPayloadTypesTest.SINK_EXTENSION_2_NAME, equalTo(BaseSinkRecipientPayloadTypesTest.SINK_EXTENSION_2_VALUE))
                 .withHeader("ce-limit", equalTo("0"));
     }
 
     private static MappingBuilder applySinkRecipientStructuredModeCommonMappings(MappingBuilder mappingBuilder) {
         return mappingBuilder
                 .withHeader(CONTENT_TYPE, equalTo("application/cloudevents+json"))
-                .withRequestBody(matchingJsonPath("specversion", equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_SPECVERSION.toString())))
-                .withRequestBody(matchingJsonPath("type", equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_TYPE)))
-                .withRequestBody(matchingJsonPath("datacontenttype", equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_DATACONTENTTYPE)))
-                .withRequestBody(matchingJsonPath("dataschema", equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_DATASCHEMA.toString())))
-                .withRequestBody(matchingJsonPath("source", equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_SOURCE.toString())))
-                .withRequestBody(matchingJsonPath("subject", equalTo(BaseSinkRecipientPayloadTypesIT.SINK_CE_SUBJECT)))
-                .withRequestBody(matchingJsonPath(BaseSinkRecipientPayloadTypesIT.SINK_EXTENSION_1_NAME, equalTo(BaseSinkRecipientPayloadTypesIT.SINK_EXTENSION_1_VALUE)))
-                .withRequestBody(matchingJsonPath(BaseSinkRecipientPayloadTypesIT.SINK_EXTENSION_2_NAME, equalTo(BaseSinkRecipientPayloadTypesIT.SINK_EXTENSION_2_VALUE)))
+                .withRequestBody(matchingJsonPath("specversion", equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_SPECVERSION.toString())))
+                .withRequestBody(matchingJsonPath("type", equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_TYPE)))
+                .withRequestBody(matchingJsonPath("datacontenttype", equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_DATACONTENTTYPE)))
+                .withRequestBody(matchingJsonPath("dataschema", equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_DATASCHEMA.toString())))
+                .withRequestBody(matchingJsonPath("source", equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_SOURCE.toString())))
+                .withRequestBody(matchingJsonPath("subject", equalTo(BaseSinkRecipientPayloadTypesTest.SINK_CE_SUBJECT)))
+                .withRequestBody(matchingJsonPath(BaseSinkRecipientPayloadTypesTest.SINK_EXTENSION_1_NAME, equalTo(BaseSinkRecipientPayloadTypesTest.SINK_EXTENSION_1_VALUE)))
+                .withRequestBody(matchingJsonPath(BaseSinkRecipientPayloadTypesTest.SINK_EXTENSION_2_NAME, equalTo(BaseSinkRecipientPayloadTypesTest.SINK_EXTENSION_2_VALUE)))
                 .withRequestBody(matchingJsonPath("limit", equalTo("0")));
     }
 
     private static String addQueryParams(String url) {
-        return String.format("%s?%s=%s", url, BaseHttpRecipientPayloadTypesIT.HTTP_QUERY_PARAM_1, BaseHttpRecipientPayloadTypesIT.HTTP_QUERY_PARAM_1_VALUE);
+        return String.format("%s?%s=%s", url, BaseHttpRecipientPayloadTypesTest.HTTP_QUERY_PARAM_1, BaseHttpRecipientPayloadTypesTest.HTTP_QUERY_PARAM_1_VALUE);
     }
 }

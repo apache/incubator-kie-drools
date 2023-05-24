@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jobs.service.repository.postgresql;
+package org.kie.kogito.jobs.service.repository.inmemory.postgresql;
 
 import java.time.Duration;
 
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseJobRepositoryTest;
-import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
+import org.kie.kogito.jobs.service.repository.postgresql.PostgreSqlJobRepository;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.smallrye.mutiny.infrastructure.Infrastructure;
 import io.vertx.mutiny.pgclient.PgPool;
 
 @QuarkusTest
-@QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
-public class PostgreSqlJobRepositoryTest extends BaseJobRepositoryTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class InmemoryPostgreSqlJobRepositoryTest extends BaseJobRepositoryTest {
 
     @Inject
     PostgreSqlJobRepository tested;
@@ -43,9 +44,7 @@ public class PostgreSqlJobRepositoryTest extends BaseJobRepositoryTest {
     public void setUp() throws Exception {
         client.query("DELETE FROM job_details")
                 .execute()
-                .await().atMost(Duration.ofSeconds(10L));
-        client.query("DELETE FROM job_service_management")
-                .execute()
+                .emitOn(Infrastructure.getDefaultExecutor())
                 .await().atMost(Duration.ofSeconds(10L));
         super.setUp();
     }

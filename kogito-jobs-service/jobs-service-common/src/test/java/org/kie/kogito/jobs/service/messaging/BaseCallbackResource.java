@@ -36,7 +36,7 @@ import javax.ws.rs.core.Response;
  * Helper resource for emulating the callback endpoint of a Job created by using the Job service events API and to have
  * the ability of registering the invocations.
  * 
- * @see BaseMessagingApiIT
+ * @see BaseMessagingApiTest
  */
 public abstract class BaseCallbackResource {
 
