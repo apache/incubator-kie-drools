@@ -1955,12 +1955,12 @@ index 8d34b05084..9043abe090 100644
  import org.kie.api.runtime.KieRuntimeBuilder;
  import org.kie.api.runtime.KieSession;
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
-index f1008d7c1a..14c0de94bb 100644
+index c2b54de4a4..340c6a0830 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
 +++ b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
-@@ -22,10 +22,10 @@ import java.util.List;
- import java.util.concurrent.TimeUnit;
- import java.util.stream.Collectors;
+@@ -22,10 +22,10 @@ import org.kie.api.runtime.KieSession;
+ import org.kie.api.runtime.rule.FactHandle;
+ import org.kie.api.time.SessionPseudoClock;
  
 -import javax.inject.Inject;
 -import javax.ws.rs.GET;
@@ -1970,9 +1970,9 @@ index f1008d7c1a..14c0de94bb 100644
 +import jakarta.ws.rs.GET;
 +import jakarta.ws.rs.Path;
 +import jakarta.ws.rs.core.Response;
- 
- import org.kie.api.KieBase;
- import org.kie.api.definition.KiePackage;
+ import java.util.Collection;
+ import java.util.List;
+ import java.util.concurrent.TimeUnit;
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
 index 541d798fb4..c8aff28b7b 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
