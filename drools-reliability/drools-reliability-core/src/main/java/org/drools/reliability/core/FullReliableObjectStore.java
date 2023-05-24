@@ -25,6 +25,11 @@ public class FullReliableObjectStore extends IdentityObjectStore {
 
     private final Storage<Long, StoredObject> storage;
 
+    public FullReliableObjectStore(){
+        super();
+        this.storage = null;
+    }
+
     public FullReliableObjectStore(Storage<Long, StoredObject> storage) {
         super();
         this.storage = storage;

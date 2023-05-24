@@ -40,9 +40,7 @@ public class SynchronizedPropagationList implements PropagationList {
         this.reteEvaluator = reteEvaluator;
     }
 
-    public SynchronizedPropagationList(){
-        //this.reteEvaluator=null;
-    }
+    public SynchronizedPropagationList(){}
 
     @Override
     public void addEntry(final PropagationEntry entry) {

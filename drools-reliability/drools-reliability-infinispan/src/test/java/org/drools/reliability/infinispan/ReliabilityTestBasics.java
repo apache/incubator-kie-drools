@@ -191,7 +191,6 @@ public abstract class ReliabilityTestBasics {
 
     protected KieSession getKieSession(String drl, PersistedSessionOption persistedSessionOption, Option... options) {
         OptionsFilter optionsFilter = new OptionsFilter(options);
-        //KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build(optionsFilter.getKieBaseOptions());
         KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build(ExecutableModelProject.class, optionsFilter.getKieBaseOptions());
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         if (persistedSessionOption != null) {

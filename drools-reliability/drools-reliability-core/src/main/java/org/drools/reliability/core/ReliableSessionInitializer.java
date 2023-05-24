@@ -112,7 +112,6 @@ public class ReliableSessionInitializer {
                 // re-propagate objects from the storage to the new session
                 populateSessionFromStorage(session);
             }
-            //session.setWorkingMemoryActionListener(entry -> onWorkingMemoryAction(session, entry));
             session.getRuleRuntimeEventSupport().addEventListener(new FullReliableSessionInitializer.FullStoreRuntimeEventListener(session));
             return session;
         }
@@ -134,7 +133,6 @@ public class ReliableSessionInitializer {
             FullStoreRuntimeEventListener(InternalWorkingMemory session) {
                 this.componentsCache = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(session, "components");
                 this.propagationList = (ReliablePropagationList) ((ReliableAgenda) session.getAgenda()).getPropagationList();
-                //propagationList = (ReliablePropagationList) componentsCache.get("PropagationList");
             }
 
             public void objectInserted(ObjectInsertedEvent ev) {

@@ -300,7 +300,6 @@ public interface PropagationEntry {
             out.writeObject(next);
             out.writeObject(handle);
             out.writeObject(context);
-            //out.writeObject(objectTypeConf);
         }
 
         @Override
@@ -308,7 +307,6 @@ public interface PropagationEntry {
             this.next = (PropagationEntry) in.readObject();
             this.handle = (InternalFactHandle) in.readObject();
             this.context = (PropagationContext) in.readObject();
-            //this.objectTypeConf = (ObjectTypeConf) in.readObject();
         }
     }
 
