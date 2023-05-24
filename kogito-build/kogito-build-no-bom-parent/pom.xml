@@ -85,7 +85,7 @@
     <version.clean.plugin>3.1.0</version.clean.plugin>
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <version.copyrename.plugin>1.0</version.copyrename.plugin>
-    <version.dependency.plugin>2.8</version.dependency.plugin>
+    <version.dependency.plugin>3.5.0</version.dependency.plugin>
     <version.de.skuzzle.enforcer>1.1.0</version.de.skuzzle.enforcer>
     <version.deploy.plugin>2.8.2</version.deploy.plugin>
     <version.enforcer.plugin>3.0.0-M2</version.enforcer.plugin>
@@ -1057,6 +1057,49 @@ limitations under the License.
         <sonar.pullrequest.github.repository>${env.ghprbPullLink}</sonar.pullrequest.github.repository>
         <sonar.pullrequest.provider>GitHub</sonar.pullrequest.provider>
       </properties>
+    </profile>
+    <profile>
+      <id>test-with-custom-binaries</id>
+      <activation>
+        <property>
+          <name>unpackbuild.version</name>
+        </property>
+        <file>
+          <exists>src/main/java</exists>
+        </file>
+      </activation>
+      <properties>
+        <maven.main.skip>true</maven.main.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${unpackbuild.version}</version>
+                  <type>${project.packaging}</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>target/classes</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+            <executions>
+              <execution>
+                <id>unpack-jar</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 </project>
