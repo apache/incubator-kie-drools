@@ -59,16 +59,17 @@ pipeline {
                         mergeAndPush(prLink, getBuildBranch())
                         githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorCredsID())
                     }
-                    }
                 }
             }
         }
     }
     post {
+        always {
+            cleanWs()
+        }
         unsuccessful {
             sendErrorNotification()
         }
-        cleanWs()
     }
 }
 
