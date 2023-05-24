@@ -4045,6 +4045,35 @@ index 1b82df7f43..f7595d1337 100644
  
  import org.kie.kogito.Application;
  import org.kie.kogito.decision.DecisionConfig;
+diff --git a/quarkus/integration-tests/integration-tests-quarkus-legacy-rules/src/main/java/org/kie/kogito/legacy/rules/TmsEndpoint.java b/quarkus/integration-tests/integration-tests-quarkus-legacy-rules/src/main/java/org/kie/kogito/legacy/rules/TmsEndpoint.java
+index 5bdb43b1c3..c151b850f2 100644
+--- a/quarkus/integration-tests/integration-tests-quarkus-legacy-rules/src/main/java/org/kie/kogito/legacy/rules/TmsEndpoint.java
++++ b/quarkus/integration-tests/integration-tests-quarkus-legacy-rules/src/main/java/org/kie/kogito/legacy/rules/TmsEndpoint.java
+@@ -15,18 +15,17 @@
+  */
+ package org.kie.kogito.legacy.rules;
+ 
+-import javax.annotation.PostConstruct;
+-import javax.inject.Inject;
+-import javax.ws.rs.*;
++import jakarta.annotation.PostConstruct;
++import java.util.HashMap;
++import java.util.Map;
++
++import jakarta.inject.Inject;
++import jakarta.ws.rs.*;
+ 
+ import org.kie.api.runtime.KieRuntimeBuilder;
+ import org.kie.api.runtime.KieSession;
+ import org.kie.api.runtime.rule.FactHandle;
+ 
+-import java.util.HashMap;
+-import java.util.Map;
+-import java.util.function.Function;
+-
+ @Path("/test-tms")
+ public class TmsEndpoint {
+     @Inject
 diff --git a/quarkus/integration-tests/integration-tests-quarkus-norest/src/test/java/org/kie/kogito/quarkus/dmn/TrafficViolationTest.java b/quarkus/integration-tests/integration-tests-quarkus-norest/src/test/java/org/kie/kogito/quarkus/dmn/TrafficViolationTest.java
 index 3c7c37692c..e8bc6621b7 100644
 --- a/quarkus/integration-tests/integration-tests-quarkus-norest/src/test/java/org/kie/kogito/quarkus/dmn/TrafficViolationTest.java
