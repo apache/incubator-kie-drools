@@ -25,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.kie.kogito.addon.source.files.SourceFilesProvider;
@@ -44,14 +45,20 @@ import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 @ApplicationScoped
 public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
 
-    @Inject
-    ProcessSvgService processSvgService;
+    private ProcessSvgService processSvgService;
+
+    private SourceFilesProvider sourceFilesProvider;
+
+    private Processes processes;
 
     @Inject
-    SourceFilesProvider sourceFilesProvider;
-
-    @Inject
-    Processes processes;
+    public KogitoAddonRuntimeClientImpl(ProcessSvgService processSvgService,
+            SourceFilesProvider sourceFilesProvider,
+            Instance<Processes> processesInstance) {
+        this.processSvgService = processSvgService;
+        this.sourceFilesProvider = sourceFilesProvider;
+        this.processes = processesInstance.isResolvable() ? processesInstance.get() : null;
+    }
 
     static <T> CompletableFuture<T> throwUnsupportedException() {
         return CompletableFuture.failedFuture(new UnsupportedOperationException());
@@ -104,7 +111,7 @@ public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
 
     @Override
     public CompletableFuture<List<Node>> getProcessInstanceNodeDefinitions(String serviceURL, ProcessInstance processInstance) {
-        Process<?> process = processes.processById(processInstance.getProcessId());
+        Process<?> process = processes != null ? processes.processById(processInstance.getProcessId()) : null;
         if (process == null) {
             return CompletableFuture.completedFuture(null);
         } else {
