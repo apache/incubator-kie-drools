@@ -15,30 +15,32 @@
 
 package org.drools.core.phreak;
 
-import java.util.Iterator;
-
 import org.drools.core.common.ReteEvaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
 
 public class SynchronizedPropagationList implements PropagationList {
 
     protected static final Logger log = LoggerFactory.getLogger( SynchronizedPropagationList.class );
 
-    protected final ReteEvaluator reteEvaluator;
+    protected ReteEvaluator reteEvaluator;
 
     protected volatile PropagationEntry head;
     protected volatile PropagationEntry tail;
 
-    private volatile boolean disposed = false;
+    protected volatile boolean disposed = false;
 
-    private volatile boolean hasEntriesDeferringExpiration = false;
+    protected volatile boolean hasEntriesDeferringExpiration = false;
 
-    private volatile boolean firingUntilHalt = false;
+    protected volatile boolean firingUntilHalt = false;
 
     public SynchronizedPropagationList(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
     }
+
+    public SynchronizedPropagationList(){}
 
     @Override
     public void addEntry(final PropagationEntry entry) {

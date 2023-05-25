@@ -16,6 +16,7 @@
 package org.drools.reliability.infinispan;
 
 import org.drools.core.ClassObjectFilter;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.reliability.core.ReliableKieSession;
 import org.drools.reliability.core.ReliableRuntimeComponentFactoryImpl;
 import org.drools.reliability.core.StorageManagerFactory;
@@ -85,6 +86,9 @@ public abstract class ReliabilityTestBasics {
 
     static boolean isProtoStream() {
         return "PROTOSTREAM".equalsIgnoreCase(getConfig(INFINISPAN_STORAGE_MARSHALLER));
+    }
+    static Stream<PersistedSessionOption.PersistenceStrategy> strategyProviderFull() {
+        return Stream.of(PersistedSessionOption.PersistenceStrategy.FULL);
     }
 
     @BeforeEach
@@ -187,7 +191,7 @@ public abstract class ReliabilityTestBasics {
 
     protected KieSession getKieSession(String drl, PersistedSessionOption persistedSessionOption, Option... options) {
         OptionsFilter optionsFilter = new OptionsFilter(options);
-        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build(optionsFilter.getKieBaseOptions());
+        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build(ExecutableModelProject.class, optionsFilter.getKieBaseOptions());
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         if (persistedSessionOption != null) {
             conf.setOption(persistedSessionOption);

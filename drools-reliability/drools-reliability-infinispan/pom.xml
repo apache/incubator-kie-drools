@@ -52,7 +52,7 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-mvel</artifactId>
+      <artifactId>drools-engine</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -119,6 +119,11 @@
     <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-codegen</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

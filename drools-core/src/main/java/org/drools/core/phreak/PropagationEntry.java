@@ -15,9 +15,6 @@
 
 package org.drools.core.phreak;
 
-import java.io.Serializable;
-import java.util.concurrent.CountDownLatch;
-
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
@@ -40,6 +37,12 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.concurrent.CountDownLatch;
 
 import static org.drools.core.reteoo.EntryPointNode.removeRightTuplesMatchingOTN;
 import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
@@ -66,7 +69,7 @@ public interface PropagationEntry {
     boolean defersExpiration();
 
     abstract class AbstractPropagationEntry implements PropagationEntry {
-        private PropagationEntry next;
+        protected PropagationEntry next;
 
         public void setNext(PropagationEntry next) {
             this.next = next;
@@ -196,12 +199,14 @@ public interface PropagationEntry {
         }
     }
 
-    class Insert extends AbstractPropagationEntry implements Serializable {
+    class Insert extends AbstractPropagationEntry implements Externalizable {
         private static final ObjectTypeNode.ExpireJob job = new ObjectTypeNode.ExpireJob();
 
-        private final InternalFactHandle handle;
-        private final PropagationContext context;
-        private final ObjectTypeConf objectTypeConf;
+        private InternalFactHandle handle;
+        private PropagationContext context;
+        private ObjectTypeConf objectTypeConf;
+
+        public Insert() { }
 
         public Insert( InternalFactHandle handle, PropagationContext context, ReteEvaluator reteEvaluator, ObjectTypeConf objectTypeConf) {
             this.handle = handle;
@@ -221,6 +226,10 @@ public interface PropagationEntry {
         }
 
         private static void propagate( InternalFactHandle handle, PropagationContext context, ReteEvaluator reteEvaluator, ObjectTypeConf objectTypeConf ) {
+            if (objectTypeConf == null) {
+                // it can be null after deserialization
+                objectTypeConf = handle.getEntryPoint(reteEvaluator).getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(handle.getEntryPointId(), handle.getObject());
+            }
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
                 otn.propagateAssert( handle, context, reteEvaluator );
             }
@@ -285,12 +294,28 @@ public interface PropagationEntry {
         public InternalFactHandle getHandle() {
             return handle;
         }
+
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(next);
+            out.writeObject(handle);
+            out.writeObject(context);
+        }
+
+        @Override
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            this.next = (PropagationEntry) in.readObject();
+            this.handle = (InternalFactHandle) in.readObject();
+            this.context = (PropagationContext) in.readObject();
+        }
     }
 
-    class Update extends AbstractPropagationEntry {
-        private final InternalFactHandle handle;
-        private final PropagationContext context;
-        private final ObjectTypeConf objectTypeConf;
+    class Update extends AbstractPropagationEntry implements Externalizable {
+        private InternalFactHandle handle;
+        private PropagationContext context;
+        private ObjectTypeConf objectTypeConf;
+
+        public Update(){}
 
         public Update(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf) {
             this.handle = handle;
@@ -303,6 +328,10 @@ public interface PropagationEntry {
         }
 
         public static void execute(InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, ReteEvaluator reteEvaluator) {
+            if (objectTypeConf == null) {
+                // it can be null after deserialization
+                objectTypeConf = handle.getEntryPoint(reteEvaluator).getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(handle.getEntryPointId(), handle.getObject());
+            }
             // make a reference to the previous tuples, then null then on the handle
             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.detachLinkedTuples() );
             ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
@@ -328,6 +357,20 @@ public interface PropagationEntry {
         @Override
         public String toString() {
             return "Update of " + handle.getObject();
+        }
+
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(next);
+            out.writeObject(handle);
+            out.writeObject(context);
+        }
+
+        @Override
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            this.next = (PropagationEntry) in.readObject();
+            this.handle = (InternalFactHandle) in.readObject();
+            this.context = (PropagationContext) in.readObject();
         }
     }
 

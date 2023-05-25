@@ -15,13 +15,54 @@
 
 package org.drools.reliability.core;
 
+import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.MapObjectStore;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
 
-public class FullReliableObjectStore extends MapObjectStore {
+public class FullReliableObjectStore extends IdentityObjectStore {
 
-    public FullReliableObjectStore(Storage<Object, InternalFactHandle> fhStorage) {
-        super(fhStorage);
+    private final Storage<Long, StoredObject> storage;
+
+    public FullReliableObjectStore(){
+        super();
+        this.storage = null;
+    }
+
+    public FullReliableObjectStore(Storage<Long, StoredObject> storage) {
+        super();
+        this.storage = storage;
+    }
+
+    @Override
+    public void addHandle(InternalFactHandle handle, Object object) {
+        super.addHandle(handle, object);
+        putIntoPersistedCache(handle, handle.hasMatches());
+    }
+
+    @Override
+    public void removeHandle(InternalFactHandle handle) {
+        removeFromPersistedCache(handle.getObject());
+        super.removeHandle(handle);
+    }
+
+    void putIntoPersistedCache(InternalFactHandle handle, boolean propagated) {
+        Object object = handle.getObject();
+        StoredObject storedObject = new SerializableStoredObject(object, propagated);
+        storage.put(getHandleForObject(object).getId(), storedObject);
+    }
+
+    void removeFromPersistedCache(Object object) {
+        InternalFactHandle fh = getHandleForObject(object);
+        if (fh != null) {
+            storage.remove(fh.getId());
+        }
+    }
+
+    public void reInit(InternalWorkingMemory session, InternalWorkingMemoryEntryPoint ep) {
+        for (StoredObject entry : storage.values()) {
+            super.addHandle(getHandleForObject(entry.getObject()),entry.getObject());
+        }
     }
 }
