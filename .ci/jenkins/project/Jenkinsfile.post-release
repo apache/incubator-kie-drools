@@ -38,6 +38,7 @@ pipeline {
             steps {
                 script {
                     cleanWs()
+                }
             }
         }
         stage('Update drools version in drools-website') {
