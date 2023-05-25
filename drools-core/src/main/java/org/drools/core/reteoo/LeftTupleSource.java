@@ -55,9 +55,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
     /** The left input <code>TupleSource</code>. */
     protected LeftTupleSource         leftInput;
 
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     /** The destination for <code>Tuples</code>. */
     protected LeftTupleSinkPropagator sink;

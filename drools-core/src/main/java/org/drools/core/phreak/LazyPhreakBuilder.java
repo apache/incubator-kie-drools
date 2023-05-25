@@ -781,7 +781,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         ObjectSource source = bn.getRightInput();
         if (source instanceof WindowNode) {
             WindowNode.WindowMemory memory = wm.getNodeMemory(((WindowNode) source));
-            for (DefaultEventHandle<?> factHandle : memory.getFactHandles()) {
+            for (DefaultEventHandle factHandle : memory.getFactHandles()) {
                 factHandle.forEachRightTuple( rt -> {
                     if (source.equals(rt.getTupleSink())) {
                         rt.unlinkFromRightParent();
@@ -890,9 +890,9 @@ class LazyPhreakBuilder implements PhreakBuilder {
             return;
         }
 
-        Iterator<InternalFactHandle<?>> it = omem.iterator();
+        Iterator<InternalFactHandle> it = omem.iterator();
         while (it.hasNext()) {
-            InternalFactHandle<?> fh = it.next();
+            InternalFactHandle fh = it.next();
             fh.forEachLeftTuple( lt -> {
                 LeftTuple nextLt = lt.getHandleNext();
 

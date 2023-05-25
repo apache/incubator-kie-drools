@@ -17,5 +17,5 @@ package org.drools.core.common;
 import java.util.Iterator;
 
 public interface FactHandleClassStore<T> {
-    Iterator<InternalFactHandle<T>> iterator();
+    Iterator<InternalFactHandle> iterator();
 }

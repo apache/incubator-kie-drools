@@ -104,9 +104,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
 
     private Set<EntryPointNode> addedEntryNodeCache;
     private Set<EntryPointNode> removedEntryNodeCache;
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
     private String              id;
 
     private KieBaseConfiguration config;

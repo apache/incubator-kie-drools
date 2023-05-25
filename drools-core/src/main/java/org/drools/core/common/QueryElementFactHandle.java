@@ -32,9 +32,9 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.reteoo.Tuple;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class QueryElementFactHandle<T>
+public class QueryElementFactHandle
     implements
-    InternalFactHandle<T> {
+    InternalFactHandle {
     private Object object;
     private long id;
     private int identityHashCode;
@@ -84,9 +84,9 @@ public class QueryElementFactHandle<T>
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public T getObject() {
+    public Object getObject() {
         if ( this.object != null ) {
-            return (T) this.object;
+            return this.object;
         }
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
@@ -95,7 +95,7 @@ public class QueryElementFactHandle<T>
         return this.object != null ? object.getClass().getName() : null;
     }
 
-    public void setObject(T object) {
+    public void setObject(Object object) {
         this.object = object;
     }    
 

@@ -983,7 +983,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             if (source instanceof WindowNode) {
                 WindowNode.WindowMemory memory = (WindowNode.WindowMemory) wm.getNodeMemories().peekNodeMemory(source);
                 if (memory != null) {
-                    for (DefaultEventHandle<?> factHandle : memory.getFactHandles()) {
+                    for (DefaultEventHandle factHandle : memory.getFactHandles()) {
                         factHandle.forEachRightTuple(rt -> {
                             if (source.equals(rt.getTupleSink())) {
                                 rt.unlinkFromRightParent();
@@ -1119,9 +1119,9 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         ObjectTypeNode otn  = (ObjectTypeNode) os;
         final ObjectTypeNodeMemory<?> omem = wm.getNodeMemory(otn); // For some reason cannot move this to peek, as TruthMaintenanceTEst.testLogicalInsertionsDynamicRule fails
 
-        Iterator<InternalFactHandle<?>> it = omem.iterator();
+        Iterator<InternalFactHandle> it = omem.iterator();
         while (it.hasNext()) {
-            InternalFactHandle<?> fh = it.next();
+            InternalFactHandle fh = it.next();
             fh.forEachLeftTuple( lt -> {
                 LeftTuple nextLt = lt.getHandleNext();
 

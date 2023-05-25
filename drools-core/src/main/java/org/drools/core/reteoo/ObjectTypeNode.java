@@ -66,9 +66,7 @@ import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
  * @see Rete
  */
 public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFactory<ObjectTypeNode.ObjectTypeNodeMemory> {
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     private static final long serialVersionUID = 510l;
 
@@ -311,7 +309,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         }
     }
 
-    public static void retractLeftTuples( InternalFactHandle<?> factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
+    public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
         factHandle.forEachLeftTuple( lt -> {
             LeftTupleSink sink = lt.getTupleSink();
             ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt, context, reteEvaluator);
@@ -328,7 +326,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         linkedTuples.clearLeftTuples(partition);
     }
 
-    public static void retractRightTuples( InternalFactHandle<?> factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
+    public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
         factHandle.forEachRightTuple( rt -> rt.retractTuple( context, reteEvaluator) );
         factHandle.clearRightTuples();
     }
@@ -446,7 +444,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         if (objectType.isTemplate()) {
             throw new UnsupportedOperationException("this method is used only for the initial fact and during incremental compilation which is not supported yet for fact templates");
         }
-        Class<?> classType = ((ClassObjectType) objectType).getClassType();
+        Class classType = ((ClassObjectType) objectType).getClassType();
         if (InitialFact.class.isAssignableFrom(classType)) {
             return new InitialFactObjectTypeNodeMemory(classType);
         }
@@ -592,13 +590,13 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
 
     public static class ObjectTypeNodeMemory<T> implements Memory {
         private FactHandleClassStore store;
-        private Class<?> classType;
+        private Class classType;
 
-        ObjectTypeNodeMemory(Class<?> classType) {
+        ObjectTypeNodeMemory(Class classType) {
             this.classType = classType;
         }
 
-        ObjectTypeNodeMemory(Class<?> classType, ReteEvaluator reteEvaluator) {
+        ObjectTypeNodeMemory(Class classType, ReteEvaluator reteEvaluator) {
             this(classType);
             store = reteEvaluator.getStoreForClass(classType);
         }
@@ -608,8 +606,8 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
             return NodeTypeEnums.ObjectTypeNode;
         }
 
-        public <T> Iterator<InternalFactHandle<?>> iterator() {
-            return (Iterator<InternalFactHandle<?>>) store.iterator();
+        public <T> Iterator<InternalFactHandle> iterator() {
+            return (Iterator<InternalFactHandle>) store.iterator();
         }
 
         @Override
@@ -657,18 +655,18 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
     }
 
     public static class InitialFactObjectTypeNodeMemory<T> extends ObjectTypeNodeMemory<T>  {
-        private List<InternalFactHandle<T>> list = Collections.emptyList();
+        private List<InternalFactHandle> list = Collections.emptyList();
 
-        InitialFactObjectTypeNodeMemory(Class<?> classType) {
+        InitialFactObjectTypeNodeMemory(Class classType) {
             super(classType);
         }
 
-        public void add(InternalFactHandle<T> factHandle) {
+        public void add(InternalFactHandle factHandle) {
             list = Collections.singletonList( factHandle );
         }
 
         @Override
-        public Iterator<InternalFactHandle<T>> iterator() {
+        public Iterator<InternalFactHandle> iterator() {
             return list.iterator();
         }
 

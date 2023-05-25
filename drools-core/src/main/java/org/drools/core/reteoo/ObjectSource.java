@@ -47,9 +47,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
  */
 public abstract class ObjectSource extends BaseNode {
 
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     /** The destination for <code>FactHandleImpl</code>. */
     protected ObjectSinkPropagator sink;

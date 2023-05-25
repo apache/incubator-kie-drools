@@ -34,9 +34,7 @@ import org.drools.core.common.PropagationContext;
  */
 public class QueryTerminalNode extends AbstractTerminalNode implements LeftTupleSinkNode {
 
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     private static final long serialVersionUID = 510l;
 

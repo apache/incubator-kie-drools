@@ -43,13 +43,9 @@ import org.kie.api.runtime.rule.FactHandle;
  */
 @XmlRootElement(name = "fact-handle")
 @XmlAccessorType(XmlAccessType.NONE)
-public class DefaultFactHandle<T> extends AbstractBaseLinkedListNode<DefaultFactHandle<T>>
+public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHandle>
                               implements
-                              InternalFactHandle<T> {
-
-    // ----------------------------------------------------------------------
-    // Instance members
-    // ----------------------------------------------------------------------
+                              InternalFactHandle {
 
     private static final long       serialVersionUID = 510l;
     /** Handle id. */
@@ -58,7 +54,7 @@ public class DefaultFactHandle<T> extends AbstractBaseLinkedListNode<DefaultFact
 
     protected long id;
     protected long recency;
-    protected T object;
+    protected Object object;
     private EqualityKey key;
     protected int objectHashCode;
     protected int identityHashCode;
@@ -79,18 +75,14 @@ public class DefaultFactHandle<T> extends AbstractBaseLinkedListNode<DefaultFact
 
     protected transient WorkingMemoryEntryPoint wmEntryPoint;
 
-    // ----------------------------------------------------------------------
-    // Constructors
-    // ----------------------------------------------------------------------
-
     public DefaultFactHandle() {
     }
 
-    public DefaultFactHandle(final T object) {
+    public DefaultFactHandle(final Object object) {
         this.object = object;
     }
 
-    public DefaultFactHandle(final long id, final T object) {
+    public DefaultFactHandle(final long id, final Object object) {
         // this is only used by tests, left as legacy as so many test rely on it.
         this( id, object, id, null );
     }
@@ -102,7 +94,7 @@ public class DefaultFactHandle<T> extends AbstractBaseLinkedListNode<DefaultFact
      *            Handle id.
      */
     public DefaultFactHandle(final long id,
-                             final T object,
+                             final Object object,
                              final long recency,
                              final WorkingMemoryEntryPoint wmEntryPoint) {
         this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint );
@@ -110,7 +102,7 @@ public class DefaultFactHandle<T> extends AbstractBaseLinkedListNode<DefaultFact
 
     public DefaultFactHandle(final long id,
                              final int identityHashCode,
-                             final T object,
+                             final Object object,
                              final long recency,
                              final WorkingMemoryEntryPoint wmEntryPoint ) {
         this(id, identityHashCode, object, recency, wmEntryPoint == null ? null : wmEntryPoint.getEntryPoint());
@@ -123,10 +115,10 @@ public class DefaultFactHandle<T> extends AbstractBaseLinkedListNode<DefaultFact
     }
 
     protected DefaultFactHandle(final long id,
-                             final int identityHashCode,
-                             final T object,
-                             final long recency,
-                             final EntryPointId entryPointId ) {
+                                final int identityHashCode,
+                                final Object object,
+                                final long recency,
+                                final EntryPointId entryPointId ) {
         this.id = id;
         this.entryPointId = entryPointId;
         this.recency = recency;
@@ -135,11 +127,11 @@ public class DefaultFactHandle<T> extends AbstractBaseLinkedListNode<DefaultFact
     }
 
     public DefaultFactHandle(long id,
-            String wmEntryPointId,
-            int identityHashCode,
-            int objectHashCode,
-            long recency,
-            T object) {
+                             String wmEntryPointId,
+                             int identityHashCode,
+                             int objectHashCode,
+                             long recency,
+                             Object object) {
         this.id = id;
         this.entryPointId = new EntryPointId( wmEntryPointId );
         this.recency = recency;
@@ -148,10 +140,6 @@ public class DefaultFactHandle<T> extends AbstractBaseLinkedListNode<DefaultFact
         this.objectHashCode = objectHashCode;
         this.disconnected = true;
     }
-
-    // ----------------------------------------------------------------------
-    // Instance members
-    // ----------------------------------------------------------------------
 
     /**
      * @see Object
@@ -287,7 +275,7 @@ public class DefaultFactHandle<T> extends AbstractBaseLinkedListNode<DefaultFact
         return valid;
     }
 
-    public T getObject() {
+    public Object getObject() {
         return this.object;
     }
 
@@ -298,7 +286,7 @@ public class DefaultFactHandle<T> extends AbstractBaseLinkedListNode<DefaultFact
         return this.objectClassName;
     }
 
-    public void setObject( final T object ) {
+    public void setObject( final Object object ) {
         this.object = object;
         this.objectClassName = null;
         this.objectHashCode = 0;

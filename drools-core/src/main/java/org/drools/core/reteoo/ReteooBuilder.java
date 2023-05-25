@@ -52,9 +52,7 @@ import org.kie.api.definition.rule.Rule;
 public class ReteooBuilder
         implements
         Externalizable {
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     private static final long           serialVersionUID = 510l;
 

@@ -27,9 +27,7 @@ import org.drools.core.base.ObjectType;
 public class FactTemplateObjectType
     implements
     ObjectType {
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     private static final long serialVersionUID = 510l;
 

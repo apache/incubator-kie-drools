@@ -29,18 +29,18 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 
-public interface InternalFactHandle<T>
+public interface InternalFactHandle
     extends
-    FactHandle<T>, Cloneable, Serializable {
+    FactHandle, Cloneable, Serializable {
     long getId();
 
     long getRecency();
 
-    T getObject();
+    Object getObject();
 
     String getObjectClassName();
 
-    void setObject(T object);
+    void setObject(Object object);
 
     void setEqualityKey(EqualityKey key);
 
@@ -92,7 +92,7 @@ public interface InternalFactHandle<T>
     }
     WorkingMemoryEntryPoint getEntryPoint(ReteEvaluator reteEvaluator);
 
-    InternalFactHandle<T> clone();
+    InternalFactHandle clone();
     
     String toExternalForm();
     
@@ -195,15 +195,15 @@ public interface InternalFactHandle<T>
         return new DummyFactHandle( object );
     }
 
-    class DummyFactHandle<T> implements InternalFactHandle<T> {
-        private final T object;
+    class DummyFactHandle implements InternalFactHandle {
+        private final Object object;
 
-        private DummyFactHandle( T object ) {
+        private DummyFactHandle( Object object ) {
             this.object = object;
         }
 
         @Override
-        public T getObject() {
+        public Object getObject() {
             return object;
         }
 

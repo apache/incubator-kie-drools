@@ -26,7 +26,7 @@ import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.EventHandle;
 
-public class DefaultEventHandle<T> extends DefaultFactHandle<T> implements EventHandle, Comparable<DefaultEventHandle<T>> {
+public class DefaultEventHandle extends DefaultFactHandle implements EventHandle, Comparable<DefaultEventHandle> {
 
     private static final long serialVersionUID = 510l;
 
@@ -45,10 +45,6 @@ public class DefaultEventHandle<T> extends DefaultFactHandle<T> implements Event
 
     private final transient LinkedList<DefaultJobHandle> jobs = new LinkedList<>();
 
-    // ----------------------------------------------------------------------
-    // Constructors
-    // ----------------------------------------------------------------------
-
     public DefaultEventHandle() {
         super();
         this.startTimestamp = 0;
@@ -65,7 +61,7 @@ public class DefaultEventHandle<T> extends DefaultFactHandle<T> implements Event
      * @param duration the duration of this event. May be 0 (zero) in case this is a primitive event.
      */
     public DefaultEventHandle(long id,
-                              T object,
+                              Object object,
                               long recency,
                               long timestamp,
                               long duration,
@@ -81,7 +77,7 @@ public class DefaultEventHandle<T> extends DefaultFactHandle<T> implements Event
 
     protected DefaultEventHandle(long id,
                                  int identityHashCode,
-                                 T object,
+                                 Object object,
                                  long recency,
                                  long timestamp,
                                  long duration,
@@ -140,7 +136,7 @@ public class DefaultEventHandle<T> extends DefaultFactHandle<T> implements Event
         return this.startTimestamp + this.duration;
     }
 
-    public DefaultEventHandle<T> getLinkedFactHandle() {
+    public DefaultEventHandle getLinkedFactHandle() {
         return linkedFactHandle;
     }
 
@@ -251,7 +247,7 @@ public class DefaultEventHandle<T> extends DefaultFactHandle<T> implements Event
         this.otnCount = otnCount;
     }
 
-    public DefaultEventHandle<T> clone() {
+    public DefaultEventHandle clone() {
         DefaultEventHandle clone = new DefaultEventHandle(getId(),
                                                           getIdentityHashCode(),
                                                           getObject(),
@@ -269,7 +265,7 @@ public class DefaultEventHandle<T> extends DefaultFactHandle<T> implements Event
         return clone;
     }
 
-    private DefaultEventHandle<T> cloneWithoutTuples() {
+    private DefaultEventHandle cloneWithoutTuples() {
         DefaultEventHandle clone = new DefaultEventHandle(getId(),
                                                           getIdentityHashCode(),
                                                           getObject(),
@@ -287,13 +283,13 @@ public class DefaultEventHandle<T> extends DefaultFactHandle<T> implements Event
         return clone;
     }
 
-    public DefaultEventHandle<T> cloneAndLink() {
+    public DefaultEventHandle cloneAndLink() {
         DefaultEventHandle clone = cloneWithoutTuples();
         clone.linkedFactHandle = this;
         return clone;
     }
 
-    public void quickCloneUpdate(DefaultFactHandle<T> clone) {
+    public void quickCloneUpdate(DefaultFactHandle clone) {
         clone.setObject( getObject() );
         clone.setRecency( getRecency() );
         clone.setEqualityKey( getEqualityKey() );
@@ -305,7 +301,7 @@ public class DefaultEventHandle<T> extends DefaultFactHandle<T> implements Event
         clone.setNegated( isNegated() );
     }
 
-    public int compareTo(DefaultEventHandle<T> e) {
+    public int compareTo(DefaultEventHandle e) {
         return (getStartTimestamp() < e.getStartTimestamp()) ? -1 : (getStartTimestamp() == e.getStartTimestamp() ? 0 : 1);
     }
 

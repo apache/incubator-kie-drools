@@ -52,9 +52,7 @@ import org.drools.core.util.bitmask.BitMask;
  */
 public class Rete extends ObjectSource implements ObjectSink {
 
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     private static final long               serialVersionUID = 510l;
 

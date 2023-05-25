@@ -43,9 +43,9 @@ import org.kie.api.runtime.rule.FactHandle;
 @XmlRootElement(name="disconnected-fact-handle")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlSeeAlso({ArrayElements.class})
-public class DisconnectedFactHandle<T>
+public class DisconnectedFactHandle
         implements
-        InternalFactHandle<T>,
+        InternalFactHandle,
         Externalizable {
 
     private static final String UNSUPPORTED_OPERATION_ERROR_MESSAGE = "DisconnectedFactHandle does not support this method";;
@@ -70,7 +70,7 @@ public class DisconnectedFactHandle<T>
      *  This could be a {@link DroolsQueryImpl} object or other almost-impossible-to-serialize class
      */
     @XmlElement
-    private T object;
+    private Object object;
 
     @XmlElement
     @XmlSchemaType(name="string")
@@ -89,7 +89,7 @@ public class DisconnectedFactHandle<T>
                                   int objectHashCode,
                                   long recency,
                                   String entryPointId,
-                                  T object,
+                                  Object object,
                                   boolean isTraitOrTraitable ) {
         this.id = id;
         this.identityHashCode = identityHashCode;
@@ -104,7 +104,7 @@ public class DisconnectedFactHandle<T>
                                   int identityHashCode,
                                   int objectHashCode,
                                   long recency,
-                                  T object,
+                                  Object object,
                                   boolean isTraitOrTraitable ) {
         this( id,
               identityHashCode,
@@ -211,7 +211,7 @@ public class DisconnectedFactHandle<T>
         return this.object != null ? object.getClass().getName() : null;
     }
 
-    public T getObject() {
+    public Object getObject() {
         if ( this.object != null ) {
             return this.object;
         }
@@ -284,7 +284,7 @@ public class DisconnectedFactHandle<T>
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
-    public void setObject(T object) {
+    public void setObject(Object object) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 

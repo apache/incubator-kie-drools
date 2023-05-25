@@ -19,8 +19,8 @@ package org.kie.api.runtime.rule;
 /**
  * An handle to a fact inserted into the working memory
  */
-public interface FactHandle<T> {
-    T getObject();
+public interface FactHandle {
+    Object getObject();
 
     boolean isNegated();
 

@@ -23,9 +23,9 @@ import java.io.ObjectOutput;
 import org.kie.api.runtime.rule.FactHandle;
 
 
-public class MockFactHandle<T>
+public class MockFactHandle
     implements
-    FactHandle<T> {
+    FactHandle {
     private static final long serialVersionUID = 510l;
     private int               id;
 
@@ -38,7 +38,7 @@ public class MockFactHandle<T>
     }
 
     @Override
-    public T getObject() {
+    public Object getObject() {
         return null;
     }
 

@@ -127,9 +127,9 @@ public interface ConsequenceContext extends RuleContext {
 
     <T, K, X extends TraitableBean> Thing<K> shed(TraitableBean<K,X> core, Class<T> trait);
 
-    <T> FactHandle<T> bolster( Object object );
+    FactHandle bolster( Object object );
 
-    <T> FactHandle<T> bolster( Object object, Object value );
+    FactHandle bolster( Object object, Object value );
 
     default void run(String ruleUnitName) {
         throw new UnsupportedOperationException();

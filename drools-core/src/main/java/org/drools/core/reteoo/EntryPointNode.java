@@ -51,9 +51,7 @@ import org.slf4j.LoggerFactory;
  * @see ObjectTypeNode
  */
 public class EntryPointNode extends ObjectSource implements ObjectSink {
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     private static final long               serialVersionUID = 510l;
 

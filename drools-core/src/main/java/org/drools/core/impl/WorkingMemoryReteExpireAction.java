@@ -33,7 +33,7 @@ public class WorkingMemoryReteExpireAction
         extends PropagationEntry.AbstractPropagationEntry
         implements WorkingMemoryAction {
 
-    protected DefaultEventHandle<?> factHandle;
+    protected DefaultEventHandle factHandle;
     protected ObjectTypeNode node;
 
     protected WorkingMemoryReteExpireAction() { }
