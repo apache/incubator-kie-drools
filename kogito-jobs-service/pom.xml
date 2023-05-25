@@ -18,12 +18,25 @@
     <module>jobs-service-internal-api</module>
     <module>jobs-recipients</module>
     <module>jobs-service-common</module>
-    <module>jobs-service-infinispan</module>
     <module>jobs-service-postgresql</module>
-    <module>jobs-service-mongodb</module>
     <module>jobs-service-inmemory</module>
     <module>kogito-addons-jobs-service</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>jobs-service-infinispan</module>
+        <module>jobs-service-mongodb</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <dependencyManagement>
     <dependencies>

@@ -73,6 +73,7 @@
         <module>data-index</module>
         <module>ui-packages</module>
         <module>kogito-quarkus-serverless-workflow-devui-parent</module>
+        <module>jobs-service</module>
       </modules>
     </profile>
     <profile>
