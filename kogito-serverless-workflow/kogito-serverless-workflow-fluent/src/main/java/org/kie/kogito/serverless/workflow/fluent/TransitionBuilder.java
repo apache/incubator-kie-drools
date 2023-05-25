@@ -30,16 +30,20 @@ public class TransitionBuilder<T> {
     private final T container;
     private final WorkflowBuilder workflow;
     private SwitchState switchState;
+    private DefaultState lastState;
 
-    protected TransitionBuilder(T container, WorkflowBuilder workflow) {
+    protected TransitionBuilder(T container, WorkflowBuilder workflow, DefaultState lastState) {
         this.container = container;
         this.workflow = workflow;
+        this.lastState = lastState;
     }
 
     public TransitionBuilder<T> next(StateBuilder<?, ?> stateBuilder) {
+        DefaultState state = stateBuilder.build();
         workflow.addFunctions(stateBuilder.getFunctions());
         workflow.addEvents(stateBuilder.getEvents());
-        next(stateBuilder.build());
+        next(state);
+        lastState = state;
         return this;
     }
 
@@ -55,7 +59,7 @@ public class TransitionBuilder<T> {
         }
         DataCondition condition = new DataCondition().withCondition(expr);
         conditions.add(condition);
-        return new ConditionTransitionBuilder<>(this, workflow, condition);
+        return new ConditionTransitionBuilder<>(this, workflow, lastState, condition);
     }
 
     public TransitionBuilder<T> or() {
@@ -64,16 +68,21 @@ public class TransitionBuilder<T> {
         }
         DefaultConditionDefinition condition = new DefaultConditionDefinition();
         switchState.setDefaultCondition(condition);
-        return new DefaultConditionTransitionBuilder<>(container, workflow, condition);
+        return new DefaultConditionTransitionBuilder<>(container, workflow, lastState, condition);
     }
 
     public T end() {
         return end(new End());
     }
 
+    protected void addEnd(End end) {
+        if (lastState.getTransition() == null) {
+            lastState.withEnd(end);
+        }
+    }
+
     public T end(End end) {
-        DefaultState prevState = workflow.getLastState();
-        prevState.withEnd(end);
+        addEnd(end);
         return container;
     }
 
@@ -83,7 +92,9 @@ public class TransitionBuilder<T> {
     }
 
     protected void addTransition(DefaultState state) {
-        DefaultState prevState = workflow.getLastState();
-        prevState.setTransition(new Transition().withNextState(state.getName()));
+        if (lastState.getTransition() != null || lastState.getEnd() != null) {
+            throw new IllegalArgumentException("Trying to add transition to an state " + state + " that already has one");
+        }
+        lastState.setTransition(new Transition().withNextState(state.getName()));
     }
 }

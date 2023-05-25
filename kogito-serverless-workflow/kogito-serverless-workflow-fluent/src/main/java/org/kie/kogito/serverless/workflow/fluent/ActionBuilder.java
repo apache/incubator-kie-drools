@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.serverless.workflow.fluent;
 
+import java.time.Duration;
 import java.util.Optional;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
@@ -31,6 +32,7 @@ import io.serverlessworkflow.api.events.EventRef;
 import io.serverlessworkflow.api.filters.ActionDataFilter;
 import io.serverlessworkflow.api.functions.FunctionRef;
 import io.serverlessworkflow.api.functions.SubFlowRef;
+import io.serverlessworkflow.api.sleep.Sleep;
 
 import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.jsonObject;
 
@@ -100,6 +102,16 @@ public class ActionBuilder {
         this.action = action;
     }
 
+    public ActionBuilder sleepBefore(Duration duration) {
+        action.withSleep(new Sleep().withBefore(duration.toString()));
+        return this;
+    }
+
+    public ActionBuilder sleepAfter(Duration duration) {
+        action.withSleep(new Sleep().withAfter(duration.toString()));
+        return this;
+    }
+
     public ActionBuilder name(String name) {
         action.withName(name);
         return this;
@@ -115,46 +127,32 @@ public class ActionBuilder {
     }
 
     private ActionDataFilter getFilter() {
-        ActionDataFilter actionFilter = null;
-        if (action != null) {
-            actionFilter = action.getActionDataFilter();
-            if (actionFilter == null) {
-                actionFilter = new ActionDataFilter();
-                action.withActionDataFilter(actionFilter);
-            }
+        ActionDataFilter actionFilter = action.getActionDataFilter();
+        if (actionFilter == null) {
+            actionFilter = new ActionDataFilter();
+            action.withActionDataFilter(actionFilter);
         }
+
         return actionFilter;
     }
 
     public ActionBuilder noResult() {
-        ActionDataFilter filter = getFilter();
-        if (filter != null) {
-            filter.withUseResults(false);
-        }
+        getFilter().withUseResults(false);
         return this;
     }
 
     public ActionBuilder inputFilter(String expr) {
-        ActionDataFilter filter = getFilter();
-        if (filter != null) {
-            filter.withFromStateData(expr);
-        }
+        getFilter().withFromStateData(expr);
         return this;
     }
 
     public ActionBuilder resultFilter(String expr) {
-        ActionDataFilter filter = getFilter();
-        if (filter != null) {
-            filter.withResults(expr);
-        }
+        getFilter().withResults(expr);
         return this;
     }
 
     public ActionBuilder outputFilter(String expr) {
-        ActionDataFilter filter = getFilter();
-        if (filter != null) {
-            filter.withToStateData(expr);
-        }
+        getFilter().withToStateData(expr);
         return this;
     }
 }

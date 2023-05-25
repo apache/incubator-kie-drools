@@ -17,6 +17,7 @@ package org.kie.kogito.serverless.workflow.fluent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import io.serverlessworkflow.api.events.EventDefinition;
 
@@ -59,5 +60,22 @@ public class EventDefBuilder {
 
     public String getName() {
         return eventDefinition.getName();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventDefinition);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        EventDefBuilder other = (EventDefBuilder) obj;
+        return Objects.equals(eventDefinition.getName(), other.eventDefinition.getName());
     }
 }

@@ -17,6 +17,7 @@ package org.kie.kogito.serverless.workflow.fluent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
@@ -92,5 +93,22 @@ public class FunctionBuilder {
 
     String getName() {
         return functionDefinition.getName();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(functionDefinition.getName());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        FunctionBuilder other = (FunctionBuilder) obj;
+        return Objects.equals(functionDefinition.getName(), other.functionDefinition.getName());
     }
 }

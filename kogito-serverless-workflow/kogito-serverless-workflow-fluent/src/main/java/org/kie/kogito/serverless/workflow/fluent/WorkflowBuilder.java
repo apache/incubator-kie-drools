@@ -16,7 +16,6 @@
 package org.kie.kogito.serverless.workflow.fluent;
 
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +31,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.events.EventDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
+import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.start.Start;
 import io.serverlessworkflow.api.states.DefaultState;
 import io.serverlessworkflow.api.workflow.Constants;
@@ -53,7 +53,7 @@ public class WorkflowBuilder {
     private Workflow workflow;
     private List<FunctionDefinition> functions = new LinkedList<>();
     private List<EventDefinition> events = new LinkedList<>();
-    private Deque<DefaultState> states = new LinkedList<>();
+    private List<State> states = new LinkedList<>();
 
     private WorkflowBuilder(String id, String name, String version) {
         this.workflow = new Workflow().withId(id).withName(name).withVersion(version);
@@ -82,8 +82,9 @@ public class WorkflowBuilder {
     public TransitionBuilder<WorkflowBuilder> start(StateBuilder<?, ?> stateBuilder) {
         addFunctions(stateBuilder.getFunctions());
         addEvents(stateBuilder.getEvents());
-        startState(stateBuilder.build());
-        return new TransitionBuilder<>(this, this);
+        DefaultState state = stateBuilder.build();
+        startState(state);
+        return new TransitionBuilder<>(this, this, state);
     }
 
     private void startState(DefaultState state) {
@@ -92,7 +93,7 @@ public class WorkflowBuilder {
     }
 
     public Workflow build() {
-        workflow.setStates((List) states);
+        workflow.setStates(states);
         workflow.withFunctions(new Functions(functions));
         workflow.withEvents(new Events(events));
         return workflow;
@@ -119,11 +120,9 @@ public class WorkflowBuilder {
     }
 
     void addState(DefaultState state) {
-        states.add(state);
-    }
-
-    DefaultState getLastState() {
-        return states.getLast();
+        if (!states.contains(state)) {
+            states.add(state);
+        }
     }
 
     void addFunctions(Collection<FunctionBuilder> functions) {
