@@ -158,4 +158,8 @@ public class DeclarationSpec {
         this.belongingPatternDescr = belongingPatternDescr;
     }
 
+    public Optional<PatternDescr> getOptPattern() {
+        return optPattern;
+    }
+
 }

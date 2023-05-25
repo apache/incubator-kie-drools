@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.drools.compiler.compiler.AnalysisResult;
@@ -33,6 +36,7 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectConfiguration;
+import org.drools.compiler.compiler.RuleBuildWarning;
 import org.drools.compiler.kie.util.BeanCreator;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
@@ -55,6 +59,7 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryArgument;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.DeclarationScopeResolver;
@@ -64,6 +69,7 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.TimerExpression;
+import org.drools.core.util.ConstraintIdentifierAnalysis;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.mvel.asm.AsmUtil;
 import org.drools.mvel.builder.MVELAnalysisResult;
@@ -416,6 +422,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                 declIds.put( "this",
                         ((ClassObjectType) p.getObjectType()).getClassType() );
             }
+            raiseWarningIfBindVariableInMethodCallIsNotRelevantToPattern(context, previousDeclarations, p, predicateDescr);
 
             unit = dialect.getMVELCompilationUnit( (String) predicateDescr.getContent(),
                                                    analysis,
@@ -428,6 +435,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                                    context.isInXpath(),
                                                    MVELCompilationUnit.Scope.CONSTRAINT );
         } catch ( final Exception e ) {
+            e.printStackTrace();
             copyErrorLocation(e, predicateDescr);
             context.addError( new DescrBuildError( context.getParentDescr(),
                     predicateDescr,
@@ -436,6 +444,29 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         }
 
         return unit;
+    }
+
+    private void raiseWarningIfBindVariableInMethodCallIsNotRelevantToPattern(RuleBuildContext context, Declaration[] previousDeclarations, Pattern pattern, PredicateDescr predicateDescr) {
+        ConstraintIdentifierAnalysis analysis = ConstraintIdentifierAnalysis.analyze((String) predicateDescr.getContent());
+        TypeDeclaration typeDeclaration = context.getKnowledgeBuilder().getTypeDeclaration(pattern.getObjectType().getClassType());
+        List<String> relevantProperties = new ArrayList<>(typeDeclaration.getAccessibleProperties());
+        relevantProperties.add("this");
+        if (analysis.containsProperties(relevantProperties)) {
+            return; // This constraint is relevant to this pattern
+        }
+
+        List<Declaration> previousDeclarationList = Arrays.asList(previousDeclarations);
+        List<String> argumentList = analysis.getMethodArgumentList();
+        for (String argument : argumentList) {
+            Optional<Declaration> nonRelevantVariable = previousDeclarationList.stream()
+                                                                               .filter(decl -> decl.getBindingName().equals(argument))
+                                                                               .filter(decl -> !decl.getPattern().equals(pattern))
+                                                                               .findFirst();
+            if (nonRelevantVariable.isPresent()) {
+                context.addWarning(new RuleBuildWarning(context.getRule(), predicateDescr, null,
+                                                        argument + " is not relevant to this pattern, so causes class reactivity. Consider place this constraint in the original pattern if possible"));
+            }
+        }
     }
 
     public static class BooleanConversionHandler implements ConversionHandler {

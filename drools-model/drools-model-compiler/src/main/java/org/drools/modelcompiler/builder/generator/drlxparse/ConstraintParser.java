@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +46,9 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import org.drools.compiler.compiler.DescrBuildWarning;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.core.util.ConstraintIdentifierAnalysis;
 import org.drools.core.util.DateUtils;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -58,6 +62,7 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
+import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
@@ -168,7 +173,36 @@ public class ConstraintParser {
             }
         });
 
+        raiseWarningIfBindVariableInMethodCallIsNotRelevantToPattern(drlxParseResult, patternType);
         return drlxParseResult;
+    }
+
+    private void raiseWarningIfBindVariableInMethodCallIsNotRelevantToPattern(DrlxParseResult drlxParseResult, Class<?> patternType) {
+        Optional<BaseDescr> currentConstraintDescrOpt = context.getCurrentConstraintDescr();
+        if (!currentConstraintDescrOpt.isPresent()) {
+            return; // eval doesn't have currentConstraintDescr. No need to check reactivity
+        }
+        BaseDescr currentConstraintDescr = currentConstraintDescrOpt.get();
+        ConstraintIdentifierAnalysis analysis = ConstraintIdentifierAnalysis.analyze(drlxParseResult.getOriginalDrlConstraint());
+        List<String> relevantProperties = new ArrayList<>(ClassUtil.getAccessibleProperties(patternType));
+        relevantProperties.add("this");
+        if (analysis.containsProperties(relevantProperties)) {
+            return; // This constraint is relevant to this pattern
+        }
+
+        Collection<DeclarationSpec> declarationList = context.getAllDeclarations();
+        List<String> argumentList = analysis.getMethodArgumentList();
+        for (String argument : argumentList) {
+            Optional<DeclarationSpec> nonRelevantVariable = declarationList.stream()
+                                                                       .filter(decl -> decl.getBindingId().equals(argument))
+                                                                       .filter(decl -> !decl.getBelongingPatternDescr().equals(context.getCurrentPatternDescr()))
+                                                                       .filter(decl -> !decl.getOptPattern().equals(context.getCurrentPatternDescr()))
+                                                                       .findFirst();
+            if (nonRelevantVariable.isPresent()) {
+                context.addCompilationWarning(new DescrBuildWarning(context.getRuleDescr(), currentConstraintDescr, null,
+                                                        argument + " is not relevant to this pattern, so causes class reactivity. Consider place this constraint in the original pattern if possible"));
+            }
+        }
     }
 
     private void addDeclaration(DrlxExpression drlx, SingleDrlxParseSuccess singleResult, String bindId) {

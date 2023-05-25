@@ -103,6 +103,13 @@ public abstract class BaseModelTest {
         return getKieSession(model, rules);
     }
 
+    protected KieSession getKieSessionIgnoringWarnings(String... rules) {
+        KieServices ks = KieServices.get();
+        KieBuilder kieBuilder = createKieBuilder(rules);
+        KieContainer kieContainer = ks.newKieContainer(kieBuilder.getKieModule().getReleaseId());
+        return kieContainer.newKieSession();
+    }
+
     protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
         return getKieContainer( model, stringRules ).newKieSession();
     }

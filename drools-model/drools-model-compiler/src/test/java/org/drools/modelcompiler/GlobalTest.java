@@ -316,7 +316,7 @@ public class GlobalTest extends BaseModelTest {
                         "then\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSessionIgnoringWarnings( str );
         ksession.setGlobal("functions", new Functions());
         ksession.insert(new Family());
         ksession.insert("test");

@@ -1395,4 +1395,16 @@ public class StringUtils {
         }
         return null;
     }
+
+    public static Character lookAheadSecondCharIgnoringSpaces(String expression, int cursor) {
+        int count = 0;
+        while (cursor < expression.length()) {
+            char c = expression.charAt(cursor);
+            if (!Character.isWhitespace(c) && ++count == 2) {
+                return c;
+            }
+            cursor++;
+        }
+        return null;
+    }
 }
