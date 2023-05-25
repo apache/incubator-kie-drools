@@ -1,5 +1,5 @@
 diff --git a/build-parent/pom.xml b/build-parent/pom.xml
-index a01370282c..6b5c85115c 100644
+index 41e84c830e..9f5ee96d35 100644
 --- a/build-parent/pom.xml
 +++ b/build-parent/pom.xml
 @@ -55,9 +55,9 @@
@@ -7,7 +7,7 @@ index a01370282c..6b5c85115c 100644
      <version.guru.nidi>0.18.0</version.guru.nidi>
      <version.info.picocli>4.7.1</version.info.picocli>
 -    <version.io.micrometer>1.10.2</version.io.micrometer>
--    <version.io.quarkus>2.16.6.Final</version.io.quarkus>
+-    <version.io.quarkus>2.16.7.Final</version.io.quarkus>
 -    <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
 +    <version.io.micrometer>1.10.5</version.io.micrometer>
 +    <version.io.quarkus>3.0.0.Final</version.io.quarkus>
