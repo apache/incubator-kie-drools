@@ -317,7 +317,7 @@ index 42d82935f9..157ad57d4b 100755
  import org.jbpm.process.instance.impl.ProcessInstanceImpl;
  import org.kie.api.command.ExecutableCommand;
 diff --git a/kogito-build/kogito-build-no-bom-parent/pom.xml b/kogito-build/kogito-build-no-bom-parent/pom.xml
-index 97a45fea4d..4ac46a1860 100644
+index 3ff556aee1..32889f3f21 100644
 --- a/kogito-build/kogito-build-no-bom-parent/pom.xml
 +++ b/kogito-build/kogito-build-no-bom-parent/pom.xml
 @@ -618,7 +618,7 @@ limitations under the License.
@@ -330,14 +330,14 @@ index 97a45fea4d..4ac46a1860 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index 2297a4bbaa..df453632f8 100644
+index 998a83da39..df453632f8 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,23 +16,23 @@
  
    <properties>
      <!-- this version property is used in plugins but also in dependencies too -->
--    <version.io.quarkus>2.16.6.Final</version.io.quarkus>
+-    <version.io.quarkus>2.16.7.Final</version.io.quarkus>
 +    <version.io.quarkus>3.0.0.Final</version.io.quarkus>
      <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
 -    <version.org.springframework.boot>2.6.6</version.org.springframework.boot>
@@ -4046,34 +4046,25 @@ index 1b82df7f43..f7595d1337 100644
  import org.kie.kogito.Application;
  import org.kie.kogito.decision.DecisionConfig;
 diff --git a/quarkus/integration-tests/integration-tests-quarkus-legacy-rules/src/main/java/org/kie/kogito/legacy/rules/TmsEndpoint.java b/quarkus/integration-tests/integration-tests-quarkus-legacy-rules/src/main/java/org/kie/kogito/legacy/rules/TmsEndpoint.java
-index 5bdb43b1c3..c151b850f2 100644
+index fc7c733c6a..c151b850f2 100644
 --- a/quarkus/integration-tests/integration-tests-quarkus-legacy-rules/src/main/java/org/kie/kogito/legacy/rules/TmsEndpoint.java
 +++ b/quarkus/integration-tests/integration-tests-quarkus-legacy-rules/src/main/java/org/kie/kogito/legacy/rules/TmsEndpoint.java
-@@ -15,18 +15,17 @@
+@@ -15,12 +15,12 @@
   */
  package org.kie.kogito.legacy.rules;
+ 
++import jakarta.annotation.PostConstruct;
+ import java.util.HashMap;
+ import java.util.Map;
  
 -import javax.annotation.PostConstruct;
 -import javax.inject.Inject;
 -import javax.ws.rs.*;
-+import jakarta.annotation.PostConstruct;
-+import java.util.HashMap;
-+import java.util.Map;
-+
 +import jakarta.inject.Inject;
 +import jakarta.ws.rs.*;
  
  import org.kie.api.runtime.KieRuntimeBuilder;
  import org.kie.api.runtime.KieSession;
- import org.kie.api.runtime.rule.FactHandle;
- 
--import java.util.HashMap;
--import java.util.Map;
--import java.util.function.Function;
--
- @Path("/test-tms")
- public class TmsEndpoint {
-     @Inject
 diff --git a/quarkus/integration-tests/integration-tests-quarkus-norest/src/test/java/org/kie/kogito/quarkus/dmn/TrafficViolationTest.java b/quarkus/integration-tests/integration-tests-quarkus-norest/src/test/java/org/kie/kogito/quarkus/dmn/TrafficViolationTest.java
 index 3c7c37692c..e8bc6621b7 100644
 --- a/quarkus/integration-tests/integration-tests-quarkus-norest/src/test/java/org/kie/kogito/quarkus/dmn/TrafficViolationTest.java
