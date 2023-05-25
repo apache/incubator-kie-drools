@@ -48,7 +48,7 @@ pipeline {
                     String prLink = null
                     String prBranchName = "${getProjectVersion().toLowerCase()}-${env.BOT_BRANCH_HASH}"
                     dir(droolsWebsiteRepository) {
-                        checkoutRepo(websiteRepository, getBuildBranch()) // there is no other branch
+                        checkoutRepo(droolsWebsiteRepository, getBuildBranch()) // there is no other branch
                         githubscm.createBranch(prBranchName)
 
                         // Update versions in links on the website and in the docs.
@@ -57,6 +57,7 @@ pipeline {
                         sh 'mvn clean generate-resources'
                         // Add changed files, commit, open and merge PR
                         prLink = commitAndCreatePR("Upgrade drools-website ${getProjectVersion()}", prBranchName, getBuildBranch())
+                        sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(prLink, getBuildBranch())
                         githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorCredsID())
                     }
@@ -87,7 +88,7 @@ String getProjectVersion() {
 }
 
 String getBuildBranch() {
-    return env.GIT_BRANCH_NAME
+    return 'main'
 }
 
 String getNextMinorSnapshotVersion(String currentVersion) {
