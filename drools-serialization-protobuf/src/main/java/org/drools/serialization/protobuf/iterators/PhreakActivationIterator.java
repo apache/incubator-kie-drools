@@ -180,7 +180,7 @@ public class PhreakActivationIterator
 
         java.util.Iterator<InternalFactHandle> it = omem.iterator();
         while (it.hasNext()) {
-            InternalFactHandle<?> fh = it.next();
+            InternalFactHandle fh = it.next();
             fh.forEachLeftTuple( lt -> {
                 if ( lt.getTupleSink() == firstLiaSink ) {
                     collectFromLeftInput(lt, internalMatches, nodeSet, reteEvaluator);

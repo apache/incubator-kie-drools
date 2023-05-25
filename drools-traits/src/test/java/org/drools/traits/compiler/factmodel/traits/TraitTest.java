@@ -5421,9 +5421,6 @@ public class TraitTest extends CommonTraitTest {
         KieSession knowledgeSession = kbase.newKieSession();
         knowledgeSession.setGlobal( "list", list );
 
-//        FactHandle<String> fh = knowledgeSession.insert("x");
-//        ArrayList x = fh.as(ArrayList.class);
-
         knowledgeSession.fireAllRules();
 
         assertThat(list).isEqualTo(Arrays.asList(42, 43));

@@ -472,7 +472,7 @@ public class ProtobufOutputMarshaller {
             ProtobufMessages.TruthMaintenanceSystem.Builder _tms = ProtobufMessages.TruthMaintenanceSystem.newBuilder();
 
             // write the assert map of Equality keys
-            for ( EqualityKey<?> key : keys ) {
+            for ( EqualityKey key : keys ) {
                 ProtobufMessages.EqualityKey.Builder _key = ProtobufMessages.EqualityKey.newBuilder();
                 _key.setStatus( key.getStatus() );
                 _key.setHandleId( key.getFactHandle().getId() );

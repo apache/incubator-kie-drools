@@ -16,7 +16,7 @@
  */
 package org.drools.core.time;
 
-public interface SchedulerService<T extends JobHandle> {
+public interface SchedulerService {
 
     /**
      * Schedule a job for later execution
@@ -27,7 +27,7 @@ public interface SchedulerService<T extends JobHandle> {
      * 
      * @return
      */
-    T scheduleJob(Job job, JobContext ctx, Trigger trigger);
+    JobHandle scheduleJob(Job job, JobContext ctx, Trigger trigger);
 
     /**
      * Remove the job identified by the given job handle from the 
@@ -37,5 +37,5 @@ public interface SchedulerService<T extends JobHandle> {
      * 
      * @return
      */
-    void removeJob(T jobHandle);
+    void removeJob(JobHandle jobHandle);
 }
