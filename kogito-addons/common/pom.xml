@@ -26,6 +26,7 @@
     <module>knative</module>
     <module>kubernetes</module>
     <module>kubernetes-service-catalog</module>
+    <module>jobs</module>
   </modules>
 
   <profiles>
@@ -41,7 +42,6 @@
         <module>monitoring</module>
         <module>explainability</module>
         <module>human-task-prediction</module>
-        <module>jobs</module>
         <module>mail</module>
         <module>tracing</module>
         <module>task-management</module>
