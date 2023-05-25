@@ -4,6 +4,7 @@ set -euo pipefail
 script_dir_path=$(cd `dirname "${BASH_SOURCE[0]}"`; pwd -P)
 
 environment=$1
+shift
 
 if [ -z "${environment}" ]; then
     echo "No environment given as first argument"
@@ -21,7 +22,7 @@ echo "Update project for environment '${environment}'"
 # If update script is present, apply it
 if [ -f "${env_path}/before.sh" ]; then
     echo "Run before script"
-    sh ${env_path}/before.sh
+    sh ${env_path}/before.sh $@
 fi
 
 # Apply patches if any
