@@ -119,6 +119,7 @@ import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Exchange;
+import org.drools.model.patterns.AccumulatePatternImpl;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.ExistentialPatternImpl;
@@ -580,7 +581,7 @@ public class KiePackagesBuilder {
             pattern = new Pattern( ctx.getNextPatternIndex(), type );
         }
 
-        PatternImpl<?> sourcePattern = (PatternImpl<?>) accumulatePattern.getPattern();
+        org.drools.model.Pattern sourcePattern = accumulatePattern.getPattern();
         Set<String> usedVariableName = new LinkedHashSet<>();
 
         if (sourcePattern != null) {
@@ -612,7 +613,7 @@ public class KiePackagesBuilder {
             addInnerBindings(bindings, accumulatePattern.getAccumulateFunctions(), accumulatePattern.getCondition());
         }
 
-        pattern.setSource(buildAccumulate( ctx, accumulatePattern, source, pattern, usedVariableName, bindings ));
+        pattern.setSource(buildAccumulate( ctx, accumulatePattern, group, source, pattern, usedVariableName, bindings ));
 
         return existingPattern ? null : pattern;
     }
@@ -626,12 +627,16 @@ public class KiePackagesBuilder {
         if (condition instanceof CompositePatterns) {
             CompositePatterns compositePatterns = (CompositePatterns) condition;
             for (Condition c : compositePatterns.getSubConditions()) {
-                Variable<?>[] boundVariables = c.getBoundVariables();
-                Arrays.stream(boundVariables)
-                      .filter(org.drools.model.Declaration.class::isInstance)
-                      .map(org.drools.model.Declaration.class::cast)
-                      .filter(decl -> functionArgList.contains(decl))
-                      .forEach(decl -> bindings.add(new SelfPatternBiding<>(decl)));
+                try {
+                    Variable<?>[] boundVariables = c.getBoundVariables();
+                    Arrays.stream(boundVariables)
+                          .filter(org.drools.model.Declaration.class::isInstance)
+                          .map(org.drools.model.Declaration.class::cast)
+                          .filter(decl -> functionArgList.contains(decl))
+                          .forEach(decl -> bindings.add(new SelfPatternBiding<>(decl)));
+                } catch (UnsupportedOperationException e) {
+                    // skip (ex: eval doesn't support this operation)
+                }
             }
         }
     }
@@ -829,12 +834,12 @@ public class KiePackagesBuilder {
         }
     }
 
-    private Accumulate buildAccumulate(RuleContext ctx, AccumulatePattern accPattern,
+    private Accumulate buildAccumulate(RuleContext ctx, AccumulatePattern accPattern, GroupElement group,
                                        RuleConditionElement source, Pattern pattern,
                                        Set<String> usedVariableName, Collection<Binding> bindings) {
         boolean isGroupBy = accPattern instanceof GroupByPattern;
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
-        Declaration groupByDeclaration  = null;
+        List<Declaration> groupByDeclarations  = new ArrayList<>();
         Class selfType = (isGroupBy || accFunctions.length > 1 ) ? Object[].class : accFunctions[0].getResult().getType();
         ReadAccessor selfReader = new SelfReferenceClassFieldReader( selfType );
         int arrayIndexOffset = 0;
@@ -847,11 +852,7 @@ public class KiePackagesBuilder {
             }
 
             // GroupBy  key is always the last element in the result array
-            Variable groupVar = (( GroupByPattern<?, ?> ) accPattern).getVarKey();
-            groupByDeclaration  = new Declaration(groupVar.getName(),
-                                                  new ArrayElementReader( selfReader, accFunctions.length, groupVar.getType() ),
-                                                  pattern, true);
-            pattern.addDeclaration( groupByDeclaration );
+            processInnerGroupBy(accPattern, group, pattern, ctx, 0, groupByDeclarations);
         }
         Accumulate accumulate;
 
@@ -862,9 +863,7 @@ public class KiePackagesBuilder {
                              bindings,
                              isGroupBy, accFunctions[i],
                              selfReader, accumulators, requiredDeclarationList, arrayIndexOffset, i);
-            if (isGroupBy) {
-                ctx.addGroupByDeclaration(((GroupByPattern) accPattern).getVarKey(), groupByDeclaration);
-            }
+            processInnerGroupBy(accPattern, group, pattern, ctx, 0, groupByDeclarations);
         }
 
         if (accFunctions.length == 1) {
@@ -893,6 +892,37 @@ public class KiePackagesBuilder {
         }
 
         return accumulate;
+    }
+
+    private void processInnerGroupBy(AccumulatePattern accPattern, GroupElement groupElement, Pattern pattern, RuleContext ctx, int index, List<Declaration> declarations) {
+        boolean isGroupBy = accPattern instanceof GroupByPattern;
+        boolean isFirstRun = index >= declarations.size();
+        if (isGroupBy) {
+            if (isFirstRun) {
+                GroupByPatternImpl<?, ?> groupByPattern = (GroupByPatternImpl<?, ?>) accPattern;
+                Variable<?> groupVar = groupByPattern.getVarKey();
+                Declaration groupByDeclaration;
+                if (index == 0) {
+                    ReadAccessor selfReader = new SelfReferenceClassFieldReader( Object[].class );
+                    groupByDeclaration = new Declaration(groupVar.getName(),
+                            new ArrayElementReader( selfReader, accPattern.getAccumulateFunctions().length, groupVar.getType() ),
+                            pattern, true);
+                    pattern.addDeclaration(groupByDeclaration);
+                    declarations.add(groupByDeclaration);
+                } else {
+                    buildAccumulate(ctx, groupElement, groupByPattern);
+                    declarations.add(null);
+                }
+
+            } else if (declarations.get(index) != null) {
+                ctx.addGroupByDeclaration(((GroupByPattern) accPattern).getVarKey(), declarations.get(index));
+            }
+        } else if (isFirstRun) {
+            declarations.add(null);
+        }
+        if (accPattern.getPattern() instanceof AccumulatePattern) {
+            processInnerGroupBy((AccumulatePattern) accPattern.getPattern(), groupElement, pattern, ctx, index + 1, declarations);
+        }
     }
 
     private Variable processFunctions(RuleContext ctx, AccumulatePattern accPattern, RuleConditionElement source, Pattern pattern,

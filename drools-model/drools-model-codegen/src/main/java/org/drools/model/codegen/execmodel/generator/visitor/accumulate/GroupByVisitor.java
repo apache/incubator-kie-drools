@@ -17,7 +17,12 @@
 
 package org.drools.model.codegen.execmodel.generator.visitor.accumulate;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -33,8 +38,10 @@ import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper;
 import org.drools.model.codegen.execmodel.generator.expressiontyper.TypedExpressionResult;
 import org.drools.model.codegen.execmodel.generator.visitor.ModelGeneratorVisitor;
+import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static org.drools.model.codegen.execmodel.util.lambdareplace.ReplaceTypeInLambda.replaceTypeInExprLambdaAndIndex;
 import static org.drools.util.StringUtils.generateUUID;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toVar;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.GROUP_BY_CALL;
@@ -57,18 +64,26 @@ public class GroupByVisitor extends AccumulateVisitor {
             return;
         }
 
-        for (String used : result.getUsedDeclarations()) {
+        LinkedHashSet<String> uniqueUsedDeclarations = new LinkedHashSet<>(result.getUsedDeclarations());
+        for (String used : uniqueUsedDeclarations) {
             accumulateDSL.addArgument( context.getVarExpr(used) );
         }
 
         TypedExpression typedExpression = optResult.get();
 
         String groupingKey = groupByDescr.getGroupingKey() != null ? groupByDescr.getGroupingKey() : generateUUID();
-        context.addDeclaration(new DeclarationSpec(groupingKey, typedExpression.getRawClass()));
+        addGroupKeyBindingAsDeclaration(context, groupingKey, typedExpression);
         accumulateDSL.addArgument(toVar(groupingKey));
 
-        accumulateDSL.addArgument( buildConstraintExpression(typedExpression.getExpression(), result.getUsedDeclarations()) );
+        accumulateDSL.addArgument( buildConstraintExpression(typedExpression.getExpression(), uniqueUsedDeclarations) );
 
         super.processAccumulateFunctions(descr, basePattern, input, accumulateDSL);
+    }
+
+    private void addGroupKeyBindingAsDeclaration(RuleContext context, String bindingId, TypedExpression grouppingFunction) {
+        if (bindingId != null) {
+            Class grouppingFunctionResultType = grouppingFunction.getRawClass();
+            context.addDeclarationReplacing(new DeclarationSpec(bindingId, grouppingFunctionResultType));
+        }
     }
 }
