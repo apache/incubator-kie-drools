@@ -17,6 +17,8 @@
 package org.drools.core.common;
 
 import java.io.Serializable;
+
+import org.drools.core.reteoo.BaseTerminalNode;
 import org.kie.api.definition.rule.Rule;
 
 /**
@@ -41,12 +43,12 @@ public interface NetworkNode extends Serializable {
 
     boolean isAssociatedWith( Rule rule );
 
-    void addAssociatedTerminal(NetworkNode terminalNode);
-    void removeAssociatedTerminal(NetworkNode terminalNode);
+    void addAssociatedTerminal(BaseTerminalNode terminalNode);
+    void removeAssociatedTerminal(BaseTerminalNode terminalNode);
 
     int getAssociatedTerminalsSize();
 
-    boolean hasAssociatedTerminal(NetworkNode terminalNode);
+    boolean hasAssociatedTerminal(BaseTerminalNode terminalNode);
 
     NetworkNode[] getSinks();
 

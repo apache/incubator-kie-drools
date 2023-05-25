@@ -336,15 +336,6 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         return false;
     }
 
-    public final boolean isTerminalNodeOf(LeftTupleNode node) {
-        for (PathEndNode pathEndNode : getPathEndNodes()) {
-            if (pathEndNode.hasPathNode( node )) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public LeftTupleSinkPropagator getSinkPropagator() {
         return EmptyLeftTupleSinkAdapter.getInstance();
     }

@@ -79,11 +79,11 @@ public class MockRightTupleSink
     }
 
     @Override
-    public void addAssociatedTerminal(NetworkNode terminalNode) {
+    public void addAssociatedTerminal(BaseTerminalNode terminalNode) {
     }
 
     @Override
-    public void removeAssociatedTerminal(NetworkNode terminalNode) {
+    public void removeAssociatedTerminal(BaseTerminalNode terminalNode) {
     }
 
     @Override
@@ -92,7 +92,7 @@ public class MockRightTupleSink
     }
 
     @Override
-    public boolean hasAssociatedTerminal(NetworkNode terminalNode) {
+    public boolean hasAssociatedTerminal(BaseTerminalNode terminalNode) {
         return false;
     }
 
