@@ -34,7 +34,7 @@ public class Import extends DRLElement
     }
 
     /**
-     * @param className The className to set.
+     * @param clazz The className to set.
      */
     public void setClassName(final String clazz) {
         this.className = clazz;

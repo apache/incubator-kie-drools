@@ -42,14 +42,14 @@ public class Global extends DRLElement
     }
 
     /**
-     * @param className The className to set.
+     * @param clazz The className to set.
      */
     public void setClassName(final String clazz) {
         this.className = clazz;
     }
 
     /**
-     * @param varName The varName to set.
+     * @param namez The identifier to set.
      */
     public void setIdentifier(final String namez) {
         this.identifier = namez;

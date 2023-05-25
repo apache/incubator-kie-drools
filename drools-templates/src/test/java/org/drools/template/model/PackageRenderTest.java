@@ -28,8 +28,8 @@ public class PackageRenderTest {
 
     public Rule buildRule() {
         final Rule rule = new Rule("myrule",
-                                   new Integer(42),
-                                   1);
+                42,
+                1);
         rule.setComment("rule comments");
 
         final Condition cond = new Condition();

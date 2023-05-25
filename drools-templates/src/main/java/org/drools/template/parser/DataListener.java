@@ -21,19 +21,19 @@ package org.drools.template.parser;
  */
 public interface DataListener {
 
-    public static final int NON_MERGED = -1;
+    int NON_MERGED = -1;
 
     /**
      * Start a new sheet
      *
      * @param name the sheet name
      */
-    public void startSheet(String name);
+    void startSheet(String name);
 
     /**
      * Come to the end of the sheet.
      */
-    public void finishSheet();
+    void finishSheet();
 
     /**
      * Enter a new row.
@@ -41,8 +41,8 @@ public interface DataListener {
      * @param rowNumber
      * @param columns
      */
-    public void newRow(int rowNumber,
-                       int columns);
+    void newRow(int rowNumber,
+            int columns);
 
     /**
      * Enter a new cell.
@@ -50,14 +50,14 @@ public interface DataListener {
      * It will just confuse the parser. If all the trailing cells are empty, just
      * stop raising events.
      *
-     * @param row       the row number
-     * @param column    the column alpha character label
-     * @param value     the string value of the cell
-     * @param mergedCol the "source" column if it is merged. -1 otherwise.
+     * @param row            the row number
+     * @param column         the column alpha character label
+     * @param value          the string value of the cell
+     * @param mergedColStart the "source" column if it is merged. -1 otherwise.
      */
-    public void newCell(int row,
-                        int column,
-                        String value,
-                        int mergedColStart);
+    void newCell(int row,
+            int column,
+            String value,
+            int mergedColStart);
 
 }
