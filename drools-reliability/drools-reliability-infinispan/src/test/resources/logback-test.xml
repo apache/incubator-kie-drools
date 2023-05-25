@@ -13,6 +13,9 @@
 <!--  <logger name="org.infinispan.protostream" level="debug"/>-->
 <!--  <logger name="org.infinispan.commons.marshall" level="debug"/>-->
 
+  <!-- keep this debug level for the future when we will upgrade to the version which includes the logging. See : https://issues.redhat.com/browse/ISPN-14901 -->
+  <logger name="org.infinispan.globalstate.impl.OverlayLocalConfigurationStorage" level="debug"/>
+
   <root level="warn">
     <appender-ref ref="consoleAppender" />
   </root>

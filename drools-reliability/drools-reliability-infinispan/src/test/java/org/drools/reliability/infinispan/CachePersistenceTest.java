@@ -15,16 +15,14 @@
 
 package org.drools.reliability.infinispan;
 
+import java.util.Optional;
+
 import org.drools.reliability.core.StorageManagerFactory;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.test.domain.Person;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.core.StorageManagerFactory.SESSION_STORAGE_PREFIX;
@@ -42,7 +40,6 @@ class CachePersistenceTest extends ReliabilityTestBasics {
                     "then\n" +
                     "end";
 
-    @DisabledOnOs(OS.WINDOWS) // temporarily disabled until DROOLS-7393 is fixed
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
     void removeAllSessionCaches_shouldRemoveAllSessionCachesEvenAfterFailover(PersistedSessionOption.PersistenceStrategy strategy) {
