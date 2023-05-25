@@ -21,16 +21,19 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.kogito.Addons;
 import org.kie.kogito.KogitoEngine;
 import org.kie.kogito.Model;
@@ -39,15 +42,21 @@ import org.kie.kogito.StaticConfig;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.config.StaticConfigBean;
 import org.kie.kogito.event.impl.EventFactoryUtils;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
+import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
 import org.kie.kogito.serverless.workflow.utils.MultiSourceConfigResolver;
+import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
+import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,12 +84,34 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
 
     private static final Logger logger = LoggerFactory.getLogger(StaticWorkflowApplication.class);
     private final StaticWorkflowProcesses processes = new StaticWorkflowProcesses();
-    private Collection<KogitoWorkItemHandler> handlers = new ArrayList<>();
+    private final Collection<KogitoWorkItemHandler> handlers = new ArrayList<>();
     private Iterable<StaticApplicationRegister> applicationRegisters;
     private Iterable<StaticWorkflowRegister> workflowRegisters;
     private Iterable<StaticProcessRegister> processRegisters;
-    private Collection<AutoCloseable> closeables = new ArrayList<>();
-    private Map<String, ProcessInstance<JsonNodeModel>> processInstances = new HashMap<>();
+    private final Collection<AutoCloseable> closeables = new ArrayList<>();
+    private final Map<String, SynchronousQueue<JsonNodeModel>> queues;
+
+    private static class StaticCompletionEventListener extends DefaultKogitoProcessEventListener {
+
+        private final Map<String, SynchronousQueue<JsonNodeModel>> queues;
+
+        public StaticCompletionEventListener(Map<String, SynchronousQueue<JsonNodeModel>> queues) {
+            this.queues = queues;
+        }
+
+        @Override
+        public void afterProcessCompleted(ProcessCompletedEvent event) {
+            WorkflowProcessInstance instance = (WorkflowProcessInstance) event.getProcessInstance();
+            SynchronousQueue<JsonNodeModel> queue = queues.remove(instance.getId());
+            if (queue != null) {
+                try {
+                    queue.offer(new JsonNodeModel(instance.getId(), instance.getVariables().get(SWFConstants.DEFAULT_WORKFLOW_VAR)), 1000L, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
 
     public static StaticWorkflowApplication create() {
         Properties properties = new Properties();
@@ -95,16 +126,20 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
     }
 
     public static StaticWorkflowApplication create(Map<String, Object> properties) {
-        StaticWorkflowApplication application = new StaticWorkflowApplication(properties);
+        Map<String, SynchronousQueue<JsonNodeModel>> queues = new ConcurrentHashMap<>();
+        StaticWorkflowApplication application = new StaticWorkflowApplication(properties, queues);
         application.applicationRegisters.forEach(register -> register.register(application));
         return application;
     }
 
-    private StaticWorkflowApplication(Map<String, Object> properties) {
-        super(new StaticConfig(new Addons(Collections.emptySet()), new StaticProcessConfig(), new StaticConfigBean()));
+    private StaticWorkflowApplication(Map<String, Object> properties, Map<String, SynchronousQueue<JsonNodeModel>> queues) {
+        super(new StaticConfig(new Addons(Collections.emptySet()), new StaticProcessConfig(new CachedWorkItemHandlerConfig(),
+                new DefaultProcessEventListenerConfig(new StaticCompletionEventListener(queues)),
+                new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory())), new StaticConfigBean()));
         if (!properties.isEmpty()) {
             ConfigResolverHolder.setConfigResolver(MultiSourceConfigResolver.withSystemProperties(properties));
         }
+        this.queues = queues;
         applicationRegisters = ServiceLoader.load(StaticApplicationRegister.class);
         workflowRegisters = ServiceLoader.load(StaticWorkflowRegister.class);
         processRegisters = ServiceLoader.load(StaticProcessRegister.class);
@@ -168,9 +203,6 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
     public JsonNodeModel execute(Process<JsonNodeModel> process, JsonNodeModel model) {
         ProcessInstance<JsonNodeModel> processInstance = process.createInstance(model);
         processInstance.start();
-        if (!isFinish(processInstance)) {
-            processInstances.put(processInstance.id(), processInstance);
-        }
         return processInstance.variables();
     }
 
@@ -193,41 +225,31 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
         closeables.add(closeable);
     }
 
+    private Optional<ProcessInstance<JsonNodeModel>> findProcessInstance(String id) {
+        for (Process<JsonNodeModel> process : processes.map.values()) {
+            Optional<ProcessInstance<JsonNodeModel>> pi = process.instances().findById(id);
+            if (pi.isPresent()) {
+                return pi;
+            }
+        }
+        return Optional.empty();
+    }
+
     public Optional<JsonNodeModel> variables(String id) {
-        return Optional.ofNullable(processInstances.get(id)).map(ProcessInstance::variables);
+        return findProcessInstance(id).map(ProcessInstance::variables);
     }
 
     public Optional<JsonNodeModel> waitForFinish(String id, Duration duration) throws InterruptedException, TimeoutException {
-        return waitForFinish(id, duration, Duration.ofMillis(750));
-    }
-
-    public Optional<JsonNodeModel> waitForFinish(String id, Duration duration, Duration pollInterval) throws InterruptedException, TimeoutException {
-        if (duration.compareTo(pollInterval) < 0) {
-            throw new IllegalArgumentException("Duration " + duration + " is lower than poll interval " + pollInterval);
-        }
-        ProcessInstance<JsonNodeModel> pi = processInstances.get(id);
-        if (pi == null) {
-            return Optional.empty();
-        }
-        Duration time = Duration.ZERO;
-        while (!isFinish(pi)) {
-            Thread.sleep(pollInterval.toMillis());
-            time = time.plus(pollInterval);
-            if (time.compareTo(duration) > 0) {
-                throw new TimeoutException("Elapsed time " + time + " Max time " + duration);
+        JsonNodeModel model = queues.computeIfAbsent(id, k -> new SynchronousQueue<>()).poll(duration.toMillis(), TimeUnit.MILLISECONDS);
+        if (model == null) {
+            Optional<ProcessInstance<JsonNodeModel>> pi = findProcessInstance(id);
+            if (pi.isEmpty()) {
+                queues.remove(id);
+                return pi.map(ProcessInstance::variables);
             }
+            throw new TimeoutException("Process " + id + " has not finished after " + duration);
         }
-        if (isFinish(pi)) {
-            processInstances.remove(id);
-        }
-        JsonNodeModel model = pi.variables();
-        logger.info("Process finished {}", model);
         return Optional.of(model);
-    }
-
-    private boolean isFinish(ProcessInstance<JsonNodeModel> pi) {
-        int status = pi.status();
-        return status == ProcessInstance.STATE_COMPLETED || status == ProcessInstance.STATE_ERROR || status == ProcessInstance.STATE_ABORTED;
     }
 
     private Process<JsonNodeModel> createProcess(Workflow workflow) {
