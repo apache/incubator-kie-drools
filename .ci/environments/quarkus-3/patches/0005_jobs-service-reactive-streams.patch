@@ -1,15 +1,15 @@
-commit eab56a7d69c07bec492a540a9cd9e755d3369ce5
+commit 4372af74ce491965339d24ff50c538548c4c26de
 Author: Pere Fernandez <pefernan@users.noreply.github.com>
-Date:   Tue May 9 12:50:39 2023 +0200
+Date:   Thu May 25 15:08:25 2023 +0200
 
-    patch: jobs service
+    patch: job-service
 
 diff --git a/jobs-service/jobs-service-common/pom.xml b/jobs-service/jobs-service-common/pom.xml
-index 17d9a5c64..062de3f6e 100644
+index c8f383499..fcd61dce7 100644
 --- a/jobs-service/jobs-service-common/pom.xml
 +++ b/jobs-service/jobs-service-common/pom.xml
-@@ -96,6 +96,11 @@
-       <artifactId>quarkus-smallrye-reactive-messaging</artifactId>
+@@ -107,6 +107,11 @@
+       <version>${version.io.quarkiverse.reactivemessaging.http}</version>
      </dependency>
 
 +    <dependency>
@@ -18,22 +18,21 @@ index 17d9a5c64..062de3f6e 100644
 +    </dependency>
 +
      <dependency>
-       <groupId>io.quarkus</groupId>
-       <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+       <groupId>io.smallrye.reactive</groupId>
+       <artifactId>smallrye-mutiny-vertx-kafka-client</artifactId>
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/ReactiveMessagingEventConsumer.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/ReactiveMessagingEventConsumer.java
-index fb5e9360b..87332abc6 100644
+index fb5e9360b..e1cba14ca 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/ReactiveMessagingEventConsumer.java
 +++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/ReactiveMessagingEventConsumer.java
-@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
- import io.cloudevents.CloudEvent;
- import io.smallrye.mutiny.Uni;
+@@ -17,6 +17,7 @@ package org.kie.kogito.jobs.service.messaging;
+
+ import java.util.Objects;
 
 +import mutiny.zero.flow.adapters.AdaptersToFlow;
-+
- public abstract class ReactiveMessagingEventConsumer {
-
-     private static final Logger LOGGER = LoggerFactory.getLogger(ReactiveMessagingEventConsumer.class);
-@@ -74,7 +76,7 @@ public abstract class ReactiveMessagingEventConsumer {
+ import org.eclipse.microprofile.reactive.messaging.Message;
+ import org.kie.kogito.jobs.service.exception.JobServiceException;
+ import org.kie.kogito.jobs.service.model.JobDetails;
+@@ -74,7 +75,7 @@ public abstract class ReactiveMessagingEventConsumer {
          return Uni.createFrom().completionStage(jobRepository.get(job.getId()))
                  .flatMap(existingJob -> {
                      if (existingJob == null || existingJob.getStatus() == JobStatus.SCHEDULED) {
@@ -43,19 +42,18 @@ index fb5e9360b..87332abc6 100644
                          LOGGER.info("A Job in status: {} already exists for the job id: {}, no processing will be done fot the event: {}.",
                                  existingJob.getStatus(),
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/JobResource.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/JobResource.java
-index 6e819faa6..c8e7b6867 100644
+index 6e819faa6..a20d55c75 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/JobResource.java
 +++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/JobResource.java
-@@ -42,6 +42,8 @@ import org.slf4j.LoggerFactory;
-
- import io.smallrye.mutiny.Uni;
+@@ -28,6 +28,7 @@ import jakarta.ws.rs.PathParam;
+ import jakarta.ws.rs.Produces;
+ import jakarta.ws.rs.core.MediaType;
 
 +import mutiny.zero.flow.adapters.AdaptersToFlow;
-+
- @ApplicationScoped
- @Path(RestApiConstants.JOBS_PATH)
- public class JobResource {
-@@ -63,7 +65,7 @@ public class JobResource {
+ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+ import org.kie.kogito.jobs.api.Job;
+ import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
+@@ -63,7 +64,7 @@ public class JobResource {
      public Uni<ScheduledJob> create(Job job) {
          LOGGER.debug("REST create {}", job);
          JobDetails jobDetails = jobDetailsValidator.validateToCreate(ScheduledJobAdapter.to(ScheduledJob.builder().job(job).build()));
@@ -64,7 +62,7 @@ index 6e819faa6..c8e7b6867 100644
                  .onItem().ifNull().failWith(new RuntimeException("Failed to schedule job " + job))
                  .onItem().transform(ScheduledJobAdapter::of);
      }
-@@ -76,7 +78,7 @@ public class JobResource {
+@@ -76,7 +77,7 @@ public class JobResource {
          LOGGER.debug("REST patch update {}", job);
          //validating allowed patch attributes
          JobDetails jobToBeMerged = jobDetailsValidator.validateToMerge(ScheduledJobAdapter.to(ScheduledJobBuilder.from(job)));
@@ -74,19 +72,18 @@ index 6e819faa6..c8e7b6867 100644
                  .onItem().transform(ScheduledJobAdapter::of);
      }
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/v2/JobResourceV2.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/v2/JobResourceV2.java
-index ff4a808d6..c3b862714 100644
+index ff4a808d6..ba06fc976 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/v2/JobResourceV2.java
 +++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/v2/JobResourceV2.java
-@@ -27,6 +27,8 @@ import jakarta.ws.rs.PathParam;
+@@ -27,6 +27,7 @@ import jakarta.ws.rs.PathParam;
  import jakarta.ws.rs.Produces;
  import jakarta.ws.rs.core.MediaType;
 
 +import mutiny.zero.flow.adapters.AdaptersToFlow;
-+
  import org.kie.kogito.jobs.service.adapter.JobDetailsAdapter;
  import org.kie.kogito.jobs.service.api.Job;
  import org.kie.kogito.jobs.service.model.JobDetails;
-@@ -61,7 +63,7 @@ public class JobResourceV2 {
+@@ -61,7 +62,7 @@ public class JobResourceV2 {
          LOGGER.debug("REST create {}", job);
          jobValidator.validateToCreate(job);
          JobDetails jobDetails = JobDetailsAdapter.from(job);
@@ -96,19 +93,18 @@ index ff4a808d6..c3b862714 100644
                  .onItem().transform(JobDetailsAdapter::toJob);
      }
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/scheduler/BaseTimerJobScheduler.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/scheduler/BaseTimerJobScheduler.java
-index 4a3e9e6a6..f2323e481 100644
+index 4a3e9e6a6..c9f23d1cd 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/scheduler/BaseTimerJobScheduler.java
 +++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/scheduler/BaseTimerJobScheduler.java
-@@ -45,6 +45,8 @@ import org.slf4j.LoggerFactory;
-
- import io.smallrye.mutiny.Uni;
+@@ -26,6 +26,7 @@ import java.util.concurrent.CompletionStage;
+ import java.util.concurrent.ConcurrentHashMap;
+ import java.util.function.Consumer;
 
 +import mutiny.zero.flow.adapters.AdaptersToFlow;
-+
- /**
-  * Base reactive Job Scheduler that performs the fundamental operations and let to the concrete classes to
-  * implement the scheduling actions.
-@@ -306,7 +308,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
+ import org.apache.commons.lang3.tuple.Pair;
+ import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+ import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+@@ -306,7 +307,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
          return Uni.createFrom().completionStage(futureJob)
                  .onItem().invoke(job -> LOGGER.debug("Cancel Job Scheduling {}", job))
                  .chain(scheduledJob -> Optional.ofNullable(scheduledJob.getScheduledId())
@@ -117,64 +113,19 @@ index 4a3e9e6a6..f2323e481 100644
                                  .onItem().transform(b -> scheduledJob))
                          .orElse(Uni.createFrom().item(scheduledJob)))
                  //final state, removing the job
-diff --git a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/resource/BaseKeycloakJobServiceIT.java b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/resource/BaseKeycloakJobServiceIT.java
-index 73560d8ff..c40c6ca05 100644
---- a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/resource/BaseKeycloakJobServiceIT.java
-+++ b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/resource/BaseKeycloakJobServiceIT.java
-@@ -17,8 +17,6 @@ package org.kie.kogito.jobs.service.resource;
-
- import java.io.IOException;
-
--import jakarta.inject.Inject;
--
- import org.eclipse.microprofile.config.inject.ConfigProperty;
- import org.junit.jupiter.api.BeforeAll;
- import org.junit.jupiter.api.BeforeEach;
-@@ -39,6 +37,8 @@ import io.restassured.http.ContentType;
- import io.restassured.response.ValidatableResponse;
- import io.restassured.specification.RequestSpecification;
-
-+import jakarta.inject.Inject;
-+
- import static io.restassured.RestAssured.given;
- import static java.util.concurrent.TimeUnit.MINUTES;
- import static org.junit.jupiter.api.Assertions.assertEquals;
-diff --git a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/resource/CommonBaseJobResourceIT.java b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/resource/CommonBaseJobResourceIT.java
-index aa3703dab..bc08f4905 100644
---- a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/resource/CommonBaseJobResourceIT.java
-+++ b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/resource/CommonBaseJobResourceIT.java
-@@ -18,8 +18,6 @@ package org.kie.kogito.jobs.service.resource;
-
- import java.io.IOException;
-
--import jakarta.inject.Inject;
--
- import org.eclipse.microprofile.config.inject.ConfigProperty;
- import org.junit.jupiter.api.AfterEach;
- import org.junit.jupiter.api.BeforeEach;
-@@ -31,6 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
- import io.restassured.http.ContentType;
- import io.restassured.response.ValidatableResponse;
-
-+import jakarta.inject.Inject;
-+
- import static io.restassured.RestAssured.given;
- import static java.util.concurrent.TimeUnit.MINUTES;
- import static java.util.concurrent.TimeUnit.SECONDS;
 diff --git a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/scheduler/BaseTimerJobSchedulerTest.java b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/scheduler/BaseTimerJobSchedulerTest.java
-index b535e7671..0ec28a562 100644
+index b535e7671..9b1b3fb0a 100644
 --- a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/scheduler/BaseTimerJobSchedulerTest.java
 +++ b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/scheduler/BaseTimerJobSchedulerTest.java
-@@ -47,6 +47,8 @@ import org.reactivestreams.Publisher;
- import io.smallrye.mutiny.Multi;
- import io.smallrye.mutiny.Uni;
+@@ -25,6 +25,7 @@ import java.util.concurrent.CompletionStage;
+ import java.util.concurrent.TimeUnit;
+ import java.util.function.Consumer;
 
 +import mutiny.zero.flow.adapters.AdaptersToFlow;
-+
- import static org.assertj.core.api.Assertions.assertThat;
- import static org.kie.kogito.jobs.service.model.JobStatus.CANCELED;
- import static org.kie.kogito.jobs.service.model.JobStatus.SCHEDULED;
-@@ -352,7 +354,7 @@ public abstract class BaseTimerJobSchedulerTest {
+ import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+ import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+ import org.junit.jupiter.api.BeforeEach;
+@@ -352,7 +353,7 @@ public abstract class BaseTimerJobSchedulerTest {
 
      private void subscribeOn(Publisher<JobDetails> schedule) {
          Multi.createFrom()
@@ -184,19 +135,18 @@ index b535e7671..0ec28a562 100644
                  .with(dummyCallback(), dummyCallback());
      }
 diff --git a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/scheduler/impl/TimerDelegateJobSchedulerTest.java b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/scheduler/impl/TimerDelegateJobSchedulerTest.java
-index 1009f1aa8..21cffbc16 100644
+index 1009f1aa8..77460ecdd 100644
 --- a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/scheduler/impl/TimerDelegateJobSchedulerTest.java
 +++ b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/scheduler/impl/TimerDelegateJobSchedulerTest.java
-@@ -42,6 +42,8 @@ import org.reactivestreams.Publisher;
-
- import io.smallrye.mutiny.Multi;
+@@ -18,6 +18,7 @@ package org.kie.kogito.jobs.service.scheduler.impl;
+ import java.util.Optional;
+ import java.util.UUID;
 
 +import mutiny.zero.flow.adapters.AdaptersToFlow;
-+
- import static org.assertj.core.api.Assertions.assertThat;
- import static org.mockito.ArgumentMatchers.any;
- import static org.mockito.ArgumentMatchers.eq;
-@@ -76,14 +78,14 @@ class TimerDelegateJobSchedulerTest extends BaseTimerJobSchedulerTest {
+ import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+ import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+ import org.junit.jupiter.api.BeforeEach;
+@@ -76,14 +77,14 @@ class TimerDelegateJobSchedulerTest extends BaseTimerJobSchedulerTest {
      @Test
      void testDoSchedule() {
          PublisherBuilder<ManageableJobHandle> schedule = tested.doSchedule(scheduledJob, Optional.empty());
@@ -213,7 +163,7 @@ index 1009f1aa8..21cffbc16 100644
          verify(timer).removeJob(any(ManageableJobHandle.class));
      }
 
-@@ -91,7 +93,7 @@ class TimerDelegateJobSchedulerTest extends BaseTimerJobSchedulerTest {
+@@ -91,7 +92,7 @@ class TimerDelegateJobSchedulerTest extends BaseTimerJobSchedulerTest {
      void testDoCancelNullId() {
          Publisher<ManageableJobHandle> cancel =
                  tested.doCancel(JobDetails.builder().of(scheduledJob).scheduledId(null).build());
@@ -223,7 +173,7 @@ index 1009f1aa8..21cffbc16 100644
      }
 
 diff --git a/jobs-service/jobs-service-mongodb/pom.xml b/jobs-service/jobs-service-mongodb/pom.xml
-index 12ab6ce62..d895fcf75 100644
+index 162893675..92d52eba7 100644
 --- a/jobs-service/jobs-service-mongodb/pom.xml
 +++ b/jobs-service/jobs-service-mongodb/pom.xml
 @@ -22,6 +22,10 @@
@@ -238,19 +188,18 @@ index 12ab6ce62..d895fcf75 100644
          <dependency>
              <groupId>org.kie.kogito</groupId>
 diff --git a/jobs-service/jobs-service-mongodb/src/main/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepository.java b/jobs-service/jobs-service-mongodb/src/main/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepository.java
-index 7f4cfd6c6..c12485697 100644
+index 7f4cfd6c6..c6200a936 100644
 --- a/jobs-service/jobs-service-mongodb/src/main/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepository.java
 +++ b/jobs-service/jobs-service-mongodb/src/main/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepository.java
-@@ -23,6 +23,8 @@ import jakarta.enterprise.context.ApplicationScoped;
+@@ -23,6 +23,7 @@ import jakarta.enterprise.context.ApplicationScoped;
  import jakarta.enterprise.event.Observes;
  import jakarta.inject.Inject;
 
 +import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
-+
  import org.bson.Document;
  import org.bson.json.JsonWriterSettings;
  import org.eclipse.microprofile.config.inject.ConfigProperty;
-@@ -142,28 +144,27 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
+@@ -142,28 +143,29 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
 
      @Override
      public PublisherBuilder<JobDetails> findAll() {
@@ -265,40 +214,35 @@ index 7f4cfd6c6..c12485697 100644
 +                        collection.find()
 +                                .map(document -> documentToJson(document))
 +                                .map(jobDetailsMarshaller::unmarshall)
-+                                .emitOn(Infrastructure.getDefaultExecutor())));
++                                .emitOn(Infrastructure.getDefaultExecutor())
++                                .convert()
++                                .toPublisher()));
      }
 
      @Override
      public PublisherBuilder<JobDetails> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status) {
          return fromPublisher(
--                collection.find(
--                        and(
--                                in(STATUS_COLUMN, stream(status).map(Enum::name).collect(toList())),
--                                gt(FIRE_TIME_COLUMN, from.toInstant().toEpochMilli()),
--                                lt(FIRE_TIME_COLUMN, to.toInstant().toEpochMilli())),
--                        new FindOptions().sort(descending("priority")))
++                AdaptersToReactiveStreams.publisher(
+                 collection.find(
+                         and(
+                                 in(STATUS_COLUMN, stream(status).map(Enum::name).collect(toList())),
+                                 gt(FIRE_TIME_COLUMN, from.toInstant().toEpochMilli()),
+                                 lt(FIRE_TIME_COLUMN, to.toInstant().toEpochMilli())),
+                         new FindOptions().sort(descending("priority")))
 -                        .map(document -> documentToJson(document))
--                        .map(jobDetailsMarshaller::unmarshall)
++                        .map(MongoDBJobRepository::documentToJson)
+                         .map(jobDetailsMarshaller::unmarshall)
 -                        .emitOn(Infrastructure.getDefaultExecutor())
 -                        .convert()
 -                        .toPublisher());
-+                AdaptersToReactiveStreams.publisher(
-+                        collection.find(
-+                                and(
-+                                        in(STATUS_COLUMN, stream(status).map(Enum::name).collect(toList())),
-+                                        gt(FIRE_TIME_COLUMN, from.toInstant().toEpochMilli()),
-+                                        lt(FIRE_TIME_COLUMN, to.toInstant().toEpochMilli())),
-+                                new FindOptions().sort(descending("priority")))
-+                                .map(document -> documentToJson(document))
-+                                .map(jobDetailsMarshaller::unmarshall)
-+                                .emitOn(Infrastructure.getDefaultExecutor())));
++                        .emitOn(Infrastructure.getDefaultExecutor())));
      }
 
      static JsonObject documentToJson(Document document) {
-diff --git a/jobs-service/jobs-service-mongodb/src/test/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepositoryTest.java b/jobs-service/jobs-service-mongodb/src/test/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepositoryTest.java
-index 22e41f721..a5787fd51 100644
---- a/jobs-service/jobs-service-mongodb/src/test/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepositoryTest.java
-+++ b/jobs-service/jobs-service-mongodb/src/test/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepositoryTest.java
+diff --git a/jobs-service/jobs-service-mongodb/src/test/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepositoryExecutionTest.java b/jobs-service/jobs-service-mongodb/src/test/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepositoryExecutionTest.java
+index 388a82566..786ca9736 100644
+--- a/jobs-service/jobs-service-mongodb/src/test/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepositoryExecutionTest.java
++++ b/jobs-service/jobs-service-mongodb/src/test/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepositoryExecutionTest.java
 @@ -22,6 +22,7 @@ import java.util.HashMap;
  import java.util.Map;
  import java.util.concurrent.CompletableFuture;
@@ -315,7 +259,7 @@ index 22e41f721..a5787fd51 100644
 
  import com.mongodb.client.model.FindOneAndReplaceOptions;
  import com.mongodb.client.model.ReturnDocument;
-@@ -125,7 +125,7 @@ class MongoDBJobRepositoryTest {
+@@ -125,7 +125,7 @@ class MongoDBJobRepositoryExecutionTest {
          MultiConvert convertMulti = mock(MultiConvert.class);
          when(multi.emitOn(any())).thenReturn(multi);
          when(multi.convert()).thenReturn(convertMulti);
@@ -325,39 +269,113 @@ index 22e41f721..a5787fd51 100644
 
          completableFuture = mock(CompletableFuture.class);
 diff --git a/jobs-service/jobs-service-postgresql/pom.xml b/jobs-service/jobs-service-postgresql/pom.xml
-index 5f2e28405..6bc3436ec 100644
+index 7ec1e415e..a4d351f42 100644
 --- a/jobs-service/jobs-service-postgresql/pom.xml
 +++ b/jobs-service/jobs-service-postgresql/pom.xml
-@@ -30,7 +30,10 @@
+@@ -30,6 +30,10 @@
              <groupId>io.quarkus</groupId>
              <artifactId>quarkus-flyway</artifactId>
          </dependency>
--
 +        <dependency>
 +            <groupId>io.smallrye.reactive</groupId>
 +            <artifactId>mutiny-zero-flow-adapters</artifactId>
 +        </dependency>
+
          <dependency>
              <groupId>org.kie.kogito</groupId>
-             <artifactId>jobs-service-common</artifactId>
 diff --git a/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java b/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java
-index 9a3f7e94b..94c315817 100644
+index 9a3f7e94b..c0ecc7df1 100644
 --- a/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java
 +++ b/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java
-@@ -24,9 +24,12 @@ import java.util.concurrent.CompletionStage;
+@@ -24,9 +24,16 @@ import java.util.concurrent.CompletionStage;
  import java.util.stream.Collectors;
  import java.util.stream.Stream;
 
-+
++import io.smallrye.mutiny.Multi;
++import io.vertx.core.Vertx;
++import io.vertx.core.json.JsonObject;
++import io.vertx.mutiny.pgclient.PgPool;
++import io.vertx.mutiny.sqlclient.Row;
++import io.vertx.mutiny.sqlclient.RowSet;
++import io.vertx.mutiny.sqlclient.Tuple;
  import jakarta.enterprise.context.ApplicationScoped;
  import jakarta.inject.Inject;
-
+-
 +import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
-+
  import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
  import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
  import org.kie.kogito.jobs.service.model.JobDetails;
-@@ -139,17 +142,19 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
+@@ -39,14 +46,6 @@ import org.kie.kogito.jobs.service.stream.JobStreams;
+ import org.kie.kogito.jobs.service.utils.DateUtil;
+ import org.kie.kogito.timer.Trigger;
+
+-import io.smallrye.mutiny.Multi;
+-import io.vertx.core.Vertx;
+-import io.vertx.core.json.JsonObject;
+-import io.vertx.mutiny.pgclient.PgPool;
+-import io.vertx.mutiny.sqlclient.Row;
+-import io.vertx.mutiny.sqlclient.RowSet;
+-import io.vertx.mutiny.sqlclient.Tuple;
+-
+ import static java.util.stream.Collectors.toList;
+ import static org.kie.kogito.jobs.service.utils.DateUtil.DEFAULT_ZONE;
+
+@@ -72,7 +71,7 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
+
+     @Inject
+     public PostgreSqlJobRepository(Vertx vertx, JobStreams jobStreams, PgPool client,
+-            TriggerMarshaller triggerMarshaller, RecipientMarshaller recipientMarshaller) {
++                                   TriggerMarshaller triggerMarshaller, RecipientMarshaller recipientMarshaller) {
+         super(vertx, jobStreams);
+         this.client = client;
+         this.triggerMarshaller = triggerMarshaller;
+@@ -82,26 +81,26 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
+     @Override
+     public CompletionStage<JobDetails> doSave(JobDetails job) {
+         return client.preparedQuery("INSERT INTO " + JOB_DETAILS_TABLE + " (" + JOB_DETAILS_COLUMNS +
+-                ") VALUES ($1, $2, $3, now(), $4, $5, $6, $7, $8, $9, $10, $11, $12) " +
+-                "ON CONFLICT (id) DO " +
+-                "UPDATE SET correlation_id = $2, status = $3, last_update = now(), retries = $4, " +
+-                "execution_counter = $5, scheduled_id = $6, priority = $7, " +
+-                "recipient = $8, trigger = $9, fire_time = $10, execution_timeout = $11, execution_timeout_unit = $12 " +
+-                "RETURNING " + JOB_DETAILS_COLUMNS)
++                                            ") VALUES ($1, $2, $3, now(), $4, $5, $6, $7, $8, $9, $10, $11, $12) " +
++                                            "ON CONFLICT (id) DO " +
++                                            "UPDATE SET correlation_id = $2, status = $3, last_update = now(), retries = $4, " +
++                                            "execution_counter = $5, scheduled_id = $6, priority = $7, " +
++                                            "recipient = $8, trigger = $9, fire_time = $10, execution_timeout = $11, execution_timeout_unit = $12 " +
++                                            "RETURNING " + JOB_DETAILS_COLUMNS)
+                 .execute(Tuple.tuple(Stream.of(
+-                        job.getId(),
+-                        job.getCorrelationId(),
+-                        Optional.ofNullable(job.getStatus()).map(Enum::name).orElse(null),
+-                        job.getRetries(),
+-                        job.getExecutionCounter(),
+-                        job.getScheduledId(),
+-                        job.getPriority(),
+-                        recipientMarshaller.marshall(job.getRecipient()),
+-                        triggerMarshaller.marshall(job.getTrigger()),
+-                        Optional.ofNullable(job.getTrigger()).map(Trigger::hasNextFireTime).map(DateUtil::dateToOffsetDateTime).orElse(null),
+-                        job.getExecutionTimeout(),
+-                        Optional.ofNullable(job.getExecutionTimeoutUnit()).map(Enum::name).orElse(null))
+-                        .collect(toList())))
++                                job.getId(),
++                                job.getCorrelationId(),
++                                Optional.ofNullable(job.getStatus()).map(Enum::name).orElse(null),
++                                job.getRetries(),
++                                job.getExecutionCounter(),
++                                job.getScheduledId(),
++                                job.getPriority(),
++                                recipientMarshaller.marshall(job.getRecipient()),
++                                triggerMarshaller.marshall(job.getTrigger()),
++                                Optional.ofNullable(job.getTrigger()).map(Trigger::hasNextFireTime).map(DateUtil::dateToOffsetDateTime).orElse(null),
++                                job.getExecutionTimeout(),
++                                Optional.ofNullable(job.getExecutionTimeoutUnit()).map(Enum::name).orElse(null))
++                                             .collect(toList())))
+                 .onItem().transform(RowSet::iterator)
+                 .onItem().transform(iterator -> iterator.hasNext() ? from(iterator.next()) : null)
+                 .convert()
+@@ -139,17 +138,19 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
          String statusQuery = createStatusQuery(status);
          String query = " WHERE " + statusQuery;
          return ReactiveStreams.fromPublisher(
@@ -383,7 +401,7 @@ index 9a3f7e94b..94c315817 100644
      }
 
      @Override
-@@ -159,10 +164,11 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
+@@ -159,10 +160,11 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
          String query = " WHERE " + statusQuery + " AND " + timeQuery;
 
          return ReactiveStreams.fromPublisher(
@@ -400,10 +418,10 @@ index 9a3f7e94b..94c315817 100644
 
      static String createStatusQuery(JobStatus... status) {
 diff --git a/kogito-apps-build-parent/pom.xml b/kogito-apps-build-parent/pom.xml
-index 046f67866..61c98f568 100644
+index 0f4ff2aac..43dbed101 100644
 --- a/kogito-apps-build-parent/pom.xml
 +++ b/kogito-apps-build-parent/pom.xml
-@@ -59,6 +59,9 @@
+@@ -58,6 +58,9 @@
 
          <!-- Explainability Toolkit version -->
          <version.explainability-core>1.22.1.Final</version.explainability-core>
@@ -413,7 +431,7 @@ index 046f67866..61c98f568 100644
      </properties>
 
      <build>
-@@ -165,6 +168,11 @@
+@@ -163,6 +166,11 @@
                  <artifactId>mapstruct</artifactId>
                  <version>${version.org.mapstruct}</version>
              </dependency>
