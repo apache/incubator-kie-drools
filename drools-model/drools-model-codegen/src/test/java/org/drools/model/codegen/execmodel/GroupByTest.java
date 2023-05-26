@@ -15,31 +15,17 @@
 package org.drools.model.codegen.execmodel;
 
 import org.apache.commons.math3.util.Pair;
-import org.drools.core.base.accumulators.CollectListAccumulateFunction;
-import org.drools.core.base.accumulators.CountAccumulateFunction;
-import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
-import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.Accumulator;
-import org.drools.model.DSL;
-import org.drools.model.Global;
-import org.drools.model.Model;
-import org.drools.model.PatternDSL;
-import org.drools.model.Rule;
-import org.drools.model.Variable;
 import org.drools.model.codegen.execmodel.domain.Child;
 import org.drools.model.codegen.execmodel.domain.Parent;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.functions.accumulate.GroupKey;
-import org.drools.model.impl.ModelImpl;
-import org.drools.modelcompiler.KieBaseBuilder;
-import org.drools.modelcompiler.dsl.pattern.D;
 import org.junit.Assume;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -813,39 +799,26 @@ public class GroupByTest extends BaseModelTest {
 
     @Test
     public void testBindingRemappedAfterGroupBy() {
-        // Note: this would create the same DRL as testFromAfterGroupBy
-        // since to bind a variable to an expression in DRL, you need to
-        // use "from"
-        Global<Set> var_results = D.globalOf( Set.class, "defaultpkg", "results" );
+        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Set.class.getCanonicalName() + ";" +
+                        "global Set<Object> results;\n" +
+                        "rule X when\n" +
+                        "    groupby(" +
+                        "        $p : Person ( name != null );" +
+                        "        $key : $p.name;" +
+                        "        $count : count()" +
+                        "    )\n" +
+                        "    $remappedKey: Object() from $key\n" +
+                        "    $remappedCount: Long() from $count\n" +
+                        "then\n" +
+                        "    if (!($remappedKey instanceof String)) {\n" +
+                        "        throw new IllegalStateException( \"Name not String, but \" + $remappedKey.getClass() );\n" +
+                        "    }\n" +
+                        "end";
 
-        Variable var_$p1 = D.declarationOf( Person.class );
-        Variable var_$key = D.declarationOf( String.class );
-        Variable var_$count = D.declarationOf( Long.class );
-        Variable var_$remapped1 = D.declarationOf( Object.class);
-        Variable var_$remapped2 = D.declarationOf( Long.class);
-
-        PatternDSL.PatternDef<Person> p1pattern = D.pattern( var_$p1 )
-                                                   .expr( p -> (( Person ) p).getName() != null );
-
-        Rule rule1 = D.rule( "R1" ).build(
-              D.groupBy(
-                    p1pattern,
-                    var_$p1,
-                    var_$key,
-                    Person::getName,
-                    DSL.accFunction( CountAccumulateFunction::new, var_$p1 ).as( var_$count ) ),
-              D.pattern( var_$key).bind(var_$remapped1, o -> o),
-              D.pattern( var_$count).bind(var_$remapped2, o -> o),
-              D.on( var_$remapped1, var_$remapped2 )
-               .execute( ( ctx, name, count ) -> {
-                   if ( !(name instanceof String) ) {
-                       throw new IllegalStateException( "Name not String, but " + name.getClass() );
-                   }
-               } )
-                                         );
-
-        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
-        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+        KieSession ksession = getKieSession(str);
 
         Set<Integer> results = new LinkedHashSet<>();
         ksession.setGlobal( "results", results );
@@ -1042,41 +1015,31 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore // FIXME This does not work, because Declaration only works with function1
     public void testTwoGroupByUsingBindings() {
         // DROOLS-5697
-        // Note: this look like it would generate the same DRL as testTwoGroupBy
-        Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Group.class.getCanonicalName() + ";" +
+                        "import " + Map.class.getCanonicalName() + ";" +
+                        "global Map<String, Integer> results;\n" +
+                        "rule R1 when\n" +
+                        "    groupby(" +
+                        "        groupby(" +
+                        "            $p : Person ($age: age);" +
+                        "            $key1 : $p.getName().substring(0, 3);" +
+                        "            $sumOfAges : sum($age)" +
+                        "        ) and $g1: Group() from new Group($key1, $sumOfAges) and " +
+                        "        $g1SumOfAges: Integer() from $g1.getValue();" +
+                        "        $key : ((String) ($g1.getKey())).substring(0, 2);" +
+                        "        $maxOfValues : max($g1SumOfAges)" +
+                        "    )\n" +
+                        "then\n" +
+                        "    System.out.println($key + \" -> \" + $maxOfValues);\n" +
+                        "    results.put($key, $maxOfValues);\n" +
+                        "end";
 
-        Variable<String> var_$key_1 = D.declarationOf(String.class);
-        Variable<Person> var_$p = D.declarationOf(Person.class);
-        Variable<Integer> var_$age = D.declarationOf(Integer.class);
-        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
-        Variable<Group> var_$g1 = D.declarationOf(Group.class); // "$g1", D.from(var_$key_1, var_$sumOfAges, ($k, $v) -> new Group($k, $v)));
-        Variable<Integer> var_$g1_value = D.declarationOf(Integer.class);
-        Variable<String> var_$key_2 = D.declarationOf(String.class);
-        Variable<Integer> var_$maxOfValues = D.declarationOf(Integer.class);
-
-        Rule rule1 = D.rule("R1").build(
-              D.groupBy(
-                    D.and(
-                          D.groupBy(
-                                D.pattern(var_$p).bind(var_$age, person -> person.getAge()),
-                                var_$p, var_$key_1, person -> person.getName().substring(0, 3),
-                                D.accFunction( IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
-                          D.pattern(var_$key_1).bind(var_$g1, var_$sumOfAges, ($k, $v) -> new Group($k, $v)), // Currently this does not work
-                          D.pattern(var_$g1).bind(var_$g1_value, group -> (Integer) group.getValue()) ),
-                    var_$g1, var_$key_2, groupResult -> ((String)groupResult.getKey()).substring(0, 2),
-                    D.accFunction( IntegerMaxAccumulateFunction::new, var_$g1_value).as(var_$maxOfValues)),
-              D.on(var_$key_2, var_results, var_$maxOfValues)
-               .execute(($key, results, $maxOfValues) -> {
-                   System.out.println($key + " -> " + $maxOfValues);
-                   results.put($key, $maxOfValues);
-               })
-                                       );
-
-        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
-        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+        KieSession ksession = getKieSession(str);
 
         Map results = new HashMap();
         ksession.setGlobal( "results", results );
@@ -1151,29 +1114,23 @@ public class GroupByTest extends BaseModelTest {
     @Test
     public void testEmptyPatternOnGroupByKey() throws Exception {
         // DROOLS-6031
-        // Note: I am unsure if this can be correctly tested in DRL
-        // (in particular, will `String()` be considered an
-        // "empty" pattern)?
-        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
+        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + List.class.getCanonicalName() + ";" +
+                "global List<String> results;\n" +
+                "rule R1 when\n" +
+                "    groupby(" +
+                "        $p : Person ();" +
+                "        $key : $p.getName().substring(0, 1);" +
+                "        count()" +
+                "    )\n" +
+                "    String() from $key\n" +
+                "then\n" +
+                "    results.add($key);" +
+                "end";
 
-        final Variable<String> var_$key = D.declarationOf(String.class);
-        final Variable<Person> var_$p = D.declarationOf(Person.class);
-
-        Rule rule1 = D.rule("R1").build(
-                D.groupBy(
-                        // Patterns
-                        D.pattern(var_$p),
-                        // Grouping Function
-                        var_$p, var_$key, person -> person.getName().substring(0, 1)),
-                // Filter
-                D.pattern(var_$key),
-                // Consequence
-                D.on(var_$key, var_results)
-                        .execute(($key, results) -> results.add($key))
-        );
-
-        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
-        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+        KieSession ksession = getKieSession(str);
 
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results", results );
@@ -1299,49 +1256,28 @@ public class GroupByTest extends BaseModelTest {
     @Test
     public void testDecomposedGroupByKeyAnd2Accumulates() throws Exception {
         // DROOLS-6031
-        // TODO: this
-        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
+        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Pair.class.getCanonicalName() + ";" +
+                "import " + List.class.getCanonicalName() + ";" +
+                "global List<Object> results;\n" +
+                "rule X when\n" +
+                "    groupby(" +
+                "        $p : Person () and $p2 : Person () and $accumulate : Pair() from eval(Pair.create($p, $p2));" +
+                "        $key : Pair.create($p.getName().substring(0, 1), $p.getName().substring(1, 2));" +
+                "        $accresult : collectList(), $accresult2 : collectList()" +
+                "    )\n" +
+                "    $subkeyA : Object() from $key.getKey()\n" +
+                "    $subkeyB : Object() from $key.getValue()\n" +
+                "    eval($accresult != null)" +
+                "then\n" +
+                "    results.add($subkeyA);\n" +
+                "    results.add($subkeyB);\n" +
+                "    results.add($accresult);\n" +
+                "end";
 
-        final Variable<Pair<String, String>> var_$key = (Variable) D.declarationOf(Pair.class);
-        final Variable<Pair> var_$accumulate = D.declarationOf(Pair.class);
-        final Variable<Person> var_$p = D.declarationOf(Person.class);
-        final Variable<Person> var_$p2 = D.declarationOf(Person.class);
-
-        final Variable<String> var_$subkeyA = D.declarationOf(String.class);
-        final Variable<String> var_$subkeyB = D.declarationOf(String.class);
-        final Variable<List> var_$accresult = D.declarationOf(List.class);
-        final Variable<List> var_$accresult2 = D.declarationOf(List.class);
-
-        final Rule rule1 = PatternDSL.rule("R1").build(
-                D.groupBy(
-                        // Patterns
-                        D.and(
-                                D.pattern(var_$p),
-                                D.pattern(var_$p2)
-                                        .bind(var_$accumulate, var_$p, Pair::create)
-                        ),
-                        // Grouping Function
-                        var_$p, var_$key, person -> Pair.create(
-                                person.getName().substring(0, 1),
-                                person.getName().substring(1, 2)),
-                        D.accFunction(CollectListAccumulateFunction::new, var_$accumulate).as(var_$accresult),
-                        D.accFunction(CollectListAccumulateFunction::new, var_$accumulate).as(var_$accresult2)),
-                // Bindings
-                D.pattern(var_$key)
-                        .bind(var_$subkeyA, Pair::getKey)
-                        .bind(var_$subkeyB, Pair::getValue),
-                D.pattern(var_$accresult),
-                // Consequence
-                D.on(var_$subkeyA, var_$subkeyB, var_$accresult, var_results)
-                        .execute(($a, $b, $accresult, results) -> {
-                            results.add($a);
-                            results.add($b);
-                            results.add($accresult);
-                        })
-        );
-
-        final Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
-        final KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+        KieSession ksession = getKieSession(str);
 
         final List<Object> results = new ArrayList<>();
         ksession.setGlobal( "results", results );
@@ -1358,44 +1294,24 @@ public class GroupByTest extends BaseModelTest {
     @Test
     public void testDecomposedGroupByKeyAnd2AccumulatesInConsequence() throws Exception {
         // DROOLS-6031
-        // TODO: this
-        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
+        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Pair.class.getCanonicalName() + ";" +
+                "import " + List.class.getCanonicalName() + ";" +
+                "global List<Object> results;\n" +
+                "rule X when\n" +
+                "    groupby(" +
+                "        $p : Person () and $p2 : Person () and $accumulate : Pair() from eval(Pair.create($p, $p2));" +
+                "        $key : Pair.create($p.getName().substring(0, 1), $p.getName().substring(1, 2));" +
+                "        $accresult : collectList(), $accresult2 : collectList()" +
+                "    )\n" +
+                "    eval($accresult2 != null)" +
+                "then\n" +
+                "    results.add($key);\n" +
+                "end";
 
-        final Variable<Pair<String, String>> var_$key = (Variable) D.declarationOf(Pair.class);
-        final Variable<Pair> var_$accumulate = D.declarationOf(Pair.class);
-        final Variable<Person> var_$p = D.declarationOf(Person.class);
-        final Variable<Person> var_$p2 = D.declarationOf(Person.class);
-
-        final Variable<String> var_$subkeyA = D.declarationOf(String.class);
-        final Variable<String> var_$subkeyB = D.declarationOf(String.class);
-        final Variable<List> var_$accresult = D.declarationOf(List.class);
-        final Variable<List> var_$accresult2 = D.declarationOf(List.class);
-
-        final Rule rule1 = PatternDSL.rule("R1").build(
-                D.groupBy(
-                        // Patterns
-                        D.and(
-                                D.pattern(var_$p),
-                                D.pattern(var_$p2)
-                                        .bind(var_$accumulate, var_$p, Pair::create)
-                        ),
-                        // Grouping Function
-                        var_$p, var_$key, person -> Pair.create(
-                                person.getName().substring(0, 1),
-                                person.getName().substring(1, 2)),
-                        D.accFunction(CollectListAccumulateFunction::new, var_$accumulate).as(var_$accresult),
-                        D.accFunction(CollectListAccumulateFunction::new, var_$accumulate).as(var_$accresult2)),
-                // Bindings
-                D.pattern(var_$accresult2),
-                // Consequence
-                D.on(var_$key, var_$accresult, var_$accresult2, var_results)
-                        .execute(($key, $accresult, $accresult2, results) -> {
-                            results.add($key);
-                        })
-        );
-
-        final Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
-        final KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+        KieSession ksession = getKieSession(str);
 
         final List<Object> results = new ArrayList<>();
         ksession.setGlobal( "results", results );
@@ -1496,18 +1412,18 @@ public class GroupByTest extends BaseModelTest {
         Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "import " + Pair.class.getCanonicalName() + ";" +
-                        "import " + List.class.getCanonicalName() + ";" +
-                        "global List<Object> results;\n" +
-                        "rule R1 when\n" +
-                        "    groupby(" +
-                        "        groupby($p: Person (); $key: $p.getName(); $accresult: count()) and eval($accresult > 0);" +
-                        "        $keyOuter: Pair.create($key, $accresult);" +
-                        "        count()" +
-                        "    )\n" +
-                        "then\n" +
-                        "    results.add($keyOuter);\n" +
-                        "end";
+                "import " + Pair.class.getCanonicalName() + ";" +
+                "import " + List.class.getCanonicalName() + ";" +
+                "global List<Object> results;\n" +
+                "rule R1 when\n" +
+                "    groupby(" +
+                "        groupby($p: Person (); $key: $p.getName(); $accresult: count()) and eval($accresult > 0);" +
+                "        $keyOuter: Pair.create($key, $accresult);" +
+                "        count()" +
+                "    )\n" +
+                "then\n" +
+                "    results.add($keyOuter);\n" +
+                "end";
         KieSession ksession = getKieSession(str);
 
         final List<Object> results = new ArrayList<>();
@@ -1526,23 +1442,23 @@ public class GroupByTest extends BaseModelTest {
         Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "import " + Pair.class.getCanonicalName() + ";" +
-                        "import " + List.class.getCanonicalName() + ";" +
-                        "global List<Object> results;\n" +
-                        "rule X when\n" +
-                        "    groupby(" +
-                        "        $p : Person ($age: age, this != null);" +
-                        "        $key : Pair.create($p.getName().substring(0, 1), $p.getName().substring(1, 2));" +
-                        "        $accresult : sum($age)" +
-                        "    )\n" +
-                        "    $subkeyA : Object() from $key.getKey()\n" +
-                        "    $subkeyB : Object() from $key.getValue()\n" +
-                        "    eval($accresult != null && $subkeyA != null && $subkeyB != null)" +
-                        "then\n" +
-                        "    results.add($subkeyA);\n" +
-                        "    results.add($subkeyB);\n" +
-                        "    results.add($accresult);\n" +
-                        "end";
+                "import " + Pair.class.getCanonicalName() + ";" +
+                "import " + List.class.getCanonicalName() + ";" +
+                "global List<Object> results;\n" +
+                "rule X when\n" +
+                "    groupby(" +
+                "        $p : Person ($age: age, this != null);" +
+                "        $key : Pair.create($p.getName().substring(0, 1), $p.getName().substring(1, 2));" +
+                "        $accresult : sum($age)" +
+                "    )\n" +
+                "    $subkeyA : Object() from $key.getKey()\n" +
+                "    $subkeyB : Object() from $key.getValue()\n" +
+                "    eval($accresult != null && $subkeyA != null && $subkeyB != null)" +
+                "then\n" +
+                "    results.add($subkeyA);\n" +
+                "    results.add($subkeyB);\n" +
+                "    results.add($accresult);\n" +
+                "end";
 
         KieSession ksession = getKieSession(str);
 
@@ -1629,32 +1545,24 @@ public class GroupByTest extends BaseModelTest {
     @Test
     public void testNestedRewrite() {
         // DROOLS-5697
-        // TODO
-        Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
+        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Pair.class.getCanonicalName() + ";" +
+                "import " + List.class.getCanonicalName() + ";" +
+                "global List<Object> results;\n" +
+                "rule R1 when\n" +
+                "    accumulate(" +
+                "        accumulate($p : Person ($age : age); $sumOfAges : sum($age)) " +
+                "        and $g1 : Integer() from eval($sumOfAges + 1) ;" +
+                "        $maxOfValues : max($g1)" +
+                "    )\n" +
+                "then\n" +
+                "    System.out.println($maxOfValues);\n" +
+                "    results.add($maxOfValues);\n" +
+                "end";
 
-        Variable<Person> var_$p = D.declarationOf(Person.class);
-        Variable<Integer> var_$age = D.declarationOf(Integer.class);
-        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
-        Variable<Integer> var_$g1 = D.declarationOf(Integer.class);
-        Variable<Integer> var_$maxOfValues = D.declarationOf(Integer.class);
-
-        Rule rule1 = D.rule("R1").build(
-              D.accumulate(
-                    D.and(
-                          D.accumulate(
-                                D.pattern(var_$p).bind(var_$age, person -> person.getAge()),
-                                D.accFunction( IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
-                          D.pattern(var_$sumOfAges).bind(var_$g1, (s) -> s+1)),
-                    D.accFunction( IntegerMaxAccumulateFunction::new, var_$g1).as(var_$maxOfValues)),
-              D.on(var_results, var_$maxOfValues)
-               .execute((results, $maxOfValues) -> {
-                   System.out.println($maxOfValues);
-                   results.add($maxOfValues);
-               })
-                                       );
-
-        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
-        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+        KieSession ksession = getKieSession(str);
 
         List results = new ArrayList();
         ksession.setGlobal( "results", results );

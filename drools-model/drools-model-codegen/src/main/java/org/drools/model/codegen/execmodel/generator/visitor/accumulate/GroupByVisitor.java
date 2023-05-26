@@ -64,8 +64,7 @@ public class GroupByVisitor extends AccumulateVisitor {
             return;
         }
 
-        LinkedHashSet<String> uniqueUsedDeclarations = new LinkedHashSet<>(result.getUsedDeclarations());
-        for (String used : uniqueUsedDeclarations) {
+        for (String used : result.getUsedDeclarations()) {
             accumulateDSL.addArgument( context.getVarExpr(used) );
         }
 
@@ -75,7 +74,7 @@ public class GroupByVisitor extends AccumulateVisitor {
         addGroupKeyBindingAsDeclaration(context, groupingKey, typedExpression);
         accumulateDSL.addArgument(toVar(groupingKey));
 
-        accumulateDSL.addArgument( buildConstraintExpression(typedExpression.getExpression(), uniqueUsedDeclarations) );
+        accumulateDSL.addArgument( buildConstraintExpression(typedExpression.getExpression(), result.getUsedDeclarations()) );
 
         super.processAccumulateFunctions(descr, basePattern, input, accumulateDSL);
     }

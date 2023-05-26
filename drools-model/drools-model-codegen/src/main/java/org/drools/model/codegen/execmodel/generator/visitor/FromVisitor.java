@@ -217,7 +217,7 @@ public class FromVisitor {
     // Avoid re-add preexisting arguments
     private void addArgumentWithPreexistingCheck(MethodCallExpr fromCall, Collection<String> args) {
         args.stream()
-                .filter(a -> fromCall.findAll(NameExpr.class, fa -> fa.toString().equals(toVar(a))).isEmpty())
+                .filter(a -> fromCall.findAll(NameExpr.class, fa -> fa.toString().equals(toVar(a)) || fa.toString().equals(context.getVarExpr(a).toString())).isEmpty())
                 .map(context::getVarExpr)
                 .forEach(fromCall::addArgument);
     }
@@ -286,7 +286,6 @@ public class FromVisitor {
                 if (newExpr instanceof LambdaExpr) {
                     context.getPackageModel().registerLambdaReturnType((LambdaExpr)newExpr, singleResult.getExprType());
                 }
-
                 addArgumentWithPreexistingCheck(fromCall, singleResult.getUsedDeclarations());
 
                 return newExpr;
