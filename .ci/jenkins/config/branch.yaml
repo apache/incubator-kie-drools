@@ -59,6 +59,7 @@ repositories:
 productized_repositories:
   - name: optaplanner
   - name: optaplanner-quickstarts
+  - name: optaplanner-website
 git:
   author:
     name: kiegroup
