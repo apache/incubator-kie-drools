@@ -15,23 +15,6 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.drools.commands.runtime.rule.FireAllRulesCommand;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.ClassObjectFilter;
@@ -88,6 +71,23 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.command.CommandFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -5069,5 +5069,100 @@ public class IncrementalCompilationTest {
 
         ksession.insert("test");
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testReaddAllRulesWithComplexNodeSharing() {
+        // DROOLS-7430
+        final String drl1 =
+                "import " + Message.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global java.util.List fired;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    Message()\n" +
+                "    Integer(this == 1)\n" +
+                "then\n" +
+                "    fired.add(drools.getRule().getName());\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $s : Message()\n" +
+                "    and\n" +
+                "    (\n" +
+                "     Integer(this == 2)\n" +
+                "    or\n" +
+                "     Integer(this == 3) and not ( String( toString == $s.message ) )\n" +
+                "    )\n" +
+                "then\n" +
+                "     fired.add(drools.getRule().getName());\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 when\n" +
+                "    $s : Message()\n" +
+                "    Integer()\n" +
+                "    not ( String( toString == $s.message ) )\n" +
+                "then\n" +
+                "    fired.add(drools.getRule().getName());\n" +
+                "end\n";
+
+        final String drl2 =
+                "import " + Message.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global java.util.List fired;\n" +
+                "\n" +
+                "rule R4 when\n" +
+                "    Message()\n" +
+                "    Integer(this == 1)\n" +
+                "then\n" +
+                "    fired.add(drools.getRule().getName());\n" +
+                "end\n" +
+                "\n" +
+                "rule R5 when\n" +
+                "    $s : Message()\n" +
+                "    and\n" +
+                "    (\n" +
+                "     Integer(this == 2)\n" +
+                "    or\n" +
+                "     Integer(this == 3) and not ( String( toString == $s.message ) )\n" +
+                "    )\n" +
+                "then\n" +
+                "     fired.add(drools.getRule().getName());\n" +
+                "end\n" +
+                "\n" +
+                "rule R6 when\n" +
+                "    $s : Message()\n" +
+                "    Integer()\n" +
+                "    not ( String( toString == $s.message ) )\n" +
+                "then\n" +
+                "    fired.add(drools.getRule().getName());\n" +
+                "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        KieSession ksession = kc.newKieSession();
+
+        List<String> fired = new ArrayList<>();
+        ksession.setGlobal("fired", fired);
+
+        ksession.insert(new Message("test"));
+        ksession.insert(0);
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(fired).containsExactly("R3");
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl2);
+
+        kc.updateToVersion(releaseId2);
+
+        fired.clear();
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(fired).containsExactly("R6");
     }
 }
