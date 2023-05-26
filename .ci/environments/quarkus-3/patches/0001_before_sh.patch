@@ -2519,7 +2519,7 @@ index 8e2e55211..37dea66f7 100644
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.jboss.shrinkwrap.api.ShrinkWrap;
 diff --git a/jobs-service/jobs-recipients/job-http-recipient/runtime/pom.xml b/jobs-service/jobs-recipients/job-http-recipient/runtime/pom.xml
-index 3d8fe30eb..4d39a8f1a 100644
+index c80a5b20f..ffb1d5366 100644
 --- a/jobs-service/jobs-recipients/job-http-recipient/runtime/pom.xml
 +++ b/jobs-service/jobs-recipients/job-http-recipient/runtime/pom.xml
 @@ -64,7 +64,7 @@
@@ -2528,9 +2528,9 @@ index 3d8fe30eb..4d39a8f1a 100644
          <groupId>io.quarkus</groupId>
 -        <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
 +        <artifactId>quarkus-extension-maven-plugin</artifactId>
+         <version>${version.io.quarkus}</version>
          <executions>
            <execution>
-             <phase>compile</phase>
 diff --git a/jobs-service/jobs-recipients/job-http-recipient/runtime/src/main/java/org/kie/kogito/job/http/recipient/HttpJobExecutor.java b/jobs-service/jobs-recipients/job-http-recipient/runtime/src/main/java/org/kie/kogito/job/http/recipient/HttpJobExecutor.java
 index a7428a6a5..34cd026ae 100644
 --- a/jobs-service/jobs-recipients/job-http-recipient/runtime/src/main/java/org/kie/kogito/job/http/recipient/HttpJobExecutor.java
@@ -2576,7 +2576,7 @@ index c81c0a30a..edf4d1a8f 100644
  import org.kie.kogito.job.recipient.common.http.converters.HttpConverters;
  import org.kie.kogito.jobs.api.URIBuilder;
 diff --git a/jobs-service/jobs-recipients/job-sink-recipient/runtime/pom.xml b/jobs-service/jobs-recipients/job-sink-recipient/runtime/pom.xml
-index 6f1cf8461..77c03b587 100644
+index a1a16586b..59cb53e18 100644
 --- a/jobs-service/jobs-recipients/job-sink-recipient/runtime/pom.xml
 +++ b/jobs-service/jobs-recipients/job-sink-recipient/runtime/pom.xml
 @@ -70,7 +70,7 @@
@@ -2585,9 +2585,9 @@ index 6f1cf8461..77c03b587 100644
                  <groupId>io.quarkus</groupId>
 -                <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
 +                <artifactId>quarkus-extension-maven-plugin</artifactId>
+                 <version>${version.io.quarkus}</version>
                  <executions>
                      <execution>
-                         <phase>compile</phase>
 diff --git a/jobs-service/jobs-recipients/job-sink-recipient/runtime/src/main/java/org/kie/kogito/job/sink/recipient/SinkJobExecutor.java b/jobs-service/jobs-recipients/job-sink-recipient/runtime/src/main/java/org/kie/kogito/job/sink/recipient/SinkJobExecutor.java
 index 8d8a7360d..084e5fa58 100644
 --- a/jobs-service/jobs-recipients/job-sink-recipient/runtime/src/main/java/org/kie/kogito/job/sink/recipient/SinkJobExecutor.java
@@ -2680,7 +2680,7 @@ index bcbaf4f9a..66ad2417a 100644
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java
-index 33072f9bc..f65c1e974 100644
+index 1661efbf0..f819621fa 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java
 +++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java
 @@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit;
@@ -3661,7 +3661,7 @@ index a042969d4..9a3f7e94b 100644
  import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
  import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 diff --git a/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java b/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java
-index b0e27ba60..3f60faaa6 100644
+index 105b644d2..2e25d4696 100644
 --- a/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java
 +++ b/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java
 @@ -20,8 +20,8 @@ import java.util.function.Function;

@@ -3,12 +3,12 @@ description: Update Quarkus version and refactor imports and resources if needed
 type: specs.openrewrite.org/v1beta/recipe
 recipeList:
 - org.openrewrite.maven.ChangePropertyValue: {
-    key: version.io.quarkus,
-    newValue: 3.0.0.Final
+    newValue: 3.0.0.Final,
+    key: version.io.quarkus
   }
 - org.openrewrite.maven.ChangePropertyValue: {
-    key: version.org.optaplanner,
-    newValue: 9.37.0.Final
+    newValue: 9.37.0.Final,
+    key: version.org.optaplanner
   }
 - org.kie.ManagedDependencies
 - io.quarkus.updates.core.quarkus30.UpgradeQuarkiverse
@@ -62,6 +62,8 @@ tags: [
   quarkus
 ]
 ---
+description: Update all managed dependencies based on dependency updates from Quarkus.
+name: org.kie.ManagedDependencies
 displayName: Update Managed Dependencies
 recipeList:
 - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId: {
@@ -448,8 +450,6 @@ recipeList:
     newArtifactId: keycloak-admin-client-jakarta
   }
 type: specs.openrewrite.org/v1beta/recipe
-description: Update all managed dependencies based on dependency updates from Quarkus.
-name: org.kie.ManagedDependencies
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.UpgradeQuarkiverse
