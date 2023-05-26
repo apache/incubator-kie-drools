@@ -56,6 +56,9 @@ repositories:
   branch: main
 - name: kie-benchmarks
   branch: main  
+productized_repositories:
+  - name: optaplanner
+  - name: optaplanner-quickstarts
 git:
   author:
     name: kiegroup
