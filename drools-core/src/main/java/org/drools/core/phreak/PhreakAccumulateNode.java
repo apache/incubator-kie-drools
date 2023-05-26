@@ -713,7 +713,7 @@ public class PhreakAccumulateNode {
                           final boolean useLeftMemory,
                           final boolean leftPropagation) {
         LeftTuple tuple = leftTuple;
-        FactHandle handle = rightTuple.getFactHandle();
+        InternalFactHandle handle = (InternalFactHandle) rightTuple.getFactHandle();
 
         if (accNode.isRightInputIsRiaNode()) {
             // if there is a subnetwork, handle must be unwrapped

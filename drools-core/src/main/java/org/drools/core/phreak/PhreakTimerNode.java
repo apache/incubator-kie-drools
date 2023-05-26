@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
@@ -174,7 +175,7 @@ public class PhreakTimerNode {
 
             if ( leftTuple.getMemory() != null ) {
                 leftTuples.remove( leftTuple ); // it gets removed either way.
-                if ( pctx.getFactHandle().isExpired() ) {
+                if ( ((InternalFactHandle)pctx.getFactHandle()).isExpired() ) {
                     // a expire clashes with insert or update, allow it to propagate once, will handle the expire the second time around
                     doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple );
                     tm.getDeleteLeftTuples().add( leftTuple );

@@ -27,6 +27,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.reteoo.Tuple;
+import org.kie.api.runtime.rule.EventHandle;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalFactHandle

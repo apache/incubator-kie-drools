@@ -58,11 +58,6 @@ public class MockFactHandle
     }
 
     @Override
-    public boolean isExpired() {
-        return false;
-    }
-
-    @Override
     public boolean isValid() {
         return false;
     }

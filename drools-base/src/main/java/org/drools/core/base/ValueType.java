@@ -198,8 +198,8 @@ public enum ValueType {
             return ValueType.ARRAY_TYPE;
         } else if ( clazz == String.class ) {
             return ValueType.STRING_TYPE;
-//        } else if ( clazz == EventFactHandle.class ) {
-//            return ValueType.EVENT_TYPE;
+        } else if ( clazz == EventHandle.class ) {
+            return ValueType.EVENT_TYPE;
         } else if ( clazz == Class.class ) {
             return ValueType.CLASS_TYPE;
         }
