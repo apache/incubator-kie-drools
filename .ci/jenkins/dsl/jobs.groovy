@@ -93,13 +93,6 @@ setupNightlyQuarkusIntegrationJob('quarkus-main')
 setupNightlyQuarkusIntegrationJob('quarkus-branch')
 setupNightlyQuarkusIntegrationJob('quarkus-lts')
 setupNightlyQuarkusIntegrationJob('native-lts')
-setupNightlyQuarkusIntegrationJob('quarkus-3') { script ->
-    def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
-    jobParams.env.put('BUILD_ENVIRONMENT_OPTIONS_CURRENT', 'rewrite push_changes')
-    jobParams.env.put('INTEGRATION_BRANCH_CURRENT', '2.x')
-    JobParamsUtils.setupJobParamsDeployConfiguration(script, jobParams)
-    return jobParams
-}
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
