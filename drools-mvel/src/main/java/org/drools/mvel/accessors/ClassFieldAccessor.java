@@ -22,9 +22,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.base.FieldAccessor;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.accessor.AcceptsReadAccessor;
 import org.drools.core.rule.accessor.ReadAccessor;
 
@@ -69,58 +69,58 @@ public class ClassFieldAccessor implements AcceptsReadAccessor, FieldAccessor, E
     }
 
     @Override
-    public Object getValue(ReteEvaluator reteEvaluator, Object object) {
-        return this.reader.getValue(reteEvaluator, object);
+    public Object getValue(ValueResolver valueResolver, Object object) {
+        return this.reader.getValue(valueResolver, object);
     }
 
     @Override
-    public char getCharValue(ReteEvaluator reteEvaluator, Object object) {
-        return this.reader.getCharValue(reteEvaluator, object);
+    public char getCharValue(ValueResolver valueResolver, Object object) {
+        return this.reader.getCharValue(valueResolver, object);
     }
 
     @Override
-    public int getIntValue(ReteEvaluator reteEvaluator, Object object) {
-        return this.reader.getIntValue(reteEvaluator, object);
+    public int getIntValue(ValueResolver valueResolver, Object object) {
+        return this.reader.getIntValue(valueResolver, object);
     }
 
     @Override
-    public byte getByteValue(ReteEvaluator reteEvaluator, Object object) {
-        return this.reader.getByteValue(reteEvaluator, object);
+    public byte getByteValue(ValueResolver valueResolver, Object object) {
+        return this.reader.getByteValue(valueResolver, object);
     }
 
     @Override
-    public short getShortValue(ReteEvaluator reteEvaluator, Object object) {
-        return this.reader.getShortValue(reteEvaluator, object);
+    public short getShortValue(ValueResolver valueResolver, Object object) {
+        return this.reader.getShortValue(valueResolver, object);
     }
 
     @Override
-    public long getLongValue(ReteEvaluator reteEvaluator, Object object) {
-        return this.reader.getLongValue(reteEvaluator, object);
+    public long getLongValue(ValueResolver valueResolver, Object object) {
+        return this.reader.getLongValue(valueResolver, object);
     }
 
     @Override
-    public float getFloatValue(ReteEvaluator reteEvaluator, Object object) {
-        return this.reader.getFloatValue(reteEvaluator, object);
+    public float getFloatValue(ValueResolver valueResolver, Object object) {
+        return this.reader.getFloatValue(valueResolver, object);
     }
 
     @Override
-    public double getDoubleValue(ReteEvaluator reteEvaluator, Object object) {
-        return this.reader.getDoubleValue(reteEvaluator, object);
+    public double getDoubleValue(ValueResolver valueResolver, Object object) {
+        return this.reader.getDoubleValue(valueResolver, object);
     }
 
     @Override
-    public boolean getBooleanValue(ReteEvaluator reteEvaluator, Object object) {
-        return this.reader.getBooleanValue(reteEvaluator, object);
+    public boolean getBooleanValue(ValueResolver valueResolver, Object object) {
+        return this.reader.getBooleanValue(valueResolver, object);
     }
 
     @Override
-    public boolean isNullValue(ReteEvaluator reteEvaluator, Object object) {
-        return this.reader.isNullValue(reteEvaluator, object);
+    public boolean isNullValue(ValueResolver valueResolver, Object object) {
+        return this.reader.isNullValue(valueResolver, object);
     }
 
     @Override
-    public int getHashCode(ReteEvaluator reteEvaluator, Object object) {
-        return this.reader.getHashCode(reteEvaluator, object);
+    public int getHashCode(ValueResolver valueResolver, Object object) {
+        return this.reader.getHashCode(valueResolver, object);
     }
 
     public String getFieldName() {

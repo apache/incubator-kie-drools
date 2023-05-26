@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.phreak.ReactiveObjectUtil.ModificationType.REMOVE;
 
@@ -53,13 +54,13 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
         storeTupleObjects(leftTuple, factHandle);
     }
 
-    public ReactiveFromNodeLeftTuple( InternalFactHandle factHandle, Sink sink, boolean leftTupleMemoryEnabled ) {
-        super( factHandle, sink, leftTupleMemoryEnabled );
+    public ReactiveFromNodeLeftTuple(FactHandle factHandle, Sink sink, boolean leftTupleMemoryEnabled) {
+        super( (InternalFactHandle) factHandle, sink, leftTupleMemoryEnabled );
         objects = new Object[] { factHandle.getObject() };
         hash = Arrays.hashCode( objects );
     }
 
-    private void storeTupleObjects(LeftTuple leftTuple, InternalFactHandle factHandle) {
+    private void storeTupleObjects(LeftTuple leftTuple, FactHandle factHandle) {
         Object[] leftObjects = leftTuple.toObjects();
         // left tuple size + 1 for the right object
         objects = new Object[leftObjects.length + 1];
@@ -69,7 +70,7 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
     }
 
     @Override
-    public void initPeer( BaseLeftTuple original, LeftTupleSink sink ) {
+    public void initPeer(AbstractLeftTuple original, LeftTupleSink sink) {
         super.initPeer( original, sink );
         if ( original instanceof ReactiveFromNodeLeftTuple ) {
             ReactiveFromNodeLeftTuple reactiveTuple = ( (ReactiveFromNodeLeftTuple) original );

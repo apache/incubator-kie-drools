@@ -19,7 +19,7 @@ package org.drools.reliability.core;
 
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 
 import java.io.Serializable;
 
@@ -33,11 +33,11 @@ public class ReliableAgendaFactory implements AgendaFactory, Serializable {
 
     private ReliableAgendaFactory() { }
 
-    public InternalAgenda createAgenda(RuleBase kBase, boolean initMain) {
+    public InternalAgenda createAgenda(InternalRuleBase kBase, boolean initMain) {
         return new ReliableAgenda( kBase, initMain );
     }
 
-    public InternalAgenda createAgenda(RuleBase kBase) {
+    public InternalAgenda createAgenda(InternalRuleBase kBase) {
         return new ReliableAgenda( kBase );
     }
 }

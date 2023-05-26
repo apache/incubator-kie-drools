@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -77,7 +76,7 @@ public class PropertySpecificTest {
         return getSettableProperties(workingMemory.getKnowledgeBase(), objectTypeNode);
     }
 
-    public static List<String> getSettableProperties( RuleBase kBase, ObjectTypeNode objectTypeNode ) {
+    public static List<String> getSettableProperties(InternalRuleBase kBase, ObjectTypeNode objectTypeNode) {
         return PropertySpecificUtil.getAccessibleProperties( kBase, getNodeClass( objectTypeNode ) );
     }
 
@@ -1879,7 +1878,7 @@ public class PropertySpecificTest {
     }
 
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, String nodeName) {
-        List<ObjectTypeNode> nodes = ((RuleBase)kbase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((InternalRuleBase)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if (((ClassObjectType) n.getObjectType()).getClassType().getSimpleName().equals( nodeName ) ) {
                 return n;

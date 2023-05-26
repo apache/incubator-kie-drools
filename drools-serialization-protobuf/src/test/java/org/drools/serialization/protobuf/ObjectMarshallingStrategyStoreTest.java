@@ -86,7 +86,7 @@ public class ObjectMarshallingStrategyStoreTest {
 
 		kbconf.setOption(EventProcessingOption.STREAM);
 		
-		InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase( kbconf ));
+		InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kbconf));
 
 		KieSession ks = kbase.newKieSession( ksc, env);
 		
@@ -127,7 +127,7 @@ public class ObjectMarshallingStrategyStoreTest {
 
 		kbconf.setOption(EventProcessingOption.STREAM);
 		
-		InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase( kbconf ));
+		InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(RuleBaseFactory.newRuleBase(kbconf));
 
 		KieSession ks = kbase.newKieSession( ksc, env);
 		

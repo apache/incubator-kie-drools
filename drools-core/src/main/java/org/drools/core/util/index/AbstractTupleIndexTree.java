@@ -1,12 +1,12 @@
 package org.drools.core.util.index;
 
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.FieldIndex;
 
 public abstract class AbstractTupleIndexTree {
-    protected AbstractHashTable.FieldIndex index;
+    protected FieldIndex index;
 
-    protected IndexUtil.ConstraintType constraintType;
+    protected ConstraintTypeOperator constraintType;
 
 
     protected int factSize;

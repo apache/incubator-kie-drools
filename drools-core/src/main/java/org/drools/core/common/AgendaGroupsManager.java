@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 
@@ -62,7 +62,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
     InternalAgendaGroup getAgendaGroup(String name);
 
-    InternalAgendaGroup getAgendaGroup(String name, RuleBase kBase);
+    InternalAgendaGroup getAgendaGroup(String name, InternalRuleBase kBase);
 
     InternalAgendaGroup getNextFocus();
 
@@ -80,7 +80,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
     InternalAgendaGroup getMainAgendaGroup();
 
-    static AgendaGroupsManager create(RuleBase kBase, boolean initMain) {
+    static AgendaGroupsManager create(InternalRuleBase kBase, boolean initMain) {
         return kBase.hasMultipleAgendaGroups() || !kBase.getProcesses().isEmpty() ? new StackedAgendaGroupsManager(kBase, initMain) : new SimpleAgendaGroupsManager(kBase);
     }
 
@@ -90,7 +90,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
         public SimpleAgendaGroupsManager() { }
 
-        public SimpleAgendaGroupsManager(RuleBase kBase) {
+        public SimpleAgendaGroupsManager(InternalRuleBase kBase) {
             this.mainAgendaGroup = RuntimeComponentFactory.get().getAgendaGroupFactory().createAgendaGroup(InternalAgendaGroup.MAIN, kBase);
         }
 
@@ -188,7 +188,7 @@ public interface AgendaGroupsManager extends Externalizable {
         }
 
         @Override
-        public InternalAgendaGroup getAgendaGroup(String name, RuleBase kBase) {
+        public InternalAgendaGroup getAgendaGroup(String name, InternalRuleBase kBase) {
             return InternalAgendaGroup.MAIN.equals(name) ? this.mainAgendaGroup : null;
         }
 
@@ -265,7 +265,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
         public StackedAgendaGroupsManager() { }
 
-        public StackedAgendaGroupsManager(RuleBase kBase, boolean initMain) {
+        public StackedAgendaGroupsManager(InternalRuleBase kBase, boolean initMain) {
             this.agendaGroupFactory = RuntimeComponentFactory.get().getAgendaGroupFactory();
             if (initMain) {
                 initMainAgendaGroup(kBase);
@@ -277,7 +277,7 @@ public interface AgendaGroupsManager extends Externalizable {
             return mainAgendaGroup;
         }
 
-        private void initMainAgendaGroup(RuleBase kBase) {
+        private void initMainAgendaGroup(InternalRuleBase kBase) {
             this.mainAgendaGroup = agendaGroupFactory.createAgendaGroup( InternalAgendaGroup.MAIN, kBase);
             this.agendaGroups.put( InternalAgendaGroup.MAIN, this.mainAgendaGroup );
             this.focusStack.add( this.mainAgendaGroup );
@@ -427,7 +427,7 @@ public interface AgendaGroupsManager extends Externalizable {
         }
 
         @Override
-        public InternalAgendaGroup getAgendaGroup(final String name, RuleBase kBase) {
+        public InternalAgendaGroup getAgendaGroup(final String name, InternalRuleBase kBase) {
             String groupName = (name == null || name.length() == 0) ? InternalAgendaGroup.MAIN : name;
 
             InternalAgendaGroup agendaGroup = this.agendaGroups.get( groupName );

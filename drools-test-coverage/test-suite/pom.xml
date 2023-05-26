@@ -24,6 +24,18 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-base</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-base</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
       <scope>test</scope>
     </dependency>

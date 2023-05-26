@@ -400,7 +400,7 @@ public class KieModuleRepoTest {
         }
 
         @Override
-        public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf ) {
+        public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf) {
             throw new UnsupportedOperationException();
         }
 

@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
@@ -208,9 +209,9 @@ public class TestingEventListener implements AgendaEventListener {
 
 }
 
-class NilConsequence implements Consequence {
+class NilConsequence implements Consequence<KnowledgeHelper> {
 
-    public void evaluate(KnowledgeHelper knowledgeHelper, ReteEvaluator reteEvaluator) throws Exception {
+    public void evaluate(KnowledgeHelper knowledgeHelper, ValueResolver valueResolver) throws Exception {
     }
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 

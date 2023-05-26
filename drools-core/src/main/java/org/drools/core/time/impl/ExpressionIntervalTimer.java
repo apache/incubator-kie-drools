@@ -23,16 +23,19 @@ import java.io.ObjectOutput;
 import java.util.Date;
 import java.util.Map;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerExpression;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
-import static org.drools.core.time.TimeUtils.evalDateExpression;
-import static org.drools.core.time.TimeUtils.evalTimeExpression;
+import static org.drools.core.time.TimerExpressionUtil.evalDateExpression;
+import static org.drools.core.time.TimerExpressionUtil.evalTimeExpression;
 
 public class ExpressionIntervalTimer  extends BaseTimer
     implements
@@ -106,12 +109,12 @@ public class ExpressionIntervalTimer  extends BaseTimer
     }
 
     public Trigger createTrigger(long timestamp,
-                                 Tuple leftTuple,
-                                 DefaultJobHandle jh,
+                                 BaseTuple leftTuple,
+                                 JobHandle jh,
                                  String[] calendarNames,
                                  Calendars calendars,
                                  Declaration[][] declrs,
-                                 ReteEvaluator reteEvaluator) {
+                                 ValueResolver valueResolver) {
         long timeSinceLastFire = 0;
 
         Declaration[] delayDeclarations = declrs[0];
@@ -124,17 +127,17 @@ public class ExpressionIntervalTimer  extends BaseTimer
         long newDelay;
 
         if ( jh != null ) {
-            IntervalTrigger preTrig = (IntervalTrigger) jh.getTimerJobInstance().getTrigger();
+            IntervalTrigger preTrig = (IntervalTrigger) ((DefaultJobHandle)jh).getTimerJobInstance().getTrigger();
             lastFireTime = preTrig.getLastFireTime();
             createdTime = preTrig.getCreatedTime();
             if (lastFireTime != null) {
                 // it is already fired calculate the new delay using the period instead of the delay
-                newDelay = evalTimeExpression(this.period, leftTuple, delayDeclarations, reteEvaluator) - timestamp + lastFireTime.getTime();
+                newDelay = evalTimeExpression(this.period, leftTuple, delayDeclarations, valueResolver) - timestamp + lastFireTime.getTime();
             } else {
-                newDelay = evalTimeExpression(this.delay, leftTuple, delayDeclarations, reteEvaluator) - timestamp + createdTime.getTime();
+                newDelay = evalTimeExpression(this.delay, leftTuple, delayDeclarations, valueResolver) - timestamp + createdTime.getTime();
             }
         } else {
-            newDelay = evalTimeExpression(this.delay, leftTuple, delayDeclarations, reteEvaluator);
+            newDelay = evalTimeExpression(this.delay, leftTuple, delayDeclarations, valueResolver);
         }
 
         if (newDelay < 0) {
@@ -142,11 +145,11 @@ public class ExpressionIntervalTimer  extends BaseTimer
         }
 
         return new IntervalTrigger(timestamp,
-                                   evalDateExpression( this.startTime, leftTuple, startDeclarations, reteEvaluator ),
-                                   evalDateExpression( this.endTime, leftTuple, startDeclarations, reteEvaluator ),
+                                   evalDateExpression( this.startTime, leftTuple, startDeclarations, valueResolver ),
+                                   evalDateExpression( this.endTime, leftTuple, startDeclarations, valueResolver ),
                                    this.repeatLimit,
                                    newDelay,
-                                   period != null ? evalTimeExpression(this.period, leftTuple, periodDeclarations, reteEvaluator) : 0,
+                                   period != null ? evalTimeExpression(this.period, leftTuple, periodDeclarations, valueResolver) : 0,
                                    calendarNames,
                                    calendars,
                                    createdTime,

@@ -42,6 +42,7 @@ public class TrackableTimeJobFactoryManager
         this.timerInstances = timerInstances;
     }
 
+    @Override
     public TimerJobInstance createTimerJobInstance(Job job,
                                                    JobContext ctx,
                                                    Trigger trigger,
@@ -60,15 +61,22 @@ public class TrackableTimeJobFactoryManager
         return new EnqueuedSelfRemovalJobContext( ctx, timerInstances );
     }
 
+    @Override
     public void addTimerJobInstance(TimerJobInstance instance) {
 
         this.timerInstances.put( instance.getJobHandle().getId(),
                                  instance );
     }
 
+    @Override
     public void removeTimerJobInstance(TimerJobInstance instance) {
 
         this.timerInstances.remove( instance.getJobHandle().getId() );
+    }
+
+    @Override
+    public void removeTimerJobInstance(JobHandle handle) {
+        this.timerInstances.remove( handle.getId() );
     }
 
     public Collection<TimerJobInstance> getTimerJobInstances() {

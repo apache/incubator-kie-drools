@@ -18,12 +18,13 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.drools.core.common.InternalFactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 
 public interface FactHandleLookup {
 
-    void put( Object obj, InternalFactHandle fh );
+    void put( Object obj, FactHandle fh);
 
-    InternalFactHandle get( Object obj );
+    FactHandle get( Object obj );
 
     void clear();
 
@@ -39,12 +40,12 @@ public interface FactHandleLookup {
     class Empty implements FactHandleLookup {
 
         @Override
-        public void put( Object obj, InternalFactHandle fh ) {
+        public void put( Object obj, FactHandle fh ) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public InternalFactHandle get( Object obj ) {
+        public FactHandle get( Object obj ) {
             return null;
         }
 
@@ -55,16 +56,16 @@ public interface FactHandleLookup {
     class Single implements FactHandleLookup {
 
         private Object obj;
-        private InternalFactHandle fh;
+        private FactHandle fh;
 
         @Override
-        public void put( Object obj, InternalFactHandle fh ) {
+        public void put( Object obj, FactHandle fh ) {
             this.obj = obj;
             this.fh = fh;
         }
 
         @Override
-        public InternalFactHandle get( Object obj ) {
+        public FactHandle get( Object obj ) {
             return this.obj == obj ? fh : null;
         }
 
@@ -79,11 +80,11 @@ public interface FactHandleLookup {
 
         private Object obj1;
         private Object obj2;
-        private InternalFactHandle fh1;
-        private InternalFactHandle fh2;
+        private FactHandle fh1;
+        private FactHandle fh2;
 
         @Override
-        public void put( Object obj, InternalFactHandle fh ) {
+        public void put( Object obj, FactHandle fh ) {
             if ( this.obj1 == null) {
                 this.obj1 = obj;
                 this.fh1 = fh;
@@ -94,7 +95,7 @@ public interface FactHandleLookup {
         }
 
         @Override
-        public InternalFactHandle get( Object obj ) {
+        public FactHandle get( Object obj ) {
             return this.obj1 == obj ? fh1 : ( this.obj2 == obj ? fh2 : null );
         }
 
@@ -109,15 +110,15 @@ public interface FactHandleLookup {
 
     class Multi implements FactHandleLookup {
 
-        private final Map<Object, InternalFactHandle> map = new IdentityHashMap<>();
+        private final Map<Object, FactHandle> map = new IdentityHashMap<>();
 
         @Override
-        public void put( Object obj, InternalFactHandle fh ) {
+        public void put( Object obj, FactHandle fh ) {
             map.put( obj, fh );
         }
 
         @Override
-        public InternalFactHandle get( Object obj ) {
+        public FactHandle get( Object obj ) {
             return map.get( obj );
         }
 

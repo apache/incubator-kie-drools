@@ -32,6 +32,7 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexFactory;
 import org.drools.core.util.index.IndexUtil;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class SingleBetaConstraints
     implements
@@ -122,7 +123,7 @@ public class SingleBetaConstraints
      */
     public void updateFromFactHandle(final ContextEntry[] context,
                                      final ReteEvaluator reteEvaluator,
-                                     final InternalFactHandle handle) {
+                                     final FactHandle handle) {
         context[0].updateFromFactHandle(reteEvaluator, handle);
     }
 
@@ -130,7 +131,7 @@ public class SingleBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
-                                       final InternalFactHandle handle) {
+                                       final FactHandle handle) {
         return this.indexed || this.constraint.isAllowedCachedLeft(context[0],
                                                                    handle);
     }

@@ -20,11 +20,14 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.base.base.ValueResolver;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.reteoo.Tuple;
+import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * Checks if one tuple is the start subtuple of other tuple.
@@ -88,14 +91,14 @@ public class TupleStartEqualsConstraint
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
-                                       final InternalFactHandle handle) {
+                                       final FactHandle handle) {
         // object MUST be a ReteTuple
         int size = ((TupleStartEqualsConstraintContextEntry) context).compareSize;
         final Tuple tuple = ((Tuple) handle.getObject()).getSubTuple( size );
         return ((TupleStartEqualsConstraintContextEntry) context).leftTuple.getSubTuple(size).equals(tuple);
     }
 
-    public boolean isAllowedCachedRight(final Tuple tuple,
+    public boolean isAllowedCachedRight(final BaseTuple tuple,
                                         final ContextEntry context) {
         LeftTuple nonEmptyLeftTuple = (LeftTuple) tuple.skipEmptyHandles();
         return nonEmptyLeftTuple.equals( ((TupleStartEqualsConstraintContextEntry) context).rightTuple.getSubTuple(nonEmptyLeftTuple.size()));
@@ -159,14 +162,14 @@ public class TupleStartEqualsConstraint
             this.entry = entry;
         }
 
-        public void updateFromTuple(final ReteEvaluator reteEvaluator,
-                                    final Tuple tuple) {
-            this.leftTuple = tuple.skipEmptyHandles();
+        public void updateFromTuple(final ValueResolver valueResolver,
+                                    final BaseTuple tuple) {
+            this.leftTuple = (Tuple) tuple.skipEmptyHandles();
             this.compareSize = leftTuple.size();
         }
 
-        public void updateFromFactHandle(final ReteEvaluator reteEvaluator,
-                                         final InternalFactHandle handle) {
+        public void updateFromFactHandle(final ValueResolver valueResolver,
+                                         final FactHandle handle) {
             // if it is not a rete tuple, then there is a bug in the engine...
             // it MUST be a rete tuple
             this.rightTuple = ((LeftTuple) handle.getObject()).skipEmptyHandles();

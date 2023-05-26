@@ -162,6 +162,7 @@
         <module>drools-util</module>
         <module>drools-io</module>
         <module>drools-core</module>
+        <module>drools-base</module>
         <module>drools-commands</module>
         <module>drools-kiesession</module>
         <module>drools-ecj</module>
@@ -273,6 +274,7 @@
         <module>drools-model</module>
         <module>drools-ruleunits</module>
         <module>drools-core</module>
+        <module>drools-base</module>
         <module>drools-compiler</module>
         <module>drools-mvel</module>
         <module>drools-kiesession</module>

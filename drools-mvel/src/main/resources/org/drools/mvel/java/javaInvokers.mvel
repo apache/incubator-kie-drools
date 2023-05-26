@@ -37,26 +37,26 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Return
 
     public Object createContext() { return null; }
 
-    public org.drools.core.rule.accessor.FieldValue evaluate(org.drools.core.common.InternalFactHandle handle,
-                            org.drools.core.reteoo.Tuple tuple,
+    public org.drools.core.rule.accessor.FieldValue evaluate(org.kie.api.runtime.rule.FactHandle handle,
+                            org.drools.core.reteoo.BaseTuple tuple,
                             org.drools.core.rule.Declaration[] previousDeclarations,
                             org.drools.core.rule.Declaration[] localDeclarations,
-                            org.drools.core.common.ReteEvaluator reteEvaluator,
+                            org.drools.base.base.ValueResolver valueResolver,
                             Object context ) throws Exception {
 
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].getValue( reteEvaluator, tuple );
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].getValue( valueResolver, tuple );
         @code{i0++}
         @end{}
         @if{readLocalsFromTuple}
-          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( reteEvaluator, tuple );
+          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( valueResolver, tuple );
           @code{i0++}
           @end{}
         @else{}
-          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( reteEvaluator, handle );
+          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( valueResolver, handle );
           @code{i0++}
           @end{}
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) valueResolver.getGlobal( "@{identifier}" );
         @end{}
 
         return @{ruleClassName}.@{methodName}(
@@ -87,20 +87,20 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Predic
 
     public Object createContext() { return null; }
 
-    public boolean evaluate(org.drools.core.common.InternalFactHandle handle,
-                            org.drools.core.reteoo.Tuple tuple,
+    public boolean evaluate(org.kie.api.runtime.rule.FactHandle handle,
+                            org.drools.core.reteoo.BaseTuple tuple,
                             org.drools.core.rule.Declaration[] previousDeclarations,
                             org.drools.core.rule.Declaration[] localDeclarations,
-                            org.drools.core.common.ReteEvaluator reteEvaluator,
+                            org.drools.base.base.ValueResolver valueResolver,
                             Object context ) throws Exception {
 
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].getValue( reteEvaluator, tuple ) );
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].getValue( valueResolver, tuple ) );
           @code{i0++}
         @end{}
-        @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( reteEvaluator, handle );
+        @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( valueResolver, handle );
           @code{i0++}
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) valueResolver.getGlobal( "@{identifier}" );
         @end{}
 
         return @{ruleClassName}.@{methodName}(
@@ -130,15 +130,15 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.EvalEx
     // no need for context
     public Object createContext() { return null; }
 
-    public boolean evaluate(org.drools.core.reteoo.Tuple tuple,
+    public boolean evaluate(org.drools.core.reteoo.BaseTuple tuple,
                             org.drools.core.rule.Declaration[] declarations,
-                            org.drools.core.common.ReteEvaluator reteEvaluator,
+                            org.drools.base.base.ValueResolver valueResolver,
                             Object context ) throws Exception {
 
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple ) );
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( valueResolver, tuple ) );
             @code{i0++}
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) valueResolver.getGlobal( "@{identifier}" );
         @end{}
 
         return @{ruleClassName}.@{methodName}(
@@ -177,13 +177,13 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Accumu
 
     public Object init(java.lang.Object workingMemoryContext,
                      java.lang.Object context,
-                     org.drools.core.reteoo.Tuple tuple,
+                     org.drools.core.reteoo.BaseTuple tuple,
                      org.drools.core.rule.Declaration[] declarations,
-                     org.drools.core.common.ReteEvaluator reteEvaluator) {
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple );
+                     org.drools.base.base.ValueResolver valueResolver) {
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( valueResolver, tuple );
             @code{i0++}
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) valueResolver.getGlobal( "@{identifier}" );
         @end{}
 
         try {
@@ -199,29 +199,29 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Accumu
 
     public Object accumulate(java.lang.Object workingMemoryContext,
                            java.lang.Object context,
-                           org.drools.core.reteoo.Tuple tuple,
-                           org.drools.core.common.InternalFactHandle handle,
+                           org.drools.core.reteoo.BaseTuple tuple,
+                           org.kie.api.runtime.rule.FactHandle handle,
                            org.drools.core.rule.Declaration[] declarations,
                            org.drools.core.rule.Declaration[] innerDeclarations,
-                           org.drools.core.common.ReteEvaluator reteEvaluator) {
-        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple );
+                           org.drools.base.base.ValueResolver valueResolver) {
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( valueResolver, tuple );
             @code{ i0++ }
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) valueResolver.getGlobal( "@{identifier}" );
         @end{}
         @if{isMultiPattern}
-          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( reteEvaluator, tuple );
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( valueResolver, tuple );
             @code{ i0++ }
           @end{}
         @else{}
-          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( reteEvaluator, handle );
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( valueResolver, handle );
             @code{ i0++ }
           @end{}
         @end{}
 
         try {
             return ((@{ruleClassName}.@{className})context).accumulate(
-                reteEvaluator,
+                valueResolver,
                 handle,
                 innerDeclarations@if{declarations != empty},@end{}
                 @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty},@end{}
@@ -234,34 +234,34 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Accumu
 
     public boolean tryReverse(java.lang.Object workingMemoryContext,
                            java.lang.Object context,
-                           org.drools.core.reteoo.Tuple tuple,
-                           org.drools.core.common.InternalFactHandle handle,
+                           org.drools.core.reteoo.BaseTuple tuple,
+                           org.kie.api.runtime.rule.FactHandle handle,
                            java.lang.Object value,
                            org.drools.core.rule.Declaration[] declarations,
                            org.drools.core.rule.Declaration[] innerDeclarations,
-                           org.drools.core.common.ReteEvaluator reteEvaluator) {
+                           org.drools.base.base.ValueResolver valueResolver) {
         if (!supportsReverse()) {
             return false;
         }
 
-        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple );
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( valueResolver, tuple );
             @code{ i0++ }
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) valueResolver.getGlobal( "@{identifier}" );
         @end{}
         @if{isMultiPattern}
-          @code{ i0 = 0}@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( reteEvaluator, tuple );
+          @code{ i0 = 0}@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( valueResolver, tuple );
             @code{ i0++ }
           @end{}
         @else{}
-          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( reteEvaluator, handle );
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( valueResolver, handle );
             @code{ i0++ }
           @end{}
         @end{}
 
         try {
             ((@{ruleClassName}.@{className})context).reverse(
-                reteEvaluator,
+                valueResolver,
                 handle,
                 value@if{globals != empty},@end{}
                 @foreach{identifier : globals} @{identifier}@end{","});
@@ -274,13 +274,13 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Accumu
 
     public Object getResult(java.lang.Object workingMemoryContext,
                             java.lang.Object context,
-                            org.drools.core.reteoo.Tuple tuple,
+                            org.drools.core.reteoo.BaseTuple tuple,
                             org.drools.core.rule.Declaration[] declarations,
-                            org.drools.core.common.ReteEvaluator reteEvaluator) {
-        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple );
+                            org.drools.base.base.ValueResolver valueResolver) {
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( valueResolver, tuple );
             @code{ i0++ }
         @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) valueResolver.getGlobal( "@{identifier}" );
         @end{}
 
         try {
@@ -332,9 +332,9 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Return
 {
     private static final long serialVersionUID  = 510l;
 
-    public Object evaluate(org.drools.core.common.ReteEvaluator reteEvaluator, org.drools.core.process.ProcessContext processContext) throws Exception {
+    public Object evaluate(org.drools.base.base.ValueResolver valueResolver, org.drools.core.process.ProcessContext processContext) throws Exception {
 
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) valueResolver.getGlobal( "@{identifier}" );
         @end{}
 
         @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) processContext.getVariable( "@{identifier}" );

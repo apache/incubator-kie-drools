@@ -14,21 +14,13 @@
 
 package org.drools.mvel.builder;
 
-import java.beans.Introspector;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
+import org.drools.core.reteoo.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.DeclarationScopeResolver;
@@ -49,6 +41,10 @@ import static org.drools.util.StringUtils.findEndOfBlockIndex;
 import static org.drools.util.StringUtils.findEndOfMethodArgsIndex;
 import static org.drools.util.StringUtils.splitModifyBlock;
 import static org.drools.util.StringUtils.splitStatements;
+
+import java.beans.Introspector;
+import java.util.*;
+import java.util.function.Function;
 
 public class MVELConsequenceBuilder
     implements

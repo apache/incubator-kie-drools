@@ -5,7 +5,7 @@ import org.drools.core.test.model.Person;
 
 Setup
     ObjectTypeNode:
-        otnLeft1, org.drools.core.base.DroolsQuery;
+        otnLeft1, org.drools.core.base.DroolsQueryImpl;
     LeftInputAdapterNode:
         lian0, otnLeft1;
     ObjectTypeNode:
@@ -13,8 +13,8 @@ Setup
     ObjectTypeNode:
         otnRight2, Cheese;
     Binding:
-         v, 0, org.drools.core.base.DroolsQuery, [0], java.lang.String;
-         $age, 0, org.drools.core.base.DroolsQuery, [1], java.lang.Integer;
+         v, 0, org.drools.core.base.DroolsQueryImpl, [0], java.lang.String;
+         $age, 0, org.drools.core.base.DroolsQueryImpl, [1], java.lang.Integer;
          p1, 1, Person, age;
     ExistsNode:
         exists1, lian0, otnRight1;
@@ -24,7 +24,7 @@ Setup
         join2, exists1, otnRight2;
         type, :=, v;
     Facts:
-        new org.drools.core.base.DroolsQuery( "x", [org.kie.api.runtime.rule.Variable.v, 35], null, true),
+        new org.drools.core.base.DroolsQueryImpl( "x", [org.kie.api.runtime.rule.Variable.v, 35], null, true),
         new Person('bobba', 36),
         new Person('yoda', 35);
 

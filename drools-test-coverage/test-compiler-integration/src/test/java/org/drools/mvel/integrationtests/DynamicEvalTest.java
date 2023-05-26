@@ -17,7 +17,7 @@ package org.drools.mvel.integrationtests;
 
 import java.util.Collection;
 
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.After;
@@ -112,7 +112,7 @@ public class DynamicEvalTest {
                 "\nend";
 
         loadPackages( ResourceFactory.newByteArrayResource( test.getBytes() ), ResourceType.DRL );
-        ((RuleBase)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
+        ((InternalRuleBase)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
         session.addEventListener( new DebugRuleRuntimeEventListener( ) );
 
         int fired = session.fireAllRules(); // 1
@@ -130,7 +130,7 @@ public class DynamicEvalTest {
                 "\nend";
 
         loadPackages(ResourceFactory.newByteArrayResource(test2.getBytes()), ResourceType.DRL);
-        ((RuleBase)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
+        ((InternalRuleBase)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
 
 
         fired = session.fireAllRules(); // 0
@@ -159,7 +159,7 @@ public class DynamicEvalTest {
 
 
         loadPackages( ResourceFactory.newByteArrayResource( test.getBytes() ), ResourceType.DRL );
-        ((RuleBase)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
+        ((InternalRuleBase)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
         session.addEventListener( new DebugRuleRuntimeEventListener( ) );
 
         session.insert( "go" );
@@ -182,7 +182,7 @@ public class DynamicEvalTest {
                 "\nend";
 
         loadPackages(ResourceFactory.newByteArrayResource(test2.getBytes()), ResourceType.DRL);
-        ((RuleBase)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
+        ((InternalRuleBase)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
 
 
         fired = session.fireAllRules(); // 0

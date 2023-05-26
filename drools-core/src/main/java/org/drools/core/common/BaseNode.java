@@ -203,11 +203,11 @@ public abstract class BaseNode
         return this.associations.contains( rule );
     }
 
-    public void addAssociatedTerminal(TerminalNode terminalNode) {
-        associatedTerminals.put(terminalNode.getId(), terminalNode);
+    public void addAssociatedTerminal(NetworkNode terminalNode) {
+        associatedTerminals.put(terminalNode.getId(),(TerminalNode) terminalNode);
     }
 
-    public void removeAssociatedTerminal(TerminalNode terminalNode) {
+    public void removeAssociatedTerminal(NetworkNode terminalNode) {
         associatedTerminals.remove(terminalNode.getId());
     }
 

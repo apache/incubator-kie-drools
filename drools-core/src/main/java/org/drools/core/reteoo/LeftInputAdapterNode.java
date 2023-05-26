@@ -118,7 +118,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return AllSetBitMask.get();
         }
 
-        return isPropertyReactive( context, objectType ) ?
+        return isPropertyReactive( context.getRuleBase(), objectType ) ?
                pattern.getPositiveWatchMask( pattern.getAccessibleProperties( context.getRuleBase() ) ) :
                AllSetBitMask.get();
     }
@@ -652,12 +652,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         @Override
-        public void addAssociatedTerminal(TerminalNode terminalNode) {
+        public void addAssociatedTerminal(NetworkNode terminalNode) {
             sink.addAssociatedTerminal(terminalNode);
         }
 
         @Override
-        public void removeAssociatedTerminal(TerminalNode terminalNode) {
+        public void removeAssociatedTerminal(NetworkNode terminalNode) {
             sink.removeAssociatedTerminal(terminalNode);
         }
 

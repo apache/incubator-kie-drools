@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.process.WorkItem;
@@ -76,7 +76,7 @@ public class OldOutputMarshallerMethods {
 
         if ( type == 2) {
             // is event
-            EventFactHandle efh = ( EventFactHandle ) handle;
+            DefaultEventHandle efh = (DefaultEventHandle) handle;
             stream.writeLong( efh.getStartTimestamp() );
             stream.writeLong( efh.getDuration() );
             stream.writeBoolean( efh.isExpired() );

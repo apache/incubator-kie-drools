@@ -16,11 +16,11 @@
 package org.drools.ruleunits.impl.facthandles;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.impl.InternalStoreCallback;
 
-public class RuleUnitEventFactHandle extends EventFactHandle implements RuleUnitInternalFactHandle {
+public class RuleUnitEventFactHandle extends DefaultEventHandle implements RuleUnitInternalFactHandle {
     public RuleUnitEventFactHandle() {
     }
 

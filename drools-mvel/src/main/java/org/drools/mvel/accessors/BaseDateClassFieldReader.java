@@ -19,9 +19,9 @@ package org.drools.mvel.accessors;
 import java.lang.reflect.Method;
 import java.util.Date;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.ReteEvaluator;
 
 public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
 
@@ -39,59 +39,59 @@ public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
      * @param valueType
      */
     protected BaseDateClassFieldReader(final int index,
-                                           final Class fieldType,
-                                           final ValueType valueType) {
+                                       final Class fieldType,
+                                       final ValueType valueType) {
         super( index,
                fieldType,
                valueType );
     }
 
-    public Object getValue(ReteEvaluator reteEvaluator, final Object object) {
+    public Object getValue(ValueResolver valueResolver, final Object object) {
         return object;
     }
 
-    public boolean getBooleanValue(ReteEvaluator reteEvaluator, final Object object) {
+    public boolean getBooleanValue(ValueResolver valueResolver, final Object object) {
         throw new RuntimeException( "Conversion to boolean not supported from Date" );
     }
 
-    public byte getByteValue(ReteEvaluator reteEvaluator, final Object object) {
-        return (byte) getLongValue( reteEvaluator, object );
+    public byte getByteValue(ValueResolver valueResolver, final Object object) {
+        return (byte) getLongValue( valueResolver, object );
 
     }
 
-    public char getCharValue(ReteEvaluator reteEvaluator, final Object object) {
-        return (char) getLongValue( reteEvaluator, object );
+    public char getCharValue(ValueResolver valueResolver, final Object object) {
+        return (char) getLongValue( valueResolver, object );
     }
 
-    public double getDoubleValue(ReteEvaluator reteEvaluator, final Object object) {
-        return getLongValue( reteEvaluator, object );
+    public double getDoubleValue(ValueResolver valueResolver, final Object object) {
+        return getLongValue( valueResolver, object );
     }
 
-    public float getFloatValue(ReteEvaluator reteEvaluator, final Object object) {
-        return getLongValue( reteEvaluator, object );
+    public float getFloatValue(ValueResolver valueResolver, final Object object) {
+        return getLongValue( valueResolver, object );
     }
 
-    public int getIntValue(ReteEvaluator reteEvaluator, final Object object) {
-        return (int) getLongValue( reteEvaluator, object );
+    public int getIntValue(ValueResolver valueResolver, final Object object) {
+        return (int) getLongValue( valueResolver, object );
     }
 
-    public long getLongValue(ReteEvaluator reteEvaluator, Object object) {
-        return getDate( reteEvaluator, object ).getTime();
+    public long getLongValue(ValueResolver valueResolver, Object object) {
+        return getDate( valueResolver, object ).getTime();
     }
 
-    protected Date getDate( ReteEvaluator reteEvaluator, Object object ) {
-        return (Date)getValue( reteEvaluator, object );
+    protected Date getDate( ValueResolver valueResolver, Object object ) {
+        return (Date)getValue( valueResolver, object );
     }
 
-    public short getShortValue(ReteEvaluator reteEvaluator, final Object object) {
-        return (short) getLongValue( reteEvaluator, object );
+    public short getShortValue(ValueResolver valueResolver, final Object object) {
+        return (short) getLongValue( valueResolver, object );
     }
 
-    public boolean isNullValue(ReteEvaluator reteEvaluator, final Object object) {
+    public boolean isNullValue(ValueResolver valueResolver, final Object object) {
         if ( object == null ) {
             return true;
         } else {
-            return getValue( reteEvaluator,
+            return getValue( valueResolver,
                              object ) == null;
         }
     }
@@ -99,7 +99,7 @@ public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod("getValue",
-                                                     ReteEvaluator.class, Object.class);
+                                                     ValueResolver.class, Object.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );
@@ -110,8 +110,8 @@ public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
         return "getValue";
     }
 
-    public int getHashCode(ReteEvaluator reteEvaluator, final Object object) {        
-        final long temp = getLongValue( reteEvaluator, object );
+    public int getHashCode(ValueResolver valueResolver, final Object object) {        
+        final long temp = getLongValue( valueResolver, object );
         return (int) (temp ^ (temp >>> 32));
     }
 

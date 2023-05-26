@@ -15,7 +15,7 @@
 
 package org.drools.reliability.core;
 
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -84,7 +84,7 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
 
     private StoredObject factHandleToStoredObject(InternalFactHandle handle, boolean propagated, Object object) {
         return handle.isEvent() ?
-                createStoredObject(propagated, object, ((EventFactHandle) handle).getStartTimestamp(), ((EventFactHandle) handle).getDuration()) :
+                createStoredObject(propagated, object, ((DefaultEventHandle) handle).getStartTimestamp(), ((DefaultEventHandle) handle).getDuration()) :
                 createStoredObject(propagated, object);
     }
 

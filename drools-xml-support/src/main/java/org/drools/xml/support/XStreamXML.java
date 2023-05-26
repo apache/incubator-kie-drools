@@ -36,9 +36,10 @@ import com.thoughtworks.xstream.converters.collections.AbstractCollectionConvert
 import com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.base.base.DroolsQuery;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.DroolsQueryImpl;
 import org.drools.commands.runtime.AdvanceSessionTimeCommand;
 import org.drools.commands.runtime.BatchExecutionCommandImpl;
 import org.drools.commands.runtime.GetGlobalCommand;
@@ -1117,7 +1118,7 @@ public class XStreamXML {
                 for( String identifier : results.getIdentifiers() ) {
                     for( QueryResultsRow row : results) {
                        Object rowObj = row.get(identifier);
-                       if(rowObj instanceof DroolsQuery) {
+                       if(rowObj instanceof DroolsQueryImpl) {
                           continue;
                        }
                        actualIds.add( identifier );

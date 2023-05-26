@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
@@ -38,7 +38,7 @@ public class DroolsTestUtil {
 
     public static Map<String, Rule> rulestoMap( KieBase kbase ) {
         List<Rule> rules = new ArrayList();
-        for ( KiePackage pkg : ((RuleBase)kbase).getPackages() ) {
+        for ( KiePackage pkg : ((InternalRuleBase)kbase).getPackages() ) {
             rules.addAll(pkg.getRules());
         }
 

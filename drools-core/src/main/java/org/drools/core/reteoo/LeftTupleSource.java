@@ -249,7 +249,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
             return;
         }
 
-        if ( pattern != null && isPropertyReactive(context, objectType) ) {
+        if ( pattern != null && isPropertyReactive(context.getRuleBase(), objectType) ) {
             Collection<String> leftListenedProperties = pattern.getListenedProperties();
             List<String> accessibleProperties = getAccessibleProperties( context.getRuleBase(), objectType );
             leftDeclaredMask = calculatePositiveMask( objectType, leftListenedProperties, accessibleProperties );

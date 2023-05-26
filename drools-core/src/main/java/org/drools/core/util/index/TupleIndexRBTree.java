@@ -26,8 +26,7 @@ import java.util.List;
 import org.drools.core.base.CoercionUtil;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
+import org.drools.core.util.FieldIndex;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.TupleRBTree;
@@ -42,7 +41,7 @@ public class TupleIndexRBTree extends AbstractTupleIndexTree implements External
         // constructor for serialisation
     }
 
-    public TupleIndexRBTree( IndexUtil.ConstraintType constraintType, AbstractHashTable.FieldIndex index, boolean left ) {
+    public TupleIndexRBTree(ConstraintTypeOperator constraintType, FieldIndex index, boolean left) {
         this.index = index;
         this.constraintType = constraintType;
         this.left = left;
@@ -59,8 +58,8 @@ public class TupleIndexRBTree extends AbstractTupleIndexTree implements External
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         tree = (TupleRBTree<Comparable<Comparable>>) in.readObject();
-        index = (AbstractHashTable.FieldIndex) in.readObject();
-        constraintType = (IndexUtil.ConstraintType) in.readObject();
+        index = (FieldIndex) in.readObject();
+        constraintType = (ConstraintTypeOperator) in.readObject();
         factSize = in.readInt();
         left = in.readBoolean();
     }

@@ -29,7 +29,7 @@ import org.drools.core.util.LinkedList;
  * which references all the handles which are equal. It also records
  * Whether the referenced facts are JUSTIFIED or STATED
  */
-public abstract class EqualityKey extends LinkedList<DefaultFactHandle> implements Externalizable {
+public abstract class EqualityKey<T> extends LinkedList<DefaultFactHandle<T>> implements Externalizable {
     public final static int    STATED    = 1;
     public final static int    JUSTIFIED = 2;
 
@@ -43,14 +43,14 @@ public abstract class EqualityKey extends LinkedList<DefaultFactHandle> implemen
 
     }
 
-    public EqualityKey(final InternalFactHandle handle) {
+    public EqualityKey(final InternalFactHandle<T> handle) {
         super( ( DefaultFactHandle ) handle );
         this.hashCode = handle.getObjectHashCode();
     }
 
-    public EqualityKey(final InternalFactHandle handle,
+    public EqualityKey(final InternalFactHandle<T> handle,
                        final int status) {
-        super( ( DefaultFactHandle ) handle );
+        super( ( DefaultFactHandle<T> ) handle );
         this.hashCode = handle.getObjectHashCode();
         this.status = status;
     }
@@ -67,20 +67,20 @@ public abstract class EqualityKey extends LinkedList<DefaultFactHandle> implemen
         out.writeInt(status);
     }
 
-    public abstract InternalFactHandle getLogicalFactHandle();
+    public abstract InternalFactHandle<T> getLogicalFactHandle();
 
-    public abstract void setLogicalFactHandle(InternalFactHandle logicalFactHandle);
+    public abstract void setLogicalFactHandle(InternalFactHandle<T> logicalFactHandle);
 
-    public InternalFactHandle getFactHandle() {
+    public InternalFactHandle<T> getFactHandle() {
         return getFirst();
     }
 
-    public void addFactHandle(final InternalFactHandle handle) {
-        add( ( DefaultFactHandle ) handle );
+    public void addFactHandle(final InternalFactHandle<T> handle) {
+        add( ( DefaultFactHandle<T> ) handle );
     }
 
-    public void removeFactHandle(final InternalFactHandle handle) {
-        remove( ( DefaultFactHandle ) handle );
+    public void removeFactHandle(final InternalFactHandle<T> handle) {
+        remove( ( DefaultFactHandle<T> ) handle );
     }
 
     /**

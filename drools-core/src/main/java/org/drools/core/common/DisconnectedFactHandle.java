@@ -31,8 +31,9 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ArrayElements;
-import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
@@ -42,9 +43,9 @@ import org.kie.api.runtime.rule.FactHandle;
 @XmlRootElement(name="disconnected-fact-handle")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlSeeAlso({ArrayElements.class})
-public class DisconnectedFactHandle
+public class DisconnectedFactHandle<T>
         implements
-        InternalFactHandle,
+        InternalFactHandle<T>,
         Externalizable {
 
     private static final String UNSUPPORTED_OPERATION_ERROR_MESSAGE = "DisconnectedFactHandle does not support this method";;
@@ -66,10 +67,10 @@ public class DisconnectedFactHandle
     private long   recency;
 
     /**
-     *  This could be a {@link DroolsQuery} object or other almost-impossible-to-serialize class
+     *  This could be a {@link DroolsQueryImpl} object or other almost-impossible-to-serialize class
      */
     @XmlElement
-    private Object object;
+    private T object;
 
     @XmlElement
     @XmlSchemaType(name="string")
@@ -88,7 +89,7 @@ public class DisconnectedFactHandle
                                   int objectHashCode,
                                   long recency,
                                   String entryPointId,
-                                  Object object,
+                                  T object,
                                   boolean isTraitOrTraitable ) {
         this.id = id;
         this.identityHashCode = identityHashCode;
@@ -103,7 +104,7 @@ public class DisconnectedFactHandle
                                   int identityHashCode,
                                   int objectHashCode,
                                   long recency,
-                                  Object object,
+                                  T object,
                                   boolean isTraitOrTraitable ) {
         this( id,
               identityHashCode,
@@ -157,7 +158,7 @@ public class DisconnectedFactHandle
     }
 
     @Override
-    public <K> K as( Class<K> klass ) throws ClassCastException {
+    public <K> K as(Class<K> klass) throws ClassCastException {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
@@ -174,7 +175,7 @@ public class DisconnectedFactHandle
     public void forEachRightTuple( Consumer<RightTuple> rightTupleConsumer ) { }
 
     @Override
-    public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer ) { }
+    public void forEachLeftTuple( Consumer<AbstractLeftTuple> leftTupleConsumer) { }
 
     @Override
     public RightTuple findFirstRightTuple( Predicate<RightTuple> rightTuplePredicate ) {
@@ -182,7 +183,7 @@ public class DisconnectedFactHandle
     }
 
     @Override
-    public LeftTuple findFirstLeftTuple( Predicate<LeftTuple> lefttTuplePredicate ) {
+    public AbstractLeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
         return null;
     }
 
@@ -210,7 +211,7 @@ public class DisconnectedFactHandle
         return this.object != null ? object.getClass().getName() : null;
     }
 
-    public Object getObject() {
+    public T getObject() {
         if ( this.object != null ) {
             return this.object;
         }
@@ -283,7 +284,7 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
-    public void setObject(Object object) {
+    public void setObject(T object) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 

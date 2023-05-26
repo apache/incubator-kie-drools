@@ -24,6 +24,7 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
+import org.drools.core.util.FieldIndex;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 
@@ -49,7 +50,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         // constructor for serialisation
     }
 
-    public TupleIndexHashTable( FieldIndex[] index, boolean left ) {
+    public TupleIndexHashTable(FieldIndex[] index, boolean left) {
         this( 128, 0.75f, index, left );
     }
 

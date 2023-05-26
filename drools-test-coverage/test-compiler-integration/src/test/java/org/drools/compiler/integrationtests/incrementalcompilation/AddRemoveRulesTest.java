@@ -274,7 +274,7 @@ public class AddRemoveRulesTest {
         final KieSession kSession = base.newKieSession();
         kSession.fireAllRules();
 
-        ((InternalKnowledgeBase) kSession.getKieBase()).addPackages( kbuilder.getKnowledgePackages() );
+        ((InternalKnowledgeBase) kSession.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
     }
 
     @Test
@@ -298,7 +298,7 @@ public class AddRemoveRulesTest {
         final FactHandle fh = kSession.insert(0.0f);
         kSession.fireAllRules();
 
-        ((InternalKnowledgeBase)kSession.getKieBase()).addPackages( kbuilder.getKnowledgePackages() );
+        ((InternalKnowledgeBase)kSession.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
         kSession.delete(fh);
     }
 

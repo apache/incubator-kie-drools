@@ -16,7 +16,7 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.BaseTuple;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -24,17 +24,17 @@ import java.util.HashSet;
 
 public class AbstractReactiveObject implements ReactiveObject {
 
-    private Collection<Tuple> lts;
+    private Collection<BaseTuple> tuples;
 
-    public void addLeftTuple(Tuple leftTuple) {
-        if (lts == null) {
-            lts = new HashSet<>();
+    public void addTuple(BaseTuple tuple) {
+        if (tuples == null) {
+            tuples = new HashSet<>();
         }
-        lts.add(leftTuple);
+        tuples.add(tuple);
     }
 
-    public Collection<Tuple> getLeftTuples() {
-        return lts != null ? lts : Collections.emptyList();
+    public Collection<BaseTuple> getTuples() {
+        return tuples != null ? tuples : Collections.emptyList();
     }
 
     protected void notifyModification() {
@@ -42,7 +42,7 @@ public class AbstractReactiveObject implements ReactiveObject {
     }
 
     @Override
-    public void removeLeftTuple(Tuple leftTuple) {
-        lts.remove(leftTuple);
+    public void removeTuple(BaseTuple tuple) {
+        tuples.remove(tuple);
     }
 }

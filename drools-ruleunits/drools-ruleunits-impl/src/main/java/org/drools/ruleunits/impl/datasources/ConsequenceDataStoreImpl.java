@@ -15,7 +15,7 @@
  */
 package org.drools.ruleunits.impl.datasources;
 
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
@@ -48,7 +48,7 @@ public class ConsequenceDataStoreImpl<T> implements ConsequenceDataStore<T> {
 
     @Override
     public void update(T object, String... modifiedProperties) {
-        BitMask bitMask = modifiedProperties.length == 0 ? AllSetBitMask.get() : calculateUpdateBitMask((RuleBase) ruleContext.getKieBase(), object, modifiedProperties);
+        BitMask bitMask = modifiedProperties.length == 0 ? AllSetBitMask.get() : calculateUpdateBitMask((InternalRuleBase) ruleContext.getKieBase(), object, modifiedProperties);
         update(object, bitMask);
     }
 

@@ -58,12 +58,12 @@ public class TraitDefaultFactHandle extends DefaultFactHandle {
     }
 
     @Override
-    public <K> K as(Class<K> klass) throws ClassCastException {
+    public Object as(Class klass) throws ClassCastException {
         if (klass.isAssignableFrom(object.getClass())) {
-            return (K) object;
+            return object;
         } else if (this.isTraitOrTraitable()) {
             TraitHelperImpl traitHelper = new TraitHelperImpl();
-            K k = traitHelper.extractTrait(this, klass);
+            Object k = traitHelper.extractTrait(this, klass);
             if (k != null) {
                 return k;
             } else {

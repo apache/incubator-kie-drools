@@ -21,7 +21,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.index.TupleList;
 
-public class RightTupleImpl extends BaseTuple implements RightTuple {
+public class RightTupleImpl extends AbstractTuple implements RightTuple {
 
     private TupleList            memory;
 

@@ -28,7 +28,7 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.FastIterator;
 
-public class NotNodeLeftTuple extends BaseLeftTuple {
+public class NotNodeLeftTuple extends AbstractLeftTuple {
     private static final long serialVersionUID = 540l;
 
     private RightTuple blocker;

@@ -95,7 +95,7 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
         KieBaseUpdaterOptions kieBaseUpdaterOptions = new KieBaseUpdaterOptions(new KieBaseUpdaterOptions.OptionEntry(
                 AlphaNetworkCompilerOption.class, AlphaNetworkCompilerOption.INMEMORY));
         KieBaseUpdatersContext context = new KieBaseUpdatersContext(kieBaseUpdaterOptions,
-                (( InternalKnowledgeBase ) kbase).getRete(), (( InternalKnowledgeBase ) kbase).getRootClassLoader());
+                                                                    ((InternalKnowledgeBase) kbase).getRete(), ((InternalKnowledgeBase) kbase).getRootClassLoader());
         new KieBaseUpdaterANC(context).run();
     }
 }

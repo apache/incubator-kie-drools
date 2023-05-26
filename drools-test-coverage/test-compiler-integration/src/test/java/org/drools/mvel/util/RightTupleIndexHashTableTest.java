@@ -32,7 +32,7 @@ import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
+import org.drools.core.util.FieldIndex;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;

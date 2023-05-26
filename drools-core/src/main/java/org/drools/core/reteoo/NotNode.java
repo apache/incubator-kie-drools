@@ -76,7 +76,7 @@ public class NotNode extends BetaNode {
     
     public LeftTuple createPeer(LeftTuple original) {
         NotNodeLeftTuple peer = new NotNodeLeftTuple();
-        peer.initPeer( (BaseLeftTuple) original, this );
+        peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer( peer );
         return peer;
     }    

@@ -9,6 +9,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.QueryTerminalNode;
+import org.kie.api.runtime.rule.FactHandle;
 
 public abstract class AbstractQueryViewListener implements InternalViewChangedEventListener {
 
@@ -22,16 +23,16 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
         return this.results;
     }
 
-    public abstract InternalFactHandle getHandle(InternalFactHandle originalHandle);
+    public abstract FactHandle getHandle(FactHandle originalHandle);
 
     public void rowAdded(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator) {
-        InternalFactHandle[] handles = new InternalFactHandle[((LeftTupleNode)tuple.getTupleSink()).getObjectCount()];
+        FactHandle[] handles = new FactHandle[((LeftTupleNode)tuple.getTupleSink()).getObjectCount()];
         LeftTuple entry = (LeftTuple) tuple.skipEmptyHandles();
 
         // Add all the FactHandles
         int i = handles.length-1;
         while ( entry != null ) {
-            InternalFactHandle handle = entry.getFactHandle();
+            FactHandle handle = entry.getFactHandle();
             handles[i--] = getHandle(handle);
             entry = entry.getParent();
         }

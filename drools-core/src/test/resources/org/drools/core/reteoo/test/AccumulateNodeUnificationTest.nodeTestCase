@@ -5,14 +5,14 @@ import org.drools.core.test.model.Person;
 
 Setup
     ObjectTypeNode:
-        otnLeft0, org.drools.core.base.DroolsQuery;
+        otnLeft0, org.drools.core.base.DroolsQueryImpl;
     LeftInputAdapterNode:
         lian0, otnLeft0;        
     ObjectTypeNode:
         otnRight1, Person;
     Binding:
-        v, 0, org.drools.core.base.DroolsQuery, [0], java.lang.String;
-        $age, 0, org.drools.core.base.DroolsQuery, [1], java.lang.Integer;
+        v, 0, org.drools.core.base.DroolsQueryImpl, [0], java.lang.String;
+        $age, 0, org.drools.core.base.DroolsQueryImpl, [1], java.lang.Integer;
         $likes, 1, Person, likes;
         $price, 2, Cheese, price;        
     JoinNode:
@@ -26,7 +26,7 @@ Setup
     LeftTupleSink:
         sink, acc;
     Facts:
-        new org.drools.core.base.DroolsQuery( "x", [org.kie.api.runtime.rule.Variable.v, 40], null, true),
+        new org.drools.core.base.DroolsQueryImpl( "x", [org.kie.api.runtime.rule.Variable.v, 40], null, true),
         new Person('darth', 35, "brie"),     // h1
         new Person('bobba', 36, 'stilton'),  // h2
         new Cheese('brie', 10),              // h3

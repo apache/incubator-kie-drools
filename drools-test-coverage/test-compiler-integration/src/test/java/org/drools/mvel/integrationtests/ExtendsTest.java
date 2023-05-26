@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.drl.ast.dsl.DescrFactory;
 import org.drools.drl.ast.dsl.PackageDescrBuilder;
@@ -512,7 +512,7 @@ public class ExtendsTest {
 
         for ( Object o : kSession.getObjects() ) {
             FactHandle h = kSession.getFactHandle( o );
-            assertThat(h instanceof EventFactHandle).isTrue();
+            assertThat(h instanceof DefaultEventHandle).isTrue();
         }
 
         System.out.println( list );

@@ -28,7 +28,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.phreak.EagerPhreakBuilder;
 import org.drools.core.phreak.EagerPhreakBuilder.Add;
@@ -848,7 +848,7 @@ public class AddRuleTest {
 
     @Test
     public void testPopulatedMultipleShares() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n" );
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n");
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List<Match> list = new ArrayList<>();
         wm.setGlobal("list", list);
@@ -881,7 +881,7 @@ public class AddRuleTest {
 
     @Test
     public void testSplitTwoBeforeCreatedSegment() throws Exception {
-        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n" );
+        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n");
         kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n") );
         kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;)\n") );
         kbase1.addPackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
@@ -940,7 +940,7 @@ public class AddRuleTest {
 
     @Test
     public void testSplitOneBeforeCreatedSegment() throws Exception {
-        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n" );
+        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n");
         kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n") );
         kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;)\n") );
         kbase1.addPackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
@@ -1019,7 +1019,7 @@ public class AddRuleTest {
     @Test
     public void testSplitOnCreatedSegment() throws Exception {
         // this test splits D1 and D2 on the later add rule
-        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n" );
+        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n");
         kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n") );
         kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;)\n") );
         kbase1.addPackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
@@ -1082,7 +1082,7 @@ public class AddRuleTest {
 
 
     private RuleTerminalNode getRtn(String ruleName, KieBase kbase) {
-        return ( RuleTerminalNode ) ((RuleBase) kbase).getReteooBuilder().getTerminalNodes(ruleName)[0];
+        return ( RuleTerminalNode ) ((InternalRuleBase) kbase).getReteooBuilder().getTerminalNodes(ruleName)[0];
     }
 
     private InternalKnowledgeBase buildKnowledgeBase(String ruleName, String... rule) {
@@ -1117,7 +1117,7 @@ public class AddRuleTest {
     }
 
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
-        return getObjectTypeNode(((RuleBase) kbase).getRete(), nodeClass);
+        return getObjectTypeNode(((InternalRuleBase) kbase).getRete(), nodeClass);
     }
 
     public ObjectTypeNode getObjectTypeNode(Rete rete, Class<?> nodeClass) {

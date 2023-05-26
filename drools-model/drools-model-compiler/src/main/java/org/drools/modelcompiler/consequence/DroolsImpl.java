@@ -16,11 +16,13 @@
 
 package org.drools.modelcompiler.consequence;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.consequence.InternalMatch;
@@ -44,8 +46,8 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     private final FactHandleLookup fhLookup;
 
-    DroolsImpl(KnowledgeHelper knowledgeHelper, ReteEvaluator reteEvaluator, FactHandleLookup fhLookup) {
-        this.reteEvaluator = reteEvaluator;
+    DroolsImpl(KnowledgeHelper knowledgeHelper, ValueResolver valueResolver, FactHandleLookup fhLookup) {
+        this.reteEvaluator = (ReteEvaluator) valueResolver;
         this.knowledgeHelper = knowledgeHelper;
         this.fhLookup = fhLookup;
     }
@@ -73,7 +75,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     @Override
     public RuleImpl getRule() {
-        return knowledgeHelper.getRule();
+        return (RuleImpl) knowledgeHelper.getRule();
     }
 
     @Override
@@ -116,8 +118,8 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
         knowledgeHelper.update( getFactHandleForObject( object ), mask, object.getClass() );
     }
 
-    private InternalFactHandle getFactHandleForObject( Object object ) {
-        InternalFactHandle fh = fhLookup.get(object);
+    private FactHandle getFactHandleForObject( Object object ) {
+        FactHandle fh = fhLookup.get(object);
         return fh != null ? fh : reteEvaluator.getFactHandle( object );
     }
 
@@ -191,7 +193,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
         return knowledgeHelper.getWorkingMemory();
     }
 
-    public Tuple getTuple() {
+    public BaseTuple getTuple() {
         return knowledgeHelper.getTuple();
     }
 }

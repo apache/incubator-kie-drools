@@ -130,9 +130,10 @@ public class JDKTimerService implements TimerService, SessionClock, InternalSche
     }
 
     public void removeJob(JobHandle jobHandle) {
-        jobHandle.setCancel(true);
+        jobHandle.cancel();
+        jobFactoryManager.removeTimerJobInstance(jobHandle);
+
         JDKJobHandle jdkJobHandle = (JDKJobHandle) jobHandle;
-        jobFactoryManager.removeTimerJobInstance(jdkJobHandle.getTimerJobInstance());
         this.scheduler.remove((Runnable) jdkJobHandle.getFuture());
     }
 

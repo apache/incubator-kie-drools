@@ -18,7 +18,7 @@ package org.drools.mvel.integrationtests;
 import java.util.Collection;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.rule.ConsequenceMetaData;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -243,7 +243,7 @@ public class RuleMetadataTest {
     }
 
     private RuleImpl getRule(KieBase kbase, String ruleName) {
-        return ((RuleBase)kbase).getPackage("org.drools").getRule(ruleName);
+        return ((InternalRuleBase)kbase).getPackage("org.drools").getRule(ruleName);
     }
 
     public static class B {

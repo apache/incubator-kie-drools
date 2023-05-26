@@ -279,12 +279,12 @@ public class AlphaNode extends ObjectSource
         }
 
         @Override
-        public void addAssociatedTerminal(TerminalNode terminalNode) {
+        public void addAssociatedTerminal(NetworkNode terminalNode) {
             sink.addAssociatedTerminal(terminalNode);
         }
 
         @Override
-        public void removeAssociatedTerminal(TerminalNode terminalNode) {
+        public void removeAssociatedTerminal(NetworkNode terminalNode) {
             sink.removeAssociatedTerminal(terminalNode);
         }
 

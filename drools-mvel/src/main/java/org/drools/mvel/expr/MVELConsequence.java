@@ -20,11 +20,12 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.mvel2.integration.VariableResolverFactory;
 
@@ -32,7 +33,7 @@ import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELConsequence
     implements
-    Consequence,
+    Consequence<KnowledgeHelper>,
     MVELCompileable,
         Externalizable {
     private static final long   serialVersionUID = 510l;
@@ -77,13 +78,13 @@ public class MVELConsequence
     }
 
     public void evaluate(final KnowledgeHelper knowledgeHelper,
-                         final ReteEvaluator reteEvaluator) throws Exception {
+                         final ValueResolver valueResolver) throws Exception {
 
         VariableResolverFactory factory = unit.getFactory(knowledgeHelper, knowledgeHelper.getMatch().getTerminalNode().getRequiredDeclarations(),
-                knowledgeHelper.getRule(), knowledgeHelper.getTuple(), null, reteEvaluator, reteEvaluator.getGlobalResolver());
+                knowledgeHelper.getRule(), knowledgeHelper.getTuple(), null, valueResolver, valueResolver.getGlobalResolver());
 
         // do we have any functions for this namespace?
-        InternalKnowledgePackage pkg = reteEvaluator.getKnowledgeBase().getPackage("MAIN");
+        InternalKnowledgePackage pkg = ((InternalKnowledgeBase)valueResolver.getRuleBase()).getPackage("MAIN");
         if (pkg != null) {
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData(this.id);
             factory.setNextFactory(data.getFunctionFactory());

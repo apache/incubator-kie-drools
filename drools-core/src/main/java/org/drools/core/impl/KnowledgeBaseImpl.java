@@ -98,7 +98,7 @@ import static org.drools.core.phreak.PhreakBuilder.isEagerSegmentCreation;
 import static org.drools.util.BitMaskUtil.isSet;
 import static org.drools.util.ClassUtils.convertClassToResourcePath;
 
-public class KnowledgeBaseImpl implements RuleBase {
+public class KnowledgeBaseImpl implements InternalRuleBase {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBaseImpl.class);
 

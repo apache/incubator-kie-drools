@@ -23,9 +23,9 @@ import java.io.ObjectOutput;
 import org.kie.api.runtime.rule.FactHandle;
 
 
-public class MockFactHandle
+public class MockFactHandle<T>
     implements
-    FactHandle {
+    FactHandle<T> {
     private static final long serialVersionUID = 510l;
     private int               id;
 
@@ -35,6 +35,36 @@ public class MockFactHandle
 
     public MockFactHandle(final int id) {
         this.id = id;
+    }
+
+    @Override
+    public T getObject() {
+        return null;
+    }
+
+    @Override
+    public boolean isNegated() {
+        return false;
+    }
+
+    @Override
+    public boolean isEvent() {
+        return false;
+    }
+
+    @Override
+    public <K> K as(Class<K> klass) throws ClassCastException {
+        return null;
+    }
+
+    @Override
+    public boolean isExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isValid() {
+        return false;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

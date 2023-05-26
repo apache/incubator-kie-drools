@@ -29,7 +29,6 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.Function;
@@ -39,6 +38,7 @@ import org.drools.mvel.MVELKnowledgePackageImpl;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.traits.core.factmodel.TraitRegistryImpl;
 import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
+import org.kie.api.definition.rule.RuleBase;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 public class TraitKnowledgePackageImpl extends MVELKnowledgePackageImpl {

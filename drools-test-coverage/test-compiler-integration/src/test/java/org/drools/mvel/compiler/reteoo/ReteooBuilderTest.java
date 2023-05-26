@@ -85,7 +85,7 @@ public class ReteooBuilderTest {
 
         final XStream xstream = createNonTrustingXStream();
 
-        final InternalKnowledgeBase goodKBase = (InternalKnowledgeBase) xstream.fromXML( getClass().getResourceAsStream( name ) );
+        final InternalKnowledgeBase goodKBase = (InternalKnowledgeBase) xstream.fromXML(getClass().getResourceAsStream(name));
 
         nodesEquals( goodKBase.getRete(),
                      kBase.getRete() );

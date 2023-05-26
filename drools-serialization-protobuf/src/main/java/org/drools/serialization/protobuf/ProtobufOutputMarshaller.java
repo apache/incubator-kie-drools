@@ -35,7 +35,7 @@ import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
@@ -52,7 +52,7 @@ import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.WorkItem;
-import org.drools.core.reteoo.BaseTuple;
+import org.drools.core.reteoo.AbstractTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -472,7 +472,7 @@ public class ProtobufOutputMarshaller {
             ProtobufMessages.TruthMaintenanceSystem.Builder _tms = ProtobufMessages.TruthMaintenanceSystem.newBuilder();
 
             // write the assert map of Equality keys
-            for ( EqualityKey key : keys ) {
+            for ( EqualityKey<?> key : keys ) {
                 ProtobufMessages.EqualityKey.Builder _key = ProtobufMessages.EqualityKey.newBuilder();
                 _key.setStatus( key.getStatus() );
                 _key.setHandleId( key.getFactHandle().getId() );
@@ -581,7 +581,7 @@ public class ProtobufOutputMarshaller {
 
         if ( _handle.getType() == ProtobufMessages.FactHandle.HandleType.EVENT ) {
             // is event
-            EventFactHandle efh = (EventFactHandle) handle;
+            DefaultEventHandle efh = (DefaultEventHandle) handle;
             _handle.setTimestamp( efh.getStartTimestamp() );
             _handle.setDuration( efh.getDuration() );
             _handle.setIsExpired( efh.isExpired() );
@@ -612,7 +612,7 @@ public class ProtobufOutputMarshaller {
     }
 
     private static ProtobufMessages.FactHandle.HandleType getHandleType(InternalFactHandle handle) {
-        if ( handle instanceof EventFactHandle ) {
+        if ( handle instanceof DefaultEventHandle) {
             return ProtobufMessages.FactHandle.HandleType.EVENT;
         } else if ( handle instanceof QueryElementFactHandle ) {
             return ProtobufMessages.FactHandle.HandleType.QUERY;
@@ -732,12 +732,12 @@ public class ProtobufOutputMarshaller {
         org.drools.core.reteoo.Tuple tuple = internalMatch.getTuple();
         ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
 
-        boolean serializeObjects = isDormient && hasNodeMemory((BaseTuple) internalMatch);
+        boolean serializeObjects = isDormient && hasNodeMemory((AbstractTuple) internalMatch);
 
         if (tuple != null) {
             // tuple can be null if this is a rule network evaluation activation, instead of terminal node left tuple.
             for (org.drools.core.reteoo.Tuple entry = tuple.skipEmptyHandles(); entry != null; entry = entry.getParent()) {
-                InternalFactHandle handle = entry.getFactHandle();
+                org.kie.api.runtime.rule.FactHandle handle = entry.getFactHandle();
                 _tb.addHandleId(handle.getId());
 
                 if (serializeObjects) {
@@ -755,7 +755,7 @@ public class ProtobufOutputMarshaller {
         return _tb.build();
     }
 
-    private static boolean hasNodeMemory(BaseTuple agendaItem) {
+    private static boolean hasNodeMemory(AbstractTuple agendaItem) {
         Sink tupleSink = agendaItem.getTupleSink();
         if (tupleSink instanceof TerminalNode ) {
             return PersisterHelper.hasNodeMemory( (TerminalNode) tupleSink );

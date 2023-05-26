@@ -27,23 +27,23 @@ import org.drools.tms.beliefsystem.BeliefSet;
  * which references all the handles which are equal. It also records
  * Whether the referenced facts are JUSTIFIED or STATED
  */
-public class TruthMaintenanceSystemEqualityKey extends EqualityKey {
+public class TruthMaintenanceSystemEqualityKey<T> extends EqualityKey<T> {
 
     private BeliefSet beliefSet;
 
     public TruthMaintenanceSystemEqualityKey() {
     }
 
-    public TruthMaintenanceSystemEqualityKey(InternalFactHandle handle) {
+    public TruthMaintenanceSystemEqualityKey(InternalFactHandle<T> handle) {
         super(handle);
     }
 
-    public TruthMaintenanceSystemEqualityKey(InternalFactHandle handle, int status) {
+    public TruthMaintenanceSystemEqualityKey(InternalFactHandle<T> handle, int status) {
         super(handle, status);
     }
 
     @Override
-    public InternalFactHandle getLogicalFactHandle() {
+    public InternalFactHandle<T> getLogicalFactHandle() {
         if ( beliefSet == null ) {
             return null;
         }
@@ -52,12 +52,12 @@ public class TruthMaintenanceSystemEqualityKey extends EqualityKey {
     }
 
     @Override
-    public void setLogicalFactHandle(InternalFactHandle logicalFactHandle) {
+    public void setLogicalFactHandle(InternalFactHandle<T> logicalFactHandle) {
         if ( logicalFactHandle == null && beliefSet != null ) {
             // beliefSet needs to not be null, otherwise someone else has already set the LFH to null
             removeFirst();
         } else {
-            addFirst((DefaultFactHandle) logicalFactHandle);
+            addFirst((DefaultFactHandle<T>) logicalFactHandle);
         }
     }
 

@@ -18,9 +18,9 @@ package org.drools.mvel.accessors;
 
 import java.lang.reflect.Method;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.ReteEvaluator;
 
 /**
  * A Base class for primitive boolean class field
@@ -48,51 +48,51 @@ public abstract class BaseBooleanClassFieldReader extends BaseClassFieldReader {
     public BaseBooleanClassFieldReader() {
     }
 
-    public Object getValue(ReteEvaluator reteEvaluator,
+    public Object getValue(ValueResolver valueResolver,
                            final Object object) {
-        return getBooleanValue( reteEvaluator,
+        return getBooleanValue( valueResolver,
                                 object ) ? Boolean.TRUE : Boolean.FALSE;
     }
 
-    public abstract boolean getBooleanValue(ReteEvaluator reteEvaluator,
+    public abstract boolean getBooleanValue(ValueResolver valueResolver,
                                             Object object);
 
-    public byte getByteValue(ReteEvaluator reteEvaluator,
+    public byte getByteValue(ValueResolver valueResolver,
                              final Object object) {
         throw new RuntimeException( "Conversion to byte not supported from boolean" );
     }
 
-    public char getCharValue(ReteEvaluator reteEvaluator,
+    public char getCharValue(ValueResolver valueResolver,
                              final Object object) {
         throw new RuntimeException( "Conversion to char not supported from boolean" );
     }
 
-    public double getDoubleValue(ReteEvaluator reteEvaluator,
+    public double getDoubleValue(ValueResolver valueResolver,
                                  final Object object) {
         throw new RuntimeException( "Conversion to double not supported from boolean" );
     }
 
-    public float getFloatValue(ReteEvaluator reteEvaluator,
+    public float getFloatValue(ValueResolver valueResolver,
                                final Object object) {
         throw new RuntimeException( "Conversion to float not supported from boolean" );
     }
 
-    public int getIntValue(ReteEvaluator reteEvaluator,
+    public int getIntValue(ValueResolver valueResolver,
                            final Object object) {
         throw new RuntimeException( "Conversion to int not supported from boolean" );
     }
 
-    public long getLongValue(ReteEvaluator reteEvaluator,
+    public long getLongValue(ValueResolver valueResolver,
                              final Object object) {
         throw new RuntimeException( "Conversion to long not supported from boolean" );
     }
 
-    public short getShortValue(ReteEvaluator reteEvaluator,
+    public short getShortValue(ValueResolver valueResolver,
                                final Object object) {
         throw new RuntimeException( "Conversion to short not supported from boolean" );
     }
 
-    public boolean isNullValue(ReteEvaluator reteEvaluator,
+    public boolean isNullValue(ValueResolver valueResolver,
                                final Object object) {
         return false;
     }
@@ -100,16 +100,16 @@ public abstract class BaseBooleanClassFieldReader extends BaseClassFieldReader {
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod("getBooleanValue",
-                                                     ReteEvaluator.class, Object.class);
+                                                     ValueResolver.class, Object.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );
         }
     }
 
-    public int getHashCode(ReteEvaluator reteEvaluator,
+    public int getHashCode(ValueResolver valueResolver,
                            final Object object) {
-        return getBooleanValue( reteEvaluator,
+        return getBooleanValue( valueResolver,
                                 object ) ? 1231 : 1237;
     }
 

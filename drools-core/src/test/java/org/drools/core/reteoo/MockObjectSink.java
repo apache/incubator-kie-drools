@@ -152,11 +152,11 @@ public class MockObjectSink
     }
 
     @Override
-    public void addAssociatedTerminal(TerminalNode terminalNode) {
+    public void addAssociatedTerminal(NetworkNode terminalNode) {
     }
 
     @Override
-    public void removeAssociatedTerminal(TerminalNode terminalNode) {
+    public void removeAssociatedTerminal(NetworkNode terminalNode) {
     }
 
     @Override

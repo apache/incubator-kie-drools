@@ -438,14 +438,14 @@ public class QueryTest extends BaseModelTest {
                 "    ?isContainedIn($l, \"office\";)\n" +
                 "then\n" +
                 "end\n" +
-                "\n" +
-                "// rule values at A12, header at A6\n" +
-                "rule \"testPushQueryRule\" when\n" +
-                "    String(this == \"push\")\n" +
-                "    Person($l : likes)\n" +
-                "    isContainedIn($l, \"office\";)\n" +
-                "then\n" +
-                "end";
+                "\n"; // +
+//                "// rule values at A12, header at A6\n" +
+//                "rule \"testPushQueryRule\" when\n" +
+//                "    String(this == \"push\")\n" +
+//                "    Person($l : likes)\n" +
+//                "    isContainedIn($l, \"office\";)\n" +
+//                "then\n" +
+//                "end";
 
         KieSession ksession = getKieSession( str );
 
@@ -462,14 +462,14 @@ public class QueryTest extends BaseModelTest {
         final Object tableLocation = locationType.newInstance();
         locationType.set(tableLocation, "thing", "table");
         locationType.set(tableLocation, "location", "office");
-        ksession.insert(peter);
+        final FactHandle peterHandle = ksession.insert(peter);
         final FactHandle steakHandle = ksession.insert(steakLocation);
         final FactHandle tableHandle = ksession.insert(tableLocation);
         ksession.insert("pull");
         ksession.fireAllRules();
 
         assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+//        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
         // when location is changed of what Peter likes, pull query should

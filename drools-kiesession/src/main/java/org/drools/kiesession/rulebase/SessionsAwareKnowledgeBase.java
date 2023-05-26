@@ -43,9 +43,9 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKieContainer;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.KieBaseUpdate;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.AsyncReceiveNode;
@@ -106,7 +106,7 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
         this(RuleBaseFactory.newRuleBase(kbaseConfiguration));
     }
 
-    public SessionsAwareKnowledgeBase(RuleBase delegate) {
+    public SessionsAwareKnowledgeBase(InternalRuleBase delegate) {
         this.delegate = (KnowledgeBaseImpl) delegate;
 
         if (this.delegate.getRuleBaseConfiguration().getSessionPoolSize() > 0) {

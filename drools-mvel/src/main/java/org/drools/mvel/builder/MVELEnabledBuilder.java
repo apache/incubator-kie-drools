@@ -24,7 +24,7 @@ import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.rule.builder.EnabledBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
+import org.drools.core.reteoo.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.DeclarationScopeResolver;
 import org.drools.core.rule.consequence.KnowledgeHelper;

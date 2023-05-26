@@ -23,7 +23,7 @@ import org.drools.core.common.ReteEvaluator;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
+public class SubnetworkTuple extends AbstractLeftTuple implements RightTuple {
 
     private LeftTuple blocked;
     private LeftTuple tempBlocked;

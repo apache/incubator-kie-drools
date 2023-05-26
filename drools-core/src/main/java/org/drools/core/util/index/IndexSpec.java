@@ -6,28 +6,28 @@ import java.util.List;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.FieldIndex;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
 import static org.drools.core.util.index.IndexUtil.isEqualIndexable;
 
 public class IndexSpec {
-    private IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.UNKNOWN;
-    private AbstractHashTable.FieldIndex[] indexes;
+    private ConstraintTypeOperator constraintType = ConstraintTypeOperator.UNKNOWN;
+    private FieldIndex[] indexes;
 
     IndexSpec(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
         init(nodeType, constraints, config);
     }
 
-    public IndexUtil.ConstraintType getConstraintType() {
+    public ConstraintTypeOperator getConstraintType() {
         return constraintType;
     }
 
-    public AbstractHashTable.FieldIndex[] getIndexes() {
+    public FieldIndex[] getIndexes() {
         return indexes;
     }
 
-    public AbstractHashTable.FieldIndex getIndex(int pos) {
+    public FieldIndex getIndex(int pos) {
         return indexes[pos];
     }
 
@@ -38,8 +38,8 @@ public class IndexSpec {
                 determineTypeWithEqualityPriority(nodeType, constraints, config) :
                 determineTypeWithPatternOrder(nodeType, constraints, config);
 
-        if (constraintType == IndexUtil.ConstraintType.EQUAL) {
-            List<AbstractHashTable.FieldIndex> indexList = new ArrayList<>();
+        if (constraintType == ConstraintTypeOperator.EQUAL) {
+            List<FieldIndex> indexList = new ArrayList<>();
             if (isEqualIndexable(constraints[firstIndexableConstraint])) {
                 indexList.add(((IndexableConstraint) constraints[firstIndexableConstraint]).getFieldIndex());
             }
@@ -50,11 +50,11 @@ public class IndexSpec {
                     indexList.add(((IndexableConstraint)constraints[i]).getFieldIndex());
                 }
             }
-            indexes = indexList.toArray(new AbstractHashTable.FieldIndex[indexList.size()]);
+            indexes = indexList.toArray(new FieldIndex[indexList.size()]);
 
         } else if (constraintType.isComparison()) {
             // look for a dual constraint to create a range index
-            indexes = new AbstractHashTable.FieldIndex[]{ ((IndexableConstraint)constraints[firstIndexableConstraint]).getFieldIndex() };
+            indexes = new FieldIndex[]{((IndexableConstraint)constraints[firstIndexableConstraint]).getFieldIndex() };
         }
     }
 
@@ -63,11 +63,11 @@ public class IndexSpec {
         for (int i = 0; i < constraints.length; i++) {
             if (constraints[i] instanceof IndexableConstraint) {
                 IndexableConstraint indexableConstraint = (IndexableConstraint) constraints[i];
-                IndexUtil.ConstraintType type = indexableConstraint.getConstraintType();
-                if (type == IndexUtil.ConstraintType.EQUAL) {
+                ConstraintTypeOperator type = indexableConstraint.getConstraintType();
+                if (type == ConstraintTypeOperator.EQUAL) {
                     constraintType = type;
                     return i;
-                } else if (constraintType == IndexUtil.ConstraintType.UNKNOWN && type.isIndexableForNode(nodeType, indexableConstraint, config)) {
+                } else if (constraintType == ConstraintTypeOperator.UNKNOWN && type.isIndexableForNode(nodeType, indexableConstraint, config)) {
                     constraintType = type;
                     indexedConstraintPos = i;
                 }
@@ -78,7 +78,7 @@ public class IndexSpec {
 
     private int determineTypeWithPatternOrder(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
         for (int i = 0; i < constraints.length; i++) {
-            IndexUtil.ConstraintType type = IndexUtil.ConstraintType.getType(constraints[i]);
+            ConstraintTypeOperator type = ConstraintTypeOperator.getType(constraints[i]);
             if ( type.isIndexableForNode(nodeType, (IndexableConstraint) constraints[i], config) ) {
                 constraintType = type;
                 return i;

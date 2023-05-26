@@ -14,7 +14,7 @@
 
 package org.drools.serialization.protobuf.actions;
 
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.MarshallerWriteContext;
@@ -28,7 +28,7 @@ public class ProtobufWorkingMemoryReteExpireAction
 
     public ProtobufWorkingMemoryReteExpireAction( MarshallerReaderContext context,
                                                   ProtobufMessages.ActionQueue.Action _action) {
-        this.factHandle = (EventFactHandle)context.getHandles().get(_action.getExpire().getHandleId());
+        this.factHandle = (DefaultEventHandle)context.getHandles().get(_action.getExpire().getHandleId());
         if (_action.getExpire().getNodeId() > 0) {
             this.node = (ObjectTypeNode) context.getSinks().get(_action.getExpire().getNodeId());
         }

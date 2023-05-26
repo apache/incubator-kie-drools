@@ -43,7 +43,6 @@ import org.drools.compiler.builder.impl.processors.PackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
 import org.drools.compiler.builder.impl.processors.RuleCompilationPhase;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
-import org.drools.compiler.builder.impl.resources.DecisionTableResourceHandler;
 import org.drools.compiler.builder.impl.resources.ResourceHandler;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.DuplicateFunction;
@@ -57,7 +56,7 @@ import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.core.base.ObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
@@ -946,7 +945,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
             }
             throw new IllegalArgumentException("Could not parse knowledge. See the logs for details.");
         }
-        RuleBase kbase = RuleBaseFactory.newRuleBase(conf);
+        InternalRuleBase kbase = RuleBaseFactory.newRuleBase(conf);
         kbase.addPackages(asList(getPackages()));
         return KnowledgeBaseFactory.newKnowledgeBase(kbase);
     }

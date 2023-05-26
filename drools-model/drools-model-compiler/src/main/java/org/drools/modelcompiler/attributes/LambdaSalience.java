@@ -16,12 +16,14 @@
 
 package org.drools.modelcompiler.attributes;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.Salience;
 import org.drools.core.reteoo.Tuple;
 import org.drools.model.DynamicValueSupplier;
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.runtime.rule.Match;
 
 import static org.drools.modelcompiler.consequence.LambdaConsequence.declarationsToFacts;
 
@@ -32,9 +34,9 @@ public class LambdaSalience extends DynamicAttributeEvaluator<Integer> implement
     }
 
     @Override
-    public int getValue(InternalMatch internalMatch, Rule rule, ReteEvaluator reteEvaluator) {
-        Tuple tuple = internalMatch.getTuple();
-        Object[] facts = declarationsToFacts( reteEvaluator, tuple, getDeclarations(tuple), supplier.getVariables() );
+    public int getValue(Match match, Rule rule, ValueResolver valueResolver) {
+        Tuple tuple = ((InternalMatch)match).getTuple();
+        Object[] facts = declarationsToFacts((ReteEvaluator) valueResolver, tuple, getDeclarations(tuple), supplier.getVariables() );
         return supplier.supply( facts );
     }
 

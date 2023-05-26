@@ -108,7 +108,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
     @Override
     public LeftTuple createPeer(LeftTuple original) {
         EvalNodeLeftTuple peer = new EvalNodeLeftTuple();
-        peer.initPeer( (BaseLeftTuple) original, this );
+        peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer( peer );
         return peer;
     }

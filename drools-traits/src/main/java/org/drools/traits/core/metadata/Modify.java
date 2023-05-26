@@ -24,7 +24,7 @@ public interface Modify<T> extends WorkingMemoryTask<T> {
 
     public T call( T o );
 
-    public T call( InternalKnowledgeBase knowledgeBase );
+    public T call( InternalKnowledgeBase knowledgeBase);
 
     public BitMask getModificationMask();
 

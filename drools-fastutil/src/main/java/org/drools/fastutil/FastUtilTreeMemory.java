@@ -23,11 +23,11 @@ import it.unimi.dsi.fastutil.objects.ObjectBidirectionalIterator;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
-import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
+import org.drools.core.util.FieldIndex;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.AbstractTupleIndexTree;
-import org.drools.core.util.index.IndexUtil.ConstraintType;
+import org.drools.core.util.index.ConstraintTypeOperator;
 import org.drools.core.util.index.TupleIndexRBTree;
 import org.drools.core.util.index.TupleList;
 
@@ -71,7 +71,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
         }
     }
 
-    public FastUtilTreeMemory(ConstraintType constraintType, AbstractHashTable.FieldIndex index, boolean left) {
+    public FastUtilTreeMemory(ConstraintTypeOperator constraintType, FieldIndex index, boolean left) {
         this.index = index;
         this.constraintType = constraintType;
         this.left = left;
@@ -248,7 +248,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
 
         Comparable key;
 
-        ConstraintType constraintType;
+        ConstraintTypeOperator constraintType;
 
         public TreeFastIterator(FastUtilTreeMemory treeMemory) {
             this.treeMemory = treeMemory;
@@ -271,8 +271,8 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
 
             HolderEntry from = HolderEntry.getInstance().setKey(key);
 
-            if (constraintType == ConstraintType.LESS_THAN ||
-                constraintType == ConstraintType.LESS_OR_EQUAL) {
+            if (constraintType == ConstraintTypeOperator.LESS_THAN ||
+                constraintType == ConstraintTypeOperator.LESS_OR_EQUAL) {
                 it =  treeMemory.tree.object2ObjectEntrySet().iterator();
             } else {
                 it = treeMemory.tree.object2ObjectEntrySet().iterator(from);

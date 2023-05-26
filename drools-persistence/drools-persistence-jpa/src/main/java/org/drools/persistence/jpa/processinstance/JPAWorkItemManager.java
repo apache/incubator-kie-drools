@@ -232,7 +232,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     private WorkItem internalGetWorkItem( WorkItemInfo workItemInfo ) {
         Environment env = kruntime.getEnvironment();
-        WorkItem workItem = workItemInfo.getWorkItem( env, (InternalKnowledgeBase) kruntime.getKieBase() );
+        WorkItem workItem = workItemInfo.getWorkItem( env, (InternalKnowledgeBase) kruntime.getKieBase());
         return workItem;
     }
 

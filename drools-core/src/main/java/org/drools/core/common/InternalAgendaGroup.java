@@ -23,11 +23,6 @@ import org.drools.core.phreak.RuleAgendaItem;
 public interface InternalAgendaGroup extends org.kie.api.runtime.rule.AgendaGroup {
 
     /**
-     * Static reference to determine the default <code>AgendaGroup</code> name.
-     */
-    String MAIN = "MAIN";
-
-    /**
      * @return
      *     The int total number of activations
      */

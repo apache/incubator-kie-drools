@@ -20,7 +20,7 @@ import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
@@ -679,8 +679,8 @@ public class IncrementalCompilationTest {
         assertThat(rules.get("R2")).isNotNull();
         assertThat(rules.get("R3")).isNotNull();
 
-        final RuleTerminalNode rtn1_1 = (RuleTerminalNode) ((RuleBase) kc.getKieBase()).getReteooBuilder().getTerminalNodes("org.drools.compiler.R1")[0];
-        final RuleTerminalNode rtn3_1 = (RuleTerminalNode) ((RuleBase) kc.getKieBase()).getReteooBuilder().getTerminalNodes("org.drools.compiler.R3")[0];
+        final RuleTerminalNode rtn1_1 = (RuleTerminalNode) ((InternalRuleBase) kc.getKieBase()).getReteooBuilder().getTerminalNodes("org.drools.compiler.R1")[0];
+        final RuleTerminalNode rtn3_1 = (RuleTerminalNode) ((InternalRuleBase) kc.getKieBase()).getReteooBuilder().getTerminalNodes("org.drools.compiler.R3")[0];
 
         // Create a new jar for version 1.1.0
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
@@ -688,7 +688,7 @@ public class IncrementalCompilationTest {
         // try to update the container to version 1.1.0
         kc.updateToVersion(releaseId2);
 
-        final RuleBase rb_2 = ((RuleBase) kc.getKieBase());
+        final InternalRuleBase rb_2 = ((InternalRuleBase) kc.getKieBase());
 
         final RuleTerminalNode rtn1_2 = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes("org.drools.compiler.R1")[0];
         final RuleTerminalNode rtn3_2 = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes("org.drools.compiler.R3")[0];

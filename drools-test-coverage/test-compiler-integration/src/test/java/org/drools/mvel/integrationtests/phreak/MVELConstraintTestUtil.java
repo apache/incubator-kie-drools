@@ -16,12 +16,13 @@ package org.drools.mvel.integrationtests.phreak;
 
 import java.util.ArrayList;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.FieldValue;
 import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.test.model.Cheese;
-import org.drools.core.util.index.IndexUtil;
+import org.drools.core.util.index.ConstraintTypeOperator;
 import org.drools.mvel.MVELConstraint;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
@@ -44,39 +45,39 @@ public class MVELConstraintTestUtil extends MVELConstraint {
     }
 
     public MVELConstraintTestUtil(String expression, String operator, Declaration declaration, ReadAccessor extractor) {
-        this(expression, IndexUtil.ConstraintType.decode(operator), declaration, extractor);
+        this(expression, ConstraintTypeOperator.decode(operator), declaration, extractor);
     }
 
-    public MVELConstraintTestUtil(String expression, IndexUtil.ConstraintType constraintType, Declaration declaration, ReadAccessor extractor) {
+    public MVELConstraintTestUtil(String expression, ConstraintTypeOperator constraintType, Declaration declaration, ReadAccessor extractor) {
         super(new ArrayList<String>(), expression, new Declaration[] { declaration }, null, null, constraintType, declaration, extractor, expression.contains(":="));
     }
 
     @Override
-    protected ParserConfiguration getParserConfiguration(ReteEvaluator reteEvaluator) {
+    protected ParserConfiguration getParserConfiguration(ValueResolver valueResolver) {
         ParserConfiguration parserConfiguration = new ParserConfiguration();
         parserConfiguration.addImport(Cheese.class);
         return parserConfiguration;
     }
 
-    private static IndexUtil.ConstraintType findConstraintTypeForExpression(String expression) {
+    private static ConstraintTypeOperator findConstraintTypeForExpression(String expression) {
         if (expression.contains("==")) {
-            return IndexUtil.ConstraintType.EQUAL;
+            return ConstraintTypeOperator.EQUAL;
         }
         if (expression.contains("!=")) {
-            return IndexUtil.ConstraintType.NOT_EQUAL;
+            return ConstraintTypeOperator.NOT_EQUAL;
         }
         if (expression.contains(">")) {
-            return IndexUtil.ConstraintType.GREATER_THAN;
+            return ConstraintTypeOperator.GREATER_THAN;
         }
         if (expression.contains(">=")) {
-            return IndexUtil.ConstraintType.GREATER_OR_EQUAL;
+            return ConstraintTypeOperator.GREATER_OR_EQUAL;
         }
         if (expression.contains("<")) {
-            return IndexUtil.ConstraintType.LESS_THAN;
+            return ConstraintTypeOperator.LESS_THAN;
         }
         if (expression.contains("<=")) {
-            return IndexUtil.ConstraintType.LESS_OR_EQUAL;
+            return ConstraintTypeOperator.LESS_OR_EQUAL;
         }
-        return IndexUtil.ConstraintType.UNKNOWN;
+        return ConstraintTypeOperator.UNKNOWN;
     }
 }

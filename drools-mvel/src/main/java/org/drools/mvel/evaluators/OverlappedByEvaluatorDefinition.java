@@ -23,19 +23,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.core.util.TimeIntervalParser;
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.mvel.evaluators.VariableRestriction.TemporalVariableContextEntry;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.rule.accessor.Evaluator;
 import org.drools.core.rule.accessor.FieldValue;
 import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.time.Interval;
+import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * <p>The implementation of the <code>overlappedby</code> evaluator definition.</p>
@@ -209,9 +209,9 @@ public class OverlappedByEvaluatorDefinition
         }
 
         public OverlappedByEvaluator(final ValueType type,
-                              final boolean isNegated,
-                              final long[] parameters,
-                              final String paramText) {
+                                     final boolean isNegated,
+                                     final long[] parameters,
+                                     final String paramText) {
             super( type,
                    isNegated ? NOT_OVERLAPPED_BY : OVERLAPPED_BY );
             this.paramText = paramText;
@@ -245,62 +245,62 @@ public class OverlappedByEvaluatorDefinition
             return new Interval( 0, Interval.MAX );
         }
         
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor,
-                                final InternalFactHandle object1,
+                                final FactHandle object1,
                                 final FieldValue object2) {
             throw new RuntimeException( "The 'overlappedby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
-        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedRight(final ValueResolver valueResolver,
                                            final VariableContextEntry context,
-                                           final InternalFactHandle left) {
+                                           final FactHandle left) {
             if ( context.rightNull || 
-                    context.declaration.getExtractor().isNullValue( reteEvaluator, left.getObject() )) {
+                    context.declaration.getExtractor().isNullValue( valueResolver, left.getObject() )) {
                 return false;
             }
             
             long rightStartTS = ((TemporalVariableContextEntry) context).startTS;
-            long leftEndTS = ((EventFactHandle) left ).getEndTimestamp();
+            long leftEndTS = ((DefaultEventHandle) left ).getEndTimestamp();
             long dist = leftEndTS - rightStartTS;
-            return this.getOperator().isNegated() ^ ( 
-                    ((EventFactHandle) left ).getStartTimestamp() < rightStartTS &&
+            return this.getOperator().isNegated() ^ (
+                    ((DefaultEventHandle) left ).getStartTimestamp() < rightStartTS &&
                     leftEndTS < ((TemporalVariableContextEntry) context).endTS &&
                     dist >= this.minDev && dist <= maxDev );
         }
 
-        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedLeft(final ValueResolver valueResolver,
                                           final VariableContextEntry context,
-                                          final InternalFactHandle right) {
+                                          final FactHandle right) {
             if ( context.leftNull ||
-                    context.extractor.isNullValue( reteEvaluator, right.getObject() ) ) {
+                    context.extractor.isNullValue( valueResolver, right.getObject() ) ) {
                 return false;
             }
             
             long leftEndTS = ((TemporalVariableContextEntry) context).endTS;
-            long rightStartTS = ((EventFactHandle) right ).getStartTimestamp();
+            long rightStartTS = ((DefaultEventHandle) right ).getStartTimestamp();
             long dist = leftEndTS - rightStartTS;
             return this.getOperator().isNegated() ^ ( 
                     ((TemporalVariableContextEntry) context).startTS < rightStartTS &&
-                    leftEndTS < ((EventFactHandle) right).getEndTimestamp() &&
+                    leftEndTS < ((DefaultEventHandle) right).getEndTimestamp() &&
                     dist >= this.minDev && dist <= maxDev );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor1,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final ReadAccessor extractor2,
-                                final InternalFactHandle handle2) {
-            if ( extractor1.isNullValue( reteEvaluator, handle1.getObject() ) ||
-                    extractor2.isNullValue( reteEvaluator, handle2.getObject() ) ) {
+                                final FactHandle handle2) {
+            if ( extractor1.isNullValue( valueResolver, handle1.getObject() ) ||
+                    extractor2.isNullValue( valueResolver, handle2.getObject() ) ) {
                 return false;
             }
             
-            long startTS = ((EventFactHandle) handle1).getStartTimestamp();
-            long endTS = ((EventFactHandle) handle2).getEndTimestamp();
+            long startTS = ((DefaultEventHandle) handle1).getStartTimestamp();
+            long endTS = ((DefaultEventHandle) handle2).getEndTimestamp();
             long dist = endTS - startTS;
-            return this.getOperator().isNegated() ^ ( ((EventFactHandle) handle2).getStartTimestamp() < startTS &&
-                    endTS < ((EventFactHandle) handle1).getEndTimestamp() &&
+            return this.getOperator().isNegated() ^ (((DefaultEventHandle) handle2).getStartTimestamp() < startTS &&
+                    endTS < ((DefaultEventHandle) handle1).getEndTimestamp() &&
                     dist >= this.minDev && dist <= this.maxDev );
         }
 

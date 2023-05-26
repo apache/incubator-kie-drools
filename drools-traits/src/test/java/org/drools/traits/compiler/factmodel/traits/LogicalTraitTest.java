@@ -27,6 +27,7 @@ import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.TraitField;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.serialization.protobuf.SerializationHelper;
@@ -84,7 +85,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
 
@@ -158,7 +159,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -237,7 +238,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -311,7 +312,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -785,7 +786,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -878,7 +879,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
 
@@ -996,7 +997,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -1132,7 +1133,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -1201,7 +1202,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();

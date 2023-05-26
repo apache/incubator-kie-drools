@@ -34,5 +34,7 @@ public interface TimerJobFactoryManager {
     
     void removeTimerJobInstance(TimerJobInstance instance);
 
+    void removeTimerJobInstance(JobHandle handle);
+
     Collection<TimerJobInstance> getTimerJobInstances();
 }

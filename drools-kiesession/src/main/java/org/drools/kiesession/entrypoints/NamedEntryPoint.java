@@ -32,7 +32,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.EqualityKey;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -45,7 +45,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.Fact;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -77,7 +77,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
     private ObjectStore objectStore;
 
-    protected transient RuleBase ruleBase;
+    protected transient InternalRuleBase ruleBase;
 
     protected EntryPointId     entryPoint;
     protected EntryPointNode entryPointNode;
@@ -292,7 +292,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         update( (InternalFactHandle) handle, object, mask, object.getClass(), null);
     }
 
-    public static BitMask calculateUpdateBitMask(RuleBase ruleBase, Object object, String[] modifiedProperties) {
+    public static BitMask calculateUpdateBitMask(InternalRuleBase ruleBase, Object object, String[] modifiedProperties) {
         String modifiedTypeName;
         List<String> accessibleProperties;
         boolean isPropertyReactive;
@@ -353,7 +353,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
                 if (handle.isExpired()) {
                     // let an expired event potentially (re)enters the objectStore, but make sure that it will be clear at the end of the inference cycle
-                    ((EventFactHandle)handle).setPendingRemoveFromStore(true);
+                    ((DefaultEventHandle)handle).setPendingRemoveFromStore(true);
                 }
 
                 final ObjectTypeConf typeConf = changedObject ?
@@ -597,7 +597,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         return entryPointNode.getTypeConfReg();
     }
 
-    public RuleBase getKnowledgeBase() {
+    public InternalRuleBase getKnowledgeBase() {
         return ruleBase;
     }
 

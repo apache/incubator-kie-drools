@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.facttemplates.Fact;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.FactTemplateTypeConf;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -36,9 +36,9 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
 
     private final Map<Object, ObjectTypeConf> typeConfMap = new ConcurrentHashMap<>();
 
-    private final transient RuleBase ruleBase;
+    private final InternalRuleBase ruleBase;
 
-    public ObjectTypeConfigurationRegistry(RuleBase ruleBase) {
+    public ObjectTypeConfigurationRegistry(InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
 

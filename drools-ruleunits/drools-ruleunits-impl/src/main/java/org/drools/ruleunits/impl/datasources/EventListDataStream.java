@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.kie.api.time.SessionPseudoClock;
 import org.drools.ruleunits.api.DataProcessor;
 import org.drools.ruleunits.api.DataStream;
@@ -58,7 +58,7 @@ public class EventListDataStream<T> implements DataStream<T> {
     }
 
     private void insertAndAdvanceClock(T t, DataProcessor subscriber) {
-        EventFactHandle fh = (EventFactHandle) subscriber.insert(null, t);
+        DefaultEventHandle fh = (DefaultEventHandle) subscriber.insert(null, t);
         long timestamp = fh.getStartTimestamp();
         WorkingMemoryEntryPoint ep = fh.getEntryPoint(null);
         SessionPseudoClock clock = (SessionPseudoClock) ep.getReteEvaluator().getSessionClock();

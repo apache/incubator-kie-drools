@@ -36,6 +36,31 @@ public class MockFactHandle
         id  = in.readInt();
     }
 
+    @Override
+    public Object getObject() {
+        return this;
+    }
+
+    @Override
+    public boolean isNegated() {
+        return false;
+    }
+
+    @Override
+    public boolean isEvent() {
+        return false;
+    }
+
+    @Override
+    public boolean isExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isValid() {
+        return true;
+    }
+
     public MockFactHandle(final int id) {
         this.id = id;
     }
@@ -67,5 +92,10 @@ public class MockFactHandle
     public long getRecency() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    @Override
+    public Object as(Class klass) throws ClassCastException {
+        throw new UnsupportedOperationException();
     }
 }

@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -394,7 +394,7 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.iterator().next()).isEqualTo("Mario");
 
-        EntryPointNode epn = ((RuleBase) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
+        EntryPointNode epn = ((InternalRuleBase) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
         Iterator<ObjectTypeNode> otns = epn.getObjectTypeNodes().values().iterator();
         ObjectTypeNode otn = otns.next();
         if (otn.toString().contains( "InitialFact" )) {

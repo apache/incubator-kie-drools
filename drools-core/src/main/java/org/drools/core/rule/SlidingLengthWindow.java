@@ -23,21 +23,20 @@ import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.DefaultEventHandle;
+import org.drools.core.common.PhreakPropagationContextFactory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.common.PropagationContext;
-
-import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
+import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * A length window behavior implementation
  */
 public class SlidingLengthWindow
-    implements
-    Externalizable,
-    Behavior {
+        implements
+        Externalizable,
+        BehaviorRuntime {
 
     protected int size;
 
@@ -56,17 +55,17 @@ public class SlidingLengthWindow
     /**
      * @inheritDoc
      *
-     * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
+     * @see Externalizable#readExternal(ObjectInput)
      */
     public void readExternal(final ObjectInput in) throws IOException,
-                                                  ClassNotFoundException {
+                                                          ClassNotFoundException {
         this.size = in.readInt();
     }
 
     /**
      * @inheritDoc
      *
-     * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
+     * @see Externalizable#writeExternal(ObjectOutput)
      */
     public void writeExternal(final ObjectOutput out) throws IOException {
         out.writeInt( this.size );
@@ -91,7 +90,7 @@ public class SlidingLengthWindow
         this.size = size;
     }
 
-    public Behavior.Context createContext() {
+    public BehaviorContext createContext() {
         return new SlidingLengthWindowContext( this.size );
     }
 
@@ -99,23 +98,23 @@ public class SlidingLengthWindow
      * @inheritDoc
      */
     public boolean assertFact(final Object context,
-                              final InternalFactHandle handle,
+                              final FactHandle handle,
                               final PropagationContext pctx,
                               final ReteEvaluator reteEvaluator) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
         window.pos = (window.pos + 1) % window.handles.length;
         if ( window.handles[window.pos] != null ) {
-            final EventFactHandle previous = window.handles[window.pos];
+            final DefaultEventHandle previous = window.handles[window.pos];
             // retract previous
-            final PropagationContext expiresPctx = createPropagationContextForFact( reteEvaluator, previous, PropagationContext.Type.EXPIRATION );
+            final PropagationContext expiresPctx = PhreakPropagationContextFactory.createPropagationContextForFact(reteEvaluator, previous, PropagationContext.Type.EXPIRATION);
             ObjectTypeNode.doRetractObject( previous, expiresPctx, reteEvaluator);
         }
-        window.handles[window.pos] = (EventFactHandle) handle;
+        window.handles[window.pos] = (DefaultEventHandle) handle;
         return true;
     }
 
     public void retractFact(final Object context,
-                            final InternalFactHandle handle,
+                            final FactHandle handle,
                             final PropagationContext pctx,
                             final ReteEvaluator reteEvaluator) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
@@ -153,15 +152,15 @@ public class SlidingLengthWindow
      * A Context object for length windows
      */
     public static class SlidingLengthWindowContext
-        implements
-        Behavior.Context,
-        Externalizable {
+            implements
+            BehaviorContext,
+            Externalizable {
 
-        public EventFactHandle[] handles;
+        public DefaultEventHandle[] handles;
         public int               pos = 0;
 
         public SlidingLengthWindowContext(final int size) {
-            this.handles = new EventFactHandle[size];
+            this.handles = new DefaultEventHandle[size];
         }
 
         /**
@@ -171,9 +170,9 @@ public class SlidingLengthWindow
         }
 
         public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
+                                                        ClassNotFoundException {
             this.pos = in.readInt();
-            this.handles = (EventFactHandle[]) in.readObject();
+            this.handles = (DefaultEventHandle[]) in.readObject();
 
         }
 
@@ -182,7 +181,7 @@ public class SlidingLengthWindow
             out.writeObject( this.handles );
         }
 
-        public Collection<EventFactHandle> getFactHandles() {
+        public Collection<DefaultEventHandle> getFactHandles() {
             return Collections.emptyList();
         }
     }

@@ -30,6 +30,7 @@ import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.base.ObjectType;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class TripleNonIndexSkipBetaConstraints
     implements
@@ -92,7 +93,7 @@ public class TripleNonIndexSkipBetaConstraints
 
     public void updateFromFactHandle(ContextEntry[] context,
                                      ReteEvaluator reteEvaluator,
-                                     InternalFactHandle handle) {
+                                     FactHandle handle) {
         constraints.updateFromFactHandle( context, reteEvaluator, handle );
     }
 
@@ -139,7 +140,7 @@ public class TripleNonIndexSkipBetaConstraints
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
-                                       final InternalFactHandle handle) {
+                                       final FactHandle handle) {
         return this.constraint0.isAllowedCachedLeft( context[0],
                                                      handle ) && this.constraint1.isAllowedCachedLeft( context[1],
                                                                                                        handle ) && this.constraint2.isAllowedCachedLeft( context[2],

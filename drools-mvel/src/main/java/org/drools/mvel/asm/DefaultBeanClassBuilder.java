@@ -307,35 +307,35 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     }
 
     private void implementReactivity(ClassWriter cw, ClassDefinition classDef) {
-        final String LEFT_TUPLES_FIELD_NAME = "_lts";
+        final String TUPLES_FIELD_NAME = "_ts";
         final String TYPE_NAME = BuildUtils.getInternalType( classDef.getClassName() );
 
         FieldVisitor fv;
         /*
-            private Collection<Tuple> _lts;
+            private Collection<BaseTuple> _ts;
          */
         {
-            fv = cw.visitField( ACC_PRIVATE, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;", "Ljava/util/Collection<Lorg/drools/core/reteoo/Tuple;>;", null );
+            fv = cw.visitField( ACC_PRIVATE, TUPLES_FIELD_NAME, "Ljava/util/Collection;", "Ljava/util/Collection<Lorg/drools/core/reteoo/BaseTuple;>;", null );
             fv.visitEnd();
         }
 
         MethodVisitor mv;
         /*
-            public void addLeftTuple(Tuple leftTuple) {
-                if (_lts == null) {
-                    _lts = new HashSet<Tuple>();
+            public void addTuple(BaseTuple tuple) {
+                if (_ts == null) {
+                    _ts = new HashSet<BaseTuple>();
                 }
-                _lts.add(leftTuple);
+                _ts.add(tuple);
             }
          */
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "addLeftTuple", "(Lorg/drools/core/reteoo/Tuple;)V", null, null );
+            mv = cw.visitMethod( ACC_PUBLIC, "addTuple", "(Lorg/drools/core/reteoo/BaseTuple;)V", null, null );
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel( l0 );
             mv.visitLineNumber( 30, l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
             Label l1 = new Label();
             mv.visitJumpInsn( IFNONNULL, l1 );
             Label l2 = new Label();
@@ -345,12 +345,12 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             mv.visitTypeInsn( NEW, "java/util/HashSet" );
             mv.visitInsn( DUP );
             mv.visitMethodInsn( INVOKESPECIAL, "java/util/HashSet", "<init>", "()V", false );
-            mv.visitFieldInsn( PUTFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
+            mv.visitFieldInsn( PUTFIELD, TYPE_NAME, TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
             mv.visitLabel( l1 );
             mv.visitLineNumber( 33, l1 );
             mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitMethodInsn( INVOKEINTERFACE, "java/util/Collection", "add", "(Ljava/lang/Object;)Z", true );
             mv.visitInsn( POP );
@@ -361,27 +361,27 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             Label l4 = new Label();
             mv.visitLabel( l4 );
             mv.visitLocalVariable( "this", "L" + TYPE_NAME + ";", null, l0, l4, 0 );
-            mv.visitLocalVariable( "leftTuple", "Lorg/drools/core/reteoo/Tuple;", null, l0, l4, 1 );
+            mv.visitLocalVariable( "tuple", "Lorg/drools/core/reteoo/BaseTuple;", null, l0, l4, 1 );
             mv.visitMaxs( 3, 2 );
             mv.visitEnd();
         }
         /*
-            public Collection<Tuple> getLeftTuples() {
-                return _lts != null ? _lts : Collections.emptyList();
+            public Collection<BaseTuple> getTuples() {
+                return _ts != null ? _ts : Collections.emptyList();
             }
          */
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "getLeftTuples", "()Ljava/util/Collection;", "()Ljava/util/Collection<Lorg/drools/core/reteoo/Tuple;>;", null );
+            mv = cw.visitMethod( ACC_PUBLIC, "getTuples", "()Ljava/util/Collection;", "()Ljava/util/Collection<Lorg/drools/core/reteoo/BaseTuple;>;", null );
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel( l0 );
             mv.visitLineNumber( 37, l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;");
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, TUPLES_FIELD_NAME, "Ljava/util/Collection;");
             Label l1 = new Label();
             mv.visitJumpInsn( IFNULL, l1 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
             Label l2 = new Label();
             mv.visitJumpInsn( GOTO, l2 );
             mv.visitLabel( l1 );
@@ -420,18 +420,18 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             mv.visitEnd();
         }
         /*
-            public void removeLeftTuple(Tuple leftTuple) {
-                _lts.remove(leftTuple);
+            public void removeTuple(BaseTuple tuple) {
+                _ts.remove(tuple);
             }
          */
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "removeLeftTuple", "(Lorg/drools/core/reteoo/Tuple;)V", null, null );
+            mv = cw.visitMethod( ACC_PUBLIC, "removeTuple", "(Lorg/drools/core/reteoo/BaseTuple;)V", null, null );
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel( l0 );
             mv.visitLineNumber( 46, l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitMethodInsn( INVOKEINTERFACE, "java/util/Collection", "remove", "(Ljava/lang/Object;)Z", true );
             mv.visitInsn( POP );
@@ -442,7 +442,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             Label l2 = new Label();
             mv.visitLabel( l2 );
             mv.visitLocalVariable( "this", "Lorg/drools/core/phreak/AbstractReactiveObject;", null, l0, l2, 0 );
-            mv.visitLocalVariable( "leftTuple", "Lorg/drools/core/reteoo/Tuple;", null, l0, l2, 1 );
+            mv.visitLocalVariable( "tuple", "Lorg/drools/core/reteoo/BaseTuple;", null, l0, l2, 1 );
             mv.visitMaxs( 2, 2 );
             mv.visitEnd();
         }

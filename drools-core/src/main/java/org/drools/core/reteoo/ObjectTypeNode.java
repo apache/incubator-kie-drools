@@ -27,6 +27,7 @@ import java.util.List;
 import org.drools.core.InitialFact;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.FactHandleClassStore;
@@ -39,12 +40,12 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.base.ObjectType;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
+import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
@@ -310,7 +311,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         }
     }
 
-    public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
+    public static void retractLeftTuples( InternalFactHandle<?> factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
         factHandle.forEachLeftTuple( lt -> {
             LeftTupleSink sink = lt.getTupleSink();
             ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt, context, reteEvaluator);
@@ -327,7 +328,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         linkedTuples.clearLeftTuples(partition);
     }
 
-    public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
+    public static void retractRightTuples( InternalFactHandle<?> factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
         factHandle.forEachRightTuple( rt -> rt.retractTuple( context, reteEvaluator) );
         factHandle.clearRightTuples();
     }
@@ -520,8 +521,9 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         @Override
         public void execute(JobContext ctx) {
             ExpireJobContext context = (ExpireJobContext) ctx;
+
             context.reteEvaluator.addPropagation(context.expireAction);
-            context.getExpireAction().getFactHandle().removeJob( context.getJobHandle());
+            context.getExpireAction().getFactHandle().removeJob( (DefaultJobHandle) context.getJobHandle());
         }
     }
 
@@ -588,7 +590,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
     }
 
 
-    public static class ObjectTypeNodeMemory implements Memory {
+    public static class ObjectTypeNodeMemory<T> implements Memory {
         private FactHandleClassStore store;
         private Class<?> classType;
 
@@ -606,8 +608,8 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
             return NodeTypeEnums.ObjectTypeNode;
         }
 
-        public Iterator<InternalFactHandle> iterator() {
-            return store.iterator();
+        public <T> Iterator<InternalFactHandle<?>> iterator() {
+            return (Iterator<InternalFactHandle<?>>) store.iterator();
         }
 
         @Override
@@ -654,19 +656,19 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         }
     }
 
-    public static class InitialFactObjectTypeNodeMemory extends ObjectTypeNodeMemory {
-        private List<InternalFactHandle> list = Collections.emptyList();
+    public static class InitialFactObjectTypeNodeMemory<T> extends ObjectTypeNodeMemory<T>  {
+        private List<InternalFactHandle<T>> list = Collections.emptyList();
 
         InitialFactObjectTypeNodeMemory(Class<?> classType) {
             super(classType);
         }
 
-        public void add(InternalFactHandle factHandle) {
+        public void add(InternalFactHandle<T> factHandle) {
             list = Collections.singletonList( factHandle );
         }
 
         @Override
-        public Iterator<InternalFactHandle> iterator() {
+        public Iterator<InternalFactHandle<T>> iterator() {
             return list.iterator();
         }
 

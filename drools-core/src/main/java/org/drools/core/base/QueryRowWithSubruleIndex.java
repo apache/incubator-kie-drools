@@ -16,19 +16,20 @@
 package org.drools.core.base;
 
 import org.drools.core.common.InternalFactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 
 
 public class QueryRowWithSubruleIndex {
-    private InternalFactHandle[] handles;
+    private FactHandle[] handles;
     private int subruleIndex;
     
-    public QueryRowWithSubruleIndex(InternalFactHandle[] handles,
+    public QueryRowWithSubruleIndex(FactHandle[] handles,
                                     int subruleIndex) {
         this.handles = handles;
         this.subruleIndex = subruleIndex;
     }
 
-    public InternalFactHandle[] getHandles() {
+    public FactHandle[] getHandles() {
         return handles;
     }
 

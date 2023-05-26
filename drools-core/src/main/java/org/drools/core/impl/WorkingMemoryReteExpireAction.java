@@ -18,7 +18,7 @@ package org.drools.core.impl;
 import java.io.IOException;
 
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
@@ -33,27 +33,27 @@ public class WorkingMemoryReteExpireAction
         extends PropagationEntry.AbstractPropagationEntry
         implements WorkingMemoryAction {
 
-    protected EventFactHandle factHandle;
+    protected DefaultEventHandle<?> factHandle;
     protected ObjectTypeNode node;
 
     protected WorkingMemoryReteExpireAction() { }
 
-    public WorkingMemoryReteExpireAction(final EventFactHandle factHandle) {
+    public WorkingMemoryReteExpireAction(final DefaultEventHandle factHandle) {
         this.factHandle = factHandle;
     }
 
-    public WorkingMemoryReteExpireAction(final EventFactHandle factHandle,
+    public WorkingMemoryReteExpireAction(final DefaultEventHandle factHandle,
                                          final ObjectTypeNode node) {
         this(factHandle);
         this.node = node;
         factHandle.increaseOtnCount();
     }
 
-    public EventFactHandle getFactHandle() {
+    public DefaultEventHandle getFactHandle() {
         return factHandle;
     }
 
-    public void setFactHandle(EventFactHandle factHandle) {
+    public void setFactHandle(DefaultEventHandle factHandle) {
         this.factHandle = factHandle;
     }
 
@@ -66,7 +66,7 @@ public class WorkingMemoryReteExpireAction
     }
 
     public WorkingMemoryReteExpireAction(MarshallerReaderContext context) throws IOException {
-        this.factHandle = (EventFactHandle)context.getHandles().get(context.readLong());
+        this.factHandle = (DefaultEventHandle)context.getHandles().get(context.readLong());
         final int nodeId = context.readInt();
         this.node = (ObjectTypeNode) context.getSinks().get(nodeId);
     }
@@ -88,7 +88,7 @@ public class WorkingMemoryReteExpireAction
         expireFactHandle( reteEvaluator, factHandle );
     }
 
-    private static void expireFactHandle( ReteEvaluator reteEvaluator, EventFactHandle factHandle ) {
+    private static void expireFactHandle( ReteEvaluator reteEvaluator, DefaultEventHandle factHandle) {
         factHandle.decreaseOtnCount();
         if (factHandle.getOtnCount() == 0) {
             factHandle.setExpired( true );
@@ -117,10 +117,10 @@ public class WorkingMemoryReteExpireAction
     }
 
     public static class PartitionAwareWorkingMemoryReteExpireAction extends PropagationEntry.AbstractPartitionedPropagationEntry {
-        private final EventFactHandle factHandle;
+        private final DefaultEventHandle factHandle;
         private final ObjectTypeNode node;
 
-        public PartitionAwareWorkingMemoryReteExpireAction(EventFactHandle factHandle, ObjectTypeNode node, int partition) {
+        public PartitionAwareWorkingMemoryReteExpireAction(DefaultEventHandle factHandle, ObjectTypeNode node, int partition) {
             super( partition );
             this.factHandle = factHandle;
             this.node = node;

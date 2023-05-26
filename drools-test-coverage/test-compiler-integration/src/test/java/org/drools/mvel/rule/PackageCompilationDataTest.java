@@ -21,16 +21,16 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.security.CodeSource;
 
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.accessor.EvalExpression;
-import org.drools.core.reteoo.Tuple;
 import org.junit.Test;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 
@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PackageCompilationDataTest {
     public static class TestEvalExpression implements EvalExpression {
         public Object createContext() { return null; }
-        public boolean evaluate(Tuple t, Declaration[] d, ReteEvaluator reteEvaluator, Object context ) {
+        public boolean evaluate(BaseTuple t, Declaration[] d, ValueResolver valueResolver, Object context) {
             return false;
         }
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

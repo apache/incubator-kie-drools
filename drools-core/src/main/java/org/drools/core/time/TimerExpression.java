@@ -14,7 +14,9 @@
 
 package org.drools.core.time;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.reteoo.Tuple;
 
@@ -22,5 +24,5 @@ public interface TimerExpression {
 
     Declaration[] getDeclarations();
 
-    Object getValue(Tuple leftTuple, Declaration[] declrs, ReteEvaluator reteEvaluator);
+    Object getValue(BaseTuple leftTuple, Declaration[] declrs, ValueResolver valueResolver);
 }

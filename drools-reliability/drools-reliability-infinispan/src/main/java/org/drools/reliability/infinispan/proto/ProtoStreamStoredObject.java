@@ -18,7 +18,7 @@ package org.drools.reliability.infinispan.proto;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.reliability.core.ReliabilityRuntimeException;
@@ -111,7 +111,7 @@ public class ProtoStreamStoredObject implements StoredObject {
     public void repropagate(InternalWorkingMemoryEntryPoint ep) {
         if (isEvent()) {
             FactHandleFactory fhFactory = ep.getHandleFactory();
-            EventFactHandle eFh = fhFactory.createEventFactHandle(fhFactory.getNextId(), object, fhFactory.getNextRecency(), ep, timestamp, duration);
+            DefaultEventHandle eFh = fhFactory.createEventFactHandle(fhFactory.getNextId(), object, fhFactory.getNextRecency(), ep, timestamp, duration);
             ep.insert(eFh);
         } else {
             ep.insert(object);

@@ -16,12 +16,12 @@ package org.drools.mvel.asm;
 
 import java.util.Map;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.CompiledInvoker;
 import org.drools.core.rule.accessor.EvalExpression;
-import org.drools.core.reteoo.Tuple;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 
@@ -70,7 +70,7 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
                 mv.visitInsn( ARETURN );
             }
         }).addMethod(ACC_PUBLIC, "replaceDeclaration", generator.methodDescr(null, Declaration.class, Declaration.class)
-        ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Tuple.class, Declaration[].class, ReteEvaluator.class, Object.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
+        ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, BaseTuple.class, Declaration[].class, ValueResolver.class, Object.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 Label syncStart = new Label();
                 Label syncEnd = new Label();
@@ -96,7 +96,7 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
                 mv.visitVarInsn(ALOAD, 2);
                 mv.visitVarInsn(ALOAD, 3);
                 // ... EvalGenerator.generate(this, tuple, declarations, workingMemory)
-                invokeStatic(EvalGenerator.class, "generate", null, EvalStub.class, Tuple.class, Declaration[].class, ReteEvaluator.class);
+                invokeStatic(EvalGenerator.class, "generate", null, EvalStub.class, BaseTuple.class, Declaration[].class, ValueResolver.class);
                 mv.visitLabel(ifNotInitialized);
                 mv.visitVarInsn(ALOAD, 5);
                 mv.visitInsn(MONITOREXIT);
@@ -116,7 +116,7 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
                 mv.visitVarInsn(ALOAD, 2);
                 mv.visitVarInsn(ALOAD, 3);
                 mv.visitVarInsn(ALOAD, 4);
-                invokeInterface(EvalExpression.class, "evaluate", Boolean.TYPE, Tuple.class, Declaration[].class, ReteEvaluator.class, Object.class);
+                invokeInterface(EvalExpression.class, "evaluate", Boolean.TYPE, BaseTuple.class, Declaration[].class, ValueResolver.class, Object.class);
                 mv.visitInsn(IRETURN);
             }
         }).addMethod(ACC_PUBLIC, "setEval", generator.methodDescr(null, EvalExpression.class), new ClassGenerator.MethodBody() {

@@ -32,7 +32,6 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -133,7 +132,6 @@ public class MVELAccumulateBuilderTest {
                        accContext,
                        tuple,
                        f1,
-                       null,
                        match,
                        ksession);
 

@@ -16,7 +16,7 @@
 
 package org.drools.kiesession;
 
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
@@ -56,8 +56,8 @@ public class ReteooRuleBaseMultiThreadedTest {
         // while removing rules from a package when said package is removed from the rulebase
         rule = new RuleImpl("Test");
         rule.setDialect("java");
-        rule.setConsequence(new Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper, ReteEvaluator reteEvaluator) throws Exception {
+        rule.setConsequence(new Consequence<KnowledgeHelper>() {
+            public void evaluate(KnowledgeHelper knowledgeHelper, ValueResolver valueResolver) throws Exception {
 
             }
             

@@ -48,7 +48,7 @@ import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.rule.Behavior;
+import org.drools.core.rule.BehaviorRuntime;
 import org.drools.core.time.TimeUtils;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
@@ -528,11 +528,11 @@ public class ModelGenerator {
         } );
         for ( BehaviorDescr behaviorDescr : declaration.getBehaviors() ) {
             MethodCallExpr windowCall = createDslTopLevelMethod(WINDOW_CALL);
-            if ( Behavior.BehaviorType.TIME_WINDOW.matches(behaviorDescr.getSubType() ) ) {
+            if ( BehaviorRuntime.BehaviorType.TIME_WINDOW.matches(behaviorDescr.getSubType()) ) {
                 windowCall.addArgument( "org.drools.model.Window.Type.TIME" );
                 windowCall.addArgument( "" + TimeUtils.parseTimeString(behaviorDescr.getParameters().get(0 ) ) );
             }
-            if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getSubType() ) ) {
+            if ( BehaviorRuntime.BehaviorType.LENGTH_WINDOW.matches(behaviorDescr.getSubType()) ) {
                 windowCall.addArgument( "org.drools.model.Window.Type.LENGTH" );
                 windowCall.addArgument( "" + Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );
             }

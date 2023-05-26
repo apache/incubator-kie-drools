@@ -22,8 +22,8 @@ import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
@@ -69,9 +69,9 @@ public class ReteooRuleBuilderTest {
 
         rule.setLhs( lhsroot );
 
-        final Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence<KnowledgeHelper>() {
             public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 ReteEvaluator reteEvaluator) throws Exception {
+                                 ValueResolver valueResolver) throws Exception {
                 System.out.println( "Consequence!" );
             }
 

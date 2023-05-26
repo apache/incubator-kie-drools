@@ -31,7 +31,7 @@ public interface IndexFactory {
             return new TupleList();
         }
 
-        if (indexSpec.getConstraintType() == IndexUtil.ConstraintType.EQUAL) {
+        if (indexSpec.getConstraintType() == ConstraintTypeOperator.EQUAL) {
             return IndexMemory.createEqualityMemory(indexSpec, false);
         }
 
@@ -50,7 +50,7 @@ public interface IndexFactory {
             return new TupleList();
         }
 
-        if (indexSpec.getConstraintType() == IndexUtil.ConstraintType.EQUAL) {
+        if (indexSpec.getConstraintType() == ConstraintTypeOperator.EQUAL) {
             return IndexMemory.createEqualityMemory(indexSpec, true);
         }
 

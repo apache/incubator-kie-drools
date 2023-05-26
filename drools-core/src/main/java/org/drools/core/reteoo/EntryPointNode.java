@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
@@ -314,7 +314,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
         }
 
         if (handle.isEvent()) {
-            ((EventFactHandle) handle).unscheduleAllJobs(reteEvaluator);
+            ((DefaultEventHandle) handle).unscheduleAllJobs(reteEvaluator);
         }
     }
 

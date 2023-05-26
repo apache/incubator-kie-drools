@@ -209,12 +209,12 @@ public class ImpactAnalysisKieModule implements InternalKieModule {
     }
 
     @Override
-    public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf ) {
+    public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf) {
         return internalKieModule.createKieBase( kBaseModel, kieProject, buildContext, conf );
     }
 
     @Override
-    public void afterKieBaseCreationUpdate( String name, InternalKnowledgeBase kBase ) {
+    public void afterKieBaseCreationUpdate( String name, InternalKnowledgeBase kBase) {
         internalKieModule.afterKieBaseCreationUpdate( name, kBase );
     }
 

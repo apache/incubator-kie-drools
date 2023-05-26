@@ -379,7 +379,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         
         final Compiler compiler = new Compiler(nameEnvironment, policy, compilerOptions, compilerRequestor, problemFactory);
 
-        if ( JavaCompiler.DUMP_GENERATED_CLASSES ) {
+        if ( true ) { //JavaCompiler.DUMP_GENERATED_CLASSES ) {
             dumpUnits( compilationUnits, pReader );
         }
 
@@ -394,11 +394,12 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         for (ICompilationUnit unit : compilationUnits) {
             String name = ( (CompilationUnit) unit ).fileName;
             String source = new String( reader.getBytes( name ) );
-            try {
-                IoUtils.write( new java.io.File(name.replace( '/', '.' )), reader.getBytes( name ) );
-            } catch (IOException e) {
-                throw new RuntimeException( e );
-            }
+//            System.out.println(source);
+//            try {
+//                IoUtils.write( new java.io.File(name.replace( '/', '.' )), reader.getBytes( name ) );
+//            } catch (IOException e) {
+//                throw new RuntimeException( e );
+//            }
         }
     }
 

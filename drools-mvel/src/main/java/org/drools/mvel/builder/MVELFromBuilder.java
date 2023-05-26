@@ -25,7 +25,7 @@ import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.compiler.rule.builder.FromBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
+import org.drools.core.reteoo.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.From;

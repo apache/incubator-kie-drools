@@ -319,7 +319,7 @@ public abstract class WorkingMemoryLogger
             String declaration = declarations.get(i);
 
             Declaration decl = declsMap.get(declaration);
-            InternalFactHandle handle = ( (Tuple) match ).get( decl );
+            FactHandle handle = ( (Tuple) match ).get( decl );
             if (!handle.isValid()) {
                 continue;
             }
@@ -341,12 +341,12 @@ public abstract class WorkingMemoryLogger
     }
 
     private String extractFactHandleIds(InternalMatch internalMatch) {
-        InternalFactHandle activatingFact = internalMatch.getPropagationContext().getFactHandle();
+        FactHandle activatingFact = internalMatch.getPropagationContext().getFactHandle();
         StringBuilder sb = new StringBuilder();
         if (activatingFact != null) {
             sb.append(activatingFact.getId());
         }
-        InternalFactHandle[] factHandles = internalMatch.getTuple().toFactHandles();
+        FactHandle[] factHandles = internalMatch.getTuple().toFactHandles();
         for (int i = 0; i < factHandles.length; i++) {
             if (activatingFact != null) {
                 if (activatingFact.getId() == factHandles[i].getId()) {

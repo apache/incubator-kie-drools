@@ -16,21 +16,21 @@
 
 package org.drools.core.reteoo;
 
-import java.io.Serializable;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.rule.Declaration;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.TupleList;
+import org.kie.api.runtime.rule.FactHandle;
+
+import java.io.Serializable;
 
 /**
  * Partial matches are propagated through the Rete network as <code>Tuple</code>s. Each <code>Tuple</code>
  * Is able to return the <code>FactHandleImpl</code> members of the partial match for the requested pattern.
  * The pattern refers to the index position of the <code>FactHandleImpl</code> in the underlying implementation.
  */
-public interface Tuple extends Serializable, Entry<Tuple> {
+public interface Tuple extends BaseTuple, Serializable, Entry<Tuple> {
 
     short NONE   = 0;
     short INSERT = 1;
@@ -38,62 +38,12 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     short DELETE = 3;
     short NORMALIZED_DELETE = 4;
 
-    Object getObject(int pattern);
-
-    Object getObject(Declaration declaration);
-
+    @Override
     default Object[] toObjects() {
         return toObjects(false);
     }
 
-    Object[] toObjects(boolean reverse);
-
-    /**
-     * Returns the <code>FactHandle</code> for the given pattern index. If the pattern is empty
-     * It returns null.
-     *
-     * @param pattern
-     *      The index of the pattern from which the <code>FactHandleImpl</code> is to be returned
-     * @return
-     *      The <code>FactHandle</code>
-     */
-    InternalFactHandle get(int pattern);
-
-    /**
-     * Returns the tuple at the given index
-     * @param index
-     * @return
-     */
-    Tuple getTuple(int index);
-
-    /**
-     * Returns the <code>FactHandle</code> for the given <code>Declaration</code>, which in turn
-     * specifcy the <code>Pattern</code> that they depend on.
-     *
-     * @param declaration
-     *      The <code>Declaration</code> which specifies the <code>Pattern</code>
-     * @return
-     *      The <code>FactHandle</code>
-     */
-    InternalFactHandle get(Declaration declaration);
-
-    /**
-     * Returns the fact handles in reverse order
-     */
-    InternalFactHandle[] toFactHandles();
-
-    /**
-     * Returns the size of this tuple in number of elements (patterns)
-     */
-    int size();
-
-    int getIndex();
-
-    Tuple getParent();
-
-    InternalFactHandle getFactHandle();
-
-    void setFactHandle( InternalFactHandle handle );
+    void setFactHandle( FactHandle handle);
 
     InternalFactHandle getOriginalFactHandle();
 
@@ -169,6 +119,8 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     void setLastChild( LeftTuple firstChild );
 
     <T extends Tuple> T getHandlePrevious();
+
+    Tuple getParent();
 
     void setHandlePrevious( Tuple leftParentLeft );
 

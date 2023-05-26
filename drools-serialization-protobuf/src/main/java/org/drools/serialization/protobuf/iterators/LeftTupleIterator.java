@@ -88,7 +88,7 @@ public class LeftTupleIterator
             Tuple leftTuple = BetaNode.getFirstTuple( memory.getLeftTupleMemory(), localIt );
             if( leftTuple != null ) {
                 AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
-                return accctx.getResultLeftTuple();
+                return (LeftTuple) accctx.getResultLeftTuple();
             }
             return null;
         }
@@ -154,7 +154,7 @@ public class LeftTupleIterator
                 otnIterator = wm.getNodeMemory( otn ).iterator();
 
                 while (otnIterator.hasNext()) {
-                    InternalFactHandle handle = otnIterator.next();
+                    InternalFactHandle<?> handle = otnIterator.next();
                     LeftTuple leftTuple = handle.findFirstLeftTuple( lt -> lt.getTupleSink() == sink );
                     if ( leftTuple != null ) {
                         return leftTuple;
@@ -228,7 +228,7 @@ public class LeftTupleIterator
 
             // We have exhausted the current FactHandle, now try the next
             while ( otnIterator.hasNext() ) {
-                InternalFactHandle handle = otnIterator.next();
+                InternalFactHandle<?> handle = otnIterator.next();
                 leftTuple = handle.findFirstLeftTuple( lt -> lt.getTupleSink() == sink );
                 if ( leftTuple != null ) {
                     return leftTuple;

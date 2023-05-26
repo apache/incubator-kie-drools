@@ -85,7 +85,7 @@ public class ParallelEvaluationTest {
         final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
 
-        EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNode( EntryPointId.DEFAULT );
+        EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNode(EntryPointId.DEFAULT);
         ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( Integer.class ) );
         assertThat(((CompositePartitionAwareObjectSinkAdapter) otn.getObjectSinkPropagator()).isHashed()).isTrue();
 

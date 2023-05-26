@@ -64,6 +64,7 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
         if ( tmp != null ) {
             queue = tmp;
         }
+//        session = ((DroolsObjectInputStream) in).getWorkingMemory();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -112,10 +113,8 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
 
     @Override
     public synchronized void removeJob(JobHandle jobHandle) {
-        jobHandle.setCancel(true);
-        TimerJobInstance timerJobInstance = jobHandle.getTimerJobInstance();
-        jobFactoryManager.removeTimerJobInstance(timerJobInstance);
-        timerJobInstance.cancel();
+        jobHandle.cancel();
+        jobFactoryManager.removeTimerJobInstance(jobHandle);
         if ( ++cancelledJob > 1000 ) {
             purgeCancelledJob();
         }

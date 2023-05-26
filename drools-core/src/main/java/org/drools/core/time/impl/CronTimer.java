@@ -23,15 +23,20 @@ import java.io.ObjectOutput;
 import java.text.ParseException;
 import java.util.Map;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerExpression;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
-import static org.drools.core.time.TimeUtils.evalDateExpression;
+import static org.drools.core.time.TimerExpressionUtil.evalDateExpression;
+
+//import static org.drools.core.time.TimerExpressionUtils.evalDateExpression;
 
 public class CronTimer extends BaseTimer
     implements
@@ -95,17 +100,17 @@ public class CronTimer extends BaseTimer
     }
 
     public Trigger createTrigger(long timestamp,
-                                 Tuple leftTuple,
-                                 DefaultJobHandle jh,
+                                 BaseTuple leftTuple,
+                                 JobHandle jh,
                                  String[] calendarNames,
                                  Calendars calendars,
                                  Declaration[][] declrs,
-                                 ReteEvaluator reteEvaluator) {
+                                 ValueResolver valueResolver) {
         Declaration[] startDeclarations = declrs[0];
 
         return new CronTrigger( timestamp,
-                                evalDateExpression( this.startTime, leftTuple, startDeclarations, reteEvaluator ),
-                                evalDateExpression( this.endTime, leftTuple, startDeclarations, reteEvaluator ),
+                                evalDateExpression( this.startTime, leftTuple, startDeclarations, valueResolver ),
+                                evalDateExpression( this.endTime, leftTuple, startDeclarations, valueResolver ),
                                 this.repeatLimit,
                                 this.cronExpression,
                                 calendarNames,
