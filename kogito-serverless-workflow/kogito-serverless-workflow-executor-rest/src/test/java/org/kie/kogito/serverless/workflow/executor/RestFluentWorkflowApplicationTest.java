@@ -40,17 +40,27 @@ class RestFluentWorkflowApplicationTest {
 
     @RegisterExtension
     static WireMockExtension wm = WireMockExtension.newInstance()
-            .options(wireMockConfig().dynamicPort())
+            .options(wireMockConfig().dynamicPort().dynamicHttpsPort())
             .build();
 
     @Test
-    void restInvocation() {
+    void httpsInvocation() {
+        final String FUNCTION_NAME = "function";
+        executeFlow(workflow("HelloRest").function(rest(FUNCTION_NAME, HttpMethod.get, "https://localhost:" + wm.getHttpsPort() + "/name"))
+                .start(operation().action(call(FUNCTION_NAME))).end().build());
+    }
+
+    @Test
+    void httpInvocation() {
+        final String FUNCTION_NAME = "function";
+        executeFlow(workflow("HelloRest").function(rest(FUNCTION_NAME, HttpMethod.get, "http://localhost:" + wm.getPort() + "/name"))
+                .start(operation().action(call(FUNCTION_NAME))).end().build());
+    }
+
+    private void executeFlow(Workflow workflow) {
         JsonNode expectedOutput = ObjectMapperFactory.get().createObjectNode().put("name", "Javierito");
         wm.stubFor(get("/name").willReturn(aResponse().withStatus(200).withJsonBody(expectedOutput)));
-        final String FUNCTION_NAME = "function";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            Workflow workflow = workflow("HelloRest").function(rest(FUNCTION_NAME, HttpMethod.get, "http://localhost:" + wm.getPort() + "/name"))
-                    .start(operation().action(call(FUNCTION_NAME))).end().build();
             assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).isEqualTo(expectedOutput);
         }
     }

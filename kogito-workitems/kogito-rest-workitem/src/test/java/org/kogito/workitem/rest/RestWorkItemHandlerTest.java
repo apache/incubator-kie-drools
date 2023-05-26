@@ -106,6 +106,7 @@ public class RestWorkItemHandlerTest {
     @BeforeEach
     public void init() {
         WebClient webClient = mock(WebClient.class);
+        WebClient sslClient = mock(WebClient.class);
         ObjectMapper mapper = new ObjectMapper();
         when(webClient.request(any(HttpMethod.class), eq(8080), eq("localhost"), anyString()))
                 .thenReturn(request);
@@ -148,7 +149,7 @@ public class RestWorkItemHandlerTest {
         Map<String, String> outputMapping = Collections.singletonMap(RestWorkItemHandler.RESULT, DEFAULT_WORKFLOW_VAR);
         when(ioSpecification.getOutputMappingBySources()).thenReturn(outputMapping);
 
-        handler = new RestWorkItemHandler(webClient);
+        handler = new RestWorkItemHandler(webClient, sslClient);
     }
 
     @Test

@@ -67,6 +67,7 @@ import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getParam;
 public class RestWorkItemHandler implements KogitoWorkItemHandler {
 
     public static final String REST_TASK_TYPE = "Rest";
+    public static final String PROTOCOL = "Protocol";
     public static final String URL = "Url";
     public static final String METHOD = "Method";
     public static final String CONTENT_DATA = "ContentData";
@@ -82,6 +83,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     public static final String AUTH_METHOD = "AuthMethod";
 
     public static final int DEFAULT_PORT = 80;
+    public static final int DEFAULT_SSL_PORT = 443;
 
     private static final Logger logger = LoggerFactory.getLogger(RestWorkItemHandler.class);
     private static final RestWorkItemHandlerResult DEFAULT_RESULT_HANDLER = new DefaultRestWorkItemHandlerResult();
@@ -95,11 +97,13 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     private static final Map<String, AuthDecorator> authDecoratorsMap = new ConcurrentHashMap<>();
     private static final Collection<AuthDecorator> DEFAULT_AUTH_DECORATORS = Arrays.asList(new ApiKeyAuthDecorator(), new BasicAuthDecorator(), new BearerTokenAuthDecorator());
 
-    protected final WebClient client;
+    protected final WebClient httpClient;
+    protected final WebClient httpsClient;
     private Collection<RequestDecorator> requestDecorators;
 
-    public RestWorkItemHandler(WebClient client) {
-        this.client = client;
+    public RestWorkItemHandler(WebClient httpClient, WebClient httpsClient) {
+        this.httpClient = httpClient;
+        this.httpsClient = httpsClient;
         this.requestDecorators = StreamSupport.stream(ServiceLoader.load(RequestDecorator.class).spliterator(), false).collect(Collectors.toList());
     }
 
@@ -115,9 +119,8 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         if (endPoint == null) {
             throw new IllegalArgumentException("Missing required parameter " + URL);
         }
+
         HttpMethod method = getParam(parameters, METHOD, HttpMethod.class, HttpMethod.GET);
-        String hostProp = getParam(parameters, HOST, String.class, "localhost");
-        int portProp = getParam(parameters, PORT, Integer.class, DEFAULT_PORT);
         RestWorkItemHandlerResult resultHandler = getClassParam(parameters, RESULT_HANDLER, RestWorkItemHandlerResult.class, DEFAULT_RESULT_HANDLER, resultHandlers);
         RestWorkItemHandlerBodyBuilder bodyBuilder = getClassParam(parameters, BODY_BUILDER, RestWorkItemHandlerBodyBuilder.class, DEFAULT_BODY_BUILDER, bodyBuilders);
         ParamsDecorator paramsDecorator = getClassParam(parameters, PARAMS_DECORATOR, ParamsDecorator.class, DEFAULT_PARAMS_DECORATOR, paramsDecorators);
@@ -128,11 +131,13 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         // create request
         endPoint = pathParamResolver.apply(endPoint, parameters);
 
+        String protocol = null;
         String host = null;
         int port = -1;
         String path = null;
         try {
             URL uri = new URL(endPoint);
+            protocol = uri.getProtocol();
             host = uri.getHost();
             port = uri.getPort();
             path = uri.getPath();
@@ -141,21 +146,30 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
                 path += "?" + query;
             }
         } catch (MalformedURLException ex) {
-            logger.warn("Parameter endpoint {} is not valid uri {}", endPoint, ex.getMessage());
+            logger.info("Parameter endpoint {} is not valid uri {}", endPoint, ex.getMessage());
         }
+
+        if (isEmpty(protocol)) {
+            protocol = getParam(parameters, PROTOCOL, String.class, "http");
+            logger.info("Protocol not specified, using {}", protocol);
+        }
+
+        boolean isSsl = protocol.equalsIgnoreCase("https");
+
         if (isEmpty(host)) {
-            logger.info("Host not specified, using default {}", hostProp);
-            host = hostProp;
+            host = getParam(parameters, HOST, String.class, "localhost");
+            logger.info("Host not specified, using {}", host);
         }
         if (port == -1) {
-            port = portProp;
-            logger.debug("Port not specified, using default {}", portProp);
+            port = getParam(parameters, PORT, Integer.class, isSsl ? DEFAULT_SSL_PORT : DEFAULT_PORT);
+            logger.info("Port not specified, using {}", port);
         }
         if (isEmpty(path)) {
             path = endPoint;
             logger.info("Path is empty, using whole endpoint {}", endPoint);
         }
-        logger.debug("Invoking request with host {} port {} and endpoint {}", host, port, path);
+        logger.debug("Invoking request with protocol {} host {} port {} and endpoint {}", protocol, host, port, path);
+        WebClient client = isSsl ? httpsClient : httpClient;
         HttpRequest<Buffer> request = client.request(method, port, host, path);
         requestDecorators.forEach(d -> d.decorate(workItem, parameters, request));
         authDecorators.forEach(d -> d.decorate(workItem, parameters, request));

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import io.vertx.mutiny.core.Vertx;
+import io.vertx.ext.web.client.WebClientOptions;
 
 import static org.kie.kogito.internal.utils.ConversionUtils.convert;
 
@@ -30,15 +30,8 @@ public class RestWorkItemHandlerUtils {
     private RestWorkItemHandlerUtils() {
     }
 
-    private static Vertx vertxContext;
-
-    public static synchronized Vertx vertx(Vertx vertx) {
-        vertxContext = vertx == null ? Vertx.vertx() : vertx;
-        return vertxContext;
-    }
-
-    public static Vertx vertx() {
-        return vertxContext;
+    public static WebClientOptions sslWebClientOptions() {
+        return new WebClientOptions().setSsl(true).setVerifyHost(false).setTrustAll(true);
     }
 
     public static String getParam(Map<String, Object> parameters, String paramName) {

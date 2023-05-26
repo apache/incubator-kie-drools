@@ -16,14 +16,20 @@
 package org.kie.kogito.serverless.workflow.executor;
 
 import org.kogito.workitem.rest.RestWorkItemHandler;
+import org.kogito.workitem.rest.RestWorkItemHandlerUtils;
 
+import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.ext.web.client.WebClient;
 
 class StaticRestWorkItemHandler extends RestWorkItemHandler implements AutoCloseable {
 
     public StaticRestWorkItemHandler(Vertx vertx) {
-        super(WebClient.create(vertx));
+        this(vertx, new WebClientOptions(), RestWorkItemHandlerUtils.sslWebClientOptions());
+    }
+
+    public StaticRestWorkItemHandler(Vertx vertx, WebClientOptions httpOptions, WebClientOptions httpsOptions) {
+        super(WebClient.create(vertx, httpOptions), WebClient.create(vertx, httpsOptions));
     }
 
     @Override
@@ -33,6 +39,7 @@ class StaticRestWorkItemHandler extends RestWorkItemHandler implements AutoClose
 
     @Override
     public void close() {
-        client.close();
+        httpClient.close();
+        httpsClient.close();
     }
 }
