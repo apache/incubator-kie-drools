@@ -54,7 +54,7 @@ public class PostgreSqlJobServiceManagementRepository implements JobServiceManag
                 .execute(Tuple.of(id))
                 .onItem().transform(RowSet::iterator)
                 .onItem().transform(iterator -> iterator.hasNext() ? from(iterator.next()) : null)
-                .onItem().invoke(r -> LOGGER.info("got {}", r))
+                .onItem().invoke(r -> LOGGER.trace("got {}", r))
                 .onItem().transformToUni(r -> update(conn, computeUpdate.apply(r))));
     }
 
@@ -94,6 +94,6 @@ public class PostgreSqlJobServiceManagementRepository implements JobServiceManag
                 .execute(Tuple.of(info.getId(), info.getToken()))
                 .onItem().transform(RowSet::iterator)
                 .onItem().transform(iterator -> iterator.hasNext() ? from(iterator.next()) : null)
-                .onItem().invoke(r -> LOGGER.debug("Heartbeat {}", r)));
+                .onItem().invoke(r -> LOGGER.trace("Heartbeat {}", r)));
     }
 }

@@ -86,20 +86,20 @@ public class JobServiceInstanceManager {
         //background task for leader check, it will be started after the first tryBecomeLeader() execution
         checkLeader = vertx.periodicStream(TimeUnit.SECONDS.toMillis(leaderCheckIntervalInSeconds))
                 .handler(id -> tryBecomeLeader(currentInfo.get(), checkLeader, heartbeat)
-                        .subscribe().with(i -> LOGGER.info("Checking Leader"),
+                        .subscribe().with(i -> LOGGER.trace("Leader check completed"),
                                 ex -> LOGGER.error("Error checking Leader", ex)))
                 .pause();
 
         //background task for heartbeat will be started when become leader
         heartbeat = vertx.periodicStream(TimeUnit.SECONDS.toMillis(heardBeatIntervalInSeconds))
                 .handler(t -> heartbeat(currentInfo.get())
-                        .subscribe().with(i -> LOGGER.debug("Heartbeat {}", currentInfo.get()),
+                        .subscribe().with(i -> LOGGER.trace("Heartbeat completed {}", currentInfo.get()),
                                 ex -> LOGGER.error("Error on heartbeat {}", currentInfo.get(), ex)))
                 .pause();
 
         //initial leader check
         tryBecomeLeader(currentInfo.get(), checkLeader, heartbeat)
-                .subscribe().with(i -> LOGGER.info("Initial check leader execution"),
+                .subscribe().with(i -> LOGGER.info("Initial leader check completed"),
                         ex -> LOGGER.error("Error on initial check leader", ex));
     }
 
@@ -182,7 +182,6 @@ public class JobServiceInstanceManager {
     }
 
     protected Uni<JobServiceManagementInfo> heartbeat(JobServiceManagementInfo info) {
-        LOGGER.debug("Heartbeat Leader");
         if (isLeader()) {
             return repository.heartbeat(info);
         }
