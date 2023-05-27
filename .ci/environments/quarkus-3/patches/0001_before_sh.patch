@@ -3080,10 +3080,10 @@ index 579ca04ddb..fcdc3f09ad 100644
  import org.drools.codegen.common.DroolsModelBuildContext;
  import org.drools.codegen.common.GeneratedFile;
 diff --git a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml
-index ea70600f2e..878cca24d4 100644
+index 99b0ccc3d0..d0750de75b 100644
 --- a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml
 +++ b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml
-@@ -87,7 +87,7 @@
+@@ -91,7 +91,7 @@
          <plugins>
              <plugin>
                  <groupId>io.quarkus</groupId>
@@ -3139,6 +3139,21 @@ index e0af805b1f..2147548e66 100644
  
  import org.kie.kogito.KogitoGAV;
  import org.kie.kogito.config.StaticConfigBean;
+diff --git a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/runtime/SSLWebClientOptionsProducer.java b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/runtime/SSLWebClientOptionsProducer.java
+index e6d50f5e81..653aebc762 100644
+--- a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/runtime/SSLWebClientOptionsProducer.java
++++ b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/runtime/SSLWebClientOptionsProducer.java
+@@ -16,8 +16,8 @@
+ 
+ package org.kie.kogito.quarkus.runtime;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Produces;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Produces;
+ 
+ import io.quarkus.arc.DefaultBean;
+ import io.vertx.ext.web.client.WebClientOptions;
 diff --git a/quarkus/extensions/kogito-quarkus-extension/kogito-quarkus-integration-test-maven-devmode/src/test/resources/projects/classic-inst/src/main/java/control/RestControl.java b/quarkus/extensions/kogito-quarkus-extension/kogito-quarkus-integration-test-maven-devmode/src/test/resources/projects/classic-inst/src/main/java/control/RestControl.java
 index a54f09d2e0..b7e7f82682 100644
 --- a/quarkus/extensions/kogito-quarkus-extension/kogito-quarkus-integration-test-maven-devmode/src/test/resources/projects/classic-inst/src/main/java/control/RestControl.java
