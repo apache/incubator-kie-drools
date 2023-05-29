@@ -16,11 +16,7 @@ package org.drools.model.codegen.execmodel;
 
 import org.apache.commons.math3.util.Pair;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Accumulator;
 import org.drools.model.codegen.execmodel.domain.Child;
 import org.drools.model.codegen.execmodel.domain.Parent;
 import org.drools.model.codegen.execmodel.domain.Person;
@@ -43,7 +39,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.ToIntFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -101,60 +96,6 @@ public class GroupByTest extends BaseModelTest {
         assertThat(results.get("G")).isEqualTo(40);
         assertThat(results.get("M")).isEqualTo(119);
     }
-
-    public static <A> SumAccumulator sumA(ToIntFunction<? super A> func) {
-        return new SumAccumulator(func);
-    }
-
-    public static class SumAccumulator<C> implements Accumulator { //extends AbstractAccumulateFunction<C> {
-        //UniConstraintCollector<A, ResultContainer_, Result_> collector;
-        private ToIntFunction func;
-
-        public <A> SumAccumulator(ToIntFunction<? super A> func) {
-            this.func = func;
-        }
-
-        @Override public Object createWorkingMemoryContext() {
-            return null;
-        }
-
-        @Override public Object createContext() {
-            return new int[1];
-        }
-
-        @Override public Object init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, ReteEvaluator reteEvaluator) {
-            ((int[])context)[0] = 0;
-            return context;
-        }
-
-        @Override public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
-            int[] ctx = (int[]) context;
-
-            int v = func.applyAsInt(handle.getObject());
-            ctx[0] += v;
-
-            Runnable undo = () -> ctx[0] -= v;
-
-            return undo;
-        }
-
-        @Override public boolean supportsReverse() {
-            return true;
-        }
-
-        @Override public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value, Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
-            if (value!=null) {
-                ((Runnable) value).run();
-            }
-            return true;
-        }
-
-        @Override public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, ReteEvaluator reteEvaluator) {
-            int[] ctx = (int[]) context;
-            return ctx[0];
-        }
-    }
-
 
     @Test
     public void testSumPersonAgeGroupByInitialWithAcc() throws Exception {
