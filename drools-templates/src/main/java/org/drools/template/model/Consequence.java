@@ -27,7 +27,7 @@ public class Consequence extends DRLElement
     private String _snippet;
 
     /**
-     * @param _snippet The _snippet to set.
+     * @param snippet The snippet to set.
      */
     public void setSnippet(final String snippet) {
         this._snippet = snippet;

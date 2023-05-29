@@ -23,11 +23,7 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
+      <artifactId>drools-drl-extensions</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

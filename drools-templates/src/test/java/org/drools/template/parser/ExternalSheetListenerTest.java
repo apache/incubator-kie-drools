@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.template.parser;
 
@@ -49,15 +49,11 @@ public class ExternalSheetListenerTest {
 
     private TemplateDataListener esl;
 
-    private Map<Row, List<StringCell>> assertedRows = new HashMap<Row, List<StringCell>>();
-
-    private List<StringCell> currentRow = new ArrayList<StringCell>();
+    private List<Row> assertedRows = new ArrayList<>();
 
     @Before
     public void setUp() throws Exception {
-        esl = new TemplateDataListener(2, 2, new TestTemplateContainer(),
-                                       new TestTemplateRuleBase(), new TestGenerator());
-
+        esl = new TemplateDataListener(2, 2, new TestTemplateContainer(), new TestGenerator());
     }
 
     @Test
@@ -82,17 +78,6 @@ public class ExternalSheetListenerTest {
         esl.newCell(2, 2, "row2col2", 0);
         esl.finishSheet();
         assertThat(assertedRows.size()).isEqualTo(2);
-        for (Map.Entry<Row, List<StringCell>> entry : assertedRows.entrySet()) {
-            Row row = entry.getKey();
-            List<StringCell> cells = entry.getValue();
-            // first column is not part of the decision table
-            int i = 1;
-            for (StringCell cell : cells) {
-                assertThat(cell.getValue()).isEqualTo("row" + row.getRowNumber() + "col" + i);
-                assertThat(cell.getColumn().getName()).isEqualTo("Pattern " + i);
-                i++;
-            }
-        }
     }
 
     @Test
@@ -122,361 +107,10 @@ public class ExternalSheetListenerTest {
         assertThat(assertedRows.size()).isEqualTo(2);
     }
 
-    private class TestTemplateRuleBase implements TemplateRuleBase {
-
-        public KieSession newStatefulSession() {
-            return new KieSession() {
-
-                @Override
-                public int getId() {
-                    return 0;
-                }
-
-                @Override
-                public long getIdentifier() {
-                    return 0L;
-                }
-
-                @Override
-                public void dispose() {
-
-                }
-
-                @Override
-                public void destroy() {
-
-                }
-
-                @Override
-                public void submit( AtomicAction action ) { }
-
-                @Override
-                public <T> T getKieRuntime( Class<T> cls ) {
-                    return null;
-                }
-
-                @Override
-                public <T> T execute(Command<T> command) {
-                    return null;
-                }
-
-                @Override
-                public <T extends SessionClock> T getSessionClock() {
-                    return null;
-                }
-
-                @Override
-                public void setGlobal(String identifier, Object value) {
-
-                }
-
-                @Override
-                public Object getGlobal(String identifier) {
-                    return null;
-                }
-
-                @Override
-                public Globals getGlobals() {
-                    return null;
-                }
-
-                @Override
-                public Calendars getCalendars() {
-                    return null;
-                }
-
-                @Override
-                public Environment getEnvironment() {
-                    return null;
-                }
-
-                @Override
-                public KieBase getKieBase() {
-                    return null;
-                }
-
-                @Override
-                public void registerChannel(String name, Channel channel) {
-
-                }
-
-                @Override
-                public void unregisterChannel(String name) {
-
-                }
-
-                @Override
-                public Map<String, Channel> getChannels() {
-                    return null;
-                }
-
-                @Override
-                public KieSessionConfiguration getSessionConfiguration() {
-                    return null;
-                }
-
-                @Override
-                public void halt() {
-
-                }
-
-                @Override
-                public org.kie.api.runtime.rule.Agenda getAgenda() {
-                    return null;
-                }
-
-                @Override
-                public EntryPoint getEntryPoint(String name) {
-                    return null;
-                }
-
-                @Override
-                public Collection<? extends EntryPoint> getEntryPoints() {
-                    return null;
-                }
-
-                @Override
-                public org.kie.api.runtime.rule.QueryResults getQueryResults(String query, Object... arguments) {
-                    return null;
-                }
-
-                @Override
-                public LiveQuery openLiveQuery(String query, Object[] arguments, ViewChangedEventListener listener) {
-                    return null;
-                }
-
-                @Override
-                public String getEntryPointId() {
-                    return null;
-                }
-
-                @Override
-                public FactHandle insert(Object fact) {
-                    if (fact instanceof Row) {
-                        assertedRows.put((Row) fact, currentRow);
-                        currentRow = new ArrayList<StringCell>();
-                    } else if (fact instanceof StringCell) {
-                        currentRow.add((StringCell) fact);
-                    }
-                    return null;
-                }
-
-                @Override
-                public void retract(org.kie.api.runtime.rule.FactHandle handle) {
-
-                }
-
-                @Override
-                public void delete(org.kie.api.runtime.rule.FactHandle handle) {
-
-                }
-
-                @Override
-                public void delete(org.kie.api.runtime.rule.FactHandle handle, org.kie.api.runtime.rule.FactHandle.State fhState) {
-
-                }
-
-                @Override
-                public void update(org.kie.api.runtime.rule.FactHandle handle, Object object) {
-
-                }
-
-                @Override
-                public void update(org.kie.api.runtime.rule.FactHandle handle, Object object, String... modifiedProperties) {
-
-                }
-
-                @Override
-                public org.kie.api.runtime.rule.FactHandle getFactHandle(Object object) {
-                    return null;
-                }
-
-                @Override
-                public Object getObject(org.kie.api.runtime.rule.FactHandle factHandle) {
-                    return null;
-                }
-
-                @Override
-                public Collection<? extends Object> getObjects() {
-                    return null;
-                }
-
-                @Override
-                public Collection<? extends Object> getObjects(ObjectFilter filter) {
-                    return null;
-                }
-
-                @Override
-                public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles() {
-                    return null;
-                }
-
-                @Override
-                public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
-                    return null;
-                }
-
-                @Override
-                public long getFactCount() {
-                    return 0L;
-                }
-
-                @Override
-                public KieRuntimeLogger getLogger() {
-                    return null;
-                }
-
-                @Override
-                public void addEventListener(ProcessEventListener listener) {
-
-                }
-
-                @Override
-                public void removeEventListener(ProcessEventListener listener) {
-
-                }
-
-                @Override
-                public Collection<ProcessEventListener> getProcessEventListeners() {
-                    return null;
-                }
-
-                @Override
-                public ProcessInstance startProcess(String processId) {
-                    return null;
-                }
-
-                @Override
-                public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
-                    return null;
-                }
-
-                @Override
-                public ProcessInstance startProcess( String processId, AgendaFilter agendaFilter ) {
-                    return null;
-                }
-
-                @Override
-                public ProcessInstance startProcess(String processId, Map<String, Object> parameters, AgendaFilter agendaFilter) {
-                    return null;
-                }
-
-                @Override
-                public ProcessInstance createProcessInstance(String processId, Map<String, Object> parameters) {
-                    return null;
-                }
-
-                @Override
-                public ProcessInstance startProcessInstance(String processInstanceId) {
-                    return null;
-                }
-
-                @Override
-                public void signalEvent(String type, Object event) {
-
-                }
-
-                @Override
-                public void signalEvent(String type, Object event, String processInstanceId) {
-
-                }
-
-                @Override
-                public Collection<ProcessInstance> getProcessInstances() {
-                    return null;
-                }
-
-                @Override
-                public ProcessInstance getProcessInstance(String processInstanceId) {
-                    return null;
-                }
-
-                @Override
-                public ProcessInstance getProcessInstance(String processInstanceId, boolean readonly) {
-                    return null;
-                }
-
-                @Override
-                public void abortProcessInstance(String processInstanceId) {
-
-                }
-
-                @Override
-                public org.kie.api.runtime.process.WorkItemManager getWorkItemManager() {
-                    return null;
-                }
-
-                @Override
-                public void addEventListener(RuleRuntimeEventListener listener) {
-
-                }
-
-                @Override
-                public void removeEventListener(RuleRuntimeEventListener listener) {
-
-                }
-
-                @Override
-                public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
-                    return null;
-                }
-
-                @Override
-                public void addEventListener(org.kie.api.event.rule.AgendaEventListener listener) {
-
-                }
-
-                @Override
-                public void removeEventListener(org.kie.api.event.rule.AgendaEventListener listener) {
-
-                }
-
-                @Override
-                public Collection<org.kie.api.event.rule.AgendaEventListener> getAgendaEventListeners() {
-                    return null;
-                }
-
-                @Override
-                public int fireAllRules() {
-                    return 0;
-                }
-
-                @Override
-                public int fireAllRules(int max) {
-                    return 0;
-                }
-
-                @Override
-                public int fireAllRules(org.kie.api.runtime.rule.AgendaFilter agendaFilter) {
-                    return 0;
-                }
-
-                @Override
-                public int fireAllRules(org.kie.api.runtime.rule.AgendaFilter agendaFilter, int max) {
-                    return 0;
-                }
-
-                @Override
-                public void fireUntilHalt() {
-
-                }
-
-                @Override
-                public void fireUntilHalt(org.kie.api.runtime.rule.AgendaFilter agendaFilter) {
-
-                }
-
-                @Override
-                public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeIds) {
-                    return null;
-                }
-            };
-        }
-    }
-
     private class TestGenerator implements Generator {
 
         public void generate(String templateName, Row row) {
+            assertedRows.add(row);
         }
 
         public String getDrl() {
@@ -494,8 +128,8 @@ public class ExternalSheetListenerTest {
         }
 
         public Column[] getColumns() {
-            return new Column[]{new StringColumn("Pattern 1"),
-                                new StringColumn("Pattern 2"), new StringColumn("Pattern 3")};
+            return new Column[] { new StringColumn("Pattern 1"),
+                    new StringColumn("Pattern 2"), new StringColumn("Pattern 3") };
         }
 
         public String getHeader() {
@@ -503,7 +137,7 @@ public class ExternalSheetListenerTest {
         }
 
         public Map<String, RuleTemplate> getTemplates() {
-            return null;
+            return Map.of("template", new RuleTemplate("template", this));
         }
 
         public void setHeader(String head) {

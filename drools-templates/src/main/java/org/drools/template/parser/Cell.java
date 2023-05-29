@@ -18,8 +18,6 @@ package org.drools.template.parser;
 
 import java.util.Map;
 
-import org.kie.api.runtime.KieSession;
-
 /**
  * A cell in a decision table
  */
@@ -33,8 +31,6 @@ public interface Cell<T> {
     T getValue();
 
     void addValue(Map<String, Object> vars);
-
-    void insert(KieSession session);
 
     void setIndex(int i);
 

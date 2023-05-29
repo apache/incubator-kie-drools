@@ -1,12 +1,12 @@
 /*
  * Copyright 2005 Red Hat, Inc. and/or its affiliates.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,6 @@
  */
 
 /**
- *
  * Cell containing an array of values
  */
 package org.drools.template.parser;
@@ -23,7 +22,6 @@ package org.drools.template.parser;
 import java.util.Map;
 
 import org.drools.util.StringUtils;
-import org.kie.api.runtime.KieSession;
 
 public class ArrayCell extends AbstractCell<String> {
 
@@ -36,16 +34,6 @@ public class ArrayCell extends AbstractCell<String> {
     public void addValue(Map<String, Object> vars) {
         for (int i = 0; i < values.length; i++) {
             vars.put(column.getName() + i, values[i]);
-        }
-    }
-
-    public void insert(KieSession session) {
-        session.insert(this);
-        for (int i = 0; i < values.length; i++) {
-            Cell cell = ((ArrayColumn) column).getType().createCell(row);
-            cell.setValue(values[i]);
-            cell.setIndex(i);
-            cell.insert(session);
         }
     }
 

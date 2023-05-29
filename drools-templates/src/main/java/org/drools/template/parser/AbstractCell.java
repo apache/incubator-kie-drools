@@ -18,8 +18,6 @@ package org.drools.template.parser;
 
 import java.util.Map;
 
-import org.kie.api.runtime.KieSession;
-
 public abstract class AbstractCell<T> implements Cell<T> {
 
     protected final Row row;
@@ -51,10 +49,6 @@ public abstract class AbstractCell<T> implements Cell<T> {
 
     public void addValue(Map<String, Object> vars) {
         vars.put(column.getName(), value);
-    }
-
-    public void insert(KieSession session) {
-        session.insert(this);
     }
 
     public void setIndex(int i) {
