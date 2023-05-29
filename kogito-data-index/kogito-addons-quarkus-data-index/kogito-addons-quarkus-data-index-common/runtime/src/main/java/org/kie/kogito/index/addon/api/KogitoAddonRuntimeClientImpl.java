@@ -16,7 +16,6 @@
 
 package org.kie.kogito.index.addon.api;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
@@ -28,12 +27,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.kie.kogito.addon.source.files.SourceFilesProvider;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.index.service.DataIndexServiceException;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.Processes;
@@ -59,6 +60,9 @@ public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
         this.sourceFilesProvider = sourceFilesProvider;
         this.processes = processesInstance.isResolvable() ? processesInstance.get() : null;
     }
+
+    @Inject
+    ManagedExecutor managedExecutor;
 
     static <T> CompletableFuture<T> throwUnsupportedException() {
         return CompletableFuture.failedFuture(new UnsupportedOperationException());
@@ -86,27 +90,21 @@ public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
 
     @Override
     public CompletableFuture<String> getProcessInstanceDiagram(String serviceURL, ProcessInstance processInstance) {
-        return CompletableFuture.supplyAsync(() -> processSvgService.getProcessInstanceSvg(processInstance.getProcessId(), processInstance.getId(), null).orElse(null));
+        return CompletableFuture.supplyAsync(() -> processSvgService.getProcessInstanceSvg(processInstance.getProcessId(), processInstance.getId(), null).orElse(null), managedExecutor);
     }
 
     @Override
     public CompletableFuture<String> getProcessInstanceSourceFileContent(String serviceURL, ProcessInstance processInstance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return sourceFilesProvider.getProcessSourceFile(processInstance.getProcessId())
-                        .map(sourceFile -> {
-                            try {
-                                return sourceFile.readContents();
-                            } catch (IOException e) {
-                                throw new UncheckedIOException(e);
-                            }
-                        })
-                        .map(String::new)
-                        .orElseThrow(() -> new FileNotFoundException("Source file not found for the specified process ID: " + processInstance.getProcessId()));
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        });
+        return CompletableFuture.supplyAsync(() -> sourceFilesProvider.getProcessSourceFile(processInstance.getProcessId())
+                .map(sourceFile -> {
+                    try {
+                        return sourceFile.readContents();
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                })
+                .map(String::new)
+                .orElseThrow(() -> new DataIndexServiceException("Source file not found for the specified process ID: " + processInstance.getProcessId())), managedExecutor);
     }
 
     @Override
