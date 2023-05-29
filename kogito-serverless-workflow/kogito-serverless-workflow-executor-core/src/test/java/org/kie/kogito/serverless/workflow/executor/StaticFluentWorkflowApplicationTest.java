@@ -25,8 +25,10 @@ import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
+import org.kie.kogito.serverless.workflow.fluent.FunctionBuilder;
 import org.kie.kogito.serverless.workflow.fluent.OperationStateBuilder;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
+import org.kie.kogito.serverless.workflow.parser.types.SysOutTypeHandler;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import org.kie.kogito.serverless.workflow.utils.KogitoProcessContextResolver;
 
@@ -34,8 +36,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.call;
 import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.log;
 import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.subprocess;
@@ -202,6 +206,26 @@ public class StaticFluentWorkflowApplicationTest {
                     .start(operation().action(log(WorkflowLogLevel.INFO, "Soy minero")).action(log(WorkflowLogLevel.INFO, "\"My name is \\($CONST.name)\""))).end().build();
             assertThat(workflow.getFunctions().getFunctionDefs()).hasSize(1);
             assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).isEmpty();
+        }
+    }
+
+    @Test
+    void testMissingMessageException() {
+        final String funcName = "badlogging";
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            Workflow workflow = workflow("Testing logs").function(FunctionBuilder.def(funcName, Type.CUSTOM, SysOutTypeHandler.SYSOUT_TYPE)).start(operation().action(
+                    call(funcName))).end().build();
+            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> application.process(workflow)).withMessageContaining("message");
+        }
+    }
+
+    @Test
+    void testNoArgsMessageException() {
+        final String funcName = "badlogging";
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            Workflow workflow = workflow("Testing logs").function(FunctionBuilder.def(funcName, Type.CUSTOM, SysOutTypeHandler.SYSOUT_TYPE)).start(operation().action(
+                    call(funcName, null))).end().build();
+            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> application.process(workflow)).withMessageContaining("Arguments cannot be null");
         }
     }
 

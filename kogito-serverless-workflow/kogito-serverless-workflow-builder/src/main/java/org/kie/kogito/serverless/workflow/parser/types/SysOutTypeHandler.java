@@ -21,6 +21,8 @@ import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.VariableInfo;
 import org.kie.kogito.serverless.workflow.suppliers.SysoutActionSupplier;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionRef;
@@ -36,7 +38,15 @@ public class SysOutTypeHandler extends ActionTypeHandler {
             FunctionDefinition functionDef,
             FunctionRef functionRef,
             VariableInfo varInfo) {
-        return node.action(new SysoutActionSupplier(workflow.getExpressionLang(), functionRef.getArguments().get(SYSOUT_TYPE_PARAM).asText(), varInfo.getInputVar(),
+        JsonNode args = functionRef.getArguments();
+        if (args == null) {
+            throw new IllegalArgumentException("Arguments cannot be null for a sysout function");
+        }
+        JsonNode message = args.get(SYSOUT_TYPE_PARAM);
+        if (message == null) {
+            throw new IllegalArgumentException("Missing mandatory message argument in " + args);
+        }
+        return node.action(new SysoutActionSupplier(workflow.getExpressionLang(), message.asText(), varInfo.getInputVar(),
                 FunctionTypeHandlerFactory.trimCustomOperation(functionDef)));
     }
 
@@ -44,5 +54,4 @@ public class SysOutTypeHandler extends ActionTypeHandler {
     public String type() {
         return SYSOUT_TYPE;
     }
-
 }
