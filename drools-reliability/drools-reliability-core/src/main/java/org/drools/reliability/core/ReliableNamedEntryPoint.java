@@ -38,6 +38,6 @@ public class ReliableNamedEntryPoint extends NamedEntryPoint {
     }
 
     public void safepoint() {
-        ((SimpleReliableObjectStore) getObjectStore()).safepoint();
+        ((ReliableObjectStore) getObjectStore()).safepoint();
     }
 }
