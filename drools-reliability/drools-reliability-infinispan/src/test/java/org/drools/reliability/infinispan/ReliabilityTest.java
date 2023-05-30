@@ -55,7 +55,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    @MethodSource("strategyProviderFullPlusStoresOnlyWithExplicitSafepoints")
     void insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
@@ -78,7 +78,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // With Remote, FULL fails with "ReliablePropagationList; no valid constructor" even without failover
+    @MethodSource("strategyProviderFullPlusStoresOnlyWithExplicitSafepoints")
     void noFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
@@ -101,7 +101,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    @MethodSource("strategyProviderFullPlusStoresOnlyWithExplicitSafepoints")
     void insertFireInsertFailoverInsertFire_shouldMatchFactInsertedBeforeFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
