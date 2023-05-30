@@ -27,6 +27,6 @@ public class JsonPathExpressionHandler extends CachedExpressionHandler {
 
     @Override
     public String lang() {
-        return "jsonpath";
+        return JsonPathExpression.LANG;
     }
 }

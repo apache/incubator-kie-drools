@@ -24,16 +24,24 @@ public class SysoutAction extends BaseExpressionAction {
 
     private static final Logger logger = LoggerFactory.getLogger(SysoutAction.class);
 
-    private final WorkflowLogLevel logLevel;
+    protected final WorkflowLogLevel logLevel;
+    protected final boolean validExpr;
 
     public SysoutAction(String lang, String expr, String inputVar, String level) {
         super(lang, expr, inputVar);
         logLevel = ConversionUtils.isEmpty(level) ? WorkflowLogLevel.INFO : WorkflowLogLevel.valueOf(level);
+        this.validExpr = super.expr.isValid();
+    }
+
+    public SysoutAction(String lang, String expr, String inputVar, WorkflowLogLevel logLevel, boolean validExpr) {
+        super(lang, expr, inputVar);
+        this.logLevel = logLevel;
+        this.validExpr = validExpr;
     }
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        log(expr.isValid() ? evaluate(context, String.class) : expr.asString());
+        log(validExpr ? evaluate(context, String.class) : expr.asString());
     }
 
     private void log(String message) {

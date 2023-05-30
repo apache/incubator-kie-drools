@@ -56,6 +56,6 @@ public class JqExpressionHandler extends CachedExpressionHandler {
 
     @Override
     public String lang() {
-        return "jq";
+        return JqExpression.LANG;
     }
 }

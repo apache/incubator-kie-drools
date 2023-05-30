@@ -18,6 +18,7 @@ package org.kie.kogito.expr.jq;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
@@ -25,6 +26,8 @@ import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import org.kie.kogito.serverless.workflow.utils.JsonNodeContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -37,6 +40,9 @@ import net.thisptr.jackson.jq.exception.JsonQueryException;
 
 public class JqExpression implements Expression {
 
+    static final String LANG = "jq";
+
+    private static final Logger logger = LoggerFactory.getLogger(JqExpression.class);
     private final Supplier<Scope> scope;
     private final String expr;
     private final Version version;
@@ -169,11 +175,19 @@ public class JqExpression implements Expression {
         }
     }
 
+    private static final Pattern JQ_FUNCTION_NAME = Pattern.compile("[a-zA-Z][a-zA-Z0-9_]*");
+
     @Override
     public boolean isValid() {
         try {
             compile();
+            if (JQ_FUNCTION_NAME.matcher(expr).matches()) {
+                query.apply(scope.get(), ObjectMapperFactory.get().createObjectNode(), out -> {
+                });
+            }
         } catch (JsonQueryException ex) {
+            logger.debug("Invalid expression {}", ex.getMessage());
+            return false;
         }
         return validationError == null;
     }
@@ -186,5 +200,10 @@ public class JqExpression implements Expression {
     @Override
     public Exception validationError() {
         return validationError;
+    }
+
+    @Override
+    public String lang() {
+        return LANG;
     }
 }

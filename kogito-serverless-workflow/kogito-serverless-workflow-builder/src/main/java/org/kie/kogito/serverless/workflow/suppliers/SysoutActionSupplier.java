@@ -22,20 +22,16 @@ import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.serverless.workflow.actions.SysoutAction;
 
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 public class SysoutActionSupplier extends SysoutAction implements ExpressionSupplier {
 
-    private final ObjectCreationExpr expression;
-
     public SysoutActionSupplier(String lang, String expr, String inputVar, String logLevel) {
         super(lang, expr, inputVar, logLevel);
-        this.expression = ExpressionUtils.getObjectCreationExpr(SysoutAction.class, lang, expr, inputVar, logLevel);
     }
 
     @Override
     public Expression get(KogitoNode node, ProcessMetaData metadata) {
-        return expression;
+        return ExpressionUtils.getObjectCreationExpr(SysoutAction.class, expr.lang(), expr.asString(), modelVar, logLevel, validExpr);
     }
 
 }

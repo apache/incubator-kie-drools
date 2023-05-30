@@ -33,6 +33,8 @@ import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
 public class JsonPathExpression implements Expression {
 
+    static final String LANG = "jsonpath";
+
     private final String expr;
     private Boolean isValid;
     private Exception validationError;
@@ -119,5 +121,10 @@ public class JsonPathExpression implements Expression {
     @Override
     public Exception validationError() {
         return validationError;
+    }
+
+    @Override
+    public String lang() {
+        return LANG;
     }
 }

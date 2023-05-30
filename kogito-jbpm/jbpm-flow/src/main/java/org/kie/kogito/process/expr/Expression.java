@@ -28,4 +28,6 @@ public interface Expression {
     void assign(Object target, Object value, KogitoProcessContext context);
 
     String asString();
+
+    String lang();
 }

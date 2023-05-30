@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.serverless.workflow.executor;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.serverless.workflow.actions.SysoutAction;
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
 import org.kie.kogito.serverless.workflow.fluent.FunctionBuilder;
 import org.kie.kogito.serverless.workflow.fluent.OperationStateBuilder;
@@ -31,12 +31,17 @@ import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 import org.kie.kogito.serverless.workflow.parser.types.SysOutTypeHandler;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import org.kie.kogito.serverless.workflow.utils.KogitoProcessContextResolver;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -200,12 +205,30 @@ public class StaticFluentWorkflowApplicationTest {
     }
 
     @Test
-    void testLogging() throws IOException {
+    void testLogging() {
+        Workflow workflow = workflow("Testing logs").constant("name", "Javierito")
+                .start(operation()
+                        .action(log(WorkflowLogLevel.INFO, "minero"))
+                        .action(log(WorkflowLogLevel.INFO, "0zapatero"))
+                        .action(log(WorkflowLogLevel.INFO, "keys"))
+                        .action(log(WorkflowLogLevel.INFO, "\"keys:\"+({pepe:1}|keys|tostring)"))
+                        .action(log(WorkflowLogLevel.INFO, "\"My name is \\($CONST.name)\""))
+                        .action(log(WorkflowLogLevel.INFO, "Viva er Beti")))
+                .end().build();
+        assertThat(workflow.getFunctions().getFunctionDefs()).hasSize(1);
+        Logger testLogger = (Logger) LoggerFactory.getLogger(SysoutAction.class);
+        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+        listAppender.start();
+        testLogger.addAppender(listAppender);
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            Workflow workflow = workflow("Testing logs").constant("name", "Javierito")
-                    .start(operation().action(log(WorkflowLogLevel.INFO, "Soy minero")).action(log(WorkflowLogLevel.INFO, "\"My name is \\($CONST.name)\""))).end().build();
-            assertThat(workflow.getFunctions().getFunctionDefs()).hasSize(1);
             assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).isEmpty();
+            assertThat(listAppender.list).hasSize(6);
+            assertThat(listAppender.list.get(0).getMessage()).isEqualTo("minero");
+            assertThat(listAppender.list.get(1).getMessage()).isEqualTo("0zapatero");
+            assertThat(listAppender.list.get(2).getMessage()).isEmpty();
+            assertThat(listAppender.list.get(3).getMessage()).isEqualTo("keys:[\"pepe\"]");
+            assertThat(listAppender.list.get(4).getMessage()).isEqualTo("My name is Javierito");
+            assertThat(listAppender.list.get(5).getMessage()).isEqualTo("Viva er Beti");
         }
     }
 
