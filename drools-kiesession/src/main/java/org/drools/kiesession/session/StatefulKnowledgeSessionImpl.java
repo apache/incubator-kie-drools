@@ -16,27 +16,6 @@
 
 package org.drools.kiesession.session;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
-
 import org.drools.core.FlowSessionConfiguration;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.RuleBaseConfiguration;
@@ -137,6 +116,27 @@ import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
@@ -329,7 +329,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.lastIdleTimestamp = new AtomicLong(-1);
 
-        this.nodeMemories = new ConcurrentNodeMemories(kBase);
+        this.nodeMemories = createNodeMemories(kBase);
         registerReceiveNodes(kBase.getReceiveNodes());
 
         RuleBaseConfiguration conf = kBase.getRuleBaseConfiguration();
@@ -347,6 +347,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if (initInitFactHandle) {
             this.initialFactHandle = initInitialFact(null);
         }
+    }
+
+    protected ConcurrentNodeMemories createNodeMemories(InternalKnowledgeBase kBase) {
+        return new ConcurrentNodeMemories(kBase);
     }
 
     public StatefulKnowledgeSessionImpl setStateless( boolean stateless ) {
