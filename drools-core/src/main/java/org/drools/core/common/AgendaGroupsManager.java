@@ -16,6 +16,9 @@
 
 package org.drools.core.common;
 
+import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.RuntimeComponentFactory;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -31,8 +34,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.RuntimeComponentFactory;
 
 public interface AgendaGroupsManager extends Externalizable {
     void setReteEvaluator(ReteEvaluator reteEvaluator);
@@ -179,7 +180,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
         @Override
         public RuleAgendaItem peekNextRule() {
-            return (RuleAgendaItem) this.mainAgendaGroup.peek();
+            return this.mainAgendaGroup.peek();
         }
 
         @Override
@@ -394,10 +395,9 @@ public interface AgendaGroupsManager extends Externalizable {
             // Set the focus to the agendaGroup if it doesn't already have the focus
             if ( this.focusStack.getLast() != agendaGroup ) {
                 this.focusStack.getLast().setActive( false );
-                InternalAgendaGroup internalGroup = agendaGroup;
-                this.focusStack.add( internalGroup );
-                internalGroup.setActive( true );
-                internalGroup.setActivatedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
+                this.focusStack.add(agendaGroup);
+                agendaGroup.setActive( true );
+                agendaGroup.setActivatedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
                 final EventSupport eventsupport = this.workingMemory;
                 eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup, this.workingMemory );
                 return true;
@@ -418,7 +418,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
         @Override
         public RuleAgendaItem peekNextRule() {
-            return (RuleAgendaItem) (this.focusStack.peekLast()).peek();
+            return this.focusStack.peekLast().peek();
         }
 
         @Override

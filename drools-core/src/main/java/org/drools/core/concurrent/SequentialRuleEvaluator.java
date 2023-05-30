@@ -39,7 +39,7 @@ public class SequentialRuleEvaluator extends AbstractRuleEvaluator implements Ru
                                 int fireCount,
                                 int fireLimit,
                                 InternalAgendaGroup group ) {
-        RuleAgendaItem item = sequential ? (RuleAgendaItem) group.remove() : (RuleAgendaItem) group.peek();
+        RuleAgendaItem item = sequential ? group.remove() : group.peek();
         return item != null ? internalEvaluateAndFire( filter, fireCount, fireLimit, item ) : 0;
     }
 

@@ -19,7 +19,7 @@ import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Storage;
 
-public class FullReliableObjectStore extends IdentityObjectStore {
+public class FullReliableObjectStore extends IdentityObjectStore implements ReliableObjectStore {
 
     private final transient Storage<Long, StoredObject> storage;
 
@@ -45,13 +45,13 @@ public class FullReliableObjectStore extends IdentityObjectStore {
         super.removeHandle(handle);
     }
 
-    void putIntoPersistedCache(InternalFactHandle handle, boolean propagated) {
+    private void putIntoPersistedCache(InternalFactHandle handle, boolean propagated) {
         Object object = handle.getObject();
         StoredObject storedObject = new SerializableStoredObject(object, propagated);
         storage.put(getHandleForObject(object).getId(), storedObject);
     }
 
-    void removeFromPersistedCache(Object object) {
+    private void removeFromPersistedCache(Object object) {
         InternalFactHandle fh = getHandleForObject(object);
         if (fh != null) {
             storage.remove(fh.getId());
@@ -62,5 +62,10 @@ public class FullReliableObjectStore extends IdentityObjectStore {
         for (StoredObject entry : storage.values()) {
             super.addHandle(getHandleForObject(entry.getObject()),entry.getObject());
         }
+    }
+
+    @Override
+    public void safepoint() {
+        // no-op
     }
 }
