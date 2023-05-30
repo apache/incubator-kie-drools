@@ -43,7 +43,7 @@ public class TypedExpressionResult {
                 String.format("Cannot type expression: %s", expressionTyperContext.getOriginalExpression())));
     }
 
-    public List<String> getUsedDeclarations() {
+    public Set<String> getUsedDeclarations() {
         return expressionTyperContext.getUsedDeclarations();
     }
 

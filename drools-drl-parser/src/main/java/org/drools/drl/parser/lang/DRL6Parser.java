@@ -46,6 +46,7 @@ import org.drools.drl.ast.dsl.FieldDescrBuilder;
 import org.drools.drl.ast.dsl.ForallDescrBuilder;
 import org.drools.drl.ast.dsl.FunctionDescrBuilder;
 import org.drools.drl.ast.dsl.GlobalDescrBuilder;
+import org.drools.drl.ast.dsl.GroupByDescrBuilder;
 import org.drools.drl.ast.dsl.ImportDescrBuilder;
 import org.drools.drl.ast.dsl.NamedConsequenceDescrBuilder;
 import org.drools.drl.ast.dsl.PackageDescrBuilder;
@@ -2396,6 +2397,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      *           | lhsEval consequenceInvocation*
      *           | lhsForall
      *           | lhsAccumulate
+     *           | lhsGroupBy
      *           | LEFT_PAREN lhsOr RIGHT_PAREN namedConsequence?
      *           | lhsPatternBind consequenceInvocation*
      *           )
@@ -2427,6 +2429,8 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             result = lhsForall(ce);
         } else if (helper.validateIdentifierKey(DroolsSoftKeywords.ACCUMULATE) || helper.validateIdentifierKey(DroolsSoftKeywords.ACC)) {
             result = lhsAccumulate(ce);
+        } else if (helper.validateIdentifierKey(DroolsSoftKeywords.GROUPBY)) {
+            result = lhsGroupBy(ce);
         } else if (input.LA(1) == DRL6Lexer.LEFT_PAREN) {
             // the order here is very important: this if branch must come before the lhsPatternBind below
             result = lhsParen(ce,
@@ -3285,6 +3289,165 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 return null;
         }
         return result;
+    }
+
+    /**
+     * lhsGroupBy := GROUPBY LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
+     *                      groupByKeyBinding SEMICOLON
+     *                      accumulateFunctionBinding (COMMA accumulateFunctionBinding)*
+     *                      (SEMICOLON constraints)?
+     *                  RIGHT_PAREN SEMICOLON?
+     *
+     * @param ce
+     * @return
+     * @throws org.antlr.runtime.RecognitionException
+     */
+    private BaseDescr lhsGroupBy(PatternContainerDescrBuilder<?, ?> ce) throws RecognitionException {
+        PatternDescrBuilder<?> pattern;
+        BaseDescr result = null;
+
+        pattern = helper.start((DescrBuilder<?, ?>) ce,
+                PatternDescrBuilder.class,
+                null);
+        if (pattern != null) {
+            result = pattern.getDescr();
+        }
+
+        try {
+            if (state.backtracking == 0) {
+                pattern.type("Object");
+                pattern.isQuery(false);
+                // might have to add the implicit bindings as well
+            }
+
+            GroupByDescrBuilder<?> groupBy = helper.start(pattern,
+                    GroupByDescrBuilder.class,
+                    null);
+            try {
+                if (helper.validateIdentifierKey(DroolsSoftKeywords.GROUPBY)) {
+                    match(input,
+                            DRL6Lexer.ID,
+                            DroolsSoftKeywords.GROUPBY,
+                            null,
+                            DroolsEditorType.KEYWORD);
+                }
+                if (state.failed)
+                    return null;
+
+                if (state.backtracking == 0 && input.LA(1) != DRL6Lexer.EOF) {
+                    helper.emit(Location.LOCATION_LHS_FROM_ACCUMULATE);
+                }
+                match(input,
+                        DRL6Lexer.LEFT_PAREN,
+                        null,
+                        null,
+                        DroolsEditorType.SYMBOL);
+                if (state.failed)
+                    return null;
+
+                CEDescrBuilder<?, AndDescr> source = groupBy.source();
+                try {
+                    helper.start(source,
+                            CEDescrBuilder.class,
+                            null);
+                    lhsAnd(source,
+                            true);
+                    if (state.failed)
+                        return null;
+
+                    if (source.getDescr() != null && source.getDescr() instanceof ConditionalElementDescr) {
+                        ConditionalElementDescr root = source.getDescr();
+                        BaseDescr[] descrs = root.getDescrs().toArray(new BaseDescr[root.getDescrs().size()]);
+                        root.getDescrs().clear();
+                        for (int i = 0; i < descrs.length; i++) {
+                            root.addOrMerge(descrs[i]);
+                        }
+                    }
+
+                } finally {
+                    helper.end(CEDescrBuilder.class,
+                            source);
+                }
+
+                if (input.LA(1) == DRL6Lexer.COMMA) {
+                    match(input,
+                            DRL6Lexer.COMMA,
+                            null,
+                            null,
+                            DroolsEditorType.SYMBOL);
+                    if (state.failed)
+                        return null;
+                } else if (input.LA(-1) != DRL6Lexer.SEMICOLON) {
+                    // lhsUnary will consume an optional SEMICOLON, so we need to check if it was consumed already
+                    // or if we must fail consuming it now
+                    match(input,
+                            DRL6Lexer.SEMICOLON,
+                            null,
+                            null,
+                            DroolsEditorType.SYMBOL);
+                    if (state.failed)
+                        return null;
+                }
+
+                // grouping functions
+                groupByKeyFunction(groupBy);
+                if (state.failed)
+                    return null;
+
+                match(input,
+                        DRL6Lexer.SEMICOLON,
+                        null,
+                        null,
+                        DroolsEditorType.SYMBOL);
+                if (state.failed)
+                    return null;
+
+                // accumulate functions
+                accumulateFunctionBinding(groupBy);
+                while (input.LA(1) == DRL6Lexer.COMMA) {
+                    match(input,
+                            DRL6Lexer.COMMA,
+                            null,
+                            null,
+                            DroolsEditorType.SYMBOL);
+                    if (state.failed)
+                        return null;
+
+                    accumulateFunctionBinding(groupBy);
+                    if (state.failed)
+                        return null;
+                }
+
+                if (input.LA(1) == DRL6Lexer.SEMICOLON) {
+                    match(input,
+                            DRL6Lexer.SEMICOLON,
+                            null,
+                            null,
+                            DroolsEditorType.SYMBOL);
+                    if (state.failed)
+                        return null;
+
+                    constraints(pattern);
+                }
+                match(input,
+                        DRL6Lexer.RIGHT_PAREN,
+                        null,
+                        null,
+                        DroolsEditorType.SYMBOL);
+                if (state.failed)
+                    return null;
+            } finally {
+                helper.end(GroupByDescrBuilder.class,
+                           groupBy);
+                if (state.backtracking == 0 && input.LA(1) != DRL6Lexer.EOF) {
+                    helper.emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
+                }
+            }
+        } finally {
+            helper.end(PatternDescrBuilder.class,
+                    pattern);
+        }
+            return result;
     }
 
     private void failMismatchedTokenException() throws DroolsMismatchedTokenException {
@@ -4235,6 +4398,40 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             if (state.backtracking == 0 && input.LA(1) != DRL6Lexer.EOF) {
                 helper.emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
             }
+        }
+    }
+
+    /**
+     * groupByKeyFunction := (label COLON)? lhsExpression
+     * @param groupBy
+     * @throws org.antlr.runtime.RecognitionException
+     */
+    private void groupByKeyFunction(GroupByDescrBuilder<?> groupBy) throws RecognitionException {
+        String label = null;
+        if (input.LA(2) == DRL6Lexer.COLON) {
+            label = match(input,
+                          DRL6Lexer.ID,
+                          null,
+                          null,
+                          DroolsEditorType.IDENTIFIER)
+                    .getText();
+            if (state.failed)
+                return;
+            match(input,
+                  DRL6Lexer.COLON,
+                  null,
+                  null,
+                  DroolsEditorType.SYMBOL);
+        }
+
+        String groupingFunction = conditionalExpression();
+        if (state.failed)
+            return;
+
+        if (label != null) {
+            groupBy.groupingFunction(groupingFunction, label);
+        } else {
+            groupBy.groupingFunction(groupingFunction);
         }
     }
 

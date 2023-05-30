@@ -2072,6 +2072,7 @@ NOTE: The format `forall( p1 p2 p3 ...)` is equivalent to `not( p1 and not( and 
 
 --
 
+[id=accumulate]
 `accumulate`::
 Use this to iterate over a collection of objects, execute custom actions for each of the elements, and return one or more result objects (if the constraints evaluate to `true`). You can use predefined functions in your `accumulate` conditions or implement custom functions as needed. You can also use the abbreviation `acc` for `accumulate` in rule conditions.
 +
@@ -2259,6 +2260,86 @@ drools.accumulate.function.average = AverageAccumulateFunction.AverageData
 
 Note that `drools.accumulate.function` is a required prefix, `average` is how the function is used in the DRL files, and `AverageAccumulateFunction.AverageData` is the fully qualified name of the class that implements the function behavior.
 ====
+--
+
+`groupby`::
+Use this to partition a collection of objects into groups, and perform accumulate functions independently on each group. You can use predefined functions in your `groupby` conditions or implement custom functions as needed.
++
+--
+Use the following format to define `groupby` conditions in rules:
+
+.Preferred format for `groupby`
+[source,subs="+quotes"]
+----
+groupby( __SOURCE_PATTERN__; __KEY_FUNCTION__ ; __FUNCTIONS__ [;__CONSTRAINTS__] )
+----
+
+.Groupby
+image::language-reference/groupby.png[align="center"]
+
+The {RULE_ENGINE} supports the same predefined `accumulate` functions that <<accumulate,accumulate>> allows. These functions accept any expression as input.
+
+In the following example rule, `min`, `max`, and `average` are `accumulate` functions that calculate the minimum, maximum, and average temperature values over all the readings for each sensor by area:
+
+.Example rule with `groupby` to calculate temperature values
+[source]
+----
+rule "Raise alarm"
+  when
+    s : /sensors
+    groupby( /readings( sensor == $s, $temp : temperature, $area: area );
+                $group: $area ;
+                $min : min( $temp ),
+                $max : max( $temp ),
+                $avg : average( $temp );
+                $min < 20, $avg > 70 )
+  then
+    // Raise the alarm for the group.
+    $group.raiseAlarm();
+end
+----
+
+The following example rule uses the `average` function with `accumulate` to calculate the average profit for all items in an order:
+
+.Example rule with `groupby` to calculate average profit
+[source]
+----
+rule "Average profit"
+  when
+    groupby( /orderItems( $order : order, $cost : cost, $price : price );
+                $group: $order;
+                $avgProfit : average( 1 - $cost / $price ) )
+  then
+    // Average profit for `$group` is `$avgProfit`.
+end
+----
+
+NOTE: Built-in accumulate functions' return types may vary depend on parameter types. `min` and `max` can take `Comparable` parameters even if they are not numeric types, for example, `LocalDateTime`. In this case, the return type would be `Comparable`, so you may need to cast the bind variable of the return value in the rule.
+
+To use custom, domain-specific functions in `groupby` conditions, follow the same procedure as <<accumulate,accumulate>>.
+
+To use the custom function in a DRL rule, import the function using the `import accumulate` statement:
+
+.Format to import a custom function
+[source,subs="+quotes"]
+----
+import accumulate __CLASS_NAME__ __FUNCTION_NAME__
+----
+
+.Example rule with the imported `average` function
+[source]
+----
+import accumulate AverageAccumulateFunction.AverageData average
+
+rule "Average profit"
+  when
+    groupby( /orderItems[ $order : order, $cost : cost, $price : price ];
+                $group: $order;
+                $avgProfit : average( 1 - $cost / $price ) )
+  then
+    // Average profit for `$group` is `$avgProfit`.
+end
+----
 --
 
 [id="ref-drl-rules-conditions-elements-diagrams_{context}"]

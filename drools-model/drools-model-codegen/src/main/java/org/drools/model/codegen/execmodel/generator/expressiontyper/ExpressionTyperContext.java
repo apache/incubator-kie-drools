@@ -19,6 +19,7 @@ package org.drools.model.codegen.execmodel.generator.expressiontyper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -29,7 +30,7 @@ import static org.drools.util.StringUtils.lcFirstForBean;
 
 public class ExpressionTyperContext {
 
-    private List<String> usedDeclarations = new ArrayList<>();
+    private Set<String> usedDeclarations = new LinkedHashSet<>();
     private Set<String> reactOnProperties = new HashSet<>();
     private List<Expression> prefixExpresssions = new ArrayList<>();
     private Expression originalExpression;
@@ -43,7 +44,7 @@ public class ExpressionTyperContext {
         usedDeclarations.add(name);
     }
 
-    public List<String> getUsedDeclarations() {
+    public Set<String> getUsedDeclarations() {
         return usedDeclarations;
     }
 
