@@ -1061,7 +1061,7 @@ describe('swf custom form tests', () => {
       Promise.resolve({
         components: {
           schemas: {
-            [workflowName]: { ...schema }
+            [workflowName + '_input']: { ...schema }
           }
         }
       })

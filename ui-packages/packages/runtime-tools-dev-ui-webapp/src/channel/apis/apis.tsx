@@ -523,7 +523,7 @@ export const getCustomWorkflowSchema = (
   return new Promise((resolve, reject) => {
     SwaggerParser.parse(`${devUIUrl}/${openApiPath}`)
       .then((response: any) => {
-        const schema = response.components.schemas[workflowName];
+        const schema = response.components.schemas[workflowName + '_input'];
         if (schema) {
           resolve(schema);
         } else {
