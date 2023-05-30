@@ -187,6 +187,7 @@ KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', 
 
 // Environment nightlies
 setupSpecificBuildChainNightlyJob('native', addFullProfileJobParamsGetter)
+setupSpecificBuildChainNightlyJob('sonarcloud', addFullProfileJobParamsGetter)
 
 // Jobs with integration branch
 setupQuarkusIntegrationJob('quarkus-main', addFullProfileJobParamsGetter)
