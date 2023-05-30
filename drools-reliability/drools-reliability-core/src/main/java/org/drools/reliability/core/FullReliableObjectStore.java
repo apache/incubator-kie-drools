@@ -17,13 +17,11 @@ package org.drools.reliability.core;
 
 import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
 
 public class FullReliableObjectStore extends IdentityObjectStore {
 
-    private final Storage<Long, StoredObject> storage;
+    private final transient Storage<Long, StoredObject> storage;
 
     public FullReliableObjectStore(){
         super();
@@ -60,7 +58,7 @@ public class FullReliableObjectStore extends IdentityObjectStore {
         }
     }
 
-    public void reInit(InternalWorkingMemory session, InternalWorkingMemoryEntryPoint ep) {
+    public void reInit() {
         for (StoredObject entry : storage.values()) {
             super.addHandle(getHandleForObject(entry.getObject()),entry.getObject());
         }

@@ -26,6 +26,9 @@ public interface SimpleReliableObjectStoreFactory extends KieService {
 
         private static final SimpleReliableObjectStoreFactory INSTANCE = createInstance();
 
+        private Holder() {
+        }
+
         static SimpleReliableObjectStoreFactory createInstance() {
             SimpleReliableObjectStoreFactory factory = KieService.load(SimpleReliableObjectStoreFactory.class);
             if (factory == null) {

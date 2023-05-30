@@ -30,6 +30,9 @@ public interface StorageManagerFactory extends KieService {
     class Holder {
         private static final StorageManagerFactory INSTANCE = createInstance();
 
+        private Holder() {
+        }
+
         static StorageManagerFactory createInstance() {
             StorageManagerFactory factory = KieService.load( StorageManagerFactory.class );
             if (factory == null) {
@@ -45,6 +48,6 @@ public interface StorageManagerFactory extends KieService {
     }
 
     static <T> T throwExceptionForMissingRuntime() {
-        throw new RuntimeException("Cannot find any persistence implementation");
+        throw new ReliabilityConfigurationException("Cannot find any persistence implementation");
     }
 }

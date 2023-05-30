@@ -75,7 +75,7 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         clock.advanceTime( 3, TimeUnit.SECONDS );
         session.insert( new StockTick( "ACME" ) );
 
-        assertThat(session.fireAllRules()).isEqualTo(0);
+        assertThat(session.fireAllRules()).isZero();
         assertThat(getResults()).isEmpty();
     }
 }

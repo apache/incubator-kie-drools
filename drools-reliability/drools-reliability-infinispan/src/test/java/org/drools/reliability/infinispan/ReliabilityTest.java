@@ -178,7 +178,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
         restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
         clearResults();
 
-        assertThat(session.fireAllRules()).isEqualTo(0);
+        assertThat(session.fireAllRules()).isZero();
         assertThat(getResults()).isEmpty();
     }
 
@@ -203,7 +203,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         insertMatchingPerson("Matching Person Two",40);
 
-        assertThat(session.fireAllRules()).isEqualTo(0);
+        assertThat(session.fireAllRules()).isZero();
         assertThat(getResults()).isEmpty();
 
         insertString("T");
@@ -237,7 +237,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         failover();
 
-        assertThat(session.fireAllRules()).isEqualTo(0);
+        assertThat(session.fireAllRules()).isZero();
     }
 
     @ParameterizedTest
@@ -270,7 +270,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         restoreSession(BASIC_RULE, strategy);
 
-        assertThat(session.fireAllRules()).isEqualTo(0);
+        assertThat(session.fireAllRules()).isZero();
     }
 
     @ParameterizedTest
@@ -287,7 +287,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         restoreSession(BASIC_RULE, strategy);
 
-        assertThat(session.fireAllRules()).isEqualTo(0);
+        assertThat(session.fireAllRules()).isZero();
     }
 
     @ParameterizedTest

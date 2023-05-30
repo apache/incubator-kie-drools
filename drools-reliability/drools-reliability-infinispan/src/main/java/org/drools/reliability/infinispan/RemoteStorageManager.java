@@ -15,6 +15,9 @@
 
 package org.drools.reliability.infinispan;
 
+import java.util.Optional;
+import java.util.Set;
+
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.Storage;
 import org.infinispan.client.hotrod.RemoteCache;
@@ -24,12 +27,8 @@ import org.infinispan.commons.marshall.ProtoStreamMarshaller;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.protostream.SerializationContext;
 import org.infinispan.protostream.SerializationContextInitializer;
-import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
-import java.util.Set;
 
 import static org.drools.reliability.core.StorageManager.createStorageId;
 import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.DELIMITER;
@@ -47,7 +46,6 @@ public class RemoteStorageManager implements InfinispanStorageManager {
 
     private MarshallerType marshallerType;
     private Optional<ProtoStreamMarshaller> protoMarshaller;
-    private Optional<SerializationContextInitializer> serializationContextInitializer;
 
     private RemoteStorageManager() {
     }
@@ -88,7 +86,7 @@ public class RemoteStorageManager implements InfinispanStorageManager {
                     .addJavaSerialAllowList(InfinispanStorageManager.getAllowedPackages());
         } else if (marshallerType == MarshallerType.PROTOSTREAM) {
             protoMarshaller = Optional.of(new ProtoStreamMarshaller());
-            serializationContextInitializer = findSerializationContextInitializer();
+            Optional<SerializationContextInitializer> serializationContextInitializer = findSerializationContextInitializer();
             if (serializationContextInitializer.isEmpty()) {
                 throw new IllegalStateException("ProtoStream serialization context initializer not found");
             }
@@ -99,14 +97,14 @@ public class RemoteStorageManager implements InfinispanStorageManager {
     }
 
     @Override
-    public <k, V> Storage<k, V> internalGetOrCreateStorageForSession(ReteEvaluator reteEvaluator, String cacheName) {
-        RemoteCache<k, V> cache = remoteCacheManager.administration().getOrCreateCache(createStorageId(reteEvaluator, cacheName), (String) null);
+    public <K, V> Storage<K, V> internalGetOrCreateStorageForSession(ReteEvaluator reteEvaluator, String cacheName) {
+        RemoteCache<K, V> cache = remoteCacheManager.administration().getOrCreateCache(createStorageId(reteEvaluator, cacheName), (String) null);
         return InfinispanStorage.fromCache(cache);
     }
 
     @Override
-    public <k, V> Storage<k, V> getOrCreateSharedStorage(String cacheName) {
-        RemoteCache<k, V> cache = remoteCacheManager.administration().getOrCreateCache(SHARED_STORAGE_PREFIX + cacheName, (String) null);
+    public <K, V> Storage<K, V> getOrCreateSharedStorage(String cacheName) {
+        RemoteCache<K, V> cache = remoteCacheManager.administration().getOrCreateCache(SHARED_STORAGE_PREFIX + cacheName, (String) null);
         return InfinispanStorage.fromCache(cache);
     }
 

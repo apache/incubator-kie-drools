@@ -27,9 +27,13 @@ import java.util.List;
 
 public class SimpleSerializationReliableObjectStore extends IdentityObjectStore implements SimpleReliableObjectStore {
 
-    protected final Storage<Long, StoredObject> storage;
+    protected final transient Storage<Long, StoredObject> storage;
 
     protected boolean reInitPropagated = false;
+
+    public SimpleSerializationReliableObjectStore() {
+        throw new UnsupportedOperationException("This constructor should never be called");
+    }
 
     public SimpleSerializationReliableObjectStore(Storage<Long, StoredObject> storage) {
         super();

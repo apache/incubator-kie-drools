@@ -21,6 +21,10 @@ import org.drools.reliability.core.StoredObject;
 
 public class SimpleProtoStreamReliableObjectStore extends SimpleSerializationReliableObjectStore {
 
+    public SimpleProtoStreamReliableObjectStore() {
+        throw new UnsupportedOperationException("This constructor should never be called");
+    }
+
     public SimpleProtoStreamReliableObjectStore(Storage<Long, StoredObject> storage) {
         super(storage);
     }
