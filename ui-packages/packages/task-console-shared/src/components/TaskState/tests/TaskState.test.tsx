@@ -57,6 +57,8 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
+const DATE_FOR_TESTS = 1592000000000; // UTC Fri Jun 12 2020 22:13:20
+
 jest.mock('@patternfly/react-icons', () =>
   Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
     OnRunningIcon: () => {
@@ -106,7 +108,7 @@ describe('TaskState', () => {
   it('Test show completed task', () => {
     const task = _.clone(userTask);
     task.state = 'Completed';
-    task.completed = true;
+    task.completed = new Date(DATE_FOR_TESTS);
 
     const wrapper = mount(<TaskState task={task} />).find('TaskState');
 
@@ -157,7 +159,7 @@ describe('TaskState', () => {
   it('Test show completed task in label', () => {
     const task = _.clone(userTask);
     task.state = 'Completed';
-    task.completed = true;
+    task.completed = new Date(DATE_FOR_TESTS);
 
     const wrapper = mount(<TaskState task={task} variant={'label'} />).find(
       'TaskState'

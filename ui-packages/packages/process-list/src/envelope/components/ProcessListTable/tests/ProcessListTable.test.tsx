@@ -18,7 +18,7 @@ import { act } from 'react-dom/test-utils';
 import { ProcessInstances } from './mocks/Mocks';
 import { OrderBy } from '../../.././../api';
 import { mount } from 'enzyme';
-import ProcessListTable from '../ProcessListTable';
+import ProcessListTable, { ProcessListTableProps } from '../ProcessListTable';
 import { Button, Checkbox } from '@patternfly/react-core';
 import _ from 'lodash';
 import axios from 'axios';
@@ -62,7 +62,7 @@ jest.mock('@kogito-apps/management-console-shared', () =>
   })
 );
 
-const props = {
+const props: ProcessListTableProps = {
   processInstances: ProcessInstances,
   isLoading: false,
   expanded: {

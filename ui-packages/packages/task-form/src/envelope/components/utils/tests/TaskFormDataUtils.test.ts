@@ -24,26 +24,26 @@ import { SCHEMA_VERSION } from '@kogito-apps/components-common';
 
 const userTask = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
-  description: null,
+  description: undefined,
   name: 'VisaApplication',
   priority: '1',
   processInstanceId: '9ae7ce3b-d49c-4f35-b843-8ac3d22fa427',
   processId: 'travels',
-  rootProcessInstanceId: null,
-  rootProcessId: null,
+  rootProcessInstanceId: undefined,
+  rootProcessId: undefined,
   state: 'Ready',
   actualOwner: 'john',
   adminGroups: [],
   adminUsers: [],
-  completed: null,
-  started: '2020-02-19T11:11:56.282Z',
+  completed: undefined,
+  started: new Date('2020-02-19T11:11:56.282Z'),
   excludedUsers: [],
   potentialGroups: [],
   potentialUsers: [],
   inputs: '{}',
   outputs: '{}',
   referenceName: 'Apply for visa (Empty Form)',
-  lastUpdate: '2020-02-19T11:11:56.282Z',
+  lastUpdate: new Date('2020-02-19T11:11:56.282Z'),
   endpoint:
     'http://localhost:4000/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3'
 };

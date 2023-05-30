@@ -34,16 +34,17 @@
   },
   "devDependencies": {
     "@kogito-apps/ouia-tools": "^1.0.0",
-    "@storybook/addon-a11y": "6.4.22",
+    "@storybook/addon-a11y": "6.5.16",
+    "@storybook/addon-actions": "6.5.16",
     "@storybook/addon-console": "1.2.3",
-    "@storybook/addon-links": "6.4.22",
-    "@storybook/addon-storysource": "6.4.22",
-    "@storybook/react": "6.4.22",
-    "@storybook/source-loader": "6.4.22",
+    "@storybook/addon-links": "6.5.16",
+    "@storybook/addon-storysource": "6.5.16",
+    "@storybook/react": "6.5.16",
+    "@storybook/source-loader": "6.5.16",
     "storybook-react-router": "1.0.8",
-    "@storybook/addon-controls":"6.4.22",
-    "@storybook/addon-essentials":"6.4.22",
-    "@storybook/addon-interactions":"6.4.22"
+    "@storybook/addon-controls": "6.5.16",
+    "@storybook/addon-essentials": "6.5.16",
+    "@storybook/addon-interactions": "6.5.16"
   },
   "jest": {
     "setupFiles": [
@@ -61,7 +62,14 @@
       "./src/graphql",
       "dist/"
     ],
-    "coverageReporters": [["lcov", { "projectRoot": "../../" }]],
+    "coverageReporters": [
+      [
+        "lcov",
+        {
+          "projectRoot": "../../"
+        }
+      ]
+    ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],

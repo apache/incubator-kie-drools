@@ -52,7 +52,7 @@ import { Checkbox } from '@patternfly/react-core';
 import DisablePopup from '../DisablePopup/DisablePopup';
 import '../styles.css';
 import ErrorPopover from '../ErrorPopover/ErrorPopover';
-interface ProcessListTableProps {
+export interface ProcessListTableProps {
   processInstances: ProcessInstance[];
   isLoading: boolean;
   expanded: {
