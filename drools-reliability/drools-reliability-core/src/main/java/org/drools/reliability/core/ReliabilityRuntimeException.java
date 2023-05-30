@@ -15,11 +15,13 @@
 
 package org.drools.reliability.core;
 
-import org.drools.core.common.Storage;
+public class ReliabilityRuntimeException extends RuntimeException {
 
-public class SimpleSerializationReliableObjectStoreFactory implements SimpleReliableObjectStoreFactory {
+    public ReliabilityRuntimeException(String message) {
+        super(message);
+    }
 
-    public SimpleReliableObjectStore createSimpleReliableObjectStore(Storage<Long, StoredObject> storage) {
-        return new SimpleSerializationReliableObjectStore(storage);
+    public ReliabilityRuntimeException(Throwable cause) {
+        super(cause);
     }
 }

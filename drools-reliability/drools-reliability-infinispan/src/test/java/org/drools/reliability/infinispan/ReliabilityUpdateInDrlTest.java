@@ -24,7 +24,7 @@ import org.kie.api.runtime.conf.PersistedSessionOption;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(BeforeAllMethodExtension.class)
-public class ReliabilityTestUpdateInDrl extends ReliabilityTestBasics {
+class ReliabilityUpdateInDrlTest extends ReliabilityTestBasics {
 
     private static final String RULE_UPDATE =
             "import " + Person.class.getCanonicalName() + ";" +
@@ -72,7 +72,7 @@ public class ReliabilityTestUpdateInDrl extends ReliabilityTestBasics {
         restoreSession(RULE_UPDATE, strategy);
         clearResults();
 
-        assertThat(session.fireAllRules()).isEqualTo(0);
+        assertThat(session.fireAllRules()).isZero();
         assertThat(getResults()).isEmpty();
     }
 

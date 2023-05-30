@@ -22,7 +22,7 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.rule.accessor.FactHandleFactory;
 
 public class SerializableStoredObject implements StoredObject, Serializable {
-    private final Object object;
+    private final Serializable object;
     private final boolean propagated;
     private final long timestamp;
     private final long duration;
@@ -32,7 +32,11 @@ public class SerializableStoredObject implements StoredObject, Serializable {
     }
 
     public SerializableStoredObject(Object object, boolean propagated, long timestamp, long duration) {
-        this.object = object;
+        if (object instanceof Serializable) {
+            this.object = (Serializable) object;
+        } else {
+            throw new IllegalArgumentException("Object must be serializable : " + object.getClass().getCanonicalName());
+        }
         this.propagated = propagated;
         this.timestamp = timestamp;
         this.duration = duration;

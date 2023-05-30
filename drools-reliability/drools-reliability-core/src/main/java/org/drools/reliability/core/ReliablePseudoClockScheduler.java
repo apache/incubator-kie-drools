@@ -25,7 +25,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
 
-    private final Storage<String, Object> storage;
+    private final transient Storage<String, Object> storage;
+
+    public ReliablePseudoClockScheduler() {
+        throw new UnsupportedOperationException("This constructor should not be used");
+    }
 
     @SuppressWarnings("unchecked")
     public ReliablePseudoClockScheduler(Storage<String, Object> storage) {

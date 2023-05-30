@@ -27,6 +27,8 @@ import java.io.ObjectOutput;
 
 public class ReliablePropagationList extends SynchronizedPropagationList implements Externalizable {
 
+    public static final String PROPAGATION_LIST = "PropagationList";
+
     public ReliablePropagationList(ReteEvaluator reteEvaluator) {
         super(reteEvaluator);
     }
@@ -45,7 +47,7 @@ public class ReliablePropagationList extends SynchronizedPropagationList impleme
     public synchronized PropagationEntry takeAll() {
         PropagationEntry p = super.takeAll();
         Storage<String, Object> componentsStorage = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(this.reteEvaluator, "components");
-        componentsStorage.put("PropagationList", this);
+        componentsStorage.put(PROPAGATION_LIST, this);
         return p;
     }
 

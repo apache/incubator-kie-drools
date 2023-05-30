@@ -21,6 +21,7 @@ import java.io.UncheckedIOException;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.rule.accessor.FactHandleFactory;
+import org.drools.reliability.core.ReliabilityRuntimeException;
 import org.drools.reliability.core.StorageManagerFactory;
 import org.drools.reliability.core.StoredObject;
 import org.drools.reliability.infinispan.InfinispanStorageManager;
@@ -75,7 +76,7 @@ public class ProtoStreamStoredObject implements StoredObject {
             Class<?> type = Class.forName(this.typeUrl);
             this.object = ProtobufUtil.fromByteArray(serializationContext, protoObject.getValue(), type);
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new ReliabilityRuntimeException(e);
         }
     }
 

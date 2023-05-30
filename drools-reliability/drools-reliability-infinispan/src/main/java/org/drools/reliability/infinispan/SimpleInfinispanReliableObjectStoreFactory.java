@@ -29,12 +29,6 @@ public class SimpleInfinispanReliableObjectStoreFactory implements SimpleReliabl
 
     private static final Logger LOG = LoggerFactory.getLogger(SimpleInfinispanReliableObjectStoreFactory.class);
 
-    static final SimpleInfinispanReliableObjectStoreFactory INSTANCE = new SimpleInfinispanReliableObjectStoreFactory();
-
-    public static SimpleInfinispanReliableObjectStoreFactory get() {
-        return INSTANCE;
-    }
-
     public SimpleReliableObjectStore createSimpleReliableObjectStore(Storage<Long, StoredObject> storage) {
         if (((InfinispanStorageManager)StorageManagerFactory.get().getStorageManager()).isProtoStream()) {
             LOG.debug("Using SimpleProtoStreamReliableObjectStore");

@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.drools.reliability.core.ReliablePropagationList.PROPAGATION_LIST;
+
 public class ReliableSessionInitializer {
 
     private static final Map<PersistedSessionOption.PersistenceStrategy, SessionInitializer> initializersMap = Map.of(
@@ -91,9 +93,11 @@ public class ReliableSessionInitializer {
             }
 
             public void objectInserted(ObjectInsertedEvent ev) {
+                // no-op
             }
 
             public void objectDeleted(ObjectDeletedEvent ev) {
+                // no-op
             }
 
             public void objectUpdated(ObjectUpdatedEvent ev) {
@@ -117,11 +121,9 @@ public class ReliableSessionInitializer {
         }
 
         private void populateSessionFromStorage(InternalWorkingMemory session) {
-            Map<InternalWorkingMemoryEntryPoint, List<StoredObject>> objects = new HashMap<>();
-
             for (EntryPoint ep : session.getEntryPoints()) {
                 FullReliableObjectStore store = (FullReliableObjectStore) ((WorkingMemoryEntryPoint) ep).getObjectStore();
-                store.reInit(session, (InternalWorkingMemoryEntryPoint) ep);
+                store.reInit();
             }
         }
 
@@ -136,15 +138,15 @@ public class ReliableSessionInitializer {
             }
 
             public void objectInserted(ObjectInsertedEvent ev) {
-                componentsCache.put("PropagationList", propagationList);
+                componentsCache.put(PROPAGATION_LIST, propagationList);
             }
 
             public void objectDeleted(ObjectDeletedEvent ev) {
-                componentsCache.put("PropagationList", propagationList);
+                componentsCache.put(PROPAGATION_LIST, propagationList);
             }
 
             public void objectUpdated(ObjectUpdatedEvent ev) {
-                componentsCache.put("PropagationList", propagationList);
+                componentsCache.put(PROPAGATION_LIST, propagationList);
             }
         }
     }

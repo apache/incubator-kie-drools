@@ -39,8 +39,8 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
     private static final AtomicLong RELIABLE_SESSIONS_COUNTER = new AtomicLong(0);
     private static final String NEXT_SESSION_ID = "nextSessionId";
 
-    private final WorkingMemoryFactory wmFactory = ReliablePhreakWorkingMemoryFactory.getInstance();
-    private final AgendaFactory agendaFactory = ReliableAgendaFactory.getInstance();
+    private final transient WorkingMemoryFactory wmFactory = ReliablePhreakWorkingMemoryFactory.getInstance();
+    private final transient AgendaFactory agendaFactory = ReliableAgendaFactory.getInstance();
 
     public ReliableRuntimeComponentFactoryImpl() {
         refreshReliableSessionsCounterUsingStorage();
