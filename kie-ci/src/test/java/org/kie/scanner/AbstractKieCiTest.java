@@ -354,4 +354,8 @@ public class AbstractKieCiTest {
         }
         return true;
     }
+
+    protected ReleaseId getTestDependencyJarReleaseId() {
+        return KieServices.get().newReleaseId("org.kie.ci.test", "kie-ci-test-jar-with-dep", "1.2.3.Final");
+    }
 }
