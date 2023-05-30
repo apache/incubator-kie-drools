@@ -1,0 +1,60 @@
+{
+  "id": "45fae435-b098-4f27-97cf-a0c107072e8b",
+  "taskName": "VisaApplication",
+  "taskDescription": null,
+  "taskPriority": "1",
+  "referenceName": "Apply for visa",
+  "startDate": "2022-03-18T15:32:22.484+10:00",
+  "completeDate": "2022-03-18T15:33:05.586+10:00",
+  "state": "Completed",
+  "actualOwner": null,
+  "potentialUsers": [],
+  "potentialGroups": [],
+  "excludedUsers": [],
+  "adminUsers": [],
+  "adminGroups": [],
+  "inputs": {
+    "trip": {
+      "city": "Brisbane",
+      "country": "Australia",
+      "begin": "2022-03-01T08:00:00.000+10:00",
+      "end": "2022-03-31T08:00:00.000+10:00",
+      "visaRequired": true
+    },
+    "NodeName": "Apply for visa",
+    "TaskName": "VisaApplication",
+    "Priority": "1",
+    "Skippable": "true",
+    "traveller": {
+      "firstName": "Test",
+      "lastName": "Test",
+      "email": "test@email.com",
+      "nationality": "Brazilian",
+      "address": {
+        "street": "",
+        "city": "",
+        "zipCode": "",
+        "country": "Brazil"
+      }
+    }
+  },
+  "outputs": {
+    "ActorId": null,
+    "visaApplication": {
+      "firstName": "Test",
+      "lastName": "Test",
+      "city": "Brisbane",
+      "country": "Australia",
+      "duration": 150,
+      "passportNumber": "CDDCDCDS",
+      "nationality": "Brazilian",
+      "approved": false
+    }
+  },
+  "comments": [],
+  "attachments": [],
+  "processInstanceId": "2308e23d-9998-47e9-a772-a078cf5b891b",
+  "rootProcessInstanceId": "",
+  "processId": "travels",
+  "rootProcessId": ""
+}

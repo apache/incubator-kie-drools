@@ -63,7 +63,7 @@ public class UserTaskInstanceEventMapper implements Function<UserTaskInstanceDat
         task.setAttachments(event.getData().getAttachments().stream().map(attachment()).collect(toList()));
         task.setInputs(getObjectMapper().valueToTree(event.getData().getInputs()));
         task.setOutputs(getObjectMapper().valueToTree(event.getData().getOutputs()));
-        task.setEndpoint(getEndpoint(event.getSource(), event.getData().getProcessInstanceId(), event.getData().getTaskName(), event.getData().getId()));
+        task.setEndpoint(event.getSource() == null ? null : getEndpoint(event.getSource(), event.getData().getProcessInstanceId(), event.getData().getTaskName(), event.getData().getId()));
         task.setLastUpdate(toZonedDateTime(event.getTime()));
         task.setReferenceName(event.getData().getReferenceName());
         return task;

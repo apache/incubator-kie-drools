@@ -1,0 +1,19 @@
+{
+  "id": "8350b8b6-c5d9-432d-a339-a9fc85f642d4_0",
+  "expirationTime": "2020-01-16T20:40:58.918Z",
+  "priority": 0,
+  "callbackEndpoint": "http://localhost:8080/management/jobs/timerscycle/instances/7c1d9b38-b462-47c5-8bf2-d9154f54957b/timers/8350b8b6-c5d9-432d-a339-a9fc85f642d4_0",
+  "processInstanceId": "7c1d9b38-b462-47c5-8bf2-d9154f54957b",
+  "rootProcessInstanceId": null,
+  "processId": "timerscycle",
+  "rootProcessId": null,
+  "repeatInterval": 1000,
+  "repeatLimit": 2147483647,
+  "scheduledId": "0",
+  "retries": 0,
+  "status": "SCHEDULED",
+  "lastUpdate": "2020-01-16T20:40:58.206Z",
+  "executionCounter": 0,
+  "executionResponse": null,
+  "nodeInstanceId": "54e66e2f-2acd-4d47-b8e6-991cb6372ad8"
+}
