@@ -1979,10 +1979,10 @@ index 0d53d229f..f9a6c3a10 100644
  import org.kie.kogito.event.DataEvent;
  import org.kie.kogito.event.EventPublisher;
 diff --git a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
-index 7c45f5b5a..869d959de 100644
+index 46ac64d39..e60791f92 100644
 --- a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
 +++ b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
-@@ -24,9 +24,9 @@ import java.util.Map;
+@@ -23,9 +23,9 @@ import java.util.Map;
  import java.util.concurrent.CompletableFuture;
  import java.util.stream.Collectors;
  
@@ -1993,8 +1993,8 @@ index 7c45f5b5a..869d959de 100644
 +import jakarta.enterprise.inject.Instance;
 +import jakarta.inject.Inject;
  
+ import org.eclipse.microprofile.context.ManagedExecutor;
  import org.kie.kogito.addon.source.files.SourceFilesProvider;
- import org.kie.kogito.index.api.KogitoRuntimeClient;
 diff --git a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java
 index d3f4c10f2..004c4fa8e 100644
 --- a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java
