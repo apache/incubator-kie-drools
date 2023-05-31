@@ -45,9 +45,13 @@ public class KSinkInjectionHealthCheck implements HealthCheck {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KSinkInjectionHealthCheck.class);
 
+    public static final String CONFIG_ALIAS = "org.kie.kogito.addons.knative.eventing.health-enabled";
+
+    public static final String NAME = "K_SINK environment variable injection check";
+
     @Override
     public HealthCheckResponse call() {
-        final HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.named("K_SINK environment variable injection check");
+        final HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.named(NAME);
         final String sinkURL = System.getenv(K_SINK);
         if ("".equals(sinkURL) || sinkURL == null) {
             LOGGER.warn(K_SINK + " variable not set in this environment. Returning not healthy.");

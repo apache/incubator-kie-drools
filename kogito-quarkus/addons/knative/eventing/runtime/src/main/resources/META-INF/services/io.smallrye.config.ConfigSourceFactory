@@ -1,1 +1,2 @@
 org.kie.kogito.addons.quarkus.knative.eventing.KnativeEventingConfigSourceFactory
+org.kie.kogito.addons.quarkus.knative.eventing.KSinkInjectionHealthCheckConfigSourceFactory

@@ -19,7 +19,7 @@ import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
 
-@ConfigRoot(prefix = "org.kie.kogito.addons.knative", phase = ConfigPhase.BUILD_TIME)
+@ConfigRoot(prefix = "org.kie.kogito.addons.knative", name = "eventing", phase = ConfigPhase.BUILD_TIME)
 public class EventingConfiguration {
 
     /**
@@ -51,15 +51,6 @@ public class EventingConfiguration {
      */
     @ConfigItem(defaultValue = "false")
     Boolean generateKogitoSource;
-
-    /**
-     * Whether to enable the health check to verify if the K_SINK variable has been injected in the environment.
-     * You are encouraged to **enable** this option (default) if running on a live cluster.
-     * <p/>
-     * The health check is disabled in dev mode and during tests.
-     */
-    @ConfigItem(defaultValue = "true")
-    Boolean healthEnabled;
 
     SinkConfiguration sink;
 }
