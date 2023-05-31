@@ -90,7 +90,6 @@ public class GenerateModelExecutor {
         final String generateModel = kieMavenPluginContext.getGenerateModel();
         final Log log = kieMavenPluginContext.getLog();
 
-        System.out.println(project.getModel().getProperties());
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings(project);
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);
 

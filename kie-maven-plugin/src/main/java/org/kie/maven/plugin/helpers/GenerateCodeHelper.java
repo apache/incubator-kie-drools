@@ -110,9 +110,7 @@ public class GenerateCodeHelper {
 
     public static JavaCompilerSettings createJavaCompilerSettings(MavenProject project) {
         JavaCompilerSettings javaCompilerSettings = new JavaCompilerSettings();
-        System.out.println(System.getProperty("java.version"));
         String javaVersion = findJavaVersion(project.getModel().getProperties().getOrDefault("maven.compiler.release", System.getProperty("java.version")).toString());
-        System.out.println(javaVersion);
         javaCompilerSettings.setSourceVersion(javaVersion);
         javaCompilerSettings.setTargetVersion(javaVersion);
         return javaCompilerSettings;
