@@ -16,29 +16,23 @@
 
 package org.drools.core.reteoo;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.drools.base.reteoo.BaseTerminalNode;
-import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.reteoo.BaseTerminalNode;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.Pattern;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.base.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
-import org.drools.core.reteoo.ObjectTypeNode.Id;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.Pattern;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.AllSetBitMask;
@@ -47,13 +41,19 @@ import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 import static org.drools.core.phreak.TupleEvaluationUtil.createLeftTupleTupleSets;
 import static org.drools.core.phreak.TupleEvaluationUtil.findPathToFlush;
 import static org.drools.core.phreak.TupleEvaluationUtil.findPathsToFlushFromRia;
 import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushPath;
-import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -64,7 +64,7 @@ import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 public class LeftInputAdapterNode extends LeftTupleSource
         implements
         ObjectSinkNode,
-        MemoryFactory<LeftInputAdapterNode.LiaNodeMemory> {
+        MemoryFactory<LeftInputAdapterNode.LiaNodeMemory>, Serializable {
 
     protected static final transient Logger log = LoggerFactory.getLogger(LeftInputAdapterNode.class);
 
@@ -410,7 +410,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    protected LeftTuple processDeletesFromModify(ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator, Id otnId) {
+    protected LeftTuple processDeletesFromModify(ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator, ObjectTypeNode.Id otnId) {
         LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple(partitionId);
         while ( leftTuple != null && leftTuple.getInputOtnId().before( otnId ) ) {
             modifyPreviousTuples.removeLeftTuple(partitionId);

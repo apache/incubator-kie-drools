@@ -36,13 +36,14 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.common.PropagationContext;
 import org.drools.base.rule.EntryPointId;
+
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.base.time.JobHandle;
@@ -51,6 +52,8 @@ import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
+
+import java.io.Serializable;
 
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
@@ -66,8 +69,7 @@ import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
  *
  * @see Rete
  */
-public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFactory<ObjectTypeNode.ObjectTypeNodeMemory> {
-
+public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFactory<ObjectTypeNode.ObjectTypeNodeMemory>, Serializable {
 
     private static final long serialVersionUID = 510l;
 

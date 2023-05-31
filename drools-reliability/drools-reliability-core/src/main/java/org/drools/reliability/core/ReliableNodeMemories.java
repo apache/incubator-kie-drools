@@ -33,6 +33,9 @@ public class ReliableNodeMemories extends ConcurrentNodeMemories {
 
     public void safepoint() {
         // TODO: persist memories
+        //Storage<String, Object> componentsStorage = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(, "components");
+        //componentsStorage.put("memories", changedMemories);
+        //componentsStorage.put("segments", changedSegments);
         changedMemories.clear();
         changedSegments.clear();
     }
