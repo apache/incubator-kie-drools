@@ -10,6 +10,14 @@ import ${import.target};
 </#list>
 <#--
 
+## DRL globals
+
+-->
+<#list globals as global>
+global ${global.type} ${global.id};
+</#list>
+<#--
+
 ## DRL rules
 
 -->

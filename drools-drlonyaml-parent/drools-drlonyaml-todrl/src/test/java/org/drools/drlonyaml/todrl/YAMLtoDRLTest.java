@@ -97,4 +97,9 @@ public class YAMLtoDRLTest {
     public void smokeTestFromYAML10() {
         assertDumpingYAMLtoDRLisValid("/smoketests/yaml10.yml");
     }
+    
+    @Test
+    public void smokeTestFromYAML11() {
+        assertDumpingYAMLtoDRLisValid("/smoketests/yaml11.yml");
+    }
 }
