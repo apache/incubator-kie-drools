@@ -59,7 +59,7 @@ public class GenerateANCExecutor {
         final JavaConfiguration.CompilerType compilerType = kieMavenPluginContext.getCompilerType();
         final Log log = kieMavenPluginContext.getLog();
 
-        JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
+        JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings(project);
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);
 
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
