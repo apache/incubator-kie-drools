@@ -23,7 +23,7 @@ import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
  * There are options to use various flavours of runtime compilers.
  * Apache JCI is used as the interface to all the runtime compilers.
  * 
- * You can also use the system property "drools.compiler" to set the desired compiler.
+ * You can also use the system property "drools.dialect.java.compiler" to set the desired compiler.
  * The valid values are "ECLIPSE" and "NATIVE" only.
  * 
  * drools.dialect.java.compiler = <ECLIPSE|NATIVE>
@@ -78,7 +78,9 @@ public class JavaConfiguration {
     private CompilerType                compiler;
 
     public static String findJavaVersion() {
-        return findJavaVersion( System.getProperty( JAVA_LANG_LEVEL_PROPERTY, System.getProperty("java.version") ) );
+        String x = findJavaVersion( System.getProperty( JAVA_LANG_LEVEL_PROPERTY, System.getProperty("java.version") ) );
+        System.out.println("inside javaconfiguratio "+x);
+        return x;
     }
 
     public static String findJavaVersion(String level) {

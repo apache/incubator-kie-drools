@@ -243,7 +243,9 @@ public class KieBuilderImpl
                 results.addMessage( Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep );
             }
             
+            System.out.println("before compileJavaClasses");
             compileJavaClasses( kProject.getClassLoader(), classFilter );
+            System.out.println("after compileJavaClasses");
 
             buildKieProject( kProject.createBuildContext(results), kProject, trgMfs );
             kModule = kProject.getInternalKieModule();
@@ -722,7 +724,10 @@ public class KieBuilderImpl
 
         if ( !javaFiles.isEmpty() || !javaTestFiles.isEmpty() ) {
             KnowledgeBuilderConfigurationImpl kconf = newKnowledgeBuilderConfiguration(classLoader).as(KnowledgeBuilderConfigurationImpl.KEY);
+            System.out.println(kconf);
             JavaConfiguration javaConf = (JavaConfiguration) kconf.getDialectConfiguration( "java" );
+            System.out.println(javaConf.getJavaLanguageLevel());
+            System.out.println(javaConf.getCompiler());
             compileJavaClasses( javaConf, classLoader, javaFiles, JAVA_ROOT );
             compileJavaClasses( javaConf, classLoader, javaTestFiles, JAVA_TEST_ROOT );
         }
@@ -749,12 +754,14 @@ public class KieBuilderImpl
             String[] sourceFiles = javaFiles.toArray( new String[ javaFiles.size() ] );
 
             JavaCompiler javaCompiler = createCompiler( javaConf, rootFolder );
+            System.out.println(javaCompiler);
             CompilationResult res = javaCompiler.compile( sourceFiles,
                                                           srcMfs,
                                                           trgMfs,
                                                           classLoader );
 
             for ( CompilationProblem problem : res.getErrors() ) {
+                System.out.println(problem);
                 results.addMessage( new CompilationProblemAdapter( problem ) );
             }
             for ( CompilationProblem problem : res.getWarnings() ) {

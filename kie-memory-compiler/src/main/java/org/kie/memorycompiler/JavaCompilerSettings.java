@@ -135,4 +135,12 @@ public class JavaCompilerSettings {
     public void addOption(String option) {
         options.add(option);
     }
+
+    @Override
+    public String toString() {
+        return "JavaCompilerSettings [targetVersion=" + targetVersion + ", sourceVersion=" + sourceVersion
+                + ", sourceEncoding=" + sourceEncoding + ", warnings=" + warnings + ", deprecations=" + deprecations
+                + ", debug=" + debug + ", classpaths=" + classpaths + ", options=" + options + ", verbose=" + verbose
+                + "]";
+    }
 }

@@ -40,6 +40,7 @@ public class JavaCompilerFactory {
         JavaCompilerSettings settings = compiler.createDefaultSettings();
         settings.setTargetVersion( lngLevel );
         settings.setSourceVersion( lngLevel );
+        System.out.println(settings);
         return settings;
     }
 
