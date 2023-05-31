@@ -15,9 +15,6 @@ git:
     main_branch: true
     seed:
       branch: main
-  - name: 8.36.x-prod
-    seed:
-      branch: seed-drools-8.36.x
   - name: 8.38.x-prod
     seed:
       branch: seed-drools-8.38.x
