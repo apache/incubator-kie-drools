@@ -17,7 +17,6 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -724,25 +723,14 @@ public class KieBuilderImpl
         }
 
         if ( !javaFiles.isEmpty() || !javaTestFiles.isEmpty() ) {
-            print();
             KnowledgeBuilderConfigurationImpl kconf = newKnowledgeBuilderConfiguration(classLoader).as(KnowledgeBuilderConfigurationImpl.KEY);
-            System.out.println("compileJavaClasses() kconf: " + kconf);
+            System.out.println(kconf);
             JavaConfiguration javaConf = (JavaConfiguration) kconf.getDialectConfiguration( "java" );
-            System.out.println("compileJavaClasses() javaConf: " + javaConf);
-            System.out.println("compileJavaClasses() javaConf.getJavaLanguageLevel: " + javaConf.getJavaLanguageLevel());
-            System.out.println("compileJavaClasses() javaConf.getCompiler: " + javaConf.getCompiler());
+            System.out.println(javaConf.getJavaLanguageLevel());
+            System.out.println(javaConf.getCompiler());
             compileJavaClasses( javaConf, classLoader, javaFiles, JAVA_ROOT );
             compileJavaClasses( javaConf, classLoader, javaTestFiles, JAVA_TEST_ROOT );
         }
-    }
-    
-    private void print() {
-        System.out.println("---");
-        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-        for (int i = 1; i < 6; i++) {
-            System.out.println(stack[i]);
-        }
-        System.out.println("---");
     }
 
     private static boolean notVetoedByFilter( final Predicate<String> classFilter,
