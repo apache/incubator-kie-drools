@@ -25,7 +25,7 @@
     <version.org.springframework.cloud.kubernetes.fabric8>2.1.1</version.org.springframework.cloud.kubernetes.fabric8>
     <!-- CVE-2022-25857: Upgrading snakeyaml until we upgrade to Spring Boot 3.x -->
     <!-- See: https://github.com/spring-projects/spring-boot/issues/32221 -->
-    <snakeyaml.version>1.31</snakeyaml.version>
+    <snakeyaml.version>2.0</snakeyaml.version>
   </properties>
   
   <dependencyManagement>
