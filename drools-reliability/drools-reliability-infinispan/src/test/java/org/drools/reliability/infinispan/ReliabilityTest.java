@@ -101,7 +101,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
 
     @ParameterizedTest
-    @MethodSource("strategyProviderFullPlusStoresOnlyWithExplicitSafepoints")
+    @MethodSource("strategyProviderFullWithExplicitSafepoints")
     void insertFireInsertFailoverInsertFire_shouldMatchFactInsertedBeforeFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
