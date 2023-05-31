@@ -100,6 +100,11 @@
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
+     <dependency>
+      <groupId>io.swagger.parser.v3</groupId>
+      <artifactId>swagger-parser</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
     <dependency>

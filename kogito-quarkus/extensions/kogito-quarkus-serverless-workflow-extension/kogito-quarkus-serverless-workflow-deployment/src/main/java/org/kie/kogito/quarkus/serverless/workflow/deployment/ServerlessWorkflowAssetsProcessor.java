@@ -17,12 +17,12 @@ package org.kie.kogito.quarkus.serverless.workflow.deployment;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.drools.codegen.common.GeneratedFile;
-import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.process.ProcessContainerGenerator;
@@ -99,11 +99,12 @@ public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
 
     @BuildStep
     void addOpenAPIModelSchema(List<KogitoProcessContainerGeneratorBuildItem> processBuildItem, BuildProducer<AddToOpenAPIDefinitionBuildItem> openAPIProducer) {
-        List<OpenAPI> schemas = processBuildItem.stream().flatMap(it -> it.getProcessContainerGenerators().stream())
+        Map<String, Schema> schemasInfo = new HashMap<>();
+        processBuildItem.stream().flatMap(it -> it.getProcessContainerGenerators().stream())
                 .map(ProcessContainerGenerator::getProcesses).flatMap(Collection::stream).map(ProcessGenerator::getProcess)
-                .map(OpenApiModelSchemaGenerator::generateOpenAPIModelSchema).flatMap(Optional::stream).collect(Collectors.toList());
-        if (!schemas.isEmpty()) {
-            openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(schemas)));
+                .forEach(process -> OpenApiModelSchemaGenerator.addOpenAPIModelSchema(process, schemasInfo));
+        if (!schemasInfo.isEmpty()) {
+            openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(schemasInfo)));
         }
     }
 

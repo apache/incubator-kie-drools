@@ -15,17 +15,18 @@
  */
 package org.kie.kogito.quarkus.serverless.workflow.openapi;
 
-import java.util.Collection;
+import java.util.Map;
 
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaGenerator;
 
 public final class ServerlessWorkflowOASFilter implements OASFilter {
 
-    private final Collection<OpenAPI> schemasInfo;
+    private final Map<String, Schema> schemasInfo;
 
-    public ServerlessWorkflowOASFilter(Collection<OpenAPI> schemasInfo) {
+    public ServerlessWorkflowOASFilter(Map<String, Schema> schemasInfo) {
         this.schemasInfo = schemasInfo;
     }
 

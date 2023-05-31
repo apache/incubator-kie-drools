@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Expression",
+    "title": "Expression Output",
     "description": "Output schema for expression test",
     "type": "object",
     "properties": {
