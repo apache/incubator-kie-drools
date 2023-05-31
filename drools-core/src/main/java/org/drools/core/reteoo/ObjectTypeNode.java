@@ -47,6 +47,8 @@ import java.util.List;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
+import java.io.Serializable;
+
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
  * fact assertions propagated from the <code>Rete</code> node using <code>ObjectType</code> interface.
@@ -62,7 +64,6 @@ import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
  * @see Rete
  */
 public class ObjectTypeNode extends ObjectSource implements ObjectSink {
-
 
     private static final long serialVersionUID = 510l;
 
