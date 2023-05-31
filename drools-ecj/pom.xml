@@ -40,49 +40,4 @@
             <scope>test</scope>
       </dependency>        
     </dependencies>
-
-    <build>
-        <plugins>
-            <!-- shade ecj to allow the gwt compiler to use its own version -->
-            <plugin>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createSourcesJar>true</createSourcesJar>
-                            <artifactSet>
-                                <includes>
-                                    <include>org.eclipse.jdt:ecj</include>
-                                </includes>
-                            </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.eclipse.jdt</pattern>
-                                    <shadedPattern>org.drools.compiler.shade.org.eclipse.jdt</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                            </transformers>
-                            <filters> <!-- since shading ecj, erase signatures see https://docs.oracle.com/en-us/iaas/data-flow/data-flow-tutorial/develop-apps-locally/create-fat-jars.htm -->
-                             <filter>
-                              <artifact>*:*</artifact>
-                              <excludes>
-                                   <exclude>META-INF/*.SF</exclude>
-                                   <exclude>META-INF/*.DSA</exclude>
-                                   <exclude>META-INF/*.RSA</exclude>
-                              </excludes>
-                             </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
 </project>
