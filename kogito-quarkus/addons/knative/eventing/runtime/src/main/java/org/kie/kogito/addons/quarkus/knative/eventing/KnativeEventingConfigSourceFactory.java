@@ -35,6 +35,8 @@ public final class KnativeEventingConfigSourceFactory implements ConfigSourceFac
 
     public static final String INCLUDE_PROCESS_EVENTS = "org.kie.kogito.addons.quarkus.knative.eventing.includeProcessEvents";
 
+    public static final String SKIP_DEFAULT_INCOMING_STREAM = "org.kie.kogito.addons.quarkus.knative.eventing.skipDefaultIncomingStream";
+
     private static final String PROCESS_INSTANCES_EVENTS = "kogito-processinstances-events";
 
     private static final String USER_TASK_INSTANCES_EVENTS = "kogito-usertaskinstances-events";
@@ -42,6 +44,10 @@ public final class KnativeEventingConfigSourceFactory implements ConfigSourceFac
     private static final String VARIABLE_EVENTS = "kogito-variables-events";
 
     private static final String QUARKUS_HTTP_CONNECTOR = "quarkus-http";
+
+    private static final String OUTGOING_CONNECTOR_PREFIX = "mp.messaging.outgoing";
+
+    private static final String INCOMING_CONNECTOR_PREFIX = "mp.messaging.incoming";
 
     /**
      * Default Knative Sink for local dev environments. Just a default endpoint, nothing in particular.
@@ -59,7 +65,11 @@ public final class KnativeEventingConfigSourceFactory implements ConfigSourceFac
 
         addOutgoingConnector(configuration, KogitoEventStreams.OUTGOING);
 
-        if (includeProcessEvents()) {
+        if (!skipDefaultIncomingStream(context)) {
+            addIncomingConnector(configuration);
+        }
+
+        if (includeProcessEvents(context)) {
             addOutgoingConnector(configuration, PROCESS_INSTANCES_EVENTS);
             addOutgoingConnector(configuration, USER_TASK_INSTANCES_EVENTS);
             addOutgoingConnector(configuration, VARIABLE_EVENTS);
@@ -88,15 +98,24 @@ public final class KnativeEventingConfigSourceFactory implements ConfigSourceFac
         configuration.put(buildOutgoingConnectorUrl(name), DEFAULT_SINK_URL_EXPRESSION);
     }
 
+    private static void addIncomingConnector(Map<String, String> configuration) {
+        configuration.put(INCOMING_CONNECTOR_PREFIX + "." + KogitoEventStreams.INCOMING + ".connector", QUARKUS_HTTP_CONNECTOR);
+        configuration.put(INCOMING_CONNECTOR_PREFIX + "." + KogitoEventStreams.INCOMING + ".path", "/");
+    }
+
     private static String buildOutgoingConnector(String name) {
-        return "mp.messaging.outgoing." + name + ".connector";
+        return OUTGOING_CONNECTOR_PREFIX + "." + name + ".connector";
     }
 
     private static String buildOutgoingConnectorUrl(String name) {
-        return "mp.messaging.outgoing." + name + ".url";
+        return OUTGOING_CONNECTOR_PREFIX + "." + name + ".url";
     }
 
-    private boolean includeProcessEvents() {
-        return Boolean.parseBoolean(System.getProperty(INCLUDE_PROCESS_EVENTS));
+    private boolean includeProcessEvents(ConfigSourceContext context) {
+        return Boolean.parseBoolean(context.getValue(INCLUDE_PROCESS_EVENTS).getValue());
+    }
+
+    private boolean skipDefaultIncomingStream(ConfigSourceContext context) {
+        return Boolean.parseBoolean(context.getValue(SKIP_DEFAULT_INCOMING_STREAM).getValue());
     }
 }
