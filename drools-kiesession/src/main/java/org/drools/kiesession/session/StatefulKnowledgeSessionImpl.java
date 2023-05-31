@@ -330,14 +330,17 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.lastIdleTimestamp = new AtomicLong(-1);
 
-        this.nodeMemories = createNodeMemories(kBase);
-        registerReceiveNodes(kBase.getReceiveNodes());
+        //this.nodeMemories = createNodeMemories(kBase);
+        //registerReceiveNodes(kBase.getReceiveNodes());
 
         RuleBaseConfiguration conf = kBase.getRuleBaseConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
 
         this.agenda = agenda != null ? agenda : RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(kBase);
         this.agenda.setWorkingMemory(this);
+
+        this.nodeMemories = createNodeMemories(kBase);
+        registerReceiveNodes(kBase.getReceiveNodes());
 
         this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
 

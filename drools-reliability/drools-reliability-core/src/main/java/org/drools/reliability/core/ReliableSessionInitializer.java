@@ -124,7 +124,12 @@ public class ReliableSessionInitializer {
             for (EntryPoint ep : session.getEntryPoints()) {
                 FullReliableObjectStore store = (FullReliableObjectStore) ((WorkingMemoryEntryPoint) ep).getObjectStore();
                 store.reInit();
+                //
+                ReliableNodeMemories memories = (ReliableNodeMemories)((WorkingMemoryEntryPoint) ep).getReteEvaluator().getNodeMemories();
+                memories.reInit();
             }
+            //
+
         }
 
         static class FullStoreRuntimeEventListener implements RuleRuntimeEventListener {

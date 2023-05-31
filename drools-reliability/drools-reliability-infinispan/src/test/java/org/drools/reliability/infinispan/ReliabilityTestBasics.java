@@ -84,6 +84,12 @@ public abstract class ReliabilityTestBasics {
         );
     }
 
+    static Stream<Arguments> strategyProviderFullWithExplicitSafepoints() {
+        return Stream.of(
+                arguments(PersistedSessionOption.PersistenceStrategy.FULL, PersistedSessionOption.SafepointStrategy.EXPLICIT)
+        );
+    }
+
     static Stream<Arguments> strategyProviderStoresOnlyWithAllSafepoints() {
         return Stream.of(
                 arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.ALWAYS),

@@ -18,6 +18,7 @@ package org.drools.reliability.core;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.Storage;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
@@ -50,7 +51,8 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
     @Override
     protected ConcurrentNodeMemories createNodeMemories(InternalKnowledgeBase kBase) {
         if (getSessionConfiguration().getPersistedSessionOption().getPersistenceStrategy() == PersistedSessionOption.PersistenceStrategy.FULL) {
-            return new ReliableNodeMemories(kBase);
+            Storage<Integer, Object> storage = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(this, "ep" + getEntryPointId());
+            return new ReliableNodeMemories(kBase,storage);
         }
         return super.createNodeMemories(kBase);
     }
