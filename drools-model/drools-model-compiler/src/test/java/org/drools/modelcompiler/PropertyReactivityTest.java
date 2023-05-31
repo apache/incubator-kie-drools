@@ -29,9 +29,12 @@ import org.drools.modelcompiler.domain.Pet;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.VariousCasePropFact;
 import org.junit.Test;
+import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.definition.type.Modifies;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -1115,6 +1118,31 @@ public class PropertyReactivityTest extends BaseModelTest {
                 .as("'$id' is resolved as property 'a'. Hence, no class reactive, so the rule shouldn't loop")
                 .isEqualTo(1);
         assertThat(bigString.getResult()).isEqualTo("OK");
+    }
+
+    @Test
+    public void externalFunctionWithBindVariableFromAnotherPatternOfSameType_shouldTriggerClassReactive() {
+        // DROOLS-7398
+        final String str =
+                "import " + Fact.class.getCanonicalName() + ";\n" +
+                           "import static " + PropertyReactivityTest.class.getCanonicalName() + ".*;\n" +
+                           "rule R when\n" +
+                           "    $fact1 : Fact( $id : a )\n" +
+                           "    $fact2 : Fact( convertToString($id) == \"BIG\" )\n" +
+                           "then\n" +
+                           "    modify($fact2) { setResult(\"OK\") };\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Fact bigString = new Fact();
+        bigString.setA(99999);
+        bigString.setResult("NG");
+        ksession.insert(bigString);
+        int fired = ksession.fireAllRules(10); // intentional loop
+
+        assertThat(fired).as("$id comes from a different pattern, so it triggers class reactivity, not property reactivity.")
+                         .isEqualTo(10);
     }
 
     @Test
