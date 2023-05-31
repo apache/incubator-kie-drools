@@ -51,7 +51,7 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
     @Override
     protected ConcurrentNodeMemories createNodeMemories(InternalKnowledgeBase kBase) {
         if (getSessionConfiguration().getPersistedSessionOption().getPersistenceStrategy() == PersistedSessionOption.PersistenceStrategy.FULL) {
-            Storage<Integer, Object> storage = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(this, "ep" + getEntryPointId());
+            Storage<Integer, Object> storage = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(this, "mem" + getEntryPointId());
             return new ReliableNodeMemories(kBase,storage);
         }
         return super.createNodeMemories(kBase);
