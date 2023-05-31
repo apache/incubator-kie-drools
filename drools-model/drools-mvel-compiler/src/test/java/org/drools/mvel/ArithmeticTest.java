@@ -1107,6 +1107,97 @@ public class ArithmeticTest {
 
     assertThat(executeExpression(expression, new HashMap<>())).isEqualTo(result);
   }
+
+
+  @Test
+  public void testBigDecimalCoercionWithFloat() {
+    Map<String, Object> vars = new LinkedHashMap<>();
+    Object val1;
+
+    vars.put("bd", new BigDecimal("13.5"));
+    vars.put("f", 13.5f);
+    val1 = executeExpression("bd == f", vars);
+    assertThat(val1).isEqualTo(true);
+    val1 = executeExpression("f == bd", vars);
+    assertThat(val1).isEqualTo(true);
+
+
+    vars.put("bd", new BigDecimal("13.05"));
+    vars.put("f", 13.05f);
+    val1 = executeExpression("bd == f", vars);
+    assertThat(val1).isEqualTo(true);
+    val1 = executeExpression("f == bd", vars);
+    assertThat(val1).isEqualTo(true);
+
+    vars.put("bd", new BigDecimal("13.0500"));
+    vars.put("f", 13.05f);
+    val1 = executeExpression("bd == f", vars);
+    assertThat(val1).isEqualTo(true);
+    val1 = executeExpression("f == bd", vars);
+    assertThat(val1).isEqualTo(true);
+
+
+    vars.put("f", 13.04f);
+    val1 = executeExpression("bd == f", vars);
+    assertThat(val1).isEqualTo(false);
+    val1 = executeExpression("f == bd", vars);
+    assertThat(val1).isEqualTo(false);
+  }
+
+  @Test
+  public void testBigDecimalCoercionWithDouble() {
+    Map<String, Object> vars = new LinkedHashMap<>();
+    Object val1;
+
+    vars.put("bd", new BigDecimal("13.5"));
+    vars.put("d", 13.5d);
+    val1 = executeExpression("bd == d", vars);
+    assertThat(val1).isEqualTo(true);
+    val1 = executeExpression("d == bd", vars);
+    assertThat(val1).isEqualTo(true);
+
+
+    vars.put("bd", new BigDecimal("13.05"));
+    vars.put("d", 13.05d);
+    val1 = executeExpression("bd == d", vars);
+    assertThat(val1).isEqualTo(true);
+    val1 = executeExpression("d == bd", vars);
+    assertThat(val1).isEqualTo(true);
+
+    vars.put("bd", new BigDecimal("13.0500"));
+    vars.put("d", 13.05d);
+    val1 = executeExpression("bd == d", vars);
+    assertThat(val1).isEqualTo(true);
+    val1 = executeExpression("d == bd", vars);
+    assertThat(val1).isEqualTo(true);
+
+
+    vars.put("d", 13.04d);
+    val1 = executeExpression("bd == d", vars);
+    assertThat(val1).isEqualTo(false);
+    val1 = executeExpression("d == bd", vars);
+    assertThat(val1).isEqualTo(false);
+  }
+
+  @Test
+  public void testBigDecimalCoercionWithLong() {
+    Map<String, Object> vars = new LinkedHashMap<>();
+    Object val1;
+
+    vars.put("bd", new BigDecimal("13.0"));
+    vars.put("l", 13l);
+    val1 = executeExpression("bd == l", vars);
+    assertThat(val1).isEqualTo(true);
+    val1 = executeExpression("l == bd", vars);
+    assertThat(val1).isEqualTo(true);
+
+
+    vars.put("l", 14l);
+    val1 = executeExpression("bd == l", vars);
+    assertThat(val1).isEqualTo(false);
+    val1 = executeExpression("l == bd", vars);
+    assertThat(val1).isEqualTo(false);
+  }
   
   /* https://github.com/mvel/mvel/issues/249
    * The following caused a ClassCastException because the compiler optimized for integers
