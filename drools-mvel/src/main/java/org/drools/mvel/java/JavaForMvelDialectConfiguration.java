@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * There are options to use various flavours of runtime compilers.
  * Apache JCI is used as the interface to all the runtime compilers.
  * 
- * You can also use the system property "drools.compiler" to set the desired compiler.
+ * You can also use the system property "drools.dialect.java.compiler" to set the desired compiler.
  * The valid values are "ECLIPSE" and "NATIVE" only.
  * 
  * drools.dialect.java.compiler = <ECLIPSE|NATIVE>
