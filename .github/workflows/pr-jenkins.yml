@@ -16,7 +16,7 @@ jobs:
     name: DSL
     steps:
     - name: DSL tests
-      uses: kiegroup/kogito-pipelines/.ci/actions/dsl-tests@main
+      uses: kiegroup/kie-ci/.ci/actions/dsl-tests@main
       with:
         main-config-file-repo: kiegroup/kogito-pipelines
         main-config-file-path: dsl/config/main.yaml
