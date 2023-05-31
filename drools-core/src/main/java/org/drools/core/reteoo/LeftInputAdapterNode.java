@@ -16,11 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ObjectType;
@@ -45,6 +40,12 @@ import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import static org.drools.core.phreak.TupleEvaluationUtil.createLeftTupleTupleSets;
 import static org.drools.core.phreak.TupleEvaluationUtil.findPathToFlush;
 import static org.drools.core.phreak.TupleEvaluationUtil.findPathsToFlushFromRia;
@@ -62,7 +63,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 public class LeftInputAdapterNode extends LeftTupleSource
         implements
         ObjectSinkNode,
-        MemoryFactory<LeftInputAdapterNode.LiaNodeMemory> {
+        MemoryFactory<LeftInputAdapterNode.LiaNodeMemory>, Serializable {
 
     protected static final transient Logger log = LoggerFactory.getLogger(LeftInputAdapterNode.class);
 

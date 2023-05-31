@@ -24,9 +24,11 @@ import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 
+import java.io.Serializable;
+
 public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         implements
-        SegmentNodeMemory {
+        SegmentNodeMemory, Serializable {
 
     private static final long serialVersionUID = 510l;
     private TupleMemory                leftTupleMemory;
