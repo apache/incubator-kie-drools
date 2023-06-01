@@ -149,7 +149,10 @@
   "resolutions": {
     "@types/express-serve-static-core": "^4.17.21",
     "axios": "0.21.2",
-    "@patternfly/react-core": "4.157.3"
+    "@patternfly/react-core": "4.157.3",
+    "d3": "^7.0.0",
+    "d3-ease": "^3.0.1",
+    "d3-interpolate":"^3.0.1"
   },
   "lint-staged": {
     "packages/**/*.{ts,tsx}": [
