@@ -30,7 +30,7 @@ When a trait is applied to a fact, a proxy class is created on the fly (one such
 
 [source]
 ----
-import org.drools.core.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.Traitable;
 declare Customer
     @Traitable
     code: String
@@ -50,11 +50,11 @@ then
 end
 ----
 
-In this case, the `code` and `balance` would be read from the underlying `Customer` object. Likewise, the `setAccount` will modify the underlying object, preserving a strongly typed access to the data structures. A hard field is a field that must have the same name and type both in the fact class and all trait interfaces. The name is used to establish the mapping: if two fields have the same name, then they must also have the same declared type. The annotation `@org.drools.core.factmodel.traits.Alias` allows to relax this restriction. If an `@Alias` is provided, its value string will be used to resolve mappings instead of the original field name. `@Alias` can be applied both to traits and core beans.
+In this case, the `code` and `balance` would be read from the underlying `Customer` object. Likewise, the `setAccount` will modify the underlying object, preserving a strongly typed access to the data structures. A hard field is a field that must have the same name and type both in the fact class and all trait interfaces. The name is used to establish the mapping: if two fields have the same name, then they must also have the same declared type. The annotation `@org.drools.base.factmodel.traits.Alias` allows to relax this restriction. If an `@Alias` is provided, its value string will be used to resolve mappings instead of the original field name. `@Alias` can be applied both to traits and core beans.
 
 [source]
 ----
-import org.drools.core.factmodel.traits.*;
+import org.drools.base.factmodel.traits.*;
 declare trait GoldenCustomer
     balance: long @Alias("org.acme.foo.accountBalance")
 end
@@ -121,7 +121,7 @@ then
     Thing t = shed($x, GoldenCustomer.class)
 ----
 
-This operation returns another proxy implementing the `org.drools.core.factmodel.traits.Thing` interface, where the `getFields()` and `getCore()` methods are defined. Internally, in fact, all declared traits are generated to extend this interface (in addition to any others specified). This allows to preserve the wrapper with the soft fields which would otherwise be lost.
+This operation returns another proxy implementing the `org.drools.base.factmodel.traits.Thing` interface, where the `getFields()` and `getCore()` methods are defined. Internally, in fact, all declared traits are generated to extend this interface (in addition to any others specified). This allows to preserve the wrapper with the soft fields which would otherwise be lost.
 
 A trait and its proxies are also correlated in another way. Whenever a fact object is "modified", its proxies are "modified" automatically as well, to allow trait-based patterns to react to potential changes in hard fields. Likewise, whenever a trait proxy (matched by a trait pattern) is modified, the modification is propagated to the fact class and the other traits. Moreover, whenever a `don` operation is performed, the fact object is also modified automatically, to reevaluate any `isA` operation which may be triggered.
 
@@ -196,7 +196,7 @@ gc1.getRefers(); // returns c2, a Customer proxy wrapping p2
 
 Notice that, by the time `p1` becomes `GoldenCustomer`, `p2` must have already become a `Customer` themselves, otherwise a runtime exception will be thrown since the very definition of `GoldenCustomer` would have been violated.
 
-In some cases, however, one may want to infer, rather than verify, that `p2` is a `Customer` by virtue that `p1` is a `GoldenCustomer`. This modality can be enabled by marking `Customer` as "logical", using the annotation `@org.drools.core.factmodel.traits.Trait(logical = true)`. In this case, should `p2` not be a `Customer` by the time that `p1` becomes a `GoldenCustomer`, it will be automatically assigned the trait `Customer` to preserve the logical integrity of the system.
+In some cases, however, one may want to infer, rather than verify, that `p2` is a `Customer` by virtue that `p1` is a `GoldenCustomer`. This modality can be enabled by marking `Customer` as "logical", using the annotation `@org.drools.base.factmodel.traits.Trait(logical = true)`. In this case, should `p2` not be a `Customer` by the time that `p1` becomes a `GoldenCustomer`, it will be automatically assigned the trait `Customer` to preserve the logical integrity of the system.
 
 Notice that the annotation on the fact class enables the dynamic type management for its fields, whereas the annotation on the traits determines whether they will be enforced as integrity constraints or cascaded dynamically.
 

@@ -58,7 +58,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
 
     public static final String SUFFIX = "_Trait__Extension";
 
-    protected static final String PACKAGE = "org.drools.core.factmodel.traits.";
+    protected static final String PACKAGE = "org.drools.base.factmodel.traits.";
 
     protected Map<String, Constructor> factoryCache = new HashMap<>();
 

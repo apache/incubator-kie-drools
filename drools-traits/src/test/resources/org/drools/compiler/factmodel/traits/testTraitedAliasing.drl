@@ -15,10 +15,10 @@
 
 package org.drools.factmodel.traits;
 
-import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.factmodel.traits.Alias
+import org.drools.base.factmodel.traits.Trait;
+import org.drools.base.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.traits.Alias
 
 global java.util.List list;
 

@@ -48,9 +48,9 @@ public class TraitKnowledgePackageImpl extends MVELKnowledgePackageImpl {
     private static final String[] implicitImports = new String[]{
             "org.kie.api.definition.rule.*",
             "org.kie.api.definition.type.*",
-            "org.drools.core.factmodel.traits.Alias",
-            "org.drools.core.factmodel.traits.Trait",
-            "org.drools.core.factmodel.traits.Traitable",
+            "org.drools.base.factmodel.traits.Alias",
+            "org.drools.base.factmodel.traits.Trait",
+            "org.drools.base.factmodel.traits.Traitable",
             "org.drools.tms.beliefsystem.abductive.Abductive",
             "org.drools.tms.beliefsystem.abductive.Abducible"};
 

@@ -1819,7 +1819,7 @@ index 9ce33143c6..c16fea8253 100644
 +import jakarta.xml.bind.annotation.XmlRootElement;
 +import jakarta.xml.bind.annotation.XmlSchemaType;
 +import jakarta.xml.bind.annotation.XmlSeeAlso;
- 
+
  import org.drools.core.WorkingMemoryEntryPoint;
  import org.drools.core.base.ArrayElements;
 diff --git a/drools-core/src/main/java/org/drools/core/common/ObjectFactory.java b/drools-core/src/main/java/org/drools/core/common/ObjectFactory.java
@@ -1827,12 +1827,12 @@ index 236d78023e..cb378ad082 100644
 --- a/drools-core/src/main/java/org/drools/core/common/ObjectFactory.java
 +++ b/drools-core/src/main/java/org/drools/core/common/ObjectFactory.java
 @@ -16,7 +16,7 @@
- 
+
  package org.drools.core.common;
- 
+
 -import javax.xml.bind.annotation.XmlRegistry;
 +import jakarta.xml.bind.annotation.XmlRegistry;
- 
+
  @XmlRegistry
  public class ObjectFactory {
 diff --git a/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java b/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
@@ -1842,7 +1842,7 @@ index f3d68fbb5f..a9d6be087f 100644
 @@ -20,9 +20,9 @@ import java.util.Arrays;
  import java.util.function.Consumer;
  import java.util.function.Predicate;
- 
+
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
 -import javax.xml.bind.annotation.XmlAttribute;
@@ -1857,16 +1857,16 @@ index 5cd6e541a5..b38cf3801b 100644
 --- a/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java
 +++ b/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java
 @@ -16,9 +16,9 @@
- 
+
  package org.drools.core.util;
- 
+
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
 -import javax.xml.bind.annotation.XmlRootElement;
 +import jakarta.xml.bind.annotation.XmlAccessType;
 +import jakarta.xml.bind.annotation.XmlAccessorType;
 +import jakarta.xml.bind.annotation.XmlRootElement;
- 
+
  /**
   * Provides a abstract base implementation that an object can extend so that it can be used in a LinkedList.
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
@@ -1876,10 +1876,10 @@ index 75848ee1fe..9b879819ef 100644
 @@ -23,7 +23,7 @@ import java.util.Optional;
  import java.util.Set;
  import java.util.stream.Collectors;
- 
+
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
- 
+
  import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
  import io.quarkus.deployment.annotations.BuildProducer;
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
@@ -1888,11 +1888,11 @@ index 728bf58c32..f8d77a3717 100644
 +++ b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
 @@ -16,7 +16,7 @@
  package org.drools.quarkus.ruleunit.examples.multiunit;
- 
+
  import java.util.concurrent.atomic.AtomicReference;
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
- 
+
  import io.quarkus.test.junit.QuarkusTest;
  import org.drools.ruleunits.api.DataHandle;
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
@@ -1902,13 +1902,13 @@ index bf39868231..8d6faa6145 100644
 @@ -15,10 +15,10 @@
   */
  package org.drools.quarkus.ruleunit.examples.reactive;
- 
+
 -import javax.annotation.PostConstruct;
 -import javax.enterprise.context.ApplicationScoped;
 -import javax.inject.Inject;
 +import jakarta.enterprise.context.ApplicationScoped;
 +import jakarta.inject.Inject;
- 
+
 +import jakarta.annotation.PostConstruct;
  import org.eclipse.microprofile.reactive.messaging.Channel;
  import org.eclipse.microprofile.reactive.messaging.Emitter;
@@ -1919,13 +1919,13 @@ index 14e6615a21..e1daf6033d 100644
 +++ b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
 @@ -19,7 +19,7 @@ import java.util.HashMap;
  import java.util.Map;
- 
+
  import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 -import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
 +import io.smallrye.reactive.messaging.memory.InMemoryConnector;
- 
+
  public class KafkaTestResourceLifecycleManager implements QuarkusTestResourceLifecycleManager {
- 
+
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
 index 6e1f058eef..79b6bb074c 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
@@ -1933,10 +1933,10 @@ index 6e1f058eef..79b6bb074c 100644
 @@ -15,13 +15,13 @@
   */
  package org.drools.quarkus.ruleunit.examples.reactive;
- 
+
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
- 
+
  import io.quarkus.test.common.QuarkusTestResource;
  import io.quarkus.test.junit.QuarkusTest;
 -import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
@@ -1947,13 +1947,13 @@ index 6e1f058eef..79b6bb074c 100644
 +import io.smallrye.reactive.messaging.memory.InMemorySource;
  import org.eclipse.microprofile.reactive.messaging.spi.Connector;
  import org.junit.jupiter.api.Test;
- 
+
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
 index 8d34b05084..9043abe090 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
 +++ b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
 @@ -17,12 +17,12 @@ package org.drools.quarkus.test.hotreload;
- 
+
  import java.util.ArrayList;
  import java.util.List;
 -import javax.inject.Inject;
@@ -1968,7 +1968,7 @@ index 8d34b05084..9043abe090 100644
 +import jakarta.ws.rs.Path;
 +import jakarta.ws.rs.Produces;
 +import jakarta.ws.rs.core.MediaType;
- 
+
  import org.kie.api.runtime.KieRuntimeBuilder;
  import org.kie.api.runtime.KieSession;
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
@@ -1978,7 +1978,7 @@ index c2b54de4a4..340c6a0830 100644
 @@ -22,10 +22,10 @@ import org.kie.api.runtime.KieSession;
  import org.kie.api.runtime.rule.FactHandle;
  import org.kie.api.time.SessionPseudoClock;
- 
+
 -import javax.inject.Inject;
 -import javax.ws.rs.GET;
 -import javax.ws.rs.Path;
@@ -1997,12 +1997,12 @@ index 541d798fb4..c8aff28b7b 100644
 @@ -21,7 +21,7 @@ import org.kie.api.definition.KiePackage;
  import org.kie.api.runtime.KieRuntimeBuilder;
  import org.kie.api.runtime.KieSession;
- 
+
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
  import java.util.List;
  import java.util.stream.Collectors;
- 
+
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
 index f93f6ed055..0c671401fc 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
@@ -2010,12 +2010,12 @@ index f93f6ed055..0c671401fc 100644
 @@ -19,8 +19,8 @@ import java.util.Collection;
  import java.util.List;
  import java.util.stream.Collectors;
- 
+
 -import javax.enterprise.context.ApplicationScoped;
 -import javax.inject.Inject;
 +import jakarta.enterprise.context.ApplicationScoped;
 +import jakarta.inject.Inject;
- 
+
  import org.drools.quarkus.quickstart.test.model.Alert;
  import org.drools.quarkus.quickstart.test.model.CCTV;
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
@@ -2025,12 +2025,12 @@ index 2029f09c59..1fccb052af 100644
 @@ -15,7 +15,7 @@
   */
  package org.drools.quarkus.quickstart.test;
- 
+
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
- 
+
  import io.quarkus.test.junit.QuarkusTest;
- 
+
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
 index 1eef910ed3..637bc75cf5 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
@@ -2038,10 +2038,10 @@ index 1eef910ed3..637bc75cf5 100644
 @@ -15,7 +15,7 @@
   */
  package org.drools.quarkus.quickstart.test;
- 
+
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
- 
+
  import io.quarkus.test.junit.QuarkusTest;
  import org.drools.quarkus.quickstart.test.model.Alert;
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
@@ -2049,9 +2049,9 @@ index e956f4e318..29a8932f7f 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
 +++ b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
 @@ -17,10 +17,10 @@ package org.drools.quarkus.ruleunit.test;
- 
+
  import static org.assertj.core.api.Assertions.assertThat;
- 
+
 -import javax.inject.Inject;
 -import javax.ws.rs.GET;
 -import javax.ws.rs.Path;
@@ -2060,7 +2060,7 @@ index e956f4e318..29a8932f7f 100644
 +import jakarta.ws.rs.GET;
 +import jakarta.ws.rs.Path;
 +import jakarta.ws.rs.core.Response;
- 
+
  import org.drools.ruleunits.api.RuleUnit;
  import org.drools.ruleunits.api.RuleUnitInstance;
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
@@ -2070,12 +2070,12 @@ index b5c0335a67..eb2582f0ae 100644
 @@ -5,7 +5,7 @@ import org.drools.ruleunits.api.RuleUnit;
  import org.drools.ruleunits.api.RuleUnitInstance;
  import org.junit.jupiter.api.Test;
- 
+
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
- 
+
  import static org.assertj.core.api.Assertions.assertThat;
- 
+
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
 index b683dcef38..5e7d100d4c 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
@@ -2083,12 +2083,12 @@ index b683dcef38..5e7d100d4c 100644
 @@ -20,7 +20,7 @@ import org.drools.ruleunits.api.RuleUnit;
  import org.drools.ruleunits.api.RuleUnitInstance;
  import org.junit.jupiter.api.Test;
- 
+
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
- 
+
  import static org.junit.jupiter.api.Assertions.assertEquals;
- 
+
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml
 index 61d43070ed..58406ae103 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml
@@ -2109,10 +2109,10 @@ index 7912b11dda..9d79d13914 100644
 @@ -22,7 +22,7 @@ import java.util.Optional;
  import java.util.Set;
  import java.util.stream.Collectors;
- 
+
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
- 
+
  import org.drools.drl.quarkus.util.deployment.KmoduleKieBaseModelsBuiltItem;
  import org.drools.drl.quarkus.util.deployment.PatternsTypesBuildItem;
 diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java
@@ -2120,12 +2120,12 @@ index be6385b9ac..b67a1b17ac 100644
 --- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java
 +++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java
 @@ -17,7 +17,7 @@ package org.drools.quarkus.testext.test;
- 
+
  import static org.assertj.core.api.Assertions.assertThat;
- 
+
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
- 
+
  import org.drools.drl.quarkus.testext.deployment.OtnClassesSingleton;
  import org.drools.quarkus.examples.otn.model.ASubclassOfMeasurement;
 diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
@@ -2148,12 +2148,12 @@ index 21a9a01650..8860daacad 100644
 @@ -19,8 +19,8 @@ package org.drools.drl.quarkus.testext.deployment;
  import java.util.Map;
  import java.util.Set;
- 
+
 -import javax.enterprise.event.Observes;
 -import javax.inject.Singleton;
 +import jakarta.enterprise.event.Observes;
 +import jakarta.inject.Singleton;
- 
+
  import org.slf4j.Logger;
  import org.slf4j.LoggerFactory;
 diff --git a/drools-legacy-test-util/src/test/java/org/drools/mvel/compiler/Person.java b/drools-legacy-test-util/src/test/java/org/drools/mvel/compiler/Person.java
@@ -2161,9 +2161,9 @@ index 5a84459c4d..51a3bfa074 100644
 --- a/drools-legacy-test-util/src/test/java/org/drools/mvel/compiler/Person.java
 +++ b/drools-legacy-test-util/src/test/java/org/drools/mvel/compiler/Person.java
 @@ -18,8 +18,8 @@ package org.drools.mvel.compiler;
- 
+
  import org.drools.core.factmodel.traits.Traitable;
- 
+
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
 +import jakarta.xml.bind.annotation.XmlAccessType;
@@ -2193,9 +2193,9 @@ index a356782f80..77d00fc4fa 100644
 --- a/drools-mvel/src/test/java/org/drools/mvel/compiler/Person.java
 +++ b/drools-mvel/src/test/java/org/drools/mvel/compiler/Person.java
 @@ -18,8 +18,8 @@ package org.drools.mvel.compiler;
- 
+
  import org.drools.core.factmodel.traits.Traitable;
- 
+
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
 +import jakarta.xml.bind.annotation.XmlAccessType;
@@ -2227,23 +2227,23 @@ index d64ee3b8e3..1c988e07cc 100644
 @@ -19,7 +19,7 @@ import org.kie.api.runtime.ExecutableRunner;
  import org.kie.api.command.Command;
  import org.kie.api.runtime.KieSession;
- 
+
 -import javax.transaction.Synchronization;
 +import jakarta.transaction.Synchronization;
- 
+
  public interface PersistenceContextManager {
-     
+
 diff --git a/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/api/TransactionSynchronizationRegistryHelper.java b/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/api/TransactionSynchronizationRegistryHelper.java
 index 5d4a3b36d4..d567816171 100644
 --- a/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/api/TransactionSynchronizationRegistryHelper.java
 +++ b/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/api/TransactionSynchronizationRegistryHelper.java
 @@ -15,7 +15,7 @@
- 
+
  package org.drools.persistence.api;
- 
+
 -import javax.transaction.TransactionSynchronizationRegistry;
 +import jakarta.transaction.TransactionSynchronizationRegistry;
- 
+
  import org.drools.persistence.jta.JtaTransactionSynchronizationAdapter;
  import org.slf4j.Logger;
 diff --git a/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/jta/JtaTransactionManager.java b/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/jta/JtaTransactionManager.java
@@ -2262,22 +2262,22 @@ index 9ed3486b10..08d3957504 100644
 +import jakarta.transaction.SystemException;
 +import jakarta.transaction.TransactionSynchronizationRegistry;
 +import jakarta.transaction.UserTransaction;
- 
+
  import org.drools.persistence.api.TransactionManager;
  import org.drools.persistence.api.TransactionSynchronization;
 @@ -69,7 +69,7 @@ public class JtaTransactionManager
- 
+
      UserTransaction                      ut;
      Object                               tsr;
 -    javax.transaction.TransactionManager tm;
 +    jakarta.transaction.TransactionManager tm;
-     
+
      public JtaTransactionManager(Object ut,
                                   Object tsr,
 @@ -80,20 +80,20 @@ public class JtaTransactionManager
              this.ut = ( UserTransaction ) ( (ut != null) ? ut : findUserTransaction() );
          }
-         
+
 -        if ( tm instanceof javax.transaction.TransactionManager ) {
 -            this.tm = ( javax.transaction.TransactionManager ) tm;
 +        if ( tm instanceof jakarta.transaction.TransactionManager ) {
@@ -2289,7 +2289,7 @@ index 9ed3486b10..08d3957504 100644
          this.tsr = (tsr != null) ? tsr : findTransactionSynchronizationRegistry( this.ut,
                                                                                   this.tm );
      }
- 
+
 -    protected javax.transaction.TransactionManager findTransactionManager(UserTransaction ut) {
 -        if ( ut instanceof javax.transaction.TransactionManager ) {
 +    protected jakarta.transaction.TransactionManager findTransactionManager(UserTransaction ut) {
@@ -2299,7 +2299,7 @@ index 9ed3486b10..08d3957504 100644
 -            return (javax.transaction.TransactionManager) ut;
 +            return (jakarta.transaction.TransactionManager) ut;
          }
- 
+
          InitialContext context;
 @@ -112,7 +112,7 @@ public class JtaTransactionManager
                  continue;
@@ -2312,11 +2312,11 @@ index 9ed3486b10..08d3957504 100644
                  return tm;
 @@ -146,7 +146,7 @@ public class JtaTransactionManager
      }
- 
+
      protected Object findTransactionSynchronizationRegistry(UserTransaction ut,
 -                                                            javax.transaction.TransactionManager tm) {
 +                                                            jakarta.transaction.TransactionManager tm) {
- 
+
          if ( transactionSynchronizationRegistryClass == null ) {
              // JTA 1.1 API not present - skip.
 diff --git a/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/jta/JtaTransactionManagerFactory.java b/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/jta/JtaTransactionManagerFactory.java
@@ -2325,28 +2325,28 @@ index 7572b105d1..7cfb68b514 100644
 +++ b/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/jta/JtaTransactionManagerFactory.java
 @@ -32,8 +32,8 @@ public class JtaTransactionManagerFactory extends TransactionManagerFactory {
      }
- 
+
      /**
 -     * Creates a {@link JtaTransactionManager} instance using any of the {@link javax.transaction.UserTransaction},
 -     * {@link javax.transaction.TransactionSynchronizationRegistry}, and {@link javax.transaction.TransactionManager}
 +     * Creates a {@link JtaTransactionManager} instance using any of the {@link jakarta.transaction.UserTransaction},
 +     * {@link jakarta.transaction.TransactionSynchronizationRegistry}, and {@link jakarta.transaction.TransactionManager}
       * present in {@code env}.
-      * 
+      *
       * @param env
 diff --git a/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/jta/JtaTransactionSynchronizationAdapter.java b/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/jta/JtaTransactionSynchronizationAdapter.java
 index d1d8dcc3a9..ba7001e629 100644
 --- a/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/jta/JtaTransactionSynchronizationAdapter.java
 +++ b/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/jta/JtaTransactionSynchronizationAdapter.java
 @@ -15,8 +15,8 @@
- 
+
  package org.drools.persistence.jta;
- 
+
 -import javax.transaction.Status;
 -import javax.transaction.Synchronization;
 +import jakarta.transaction.Status;
 +import jakarta.transaction.Synchronization;
- 
+
  import org.drools.persistence.api.TransactionManager;
  import org.drools.persistence.api.TransactionSynchronization;
 diff --git a/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/jta/TransactionLockInterceptor.java b/drools-persistence/drools-persistence-api/src/main/java/org/drools/persistence/jta/TransactionLockInterceptor.java
@@ -2359,7 +2359,7 @@ index 228078eec7..267c2fca72 100644
  import java.util.concurrent.locks.ReentrantLock;
 -import javax.transaction.Status;
 +import jakarta.transaction.Status;
- 
+
  import org.drools.commands.impl.AbstractInterceptor;
  import org.drools.persistence.api.OrderedTransactionSynchronization;
 diff --git a/drools-persistence/drools-persistence-jpa/pom.xml b/drools-persistence/drools-persistence-jpa/pom.xml
@@ -2381,7 +2381,7 @@ index a694f0fabd..9961785cdf 100644
        <groupId>com.sun.xml.bind</groupId>
 @@ -147,13 +148,8 @@
      </dependency>
- 
+
      <!-- Hibernate -->
 -    <dependency>
 -      <groupId>org.hibernate</groupId>
@@ -2401,11 +2401,11 @@ index d71fbda727..aaeb023cb3 100644
 +++ b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/TriggerUpdateTransactionSynchronization.java
 @@ -16,7 +16,7 @@
  package org.drools.persistence;
- 
+
  import java.util.Set;
 -import javax.persistence.EntityManager;
 +import jakarta.persistence.EntityManager;
- 
+
  import org.drools.persistence.api.TransactionManager;
  import org.drools.persistence.api.TransactionManagerHelper;
 diff --git a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/info/SessionInfo.java b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/info/SessionInfo.java
@@ -2413,9 +2413,9 @@ index 52cc91c136..b5da3259b2 100644
 --- a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/info/SessionInfo.java
 +++ b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/info/SessionInfo.java
 @@ -17,15 +17,15 @@ package org.drools.persistence.info;
- 
+
  import java.util.Date;
- 
+
 -import javax.persistence.Column;
 -import javax.persistence.Entity;
 -import javax.persistence.GeneratedValue;
@@ -2434,7 +2434,7 @@ index 52cc91c136..b5da3259b2 100644
 +import jakarta.persistence.SequenceGenerator;
 +import jakarta.persistence.Transient;
 +import jakarta.persistence.Version;
- 
+
  import org.drools.persistence.api.PersistentSession;
  import org.drools.persistence.SessionMarshallingHelper;
 diff --git a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/info/WorkItemInfo.java b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/info/WorkItemInfo.java
@@ -2463,7 +2463,7 @@ index 65e07c870c..3308128753 100644
 +import jakarta.persistence.SequenceGenerator;
 +import jakarta.persistence.Transient;
 +import jakarta.persistence.Version;
- 
+
  import org.drools.core.marshalling.MarshallerReaderContext;
  import org.drools.core.marshalling.MarshallerWriteContext;
 diff --git a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/AbstractPersistenceContextManager.java b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/AbstractPersistenceContextManager.java
@@ -2473,12 +2473,12 @@ index a36e1b4843..abf285eb0d 100644
 @@ -15,8 +15,8 @@
   */
   package org.drools.persistence.jpa;
- 
+
 -import javax.persistence.EntityManager;
 -import javax.persistence.EntityManagerFactory;
 +import jakarta.persistence.EntityManager;
 +import jakarta.persistence.EntityManagerFactory;
- 
+
  import org.drools.persistence.api.TransactionManager;
  import org.kie.api.runtime.Environment;
 diff --git a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/JpaPersistenceContext.java b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/JpaPersistenceContext.java
@@ -2486,14 +2486,14 @@ index 9cf810eef7..ee7012c495 100644
 --- a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/JpaPersistenceContext.java
 +++ b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/JpaPersistenceContext.java
 @@ -17,8 +17,8 @@ package org.drools.persistence.jpa;
- 
+
  import java.lang.reflect.Field;
- 
+
 -import javax.persistence.EntityManager;
 -import javax.persistence.LockModeType;
 +import jakarta.persistence.EntityManager;
 +import jakarta.persistence.LockModeType;
- 
+
  import org.drools.persistence.api.PersistenceContext;
  import org.drools.persistence.api.PersistentSession;
 diff --git a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/JpaPersistenceContextManager.java b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/JpaPersistenceContextManager.java
@@ -2503,10 +2503,10 @@ index 407ff42b02..6baa92cf50 100644
 @@ -15,7 +15,7 @@
   */
   package org.drools.persistence.jpa;
- 
+
 -import javax.persistence.EntityManager;
 +import jakarta.persistence.EntityManager;
- 
+
  import org.drools.persistence.api.PersistenceContext;
  import org.drools.persistence.api.PersistenceContextManager;
 diff --git a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/OptimisticLockRetryInterceptor.java b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/OptimisticLockRetryInterceptor.java
@@ -2516,11 +2516,11 @@ index b5bea39c66..5e64f56dea 100644
 @@ -22,7 +22,7 @@ import org.kie.api.runtime.RequestContext;
  import org.slf4j.Logger;
  import org.slf4j.LoggerFactory;
- 
+
 -import javax.persistence.OptimisticLockException;
 +import jakarta.persistence.OptimisticLockException;
  import java.util.concurrent.atomic.AtomicInteger;
- 
+
  /**
 diff --git a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/marshaller/EntityPersister.java b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/marshaller/EntityPersister.java
 index 231e8e2ee9..c05ec10dea 100644
@@ -2529,12 +2529,12 @@ index 231e8e2ee9..c05ec10dea 100644
 @@ -19,7 +19,7 @@ package org.drools.persistence.jpa.marshaller;
  import java.util.ArrayList;
  import java.util.List;
- 
+
 -import javax.persistence.EntityManager;
 +import jakarta.persistence.EntityManager;
- 
+
  public class EntityPersister {
- 
+
 diff --git a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/marshaller/JPAPlaceholderResolverStrategy.java b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/marshaller/JPAPlaceholderResolverStrategy.java
 index 062523d9f1..717941f5f6 100644
 --- a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/marshaller/JPAPlaceholderResolverStrategy.java
@@ -2542,7 +2542,7 @@ index 062523d9f1..717941f5f6 100644
 @@ -25,11 +25,11 @@ import java.io.Serializable;
  import java.util.HashSet;
  import java.util.Set;
- 
+
 -import javax.persistence.EntityManager;
 -import javax.persistence.EntityManagerFactory;
 -import javax.persistence.Persistence;
@@ -2562,7 +2562,7 @@ index 604fe48cea..5edb5d9e1d 100644
 +++ b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/marshaller/MappedVariable.java
 @@ -17,13 +17,13 @@
  package org.drools.persistence.jpa.marshaller;
- 
+
  import java.io.Serializable;
 -import javax.persistence.Column;
 -import javax.persistence.Entity;
@@ -2578,7 +2578,7 @@ index 604fe48cea..5edb5d9e1d 100644
 +import jakarta.persistence.Id;
 +import jakarta.persistence.SequenceGenerator;
 +import jakarta.persistence.Version;
- 
+
  @Entity
  @SequenceGenerator(name="mappedVarIdSeq", sequenceName="MAPPED_VAR_ID_SEQ")
 diff --git a/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/marshaller/VariableEntity.java b/drools-persistence/drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/marshaller/VariableEntity.java
@@ -2599,7 +2599,7 @@ index 445d9eb17f..f35762181d 100644
 +import jakarta.persistence.MappedSuperclass;
 +import jakarta.persistence.OneToMany;
 +import jakarta.persistence.FetchType;
- 
+
  @MappedSuperclass
  public abstract class VariableEntity implements Serializable {
 diff --git a/drools-persistence/drools-persistence-jpa/src/test/filtered-resources/META-INF/persistence.xml b/drools-persistence/drools-persistence-jpa/src/test/filtered-resources/META-INF/persistence.xml
@@ -2615,7 +2615,7 @@ index 6c29cb4771..027943ebcc 100644
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 -             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 +             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
- 
+
      <persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA">
        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 diff --git a/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/JtaTransactionManagerFactoryTest.java b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/JtaTransactionManagerFactoryTest.java
@@ -2623,7 +2623,7 @@ index c21e072745..ec16582dbf 100644
 --- a/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/JtaTransactionManagerFactoryTest.java
 +++ b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/JtaTransactionManagerFactoryTest.java
 @@ -16,13 +16,13 @@ package org.drools.persistence.jta;
- 
+
  import javax.naming.InitialContext;
  import javax.naming.NamingException;
 -import javax.transaction.HeuristicMixedException;
@@ -2641,7 +2641,7 @@ index c21e072745..ec16582dbf 100644
 +import jakarta.transaction.TransactionManager;
 +import jakarta.transaction.UserTransaction;
  import org.drools.core.impl.EnvironmentFactory;
- 
+
  import static org.assertj.core.api.Assertions.assertThat;
 diff --git a/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/JtaTransactionManagerTest.java b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/JtaTransactionManagerTest.java
 index 2ed2d81ebd..fd02afeba9 100644
@@ -2659,7 +2659,7 @@ index 2ed2d81ebd..fd02afeba9 100644
 +import jakarta.persistence.EntityManagerFactory;
 +import jakarta.transaction.RollbackException;
 +import jakarta.transaction.UserTransaction;
- 
+
  import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
  import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 diff --git a/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/TransactionTestCommand.java b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/TransactionTestCommand.java
@@ -2668,13 +2668,13 @@ index 3c04feca2e..08c264c012 100644
 +++ b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/TransactionTestCommand.java
 @@ -16,8 +16,8 @@
  package org.drools.persistence.jta;
- 
+
  import java.util.HashMap;
 -import javax.persistence.EntityManager;
 -import javax.persistence.EntityManagerFactory;
 +import jakarta.persistence.EntityManager;
 +import jakarta.persistence.EntityManagerFactory;
- 
+
  import com.arjuna.ats.jta.TransactionManager;
  import org.drools.core.base.MapGlobalResolver;
 diff --git a/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/TransactionTestObject.java b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/TransactionTestObject.java
@@ -2682,9 +2682,9 @@ index e3f3f3d8a3..5ed617ea17 100644
 --- a/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/TransactionTestObject.java
 +++ b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/jta/TransactionTestObject.java
 @@ -17,13 +17,13 @@ package org.drools.persistence.jta;
- 
+
  import java.io.Serializable;
- 
+
 -import javax.persistence.Column;
 -import javax.persistence.Entity;
 -import javax.persistence.GeneratedValue;
@@ -2699,20 +2699,20 @@ index e3f3f3d8a3..5ed617ea17 100644
 +import jakarta.persistence.Id;
 +import jakarta.persistence.OneToOne;
 +import jakarta.persistence.SequenceGenerator;
- 
+
  /**
-  * This class is used to test transactions. 
+  * This class is used to test transactions.
 diff --git a/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/kie/persistence/session/JpaPersistentStatefulSessionTest.java b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/kie/persistence/session/JpaPersistentStatefulSessionTest.java
 index c23b5361db..28babfedb9 100644
 --- a/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/kie/persistence/session/JpaPersistentStatefulSessionTest.java
 +++ b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/kie/persistence/session/JpaPersistentStatefulSessionTest.java
 @@ -26,7 +26,7 @@ import java.util.Properties;
  import java.util.concurrent.atomic.AtomicInteger;
- 
+
  import javax.naming.InitialContext;
 -import javax.transaction.UserTransaction;
 +import jakarta.transaction.UserTransaction;
- 
+
  import org.drools.core.FlowSessionConfiguration;
  import org.drools.core.SessionConfiguration;
 diff --git a/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/map/impl/JpaBasedPersistenceTest.java b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/map/impl/JpaBasedPersistenceTest.java
@@ -2722,7 +2722,7 @@ index ba7dd5109d..6e7e5432c6 100644
 @@ -31,7 +31,7 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
  import org.slf4j.Logger;
  import org.slf4j.LoggerFactory;
- 
+
 -import javax.persistence.EntityManagerFactory;
 +import jakarta.persistence.EntityManagerFactory;
  import java.util.Arrays;
@@ -2734,11 +2734,11 @@ index 438650b714..566285a37a 100644
 +++ b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/session/JpaPersistentStatefulSessionTest.java
 @@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  import java.util.stream.IntStream;
- 
+
  import javax.naming.InitialContext;
 -import javax.transaction.UserTransaction;
 +import jakarta.transaction.UserTransaction;
- 
+
  import org.drools.commands.ChainableRunner;
  import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
 diff --git a/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/session/ReloadSessionTest.java b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/session/ReloadSessionTest.java
@@ -2753,7 +2753,7 @@ index fada845fc1..2b8e3a8b3a 100644
 -import javax.persistence.Persistence;
 +import jakarta.persistence.EntityManagerFactory;
 +import jakarta.persistence.Persistence;
- 
+
  import org.drools.core.common.DefaultFactHandle;
  import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 diff --git a/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/util/DroolsPersistenceUtil.java b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/util/DroolsPersistenceUtil.java
@@ -2762,7 +2762,7 @@ index 31038d2afa..775f3f19dc 100644
 +++ b/drools-persistence/drools-persistence-jpa/src/test/java/org/drools/persistence/util/DroolsPersistenceUtil.java
 @@ -19,7 +19,7 @@ import static org.kie.api.runtime.EnvironmentName.GLOBALS;
  import static org.kie.api.runtime.EnvironmentName.TRANSACTION;
- 
+
  import java.util.Map;
 -import javax.transaction.UserTransaction;
 +import jakarta.transaction.UserTransaction;
@@ -2796,7 +2796,7 @@ index a356782f80..77d00fc4fa 100644
 --- a/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/compiler/Person.java
 +++ b/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/compiler/Person.java
 @@ -18,8 +18,8 @@ package org.drools.mvel.compiler;
- 
+
  import org.drools.core.factmodel.traits.Traitable;
  
 -import javax.xml.bind.annotation.XmlAccessType;

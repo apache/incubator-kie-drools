@@ -125,6 +125,6 @@ public class TypeDeclarationDescr
     @Override
     public void indexByFQN(boolean isStrict) {
         super.indexByFQN( isStrict );
-        trait |= hasAnnotation( "org.drools.core.factmodel.traits.Trait" );
+        trait |= hasAnnotation( "org.drools.base.factmodel.traits.Trait" );
     }
 }
