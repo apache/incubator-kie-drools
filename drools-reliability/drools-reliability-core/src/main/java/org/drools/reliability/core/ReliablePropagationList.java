@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class ReliablePropagationList extends SynchronizedPropagationList implements Externalizable {
+public class ReliablePropagationList extends SynchronizedPropagationList implements Externalizable, ReliableList {
 
     public static final String PROPAGATION_LIST = "PropagationList";
 
@@ -46,8 +46,8 @@ public class ReliablePropagationList extends SynchronizedPropagationList impleme
     @Override
     public synchronized PropagationEntry takeAll() {
         PropagationEntry p = super.takeAll();
-        Storage<String, Object> componentsStorage = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(this.reteEvaluator, "components");
-        componentsStorage.put(PROPAGATION_LIST, this);
+        //Storage<String, Object> componentsStorage = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(this.reteEvaluator, "components");
+        //componentsStorage.put(PROPAGATION_LIST, this);
         return p;
     }
 
@@ -66,5 +66,11 @@ public class ReliablePropagationList extends SynchronizedPropagationList impleme
         this.disposed = in.readBoolean();
         this.hasEntriesDeferringExpiration = in.readBoolean();
         this.firingUntilHalt = in.readBoolean();
+    }
+
+    @Override
+    public void safepoint() {
+        Storage<String, Object> componentsStorage = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(this.reteEvaluator, "components");
+        componentsStorage.put(PROPAGATION_LIST, this);
     }
 }

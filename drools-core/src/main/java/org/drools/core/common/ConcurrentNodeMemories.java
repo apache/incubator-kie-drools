@@ -16,15 +16,15 @@
 
 package org.drools.core.common;
 
+import org.drools.core.impl.RuleBase;
+import org.drools.core.reteoo.SegmentMemory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.drools.core.impl.RuleBase;
-import org.drools.core.reteoo.SegmentMemory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * A concurrent implementation for the node memories interface
@@ -151,6 +151,26 @@ public class ConcurrentNodeMemories implements NodeMemories {
 
     public int length() {
         return this.memories.length();
+    }
+
+    protected void reInit(Storage<Integer, Object> storage, StatefulKnowledgeSession session){
+
+        this.clear();
+        int i =0;
+        Set<SegmentMemory> smemSet = new HashSet<>();
+
+        for (Integer key : storage.keySet()){
+            if (storage.get(key) instanceof Memory){
+                this.memories.getAndSet(i,(Memory) storage.get(key));
+            }else if (storage.get(key) instanceof SegmentMemory) {
+                smemSet.add((SegmentMemory) storage.get(key));
+                //changedSegments.put(key,(SegmentMemory) storage.get(key));
+            }
+        }
+
+        RuleBase kBase = (RuleBase) session.getKieBase();
+        smemSet.forEach(smem -> resetSegmentMemory(session, kBase, smem));
+
     }
 
 }

@@ -511,7 +511,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return new LiaNodeMemory();
     }
 
-    public static class LiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements SegmentNodeMemory {
+    public static class LiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements SegmentNodeMemory, Serializable {
         private int               counter;
 
         private SegmentMemory     segmentMemory;
