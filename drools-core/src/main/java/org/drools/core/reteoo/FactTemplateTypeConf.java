@@ -29,7 +29,7 @@ import org.drools.core.facttemplates.Event;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateObjectType;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
@@ -41,7 +41,7 @@ public class FactTemplateTypeConf
 
     private static final long serialVersionUID = 510l;
 
-    private transient RuleBase ruleBase;
+    private transient InternalRuleBase ruleBase;
 
     private ObjectType        objectType;
     private FactTemplate      factTemplate;
@@ -58,7 +58,7 @@ public class FactTemplateTypeConf
 
     public FactTemplateTypeConf(final EntryPointId entryPoint,
                                 final FactTemplate factTemplate,
-                                final RuleBase ruleBase) {
+                                final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
         this.factTemplate = factTemplate;
         this.entryPoint = entryPoint;
@@ -68,7 +68,7 @@ public class FactTemplateTypeConf
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        ruleBase = (RuleBase) in.readObject();
+        ruleBase = (InternalRuleBase) in.readObject();
         factTemplate = (FactTemplate) in.readObject();
         concreteObjectTypeNode = (ObjectTypeNode) in.readObject();
         cache = (ObjectTypeNode[]) in.readObject();

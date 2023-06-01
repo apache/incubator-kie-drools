@@ -25,7 +25,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
+import org.drools.core.util.FieldIndex;
 import org.drools.core.util.AbstractHashTable.SingleIndex;
 import org.drools.core.util.index.TupleList;
 import org.junit.Before;

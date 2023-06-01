@@ -17,7 +17,6 @@ package org.drools.mvel.integrationtests.phreak;
 
 import java.util.Collections;
 
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -158,8 +157,8 @@ public class PhreakNotNodeTest {
 
         CompositeBaseConfiguration conf = (CompositeBaseConfiguration) RuleBaseFactory.newKnowledgeBaseConfiguration();
 
-        KnowledgeBaseImpl rbase = new KnowledgeBaseImpl( "ID",
-                                                         conf );
+        KnowledgeBaseImpl rbase = new KnowledgeBaseImpl("ID",
+                                                        conf );
         BuildContext buildContext = new BuildContext( rbase, Collections.emptyList() );
 
         RuleImpl rule = new RuleImpl( "rule1").setPackage( "org.pkg1" );

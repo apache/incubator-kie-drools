@@ -97,7 +97,6 @@ public class PhreakAsyncSendNode {
                                       DataProvider dataProvider, Class<?> resultClass, LeftTuple leftTuple, PropagationContext propagationContext ) {
         for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple,
                                                                       reteEvaluator,
-                                                                      propagationContext,
                                                                       memory.providerContext); it.hasNext(); ) {
             final Object object = it.next();
             if ( (object == null) || !resultClass.isAssignableFrom( object.getClass() ) ) {

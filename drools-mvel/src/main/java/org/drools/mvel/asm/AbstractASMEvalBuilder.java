@@ -21,12 +21,12 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.core.reteoo.SortDeclarations;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.PredicateDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
-import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.EvalConditionFactory;
@@ -83,7 +83,7 @@ public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
         String className = "eval" + context.getNextId();
         evalDescr.setClassMethodName( className );
 
-        Arrays.sort(declarations, RuleTerminalNode.SortDeclarations.instance);
+        Arrays.sort(declarations, SortDeclarations.instance);
 
         EvalCondition eval = EvalConditionFactory.Factory.get().createEvalCondition(declarations);
 

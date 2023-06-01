@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.xml.bind.JAXBContext;
 
+import org.drools.base.base.DroolsQuery;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.commands.runtime.FlatQueryResults;
 import org.drools.core.base.ObjectType;

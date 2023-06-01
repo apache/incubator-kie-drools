@@ -19,14 +19,14 @@ import java.util.Map;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 
 public interface MarshallerWriteContext extends ObjectOutput {
 
-    RuleBase getKnowledgeBase();
+    InternalRuleBase getKnowledgeBase();
 
     ObjectMarshallingStrategyStore getObjectMarshallingStrategyStore();
 

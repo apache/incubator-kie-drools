@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.BaseTuple;
 
 public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements List<T>{
 
@@ -38,10 +38,10 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
         boolean result = wrapped.addAll(index, c);
         if (result) {
             for ( T element : c ) {
-                ReactiveObjectUtil.notifyModification(element, getLeftTuples(), ModificationType.ADD);
+                ReactiveObjectUtil.notifyModification(element, getTuples(), ModificationType.ADD);
                 if ( element instanceof ReactiveObject ) {
-                    for (Tuple lts : getLeftTuples()) {
-                        ((ReactiveObject) element).addLeftTuple(lts);
+                    for (BaseTuple lts : getTuples()) {
+                        ((ReactiveObject) element).addTuple(lts);
                     }
                 }
             }
@@ -58,19 +58,19 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     public T set(int index, T element) {
         T previous = wrapped.set(index, element);
         if ( previous != element ) { // this is indeed intended != to check by reference
-            ReactiveObjectUtil.notifyModification(element, getLeftTuples(), ModificationType.ADD);
+            ReactiveObjectUtil.notifyModification(element, getTuples(), ModificationType.ADD);
             if ( element instanceof ReactiveObject ) {
-                for (Tuple lts : getLeftTuples()) {
-                    ((ReactiveObject) element).addLeftTuple(lts);
+                for (BaseTuple lts : getTuples()) {
+                    ((ReactiveObject) element).addTuple(lts);
                 }
             }
             
             if (previous instanceof ReactiveObject) {
-                for (Tuple lts : getLeftTuples()) {
-                    ((ReactiveObject) previous).removeLeftTuple(lts);
+                for (BaseTuple lts : getTuples()) {
+                    ((ReactiveObject) previous).removeTuple(lts);
                 }
             }
-            ReactiveObjectUtil.notifyModification(previous, getLeftTuples(), ModificationType.REMOVE);
+            ReactiveObjectUtil.notifyModification(previous, getTuples(), ModificationType.REMOVE);
         }
         return previous;
     }
@@ -78,10 +78,10 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     @Override
     public void add(int index, T element) {
         wrapped.add(index, element);
-        ReactiveObjectUtil.notifyModification(element, getLeftTuples(), ModificationType.ADD);
+        ReactiveObjectUtil.notifyModification(element, getTuples(), ModificationType.ADD);
         if ( element instanceof ReactiveObject ) {
-            for (Tuple lts : getLeftTuples()) {
-                ((ReactiveObject) element).addLeftTuple(lts);
+            for (BaseTuple lts : getTuples()) {
+                ((ReactiveObject) element).addTuple(lts);
             }
         }
     }
@@ -90,11 +90,11 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     public T remove(int index) {
         T result = wrapped.remove(index);
         if (result instanceof ReactiveObject) {
-            for (Tuple lts : getLeftTuples()) {
-                ((ReactiveObject) result).removeLeftTuple(lts);
+            for (BaseTuple lts : getTuples()) {
+                ((ReactiveObject) result).removeTuple(lts);
             }
         }
-        ReactiveObjectUtil.notifyModification(result, getLeftTuples(), ModificationType.REMOVE);
+        ReactiveObjectUtil.notifyModification(result, getTuples(), ModificationType.REMOVE);
         return result;
     }
 
@@ -111,8 +111,8 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
         ReactiveList<T> result = new ReactiveList<>( wrapped.subList(fromIndex, toIndex) );
-        for ( Tuple lts : getLeftTuples() ) {
-            result.addLeftTuple( lts );
+        for ( BaseTuple lts : getTuples() ) {
+            result.addTuple(lts);
         }
         return result;
     }
@@ -167,19 +167,19 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
             if ( last != null ) {
                 wrapped.set(e);
                 if ( last != e ) { // this is indeed intended != to check by reference
-                    ReactiveObjectUtil.notifyModification(e, getLeftTuples(), ModificationType.ADD);
+                    ReactiveObjectUtil.notifyModification(e, getTuples(), ModificationType.ADD);
                     if ( e instanceof ReactiveObject ) {
-                        for (Tuple lts : getLeftTuples()) {
-                            ((ReactiveObject) e).addLeftTuple(lts);
+                        for (BaseTuple lts : getTuples()) {
+                            ((ReactiveObject) e).addTuple(lts);
                         }
                     }
                     
                     if (last instanceof ReactiveObject) {
-                        for (Tuple lts : getLeftTuples()) {
-                            ((ReactiveObject) last).removeLeftTuple(lts);
+                        for (BaseTuple lts : getTuples()) {
+                            ((ReactiveObject) last).removeTuple(lts);
                         }
                     }
-                    ReactiveObjectUtil.notifyModification(last, getLeftTuples(), ModificationType.REMOVE);
+                    ReactiveObjectUtil.notifyModification(last, getTuples(), ModificationType.REMOVE);
                 }
                 last = e;
             }
@@ -189,10 +189,10 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
         public void add(T e) {
             wrapped.add(e);
             // the line above either throws UnsupportedOperationException or follows with:
-            ReactiveObjectUtil.notifyModification(e, getLeftTuples(), ModificationType.ADD);
+            ReactiveObjectUtil.notifyModification(e, getTuples(), ModificationType.ADD);
             if ( e instanceof ReactiveObject ) {
-                for (Tuple lts : getLeftTuples()) {
-                    ((ReactiveObject) e).addLeftTuple(lts);
+                for (BaseTuple lts : getTuples()) {
+                    ((ReactiveObject) e).addTuple(lts);
                 }
             }
             last = null;

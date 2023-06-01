@@ -23,7 +23,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -39,7 +39,7 @@ public interface MarshallerReaderContext extends ObjectInput {
     Scheduler removeTimerNodeScheduler( int nodeId, TupleKey key );
 
     InternalWorkingMemory getWorkingMemory();
-    RuleBase getKnowledgeBase();
+    InternalRuleBase getKnowledgeBase();
     Map<Long, InternalFactHandle> getHandles();
     Map<Integer, LeftTuple> getTerminalTupleMap();
     ActivationsFilter getFilter();

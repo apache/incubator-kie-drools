@@ -33,6 +33,7 @@ import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexFactory;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
@@ -155,7 +156,7 @@ public class DefaultBetaConstraints
      */
     public void updateFromFactHandle(final ContextEntry[] context,
                                      final ReteEvaluator reteEvaluator,
-                                     final InternalFactHandle handle) {
+                                     final FactHandle handle) {
         for (ContextEntry aContext : context) {
             aContext.updateFromFactHandle(reteEvaluator, handle);
         }
@@ -177,7 +178,7 @@ public class DefaultBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
-                                       final InternalFactHandle handle) {
+                                       final FactHandle handle) {
         for (int i = indexed; i < constraints.length; i++) {
             if ( !constraints[i].isAllowedCachedLeft(context[i], handle) ) {
                 return false;

@@ -23,7 +23,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
 import org.drools.core.base.ObjectType;
@@ -47,9 +47,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
  */
 public abstract class ObjectSource extends BaseNode {
 
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     /** The destination for <code>FactHandleImpl</code>. */
     protected ObjectSinkPropagator sink;
@@ -112,7 +110,7 @@ public abstract class ObjectSource extends BaseNode {
         this.source = source;
     }
 
-    public RuleBase getRuleBase() {
+    public InternalRuleBase getRuleBase() {
         return source.getRuleBase();
     }
 
@@ -126,7 +124,7 @@ public abstract class ObjectSource extends BaseNode {
         Pattern pattern = context.getLastBuiltPatterns()[0];
         ObjectType objectType = pattern.getObjectType();
         
-        if ( isPropertyReactive(context, objectType) ) {
+        if ( isPropertyReactive(context.getRuleBase(), objectType) ) {
             List<String> settableProperties = getAccessibleProperties( context.getRuleBase(), objectType );
             declaredMask = calculateDeclaredMask(objectType, settableProperties);
         } else {

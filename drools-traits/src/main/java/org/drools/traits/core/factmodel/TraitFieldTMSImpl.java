@@ -46,10 +46,10 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
 
     private BitMask modificationMask = onlyTraitBitSetMask();
 
-    public void init( WorkingMemory wm ) {
-        this.workingMemory = wm;
+    public void init( Object wm ) {
+        this.workingMemory = (WorkingMemory) wm;
         if ( getTypeCache().needsInit() ) {
-            getTypeCache().init( wm );
+            getTypeCache().init( workingMemory );
         }
     }
 

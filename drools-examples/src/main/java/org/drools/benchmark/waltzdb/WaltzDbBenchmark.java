@@ -52,7 +52,7 @@ public class WaltzDbBenchmark {
         kbaseConfiguration.setProperty( "drools.removeIdentities",
                                         "true" );
 
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConfiguration );
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConfiguration);
         //                final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
         //                                                               conf );
 

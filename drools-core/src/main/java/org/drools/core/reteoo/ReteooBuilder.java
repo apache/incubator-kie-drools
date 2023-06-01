@@ -38,7 +38,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.builder.ReteooRuleBuilder;
 import org.drools.core.rule.InvalidPatternException;
@@ -52,14 +52,12 @@ import org.kie.api.definition.rule.Rule;
 public class ReteooBuilder
         implements
         Externalizable {
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     private static final long           serialVersionUID = 510l;
 
     /** The RuleBase */
-    private transient RuleBase  kBase;
+    private transient InternalRuleBase kBase;
 
     private Map<String, TerminalNode[]>          rules;
     private Map<String, QueryTerminalNode[]>     queries;
@@ -83,7 +81,7 @@ public class ReteooBuilder
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    public ReteooBuilder( final RuleBase kBase ) {
+    public ReteooBuilder( final InternalRuleBase kBase) {
         this.kBase = kBase;
         this.rules = new HashMap<>();
         this.queries = new HashMap<>();
@@ -461,7 +459,7 @@ public class ReteooBuilder
         }
     }
 
-    public void setRuleBase( RuleBase kBase ) {
+    public void setRuleBase( InternalRuleBase kBase) {
         this.kBase = kBase;
         this.ruleBuilder = new ReteooRuleBuilder();
     }

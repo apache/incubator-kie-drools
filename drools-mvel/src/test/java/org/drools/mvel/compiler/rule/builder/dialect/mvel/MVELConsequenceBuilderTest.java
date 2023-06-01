@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
@@ -481,7 +482,7 @@ public class MVELConsequenceBuilderTest {
 
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext pctx,
-                                 final ReteEvaluator reteEvaluator) {
+                                 final ValueResolver valueResolver) {
         }
 
         @Override

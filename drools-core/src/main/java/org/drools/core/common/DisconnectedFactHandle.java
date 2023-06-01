@@ -31,8 +31,9 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ArrayElements;
-import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
@@ -66,7 +67,7 @@ public class DisconnectedFactHandle
     private long   recency;
 
     /**
-     *  This could be a {@link DroolsQuery} object or other almost-impossible-to-serialize class
+     *  This could be a {@link DroolsQueryImpl} object or other almost-impossible-to-serialize class
      */
     @XmlElement
     private Object object;
@@ -157,7 +158,7 @@ public class DisconnectedFactHandle
     }
 
     @Override
-    public <K> K as( Class<K> klass ) throws ClassCastException {
+    public <K> K as(Class<K> klass) throws ClassCastException {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
@@ -174,7 +175,7 @@ public class DisconnectedFactHandle
     public void forEachRightTuple( Consumer<RightTuple> rightTupleConsumer ) { }
 
     @Override
-    public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer ) { }
+    public void forEachLeftTuple( Consumer<AbstractLeftTuple> leftTupleConsumer) { }
 
     @Override
     public RightTuple findFirstRightTuple( Predicate<RightTuple> rightTuplePredicate ) {
@@ -182,7 +183,7 @@ public class DisconnectedFactHandle
     }
 
     @Override
-    public LeftTuple findFirstLeftTuple( Predicate<LeftTuple> lefttTuplePredicate ) {
+    public AbstractLeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
         return null;
     }
 

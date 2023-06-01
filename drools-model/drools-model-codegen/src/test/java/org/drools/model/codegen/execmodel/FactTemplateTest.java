@@ -396,7 +396,7 @@ public class FactTemplateTest {
     }
 
     private ObjectTypeNode getFactTemplateObjectTypeNode( KieSession ksession, String name ) {
-        EntryPointNode epn = (( InternalKnowledgeBase ) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
+        EntryPointNode epn = ((InternalKnowledgeBase) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
         for (ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
             if (otn.getObjectType() instanceof FactTemplateObjectType && (( FactTemplateObjectType ) otn.getObjectType()).getFactTemplate().getName().equals( name )) {
                 return otn;

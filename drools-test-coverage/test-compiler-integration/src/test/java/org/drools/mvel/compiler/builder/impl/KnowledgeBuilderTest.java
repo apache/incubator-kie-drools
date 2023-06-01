@@ -47,6 +47,7 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Behavior;
+import org.drools.core.rule.BehaviorRuntime;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.GroupElement;
@@ -1232,7 +1233,7 @@ public class KnowledgeBuilderTest {
 
         final Pattern pattern = (Pattern) rule.getLhs().getChildren().get( 0 );
         assertThat(((ClassObjectType) pattern.getObjectType()).getClassType().getName()).isEqualTo(StockTick.class.getName());
-        final Behavior window = pattern.getBehaviors().get( 0 );
+        final Behavior window = pattern.getBehaviors().get(0);
         assertThat(window.getType()).isEqualTo(Behavior.BehaviorType.TIME_WINDOW);
         assertThat(((SlidingTimeWindow) window).getSize()).isEqualTo(60000);
     }

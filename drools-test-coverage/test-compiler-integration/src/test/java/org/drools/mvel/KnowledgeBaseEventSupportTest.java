@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ReteEvaluator;
@@ -33,7 +35,6 @@ import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.test.model.Cheese;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -108,11 +109,11 @@ public class KnowledgeBaseEventSupportTest {
         pattern.addConstraint( constraint );
         rule1.addPattern( pattern );
 
-        rule1.setConsequence( new Consequence() {
+        rule1.setConsequence( new Consequence<KnowledgeHelper>() {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
-                                 final ReteEvaluator reteEvaluator) throws Exception {
+                                 final ValueResolver valueResolver) throws Exception {
             }
 
             public void readExternal(ObjectInput in) throws IOException,
@@ -139,11 +140,11 @@ public class KnowledgeBaseEventSupportTest {
         pattern2.addConstraint( constraint2 );
         rule2.addPattern( pattern2 );
 
-        rule2.setConsequence( new Consequence() {
+        rule2.setConsequence( new Consequence<KnowledgeHelper>() {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
-                                 final ReteEvaluator reteEvaluator) throws Exception {
+                                 final ValueResolver valueResolver) throws Exception {
             }
 
             public void readExternal(ObjectInput in) throws IOException,

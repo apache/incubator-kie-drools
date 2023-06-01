@@ -254,7 +254,7 @@ public class FromTest {
                                                                          kieBaseTestConfiguration,
                                                                          drl);
 
-        EntryPointNode epn = (( InternalKnowledgeBase ) kbase).getRete().getEntryPointNode( EntryPointId.DEFAULT );
+        EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNode(EntryPointId.DEFAULT);
         ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( Cheesery.class) );
         NetworkNode[] otnSinks = otn.getSinks();
         assertThat(otnSinks.length).isEqualTo(1);

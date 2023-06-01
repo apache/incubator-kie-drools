@@ -23,7 +23,7 @@ import org.drools.core.time.Job;
 /**
  * A default implementation for the JobHandle interface
  */
-public class DefaultJobHandle extends AbstractJobHandle implements Serializable {
+public class DefaultJobHandle extends AbstractJobHandle<DefaultJobHandle> implements Serializable {
 
     private static final long serialVersionUID = 510l;
 
@@ -41,8 +41,11 @@ public class DefaultJobHandle extends AbstractJobHandle implements Serializable 
         return id;
     }
 
-    public void setCancel(boolean cancel) {
-        this.cancel = cancel;
+    public void cancel() {
+        if (!this.cancel) {
+            timerJobInstance.cancel();
+        }
+        this.cancel = true;
     }
 
     public boolean isCancel() {

@@ -19,7 +19,7 @@ package org.drools.core.reteoo;
 import java.util.Collections;
 
 import org.drools.core.common.EmptyBetaConstraints;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class BetaNodeTest {
 
     @Test
     public void testEqualsObject() {
-        RuleBase kBase = RuleBaseFactory.newRuleBase();
+        InternalRuleBase kBase = RuleBaseFactory.newRuleBase();
 
         BuildContext buildContext = new BuildContext( kBase, Collections.emptyList() );
 

@@ -15,10 +15,11 @@
 
 package org.drools.mvel;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueResolver;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.reteoo.Tuple;
+import org.kie.api.runtime.rule.FactHandle;
 
 public interface ConditionEvaluator {
-    boolean evaluate(InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple);
+    boolean evaluate(FactHandle handle, ValueResolver valueResolver, BaseTuple tuple);
 }

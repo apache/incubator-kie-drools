@@ -165,7 +165,7 @@ public abstract class BetaNode extends LeftTupleSource
         if (!isRightInputIsRiaNode()) {
             ObjectType objectType = pattern.getObjectType();
 
-            if (isPropertyReactive(context, objectType)) {
+            if (isPropertyReactive(context.getRuleBase(), objectType)) {
                 rightListenedProperties = pattern.getListenedProperties();
                 List<String> accessibleProperties = pattern.getAccessibleProperties( context.getRuleBase() );
                 rightDeclaredMask = pattern.getPositiveWatchMask(accessibleProperties);

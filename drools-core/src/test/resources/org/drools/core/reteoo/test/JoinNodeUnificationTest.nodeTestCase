@@ -4,7 +4,7 @@ import org.drools.core.test.model.Person;
 
 Setup
     ObjectTypeNode:
-        otnLeft1, org.drools.core.base.DroolsQuery;
+        otnLeft1, org.drools.core.base.DroolsQueryImpl;
     LeftInputAdapterNode:
         lian0, otnLeft1;
     ObjectTypeNode:
@@ -12,7 +12,7 @@ Setup
     ObjectTypeNode:
         otnRight2, Person;
     Binding:
-         v, 0, org.drools.core.base.DroolsQuery, [0], java.lang.Integer;
+         v, 0, org.drools.core.base.DroolsQueryImpl, [0], java.lang.Integer;
          p1, 1, Person, age;
     JoinNode:
         join1, lian0, otnRight1;
@@ -21,7 +21,7 @@ Setup
         join2, join1, otnRight2;
         age, !=, p1;        
     Facts:
-        new org.drools.core.base.DroolsQuery( "x", [org.kie.api.runtime.rule.Variable.v], null, true),
+        new org.drools.core.base.DroolsQueryImpl( "x", [org.kie.api.runtime.rule.Variable.v], null, true),
         new Person('bobba', 36);
 
 Test "Assert right then left"

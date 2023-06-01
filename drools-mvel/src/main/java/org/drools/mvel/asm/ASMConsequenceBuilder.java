@@ -16,19 +16,22 @@ package org.drools.mvel.asm;
 
 import java.util.Map;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.consequence.ConsequenceContext;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.CompiledInvoker;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
 import org.mvel2.asm.MethodVisitor;
 
 import static org.mvel2.asm.Opcodes.AALOAD;
@@ -56,20 +59,17 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 push(name);
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, ReteEvaluator.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
+        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, ConsequenceContext.class, ValueResolver.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
             public void body(MethodVisitor mv) {
-                // Tuple tuple = knowledgeHelper.getTuple();
+                // Tuple tuple = (Tuple) ConsequenceContext.getTuple();
                 mv.visitVarInsn(ALOAD, 1);
-                invokeInterface(KnowledgeHelper.class, "getTuple", Tuple.class);
+                invokeInterface(ConsequenceContext.class, "getTuple", BaseTuple.class);
+                cast(Tuple.class);
                 mv.visitVarInsn(ASTORE, 3);
 
-                // Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getMatch().getTuple().getTupleSink()).getDeclarations();
+                // Declaration[] declarations = knowledgeHelper.getDeclarations();
                 mv.visitVarInsn(ALOAD, 1);
-                invokeInterface(KnowledgeHelper.class, "getMatch", InternalMatch.class);
-                invokeInterface(InternalMatch.class, "getTuple", Tuple.class);
-                invokeInterface(Tuple.class, "getTupleSink", Sink.class);
-                cast(RuleTerminalNode.class);
-                invokeVirtual(RuleTerminalNode.class, "getRequiredDeclarations", Declaration[].class);
+                invokeInterface(ConsequenceContext.class, "getRequiredDeclarations", Declaration[].class);
                 mv.visitVarInsn(ASTORE, 4);
 
                 final String[] globals = data.getGlobals();
@@ -88,7 +88,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     mv.visitVarInsn(ALOAD, 4); // org.kie.rule.Declaration[]
                     push(i); // i
                     mv.visitInsn(AALOAD); // declarations[i]
-                    invokeInterface(Tuple.class, "get", InternalFactHandle.class, Declaration.class);
+                    invokeInterface(Tuple.class, "get", FactHandle.class, Declaration.class);
                     mv.visitVarInsn(ASTORE, factPos); // fact[i]
 
                     // declarations[i].getValue( reteEvaluator, obj[i] );
@@ -97,12 +97,12 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     mv.visitInsn(AALOAD); // declarations[i]
                     mv.visitVarInsn(ALOAD, 2); // WorkingMemory
                     mv.visitVarInsn(ALOAD, factPos); // fact[i]
-                    invokeInterface(InternalFactHandle.class, "getObject", Object.class);
+                    invokeInterface(FactHandle.class, "getObject", Object.class);
                     String readMethod = declarations[i].getNativeReadMethodName();
                     boolean isObject = readMethod.equals("getValue");
                     String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarations[i].getTypeName());
                     mv.visitMethodInsn(INVOKEVIRTUAL, Declaration.class.getName().replace('.', '/'), readMethod,
-                                       "(L" + ReteEvaluator.class.getName().replace('.', '/')+";Ljava/lang/Object;)" + returnedType);
+                                       "(L" + ValueResolver.class.getName().replace('.', '/')+";Ljava/lang/Object;)" + returnedType);
                     if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarations[i].getTypeName()));
                     offset += store(objPos, declarations[i].getTypeName()); // obj[i]
 
@@ -117,8 +117,9 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 }
 
                 // @{ruleClassName}.@{methodName}(KnowledgeHelper, @foreach{declr : declarations} Object, FactHandle @end)
-                StringBuilder consequenceMethodDescr = new StringBuilder("(L" + KnowledgeHelper.class.getName().replace('.', '/')+ ";");
+                StringBuilder consequenceMethodDescr = new StringBuilder("(L" + ConsequenceContext.class.getName().replace('.', '/')+ ";");
                 mv.visitVarInsn(ALOAD, 1); // KnowledgeHelper
+                cast(KnowledgeHelper.class);
                 for (int i = 0; i < declarations.length; i++) {
                     load(paramsPos[i] + 1); // obj[i]
                     mv.visitVarInsn(ALOAD, paramsPos[i]); // fact[i]
@@ -129,7 +130,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 for (int i = 0; i < globals.length; i++) {
                     mv.visitVarInsn(ALOAD, 2); // ReteEvaluator
                     push(globals[i]);
-                    invokeInterface(WorkingMemory.class, "getGlobal", Object.class, String.class);
+                    invokeInterface(ValueResolver.class, "getGlobal", Object.class, String.class);
                     mv.visitTypeInsn(CHECKCAST, internalName(globalTypes[i]));
                     consequenceMethodDescr.append(typeDescr(globalTypes[i]));
                 }

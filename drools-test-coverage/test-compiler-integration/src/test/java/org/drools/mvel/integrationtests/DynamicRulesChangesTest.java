@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.kie.api.definition.rule.Rule;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -200,7 +200,7 @@ public class DynamicRulesChangesTest {
         addRule(ruleName, null);
     }
 
-    public static void addRule(String ruleName, RuleImpl firingRule) throws Exception {
+    public static void addRule(String ruleName, Rule firingRule) throws Exception {
         String rule = rules.get(ruleName);
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(staticKieBaseTestConfiguration, true, rule);

@@ -290,14 +290,14 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         if (NodeTypeEnums.RightInputAdapterNode == pmem.getNodeType()) {
             for (PathEndNode endNode : pmem.getPathEndNode().getPathEndNodes() ) {
                 if (NodeTypeEnums.isTerminalNode(endNode)) {
-                    if ( proto.getRootNode().hasAssociatedTerminal(endNode)) {
+                    if ( proto.getRootNode().hasAssociatedTerminal((AbstractTerminalNode)endNode)) {
                         return true;
                     }
                 }
             }
             return false;
         }
-        return proto.getRootNode().hasAssociatedTerminal( pmem.getPathEndNode() );
+        return proto.getRootNode().hasAssociatedTerminal((AbstractTerminalNode)pmem.getPathEndNode() );
     }
 
     public void removePathMemory(PathMemory pathMemory) {

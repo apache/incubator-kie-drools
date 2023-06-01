@@ -20,7 +20,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.DataProvider;
 import org.drools.core.common.PropagationContext;
@@ -49,7 +51,7 @@ public class SupplierDataProvider implements DataProvider {
     }
 
     @Override
-    public Iterator getResults(Tuple tuple, ReteEvaluator reteEvaluator, PropagationContext ctx, Object providerContext ) {
+    public Iterator getResults(BaseTuple tuple, ValueResolver valueResolver, Object providerContext) {
         Object result = null;
         if (supplierFunction != null) {
             result = supplierFunction.apply();

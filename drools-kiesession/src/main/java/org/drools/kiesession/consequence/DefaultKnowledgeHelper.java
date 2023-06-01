@@ -115,38 +115,38 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
         return toStatefulKnowledgeSession().insertAsync( object );
     }
 
-    public InternalFactHandle insert(final Object object) {
+    public FactHandle insert(final Object object) {
         return insert( object, false );
     }
 
-    public InternalFactHandle insert(final Object object, final boolean dynamic) {
+    public FactHandle insert(final Object object, final boolean dynamic) {
         return (InternalFactHandle) ((InternalWorkingMemoryEntryPoint) this.reteEvaluator.getDefaultEntryPoint())
                 .insert(object, dynamic, this.internalMatch.getRule(), this.internalMatch.getTuple().getTupleSink());
     }
 
     @Override
-    public InternalFactHandle insertLogical(Object object, Mode belief) {
+    public FactHandle insertLogical(Object object, Mode belief) {
         return insertLogical( object, belief );
     }
 
     @Override
-    public InternalFactHandle insertLogical(Object object, Mode... beliefs) {
+    public FactHandle insertLogical(Object object, Mode... beliefs) {
         return insertLogical( object, beliefs );
     }
 
     @Override
-    public InternalFactHandle insertLogical(final Object object) {
+    public FactHandle insertLogical(final Object object) {
         return insertLogical( object, (Object) null );
     }
 
     @Override
-    public InternalFactHandle insertLogical(Object object, Object value) {
+    public FactHandle insertLogical(Object object, Object value) {
         TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
         return null;
     }
 
     @Override
-    public InternalFactHandle insertLogical(EntryPoint ep, Object object) {
+    public FactHandle insertLogical(EntryPoint ep, Object object) {
         TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
         return null;
     }
@@ -165,15 +165,15 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
         ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match, reteEvaluator);
     }
 
-    public InternalFactHandle getFactHandle(Object object) {
-        InternalFactHandle handle = getFactHandleFromWM( object );
+    public FactHandle getFactHandle(Object object) {
+        FactHandle handle = getFactHandleFromWM( object );
 
         if ( handle == null ) {
             if ( object instanceof CoreWrapper ) {
                 handle = getFactHandleFromWM( ((CoreWrapper) object).getCore() );
             }
             if ( handle == null && reteEvaluator.getKnowledgeBase().getRuleBaseConfiguration().getAssertBehaviour() == RuleBaseConfiguration.AssertBehaviour.EQUALITY ) {
-                InternalFactHandle modifiedFh = tuple.getFactHandle();
+                FactHandle modifiedFh = tuple.getFactHandle();
                 while (modifiedFh == null || modifiedFh.getObject() != object) {
                     tuple = tuple.getParent();
                     modifiedFh = tuple.getFactHandle();
@@ -187,8 +187,8 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
         return handle;
     }
     
-    public InternalFactHandle getFactHandle(InternalFactHandle handle) {
-        InternalFactHandle handleFromWM = getFactHandleFromWM( handle.getObject() );
+    public FactHandle getFactHandle(FactHandle handle) {
+        FactHandle handleFromWM = getFactHandleFromWM( handle.getObject() );
         return handleFromWM != null ? handleFromWM : handle;
     }
     
@@ -266,6 +266,11 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     public Tuple getTuple() {
         return this.tuple;
+    }
+
+    @Override
+    public Declaration[] getRequiredDeclarations() {
+        return ((RuleTerminalNode)this.tuple.getTupleSink()).getRequiredDeclarations();
     }
 
     public WorkingMemory getWorkingMemory() {

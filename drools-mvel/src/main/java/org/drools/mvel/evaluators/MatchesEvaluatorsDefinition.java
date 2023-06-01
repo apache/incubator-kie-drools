@@ -20,16 +20,17 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.rule.accessor.Evaluator;
 import org.drools.core.rule.accessor.FieldValue;
 import org.drools.core.rule.accessor.ReadAccessor;
+import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * This class defines the matches evaluator
@@ -135,10 +136,10 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
                    MATCHES );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor,
-                                final InternalFactHandle handle1, final FieldValue fieldValue) {
-            final String value1 = (String) extractor.getValue( reteEvaluator, handle1.getObject() );
+                                final FactHandle handle1, final FieldValue fieldValue) {
+            final String value1 = (String) extractor.getValue( valueResolver, handle1.getObject() );
             final String value2 = (String) fieldValue.getValue();
             if ( value1 == null ) {
                 return false;
@@ -146,30 +147,30 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
             return value1.matches( value2 );
         }
 
-        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
-                                           final VariableContextEntry context, final InternalFactHandle left) {
+        public boolean evaluateCachedRight(final ValueResolver valueResolver,
+                                           final VariableContextEntry context, final FactHandle left) {
             final String value = (String) ((ObjectVariableContextEntry) context).right;
             if ( value == null ) {
                 return false;
             }
-            return value.matches( (String) context.declaration.getExtractor().getValue( reteEvaluator, left.getObject() ) );
+            return value.matches( (String) context.declaration.getExtractor().getValue( valueResolver, left.getObject() ) );
         }
 
-        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
-                                          final VariableContextEntry context, final InternalFactHandle right) {
-            final String value = (String) context.extractor.getValue( reteEvaluator, right.getObject() );
+        public boolean evaluateCachedLeft(final ValueResolver valueResolver,
+                                          final VariableContextEntry context, final FactHandle right) {
+            final String value = (String) context.extractor.getValue( valueResolver, right.getObject() );
             if ( value == null ) {
                 return false;
             }
             return value.matches( (String) ((ObjectVariableContextEntry) context).left );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor1,
-                                final InternalFactHandle handle1,
-                                final ReadAccessor extractor2, final InternalFactHandle handle2) {
-            final Object value1 = extractor1.getValue( reteEvaluator, handle1.getObject() );
-            final Object value2 = extractor2.getValue( reteEvaluator, handle2.getObject() );
+                                final FactHandle handle1,
+                                final ReadAccessor extractor2, final FactHandle handle2) {
+            final Object value1 = extractor1.getValue( valueResolver, handle1.getObject() );
+            final Object value2 = extractor2.getValue( valueResolver, handle2.getObject() );
             if ( value1 == null ) {
                 return false;
             }
@@ -190,10 +191,11 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
                    NOT_MATCHES );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor,
-                                final InternalFactHandle handle1, final FieldValue fieldValue) {
-            final String value1 = (String) extractor.getValue( reteEvaluator, handle1.getObject() );
+                                final FactHandle handle1,
+                                final FieldValue fieldValue) {
+            final String value1 = (String) extractor.getValue( valueResolver, handle1.getObject() );
             final String value2 = (String) fieldValue.getValue();
             if ( value1 == null ) {
                 return false;
@@ -201,30 +203,32 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
             return ! value1.matches( value2 );
         }
 
-        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
-                                           final VariableContextEntry context, final InternalFactHandle left) {
+        public boolean evaluateCachedRight(final ValueResolver valueResolver,
+                                           final VariableContextEntry context,
+                                           final FactHandle left) {
             final String value = (String) ((ObjectVariableContextEntry) context).right;
             if ( value == null ) {
                 return false;
             }
-            return ! value.matches( (String) context.declaration.getExtractor().getValue( reteEvaluator, left.getObject() ) );
+            return ! value.matches( (String) context.declaration.getExtractor().getValue( valueResolver, left.getObject() ) );
         }
 
-        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
-                                          final VariableContextEntry context, final InternalFactHandle right) {
-            final String value = (String) context.extractor.getValue( reteEvaluator, right.getObject() );
+        public boolean evaluateCachedLeft(final ValueResolver valueResolver,
+                                          final VariableContextEntry context,
+                                          final FactHandle right) {
+            final String value = (String) context.extractor.getValue( valueResolver, right.getObject() );
             if ( value == null ) {
                 return false;
             }
             return ! value.matches( (String) ((ObjectVariableContextEntry) context).left );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor1,
-                                final InternalFactHandle handle1,
-                                final ReadAccessor extractor2, final InternalFactHandle handle2) {
-            final Object value1 = extractor1.getValue( reteEvaluator, handle1.getObject() );
-            final Object value2 = extractor2.getValue( reteEvaluator, handle2.getObject() );
+                                final FactHandle handle1,
+                                final ReadAccessor extractor2, final FactHandle handle2) {
+            final Object value1 = extractor1.getValue( valueResolver, handle1.getObject() );
+            final Object value2 = extractor2.getValue( valueResolver, handle2.getObject() );
             if ( value1 == null ) {
                 return false;
             }

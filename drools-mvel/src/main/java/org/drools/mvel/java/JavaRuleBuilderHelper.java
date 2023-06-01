@@ -14,28 +14,19 @@
 
 package org.drools.mvel.java;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.base.AcceptsClassObjectType;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.base.AcceptsClassObjectType;
 import org.drools.core.rule.accessor.DeclarationScopeResolver;
-import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.rule.accessor.Wireable;
+import org.drools.core.rule.consequence.ConsequenceContext;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.util.StringUtils;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;
@@ -44,6 +35,15 @@ import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public final class JavaRuleBuilderHelper {
 
@@ -109,7 +109,7 @@ public final class JavaRuleBuilderHelper {
         BoundIdentifiers bindings = new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ),
                                                           context,
                                                           Collections.EMPTY_MAP,
-                                                          KnowledgeHelper.class );
+                                                          ConsequenceContext.class );
 
         String consequenceStr = ( RuleImpl.DEFAULT_CONSEQUENCE_NAME.equals( consequenceName ) ) ?
                 (String) ruleDescr.getConsequence() :
@@ -136,7 +136,7 @@ public final class JavaRuleBuilderHelper {
             declrStr[j] = str;
             declarations[j++] = decls.get( str );
         }
-        Arrays.sort( declarations, RuleTerminalNode.SortDeclarations.instance  );
+        Arrays.sort(declarations, SortDeclarations.instance);
         for ( int i = 0; i < declrStr.length; i++) {
             declrStr[i] = declarations[i].getIdentifier();
         }

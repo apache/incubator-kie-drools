@@ -113,7 +113,7 @@ public class ProtobufMarshaller
         ProtobufMarshallerWriteContext context = new ProtobufMarshallerWriteContext( stream,
                                                                      (InternalKnowledgeBase) kbase,
                                                                      (InternalWorkingMemory) ksession,
-                                                                     RuleBaseNodes.getNodeMap( (InternalKnowledgeBase) kbase ),
+                                                                     RuleBaseNodes.getNodeMap( (InternalKnowledgeBase) kbase),
                                                                      this.strategyStore,
                                                                      this.marshallingConfig.isMarshallProcessInstances(),
                                                                      this.marshallingConfig.isMarshallWorkItems(),

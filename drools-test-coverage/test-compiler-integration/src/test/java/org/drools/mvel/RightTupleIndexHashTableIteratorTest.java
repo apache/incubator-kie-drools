@@ -29,7 +29,6 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleIndexHashTable.FieldIndexHashTableFullIterator;
@@ -43,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class RightTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTableIteratorTest {
+public class RightTupleIndexHashTableIteratorTest extends AbstractTupleIndexHashTableIteratorTest {
 
     public RightTupleIndexHashTableIteratorTest(boolean useLambdaConstraint) {
         this.useLambdaConstraint = useLambdaConstraint;

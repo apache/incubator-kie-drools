@@ -18,15 +18,18 @@ package org.drools.core.reteoo.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.drools.base.base.DroolsQuery;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Behavior;
+import org.drools.core.rule.BehaviorRuntime;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.GroupElement;
@@ -124,14 +127,15 @@ public class PatternBuilder
     }
 
     private void buildBehaviors(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {
-        final List<Behavior> behaviors = pattern.getBehaviors();
         if ( pattern.getSource() == null ||
-                ( !( pattern.getSource() instanceof WindowReference) &&
-                  ( context.getCurrentEntryPoint() != EntryPointId.DEFAULT || ! behaviors.isEmpty() ) ) ){
+             ( !( pattern.getSource() instanceof WindowReference) &&
+               ( context.getCurrentEntryPoint() != EntryPointId.DEFAULT || !pattern.getBehaviors().isEmpty() ) ) ){
             attachObjectTypeNode( context, utils, pattern );
         }
 
-        if( ! behaviors.isEmpty() ) {
+        if( !pattern.getBehaviors().isEmpty() ) {
+            final List<BehaviorRuntime> behaviors = pattern.getBehaviors().stream().map(BehaviorRuntime.class::cast).collect(Collectors.toList());
+
             // build the window node:
             WindowNode wn = CoreComponentFactory.get().getNodeFactoryService().buildWindowNode( context.getNextNodeId(),
                                                                                                    constraints.alphaConstraints,
@@ -334,7 +338,7 @@ public class PatternBuilder
         
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
             // Is this the query node, if so we don't want any memory
-            if ( DroolsQuery.class == ((ClassObjectType) pattern.getObjectType()).getClassType() ) {
+            if (DroolsQuery.class == ((ClassObjectType) pattern.getObjectType()).getClassType() ) {
                 context.setTupleMemoryEnabled( false );
                 context.setObjectTypeNodeMemoryEnabled( false );
             }
@@ -365,7 +369,7 @@ public class PatternBuilder
                 }
 
                 long distance = context.getExpirationOffset( pattern );
-                if( distance == NEVER_EXPIRES ) {
+                if ( distance == NEVER_EXPIRES ) {
                     // it means the rules have no temporal constraints, or
                     // the constraints require events to be hold forever. In this 
                     // case, we allow type declarations to override the implicit 

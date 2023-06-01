@@ -19,7 +19,9 @@ package org.drools.metric.rule;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.accessor.EvalExpression;
@@ -41,11 +43,11 @@ public class EvalConditionMetric extends EvalCondition {
     }
 
     @Override
-    public boolean isAllowed(final Tuple tuple,
-                             final ReteEvaluator reteEvaluator,
+    public boolean isAllowed(final BaseTuple tuple,
+                             final ValueResolver valueResolver,
                              final Object context) {
         MetricLogUtils.getInstance().incrementEvalCount();
-        return super.isAllowed(tuple, reteEvaluator, context);
+        return super.isAllowed(tuple, valueResolver, context);
     }
 
     @Override

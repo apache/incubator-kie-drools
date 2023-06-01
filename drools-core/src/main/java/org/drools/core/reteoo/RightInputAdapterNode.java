@@ -191,7 +191,7 @@ public class RightInputAdapterNode extends ObjectSource
     
     public SubnetworkTuple createPeer(LeftTuple original) {
         SubnetworkTuple peer = new SubnetworkTuple();
-        peer.initPeer( (BaseLeftTuple) original, this );
+        peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer( peer );
         return peer;
     }     

@@ -27,6 +27,7 @@ import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.base.ObjectType;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.rule.FactHandle;
 
 public interface BetaConstraints
     extends
@@ -40,10 +41,10 @@ public interface BetaConstraints
 
     void updateFromFactHandle(ContextEntry[] context,
                               ReteEvaluator reteEvaluator,
-                              InternalFactHandle handle);
+                              FactHandle handle);
 
     boolean isAllowedCachedLeft(ContextEntry[] context,
-                                InternalFactHandle handle);
+                                FactHandle handle);
 
     boolean isAllowedCachedRight(ContextEntry[] context,
                                  Tuple tuple);

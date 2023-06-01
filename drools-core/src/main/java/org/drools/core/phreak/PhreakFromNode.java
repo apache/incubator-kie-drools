@@ -37,6 +37,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
@@ -95,7 +96,6 @@ public class PhreakFromNode {
             betaConstraints.updateFromTuple(context, reteEvaluator, leftTuple);
 
             for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple, reteEvaluator,
-                                                                          propagationContext,
                                                                           fm.providerContext); it.hasNext(); ) {
                 final Object object = it.next();
                 if ( (object == null) || !resultClass.isAssignableFrom( object.getClass() ) ) {
@@ -146,7 +146,7 @@ public class PhreakFromNode {
             betaConstraints.updateFromTuple(context, reteEvaluator, leftTuple);
 
             FastIterator rightIt = LinkedList.fastIterator;
-            for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple, reteEvaluator, propagationContext, fm.providerContext); it.hasNext(); ) {
+            for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple, reteEvaluator, fm.providerContext); it.hasNext(); ) {
                 final Object object = it.next();
                 if ( (object == null) || !resultClass.isAssignableFrom( object.getClass() ) ) {
                     continue; // skip anything if it not assignable
@@ -215,7 +215,7 @@ public class PhreakFromNode {
         }
     }
 
-    public static boolean isAllowed( InternalFactHandle factHandle,
+    public static boolean isAllowed( FactHandle factHandle,
                                      AlphaNodeFieldConstraint[] alphaConstraints,
                                      ReteEvaluator reteEvaluator,
                                      FromMemory fm ) {

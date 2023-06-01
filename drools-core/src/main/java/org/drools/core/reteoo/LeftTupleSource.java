@@ -55,9 +55,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
     /** The left input <code>TupleSource</code>. */
     protected LeftTupleSource         leftInput;
 
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     /** The destination for <code>Tuples</code>. */
     protected LeftTupleSinkPropagator sink;
@@ -249,7 +247,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
             return;
         }
 
-        if ( pattern != null && isPropertyReactive(context, objectType) ) {
+        if ( pattern != null && isPropertyReactive(context.getRuleBase(), objectType) ) {
             Collection<String> leftListenedProperties = pattern.getListenedProperties();
             List<String> accessibleProperties = getAccessibleProperties( context.getRuleBase(), objectType );
             leftDeclaredMask = calculatePositiveMask( objectType, leftListenedProperties, accessibleProperties );

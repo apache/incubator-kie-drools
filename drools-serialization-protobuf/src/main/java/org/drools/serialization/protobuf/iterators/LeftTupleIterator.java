@@ -88,7 +88,7 @@ public class LeftTupleIterator
             Tuple leftTuple = BetaNode.getFirstTuple( memory.getLeftTupleMemory(), localIt );
             if( leftTuple != null ) {
                 AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
-                return accctx.getResultLeftTuple();
+                return (LeftTuple) accctx.getResultLeftTuple();
             }
             return null;
         }

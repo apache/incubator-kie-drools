@@ -19,8 +19,8 @@ package org.drools.mvel.accessors;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.ReteEvaluator;
 
 public class BaseZonedDateTimeClassFieldReader extends BaseDateClassFieldReader {
 
@@ -45,8 +45,8 @@ public class BaseZonedDateTimeClassFieldReader extends BaseDateClassFieldReader 
                valueType );
     }
 
-    protected Date getDate(ReteEvaluator reteEvaluator, Object object ) {
-        ZonedDateTime zdt = ((ZonedDateTime)getValue( reteEvaluator, object ));
+    protected Date getDate(ValueResolver valueResolver, Object object) {
+        ZonedDateTime zdt = ((ZonedDateTime)getValue( valueResolver, object ));
         return Date.from( zdt.toInstant() );
     }
 }

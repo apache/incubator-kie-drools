@@ -28,7 +28,6 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.core.util.index.RangeIndex.IndexType;
 
 /**
@@ -128,7 +127,7 @@ public class AlphaRangeIndex implements Externalizable {
     }
 
     private IndexType extractIndexType(IndexableConstraint constraint) {
-        ConstraintType constraintType = constraint.getConstraintType();
+        ConstraintTypeOperator constraintType = constraint.getConstraintType();
         switch (constraintType) {
             case LESS_THAN:
                 return IndexType.LT;

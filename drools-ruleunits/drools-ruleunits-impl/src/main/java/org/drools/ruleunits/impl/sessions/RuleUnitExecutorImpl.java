@@ -32,7 +32,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.CalendarsImpl;
-import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
@@ -55,7 +55,7 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.ActivationsManagerImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -91,8 +91,9 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     private final RuleRuntimeEventSupport ruleRuntimeEventSupport = new RuleRuntimeEventSupport();
     private final AtomicLong propagationIdCounter = new AtomicLong(1);
 
-    private final RuleBase ruleBase;
+    private final InternalRuleBase ruleBase;
     private final long identifier;
+
     private final SessionConfiguration sessionConfiguration;
     private final FactHandleFactory handleFactory;
 
@@ -111,11 +112,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
     private RuleUnits ruleUnits;
 
-    public RuleUnitExecutorImpl(RuleBase knowledgeBase) {
+    public RuleUnitExecutorImpl(InternalRuleBase knowledgeBase) {
         this(knowledgeBase, knowledgeBase.getSessionConfiguration().as(SessionConfiguration.KEY));
     }
 
-    public RuleUnitExecutorImpl(RuleBase knowledgeBase, SessionConfiguration sessionConfiguration) {
+    public RuleUnitExecutorImpl(InternalRuleBase knowledgeBase, SessionConfiguration sessionConfiguration) {
         this.ruleBase = knowledgeBase;
         this.identifier = ((InternalKnowledgeBase) ruleBase).nextWorkingMemoryCounter();
         this.sessionConfiguration = sessionConfiguration;
@@ -130,7 +131,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         initInitialFact(ruleBase);
     }
 
-    private void initInitialFact(RuleBase kBase) {
+    private void initInitialFact(InternalRuleBase kBase) {
         WorkingMemoryEntryPoint defaultEntryPoint = entryPointsManager.getDefaultEntryPoint();
         InternalFactHandle handle = getFactHandleFactory().newInitialFactHandle(defaultEntryPoint);
 
@@ -154,7 +155,12 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     }
 
     @Override
-    public RuleBase getKnowledgeBase() {
+    public InternalRuleBase getKnowledgeBase() {
+        return ruleBase;
+    }
+
+    @Override
+    public InternalRuleBase getRuleBase() {
         return ruleBase;
     }
 
@@ -233,6 +239,12 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         return activationsManager.getAgendaEventSupport();
     }
 
+
+    @Override
+    public long getCurrentTime() {
+        return timerService.getCurrentTime();
+    }
+
     @Override
     public Calendars getCalendars() {
         if (this.calendars == null) {
@@ -293,7 +305,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     public QueryResults getQueryResults(String queryName, Object... arguments) {
         activationsManager.flushPropagations();
 
-        DroolsQuery queryObject = new DroolsQuery( queryName, arguments, new NonCloningQueryViewListener(), false );
+        DroolsQueryImpl queryObject = new DroolsQueryImpl(queryName, arguments, new NonCloningQueryViewListener(), false );
 
         InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject, null, this, getDefaultEntryPoint() );
 
@@ -392,6 +404,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
                     knowledgeHelper.getActivation().getRule(),
                     knowledgeHelper.getActivation().getTuple().getTupleSink(),
                     fhState);
+        }
+
+        @Override
+        public Declaration[] getRequiredDeclarations() {
+            return knowledgeHelper.getRequiredDeclarations();
         }
 
         @Override
@@ -589,37 +606,37 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         }
 
         @Override
-        public InternalFactHandle insert(Object object) {
+        public FactHandle insert(Object object) {
             return knowledgeHelper.insert(object);
         }
 
         @Override
-        public InternalFactHandle insert(Object object, boolean dynamic) {
+        public FactHandle insert(Object object, boolean dynamic) {
             return knowledgeHelper.insert(object, dynamic);
         }
 
         @Override
-        public InternalFactHandle insertLogical(Object object, Mode belief) {
+        public FactHandle insertLogical(Object object, Mode belief) {
             return knowledgeHelper.insertLogical(object, belief);
         }
 
         @Override
-        public InternalFactHandle insertLogical(Object object, Mode... beliefs) {
+        public FactHandle insertLogical(Object object, Mode... beliefs) {
             return knowledgeHelper.insertLogical(object, beliefs);
         }
 
         @Override
-        public InternalFactHandle insertLogical(Object object) {
+        public FactHandle insertLogical(Object object) {
             return knowledgeHelper.insertLogical(object);
         }
 
         @Override
-        public InternalFactHandle insertLogical(Object object, Object value) {
+        public FactHandle insertLogical(Object object, Object value) {
             return knowledgeHelper.insertLogical(object, value);
         }
 
         @Override
-        public InternalFactHandle insertLogical(EntryPoint ep, Object object) {
+        public FactHandle insertLogical(EntryPoint ep, Object object) {
             return knowledgeHelper.insertLogical(ep, object);
         }
 
@@ -629,7 +646,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         }
 
         @Override
-        public InternalFactHandle bolster(Object object, Object value) {
+        public FactHandle bolster(Object object, Object value) {
             return knowledgeHelper.bolster(object, value);
         }
 
@@ -639,12 +656,12 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         }
 
         @Override
-        public InternalFactHandle getFactHandle(Object object) {
+        public FactHandle getFactHandle(Object object) {
             return knowledgeHelper.getFactHandle(object);
         }
 
         @Override
-        public InternalFactHandle getFactHandle(InternalFactHandle handle) {
+        public FactHandle getFactHandle(FactHandle handle) {
             return knowledgeHelper.getFactHandle(handle);
         }
 

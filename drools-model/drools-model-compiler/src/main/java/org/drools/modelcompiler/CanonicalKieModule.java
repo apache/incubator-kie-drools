@@ -79,7 +79,6 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.internal.utils.KieService;
@@ -284,7 +283,7 @@ public class CanonicalKieModule implements InternalKieModule {
         compositeUpdater.run();
     }
 
-    private void registerNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, InternalKnowledgeBase kieBase, BuildContext buildContext ) {
+    private void registerNonNativeResources(KieBaseModelImpl kBaseModel, KieProject kieProject, InternalKnowledgeBase kieBase, BuildContext buildContext) {
         KnowledgeBuilder kbuilder = getKnowledgeBuilderForKieBase(kBaseModel.getName());
         if (kbuilder == null) {
             kbuilder = kieProject.buildKnowledgePackages(kBaseModel, buildContext, NON_MODEL_RESOURCES);

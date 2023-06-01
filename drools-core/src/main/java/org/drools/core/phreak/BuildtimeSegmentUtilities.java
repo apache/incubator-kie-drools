@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.common.NetworkNode;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.BetaNode;
@@ -116,7 +116,7 @@ public class BuildtimeSegmentUtilities {
         return allLinkedMaskTest;
     }
 
-    public static SegmentPrototype[] createPathProtoMemories(TerminalNode tn, TerminalNode removingTn, RuleBase rbase) {
+    public static SegmentPrototype[] createPathProtoMemories(TerminalNode tn, TerminalNode removingTn, InternalRuleBase rbase) {
         // Will initialise all segments in a path
         SegmentPrototype[] smems = createLeftTupleNodeProtoMemories(tn, removingTn, rbase);
 
@@ -128,7 +128,7 @@ public class BuildtimeSegmentUtilities {
         return smems;
     }
 
-    public static SegmentPrototype[] createLeftTupleNodeProtoMemories(LeftTupleNode lts, TerminalNode removingTn, RuleBase rbase) {
+    public static SegmentPrototype[] createLeftTupleNodeProtoMemories(LeftTupleNode lts, TerminalNode removingTn, InternalRuleBase rbase) {
         LeftTupleNode segmentRoot = lts;
         LeftTupleNode segmentTip = lts;
         List<SegmentPrototype> smems = new ArrayList<>();
@@ -187,7 +187,7 @@ public class BuildtimeSegmentUtilities {
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
-    public static SegmentPrototype createSegmentMemory(LeftTupleNode segmentRoot, LeftTupleNode segmentTip, int recordBefore, TerminalNode removingTn, RuleBase rbase) {
+    public static SegmentPrototype createSegmentMemory(LeftTupleNode segmentRoot, LeftTupleNode segmentTip, int recordBefore, TerminalNode removingTn, InternalRuleBase rbase) {
         LeftTupleNode node = segmentRoot;
         int nodeTypesInSegment = 0;
 
@@ -351,7 +351,7 @@ public class BuildtimeSegmentUtilities {
     }
 
     private static long processBetaNode(BetaNode betaNode, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes,
-                                        long nodePosMask, long allLinkedTestMask, boolean updateNodeBit, TerminalNode removingTn, RuleBase rbase) {
+                                        long nodePosMask, long allLinkedTestMask, boolean updateNodeBit, TerminalNode removingTn, InternalRuleBase rbase) {
         RightInputAdapterNode riaNode = null;
         if (betaNode.isRightInputIsRiaNode()) {
             // there is a subnetwork, so create all it's segment memory prototypes

@@ -64,7 +64,7 @@ public class KieBuilderTest {
     }
 
     private AlphaNodeFieldConstraint getAlphaConstraint( KieSession ksession ) {
-        EntryPointNode epn = (( InternalKnowledgeBase ) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
+        EntryPointNode epn = ((InternalKnowledgeBase) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
         for (ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
             if (otn.getObjectType().isAssignableFrom( String.class )) {
                 AlphaNode alpha = (AlphaNode) otn.getObjectSinkPropagator().getSinks()[0];

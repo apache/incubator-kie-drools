@@ -330,7 +330,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
     }
 
     private void doRetract( PropagationContext ectx ) {
-        InternalFactHandle factHandle = ectx.getFactHandle();
+        InternalFactHandle factHandle = (InternalFactHandle) ectx.getFactHandle();
         ObjectTypeNode.retractLeftTuples( factHandle, ectx, reteEvaluator );
         ObjectTypeNode.retractRightTuples( factHandle, ectx, reteEvaluator );
         if ( factHandle.isPendingRemoveFromStore() ) {

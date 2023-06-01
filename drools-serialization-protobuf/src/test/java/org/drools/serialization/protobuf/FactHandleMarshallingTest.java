@@ -18,7 +18,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Date;
@@ -26,7 +25,7 @@ import java.util.Date;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.RuleBasePartitionId;
@@ -77,7 +76,7 @@ public class FactHandleMarshallingTest {
         EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, false, rete , EntryPointId.DEFAULT);
         WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( EntryPointId.DEFAULT, entryPointNode, wm);
 
-        EventFactHandle factHandle = new EventFactHandle(1, new Person(),0, (new Date()).getTime(), 0, wmEntryPoint);
+        DefaultEventHandle factHandle = new DefaultEventHandle(1, new Person(), 0, (new Date()).getTime(), 0, wmEntryPoint);
         
         return factHandle;
     }
@@ -210,10 +209,10 @@ public class FactHandleMarshallingTest {
                 break;
             }
             case 2: {
-                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration,
-                        (WorkingMemoryEntryPoint) entryPoint );
-                ( (EventFactHandle) handle ).setExpired( expired );
-                ( (EventFactHandle) handle ).setActivationsCount( activationsCount );
+                handle = new DefaultEventHandle(id, object, recency, startTimeStamp, duration,
+                                                (WorkingMemoryEntryPoint) entryPoint );
+                ( (DefaultEventHandle) handle ).setExpired(expired);
+                ( (DefaultEventHandle) handle ).setActivationsCount(activationsCount);
                 break;
             }
             default: {

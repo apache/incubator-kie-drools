@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.reteoo.BaseTerminalNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
@@ -203,11 +204,13 @@ public abstract class BaseNode
         return this.associations.contains( rule );
     }
 
-    public void addAssociatedTerminal(TerminalNode terminalNode) {
-        associatedTerminals.put(terminalNode.getId(), terminalNode);
+    @Override
+    public void addAssociatedTerminal(BaseTerminalNode terminalNode) {
+        associatedTerminals.put(terminalNode.getId(),(TerminalNode) terminalNode);
     }
 
-    public void removeAssociatedTerminal(TerminalNode terminalNode) {
+    @Override
+    public void removeAssociatedTerminal(BaseTerminalNode terminalNode) {
         associatedTerminals.remove(terminalNode.getId());
     }
 
@@ -215,7 +218,7 @@ public abstract class BaseNode
         return associatedTerminals.size();
     }
 
-    public boolean hasAssociatedTerminal(NetworkNode terminalNode) {
+    public boolean hasAssociatedTerminal(BaseTerminalNode terminalNode) {
         return associatedTerminals.containsKey(terminalNode.getId());
     }
 

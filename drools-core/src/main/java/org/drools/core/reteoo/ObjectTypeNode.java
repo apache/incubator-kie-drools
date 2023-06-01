@@ -27,6 +27,7 @@ import java.util.List;
 import org.drools.core.InitialFact;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.FactHandleClassStore;
@@ -39,12 +40,12 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.base.ObjectType;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
+import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
@@ -65,9 +66,7 @@ import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
  * @see Rete
  */
 public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFactory<ObjectTypeNode.ObjectTypeNodeMemory> {
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     private static final long serialVersionUID = 510l;
 
@@ -445,7 +444,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         if (objectType.isTemplate()) {
             throw new UnsupportedOperationException("this method is used only for the initial fact and during incremental compilation which is not supported yet for fact templates");
         }
-        Class<?> classType = ((ClassObjectType) objectType).getClassType();
+        Class classType = ((ClassObjectType) objectType).getClassType();
         if (InitialFact.class.isAssignableFrom(classType)) {
             return new InitialFactObjectTypeNodeMemory(classType);
         }
@@ -520,8 +519,9 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         @Override
         public void execute(JobContext ctx) {
             ExpireJobContext context = (ExpireJobContext) ctx;
+
             context.reteEvaluator.addPropagation(context.expireAction);
-            context.getExpireAction().getFactHandle().removeJob( context.getJobHandle());
+            context.getExpireAction().getFactHandle().removeJob( (DefaultJobHandle) context.getJobHandle());
         }
     }
 
@@ -588,15 +588,15 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
     }
 
 
-    public static class ObjectTypeNodeMemory implements Memory {
+    public static class ObjectTypeNodeMemory<T> implements Memory {
         private FactHandleClassStore store;
-        private Class<?> classType;
+        private Class classType;
 
-        ObjectTypeNodeMemory(Class<?> classType) {
+        ObjectTypeNodeMemory(Class classType) {
             this.classType = classType;
         }
 
-        ObjectTypeNodeMemory(Class<?> classType, ReteEvaluator reteEvaluator) {
+        ObjectTypeNodeMemory(Class classType, ReteEvaluator reteEvaluator) {
             this(classType);
             store = reteEvaluator.getStoreForClass(classType);
         }
@@ -606,8 +606,8 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
             return NodeTypeEnums.ObjectTypeNode;
         }
 
-        public Iterator<InternalFactHandle> iterator() {
-            return store.iterator();
+        public <T> Iterator<InternalFactHandle> iterator() {
+            return (Iterator<InternalFactHandle>) store.iterator();
         }
 
         @Override
@@ -654,10 +654,10 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         }
     }
 
-    public static class InitialFactObjectTypeNodeMemory extends ObjectTypeNodeMemory {
+    public static class InitialFactObjectTypeNodeMemory<T> extends ObjectTypeNodeMemory<T>  {
         private List<InternalFactHandle> list = Collections.emptyList();
 
-        InitialFactObjectTypeNodeMemory(Class<?> classType) {
+        InitialFactObjectTypeNodeMemory(Class classType) {
             super(classType);
         }
 

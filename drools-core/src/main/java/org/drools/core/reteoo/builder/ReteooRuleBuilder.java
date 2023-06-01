@@ -26,7 +26,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
@@ -108,7 +108,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
      * @return a List<BaseNode> of terminal nodes for the rule             
      * @throws InvalidPatternException
      */
-    public List<TerminalNode> addRule( RuleImpl rule, RuleBase kBase, Collection<InternalWorkingMemory> workingMemories ) throws InvalidPatternException {
+    public List<TerminalNode> addRule(RuleImpl rule, InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories) throws InvalidPatternException {
 
         // the list of terminal nodes
         final List<TerminalNode> termNodes = new ArrayList<>();
@@ -256,7 +256,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
                           pattern );
     }
 
-    public void addEntryPoint( final String id, final RuleBase kBase, Collection<InternalWorkingMemory> workingMemories ) {
+    public void addEntryPoint(final String id, final InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories) {
         // creates a clean build context for each subrule
         final BuildContext context = new BuildContext( kBase, workingMemories );
         EntryPointId ep = new EntryPointId( id );
@@ -264,7 +264,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         builder.build(context, utils, ep);
     }
 
-    public WindowNode addWindowNode( WindowDeclaration window, RuleBase kBase, Collection<InternalWorkingMemory> workingMemories ) {
+    public WindowNode addWindowNode(WindowDeclaration window, InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories) {
 
         // creates a clean build context for each subrule
         BuildContext context = new BuildContext( kBase, workingMemories );

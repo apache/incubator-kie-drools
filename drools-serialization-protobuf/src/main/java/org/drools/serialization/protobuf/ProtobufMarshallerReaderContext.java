@@ -51,7 +51,7 @@ import org.kie.internal.marshalling.MarshallerFactory;
 
 public class ProtobufMarshallerReaderContext extends ObjectInputStream implements MarshallerReaderContext {
 
-    private final InternalKnowledgeBase                                            kBase;
+    private final InternalKnowledgeBase kBase;
     private InternalWorkingMemory                                                  wm;
     public KieRuntime                                                              kruntime;
     private final Map<Integer, BaseNode>                                           sinks;

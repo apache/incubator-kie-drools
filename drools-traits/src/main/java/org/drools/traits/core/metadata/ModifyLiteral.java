@@ -114,14 +114,14 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
         return target;
     }
 
-    public T call( InternalKnowledgeBase knowledgeBase ) {
+    public T call( InternalKnowledgeBase knowledgeBase) {
         computeModificationMasks( knowledgeBase );
         task.call( target );
         return target;
     }
 
 
-    protected void computeModificationMasks( InternalKnowledgeBase knowledgeBase ) {
+    protected void computeModificationMasks( InternalKnowledgeBase knowledgeBase) {
         List<String> settableProperties = getAccessibleProperties( target, knowledgeBase );
         modificationMask = PropertySpecificUtil.getEmptyPropertyReactiveMask( settableProperties.size() );
 
@@ -140,7 +140,7 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
     }
 
 
-    protected List<String> getAccessibleProperties( Object o, InternalKnowledgeBase knowledgeBase ) {
+    protected List<String> getAccessibleProperties( Object o, InternalKnowledgeBase knowledgeBase) {
         if ( knowledgeBase != null ) {
             return PropertySpecificUtil.getAccessibleProperties( knowledgeBase, o.getClass() );
         } else {

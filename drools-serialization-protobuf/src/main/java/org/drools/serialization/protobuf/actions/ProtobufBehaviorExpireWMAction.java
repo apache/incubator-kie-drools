@@ -17,7 +17,7 @@ package org.drools.serialization.protobuf.actions;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.reteoo.WindowNode;
-import org.drools.core.rule.Behavior;
+import org.drools.core.rule.BehaviorContext;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.serialization.protobuf.ProtobufMessages;
 import org.drools.serialization.protobuf.ProtobufWorkingMemoryAction;
@@ -30,7 +30,7 @@ public class ProtobufBehaviorExpireWMAction extends SlidingTimeWindow.BehaviorEx
 
         WindowNode.WindowMemory memory = context.getWorkingMemory().getNodeMemory( windowNode );
 
-        Behavior.Context[] behaviorContext = memory.behaviorContext;
+        BehaviorContext[] behaviorContext = memory.behaviorContext;
 
         int i = 0; //  <==== this needs fixing
 

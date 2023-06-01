@@ -16,15 +16,11 @@ package org.drools.mvel.workitem;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.core.CompositeSessionConfiguration;
 import org.drools.core.FlowSessionConfiguration;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;

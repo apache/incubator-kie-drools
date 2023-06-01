@@ -46,6 +46,7 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
+import org.kie.api.definition.rule.RuleBase;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -575,6 +576,16 @@ public class StatefulKnowledgeSessionForRHS
 
     public Collection<? extends Object> getObjects(ObjectFilter filter) {
         return delegate.getObjects(filter);
+    }
+
+    @Override
+    public long getCurrentTime() {
+        return this.delegate.getCurrentTime();
+    }
+
+    @Override
+    public RuleBase getRuleBase() {
+        return delegate.getRuleBase();
     }
 
     public long getIdleTime() {

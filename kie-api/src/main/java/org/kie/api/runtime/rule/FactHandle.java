@@ -20,6 +20,19 @@ package org.kie.api.runtime.rule;
  * An handle to a fact inserted into the working memory
  */
 public interface FactHandle {
+    Object getObject();
+
+    boolean isNegated();
+
+    boolean isEvent();
+
+    long getId();
+
+    long getRecency();
+
+     <K> K as(Class<K> klass) throws ClassCastException;
+
+    boolean isValid();
 
     /**
      * The way how the fact to which this FactHandle was assigned

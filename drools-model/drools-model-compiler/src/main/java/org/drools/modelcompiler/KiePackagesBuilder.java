@@ -16,9 +16,25 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.drools.base.base.DroolsQuery;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.ObjectType;
 import org.drools.core.base.SalienceInteger;
@@ -34,7 +50,7 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.AsyncReceive;
 import org.drools.core.rule.AsyncSend;
-import org.drools.core.rule.Behavior;
+import org.drools.core.rule.BehaviorRuntime;
 import org.drools.core.rule.ConditionalBranch;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
@@ -133,21 +149,6 @@ import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
@@ -364,7 +365,7 @@ public class KiePackagesBuilder {
         Declaration[] declarations = new Declaration[args.length];
         for (int i = 0; i < args.length; i++) {
             int index = i;
-            LambdaReadAccessor accessor = new LambdaReadAccessor(index, args[index].getType(), obj -> ( (DroolsQuery) obj ).getElements()[index] );
+            LambdaReadAccessor accessor = new LambdaReadAccessor(index, args[index].getType(), obj -> ( (DroolsQueryImpl) obj ).getElements()[index] );
             declarations[i] = new Declaration( args[i].getName(), accessor, pattern, false );
             pattern.addDeclaration( declarations[i] );
             ctx.addQueryDeclaration( args[i], declarations[i] );
@@ -1129,7 +1130,7 @@ public class KiePackagesBuilder {
         ctx.getPkg().addWindowDeclaration(windowDeclaration);
     }
 
-    private Behavior createWindow( WindowDefinition window ) {
+    private BehaviorRuntime createWindow(WindowDefinition window) {
         switch (window.getType()) {
             case LENGTH:
                 return new SlidingLengthWindow( (int) window.getValue() );

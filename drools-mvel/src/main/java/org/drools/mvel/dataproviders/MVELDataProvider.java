@@ -23,8 +23,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueResolver;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.DataProvider;
 import org.drools.core.common.PropagationContext;
@@ -117,15 +118,14 @@ public class MVELDataProvider implements DataProvider, MVELCompileable, External
         return null;
     }
 
-    public Iterator getResults(final Tuple tuple,
-                               final ReteEvaluator reteEvaluator,
-                               final PropagationContext ctx,
+    public Iterator getResults(final BaseTuple tuple,
+                               final ValueResolver valueResolver,
                                final Object executionContext) {
-        return asIterator( evaluate( tuple, reteEvaluator ) );
+        return asIterator( evaluate( tuple, valueResolver ) );
     }
 
-    protected Object evaluate( Tuple tuple, ReteEvaluator reteEvaluator ) {
-        VariableResolverFactory factory = unit.getFactory( null, null, null, null, tuple, null, reteEvaluator, reteEvaluator.getGlobalResolver() );
+    protected Object evaluate( BaseTuple tuple, ValueResolver valueResolver ) {
+        VariableResolverFactory factory = unit.getFactory( null, null, null, null, tuple, null, valueResolver, valueResolver.getGlobalResolver() );
         return evaluator.evaluate( factory );
     }
 

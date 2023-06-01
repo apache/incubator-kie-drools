@@ -1,5 +1,6 @@
 package org.drools.mvel.compiler.command;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -33,8 +34,8 @@ public class DisposeCommandPublicAPITest {
         pkg.getDialectRuntimeRegistry().setDialectData("java", data);
         rule = new RuleImpl("Test");
         rule.setDialect("java");
-        rule.setConsequence(new Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper, ReteEvaluator reteEvaluator) throws Exception {
+        rule.setConsequence(new Consequence<KnowledgeHelper>() {
+            public void evaluate(KnowledgeHelper knowledgeHelper, ValueResolver valueResolver) throws Exception {
 
             }
 

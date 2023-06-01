@@ -40,6 +40,7 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -186,7 +187,7 @@ public class TraitTest extends CommonTraitTest {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactoryImpl.setMode(mode, kb );
         kb.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -376,7 +377,7 @@ public class TraitTest extends CommonTraitTest {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactoryImpl.setMode(mode, kb );
         TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
@@ -450,7 +451,7 @@ public class TraitTest extends CommonTraitTest {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
 
         TraitFactoryImpl.setMode(mode, kb );
@@ -560,7 +561,7 @@ public class TraitTest extends CommonTraitTest {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactoryImpl.setMode(mode, kb );
 
@@ -641,7 +642,7 @@ public class TraitTest extends CommonTraitTest {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
 
 
@@ -764,7 +765,7 @@ public class TraitTest extends CommonTraitTest {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
 
         TraitFactoryImpl.setMode(mode, kb );
@@ -827,7 +828,7 @@ public class TraitTest extends CommonTraitTest {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactoryImpl.setMode(mode, kb );
 
@@ -922,7 +923,7 @@ public class TraitTest extends CommonTraitTest {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactoryImpl.setMode(mode, kb );
         TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
@@ -1917,7 +1918,7 @@ public class TraitTest extends CommonTraitTest {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages(kbuilder.getKnowledgePackages());
         TraitFactoryImpl traitBuilder = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
         TraitFactoryImpl.setMode(mode, kb );
@@ -2056,7 +2057,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2133,7 +2134,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2176,7 +2177,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (KieBase) kbase);
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2298,7 +2299,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2397,7 +2398,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, kbase ); // not relevant
+        TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2463,7 +2464,8 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, kbase ); // not relevant
+        TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
+
         kbase.addPackages( kbuilder.getKnowledgePackages() );
         KieSession ksession = kbase.newKieSession();
 
@@ -2564,7 +2566,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, kbase ); // not relevant
+        TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2683,7 +2685,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, kbase ); // not relevant
+        TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2729,7 +2731,7 @@ public class TraitTest extends CommonTraitTest {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalRuleBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactoryImpl.setMode(mode, kbase );
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -3700,7 +3702,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, kbase ); // not relevant
+        TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -3771,7 +3773,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -5283,7 +5285,7 @@ public class TraitTest extends CommonTraitTest {
                      "";
 
         InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, knowledgeBase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) knowledgeBase);
 
         KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kb.add( new ByteArrayResource( drl0.getBytes() ), ResourceType.DRL );

@@ -22,11 +22,11 @@ import java.util.List;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.kiesession.entrypoints.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -49,7 +49,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class CompositeObjectSinkAdapterTest {
-    private InternalKnowledgeBase        kBase;
+    private InternalKnowledgeBase kBase;
     private BuildContext                 buildContext;
 	private CompositeObjectSinkAdapter ad;
 	private ReadAccessor extractor;

@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.core.util.index.ConstraintTypeOperator;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -33,7 +34,7 @@ import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
+import org.drools.core.reteoo.SortDeclarations;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MultiAccumulate;
@@ -46,7 +47,6 @@ import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.rule.accessor.DeclarationScopeResolver;
 import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.util.index.IndexUtil;
 import org.drools.mvel.MVELConstraint;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.asm.AsmUtil;
@@ -246,7 +246,7 @@ public class MVELAccumulateBuilder
                                                                      new Declaration[] { inner },
                                                                      null,
                                                                      null,
-                                                                     IndexUtil.ConstraintType.EQUAL,
+                                                                     ConstraintTypeOperator.EQUAL,
                                                                      context.getDeclarationResolver().getDeclaration( func.getBind() ),
                                                                      accumDescr.isMultiFunction()
                                                                 ? new ArrayElementReader( arrayReader, index, function.getResultType() )

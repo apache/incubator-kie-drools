@@ -78,7 +78,7 @@ public class QueryElementNodeTest {
     public static class InstrumentedWorkingMemory extends StatefulKnowledgeSessionImpl {
 
         public InstrumentedWorkingMemory( final int id,
-                                          final InternalKnowledgeBase kBase ) {
+                                          final InternalKnowledgeBase kBase) {
             super( new Long( id ),
                    kBase );
         }

@@ -32,6 +32,7 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.base.ObjectType;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
@@ -47,7 +48,7 @@ public class PhreakPropagationContext
 
     private TerminalNode                    terminalNodeOrigin;
 
-    private InternalFactHandle              factHandle;
+    private FactHandle                      factHandle;
 
     private long                            propagationNumber;
 
@@ -177,11 +178,11 @@ public class PhreakPropagationContext
         return terminalNodeOrigin;
     }
 
-    public InternalFactHandle getFactHandle() {
+    public FactHandle getFactHandle() {
         return this.factHandle;
     }
     
-    public void setFactHandle(InternalFactHandle factHandle) {
+    public void setFactHandle(FactHandle factHandle) {
         this.factHandle = factHandle;
     }    
 

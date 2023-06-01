@@ -47,7 +47,7 @@ import org.drools.core.concurrent.SequentialRuleEvaluator;
 import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
@@ -133,15 +133,15 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     // ------------------------------------------------------------
     public DefaultAgenda() { }
 
-    public DefaultAgenda(RuleBase kBase) {
+    public DefaultAgenda(InternalRuleBase kBase) {
         this( kBase, true );
     }
 
-    public DefaultAgenda(RuleBase kBase, boolean initMain) {
+    public DefaultAgenda(InternalRuleBase kBase, boolean initMain) {
         this(kBase, initMain, new ConcurrentExecutionStateMachine());
     }
 
-    DefaultAgenda(RuleBase kBase,
+    DefaultAgenda(InternalRuleBase kBase,
                   boolean initMain,
                   ExecutionStateMachine executionStateMachine) {
         this.agendaGroupsManager = AgendaGroupsManager.create(kBase, initMain);
@@ -1291,7 +1291,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     protected void doRetract( PropagationContext ectx ) {
-        InternalFactHandle factHandle = ectx.getFactHandle();
+        InternalFactHandle factHandle = (InternalFactHandle) ectx.getFactHandle();
         ObjectTypeNode.retractLeftTuples( factHandle, ectx, workingMemory );
         ObjectTypeNode.retractRightTuples( factHandle, ectx, workingMemory );
         if ( factHandle.isPendingRemoveFromStore() ) {

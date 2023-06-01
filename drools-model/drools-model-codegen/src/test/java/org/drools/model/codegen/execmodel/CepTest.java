@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.ClockType;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.model.codegen.execmodel.domain.DateTimeHolder;
 import org.drools.model.codegen.execmodel.domain.StockFact;
@@ -44,7 +44,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.Calendar;
-import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -719,7 +718,7 @@ public class CepTest extends BaseModelTest {
             props.put("duration", 52);
             msg.setProperties(props);
 
-            final EventFactHandle efh = (EventFactHandle) ksession.insert(msg);
+            final DefaultEventHandle efh = (DefaultEventHandle) ksession.insert(msg);
             assertThat(efh.getStartTimestamp()).isEqualTo(98);
             assertThat(efh.getDuration()).isEqualTo(53);
         } finally {

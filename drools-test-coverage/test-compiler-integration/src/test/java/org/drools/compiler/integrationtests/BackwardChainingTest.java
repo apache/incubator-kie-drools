@@ -32,7 +32,7 @@ import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -2219,7 +2219,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
         // Get the accumulate node, so we can test it's memory later
         // now check beta memory was correctly cleared
-        final List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
+        final List<ObjectTypeNode> nodes = ((InternalRuleBase) kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
         for (final ObjectTypeNode n : nodes) {
             if ((( ClassObjectType ) n.getObjectType()).getClassType() == String.class) {

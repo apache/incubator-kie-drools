@@ -214,7 +214,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         Pattern pattern = context.getLastBuiltPatterns()[0];
         ObjectType objectType = pattern.getObjectType();
 
-        if ( isPropertyReactive(context, objectType) ) {
+        if ( isPropertyReactive(context.getRuleBase(), objectType) ) {
             List<String> accessibleProperties = pattern.getAccessibleProperties( context.getRuleBase() );
             setDeclaredMask( pattern.getPositiveWatchMask(accessibleProperties) );
             setNegativeMask( pattern.getNegativeWatchMask(accessibleProperties) );
@@ -256,7 +256,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     public LeftTuple createPeer(LeftTuple original) {
         RuleTerminalNodeLeftTuple peer = (RuleTerminalNodeLeftTuple) AgendaComponentFactory.get().createTerminalTuple();
-        peer.initPeer( (BaseLeftTuple) original, this );
+        peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer( peer );
         return peer;
     }
@@ -330,15 +330,6 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     public final boolean hasPathNode(LeftTupleNode node) {
         for (LeftTupleNode pathNode : getPathNodes()) {
             if (node.getId() == pathNode.getId()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final boolean isTerminalNodeOf(LeftTupleNode node) {
-        for (PathEndNode pathEndNode : getPathEndNodes()) {
-            if (pathEndNode.hasPathNode( node )) {
                 return true;
             }
         }

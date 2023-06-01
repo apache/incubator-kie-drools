@@ -30,6 +30,7 @@ public class DefaultTimerJobFactoryManager
     
     public static final DefaultTimerJobFactoryManager INSTANCE = new DefaultTimerJobFactoryManager();
 
+    @Override
     public TimerJobInstance createTimerJobInstance(Job job,
                                                    JobContext ctx,
                                                    Trigger trigger,
@@ -43,11 +44,19 @@ public class DefaultTimerJobFactoryManager
                                             scheduler );
     }
 
+    @Override
     public Collection<TimerJobInstance> getTimerJobInstances() {
         return Collections.emptyList();
     }
 
+    @Override
     public void addTimerJobInstance(TimerJobInstance instance) { }
 
+    @Override
     public void removeTimerJobInstance(TimerJobInstance instance) { }
+
+    @Override
+    public void removeTimerJobInstance(JobHandle handle) {
+
+    }
 }

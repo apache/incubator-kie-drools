@@ -23,16 +23,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.rule.accessor.Evaluator;
 import org.drools.core.rule.accessor.FieldValue;
 import org.drools.core.rule.accessor.ReadAccessor;
+import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * This class defines all the set built in evaluators like contains, memberOf,
@@ -326,11 +327,11 @@ public class SetEvaluatorsDefinition
                    CONTAINS );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final FieldValue fieldValue) {
-            final Object array = extractor.getValue( reteEvaluator,
+            final Object array = extractor.getValue( valueResolver,
                                                      handle1.getObject() );
 
             if ( array == null ) return false;
@@ -339,22 +340,22 @@ public class SetEvaluatorsDefinition
                                                                   fieldValue );
         }
 
-        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedRight(final ValueResolver valueResolver,
                                            final VariableContextEntry context,
-                                           final InternalFactHandle left) {
+                                           final FactHandle left) {
             final Object array = ((ObjectVariableContextEntry) context).right;
             if ( array == null ) return false;
 
             return getArrayContains( array.getClass() ).contains( array,
-                                                                  reteEvaluator,
+                                                                  valueResolver,
                                                                   context.declaration.getExtractor(),
                                                                   left.getObject() );
         }
 
-        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedLeft(final ValueResolver valueResolver,
                                           final VariableContextEntry context,
-                                          final InternalFactHandle right) {
-            final Object array = context.extractor.getValue( reteEvaluator,
+                                          final FactHandle right) {
+            final Object array = context.extractor.getValue( valueResolver,
                                                              right.getObject() );
 
             if ( array == null ) return false;
@@ -362,23 +363,23 @@ public class SetEvaluatorsDefinition
             // the original object is passed, as the extractor
             // is used to cast to the correct type for the array comparison
             return getArrayContains( array.getClass() ).contains( array,
-                                                                  reteEvaluator,
+                                                                  valueResolver,
                                                                   context.declaration.getExtractor(),
                                                                   context.tuple.getObject( context.declaration ) );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor1,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final ReadAccessor extractor2,
-                                final InternalFactHandle handle2) {
-            final Object array = extractor1.getValue( reteEvaluator,
+                                final FactHandle handle2) {
+            final Object array = extractor1.getValue( valueResolver,
                                                       handle1.getObject() );
 
             if ( array == null ) return false;
 
             return getArrayContains( array.getClass() ).contains( array,
-                                                                  reteEvaluator,
+                                                                  valueResolver,
                                                                   extractor2,
                                                                   handle2.getObject() );
         }
@@ -397,11 +398,11 @@ public class SetEvaluatorsDefinition
                    EXCLUDES );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final FieldValue fieldValue) {
-            final Object array = extractor.getValue( reteEvaluator,
+            final Object array = extractor.getValue( valueResolver,
                                                      handle1.getObject() );
 
             if ( array == null ) return false;
@@ -410,44 +411,44 @@ public class SetEvaluatorsDefinition
                                                                    fieldValue );
         }
 
-        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedRight(final ValueResolver valueResolver,
                                            final VariableContextEntry context,
-                                           final InternalFactHandle left) {
+                                           final FactHandle left) {
             final Object array = ((ObjectVariableContextEntry) context).right;
             if ( array == null ) return false;
 
             return !getArrayContains( array.getClass() ).contains( array,
-                                                                   reteEvaluator,
+                                                                   valueResolver,
                                                                    context.declaration.getExtractor(),
                                                                    left.getObject() );
         }
 
-        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedLeft(final ValueResolver valueResolver,
                                           final VariableContextEntry context,
-                                          final InternalFactHandle right) {
-            final Object array = context.extractor.getValue( reteEvaluator,
+                                          final FactHandle right) {
+            final Object array = context.extractor.getValue( valueResolver,
                                                              right.getObject() );
 
             if ( array == null ) return false;
 
             return !getArrayContains( array.getClass() ).contains( array,
-                                                                   reteEvaluator,
+                                                                   valueResolver,
                                                                    context.declaration.getExtractor(),
                                                                    context.getTuple().getObject( context.getVariableDeclaration() ) );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor1,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final ReadAccessor extractor2,
-                                final InternalFactHandle handle2) {
-            final Object array = extractor1.getValue( reteEvaluator,
+                                final FactHandle handle2) {
+            final Object array = extractor1.getValue( valueResolver,
                                                       handle1 .getObject());
 
             if ( array == null ) return false;
 
             return !getArrayContains( array.getClass() ).contains( array,
-                                                                   reteEvaluator,
+                                                                   valueResolver,
                                                                    extractor2,
                                                                    handle2.getObject() );
         }
@@ -488,20 +489,20 @@ public class SetEvaluatorsDefinition
             return ValueType.OBJECT_TYPE;
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final FieldValue fieldValue) {
             if ( fieldValue.isNull() ) {
                 return false;
             } else if ( fieldValue.isCollectionField() ) {
                 final Collection col = (Collection) fieldValue.getValue();
-                final Object value = extractor.getValue( reteEvaluator,
+                final Object value = extractor.getValue( valueResolver,
                                                          handle1.getObject() );
                 return col.contains( value );
             } else if ( fieldValue.getValue().getClass().isArray() ) {
                 return getArrayContains( fieldValue.getValue().getClass() ).contains( fieldValue.getValue(),
-                                                                                      reteEvaluator,
+                                                                                      valueResolver,
                                                                                       extractor,
                                                                                       handle1.getObject() );
             } else {
@@ -509,10 +510,10 @@ public class SetEvaluatorsDefinition
             }
         }
 
-        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedRight(final ValueResolver valueResolver,
                                            final VariableContextEntry context,
-                                           final InternalFactHandle left) {
-            final Object object = context.declaration.getExtractor().getValue( reteEvaluator,
+                                           final FactHandle left) {
+            final Object object = context.declaration.getExtractor().getValue( valueResolver,
                                                                                left.getObject() );
             if ( object == null ) {
                 return false;
@@ -522,7 +523,7 @@ public class SetEvaluatorsDefinition
                 return col.contains( value );
             } else if ( object.getClass().isArray() ) {
                 return getArrayContains( object.getClass() ).contains( object,
-                                                                       reteEvaluator,
+                                                                       valueResolver,
                                                                        context.extractor,
                                                                        context.object );
             } else {
@@ -530,20 +531,20 @@ public class SetEvaluatorsDefinition
             }
         }
 
-        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedLeft(final ValueResolver valueResolver,
                                           final VariableContextEntry context,
-                                          final InternalFactHandle right) {
+                                          final FactHandle right) {
             final Object object = ((ObjectVariableContextEntry) context).left;
             if ( object == null ) {
                 return false;
             } else if ( object instanceof Collection ) {
                 final Collection col = (Collection) object;
-                final Object value = context.extractor.getValue( reteEvaluator,
+                final Object value = context.extractor.getValue( valueResolver,
                                                                  right.getObject() );
                 return col.contains( value );
             } else if ( object.getClass().isArray() ) {
                 return getArrayContains( object.getClass() ).contains( object,
-                                                                       reteEvaluator,
+                                                                       valueResolver,
                                                                        context.extractor,
                                                                        right.getObject() );
             } else {
@@ -551,25 +552,25 @@ public class SetEvaluatorsDefinition
             }
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor1,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final ReadAccessor extractor2,
-                                final InternalFactHandle handle2) {
-            final Object object = extractor2.getValue( reteEvaluator,
+                                final FactHandle handle2) {
+            final Object object = extractor2.getValue( valueResolver,
                                                        handle2.getObject() );
             if ( object == null ) {
                 return false;
             } else if ( object instanceof Collection ) {
                 final Collection col = (Collection) object;
-                final Object value = extractor1.getValue( reteEvaluator,
+                final Object value = extractor1.getValue( valueResolver,
                                                           handle1.getObject() );
                 return col.contains( value );
             } else if ( object.getClass().isArray() ) {
                 return getArrayContains( object.getClass() ).contains( object,
-                                                                      reteEvaluator,
-                                                                      extractor1,
-                                                                      handle1.getObject() );
+                                                                       valueResolver,
+                                                                       extractor1,
+                                                                       handle1.getObject() );
             } else {
                 throw new ClassCastException( "Can't check if an attribute is member of an object of class " + object.getClass() );
             }
@@ -597,31 +598,31 @@ public class SetEvaluatorsDefinition
             return ValueType.OBJECT_TYPE;
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final FieldValue fieldValue) {
             if ( fieldValue.isNull() ) {
                 return false;
             } else if ( fieldValue.isCollectionField() ) {
                 final Collection col = (Collection) fieldValue.getValue();
-                final Object value = extractor.getValue( reteEvaluator,
+                final Object value = extractor.getValue( valueResolver,
                                                          handle1.getObject() );
                 return !col.contains( value );
             } else if ( fieldValue.getValue().getClass().isArray() ) {
                 return !getArrayContains( fieldValue.getValue().getClass() ).contains( fieldValue.getValue(),
-                                                                                   reteEvaluator,
-                                                                                   extractor,
-                                                                                   handle1.getObject() );
+                                                                                       valueResolver,
+                                                                                       extractor,
+                                                                                       handle1.getObject() );
             } else {
                 throw new ClassCastException( "Can't check if an attribute is not member of an object of class " + fieldValue.getValue().getClass() );
             }
         }
 
-        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedRight(final ValueResolver valueResolver,
                                            final VariableContextEntry context,
-                                           final InternalFactHandle left) {
-            final Object object = context.declaration.getExtractor().getValue( reteEvaluator,
+                                           final FactHandle left) {
+            final Object object = context.declaration.getExtractor().getValue( valueResolver,
                                                                                left.getObject() );
             if ( object == null ) {
                 return false;
@@ -633,55 +634,55 @@ public class SetEvaluatorsDefinition
                 // the original object is passed, as the extractor
                 // is used to cast to the correct type for the array comparison
                 return !getArrayContains( object.getClass() ).contains( object,
-                                                                       reteEvaluator,
-                                                                       context.extractor,
-                                                                       context.object ); 
+                                                                        valueResolver,
+                                                                        context.extractor,
+                                                                         context.object );
                   
             } else {
                 throw new ClassCastException( "Can't check if an attribute is not member of an object of class " + object.getClass() );
             }
         }
 
-        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedLeft(final ValueResolver valueResolver,
                                           final VariableContextEntry context,
-                                          final InternalFactHandle right) {
+                                          final FactHandle right) {
             final Object object = ((ObjectVariableContextEntry) context).left;
             if ( object == null ) {
                 return false;
             } else if ( object instanceof Collection ) {
                 final Collection col = (Collection) object;
-                final Object value = context.extractor.getValue( reteEvaluator,
+                final Object value = context.extractor.getValue( valueResolver,
                                                                  right.getObject() );
                 return !col.contains( value );
             } else if ( object.getClass().isArray() ) {
                 return !getArrayContains( object.getClass() ).contains( object,
-                                                                       reteEvaluator,
-                                                                       context.extractor,
-                                                                       right.getObject() );
+                                                                        valueResolver,
+                                                                        context.extractor,
+                                                                        right.getObject() );
             } else {
                 throw new ClassCastException( "Can't check if an attribute is not member of an object of class " + object.getClass() );
             }
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor1,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final ReadAccessor extractor2,
-                                final InternalFactHandle handle2) {
-            final Object object = extractor2.getValue( reteEvaluator,
+                                final FactHandle handle2) {
+            final Object object = extractor2.getValue( valueResolver,
                                                        handle2.getObject() );
             if ( object == null ) {
                 return false;
             } else if ( object instanceof Collection ) {
                 final Collection col = (Collection) object;
-                final Object value = extractor1.getValue( reteEvaluator,
+                final Object value = extractor1.getValue( valueResolver,
                                                           handle1.getObject() );
                 return !col.contains( value );
             } else if ( object.getClass().isArray() ) {
                 return !getArrayContains( object.getClass() ).contains( object,
-                                                                      reteEvaluator,
-                                                                      extractor1,
-                                                                      handle1.getObject() );
+                                                                        valueResolver,
+                                                                        extractor1,
+                                                                        handle1.getObject() );
             } else {
                 throw new ClassCastException( "Can't check if an attribute is not member of an object of class " + object.getClass() );
             }
@@ -999,42 +1000,42 @@ public class SetEvaluatorsDefinition
                    CONTAINS );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final FieldValue fieldValue) {
             final Object value = fieldValue.getValue();
-            final Collection col = (Collection) extractor.getValue( reteEvaluator,
+            final Collection col = (Collection) extractor.getValue( valueResolver,
                                                                     handle1.getObject() );
             return (col == null) ? false : col.contains( value );
         }
 
-        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedRight(final ValueResolver valueResolver,
                                            final VariableContextEntry context,
-                                           final InternalFactHandle left) {
-            final Object value = context.declaration.getExtractor().getValue( reteEvaluator,
+                                           final FactHandle left) {
+            final Object value = context.declaration.getExtractor().getValue( valueResolver,
                                                                               left.getObject() );
             final Collection col = (Collection) ((ObjectVariableContextEntry) context).right;
             return (col == null) ? false : col.contains( value );
         }
 
-        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedLeft(final ValueResolver valueResolver,
                                           final VariableContextEntry context,
-                                          final InternalFactHandle right) {
+                                          final FactHandle right) {
             final Object value = ((ObjectVariableContextEntry) context).left;
-            final Collection col = (Collection) context.extractor.getValue( reteEvaluator,
+            final Collection col = (Collection) context.extractor.getValue( valueResolver,
                                                                             right.getObject() );
             return (col == null) ? false : col.contains( value );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor1,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final ReadAccessor extractor2,
-                                final InternalFactHandle handle2) {
-            final Object value = extractor2.getValue( reteEvaluator,
+                                final FactHandle handle2) {
+            final Object value = extractor2.getValue( valueResolver,
                                                       handle2.getObject() );
-            final Collection col = (Collection) extractor1.getValue( reteEvaluator,
+            final Collection col = (Collection) extractor1.getValue( valueResolver,
                                                                      handle1.getObject() );
             return (col == null) ? false : col.contains( value );
         }
@@ -1053,42 +1054,42 @@ public class SetEvaluatorsDefinition
                    EXCLUDES );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final FieldValue fieldValue) {
             final Object value = fieldValue.getValue();
-            final Collection col = (Collection) extractor.getValue( reteEvaluator,
+            final Collection col = (Collection) extractor.getValue( valueResolver,
                                                                     handle1.getObject() );
             return (col == null) ? true : !col.contains( value );
         }
 
-        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedRight(final ValueResolver valueResolver,
                                            final VariableContextEntry context,
-                                           final InternalFactHandle left) {
-            final Object value = context.declaration.getExtractor().getValue( reteEvaluator,
+                                           final FactHandle left) {
+            final Object value = context.declaration.getExtractor().getValue( valueResolver,
                                                                               left.getObject() );
             final Collection col = (Collection) ((ObjectVariableContextEntry) context).right;
             return (col == null) ? true : !col.contains( value );
         }
 
-        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedLeft(final ValueResolver valueResolver,
                                           final VariableContextEntry context,
-                                          final InternalFactHandle right) {
+                                          final FactHandle right) {
             final Object value = ((ObjectVariableContextEntry) context).left;
-            final Collection col = (Collection) context.extractor.getValue( reteEvaluator,
+            final Collection col = (Collection) context.extractor.getValue( valueResolver,
                                                                             right.getObject() );
             return (col == null) ? true : !col.contains( value );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor1,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final ReadAccessor extractor2,
-                                final InternalFactHandle handle2) {
-            final Object value = extractor2.getValue( reteEvaluator,
+                                final FactHandle handle2) {
+            final Object value = extractor2.getValue( valueResolver,
                                                       handle2.getObject() );
-            final Collection col = (Collection) extractor1.getValue( reteEvaluator,
+            final Collection col = (Collection) extractor1.getValue( valueResolver,
                                                                      handle1.getObject() );
             return (col == null) ? true : !col.contains( value );
         }
@@ -1195,7 +1196,7 @@ public class SetEvaluatorsDefinition
                          FieldValue value);
 
         boolean contains(Object array,
-                         ReteEvaluator reteEvaluator,
+                         ValueResolver valueResolver,
                          ReadAccessor accessor,
                          Object object);
         //        
@@ -1226,13 +1227,13 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean contains(Object array,
-                                ReteEvaluator reteEvaluator,
+                                ValueResolver valueResolver,
                                 ReadAccessor accessor,
                                 Object object) {
             boolean[] boolArray = (boolean[]) array;
 
             for ( int i = 0, length = boolArray.length; i < length; i++ ) {
-                if ( boolArray[i] == accessor.getBooleanValue( reteEvaluator,
+                if ( boolArray[i] == accessor.getBooleanValue( valueResolver,
                                                                object ) ) {
                     return true;
                 }
@@ -1258,11 +1259,11 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean contains(Object array,
-                                ReteEvaluator reteEvaluator,
+                                ValueResolver valueResolver,
                                 ReadAccessor accessor,
                                 Object object) {
             return contains( (byte[]) array,
-                             accessor.getByteValue( reteEvaluator,
+                             accessor.getByteValue( valueResolver,
                                                     object ) );
         }
 
@@ -1294,11 +1295,11 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean contains(Object array,
-                                ReteEvaluator reteEvaluator,
+                                ValueResolver valueResolver,
                                 ReadAccessor accessor,
                                 Object object) {
             return contains( (short[]) array,
-                             accessor.getShortValue( reteEvaluator,
+                             accessor.getShortValue( valueResolver,
                                                      object ) );
         }
 
@@ -1329,11 +1330,11 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean contains(Object array,
-                                ReteEvaluator reteEvaluator,
+                                ValueResolver valueResolver,
                                 ReadAccessor accessor,
                                 Object object) {
             return contains( (char[]) array,
-                             accessor.getCharValue( reteEvaluator,
+                             accessor.getCharValue( valueResolver,
                                                     object ) );
         }
 
@@ -1365,11 +1366,11 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean contains(Object array,
-                                ReteEvaluator reteEvaluator,
+                                ValueResolver valueResolver,
                                 ReadAccessor accessor,
                                 Object object) {
             return contains( (int[]) array,
-                             accessor.getIntValue( reteEvaluator,
+                             accessor.getIntValue( valueResolver,
                                                    object ) );
         }
 
@@ -1401,11 +1402,11 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean contains(Object array,
-                                ReteEvaluator reteEvaluator,
+                                ValueResolver valueResolver,
                                 ReadAccessor accessor,
                                 Object object) {
             return contains( (long[]) array,
-                             accessor.getLongValue( reteEvaluator,
+                             accessor.getLongValue( valueResolver,
                                                     object ) );
         }
 
@@ -1437,11 +1438,11 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean contains(Object array,
-                                ReteEvaluator reteEvaluator,
+                                ValueResolver valueResolver,
                                 ReadAccessor accessor,
                                 Object object) {
             return contains( (float[]) array,
-                             accessor.getFloatValue( reteEvaluator,
+                             accessor.getFloatValue( valueResolver,
                                                      object ) );
         }
 
@@ -1472,11 +1473,11 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean contains(Object array,
-                                ReteEvaluator reteEvaluator,
+                                ValueResolver valueResolver,
                                 ReadAccessor accessor,
                                 Object object) {
             return contains( (double[]) array,
-                             accessor.getDoubleValue( reteEvaluator,
+                             accessor.getDoubleValue( valueResolver,
                                                       object ) );
         }
 
@@ -1522,11 +1523,11 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean contains(Object array,
-                                ReteEvaluator reteEvaluator,
+                                ValueResolver valueResolver,
                                 ReadAccessor accessor,
                                 Object object) {
             return contains( (Object[]) array,
-                             accessor.getValue( reteEvaluator,
+                             accessor.getValue( valueResolver,
                                                 object ) );
         }
 

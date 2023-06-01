@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.ancompiler.CompiledNetwork;
+import org.drools.base.base.DroolsQuery;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
@@ -33,7 +33,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -255,7 +255,7 @@ public class IndexingTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
         final InternalWorkingMemory wm = (InternalWorkingMemory) kbase.newKieSession();
         try {
-            final List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
+            final List<ObjectTypeNode> nodes = ((InternalRuleBase) kbase).getRete().getObjectTypeNodes();
             ObjectTypeNode node = null;
             for (final ObjectTypeNode n : nodes) {
                 if (((ClassObjectType) n.getObjectType()).getClassType() == DroolsQuery.class) {
@@ -291,7 +291,7 @@ public class IndexingTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
         final StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) kbase.newKieSession();
         try {
-            final List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
+            final List<ObjectTypeNode> nodes = ((InternalRuleBase) kbase).getRete().getObjectTypeNodes();
             ObjectTypeNode node = null;
             for (final ObjectTypeNode n : nodes) {
                 if (((ClassObjectType) n.getObjectType()).getClassType() == DroolsQuery.class) {
@@ -424,7 +424,7 @@ public class IndexingTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
         final StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) kbase.newKieSession();
         try {
-            final List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
+            final List<ObjectTypeNode> nodes = ((InternalRuleBase) kbase).getRete().getObjectTypeNodes();
             ObjectTypeNode node = null;
             for (final ObjectTypeNode n : nodes) {
                 if (((ClassObjectType) n.getObjectType()).getClassType() == DroolsQuery.class) {

@@ -36,7 +36,7 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.io.ResourceConfigurationImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -201,7 +201,7 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
         return new KnowledgePackagesBuildResult(false, pkgs);
     }
 
-    public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf ) {
+    public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf) {
         KnowledgePackagesBuildResult knowledgePackagesBuildResult = buildKnowledgePackages(kBaseModel, kieProject, buildContext);
         if(knowledgePackagesBuildResult.hasErrors()) {
             return null;
@@ -217,7 +217,7 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
             ((RuleBaseConfiguration)conf).setClassLoader(cl);
         }
 
-        RuleBase kBase = RuleBaseFactory.newRuleBase(kBaseModel.getName(), conf );
+        InternalRuleBase kBase = RuleBaseFactory.newRuleBase(kBaseModel.getName(), conf);
         kBase.addPackages( pkgs );
         return KnowledgeBaseFactory.newKnowledgeBase(kBase);
     }

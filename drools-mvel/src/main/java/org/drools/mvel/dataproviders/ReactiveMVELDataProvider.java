@@ -16,10 +16,9 @@ package org.drools.mvel.dataproviders;
 
 import java.util.Iterator;
 
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueResolver;
 import org.drools.core.phreak.ReactiveObject;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.mvel.expr.MVELCompilationUnit;
 
 public class ReactiveMVELDataProvider extends MVELDataProvider {
@@ -36,13 +35,12 @@ public class ReactiveMVELDataProvider extends MVELDataProvider {
     }
 
     @Override
-    public Iterator getResults( final Tuple tuple,
-                                final ReteEvaluator reteEvaluator,
-                                final PropagationContext ctx,
+    public Iterator getResults( final BaseTuple tuple,
+                                final ValueResolver valueResolver,
                                 final Object executionContext ) {
-        Object result = evaluate( tuple, reteEvaluator );
+        Object result = evaluate( tuple, valueResolver );
         if (result instanceof ReactiveObject) {
-            ( (ReactiveObject) result ).addLeftTuple( tuple );
+            ( (ReactiveObject) result ).addTuple(tuple);
         }
         return asIterator( result );
     }

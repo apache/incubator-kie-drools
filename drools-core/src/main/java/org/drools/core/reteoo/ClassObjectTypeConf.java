@@ -28,11 +28,9 @@ import java.util.List;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DroolsQuery;
-import org.drools.core.base.ObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
@@ -41,6 +39,7 @@ import org.drools.core.util.TimeIntervalParser;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Role.Type;
+import org.drools.core.base.ObjectType;
 
 public class ClassObjectTypeConf
     implements
@@ -74,7 +73,7 @@ public class ClassObjectTypeConf
 
     public ClassObjectTypeConf(final EntryPointId entryPoint,
                                final Class< ? > clazz,
-                               final RuleBase ruleBase) {
+                               final InternalRuleBase ruleBase) {
         this.cls = (InternalMatch.class.isAssignableFrom(clazz) ) ? ClassObjectType.Match_ObjectType.getClassType() : clazz;
         this.entryPoint = entryPoint;
 
@@ -91,7 +90,7 @@ public class ClassObjectTypeConf
                 if (isEvent) {
                     Expires expires = clazz.getAnnotation(Expires.class);
                     if (expires != null) {
-                        expirationOffset = TimeIntervalParser.parseSingle( expires.value() );
+                        expirationOffset = TimeIntervalParser.parseSingle(expires.value());
                     }
                 }
             }
@@ -194,12 +193,7 @@ public class ClassObjectTypeConf
         final List<ObjectTypeNode> cache = new ArrayList<>();
 
         for ( ObjectTypeNode node : rete.getObjectTypeNodes( this.entryPoint ).values() ) {
-            if ( clazz == DroolsQuery.class ) {
-                // for query objects only add direct matches
-                if ( ((ClassObjectType)node.getObjectType()).getClassType() == clazz ) {
-                    cache.add( node );    
-                }
-            } else if ( node.isAssignableFrom( new ClassObjectType( clazz ) ) ) {
+            if ( node.isAssignableFrom( new ClassObjectType( clazz ) ) ) {
                 cache.add( node );
             }
         }
