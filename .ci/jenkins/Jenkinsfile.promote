@@ -79,8 +79,8 @@ pipeline {
                         if(githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
                             githubscm.deleteRelease(getGitTag(), getGitAuthorCredsID())
                         }
-                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), getPreviousTag(), getGitAuthorCredsID())
-                        updateReleaseBody(getGitTag(), getGitAuthorCredsID())
+                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTag(getGitTag()), getGitAuthorCredsID())
+                        githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
                     }
                 }
             }
@@ -239,41 +239,6 @@ void setPipelinePrLink(String value) {
 
 String getSnapshotBranch() {
     return "${getSnapshotVersion().toLowerCase()}-${env.BOT_BRANCH_HASH}"
-}
-
-String updateReleaseBody(String tagName, String credsId){
-    String releaseNotesFile = 'release_notes'
-    withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
-        sh "gh release view ${tagName} --json body --jq .body > ${releaseNotesFile}"
-
-        sh """
-            #!/bin/bash
-            sed -i -r 's|\\[(KOGITO-[0-9]*)\\](.*)|\\1\\2|g' ${releaseNotesFile}
-            sed -i -r 's|(KOGITO-[0-9]*)(.*)|\\[\\1\\](https\\://issues\\.redhat\\.com/browse/\\1)\\2|g' ${releaseNotesFile}
-
-            sed -i -r 's|\\[(DROOLS-[0-9]*)\\](.*)|\\1\\2|g' ${releaseNotesFile}
-            sed -i -r 's|(DROOLS-[0-9]*)(.*)|\\[\\1\\](https\\://issues\\.redhat\\.com/browse/\\1)\\2|g' ${releaseNotesFile}
-
-            sed -i -r 's|\\[(BXMSPROD-[0-9]*)\\](.*)|\\1\\2|g' ${releaseNotesFile}
-            sed -i -r 's|(BXMSPROD-[0-9]*)(.*)|\\[\\1\\](https\\://issues\\.redhat\\.com/browse/\\1)\\2|g' ${releaseNotesFile}
-
-            sed -i -r 's|\\[(kie-issues-[0-9]*)\\](.*)|\\1\\2|g' ${releaseNotesFile}
-            sed -i -r 's|kie-issues#([0-9]*)(.*)|\\[kie-issues#\\1\\](https\\://github\\.com/kiegroup/kie-issues/issues/\\1)\\2|g' ${releaseNotesFile}
-            sed -i -r 's|kie-issues-([0-9]*)(.*)|\\[kie-issues#\\1\\](https\\://github\\.com/kiegroup/kie-issues/issues/\\1)\\2|g' ${releaseNotesFile}
-            cat ${releaseNotesFile}
-        """
-
-        sh "gh release edit ${tagName} -F ${releaseNotesFile}"
-    }
-}
-
-String getPreviousTag(){
-    String latestTag = sh(returnStdout: true, script: 'git tag --sort=-taggerdate | head -n 1').trim()
-    if (latestTag == getGitTag()) {
-        latestTag = sh(returnStdout: true, script: 'git tag --sort=-taggerdate | head -n 2 | tail -n 1').trim()    
-    }
-    echo "Got latestTag = ${latestTag}"
-    return latestTag
 }
 
 //////////////////////////////////////////////////////////////////////////////
