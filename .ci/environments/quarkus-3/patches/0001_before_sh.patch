@@ -1265,11 +1265,24 @@ index 9894ced190..7052f46fe3 100644
  
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.eclipse.microprofile.reactive.messaging.Channel;
+diff --git a/quarkus/addons/knative/eventing/integration-tests/src/test/java/org/kie/kogito/addons/quarkus/knative/eventing/AbstractKSinkInjectionHealthCheckTest.java b/quarkus/addons/knative/eventing/integration-tests/src/test/java/org/kie/kogito/addons/quarkus/knative/eventing/AbstractKSinkInjectionHealthCheckTest.java
+index 59235e0d7c..2b17ac82b5 100644
+--- a/quarkus/addons/knative/eventing/integration-tests/src/test/java/org/kie/kogito/addons/quarkus/knative/eventing/AbstractKSinkInjectionHealthCheckTest.java
++++ b/quarkus/addons/knative/eventing/integration-tests/src/test/java/org/kie/kogito/addons/quarkus/knative/eventing/AbstractKSinkInjectionHealthCheckTest.java
+@@ -15,7 +15,7 @@
+  */
+ package org.kie.kogito.addons.quarkus.knative.eventing;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.eclipse.microprofile.config.Config;
+ import org.hamcrest.Matcher;
 diff --git a/quarkus/addons/knative/eventing/runtime/pom.xml b/quarkus/addons/knative/eventing/runtime/pom.xml
-index c0f137fc5a..4a2d16a435 100644
+index 8b6c805b2c..e500ed07c1 100644
 --- a/quarkus/addons/knative/eventing/runtime/pom.xml
 +++ b/quarkus/addons/knative/eventing/runtime/pom.xml
-@@ -38,7 +38,7 @@
+@@ -54,7 +54,7 @@
      <plugins>
        <plugin>
          <groupId>io.quarkus</groupId>
@@ -1279,7 +1292,7 @@ index c0f137fc5a..4a2d16a435 100644
          <executions>
            <execution>
 diff --git a/quarkus/addons/knative/eventing/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/eventing/KSinkInjectionHealthCheck.java b/quarkus/addons/knative/eventing/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/eventing/KSinkInjectionHealthCheck.java
-index 92771a52f3..1a2dfbd2cf 100644
+index 4153a39970..dd02bb5268 100644
 --- a/quarkus/addons/knative/eventing/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/eventing/KSinkInjectionHealthCheck.java
 +++ b/quarkus/addons/knative/eventing/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/eventing/KSinkInjectionHealthCheck.java
 @@ -21,7 +21,7 @@ import java.net.URI;
@@ -4584,7 +4597,7 @@ index 5b7f0e8a75..712d3d1e17 100644
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.beans.factory.annotation.Value;
 diff --git a/springboot/bom/pom.xml b/springboot/bom/pom.xml
-index 7651661c3d..10b6eff566 100644
+index 8247d78ce6..10b6eff566 100644
 --- a/springboot/bom/pom.xml
 +++ b/springboot/bom/pom.xml
 @@ -22,10 +22,9 @@
@@ -4595,7 +4608,7 @@ index 7651661c3d..10b6eff566 100644
 +    <version.org.springframework.cloud.kubernetes.fabric8>3.0.2</version.org.springframework.cloud.kubernetes.fabric8>
      <!-- CVE-2022-25857: Upgrading snakeyaml until we upgrade to Spring Boot 3.x -->
      <!-- See: https://github.com/spring-projects/spring-boot/issues/32221 -->
--    <snakeyaml.version>1.31</snakeyaml.version>
+-    <snakeyaml.version>2.0</snakeyaml.version>
    </properties>
    
    <dependencyManagement>
