@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.process.validation;
 
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,22 +24,12 @@ public class ValidationLogDecorator extends ValidationDecorator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationLogDecorator.class);
 
-    public ValidationLogDecorator(ValidationContext context) {
-        super(context);
-    }
-
-    public static ValidationLogDecorator of(ValidationContext context) {
-        return new ValidationLogDecorator(context);
+    public ValidationLogDecorator(Map<String, Exception> exceptions) {
+        super(exceptions);
     }
 
     @Override
-    public ValidationLogDecorator decorate() {
-        context.resourcesWithError().forEach(id -> {
-            String message = context.errors(id).stream()
-                    .map(ValidationError::getMessage)
-                    .collect(Collectors.joining("\n - ", " - ", ""));
-            LOGGER.error("Invalid process: '{}'. Found errors:\n{}\n", id, message);
-        });
-        return this;
+    public void decorate() {
+        exceptions.forEach((processId, exception) -> LOGGER.error("Invalid process: '{}'. Found error: {}", processId, exception));
     }
 }

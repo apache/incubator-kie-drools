@@ -44,16 +44,12 @@ public class InvalidProcessIT extends AbstractCodegenIT {
     static Stream<Arguments> invalidDataMappingProcessesForTest() {
         return Stream.of(
                 Arguments.of(new Object[] { "invalid/invalid-message-end-event.bpmn2",
-                        "Errors during validation for processes [MessageEndEvent]",
                         "Node 'processedconsumers' [2] Source variable 'customerId':'java.lang.String' has different data type from 'event':'java.lang.Boolean' in data input assignment" }),
                 Arguments.of(new Object[] { "invalid/invalid-message-start-event.bpmn2",
-                        "Errors during validation for processes [MessageStartEvent]",
                         "Node 'StartProcess' [1] Target variable 'customerId':'java.lang.String' has different data type from 'event':'java.lang.Boolean' in data output assignment" }),
                 Arguments.of(new Object[] { "invalid/intermediate-throw-event-message.bpmn2",
-                        "Errors during validation for processes [IntermediateThrowEventMessage]",
                         "Node 'Intermediate Throw Event 1' [3] Source variable 'customerId':'java.lang.String' has different data type from 'input':'java.lang.Float' in data input assignment" }),
                 Arguments.of(new Object[] { "invalid/intermediate-catch-event-message.bpmn2",
-                        "Errors during validation for processes [IntermediateCatchEventMessage]",
                         "Node 'Intermediate Catch Event' [2] Target variable 'customerId':'java.lang.String' has different data type from 'event':'org.acme.Customer' in data output assignment" }));
     }
 
@@ -88,11 +84,9 @@ public class InvalidProcessIT extends AbstractCodegenIT {
 
     @ParameterizedTest
     @MethodSource("invalidDataMappingProcessesForTest")
-    public void testInvalidDataMappingProcesses(String processFile, String message, String rootCauseMessage) {
+    public void testInvalidDataMappingProcesses(String processFile, String message) {
         assertThatThrownBy(() -> generateCodeProcessesOnly(processFile))
                 .isInstanceOf(ProcessCodegenException.class)
-                .hasMessage(message)
-                .hasRootCauseMessage(rootCauseMessage)
-                .getRootCause();
+                .hasMessageContaining(message);
     }
 }

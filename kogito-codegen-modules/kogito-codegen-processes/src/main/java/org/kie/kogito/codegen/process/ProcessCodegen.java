@@ -43,6 +43,7 @@ import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.core.SemanticModules;
+import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.process.core.validation.ProcessValidatorRegistry;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -59,7 +60,6 @@ import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.process.events.ProcessCloudEventMetaFactoryGenerator;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
-import org.kie.kogito.process.validation.ValidationContext;
 import org.kie.kogito.process.validation.ValidationException;
 import org.kie.kogito.process.validation.ValidationLogDecorator;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
@@ -112,47 +112,50 @@ public class ProcessCodegen extends AbstractGenerator {
 
     public static ProcessCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
         Map<String, byte[]> processSVGMap = new HashMap<>();
+        Map<String, Exception> processesErrors = new HashMap<>();
         boolean useSvgAddon = context.getAddonsConfig().useProcessSVG();
         final List<GeneratedInfo<KogitoWorkflowProcess>> processes = resources.stream()
                 .map(CollectedResource::resource)
                 .flatMap(resource -> {
-                    if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(resource.getSourcePath()::endsWith)) {
-                        try {
+                    try {
+                        if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(resource.getSourcePath()::endsWith)) {
                             Collection<Process> p = parseProcessFile(resource);
                             notifySourceFileCodegenBindListeners(context, resource, p);
                             if (useSvgAddon) {
                                 processSVG(resource, resources, p, processSVGMap);
                             }
-                            return p.stream().map(KogitoWorkflowProcess.class::cast).map(GeneratedInfo::new);
-                        } catch (ValidationException e) {
-                            //TODO: add all errors during parsing phase in the ValidationContext itself
-                            ValidationContext.get()
-                                    .add(resource.getSourcePath(), e.getErrors())
-                                    .putException(e);
-                            return Stream.empty();
+                            return p.stream().map(KogitoWorkflowProcess.class::cast).map(GeneratedInfo::new).map(info -> addResource(info, resource));
+                        } else {
+                            return SUPPORTED_SW_EXTENSIONS.entrySet()
+                                    .stream()
+                                    .filter(e -> resource.getSourcePath().endsWith(e.getKey()))
+                                    .map(e -> {
+                                        GeneratedInfo<KogitoWorkflowProcess> generatedInfo = parseWorkflowFile(resource, e.getValue(), context);
+                                        notifySourceFileCodegenBindListeners(context, resource, Collections.singletonList(generatedInfo.info()));
+                                        return addResource(generatedInfo, resource);
+                                    });
                         }
-                    } else {
-                        return SUPPORTED_SW_EXTENSIONS.entrySet()
-                                .stream()
-                                .filter(e -> resource.getSourcePath().endsWith(e.getKey()))
-                                .map(e -> {
-                                    GeneratedInfo<KogitoWorkflowProcess> generatedInfo = parseWorkflowFile(resource, e.getValue(), context);
-                                    notifySourceFileCodegenBindListeners(context, resource, Collections.singletonList(generatedInfo.info()));
-                                    return generatedInfo;
-                                });
+                    } catch (ValidationException | ProcessParsingException e) {
+                        processesErrors.put(resource.getSourcePath(), e);
+                        return Stream.empty();
                     }
                 })
                 //Validate parsed processes
-                .map(ProcessCodegen::validate)
+                .map(processInfo -> validate(processInfo, processesErrors))
                 .collect(toList());
 
         if (useSvgAddon) {
             context.addContextAttribute(ContextAttributesConstants.PROCESS_AUTO_SVG_MAPPING, processSVGMap);
         }
 
-        handleValidation();
+        handleValidation(context, processesErrors);
 
         return ofProcesses(context, processes);
+    }
+
+    private static GeneratedInfo<KogitoWorkflowProcess> addResource(GeneratedInfo<KogitoWorkflowProcess> info, Resource r) {
+        ((ProcessImpl) info.info()).setResource(r);
+        return info;
     }
 
     private static void notifySourceFileCodegenBindListeners(KogitoBuildContext context, Resource resource, Collection<Process> processes) {
@@ -160,32 +163,23 @@ public class ProcessCodegen extends AbstractGenerator {
                 .ifPresent(notifier -> processes.forEach(p -> notifier.notify(new SourceFileCodegenBindEvent(p.getId(), resource.getSourcePath()))));
     }
 
-    private static void handleValidation() {
-        ValidationContext validationContext = ValidationContext.get();
-        if (validationContext.hasErrors()) {
-            //we may provide different validation decorators, for now just in logging in the console
-            ValidationLogDecorator decorator = ValidationLogDecorator
-                    .of(validationContext)
-                    .decorate();
-            Optional<Exception> cause = validationContext.exception();
-            //rethrow exception to break the flow after decoration
-            try {
-                throw new ProcessCodegenException(decorator.simpleMessage(), cause);
-            } finally {
-                validationContext.clear();
+    private static void handleValidation(KogitoBuildContext context, Map<String, Exception> processesErrors) {
+        if (!processesErrors.isEmpty()) {
+            ValidationLogDecorator decorator = new ValidationLogDecorator(processesErrors);
+            decorator.decorate();
+            //rethrow exception to break the flow after decoration unless property is set to false
+            if (context.getApplicationProperty("kogito.process.build.failOnError", Boolean.class).orElse(true)) {
+                throw new ProcessCodegenException("Processes with errors are " + decorator.toString());
             }
         }
     }
 
-    private static GeneratedInfo<KogitoWorkflowProcess> validate(GeneratedInfo<KogitoWorkflowProcess> processInfo) {
+    private static GeneratedInfo<KogitoWorkflowProcess> validate(GeneratedInfo<KogitoWorkflowProcess> processInfo, Map<String, Exception> processesErrors) {
         Process process = processInfo.info();
         try {
             ProcessValidatorRegistry.getInstance().getValidator(process, process.getResource()).validate(process);
         } catch (ValidationException e) {
-            //TODO: add all errors during parsing phase in the ValidationContext itself
-            ValidationContext.get()
-                    .add(process.getId(), e.getErrors())
-                    .putException(e);
+            processesErrors.put(process.getResource().getSourcePath(), e);
         }
         return processInfo;
     }

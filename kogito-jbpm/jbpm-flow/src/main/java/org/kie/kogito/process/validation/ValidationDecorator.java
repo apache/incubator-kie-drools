@@ -15,22 +15,22 @@
  */
 package org.kie.kogito.process.validation;
 
-import java.util.Optional;
+import java.util.Map;
 
 public abstract class ValidationDecorator {
 
-    protected final ValidationContext context;
+    protected final Map<String, Exception> exceptions;
 
-    protected ValidationDecorator(ValidationContext context) {
-        this.context = context;
+    protected ValidationDecorator(Map<String, Exception> exceptions) {
+        this.exceptions = exceptions;
     }
 
-    public abstract ValidationDecorator decorate();
+    public abstract void decorate();
 
-    public String simpleMessage() {
-        return Optional.ofNullable(context)
-                .map(ValidationContext::resourcesWithError)
-                .map(ids -> String.format("Errors during validation for processes %s", context.resourcesWithError()))
-                .orElse("Error during processes validation");
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        exceptions.forEach((processId, exception) -> sb.append(String.format("Invalid process: '%s'. Found error: %s%n", processId, exception)));
+        return sb.toString();
     }
 }
