@@ -1796,7 +1796,7 @@ index 2da4272067..9d7bd8842c 100644
 +import jakarta.xml.bind.annotation.XmlRootElement;
  
  import org.drools.core.WorkingMemoryEntryPoint;
- import org.drools.core.factmodel.traits.TraitTypeEnum;
+ import org.drools.base.factmodel.traits.TraitTypeEnum;
 diff --git a/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java b/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
 index 9ce33143c6..c16fea8253 100644
 --- a/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
@@ -1850,7 +1850,7 @@ index f3d68fbb5f..a9d6be087f 100644
 +import jakarta.xml.bind.annotation.XmlAccessorType;
 +import jakarta.xml.bind.annotation.XmlAttribute;
  import org.drools.core.WorkingMemoryEntryPoint;
- import org.drools.core.factmodel.traits.TraitTypeEnum;
+ import org.drools.base.factmodel.traits.TraitTypeEnum;
  import org.drools.core.reteoo.AbstractLeftTuple;
 diff --git a/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java b/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java
 index 5cd6e541a5..b38cf3801b 100644
@@ -2162,7 +2162,7 @@ index 5a84459c4d..51a3bfa074 100644
 +++ b/drools-legacy-test-util/src/test/java/org/drools/mvel/compiler/Person.java
 @@ -18,8 +18,8 @@ package org.drools.mvel.compiler;
 
- import org.drools.core.factmodel.traits.Traitable;
+ import org.drools.base.factmodel.traits.Traitable;
 
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
@@ -2194,7 +2194,7 @@ index a356782f80..77d00fc4fa 100644
 +++ b/drools-mvel/src/test/java/org/drools/mvel/compiler/Person.java
 @@ -18,8 +18,8 @@ package org.drools.mvel.compiler;
 
- import org.drools.core.factmodel.traits.Traitable;
+ import org.drools.base.factmodel.traits.Traitable;
 
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
@@ -2797,7 +2797,7 @@ index a356782f80..77d00fc4fa 100644
 +++ b/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/compiler/Person.java
 @@ -18,8 +18,8 @@ package org.drools.mvel.compiler;
 
- import org.drools.core.factmodel.traits.Traitable;
+ import org.drools.base.factmodel.traits.Traitable;
  
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
