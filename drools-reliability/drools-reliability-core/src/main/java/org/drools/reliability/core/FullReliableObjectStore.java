@@ -66,6 +66,8 @@ public class FullReliableObjectStore extends IdentityObjectStore implements Reli
 
     @Override
     public void safepoint() {
-        // no-op
+        if (storage.requiresFlush()) {
+            storage.flush();
+        }
     }
 }

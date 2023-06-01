@@ -657,7 +657,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         }
     }
 
-    public static class InitialFactObjectTypeNodeMemory<T> extends ObjectTypeNodeMemory<T>  {
+    public static class InitialFactObjectTypeNodeMemory extends ObjectTypeNodeMemory implements Serializable {
         private List<InternalFactHandle> list = Collections.emptyList();
 
         InitialFactObjectTypeNodeMemory(Class classType) {
