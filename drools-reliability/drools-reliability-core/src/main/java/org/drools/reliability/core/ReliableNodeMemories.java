@@ -7,6 +7,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.Storage;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.SegmentMemory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,6 @@ import java.util.Map;
 public class ReliableNodeMemories extends ConcurrentNodeMemories {
 
     private final Map<Integer, Memory> changedMemories = new HashMap<>();
-    //private final Set<SegmentMemory> changedSegments = new HashSet<>();
     private final Map<Integer,SegmentMemory> changedSegments = new HashMap<>();
     private final Storage<Integer, Object> storage;
 
@@ -41,17 +41,15 @@ public class ReliableNodeMemories extends ConcurrentNodeMemories {
         for (Integer key : changedSegments.keySet()){
             storage.put(key, changedSegments.get(key));
         }
+
         changedMemories.clear();
         changedSegments.clear();
+
+        if (storage.requiresFlush()) {this.storage.flush();}
+
     }
 
-    public void reInit() {
-        for (Integer key : storage.keySet()){
-            if (storage.get(key) instanceof Memory){
-                changedMemories.put(key,(Memory) storage.get(key));
-            }else if (storage.get(key) instanceof SegmentMemory) {
-                changedSegments.put(key,(SegmentMemory) storage.get(key));
-            }
-        }
+    public void reInit(StatefulKnowledgeSession session) {
+        super.reInit(this.storage, session);
     }
 }

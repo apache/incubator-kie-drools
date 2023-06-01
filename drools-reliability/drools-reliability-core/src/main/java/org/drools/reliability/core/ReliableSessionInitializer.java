@@ -28,6 +28,7 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.HashMap;
 import java.util.List;
@@ -126,7 +127,7 @@ public class ReliableSessionInitializer {
                 store.reInit();
                 //
                 ReliableNodeMemories memories = (ReliableNodeMemories)((WorkingMemoryEntryPoint) ep).getReteEvaluator().getNodeMemories();
-                memories.reInit();
+                memories.reInit((StatefulKnowledgeSession) session);
             }
             //
 
