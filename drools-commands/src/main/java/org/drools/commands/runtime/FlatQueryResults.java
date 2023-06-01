@@ -38,7 +38,7 @@ import org.drools.core.QueryResultsImpl;
 import org.drools.core.QueryResultsRowImpl;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.rule.Declaration;
+import org.drools.base.rule.Declaration;
 import org.drools.core.runtime.rule.impl.FlatQueryResultRow;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;

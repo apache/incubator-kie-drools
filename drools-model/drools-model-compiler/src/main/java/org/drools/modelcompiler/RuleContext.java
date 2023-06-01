@@ -24,14 +24,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.accessor.GlobalExtractor;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.base.ObjectType;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.Accumulate;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.accessor.GlobalExtractor;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.base.ObjectType;
 import org.drools.model.Global;
 import org.drools.model.Variable;
 

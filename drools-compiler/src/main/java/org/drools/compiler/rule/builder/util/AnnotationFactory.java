@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import org.drools.util.TypeResolver;
-import org.drools.core.rule.Annotated;
+import org.drools.base.rule.Annotated;
 import org.drools.drl.ast.descr.AnnotatedBaseDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 

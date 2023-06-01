@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 import org.drools.tms.beliefsystem.BeliefSystem;
 import org.drools.tms.beliefsystem.jtms.JTMSMode;
-import org.drools.core.beliefsystem.Mode;
+import org.drools.base.beliefsystem.Mode;
 
 public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { //extends LinkedListEntry<Activation> implements Mode {
     private static final String[] EMPTY_DEFEATS = new String[0];

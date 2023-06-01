@@ -19,8 +19,8 @@ import java.util.Map;
 import org.drools.compiler.compiler.MissingDependencyError;
 import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.common.MissingDependencyException;
-import org.drools.core.rule.Declaration;
+import org.drools.base.common.MissingDependencyException;
+import org.drools.base.rule.Declaration;
 import org.drools.mvel.java.JavaAnalysisResult;
 import org.drools.mvel.java.JavaRuleBuilderHelper;
 

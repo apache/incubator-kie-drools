@@ -23,15 +23,12 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.BaseTuple;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Accumulator;
-import org.drools.core.rule.accessor.CompiledInvoker;
-import org.drools.core.rule.accessor.ReturnValueExpression;
-import org.drools.core.rule.accessor.Wireable;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Accumulator;
+import org.drools.base.rule.accessor.CompiledInvoker;
+import org.drools.base.rule.accessor.ReturnValueExpression;
+import org.drools.base.rule.accessor.Wireable;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**

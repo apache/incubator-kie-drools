@@ -17,7 +17,7 @@ package org.drools.xml.support;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.core.base.XMLSupport;
+import org.drools.base.base.XMLSupport;
 import org.drools.commands.runtime.BatchExecutionCommandImpl;
 import org.drools.xml.support.converters.KieModuleMarshaller;
 

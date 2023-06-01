@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.drools.core.time.Trigger;
+import org.drools.base.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
 public class IntervalTrigger

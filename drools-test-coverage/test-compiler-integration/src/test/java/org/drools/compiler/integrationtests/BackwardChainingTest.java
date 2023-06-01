@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
-import org.drools.core.InitialFact;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.InitialFact;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalRuleBase;

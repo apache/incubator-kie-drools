@@ -21,10 +21,10 @@ import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ForallDescr;
 import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.core.rule.Forall;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
+import org.drools.base.rule.Forall;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
 
 public class ForallBuilder
     implements

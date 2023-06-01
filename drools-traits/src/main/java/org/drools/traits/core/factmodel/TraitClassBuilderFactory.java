@@ -17,7 +17,7 @@
 package org.drools.traits.core.factmodel;
 
 import org.drools.compiler.builder.impl.classbuilder.ClassBuilder;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.mvel.asm.DefaultClassBuilderFactory;
 
 public class TraitClassBuilderFactory extends DefaultClassBuilderFactory {

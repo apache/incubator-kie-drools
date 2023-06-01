@@ -17,17 +17,17 @@
 package org.drools.compiler.rule.builder;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
 import org.drools.core.base.extractors.ConstantValueReader;
-import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.base.field.ObjectFieldImpl;
+import org.drools.base.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.base.base.field.ObjectFieldImpl;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Evaluator;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.time.Interval;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.time.Interval;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.common.InternalFactHandle.dummyFactHandleOf;

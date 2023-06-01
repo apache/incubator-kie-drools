@@ -16,10 +16,10 @@
 
 package org.drools.traits.compiler.factmodel.traits;
 
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitFieldTMS;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitFieldTMS;
 import org.drools.traits.core.factmodel.TraitFieldTMSImpl;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.traits.TraitableBean;
 
 import java.util.BitSet;
 import java.util.Collection;

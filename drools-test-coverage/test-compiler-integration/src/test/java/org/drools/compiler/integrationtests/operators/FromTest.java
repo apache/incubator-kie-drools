@@ -25,15 +25,15 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.NetworkNode;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.event.DebugAgendaEventListener;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Cheese;

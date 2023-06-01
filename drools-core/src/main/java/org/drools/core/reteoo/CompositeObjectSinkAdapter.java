@@ -28,20 +28,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.index.AlphaRangeIndex;
-import org.drools.core.util.index.ConstraintTypeOperator;
+import org.drools.base.util.index.ConstraintTypeOperator;
 
-import static org.drools.core.util.index.IndexUtil.isBigDecimalEqualityConstraint;
+import static org.drools.base.util.index.IndexUtil.isBigDecimalEqualityConstraint;
 
 public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 

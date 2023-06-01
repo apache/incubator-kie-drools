@@ -16,7 +16,7 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 
 public interface LeftTupleNode extends NetworkNode {
     int getPathIndex();

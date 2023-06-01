@@ -18,11 +18,11 @@ package org.drools.mvel.integrationtests;
 
 import java.util.Collection;
 
-import org.drools.core.InitialFact;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.InitialFact;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.NetworkNode;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;

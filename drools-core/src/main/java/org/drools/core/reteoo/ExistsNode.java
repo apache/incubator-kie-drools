@@ -16,6 +16,7 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;

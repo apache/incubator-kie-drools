@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.drools.core.base.CoreComponentsBuilder;
+import org.drools.base.base.CoreComponentsBuilder;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.command.Setter;

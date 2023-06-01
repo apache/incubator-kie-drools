@@ -17,8 +17,7 @@
 package org.drools.mvel.evaluators;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.Evaluator;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface MvelEvaluator extends Evaluator {

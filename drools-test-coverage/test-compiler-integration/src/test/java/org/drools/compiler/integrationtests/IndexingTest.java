@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.drools.ancompiler.CompiledNetwork;
 import org.drools.base.base.DroolsQuery;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;

@@ -20,13 +20,13 @@ import java.util.Collections;
 
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.QueryArgument;
-import org.drools.core.rule.QueryElement;
+import org.drools.base.rule.QueryArgument;
+import org.drools.base.rule.QueryElement;
 import org.drools.core.common.PropagationContext;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;

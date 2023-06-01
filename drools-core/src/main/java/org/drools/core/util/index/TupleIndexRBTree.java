@@ -23,10 +23,11 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.base.CoercionUtil;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.util.FieldIndex;
+import org.drools.base.util.FieldIndex;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.TupleRBTree;

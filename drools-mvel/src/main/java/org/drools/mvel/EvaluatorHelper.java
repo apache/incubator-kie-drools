@@ -20,11 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.base.CoreComponentsBuilder;
+import org.drools.base.base.CoreComponentsBuilder;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.BaseTuple;
-import org.drools.core.rule.Declaration;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
 import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 

@@ -19,7 +19,7 @@ package org.drools.kiesession;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.MockObjectSink;

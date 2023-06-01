@@ -19,9 +19,9 @@ package org.drools.kiesession.debug;
 import java.util.Collection;
 import java.util.Set;
 
-import org.drools.core.common.NetworkNode;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 
 public interface NodeInfo {
 

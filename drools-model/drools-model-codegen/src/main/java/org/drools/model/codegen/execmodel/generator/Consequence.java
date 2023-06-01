@@ -50,7 +50,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.MissingDependencyError;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
-import org.drools.core.factmodel.ClassDefinition;
+import org.drools.base.factmodel.ClassDefinition;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.model.codegen.execmodel.PackageModel;

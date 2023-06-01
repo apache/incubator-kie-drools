@@ -16,13 +16,10 @@
 
 package org.drools.core.base.accumulators;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.Collect;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Accumulator;
+import org.drools.base.rule.Collect;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Accumulator;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -32,7 +29,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.reteoo.BaseTuple;
+import org.drools.base.reteoo.BaseTuple;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**

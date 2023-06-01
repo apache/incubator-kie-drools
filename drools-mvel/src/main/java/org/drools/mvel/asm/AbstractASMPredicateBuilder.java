@@ -22,8 +22,8 @@ import org.drools.drl.ast.descr.PredicateDescr;
 import org.drools.compiler.rule.builder.PredicateBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.mvel.java.JavaRuleBuilderHelper;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.PredicateConstraint;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.PredicateConstraint;
 
 public abstract class AbstractASMPredicateBuilder implements PredicateBuilder {
     public void build(final RuleBuildContext context,

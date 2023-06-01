@@ -15,8 +15,8 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;
 import org.kie.api.internal.utils.KieService;

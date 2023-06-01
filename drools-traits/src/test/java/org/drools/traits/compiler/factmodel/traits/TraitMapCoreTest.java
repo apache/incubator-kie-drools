@@ -24,7 +24,7 @@ import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.core.ClassObjectFilter;
 import org.drools.traits.core.factmodel.TraitableMap;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
-import org.drools.core.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.Traitable;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;

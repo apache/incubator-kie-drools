@@ -18,7 +18,7 @@ package org.drools.core.reteoo;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.core.reteoo.NodeTypeEnums.*;
+import static org.drools.base.reteoo.NodeTypeEnums.*;
 
 public class NodeTypeEnumTest {
     EntryPointNode         epNode     = new EntryPointNode();

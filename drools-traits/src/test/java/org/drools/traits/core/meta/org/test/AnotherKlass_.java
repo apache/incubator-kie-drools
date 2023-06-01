@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.util.PropertyReactivityUtil;
+import org.drools.base.util.PropertyReactivityUtil;
 import org.drools.traits.core.factmodel.AbstractTraitFactory;
 import org.drools.traits.core.metadata.ClassLiteral;
 import org.drools.traits.core.metadata.DonLiteral;

@@ -16,15 +16,15 @@
 package org.drools.compiler.rule.builder;
 
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.drl.ast.descr.QueryDescr;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.rule.constraint.QueryNameConstraint;
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.extractors.ArrayElementReader;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.definitions.rule.impl.QueryImpl;
+import org.drools.base.rule.constraint.QueryNameConstraint;
+import org.drools.base.base.ObjectType;
 
 
 public class PatternBuilderForQuery implements EngineElementBuilder {

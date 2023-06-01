@@ -16,7 +16,7 @@
 
 package org.drools.ancompiler;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
 
 import java.util.Map;
 import java.util.HashMap;

@@ -16,7 +16,7 @@
 
 package org.drools.traits.compiler;
 
-import org.drools.core.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.Traitable;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -25,20 +25,20 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.definitions.ResourceTypePackageRegistry;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.common.DroolsObjectInputStream;
+import org.drools.base.common.DroolsObjectOutputStream;
+import org.drools.base.definitions.ResourceTypePackageRegistry;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.rule.DialectRuntimeRegistry;
-import org.drools.core.rule.Function;
-import org.drools.core.rule.ImportDeclaration;
-import org.drools.core.rule.WindowDeclaration;
+import org.drools.base.rule.DialectRuntimeRegistry;
+import org.drools.base.rule.Function;
+import org.drools.base.rule.ImportDeclaration;
+import org.drools.base.rule.WindowDeclaration;
 import org.drools.mvel.MVELKnowledgePackageImpl;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.traits.core.factmodel.TraitRegistryImpl;
 import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
-import org.kie.api.definition.rule.RuleBase;
+import org.drools.base.RuleBase;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 public class TraitKnowledgePackageImpl extends MVELKnowledgePackageImpl {

@@ -19,8 +19,8 @@ package org.drools.modelcompiler.facttemplate;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.facttemplates.Fact;
-import org.drools.core.facttemplates.FactTemplate;
+import org.drools.base.facttemplates.Fact;
+import org.drools.base.facttemplates.FactTemplate;
 import org.drools.model.PrototypeFact;
 
 public class HashMapFactImpl implements Fact, PrototypeFact {

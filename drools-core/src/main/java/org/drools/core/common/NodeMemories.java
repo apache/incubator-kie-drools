@@ -17,6 +17,7 @@
 package org.drools.core.common;
 
 
+import org.drools.base.common.NetworkNode;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**

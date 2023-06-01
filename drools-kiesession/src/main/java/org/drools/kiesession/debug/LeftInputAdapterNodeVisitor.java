@@ -18,7 +18,7 @@ package org.drools.kiesession.debug;
 
 import java.util.Collection;
 
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 
 public class LeftInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {

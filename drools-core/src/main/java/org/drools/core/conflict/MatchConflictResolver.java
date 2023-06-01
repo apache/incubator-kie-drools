@@ -18,7 +18,7 @@ package org.drools.core.conflict;
 
 import java.io.Serializable;
 
-import org.drools.core.rule.consequence.ConflictResolver;
+import org.drools.base.rule.consequence.ConflictResolver;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.definition.rule.Rule;
 

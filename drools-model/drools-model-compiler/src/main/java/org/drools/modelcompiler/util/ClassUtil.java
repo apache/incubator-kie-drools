@@ -16,16 +16,12 @@
 
 package org.drools.modelcompiler.util;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.drools.core.util.PropertyReactivityUtil;
-import org.drools.util.MethodUtils;
+import org.drools.base.util.PropertyReactivityUtil;
 
 public class ClassUtil {
 

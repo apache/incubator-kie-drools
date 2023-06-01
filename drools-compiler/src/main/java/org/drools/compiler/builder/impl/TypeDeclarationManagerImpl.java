@@ -15,10 +15,10 @@
 
 package org.drools.compiler.builder.impl;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.ObjectType;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 
 /**

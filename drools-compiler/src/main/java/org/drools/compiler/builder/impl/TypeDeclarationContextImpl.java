@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.base.ObjectType;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.base.ObjectType;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.internal.builder.ResourceChange;

@@ -31,18 +31,19 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.base.common.DroolsObjectInputStream;
+import org.drools.base.common.DroolsObjectOutputStream;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NetworkNode;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.builder.ReteooRuleBuilder;
-import org.drools.core.rule.InvalidPatternException;
-import org.drools.core.rule.WindowDeclaration;
+import org.drools.base.rule.InvalidPatternException;
+import org.drools.base.rule.WindowDeclaration;
 import org.kie.api.definition.rule.Rule;
 
 /**

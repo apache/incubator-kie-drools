@@ -20,10 +20,10 @@ import java.beans.PropertyDescriptor;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.core.test.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;

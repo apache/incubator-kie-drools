@@ -21,7 +21,7 @@ import java.io.ObjectOutput;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.mvel.accessors.BaseNumberClassFieldReader;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompileable;
 import org.drools.mvel.expr.MvelEvaluator;

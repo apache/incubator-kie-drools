@@ -19,7 +19,7 @@ package org.drools.core.conflict;
 import java.io.Serializable;
 
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.rule.consequence.ConflictResolver;
+import org.drools.base.rule.consequence.ConflictResolver;
 import org.kie.api.definition.rule.Rule;
 
 public class RuleAgendaConflictResolver implements ConflictResolver<RuleAgendaItem>, Serializable {

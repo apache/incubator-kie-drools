@@ -20,7 +20,7 @@ import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.kiesession.entrypoints.NamedEntryPointFactory;
 
 public class TraitEntryPointFactory extends NamedEntryPointFactory implements EntryPointFactory {

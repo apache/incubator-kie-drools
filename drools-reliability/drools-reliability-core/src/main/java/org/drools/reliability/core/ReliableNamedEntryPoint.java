@@ -19,7 +19,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 

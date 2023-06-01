@@ -16,6 +16,8 @@
 
 package org.drools.core.time;
 
+import org.drools.base.time.Interval;
+import org.drools.base.time.TimeUtils;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

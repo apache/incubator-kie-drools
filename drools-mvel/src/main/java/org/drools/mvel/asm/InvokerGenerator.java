@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.rule.Declaration;
+import org.drools.base.rule.Declaration;
 import org.drools.util.TypeResolver;
 import org.mvel2.asm.MethodVisitor;
 

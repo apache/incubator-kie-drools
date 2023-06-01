@@ -17,8 +17,8 @@ package org.drools.mvel.dataproviders;
 import java.util.Iterator;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.phreak.ReactiveObject;
-import org.drools.core.reteoo.BaseTuple;
+import org.drools.base.phreak.ReactiveObject;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.mvel.expr.MVELCompilationUnit;
 
 public class ReactiveMVELDataProvider extends MVELDataProvider {

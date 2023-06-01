@@ -21,13 +21,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.reteoo.PropertySpecificUtil;
-import org.drools.core.util.PropertyReactivityUtil;
+import org.drools.base.reteoo.PropertySpecificUtil;
+import org.drools.base.util.PropertyReactivityUtil;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.setPropertyOnMask;
 
 public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modify<T>, Serializable {
     private T target;

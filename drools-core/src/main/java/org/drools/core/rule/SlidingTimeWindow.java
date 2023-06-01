@@ -36,7 +36,7 @@ import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
+import org.drools.base.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.kie.api.runtime.rule.FactHandle;

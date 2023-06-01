@@ -24,7 +24,7 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.PropagationContext;
@@ -33,7 +33,7 @@ import org.drools.tms.SimpleMode;
 import org.drools.tms.agenda.TruthMaintenanceSystemInternalMatch;
 import org.drools.tms.beliefsystem.BeliefSystem;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 /**
  * Default implementation emulates classical Drools TMS behaviour.

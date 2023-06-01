@@ -16,7 +16,7 @@
 
 package org.drools.compiler.builder.impl.classbuilder;
 
-import org.drools.core.factmodel.FieldDefinition;
+import org.drools.base.factmodel.FieldDefinition;
 import org.kie.internal.definition.GenericTypeDefinition;
 
 import static java.util.stream.Collectors.joining;

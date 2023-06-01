@@ -18,11 +18,10 @@ import java.util.Map;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.accessor.CompiledInvoker;
-import org.drools.core.rule.consequence.Consequence;
-import org.drools.core.rule.consequence.ConsequenceContext;
-import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.accessor.CompiledInvoker;
+import org.drools.base.rule.consequence.Consequence;
+import org.drools.base.rule.consequence.ConsequenceContext;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 

@@ -1,7 +1,7 @@
 package org.drools.base.base;
 
-import org.kie.api.definition.rule.RuleBase;
-import org.drools.core.rule.accessor.GlobalResolver;
+import org.drools.base.RuleBase;
+import org.drools.base.rule.accessor.GlobalResolver;
 
 public interface ValueResolver {
 

@@ -17,7 +17,7 @@ package org.drools.mvel.builder;
 import java.util.Map;
 
 import org.drools.compiler.kie.util.BeanCreator;
-import org.drools.core.base.CoreComponentsBuilder;
+import org.drools.base.base.CoreComponentsBuilder;
 import org.kie.api.builder.model.QualifierModel;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;

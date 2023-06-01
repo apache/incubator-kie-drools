@@ -15,7 +15,7 @@
 
 package org.drools.core.common;
 
-import org.drools.core.factmodel.traits.CoreWrapper;
+import org.drools.base.factmodel.traits.CoreWrapper;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.ObjectFilter;
 

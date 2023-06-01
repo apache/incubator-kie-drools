@@ -17,22 +17,9 @@
 package org.drools.core.rule.consequence;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
 
+import org.drools.base.rule.consequence.ConsequenceContext;
 import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.rule.Declaration;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.beliefsystem.Mode;
-import org.kie.api.runtime.Channel;
-import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.RuleContext;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses

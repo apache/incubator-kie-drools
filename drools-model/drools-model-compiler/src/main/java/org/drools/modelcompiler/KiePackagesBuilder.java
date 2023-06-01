@@ -32,52 +32,53 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.base.base.DroolsQuery;
+import org.drools.base.time.impl.Timer;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.base.DroolsQueryImpl;
-import org.drools.core.base.EnabledBoolean;
-import org.drools.core.base.ObjectType;
-import org.drools.core.base.SalienceInteger;
+import org.drools.base.base.EnabledBoolean;
+import org.drools.base.base.ObjectType;
+import org.drools.base.base.SalienceInteger;
 import org.drools.core.base.accumulators.CountAccumulateFunction;
-import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.facttemplates.FactTemplateObjectType;
+import org.drools.base.base.extractors.ArrayElementReader;
+import org.drools.base.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.impl.KnowledgePackageImpl;
+import org.drools.base.definitions.rule.impl.QueryImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.facttemplates.FactTemplateObjectType;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.AsyncReceive;
-import org.drools.core.rule.AsyncSend;
+import org.drools.base.rule.Accumulate;
+import org.drools.base.rule.AsyncReceive;
+import org.drools.base.rule.AsyncSend;
 import org.drools.core.rule.BehaviorRuntime;
-import org.drools.core.rule.ConditionalBranch;
-import org.drools.core.rule.ConditionalElement;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.EvalCondition;
-import org.drools.core.rule.Forall;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.MultiAccumulate;
-import org.drools.core.rule.NamedConsequence;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.PatternSource;
-import org.drools.core.rule.QueryArgument;
-import org.drools.core.rule.QueryElement;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.rule.SingleAccumulate;
+import org.drools.base.rule.ConditionalBranch;
+import org.drools.base.rule.ConditionalElement;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.EvalCondition;
+import org.drools.base.rule.Forall;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.MultiAccumulate;
+import org.drools.base.rule.NamedConsequence;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.PatternSource;
+import org.drools.base.rule.QueryArgument;
+import org.drools.base.rule.QueryElement;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.SingleAccumulate;
 import org.drools.core.rule.SlidingLengthWindow;
 import org.drools.core.rule.SlidingTimeWindow;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.rule.WindowDeclaration;
-import org.drools.core.rule.accessor.Accumulator;
-import org.drools.core.rule.accessor.DataProvider;
-import org.drools.core.rule.accessor.Enabled;
-import org.drools.core.rule.accessor.EvalExpression;
-import org.drools.core.rule.accessor.PatternExtractor;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.accessor.Salience;
-import org.drools.core.rule.constraint.QueryNameConstraint;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.rule.WindowDeclaration;
+import org.drools.base.rule.accessor.Accumulator;
+import org.drools.base.rule.accessor.DataProvider;
+import org.drools.base.rule.accessor.Enabled;
+import org.drools.base.rule.accessor.EvalExpression;
+import org.drools.base.rule.accessor.PatternExtractor;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.Salience;
+import org.drools.base.rule.constraint.QueryNameConstraint;
 import org.drools.model.AccumulatePattern;
 import org.drools.model.Argument;
 import org.drools.model.Binding;
@@ -152,8 +153,8 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
-import static org.drools.core.rule.GroupElement.AND;
-import static org.drools.core.rule.GroupElement.OR;
+import static org.drools.base.rule.GroupElement.AND;
+import static org.drools.base.rule.GroupElement.OR;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
@@ -334,7 +335,7 @@ public class KiePackagesBuilder {
         }
     }
 
-    private org.drools.core.time.impl.Timer parseTimer( RuleImpl ruleImpl, String timerExpr, RuleContext ctx ) {
+    private Timer parseTimer(RuleImpl ruleImpl, String timerExpr, RuleContext ctx ) {
         return buildTimer(timerExpr, null, expr -> buildTimerExpression( expr, ctx.getDeclarations() ), e -> {
             throw new IllegalArgumentException("Invalid timer expression: '" + e + "' in rule " + ruleImpl.getName());
         });
@@ -1053,7 +1054,7 @@ public class KiePackagesBuilder {
                     if ( !ctx.getPkg().getWindowDeclarations().containsKey( window.getName() ) ) {
                         createWindowReference( ctx, window );
                     }
-                    pattern.setSource( new org.drools.core.rule.WindowReference( window.getName() ) );
+                    pattern.setSource( new org.drools.base.rule.WindowReference( window.getName() ) );
                 } else if ( decl.getSource() instanceof From ) {
                     pattern.setSource( buildFrom( ctx, pattern, (From) decl.getSource() ) );
                 } else if ( decl.getSource() instanceof UnitData ) {
@@ -1085,9 +1086,9 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private org.drools.core.rule.From buildFrom( RuleContext ctx, Pattern pattern, From<?> from ) {
+    private org.drools.base.rule.From buildFrom(RuleContext ctx, Pattern pattern, From<?> from ) {
         DataProvider provider = createFromDataProvider( ctx, from );
-        org.drools.core.rule.From fromSource = new org.drools.core.rule.From(provider);
+        org.drools.base.rule.From fromSource = new org.drools.base.rule.From(provider);
         fromSource.setResultPattern( pattern );
         return fromSource;
     }
@@ -1151,7 +1152,7 @@ public class KiePackagesBuilder {
         createConstraint( ctx, pattern, constraint ).ifPresent( pattern::addConstraint );
     }
 
-    private Optional<org.drools.core.rule.constraint.Constraint> createConstraint(RuleContext ctx, Pattern pattern, Constraint constraint ) {
+    private Optional<org.drools.base.rule.constraint.Constraint> createConstraint(RuleContext ctx, Pattern pattern, Constraint constraint ) {
         if (constraint.getType() == Constraint.Type.SINGLE) {
             SingleConstraint singleConstraint = (SingleConstraint) constraint;
             if (singleConstraint.getVariables().length > 0 || singleConstraint.equals(SingleConstraint.FALSE)) {
@@ -1166,7 +1167,7 @@ public class KiePackagesBuilder {
         }
     }
 
-    private org.drools.core.rule.constraint.Constraint createSingleConstraint(RuleContext ctx, Pattern pattern, SingleConstraint singleConstraint ) {
+    private org.drools.base.rule.constraint.Constraint createSingleConstraint(RuleContext ctx, Pattern pattern, SingleConstraint singleConstraint ) {
         Variable[] vars = singleConstraint.getVariables();
         Declaration[] declarations = new Declaration[vars.length];
         Declaration unificationDeclaration = collectConstraintDeclarations( ctx, pattern, singleConstraint, vars, declarations );

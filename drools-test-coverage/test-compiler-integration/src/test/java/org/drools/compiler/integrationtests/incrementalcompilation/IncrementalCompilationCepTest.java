@@ -29,10 +29,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.testcoverage.common.model.ChildEventA;
 import org.drools.testcoverage.common.model.ChildEventB;

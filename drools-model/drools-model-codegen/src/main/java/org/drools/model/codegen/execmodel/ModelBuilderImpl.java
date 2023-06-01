@@ -22,7 +22,7 @@ import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import static java.util.Arrays.asList;
-import static org.drools.core.util.Drools.hasMvel;
+import static org.drools.base.util.Drools.hasMvel;
 
 public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilderImpl {
 

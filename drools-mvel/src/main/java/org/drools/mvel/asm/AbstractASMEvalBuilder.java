@@ -21,18 +21,18 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.core.reteoo.SortDeclarations;
+import org.drools.base.reteoo.SortDeclarations;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.PredicateDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EvalCondition;
-import org.drools.core.rule.EvalConditionFactory;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.rule.accessor.DeclarationScopeResolver;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.EvalCondition;
+import org.drools.base.rule.EvalConditionFactory;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.accessor.DeclarationScopeResolver;
 
 import static org.drools.compiler.rule.builder.PatternBuilder.buildAnalysis;
 import static org.drools.compiler.rule.builder.PatternBuilder.createImplicitBindings;

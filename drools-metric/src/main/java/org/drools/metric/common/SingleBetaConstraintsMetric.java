@@ -17,11 +17,10 @@
 package org.drools.metric.common;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.SingleBetaConstraints;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.reteoo.Tuple;
 import org.drools.metric.util.MetricLogUtils;
 import org.kie.api.runtime.rule.FactHandle;

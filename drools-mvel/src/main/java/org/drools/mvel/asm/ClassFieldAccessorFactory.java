@@ -14,13 +14,16 @@
 
 package org.drools.mvel.asm;
 
+import org.drools.base.base.BaseClassFieldReader;
+import org.drools.base.base.ClassFieldInspector;
 import org.drools.base.base.ValueResolver;
+import org.drools.base.base.ValueType;
 import org.drools.core.base.*;
 import org.drools.core.base.ClassFieldAccessorCache.CacheEntry;
-import org.drools.core.base.extractors.BaseObjectClassFieldReader;
-import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.base.base.extractors.BaseObjectClassFieldReader;
+import org.drools.base.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 import org.drools.mvel.accessors.*;
 import org.drools.wiring.api.util.ByteArrayClassLoader;
 import org.mvel2.asm.*;
@@ -57,7 +60,7 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
     }
 
     @Override
-    public BaseClassFieldReader getClassFieldReader( Class< ? > clazz, String fieldName, CacheEntry cache) {
+    public BaseClassFieldReader getClassFieldReader(Class< ? > clazz, String fieldName, CacheEntry cache) {
         try {
             // if it is a self reference
             if ( SELF_REFERENCE_FIELD.equals( fieldName ) ) {

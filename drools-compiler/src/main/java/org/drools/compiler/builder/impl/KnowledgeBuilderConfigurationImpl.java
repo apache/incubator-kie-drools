@@ -28,7 +28,7 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.ConstraintBuilder;
 import org.drools.core.BaseConfiguration;
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.OptionKey;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;

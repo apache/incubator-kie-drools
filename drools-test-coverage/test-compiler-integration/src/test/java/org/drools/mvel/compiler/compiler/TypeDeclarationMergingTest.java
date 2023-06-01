@@ -16,8 +16,8 @@
 package org.drools.mvel.compiler.compiler;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.rule.TypeDeclaration.Format;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.rule.TypeDeclaration.Format;
 import org.junit.Test;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;

@@ -18,7 +18,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.rule.Declaration;
+import org.drools.base.rule.Declaration;
 import org.drools.core.common.PropagationContext;
 import org.kie.api.runtime.rule.FactHandle;
 

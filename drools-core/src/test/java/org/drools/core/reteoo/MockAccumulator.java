@@ -25,10 +25,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Accumulator;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Accumulator;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**
@@ -40,7 +39,7 @@ public class MockAccumulator
 
     private static final long serialVersionUID = 510l;
 
-    private BaseTuple             leftTuple        = null;
+    private BaseTuple leftTuple        = null;
     private List              matchingObjects  = Collections.EMPTY_LIST;
     private ValueResolver     valueResolver    = null;
 

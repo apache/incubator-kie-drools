@@ -23,23 +23,23 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.base.ValueType;
-import org.drools.core.base.field.ObjectFieldImpl;
+import org.drools.base.base.ValueType;
+import org.drools.base.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.BaseTuple;
-import org.drools.core.reteoo.PropertySpecificUtil;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.base.ObjectType;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.reteoo.PropertySpecificUtil;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.base.ObjectType;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.accessor.TupleValueExtractor;
-import org.drools.core.time.Interval;
-import org.drools.core.util.FieldIndex;
+import org.drools.base.rule.accessor.TupleValueExtractor;
+import org.drools.base.time.Interval;
+import org.drools.base.util.FieldIndex;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.index.ConstraintTypeOperator;
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
 import org.drools.model.BetaIndex2;
@@ -55,8 +55,8 @@ import org.drools.model.functions.PredicateInformation;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.drools.core.base.ValueType.determineValueType;
-import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.base.base.ValueType.determineValueType;
+import static org.drools.base.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 
 public class LambdaConstraint extends AbstractConstraint {

@@ -23,15 +23,15 @@ import java.lang.reflect.Method;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.mvel.field.FieldFactory;
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
 import org.drools.kiesession.entrypoints.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Evaluator;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -19,11 +19,11 @@ import java.util.List;
 
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.IndexMemory;
 import org.drools.core.util.index.TupleIndexHashTable;

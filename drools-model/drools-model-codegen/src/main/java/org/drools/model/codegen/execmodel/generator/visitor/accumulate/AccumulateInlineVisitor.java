@@ -32,7 +32,7 @@ import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
 
-import static org.drools.core.util.Drools.hasMvel;
+import static org.drools.base.util.Drools.hasMvel;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.addSemicolon;
 import static org.drools.model.codegen.execmodel.generator.visitor.accumulate.AccumulateVisitor.collectNamesInBlock;
 
