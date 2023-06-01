@@ -16,9 +16,12 @@
 package org.drools.quarkus.testext.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.as;
 
 import javax.inject.Inject;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
+import org.drools.drl.quarkus.testext.deployment.GlobalsSingleton;
 import org.drools.drl.quarkus.testext.deployment.OtnClassesSingleton;
 import org.drools.quarkus.examples.otn.model.ASubclassOfMeasurement;
 import org.drools.quarkus.examples.otn.model.Measurement;
@@ -51,6 +54,9 @@ public class ExtensionTest {
     @Inject
     OtnClassesSingleton myBean;
     
+    @Inject
+    GlobalsSingleton globalBean;
+    
     @Test
     public void test() {
         assertThat(myBean.getAllKnown()).contains(ASubclassOfMeasurement.class.getCanonicalName(),
@@ -61,5 +67,9 @@ public class ExtensionTest {
         
         assertThat(myBean.getAllKnown()).doesNotContain(MyUnusedClass.class.getCanonicalName())
                 .as("this class is unused in the rules despite star-import");
+        
+        assertThat(globalBean.getGlobals()).containsKey("org.drools.quarkus.examples.otn")
+            .extractingByKey("org.drools.quarkus.examples.otn", as(InstanceOfAssertFactories.MAP))
+            .containsKey("controlSet");
     }
 }
