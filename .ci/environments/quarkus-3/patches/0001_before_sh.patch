@@ -234,6 +234,23 @@ index 41e84c830e..9f5ee96d35 100644
          <classifier>sources</classifier>
        </dependency>
  
+diff --git a/drools-base/pom.xml b/drools-base/pom.xml
+index 2a4427afdd..8de74000a5 100644
+--- a/drools-base/pom.xml
++++ b/drools-base/pom.xml
+@@ -81,9 +81,10 @@
+       <scope>provided</scope>
+     </dependency>
+     <dependency>
+-      <groupId>com.sun.xml.bind</groupId>
+-      <artifactId>jaxb-impl</artifactId>
++      <groupId>org.glassfish.jaxb</groupId>
++      <artifactId>jaxb-runtime</artifactId>
+       <scope>provided</scope>
++      <version>4.0.2</version>
+     </dependency>
+     <dependency>
+       <groupId>jakarta.xml.bind</groupId>
 diff --git a/drools-commands/src/main/java/org/drools/commands/GetVariableCommand.java b/drools-commands/src/main/java/org/drools/commands/GetVariableCommand.java
 index 281582bfd3..800ec105c3 100644
 --- a/drools-commands/src/main/java/org/drools/commands/GetVariableCommand.java
@@ -1600,10 +1617,10 @@ index 19c566794f..984f218d5f 100644
  import org.drools.core.common.DisconnectedFactHandle;
  import org.kie.api.command.ExecutableCommand;
 diff --git a/drools-compiler/pom.xml b/drools-compiler/pom.xml
-index 93813a6253..36245b6a4a 100644
+index 0747f9c0b0..6b810000de 100644
 --- a/drools-compiler/pom.xml
 +++ b/drools-compiler/pom.xml
-@@ -104,9 +104,10 @@
+@@ -108,9 +108,10 @@
        <scope>provided</scope>
      </dependency>
      <dependency>
@@ -1632,10 +1649,10 @@ index 9b15d3e9d7..e195ed0c0a 100644
  import com.sun.codemodel.CodeWriter;
  import com.sun.codemodel.JCodeModel;
 diff --git a/drools-core/pom.xml b/drools-core/pom.xml
-index 530fa03d83..502ee278a9 100644
+index 53f3e4e3e8..e7fae51e99 100644
 --- a/drools-core/pom.xml
 +++ b/drools-core/pom.xml
-@@ -72,9 +72,10 @@
+@@ -76,9 +76,10 @@
        <scope>provided</scope>
      </dependency>
      <dependency>
@@ -1762,7 +1779,7 @@ index c5f6384f43..fea26fb7bc 100644
  import org.kie.api.runtime.rule.Match;
  
 diff --git a/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java b/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
-index f7d14914f2..a40e0a5c32 100644
+index 2da4272067..9d7bd8842c 100644
 --- a/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
 @@ -20,10 +20,10 @@ import java.util.Objects;
@@ -1781,7 +1798,7 @@ index f7d14914f2..a40e0a5c32 100644
  import org.drools.core.WorkingMemoryEntryPoint;
  import org.drools.core.factmodel.traits.TraitTypeEnum;
 diff --git a/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java b/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
-index e1e365627c..e9a82ec886 100644
+index 9ce33143c6..c16fea8253 100644
 --- a/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
 @@ -21,13 +21,13 @@ import java.io.ObjectInput;
@@ -1819,7 +1836,7 @@ index 236d78023e..cb378ad082 100644
  @XmlRegistry
  public class ObjectFactory {
 diff --git a/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java b/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
-index d6b72a241c..ae1fb6d096 100644
+index f3d68fbb5f..a9d6be087f 100644
 --- a/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
 @@ -20,9 +20,9 @@ import java.util.Arrays;
@@ -1834,7 +1851,7 @@ index d6b72a241c..ae1fb6d096 100644
 +import jakarta.xml.bind.annotation.XmlAttribute;
  import org.drools.core.WorkingMemoryEntryPoint;
  import org.drools.core.factmodel.traits.TraitTypeEnum;
- import org.drools.core.reteoo.LeftTuple;
+ import org.drools.core.reteoo.AbstractLeftTuple;
 diff --git a/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java b/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java
 index 5cd6e541a5..b38cf3801b 100644
 --- a/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java
@@ -2790,7 +2807,7 @@ index a356782f80..77d00fc4fa 100644
  import java.math.BigDecimal;
  import java.math.BigInteger;
 diff --git a/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/integrationtests/QueryTest.java b/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/integrationtests/QueryTest.java
-index 89b51fcb2b..3c35815740 100644
+index d08ac42f8b..1a5bf6f5bd 100644
 --- a/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/integrationtests/QueryTest.java
 +++ b/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/integrationtests/QueryTest.java
 @@ -29,7 +29,7 @@ import java.util.Set;
@@ -2800,8 +2817,8 @@ index 89b51fcb2b..3c35815740 100644
 -import javax.xml.bind.JAXBContext;
 +import jakarta.xml.bind.JAXBContext;
  
+ import org.drools.base.base.DroolsQuery;
  import org.drools.core.QueryResultsImpl;
- import org.drools.core.base.ClassObjectType;
 diff --git a/drools-test-coverage/test-integration-nomvel/pom.xml b/drools-test-coverage/test-integration-nomvel/pom.xml
 index 7d9f51e8a0..37d3c8b126 100644
 --- a/drools-test-coverage/test-integration-nomvel/pom.xml
