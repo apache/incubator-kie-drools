@@ -7,10 +7,10 @@
 
 @declare{"equals"}
     public boolean equals(Object object) {
-        if ( object == null || !(object instanceof  org.drools.core.rule.accessor.CompiledInvoker) ) {
+        if ( object == null || !(object instanceof  org.drools.base.rule.accessor.CompiledInvoker) ) {
             return false;
         }
-        return org.drools.mvel.asm.MethodComparator.compareBytecode( getMethodBytecode(), (( org.drools.core.rule.accessor.CompiledInvoker ) object).getMethodBytecode() );
+        return org.drools.mvel.asm.MethodComparator.compareBytecode( getMethodBytecode(), (( org.drools.base.rule.accessor.CompiledInvoker ) object).getMethodBytecode() );
     }
 @end{}
 
@@ -21,8 +21,8 @@
 @end{}
 
 @declare{"replaceDeclaration"}
-    public void replaceDeclaration(org.drools.core.rule.Declaration declaration,
-                                   org.drools.core.rule.Declaration resolved) {
+    public void replaceDeclaration(org.drools.base.rule.Declaration declaration,
+                                   org.drools.base.rule.Declaration resolved) {
         // this class does not cache declarations
     }
 @end{}
@@ -31,16 +31,16 @@
 @declare{"returnValueInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.core.rule.accessor.ReturnValueExpression, org.drools.core.rule.accessor.CompiledInvoker
+public class @{invokerClassName} implements org.drools.base.rule.accessor.ReturnValueExpression, org.drools.base.rule.accessor.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
     public Object createContext() { return null; }
 
-    public org.drools.core.rule.accessor.FieldValue evaluate(org.kie.api.runtime.rule.FactHandle handle,
-                            org.drools.core.reteoo.BaseTuple tuple,
-                            org.drools.core.rule.Declaration[] previousDeclarations,
-                            org.drools.core.rule.Declaration[] localDeclarations,
+    public org.drools.base.rule.accessor.FieldValue evaluate(org.kie.api.runtime.rule.FactHandle handle,
+                            org.drools.base.reteoo.BaseTuple tuple,
+                            org.drools.base.rule.Declaration[] previousDeclarations,
+                            org.drools.base.rule.Declaration[] localDeclarations,
                             org.drools.base.base.ValueResolver valueResolver,
                             Object context ) throws Exception {
 
@@ -81,16 +81,16 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Return
 @declare{"predicateInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.core.rule.accessor.PredicateExpression, org.drools.core.rule.accessor.CompiledInvoker
+public class @{invokerClassName} implements org.drools.base.rule.accessor.PredicateExpression, org.drools.base.rule.accessor.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
     public Object createContext() { return null; }
 
     public boolean evaluate(org.kie.api.runtime.rule.FactHandle handle,
-                            org.drools.core.reteoo.BaseTuple tuple,
-                            org.drools.core.rule.Declaration[] previousDeclarations,
-                            org.drools.core.rule.Declaration[] localDeclarations,
+                            org.drools.base.reteoo.BaseTuple tuple,
+                            org.drools.base.rule.Declaration[] previousDeclarations,
+                            org.drools.base.rule.Declaration[] localDeclarations,
                             org.drools.base.base.ValueResolver valueResolver,
                             Object context ) throws Exception {
 
@@ -123,15 +123,15 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Predic
 @declare{"evalInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.core.rule.accessor.EvalExpression, org.drools.core.rule.accessor.CompiledInvoker
+public class @{invokerClassName} implements org.drools.base.rule.accessor.EvalExpression, org.drools.base.rule.accessor.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
     // no need for context
     public Object createContext() { return null; }
 
-    public boolean evaluate(org.drools.core.reteoo.BaseTuple tuple,
-                            org.drools.core.rule.Declaration[] declarations,
+    public boolean evaluate(org.drools.base.reteoo.BaseTuple tuple,
+                            org.drools.base.rule.Declaration[] declarations,
                             org.drools.base.base.ValueResolver valueResolver,
                             Object context ) throws Exception {
 
@@ -148,7 +148,7 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.EvalEx
             @end{","} );
     }
 
-    public org.drools.core.rule.accessor.EvalExpression clone() {
+    public org.drools.base.rule.accessor.EvalExpression clone() {
         // this class is stateless, so no cloning needed
         return this;
     }
@@ -167,7 +167,7 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.EvalEx
 @declare{"accumulateInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.core.rule.accessor.Accumulator, org.drools.core.rule.accessor.CompiledInvoker
+public class @{invokerClassName} implements org.drools.base.rule.accessor.Accumulator, org.drools.base.rule.accessor.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
@@ -177,8 +177,8 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Accumu
 
     public Object init(java.lang.Object workingMemoryContext,
                      java.lang.Object context,
-                     org.drools.core.reteoo.BaseTuple tuple,
-                     org.drools.core.rule.Declaration[] declarations,
+                     org.drools.base.reteoo.BaseTuple tuple,
+                     org.drools.base.rule.Declaration[] declarations,
                      org.drools.base.base.ValueResolver valueResolver) {
         @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( valueResolver, tuple );
             @code{i0++}
@@ -199,10 +199,10 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Accumu
 
     public Object accumulate(java.lang.Object workingMemoryContext,
                            java.lang.Object context,
-                           org.drools.core.reteoo.BaseTuple tuple,
+                           org.drools.base.reteoo.BaseTuple tuple,
                            org.kie.api.runtime.rule.FactHandle handle,
-                           org.drools.core.rule.Declaration[] declarations,
-                           org.drools.core.rule.Declaration[] innerDeclarations,
+                           org.drools.base.rule.Declaration[] declarations,
+                           org.drools.base.rule.Declaration[] innerDeclarations,
                            org.drools.base.base.ValueResolver valueResolver) {
         @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( valueResolver, tuple );
             @code{ i0++ }
@@ -234,11 +234,11 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Accumu
 
     public boolean tryReverse(java.lang.Object workingMemoryContext,
                            java.lang.Object context,
-                           org.drools.core.reteoo.BaseTuple tuple,
+                           org.drools.base.reteoo.BaseTuple tuple,
                            org.kie.api.runtime.rule.FactHandle handle,
                            java.lang.Object value,
-                           org.drools.core.rule.Declaration[] declarations,
-                           org.drools.core.rule.Declaration[] innerDeclarations,
+                           org.drools.base.rule.Declaration[] declarations,
+                           org.drools.base.rule.Declaration[] innerDeclarations,
                            org.drools.base.base.ValueResolver valueResolver) {
         if (!supportsReverse()) {
             return false;
@@ -274,8 +274,8 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Accumu
 
     public Object getResult(java.lang.Object workingMemoryContext,
                             java.lang.Object context,
-                            org.drools.core.reteoo.BaseTuple tuple,
-                            org.drools.core.rule.Declaration[] declarations,
+                            org.drools.base.reteoo.BaseTuple tuple,
+                            org.drools.base.rule.Declaration[] declarations,
                             org.drools.base.base.ValueResolver valueResolver) {
         @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( valueResolver, tuple );
             @code{ i0++ }
@@ -328,11 +328,11 @@ public class @{invokerClassName} implements org.drools.core.rule.accessor.Accumu
 @declare{"returnValueEvaluatorInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.core.rule.accessor.ReturnValueEvaluator, org.drools.core.rule.accessor.CompiledInvoker
+public class @{invokerClassName} implements org.drools.base.rule.accessor.ReturnValueEvaluator, org.drools.base.rule.accessor.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
-    public Object evaluate(org.drools.base.base.ValueResolver valueResolver, org.drools.core.process.ProcessContext processContext) throws Exception {
+    public Object evaluate(org.drools.base.base.ValueResolver valueResolver, org.drools.base.process.ProcessContext processContext) throws Exception {
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) valueResolver.getGlobal( "@{identifier}" );
         @end{}
