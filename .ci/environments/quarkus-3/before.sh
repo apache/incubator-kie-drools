@@ -77,7 +77,9 @@ if [ "$(git status --porcelain ${patch_file})" != '' ]; then
     if [ "${behavior}" = 'push_changes' ]; then
         git_remote="${GIT_REMOTE:-origin}"
         branch=$(git branch --show-current)
-        echo "Pushing changes to ${git_remote}/${branch}"
+        echo "Pushing changes to ${git_remote}/${branch} after rebase "
+        git fetch ${git_remote}
+        git rebase ${git_remote}/${branch}
         git push ${git_remote} ${branch}
     fi
 fi
