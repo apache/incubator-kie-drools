@@ -454,6 +454,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
             }
             boolean firstProp = true;
             for (String propertyName : properties) {
+                String originalPropertyName = propertyName;
                 if (propertyName == null || propertyName.equals("this") || propertyName.length() == 0) {
                     return allSetButTraitBitMask();
                 }
@@ -474,6 +475,11 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                 } else {
                     // if it is not able to find the property name it could be a function invocation so property reactivity shouldn't filter anything
                     if (firstProp) {
+                        if (isBoundVariableFromDifferentPattern(originalPropertyName, pattern)) {
+                            logger.warn("{} is not relevant to this pattern, so it causes class reactivity." +
+                                        " Consider placing this constraint in the original pattern if possible : {}",
+                                        originalPropertyName, simpleExpression);
+                        }
                         return allSetBitMask();
                     }
                 }
@@ -494,6 +500,18 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
             }
         }
         return null;
+    }
+
+    private boolean isBoundVariableFromDifferentPattern(String variable, Optional<Pattern> pattern) {
+        if (!pattern.isPresent()) {
+            return false;
+        }
+        for (Declaration declaration : declarations) {
+            if (declaration.getIdentifier().equals(variable) && !declaration.getPattern().equals(pattern.get())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<String> getPropertyNamesFromSimpleExpression(String expression) {

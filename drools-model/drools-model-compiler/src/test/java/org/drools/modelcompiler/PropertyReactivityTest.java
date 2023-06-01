@@ -29,12 +29,9 @@ import org.drools.modelcompiler.domain.Pet;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.VariousCasePropFact;
 import org.junit.Test;
-import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.definition.type.Modifies;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
