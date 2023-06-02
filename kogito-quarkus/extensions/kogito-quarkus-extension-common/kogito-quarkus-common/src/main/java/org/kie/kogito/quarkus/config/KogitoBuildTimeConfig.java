@@ -58,4 +58,11 @@ public class KogitoBuildTimeConfig {
     @ConfigItem(name = "codegen.ignoreHiddenFiles", defaultValue = "true")
     public Boolean ignoreHiddenFiles;
 
+    /**
+     * Whether to fail when there are parsing/validation errors of process assets
+     * <p>
+     * If not defined, true will be used.
+     */
+    @ConfigItem(name = "codegen.process.failOnError", defaultValue = "true")
+    public Boolean failOnError;
 }

@@ -168,7 +168,7 @@ public class ProcessCodegen extends AbstractGenerator {
             ValidationLogDecorator decorator = new ValidationLogDecorator(processesErrors);
             decorator.decorate();
             //rethrow exception to break the flow after decoration unless property is set to false
-            if (context.getApplicationProperty("kogito.process.build.failOnError", Boolean.class).orElse(true)) {
+            if (context.getApplicationProperty("kogito.codegen.process.failOnError", Boolean.class).orElse(true)) {
                 throw new ProcessCodegenException("Processes with errors are " + decorator.toString());
             }
         }
