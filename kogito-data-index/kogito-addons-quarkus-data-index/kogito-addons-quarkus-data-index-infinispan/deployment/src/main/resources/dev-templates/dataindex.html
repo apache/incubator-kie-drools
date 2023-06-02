@@ -1,0 +1,16 @@
+{#include main fluid=true}
+{#style}
+.main-container {
+    margin: 0;
+    padding: 0;
+}
+{/style}
+{#title}Data Index GraphQL UI{/title}
+{#body}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <iframe style="width: 100vw;height: 100vh;position: relative;" src="{config:property('quarkus.http.root-path')}{config:property('quarkus.http.non-application-root-path')}/graphql-ui/" style="border:none;"></iframe>
+    </div>
+</div>
+{/body}
+{/include}
