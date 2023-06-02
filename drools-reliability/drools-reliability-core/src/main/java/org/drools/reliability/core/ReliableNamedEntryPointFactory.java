@@ -17,7 +17,7 @@ package org.drools.reliability.core;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.kiesession.entrypoints.NamedEntryPointFactory;
 

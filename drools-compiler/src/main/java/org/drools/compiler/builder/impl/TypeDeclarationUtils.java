@@ -25,11 +25,11 @@ import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.util.TypeResolver;
-import org.drools.core.base.ClassFieldInspector;
-import org.drools.core.base.CoreComponentsBuilder;
+import org.drools.base.base.ClassFieldInspector;
+import org.drools.base.base.CoreComponentsBuilder;
 import org.drools.compiler.builder.impl.classbuilder.BuildUtils;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.util.StringUtils;
 import org.kie.api.definition.type.Modifies;
 

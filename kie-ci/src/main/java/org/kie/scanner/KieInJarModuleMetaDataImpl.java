@@ -34,8 +34,8 @@ import java.util.zip.ZipInputStream;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.rule.KieModuleMetaInfo;
-import org.drools.core.rule.TypeMetaInfo;
+import org.drools.base.rule.KieModuleMetaInfo;
+import org.drools.base.rule.TypeMetaInfo;
 import org.drools.util.ClassUtils;
 import org.drools.util.IoUtils;
 import org.drools.wiring.api.classloader.ProjectClassLoader;

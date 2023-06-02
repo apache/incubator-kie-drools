@@ -15,7 +15,7 @@
 
 package org.drools.example.api.kiemodulemodel;
 
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;

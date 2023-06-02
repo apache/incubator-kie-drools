@@ -16,19 +16,19 @@
 
 package org.drools.core.reteoo;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
 
-import org.drools.core.base.SalienceInteger;
+import org.drools.base.base.SalienceInteger;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.GroupElement;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.GroupElement;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.rule.consequence.InternalMatch;
 

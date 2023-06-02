@@ -27,7 +27,7 @@ import org.drools.core.reteoo.SegmentMemory;
 
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushWhenRiaNode;
-import static org.drools.core.reteoo.NodeTypeEnums.hasNodeMemory;
+import static org.drools.base.reteoo.NodeTypeEnums.hasNodeMemory;
 
 public class SegmentPropagator {
 

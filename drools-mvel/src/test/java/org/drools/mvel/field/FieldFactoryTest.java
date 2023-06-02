@@ -22,8 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.drools.core.base.ValueType;
-import org.drools.core.rule.accessor.FieldValue;
+import org.drools.base.base.ValueType;
+import org.drools.base.rule.accessor.FieldValue;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

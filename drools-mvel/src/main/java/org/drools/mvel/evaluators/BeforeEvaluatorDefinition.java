@@ -23,13 +23,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.util.TimeIntervalParser;
+import org.drools.base.util.TimeIntervalParser;
 import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.rule.accessor.Evaluator;
-import org.drools.core.time.Interval;
+import org.drools.base.rule.accessor.Evaluator;
+import org.drools.base.time.Interval;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**

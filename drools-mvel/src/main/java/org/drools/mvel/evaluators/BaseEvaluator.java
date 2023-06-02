@@ -21,10 +21,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.rule.accessor.Evaluator;
-import org.drools.core.time.Interval;
+import org.drools.base.rule.accessor.Evaluator;
+import org.drools.base.time.Interval;
 
 /**
  * BaseEvaluator is an Object Comparator that is operator aware

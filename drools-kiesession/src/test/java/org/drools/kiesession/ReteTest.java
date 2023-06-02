@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
@@ -37,7 +37,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.test.model.Cheese;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;

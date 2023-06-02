@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Objects;
 
+import org.drools.base.util.FieldIndex;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.index.TupleList;
 

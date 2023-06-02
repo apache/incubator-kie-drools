@@ -21,14 +21,12 @@ import java.io.ObjectOutput;
 import java.util.Collection;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.accessor.Evaluator;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.mvel.evaluators.BaseEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;

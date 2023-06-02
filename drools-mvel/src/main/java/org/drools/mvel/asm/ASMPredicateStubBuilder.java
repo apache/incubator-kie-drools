@@ -18,10 +18,10 @@ import java.util.Map;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.reteoo.BaseTuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.CompiledInvoker;
-import org.drools.core.rule.accessor.PredicateExpression;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.CompiledInvoker;
+import org.drools.base.rule.accessor.PredicateExpression;
 import org.drools.mvel.asm.ClassGenerator.MethodBody;
 import org.kie.api.runtime.rule.FactHandle;
 import org.mvel2.asm.Label;

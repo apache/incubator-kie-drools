@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
@@ -34,10 +35,10 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.BehaviorRuntime;
 import org.drools.core.rule.BehaviorManager;
 import org.drools.core.rule.BehaviorContext;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.rule.SlidingTimeWindow;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 

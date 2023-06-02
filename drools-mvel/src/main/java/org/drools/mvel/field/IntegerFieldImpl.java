@@ -16,7 +16,7 @@
 
 package org.drools.mvel.field;
 
-import org.drools.core.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.FieldValue;
 
 import java.io.Externalizable;
 import java.io.IOException;

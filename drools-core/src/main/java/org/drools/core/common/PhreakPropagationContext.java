@@ -22,19 +22,19 @@ import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.MarshallerReaderContext;
-import org.drools.core.reteoo.PropertySpecificUtil;
+import org.drools.base.reteoo.PropertySpecificUtil;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.base.ObjectType;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.base.reteoo.PropertySpecificUtil.*;
 
 public class PhreakPropagationContext
         implements

@@ -18,9 +18,9 @@ package org.drools.compiler.compiler;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.util.TypeResolver;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.rule.DialectRuntimeRegistry;
-import org.drools.core.rule.ImportDeclaration;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.rule.DialectRuntimeRegistry;
+import org.drools.base.rule.ImportDeclaration;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 

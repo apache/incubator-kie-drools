@@ -15,12 +15,12 @@
 
 package org.drools.core;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.GroupElement;
+import org.drools.base.rule.GroupElement;
 
 public class RuleActivationListenerFactory implements ActivationListenerFactory  {
     

@@ -18,15 +18,16 @@ package org.drools.ancompiler;
 
 import java.util.NoSuchElementException;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.Sink;
-import org.drools.core.rule.ContextEntry;
+import org.drools.base.rule.ContextEntry;
 import org.drools.core.util.index.AlphaRangeIndex;
 
 /**
  * This handler is used as a base class for all {@link org.drools.ancompiler.NetworkHandler}s used for
  * generating a compiled network. It provides methods to return the variable type and names used for storing
- * refernces to different {@link org.drools.core.common.NetworkNode}s and variable names for ClassFieldReaders.
+ * refernces to different {@link NetworkNode}s and variable names for ClassFieldReaders.
  */
 abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
     protected static final String NEWLINE = "\n";
@@ -80,7 +81,7 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
      * nodeId.
      *
      * @param clazz  class whose simple name is lowercased and user as the prefix of the variable name
-     * @param nodeId id of {@link org.drools.core.common.NetworkNode}
+     * @param nodeId id of {@link NetworkNode}
      * @return variable name
      * @see Class#getSimpleName()
      */

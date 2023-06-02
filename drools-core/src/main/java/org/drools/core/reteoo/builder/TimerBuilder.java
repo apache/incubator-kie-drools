@@ -17,10 +17,10 @@
 package org.drools.core.reteoo.builder;
 
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.RuleConditionElement;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.RuleConditionElement;
 import org.drools.core.time.impl.BaseTimer;
-import org.drools.core.time.impl.Timer;
+import org.drools.base.time.impl.Timer;
 
 public class TimerBuilder
     implements

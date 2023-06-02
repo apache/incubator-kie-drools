@@ -17,11 +17,11 @@ package org.drools.compiler.rule.builder.util;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.drools.core.base.ValueType;
-import org.drools.core.rule.accessor.FieldValue;
+import org.drools.base.base.ValueType;
+import org.drools.base.rule.accessor.FieldValue;
 import org.drools.drl.ast.descr.LiteralRestrictionDescr;
 
-import static org.drools.core.util.TimeIntervalParser.getTimestampFromDate;
+import static org.drools.base.util.TimeIntervalParser.getTimestampFromDate;
 
 public class PatternBuilderUtil {
 

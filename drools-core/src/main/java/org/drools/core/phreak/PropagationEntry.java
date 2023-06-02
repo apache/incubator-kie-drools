@@ -22,7 +22,7 @@ import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.facttemplates.Event;
+import org.drools.base.facttemplates.Event;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
@@ -30,7 +30,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ModifyPreviousTuples;
-import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
@@ -44,10 +44,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.concurrent.CountDownLatch;
 
 import static org.drools.core.reteoo.EntryPointNode.removeRightTuplesMatchingOTN;
-import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
+import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
 public interface PropagationEntry {
 

@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.drl.parser.DroolsParserException;
 import org.junit.Test;
 

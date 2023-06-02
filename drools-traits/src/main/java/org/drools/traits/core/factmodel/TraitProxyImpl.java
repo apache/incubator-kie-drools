@@ -26,8 +26,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.factmodel.traits.TraitType;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.traits.TraitType;
+import org.drools.base.factmodel.traits.TraitableBean;
 import org.kie.api.runtime.rule.Variable;
 
 import static org.drools.traits.core.base.TraitUtils.supersetOrEqualset;

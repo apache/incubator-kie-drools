@@ -29,7 +29,7 @@ import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.OperatorDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.rule.XpathBackReference;
+import org.drools.base.rule.XpathBackReference;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.findClassByName;

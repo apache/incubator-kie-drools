@@ -14,7 +14,7 @@
 */
 
 package test;
-import org.drools.core.factmodel.traits.*;
+import org.drools.base.factmodel.traits.*;
 import org.drools.traits.core.factmodel.*;
 
 declare trait A id : int end

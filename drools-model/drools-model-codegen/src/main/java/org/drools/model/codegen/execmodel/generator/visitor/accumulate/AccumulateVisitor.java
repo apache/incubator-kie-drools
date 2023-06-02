@@ -46,7 +46,7 @@ import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.core.base.accumulators.CollectListAccumulateFunction;
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
-import org.drools.core.rule.Pattern;
+import org.drools.base.rule.Pattern;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.generator.DeclarationSpec;

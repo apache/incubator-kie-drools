@@ -30,7 +30,7 @@ import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.codegen.common.context.QuarkusDroolsModelBuildContext;
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 import org.drools.wiring.api.ComponentsSupplier;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;

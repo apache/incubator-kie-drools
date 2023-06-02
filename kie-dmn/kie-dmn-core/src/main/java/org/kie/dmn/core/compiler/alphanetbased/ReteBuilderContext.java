@@ -18,13 +18,13 @@ package org.kie.dmn.core.compiler.alphanetbased;
 
 import java.util.Collections;
 
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.model.Variable;
 

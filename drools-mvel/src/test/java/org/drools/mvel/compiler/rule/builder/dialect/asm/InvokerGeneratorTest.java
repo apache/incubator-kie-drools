@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.rule.Declaration;
+import org.drools.base.rule.Declaration;
 import org.drools.mvel.asm.ClassGenerator;
 import org.drools.mvel.asm.InvokerContext;
 import org.drools.mvel.asm.InvokerGenerator;

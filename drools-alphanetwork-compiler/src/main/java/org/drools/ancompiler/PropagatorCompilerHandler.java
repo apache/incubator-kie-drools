@@ -61,9 +61,9 @@ import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.WindowNode;
-import org.drools.core.rule.IndexableConstraint;
+import org.drools.base.rule.IndexableConstraint;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.core.util.index.AlphaRangeIndex;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;

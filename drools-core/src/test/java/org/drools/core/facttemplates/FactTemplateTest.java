@@ -16,7 +16,12 @@
 
 package org.drools.core.facttemplates;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.facttemplates.Fact;
+import org.drools.base.facttemplates.FactTemplate;
+import org.drools.base.facttemplates.FactTemplateImpl;
+import org.drools.base.facttemplates.FieldTemplate;
+import org.drools.base.facttemplates.FieldTemplateImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.junit.Test;
 

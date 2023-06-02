@@ -29,14 +29,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.kie</groupId>-->
-<!--      <artifactId>kie-apiv2-flow</artifactId>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>org.kie</groupId>-->
-<!--      <artifactId>kie-apiv2-rules</artifactId>-->
-<!--    </dependency>-->
 
     <dependency>
       <groupId>org.drools</groupId>
@@ -54,16 +46,6 @@
       <artifactId>kie-internal</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr-runtime</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>

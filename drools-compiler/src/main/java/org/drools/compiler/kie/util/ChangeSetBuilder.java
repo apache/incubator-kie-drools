@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl;
 import org.drools.drl.parser.DrlParser;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -38,7 +37,7 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.util.TypeResolver;
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.io.ByteArrayResource;
 import org.drools.util.StringUtils;
 import org.kie.api.io.ResourceType;

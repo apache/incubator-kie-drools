@@ -20,14 +20,14 @@ import java.io.Serializable;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.reteoo.Tuple;
-import org.kie.api.runtime.rule.EventHandle;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalFactHandle

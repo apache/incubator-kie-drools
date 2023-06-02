@@ -77,7 +77,7 @@ import org.drools.commands.runtime.rule.UpdateCommand;
 import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.process.WorkItem;
 import org.drools.core.process.WorkItemManager;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;

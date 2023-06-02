@@ -25,27 +25,27 @@ import java.util.List;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NetworkNode;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.rule.constraint.XpathConstraint;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.rule.RuleComponent;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.constraint.XpathConstraint;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.RuleComponent;
 import org.drools.core.time.TemporalDependencyMatrix;
-import org.kie.api.definition.rule.RuleBuildContext;
+import org.drools.base.RuleBuildContext;
 
-import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
+import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
 /**
  * A build context for Reteoo Builder

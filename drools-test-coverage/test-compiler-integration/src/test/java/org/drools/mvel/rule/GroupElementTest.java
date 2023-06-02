@@ -14,11 +14,11 @@
 
 package org.drools.mvel.rule;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.GroupElementFactory;
-import org.drools.core.rule.Pattern;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.GroupElementFactory;
+import org.drools.base.rule.Pattern;
 import org.drools.core.test.model.Person;
 import org.junit.Test;
 

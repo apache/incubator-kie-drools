@@ -22,12 +22,12 @@ import java.util.List;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
-import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.AnnotationDefinition;
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.factmodel.traits.CoreWrapper;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.Trait;
+import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.traits.core.factmodel.HierarchyEncoder;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.drools.traits.core.factmodel.AbstractTraitFactory;

@@ -23,10 +23,10 @@ import java.util.Objects;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.phreak.ReactiveObject;
-import org.drools.core.reteoo.BaseTuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.DataProvider;
+import org.drools.base.phreak.ReactiveObject;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.DataProvider;
 import org.drools.core.reteoo.Tuple;
 import org.drools.model.functions.FunctionN;
 

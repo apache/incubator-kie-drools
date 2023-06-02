@@ -16,7 +16,7 @@
 
 package org.drools.mvel.compiler;
 
-import org.drools.core.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.Traitable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

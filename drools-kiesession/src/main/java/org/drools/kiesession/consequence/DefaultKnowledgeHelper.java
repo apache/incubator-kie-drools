@@ -26,19 +26,19 @@ import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
-import org.drools.core.beliefsystem.Mode;
+import org.drools.base.beliefsystem.Mode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.factmodel.traits.CoreWrapper;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.rule.Declaration;
+import org.drools.base.rule.Declaration;
 import org.drools.core.process.AbstractProcessContext;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
@@ -57,8 +57,8 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
 public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 

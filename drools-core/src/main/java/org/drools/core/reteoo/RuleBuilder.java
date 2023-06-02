@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.rule.WindowDeclaration;
+import org.drools.base.rule.WindowDeclaration;
 
 public interface RuleBuilder {
 

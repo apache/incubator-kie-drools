@@ -16,11 +16,11 @@
 
 package org.drools.core.reteoo.builder;
 
-import org.drools.core.rule.Forall;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.GroupElementFactory;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
+import org.drools.base.rule.Forall;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.GroupElementFactory;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
 
 /**
  * The Reteoo component builder for forall CE

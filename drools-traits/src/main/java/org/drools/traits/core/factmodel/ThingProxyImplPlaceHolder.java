@@ -19,9 +19,9 @@ package org.drools.traits.core.factmodel;
 import java.io.Serializable;
 import java.util.BitSet;
 
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitType;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitType;
+import org.drools.base.factmodel.traits.TraitableBean;
 
 public class ThingProxyImplPlaceHolder<K> extends TraitProxyImpl implements Thing<K>,
                                                                             TraitType, Serializable {

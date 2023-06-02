@@ -20,9 +20,8 @@ import java.util.Map;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
-import org.drools.core.reteoo.BaseTuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.reteoo.Tuple;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MvelEvaluator;
 import org.kie.api.runtime.rule.FactHandle;

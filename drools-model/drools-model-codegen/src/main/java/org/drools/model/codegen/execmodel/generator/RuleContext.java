@@ -45,7 +45,7 @@ import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderRulesConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
-import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
+import org.drools.base.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AttributeDescr;

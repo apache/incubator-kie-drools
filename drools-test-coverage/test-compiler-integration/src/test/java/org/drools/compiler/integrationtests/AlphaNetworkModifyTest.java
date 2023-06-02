@@ -18,7 +18,7 @@ package org.drools.compiler.integrationtests;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;

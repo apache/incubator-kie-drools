@@ -18,11 +18,11 @@ package org.drools.traits.core.common;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.factmodel.traits.CoreWrapper;
+import org.drools.base.factmodel.traits.TraitTypeEnum;
+import org.drools.base.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.TraitableBean;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.traits.core.base.TraitHelperImpl;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 

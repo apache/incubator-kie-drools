@@ -19,21 +19,22 @@ package org.drools.core.reteoo;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Pattern;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.Pattern;
+import org.drools.base.base.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import static org.drools.base.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.getAccessibleProperties;
+import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.

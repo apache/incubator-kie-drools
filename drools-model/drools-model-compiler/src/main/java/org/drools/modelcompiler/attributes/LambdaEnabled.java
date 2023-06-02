@@ -18,10 +18,10 @@ package org.drools.modelcompiler.attributes;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.BaseTuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Enabled;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Enabled;
 import org.drools.core.reteoo.Tuple;
 import org.drools.model.DynamicValueSupplier;
 

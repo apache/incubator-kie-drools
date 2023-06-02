@@ -27,19 +27,19 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.util.TimeIntervalParser;
+import org.drools.base.util.TimeIntervalParser;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Role.Type;
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ObjectType;
 
 public class ClassObjectTypeConf
     implements

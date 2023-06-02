@@ -24,8 +24,8 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.Map;
 
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitType;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitType;
 
 public class NullTraitType implements TraitType,
                                       Thing, Externalizable {

@@ -26,7 +26,7 @@ import java.security.SignatureException;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.serialization.protobuf.kie.KieModuleCache.Header;
 

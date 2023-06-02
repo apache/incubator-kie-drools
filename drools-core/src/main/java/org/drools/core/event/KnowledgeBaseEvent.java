@@ -18,8 +18,8 @@ package org.drools.core.event;
 
 import java.util.EventObject;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalRuleBase;
 
 public class KnowledgeBaseEvent extends EventObject {

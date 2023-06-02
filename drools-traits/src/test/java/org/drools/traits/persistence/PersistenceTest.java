@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import org.drools.core.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.Traitable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

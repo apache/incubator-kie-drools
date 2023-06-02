@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.base.ClassFieldInspector;
+import org.drools.base.base.ClassFieldInspector;
 import org.drools.util.ClassUtils;
 import org.drools.util.MethodUtils;
 import org.drools.drl.parser.MessageImpl;

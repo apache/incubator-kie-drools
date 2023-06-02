@@ -5,8 +5,8 @@ import java.util.Set;
 
 import org.drools.compiler.compiler.DuplicateRule;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.parser.ParserError;

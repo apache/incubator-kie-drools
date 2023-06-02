@@ -24,12 +24,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.BaseTuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.DataProvider;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.reteoo.Tuple;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.DataProvider;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MVELCompileable;

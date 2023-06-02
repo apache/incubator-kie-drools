@@ -14,19 +14,19 @@
 
 package org.drools.mvel.rule;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.facttemplates.Fact;
-import org.drools.core.facttemplates.FactTemplate;
-import org.drools.core.facttemplates.FactTemplateImpl;
-import org.drools.core.facttemplates.FactTemplateObjectType;
-import org.drools.core.facttemplates.FieldTemplate;
-import org.drools.core.facttemplates.FieldTemplateImpl;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.facttemplates.Fact;
+import org.drools.base.facttemplates.FactTemplate;
+import org.drools.base.facttemplates.FactTemplateImpl;
+import org.drools.base.facttemplates.FactTemplateObjectType;
+import org.drools.base.facttemplates.FieldTemplate;
+import org.drools.base.facttemplates.FieldTemplateImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.base.ObjectType;
 import org.drools.core.test.model.Cheese;
 import org.junit.Test;
 

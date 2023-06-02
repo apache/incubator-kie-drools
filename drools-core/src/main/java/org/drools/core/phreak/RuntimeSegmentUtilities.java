@@ -27,7 +27,7 @@ import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSinkPropagator;
 import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -37,7 +37,7 @@ import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
-import org.drools.core.rule.constraint.QueryNameConstraint;
+import org.drools.base.rule.constraint.QueryNameConstraint;
 
 import static org.drools.core.phreak.EagerPhreakBuilder.isInsideSubnetwork;
 

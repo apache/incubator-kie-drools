@@ -16,10 +16,6 @@
 
 package org.kie.utll.xml;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
@@ -28,6 +24,10 @@ import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
 import com.thoughtworks.xstream.security.AnyTypePermission;
 import com.thoughtworks.xstream.security.WildcardTypePermission;
+
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static com.thoughtworks.xstream.XStream.setupDefaultSecurity;
 
@@ -42,9 +42,8 @@ public class XStreamUtils {
         "org.drools.traits.core.factmodel.Fact",
         "org.drools.traits.core.factmodel.Field",
         "org.drools.core.common.DefaultFactHandle",
-        "org.drools.core.common.EventFactHandle",
-        "org.drools.core.rule.KieModuleMetaInfo",
-        "org.drools.core.rule.TypeMetaInfo",
+        "org.drools.base.rule.KieModuleMetaInfo",
+        "org.drools.base.rule.TypeMetaInfo",
         "org.drools.core.runtime.help.impl.XStreamXMLTest$Message"
     };
 

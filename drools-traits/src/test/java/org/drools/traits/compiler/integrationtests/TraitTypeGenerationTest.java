@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.tms.beliefsystem.abductive.Abducible;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.Traitable;
 import org.drools.io.ByteArrayResource;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.traits.compiler.CommonTraitTest;

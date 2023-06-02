@@ -24,14 +24,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import org.drools.base.RuleBase;
 import org.drools.core.KieBaseConfigurationImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -40,10 +41,10 @@ import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
-import org.drools.core.rule.InvalidPatternException;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.rule.InvalidPatternException;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
+import org.drools.base.ruleunit.RuleUnitDescriptionRegistry;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
@@ -54,7 +55,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSessionConfiguration;
 
-public interface InternalRuleBase extends org.kie.api.definition.rule.RuleBase {
+public interface InternalRuleBase extends RuleBase {
 
     Collection<KiePackage> getKiePackages();
     KiePackage getKiePackage( String packageName );

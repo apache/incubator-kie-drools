@@ -17,7 +17,7 @@ package org.drools.compiler.trait.test;
 
 
 // Individual is an empty traitable, based solely on a property map.
-import org.drools.core.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.Traitable;
 
 import org.drools.traits.compiler.factmodel.traits.IRole
 import org.drools.traits.compiler.factmodel.traits.Imp

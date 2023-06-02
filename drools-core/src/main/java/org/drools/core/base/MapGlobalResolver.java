@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.rule.accessor.GlobalResolver;
+import org.drools.base.rule.accessor.GlobalResolver;
 import org.kie.api.runtime.Globals;
 
 public class MapGlobalResolver

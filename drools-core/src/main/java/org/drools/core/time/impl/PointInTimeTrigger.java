@@ -22,7 +22,7 @@ import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Date;
 
-import org.drools.core.time.Trigger;
+import org.drools.base.time.Trigger;
 import org.kie.api.time.Calendar;
 
 public class PointInTimeTrigger implements Trigger {

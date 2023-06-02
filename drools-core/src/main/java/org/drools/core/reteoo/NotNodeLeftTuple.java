@@ -20,11 +20,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.ContextEntry;
+import org.drools.base.rule.ContextEntry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.FastIterator;
 

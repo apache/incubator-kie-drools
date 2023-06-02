@@ -16,7 +16,7 @@ package org.drools.mvel;
 
 import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.DefaultBetaConstraints;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.junit.Test;
 
 public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {

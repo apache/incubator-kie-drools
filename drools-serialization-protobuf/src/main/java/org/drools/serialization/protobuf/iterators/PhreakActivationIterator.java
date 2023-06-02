@@ -15,6 +15,7 @@
 
 package org.drools.serialization.protobuf.iterators;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;

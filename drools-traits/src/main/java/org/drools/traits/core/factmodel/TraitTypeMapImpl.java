@@ -22,9 +22,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.*;
 
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitType;
-import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitType;
+import org.drools.base.factmodel.traits.TraitTypeMap;
 
 public class TraitTypeMapImpl<T extends String, K extends Thing<C>, C>
         extends TypeHierarchy<K, BitMaskKey<K>>

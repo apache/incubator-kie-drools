@@ -16,9 +16,8 @@
 
 package org.drools.traits.core.factmodel;
 
-import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.Traitable;
-import org.drools.traits.core.factmodel.MapCore;
+import org.drools.base.factmodel.traits.TraitFieldTMS;
+import org.drools.base.factmodel.traits.Traitable;
 
 import java.util.Map;
 

@@ -14,28 +14,17 @@
 
 package org.drools.mvel.asm;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.drools.core.factmodel.AnnotationDefinition;
+import org.drools.base.factmodel.AnnotationDefinition;
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.factmodel.FieldDefinition;
+import org.drools.base.factmodel.GeneratedFact;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitConstants;
+import org.drools.base.factmodel.traits.TraitFieldTMS;
+import org.drools.base.factmodel.traits.TraitTypeMapConstants;
+import org.drools.base.phreak.ReactiveObject;
 import org.drools.compiler.builder.impl.classbuilder.BeanClassBuilder;
 import org.drools.compiler.builder.impl.classbuilder.BuildUtils;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.factmodel.GeneratedFact;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitConstants;
-import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.TraitTypeMapConstants;
-import org.drools.core.phreak.ReactiveObject;
 import org.kie.api.definition.type.FactField;
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.ClassVisitor;
@@ -47,6 +36,17 @@ import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.drools.compiler.builder.impl.classbuilder.BuildUtils.getDescriptor;
 import static org.drools.compiler.builder.impl.classbuilder.BuildUtils.getSignature;
@@ -315,7 +315,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             private Collection<BaseTuple> _ts;
          */
         {
-            fv = cw.visitField( ACC_PRIVATE, TUPLES_FIELD_NAME, "Ljava/util/Collection;", "Ljava/util/Collection<Lorg/drools/core/reteoo/BaseTuple;>;", null );
+            fv = cw.visitField( ACC_PRIVATE, TUPLES_FIELD_NAME, "Ljava/util/Collection;", "Ljava/util/Collection<Lorg/drools/base/reteoo/BaseTuple;>;", null );
             fv.visitEnd();
         }
 
@@ -329,7 +329,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             }
          */
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "addTuple", "(Lorg/drools/core/reteoo/BaseTuple;)V", null, null );
+            mv = cw.visitMethod( ACC_PUBLIC, "addTuple", "(Lorg/drools/base/reteoo/BaseTuple;)V", null, null );
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel( l0 );
@@ -361,7 +361,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             Label l4 = new Label();
             mv.visitLabel( l4 );
             mv.visitLocalVariable( "this", "L" + TYPE_NAME + ";", null, l0, l4, 0 );
-            mv.visitLocalVariable( "tuple", "Lorg/drools/core/reteoo/BaseTuple;", null, l0, l4, 1 );
+            mv.visitLocalVariable( "tuple", "Lorg/drools/base/reteoo/BaseTuple;", null, l0, l4, 1 );
             mv.visitMaxs( 3, 2 );
             mv.visitEnd();
         }
@@ -371,7 +371,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             }
          */
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "getTuples", "()Ljava/util/Collection;", "()Ljava/util/Collection<Lorg/drools/core/reteoo/BaseTuple;>;", null );
+            mv = cw.visitMethod( ACC_PUBLIC, "getTuples", "()Ljava/util/Collection;", "()Ljava/util/Collection<Lorg/drools/base/reteoo/BaseTuple;>;", null );
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel( l0 );
@@ -408,7 +408,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             mv.visitLabel( l0 );
             mv.visitLineNumber( 41, l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKESTATIC, "org/drools/core/phreak/ReactiveObjectUtil", "notifyModification", "(Lorg/drools/core/phreak/ReactiveObject;)V", false );
+            mv.visitMethodInsn( INVOKESTATIC, "org/drools/core/phreak/ReactiveObjectUtil", "notifyModification", "(Lorg/drools/base/phreak/ReactiveObject;)V", false );
             Label l1 = new Label();
             mv.visitLabel( l1 );
             mv.visitLineNumber( 42, l1 );
@@ -425,7 +425,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             }
          */
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "removeTuple", "(Lorg/drools/core/reteoo/BaseTuple;)V", null, null );
+            mv = cw.visitMethod( ACC_PUBLIC, "removeTuple", "(Lorg/drools/base/reteoo/BaseTuple;)V", null, null );
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel( l0 );
@@ -442,7 +442,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             Label l2 = new Label();
             mv.visitLabel( l2 );
             mv.visitLocalVariable( "this", "Lorg/drools/core/phreak/AbstractReactiveObject;", null, l0, l2, 0 );
-            mv.visitLocalVariable( "tuple", "Lorg/drools/core/reteoo/BaseTuple;", null, l0, l2, 1 );
+            mv.visitLocalVariable( "tuple", "Lorg/drools/base/reteoo/BaseTuple;", null, l0, l2, 1 );
             mv.visitMaxs( 2, 2 );
             mv.visitEnd();
         }

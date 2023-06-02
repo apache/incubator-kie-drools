@@ -20,7 +20,7 @@ import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.common.PropagationContext;
 

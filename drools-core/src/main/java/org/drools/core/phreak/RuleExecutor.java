@@ -15,7 +15,7 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.base.SalienceInteger;
+import org.drools.base.base.SalienceInteger;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.EventSupport;
@@ -24,14 +24,14 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.conflict.MatchConflictResolver;
 import org.drools.core.conflict.RuleAgendaConflictResolver;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.consequence.Consequence;
-import org.drools.core.rule.consequence.ConsequenceException;
+import org.drools.base.rule.consequence.Consequence;
+import org.drools.base.rule.consequence.ConsequenceException;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.util.Queue;

@@ -16,15 +16,6 @@
 
 package org.drools.ancompiler;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -37,14 +28,23 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.VoidType;
 import com.github.javaparser.printer.PrettyPrinter;
-import org.drools.core.InitialFact;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.InitialFact;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
-import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.index.AlphaRangeIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseType;
@@ -191,7 +191,7 @@ public class ObjectTypeNodeCompiler {
 
     private void addEmptySetNetworkReference(StringBuilder builder) {
         builder.append("   @Override\n" +
-                               "    protected void setNetworkNodeReference(org.drools.core.common.NetworkNode networkNode) {\n" +
+                               "    protected void setNetworkNodeReference(org.drools.base.common.NetworkNode networkNode) {\n" +
                                "        \n" +
                                "    }");
     }

@@ -16,27 +16,28 @@
 
 package org.drools.core.common;
 
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.factmodel.traits.TraitTypeEnum;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.util.StringUtils;
 import org.kie.api.runtime.rule.FactHandle;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Implementation of <code>FactHandle</code>.

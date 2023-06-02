@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.rule.consequence.ConflictResolver;
+import org.drools.base.rule.consequence.ConflictResolver;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.util.StringUtils;
 import org.kie.api.KieBaseConfiguration;

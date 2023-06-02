@@ -17,9 +17,9 @@ package org.drools.mvel.integrationtests;
 
 import java.util.Collection;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.rule.ConsequenceMetaData;
+import org.drools.base.rule.ConsequenceMetaData;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
