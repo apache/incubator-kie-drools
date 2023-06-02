@@ -19,7 +19,7 @@
     <version.io.quarkus>2.16.7.Final</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
     <version.org.springframework.boot>2.6.6</version.org.springframework.boot>
-    <version.org.apache.kafka>3.3.2</version.org.apache.kafka>
+    <version.org.apache.kafka>3.4.0</version.org.apache.kafka>
 
     <!-- dependencies versions -->
     <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
@@ -72,7 +72,7 @@
     <version.io.swagger.parser.v3>2.0.26</version.io.swagger.parser.v3>
 
     <version.org.apache.commons>3.12.0</version.org.apache.commons>
-    <version.org.apache.xmlgraphics.batik>1.14</version.org.apache.xmlgraphics.batik>
+    <version.org.apache.xmlgraphics.batik>1.16</version.org.apache.xmlgraphics.batik>
 
     <version.org.graalvm.nativeimage>22.3.0</version.org.graalvm.nativeimage>
 
@@ -109,7 +109,7 @@
 
     <version.org.mvel>2.4.15.Final</version.org.mvel>
     <version.org.reactivestreams>1.0.3</version.org.reactivestreams>
-    <version.org.reflections>0.9.11</version.org.reflections>
+    <version.org.reflections>0.10.2</version.org.reflections>
     <version.org.slf4j>1.7.36</version.org.slf4j>
 
     <version.maven>3.8.6</version.maven>

@@ -119,7 +119,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
             URLClassLoader classLoader = (URLClassLoader) projectClassLoader();
             ConfigurationBuilder builder = new ConfigurationBuilder();
             builder.addUrls(classLoader.getURLs());
-            builder.addClassLoader(classLoader);
+            builder.addClassLoaders(classLoader);
             reflections = new Reflections(builder);
         }
         return reflections;
