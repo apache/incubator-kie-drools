@@ -26,11 +26,16 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.FastIterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
 public class PhreakNotNode {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PhreakNotNode.class);
     public void doNode(NotNode notNode,
                        LeftTupleSink sink,
                        BetaMemory bm,
@@ -40,8 +45,12 @@ public class PhreakNotNode {
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
         if (!notNode.isRightInputIsRiaNode()) {
+            if (PseudoClockScheduler.DEBUG) {
+                LOG.info("doNormalNode");
+            }
             doNormalNode(notNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         } else {
+            LOG.info("PhreakSubnetworkNotExistsNode.doSubNetworkNode");
             PhreakSubnetworkNotExistsNode.doSubNetworkNode(notNode, sink, bm,
                                                            srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
@@ -469,7 +478,9 @@ public class PhreakNotNode {
 
         for (RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
-
+            if (PseudoClockScheduler.DEBUG) {
+                LOG.info("rightTuple.getFactHandle() : {}, {}", rightTuple.getFactHandle(), rightTuple.getFactHandle().getObject());
+            }
             if (rightTuple.getMemory() != null) {
                 // it may have been staged and never actually added
                 rtm.remove(rightTuple);
@@ -523,6 +534,9 @@ public class PhreakNotNode {
         if (!leftTuple.isExpired()) {
             if (useLeftMemory) {
                 ltm.add(leftTuple);
+            }
+            if (PseudoClockScheduler.DEBUG) {
+                LOG.info("insertChildLeftTuple");
             }
             trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple, sink, pctx, useLeftMemory ) );
         }

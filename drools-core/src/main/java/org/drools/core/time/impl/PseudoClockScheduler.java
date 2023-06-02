@@ -30,6 +30,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -43,7 +44,9 @@ import java.util.concurrent.atomic.AtomicLong;
  * that allows the user to explicitly control current time.
  */
 public class PseudoClockScheduler implements TimerService, SessionPseudoClock, Externalizable, InternalSchedulerService {
-    
+
+    public static boolean DEBUG = false;
+
     private final Logger logger = LoggerFactory.getLogger( PseudoClockScheduler.class );
 
     protected AtomicLong timer = new AtomicLong(0);
@@ -142,23 +145,41 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
         // nothing to do
     }
 
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); // use only inside synchronized
+
     @SuppressWarnings("unchecked")
     private synchronized long runCallBacksAndIncreaseTimer( long increase ) {
         long endTime = this.timer.get() + increase;
         TimerJobInstance item = peek();
+        if (DEBUG) {
+            logger.info("this.timer.get() : {}", sdf.format(this.timer.get()));
+            if (item != null && item.getTrigger().hasNextFireTime() != null) {
+                logger.info("item nextFireTime : {}", sdf.format(item.getTrigger().hasNextFireTime().getTime()));
+            }
+        }
         long fireTime;
         while (item != null && item.getTrigger().hasNextFireTime() != null && (fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime) {
             // remove the head
+            if (DEBUG) {
+                logger.info("queue.size() : {}", queue.size());
+            }
             queue.poll();
 
             if ( !item.getJobHandle().isCancel() ) {
                 try {
                     // set the clock back to the trigger's fire time
+                    if (DEBUG) {
+                        logger.info("timer.get() = {}, fireTime = {}", sdf.format(this.timer.get()), sdf.format(fireTime));
+                    }
                     this.timer.getAndSet(fireTime);
                     // execute the call
                     ((Callable<Void>) item).call();
                 } catch (Exception e) {
                     logger.error("Exception running callbacks: ", e);
+                }
+            } else {
+                if (DEBUG) {
+                    logger.info("Skipping cancelled job: {}", item.getJobHandle());
                 }
             }
 

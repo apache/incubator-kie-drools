@@ -26,12 +26,17 @@ import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.time.impl.PseudoClockScheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 
 public class WorkingMemoryReteExpireAction
         extends PropagationEntry.AbstractPropagationEntry
         implements WorkingMemoryAction {
+
+    private static final Logger LOG = LoggerFactory.getLogger(WorkingMemoryReteExpireAction.class);
 
     protected DefaultEventHandle factHandle;
     protected ObjectTypeNode node;
@@ -86,6 +91,10 @@ public class WorkingMemoryReteExpireAction
         } );
 
         expireFactHandle( reteEvaluator, factHandle );
+
+        if (PseudoClockScheduler.DEBUG) {
+            LOG.info("Expiring FactHandle {} : {}", factHandle, factHandle.getObject());
+        }
     }
 
     private static void expireFactHandle( ReteEvaluator reteEvaluator, DefaultEventHandle factHandle) {
