@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-import org.drools.core.time.TimeUtils;
+import org.drools.base.time.TimeUtils;
 
 public class DateTimeUtils extends TimeUtils {
 

@@ -17,8 +17,8 @@ package org.jbpm.process.builder.dialect.java;
 
 import java.util.Iterator;
 
+import org.drools.base.rule.accessor.Wireable;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.rule.accessor.Wireable;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ProcessDescr;
 import org.drools.mvel.java.JavaDialect;

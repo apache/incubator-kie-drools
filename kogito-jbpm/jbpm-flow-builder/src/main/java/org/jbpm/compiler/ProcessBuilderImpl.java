@@ -25,14 +25,14 @@ import java.util.Set;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.ProcessPackage;
+import org.drools.base.definitions.ResourceTypePackageRegistry;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.ProcessPackage;
-import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.drl.ast.descr.ActionDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.ProcessDescr;

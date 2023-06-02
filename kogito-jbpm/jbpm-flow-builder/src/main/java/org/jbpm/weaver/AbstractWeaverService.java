@@ -15,8 +15,8 @@
  */
 package org.jbpm.weaver;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.ProcessPackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.ProcessPackage;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.internal.weaver.KieWeaverService;
 

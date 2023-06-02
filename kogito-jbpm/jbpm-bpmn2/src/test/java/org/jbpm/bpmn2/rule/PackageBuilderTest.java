@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.drl.ast.descr.PackageDescr;

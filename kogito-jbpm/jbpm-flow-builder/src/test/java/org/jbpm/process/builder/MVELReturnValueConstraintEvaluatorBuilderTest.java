@@ -17,11 +17,11 @@ package org.jbpm.process.builder;
 
 import java.io.StringReader;
 
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.ReturnValueDescr;
 import org.drools.mvel.MVELDialectRuntimeData;

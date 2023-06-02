@@ -22,8 +22,8 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.rule.accessor.CompiledInvoker;
-import org.drools.core.rule.accessor.Wireable;
+import org.drools.base.rule.accessor.CompiledInvoker;
+import org.drools.base.rule.accessor.Wireable;
 
 public class DroolsAction implements Externalizable, Wireable {
 

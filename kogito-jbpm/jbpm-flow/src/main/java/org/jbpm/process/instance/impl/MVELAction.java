@@ -21,9 +21,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.accessor.GlobalResolver;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MVELCompileable;
