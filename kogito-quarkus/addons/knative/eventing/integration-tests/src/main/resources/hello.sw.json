@@ -5,6 +5,13 @@
   "name": "Hello World Workflow",
   "description": "JSON based hello world workflow",
   "start": "Inject Hello World",
+  "events": [
+    {
+      "name": "helloWorldEvent",
+      "kind": "produced",
+      "type": "hello_world_event_type"
+    }
+  ],
   "states": [
     {
       "name": "Inject Hello World",
@@ -12,14 +19,19 @@
       "data": {
         "greeting": "Hello World"
       },
-      "transition": "Inject Mantra"
+      "transition": "Send Hello World"
     },
     {
-      "name": "Inject Mantra",
-      "type": "inject",
-      "data": {
-        "mantra": "Serverless Workflow is awesome!"
-      },
+      "name": "Send Hello World",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "sendHelloWorldEvent",
+          "eventRef": {
+            "triggerEventRef": "helloWorldEvent"
+          }
+        }
+      ],
       "end": true
     }
   ]

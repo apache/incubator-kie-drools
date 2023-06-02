@@ -25,6 +25,7 @@ import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.addons.quarkus.knative.eventing.KSinkInjectionHealthCheck;
 import org.kie.kogito.event.EventKind;
 import org.kie.kogito.event.cloudevents.CloudEventMeta;
 import org.mockito.ArgumentCaptor;
@@ -34,6 +35,7 @@ import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.GeneratedFileSystemResourceBuildItem;
 import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
+import io.quarkus.smallrye.health.deployment.spi.HealthBuildItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -41,7 +43,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.addons.quarkus.knative.eventing.KnativeEventingConfigSourceFactory.INCLUDE_PROCESS_EVENTS;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 class KogitoAddOnKnativeEventingProcessorTest {
 
@@ -171,6 +177,31 @@ class KogitoAddOnKnativeEventingProcessorTest {
         KogitoAddOnKnativeEventingProcessor eventingProcessor = new KogitoAddOnKnativeEventingProcessor();
         eventingProcessor.checkProcessEvents(buildProducer, combinedIndex);
         verify(buildProducer, never()).produce(any());
+    }
+
+    @Test
+    void registerKSinkInjectionHealthCheckWithProducedEvents() {
+        Set<? extends CloudEventMeta> cloudEvents = Collections.singleton(new CloudEventMeta("my_type", "my_source", EventKind.PRODUCED));
+        registerKSinkInjectionHealthCheck(cloudEvents, true);
+    }
+
+    @Test
+    void registerKSinkInjectionHealthCheckWithoutEvents() {
+        registerKSinkInjectionHealthCheck(Collections.emptySet(), false);
+    }
+
+    @Test
+    void registerKSinkInjectionHealthCheckWithOnlyConsumedEvents() {
+        Set<? extends CloudEventMeta> cloudEvents = Collections.singleton(new CloudEventMeta("my_type", "my_source", EventKind.CONSUMED));
+        registerKSinkInjectionHealthCheck(cloudEvents, false);
+    }
+
+    private static void registerKSinkInjectionHealthCheck(Set<? extends CloudEventMeta> cloudEvents, boolean expectedIsEnabled) {
+        KogitoKnativeResourcesMetadataBuildItem metadata = new KogitoKnativeResourcesMetadataBuildItem(cloudEvents, null);
+        KogitoAddOnKnativeEventingProcessor eventingProcessor = new KogitoAddOnKnativeEventingProcessor();
+        HealthBuildItem healthBuildItem = eventingProcessor.registerKSinkInjectionHealthCheck(Optional.of(metadata));
+        assertThat(healthBuildItem.getHealthCheckClass()).isEqualTo(KSinkInjectionHealthCheck.class.getName());
+        assertThat(healthBuildItem.isEnabled()).isEqualTo(expectedIsEnabled);
     }
 
     private KogitoAddOnKnativeEventingProcessor buildTestProcessorWithDefaultConfig() {

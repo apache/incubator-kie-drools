@@ -17,14 +17,20 @@
 package org.kie.kogito.jobs.knative.eventing.quarkus.deployment;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +55,7 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.jobs.knative.eventing.quarkus.deployment.KogitoAddOnJobsKnativeEventingProcessor.FEATURE;
+import static org.kie.kogito.jobs.knative.eventing.quarkus.deployment.KogitoAddOnJobsKnativeEventingProcessor.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
@@ -60,15 +66,34 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class KogitoAddOnJobsKnativeEventingProcessorTest {
 
+    private static final String DURATION = "PT15S";
+
     private static final String PROCESS1_ID = "PROCESS1_ID";
     private static final String PROCESS2_ID = "PROCESS2_ID";
     private static final String PROCESS3_ID = "PROCESS3_ID";
     private static final String PROCESS4_ID = "PROCESS4_ID";
+    private static final String PROCESS5_ID = "PROCESS5_ID";
+    private static final String PROCESS6_ID = "PROCESS6_ID";
+    private static final String PROCESS7_ID = "PROCESS7_ID";
+    private static final String PROCESS8_ID = "PROCESS8_ID";
+    private static final String PROCESS9_ID = "PROCESS9_ID";
+    private static final String PROCESS10_ID = "PROCESS10_ID";
+    private static final String PROCESS11_ID = "PROCESS11_ID";
+    private static final String PROCESS12_ID = "PROCESS12_ID";
+    private static final String PROCESS13_ID = "PROCESS13_ID";
 
     private static final KogitoWorkflowProcess PROCESS1 = mockProcess1();
     private static final KogitoWorkflowProcess PROCESS2 = mockProcess2();
     private static final KogitoWorkflowProcess PROCESS3 = mockProcess3();
     private static final KogitoWorkflowProcess PROCESS4 = mockProcess4();
+    private static final KogitoWorkflowProcess PROCESS5 = mockProcess5();
+    private static final KogitoWorkflowProcess PROCESS6 = mockProcess6();
+    private static final KogitoWorkflowProcess PROCESS7 = mockProcess7();
+    private static final KogitoWorkflowProcess PROCESS8 = mockProcess8();
+    private static final KogitoWorkflowProcess PROCESS9 = mockProcess9();
+    private static final KogitoWorkflowProcess PROCESS10 = mockProcess10();
+    private static final KogitoWorkflowProcess PROCESS11 = mockProcess11();
+    private static final KogitoWorkflowProcess PROCESS12 = mockProcess12();
 
     @Mock
     private BuildProducer<KogitoCloudEventsBuildItem> buildItemProducer;
@@ -82,12 +107,22 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
         ProcessGenerator processGenerator2 = mockProcessGenerator(PROCESS2);
         ProcessGenerator processGenerator3 = mockProcessGenerator(PROCESS3);
         ProcessGenerator processGenerator4 = mockProcessGenerator(PROCESS4);
+        ProcessGenerator processGenerator5 = mockProcessGenerator(PROCESS5);
+        ProcessGenerator processGenerator6 = mockProcessGenerator(PROCESS6);
+        ProcessGenerator processGenerator7 = mockProcessGenerator(PROCESS7);
+        ProcessGenerator processGenerator8 = mockProcessGenerator(PROCESS8);
+        ProcessGenerator processGenerator9 = mockProcessGenerator(PROCESS9);
+        ProcessGenerator processGenerator10 = mockProcessGenerator(PROCESS10);
+        ProcessGenerator processGenerator11 = mockProcessGenerator(PROCESS11);
+        ProcessGenerator processGenerator12 = mockProcessGenerator(PROCESS12);
 
         ProcessContainerGenerator containerGenerator1 = mockProcessContainerGenerator(processGenerator1, processGenerator2);
         ProcessContainerGenerator containerGenerator2 = mockProcessContainerGenerator(processGenerator3);
-        ProcessContainerGenerator containerGenerator3 = mockProcessContainerGenerator(processGenerator4);
+        ProcessContainerGenerator containerGenerator3 = mockProcessContainerGenerator(processGenerator4, processGenerator5);
+        ProcessContainerGenerator containerGenerator4 = mockProcessContainerGenerator(processGenerator6, processGenerator7,
+                processGenerator8, processGenerator9, processGenerator10, processGenerator11, processGenerator12);
 
-        Set<ProcessContainerGenerator> containerGenerators = Set.of(containerGenerator1, containerGenerator2, containerGenerator3);
+        Set<ProcessContainerGenerator> containerGenerators = Set.of(containerGenerator1, containerGenerator2, containerGenerator3, containerGenerator4);
         KogitoProcessContainerGeneratorBuildItem kogitoProcessContainerGeneratorBuildItem = new KogitoProcessContainerGeneratorBuildItem(containerGenerators);
 
         KogitoAddOnJobsKnativeEventingProcessor processor = new KogitoAddOnJobsKnativeEventingProcessor();
@@ -95,11 +130,19 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
         verify(buildItemProducer).produce(cloudEventsBuildItemCaptor.capture());
         KogitoCloudEventsBuildItem kogitoCloudEventsBuildItem = cloudEventsBuildItemCaptor.getValue();
         assertThat(kogitoCloudEventsBuildItem).isNotNull();
-        assertThat(kogitoCloudEventsBuildItem.getCloudEvents()).hasSize(4);
+        assertThat(kogitoCloudEventsBuildItem.getCloudEvents()).hasSize(20);
         assertProcessWasIncluded(PROCESS1_ID, kogitoCloudEventsBuildItem.getCloudEvents());
         assertProcessWasNotIncluded(PROCESS2_ID, kogitoCloudEventsBuildItem.getCloudEvents());
         assertProcessWasIncluded(PROCESS3_ID, kogitoCloudEventsBuildItem.getCloudEvents());
         assertProcessWasNotIncluded(PROCESS4_ID, kogitoCloudEventsBuildItem.getCloudEvents());
+        assertProcessWasIncluded(PROCESS5_ID, kogitoCloudEventsBuildItem.getCloudEvents());
+        assertProcessWasIncluded(PROCESS6_ID, kogitoCloudEventsBuildItem.getCloudEvents());
+        assertProcessWasIncluded(PROCESS7_ID, kogitoCloudEventsBuildItem.getCloudEvents());
+        assertProcessWasIncluded(PROCESS8_ID, kogitoCloudEventsBuildItem.getCloudEvents());
+        assertProcessWasIncluded(PROCESS9_ID, kogitoCloudEventsBuildItem.getCloudEvents());
+        assertProcessWasIncluded(PROCESS10_ID, kogitoCloudEventsBuildItem.getCloudEvents());
+        assertProcessWasIncluded(PROCESS11_ID, kogitoCloudEventsBuildItem.getCloudEvents());
+        assertProcessWasIncluded(PROCESS12_ID, kogitoCloudEventsBuildItem.getCloudEvents());
     }
 
     @Test
@@ -172,6 +215,87 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
         Node scriptNode = new ActionNode();
         Node endNode = new EndNode();
         return mockProcess(PROCESS4_ID, startNode, scriptNode, endNode);
+    }
+
+    /**
+     * Produces jobs service related events when the addon is installed.
+     */
+    private static KogitoWorkflowProcess mockProcess5() {
+        Node startNode = new StartNode();
+        Node asyncEventNode = new AsyncEventNode(mock(org.kie.api.definition.process.Node.class));
+        Node endNode = new EndNode();
+        return mockProcess(PROCESS5_ID, startNode, asyncEventNode, endNode);
+    }
+
+    /**
+     * Produces jobs service related events when the addon is installed.
+     */
+    private static KogitoWorkflowProcess mockProcess6() {
+        Node startNode = new StartNode();
+        Node eventNode = new EventNode();
+        eventNode.setMetaData(Metadata.CUSTOM_SLA_DUE_DATE, "PT15S");
+        Node endNode = new EndNode();
+        return mockProcess(PROCESS6_ID, startNode, eventNode, endNode);
+    }
+
+    /**
+     * Produces jobs service related events when the addon is installed.
+     */
+    private static KogitoWorkflowProcess mockProcess7() {
+        Node startNode = new StartNode();
+        StateBasedNode stateBasedNode = new StateBasedNode();
+        stateBasedNode.setTimeout(DURATION);
+        Node endNode = new EndNode();
+        return mockProcess(PROCESS7_ID, startNode, stateBasedNode, endNode);
+    }
+
+    /**
+     * Produces jobs service related events when the addon is installed.
+     */
+    private static KogitoWorkflowProcess mockProcess8() {
+        Node startNode = new StartNode();
+        Node endNode = new EndNode();
+        KogitoWorkflowProcess process = mockProcess(PROCESS8_ID, startNode, endNode);
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put(Metadata.CUSTOM_SLA_DUE_DATE, DURATION);
+        doReturn(metadata).when(process).getMetaData();
+        return process;
+    }
+
+    /**
+     * Produces jobs service related events when the addon is installed.
+     */
+    private static KogitoWorkflowProcess mockProcess9() {
+        return mockProcessWithUserTaskDeadline(PROCESS9_ID, NOT_STARTED_NOTIFY_PARAMETER, "deadline1");
+    }
+
+    /**
+     * Produces jobs service related events when the addon is installed.
+     */
+    private static KogitoWorkflowProcess mockProcess10() {
+        return mockProcessWithUserTaskDeadline(PROCESS10_ID, NOT_COMPLETED_NOTIFY_PARAMETER, "deadline2");
+    }
+
+    /**
+     * Produces jobs service related events when the addon is installed.
+     */
+    private static KogitoWorkflowProcess mockProcess11() {
+        return mockProcessWithUserTaskDeadline(PROCESS11_ID, NOT_STARTED_REASSIGN_PARAMETER, "deadline3");
+    }
+
+    /**
+     * Produces jobs service related events when the addon is installed.
+     */
+    private static KogitoWorkflowProcess mockProcess12() {
+        return mockProcessWithUserTaskDeadline(PROCESS12_ID, NOT_COMPLETED_REASSIGN_PARAMETER, "deadline4");
+    }
+
+    private static KogitoWorkflowProcess mockProcessWithUserTaskDeadline(String processId, String deadline, String value) {
+        Node startNode = new StartNode();
+        Node endNode = new EndNode();
+        HumanTaskNode humanTaskNode = new HumanTaskNode();
+        humanTaskNode.getWork().setParameter(deadline, value);
+        return mockProcess(processId, startNode, humanTaskNode, endNode);
     }
 
     private static void assertProcessWasIncluded(String processId, Set<? extends CloudEventMeta> cloudEvents) {

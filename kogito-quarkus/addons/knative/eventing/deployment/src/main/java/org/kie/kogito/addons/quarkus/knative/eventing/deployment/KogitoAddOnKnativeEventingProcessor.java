@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jboss.jandex.DotName;
+import org.kie.kogito.addons.quarkus.knative.eventing.KSinkInjectionHealthCheck;
 import org.kie.kogito.addons.quarkus.knative.eventing.deployment.resources.KogitoSource;
 import org.kie.kogito.addons.quarkus.knative.eventing.deployment.resources.KogitoSourceSpec;
 import org.kie.kogito.event.EventKind;
@@ -75,8 +76,9 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
     }
 
     @BuildStep(onlyIfNot = { IsDevelopment.class })
-    HealthBuildItem registerHealthCheck() {
-        return new HealthBuildItem("org.kie.kogito.addons.quarkus.knative.eventing.KSinkInjectionHealthCheck", true);
+    HealthBuildItem registerKSinkInjectionHealthCheck(Optional<KogitoKnativeResourcesMetadataBuildItem> resourcesMetadata) {
+        boolean hasProducedEvents = resourcesMetadata.map(KogitoAddOnKnativeEventingProcessor::hasProducedEvents).orElse(false);
+        return new HealthBuildItem(KSinkInjectionHealthCheck.class.getName(), hasProducedEvents);
     }
 
     /**
@@ -163,7 +165,7 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
     }
 
     private Optional<SinkBinding> generateSinkBinding(KogitoKnativeResourcesMetadataBuildItem metadata) {
-        if (metadata.getCloudEvents().stream().anyMatch(ce -> ce.getKind() == EventKind.PRODUCED)) {
+        if (hasProducedEvents(metadata)) {
             return Optional.of(new SinkBindingBuilder()
                     .withNewMetadata().withName(KnativeResourcesUtil.generateSinkBindingName(metadata.getDeployment().getName())).endMetadata()
                     .withNewSpec()
@@ -203,5 +205,9 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
                         .endRef().endSubscriber().endSpec()
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    private static boolean hasProducedEvents(KogitoKnativeResourcesMetadataBuildItem metadata) {
+        return metadata.getCloudEvents().stream().anyMatch(ce -> ce.getKind() == EventKind.PRODUCED);
     }
 }

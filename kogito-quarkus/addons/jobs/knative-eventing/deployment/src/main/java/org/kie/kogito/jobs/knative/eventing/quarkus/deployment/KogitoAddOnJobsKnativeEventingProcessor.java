@@ -19,10 +19,16 @@ package org.kie.kogito.jobs.knative.eventing.quarkus.deployment;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.workflow.core.node.AsyncEventNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.TimerNode;
+import org.kie.api.definition.process.Node;
 import org.kie.kogito.addons.quarkus.knative.eventing.deployment.KogitoCloudEventsBuildItem;
 import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
 import org.kie.kogito.codegen.process.ProcessGenerator;
@@ -45,6 +51,11 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 public class KogitoAddOnJobsKnativeEventingProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
     static final String FEATURE = "kogito-addon-jobs-knative-eventing-extension";
+
+    static final String NOT_STARTED_NOTIFY_PARAMETER = "NotStartedNotify";
+    static final String NOT_COMPLETED_NOTIFY_PARAMETER = "NotCompletedNotify";
+    static final String NOT_STARTED_REASSIGN_PARAMETER = "NotStartedReassign";
+    static final String NOT_COMPLETED_REASSIGN_PARAMETER = "NotCompletedReassign";
 
     KogitoAddOnJobsKnativeEventingProcessor() {
         super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
@@ -70,24 +81,69 @@ public class KogitoAddOnJobsKnativeEventingProcessor extends OneOfCapabilityKogi
     public void buildCloudEventsMetadata(List<KogitoProcessContainerGeneratorBuildItem> processContainerBuildItem,
             BuildProducer<KogitoCloudEventsBuildItem> cloudEventsBuildItemProducer) {
         final Set<CloudEventMeta> cloudEvents = new LinkedHashSet<>();
-        List<KogitoWorkflowProcess> processes = processContainerBuildItem.stream().flatMap(it -> it.getProcessContainerGenerators().stream())
+        processContainerBuildItem.stream().flatMap(it -> it.getProcessContainerGenerators().stream())
                 .flatMap(processContainerGenerator -> processContainerGenerator.getProcesses().stream())
                 .map(ProcessGenerator::getProcessExecutable)
                 .map(ProcessExecutableModelGenerator::process)
-                .collect(Collectors.toList());
-
-        for (KogitoWorkflowProcess process : processes) {
-            process.getNodesRecursively().stream()
-                    .filter(TimerNode.class::isInstance)
-                    .map(TimerNode.class::cast)
-                    .forEach(timer -> {
-                        String eventSource = "/process/" + process.getId();
-                        cloudEvents.add(new CloudEventMeta(CreateJobEvent.TYPE, eventSource, EventKind.PRODUCED));
-                        cloudEvents.add(new CloudEventMeta(DeleteJobEvent.TYPE, eventSource, EventKind.PRODUCED));
-                    });
-        }
+                .filter(KogitoAddOnJobsKnativeEventingProcessor::produceJobEvents)
+                .forEach(process -> {
+                    String eventSource = "/process/" + process.getId();
+                    cloudEvents.add(new CloudEventMeta(CreateJobEvent.TYPE, eventSource, EventKind.PRODUCED));
+                    cloudEvents.add(new CloudEventMeta(DeleteJobEvent.TYPE, eventSource, EventKind.PRODUCED));
+                });
         if (!cloudEvents.isEmpty()) {
             cloudEventsBuildItemProducer.produce(new KogitoCloudEventsBuildItem(cloudEvents));
         }
+    }
+
+    private static boolean produceJobEvents(KogitoWorkflowProcess process) {
+        if (hasSlaDueDate(process.getMetaData()) || hasProcessDuration(process.getMetaData())) {
+            return true;
+        }
+        return process.getNodesRecursively().stream().anyMatch(KogitoAddOnJobsKnativeEventingProcessor::produceJobEvents);
+    }
+
+    private static boolean produceJobEvents(Node node) {
+        if (node instanceof TimerNode) {
+            return true;
+        }
+        if (node instanceof AsyncEventNode) {
+            return true;
+        }
+        if (node instanceof EventNode) {
+            return hasSlaDueDate(node.getMetaData());
+        }
+        if (node instanceof HumanTaskNode && hasDeadlines((HumanTaskNode) node)) {
+            return true;
+        }
+        if (node instanceof StateBasedNode) {
+            Map<?, ?> timers = ((StateBasedNode) node).getTimers();
+            return (timers != null && !timers.isEmpty()) || hasSlaDueDate(node.getMetaData());
+        }
+        return false;
+    }
+
+    private static boolean hasSlaDueDate(Map<?, ?> metadata) {
+        return hasMetadataAttribute(metadata, Metadata.CUSTOM_SLA_DUE_DATE);
+    }
+
+    private static boolean hasProcessDuration(Map<?, ?> metadata) {
+        return hasMetadataAttribute(metadata, Metadata.PROCESS_DURATION);
+    }
+
+    private static boolean hasDeadlines(HumanTaskNode node) {
+        return hasWorkParameter(node, NOT_STARTED_NOTIFY_PARAMETER) ||
+                hasWorkParameter(node, NOT_COMPLETED_NOTIFY_PARAMETER) ||
+                hasWorkParameter(node, NOT_STARTED_REASSIGN_PARAMETER) ||
+                hasWorkParameter(node, NOT_COMPLETED_REASSIGN_PARAMETER);
+    }
+
+    private static boolean hasMetadataAttribute(Map<?, ?> metadata, String attributeName) {
+        String value = (String) metadata.get(attributeName);
+        return value != null && !value.isEmpty();
+    }
+
+    private static boolean hasWorkParameter(HumanTaskNode node, String parameterName) {
+        return node.getWork().getParameter(parameterName) != null;
     }
 }
