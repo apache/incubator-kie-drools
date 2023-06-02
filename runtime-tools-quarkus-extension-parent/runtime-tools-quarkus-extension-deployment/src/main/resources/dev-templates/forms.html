@@ -36,10 +36,10 @@
         isDataIndexAvailable: {info:isProcessEnabled},
         isTracingEnabled: {info:isTracingEnabled},
         users: {info:userInfo.arrayRepresentation.raw},
-        dataIndexUrl: "{config:property('kogito.data-index.url') ?: 'http://localhost:8180'}/graphql",
+        dataIndexUrl: "{config:property('kogito.data-index.url') ?: ''}/graphql",
         trustyServiceUrl: "{config:property('kogito.trusty.http.url') ?: 'http://localhost:1336'}",
         page: "Forms",
-        devUIUrl: "http://localhost:{config:property('quarkus.http.port') or '8080'}",
+        devUIUrl: {#if config:property('kogito.dev-ui.url')}"{config:property('kogito.dev-ui.url')}"{#else}window.location.origin{/if},
         openApiPath: "{config:property('quarkus.smallrye-openapi.path') or '/q/openapi.json'}",
         availablePages: ["Processes", "Jobs", "Tasks", "Forms"]
     })

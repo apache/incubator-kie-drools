@@ -29,16 +29,27 @@
 {/if}
 {#if info:isDataIndexAvailable}
 <script>
-    const fillCount = (resourceType) => {
-        fetch("{#if config:property('kogito.dev-ui.url')}{config:property('kogito.dev-ui.url')}{#else}http://localhost:{config:property('quarkus.http.port') or '8080'}{/if}/dataindex/" + resourceType + "/count")
-                .then(response => response.text())
-                .then(count => {
-                    document.getElementById(resourceType + "Count").innerText = count;
-                }).catch(function () {
-            console.log("Error while trying to fetch " + resourceType + " count.");
-        });
-    };
+    const graphqlUrl = "{config:property('kogito.data-index.url') ?: ''}/graphql";
 
-    fillCount("workflowInstances");
+    {|
+        const fillCount = () => {
+            fetch(graphqlUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({query: "query getAllProcessesIds{  ProcessInstances{ id } }"}),
+            })
+                .then(r => r.json())
+                .then(json => $("#workflowInstancesCount").text(json.data.ProcessInstances.length))
+                .catch(error => {
+                    console.log("Error while trying to fetch workflow instances count.");
+                    console.error(error);
+                });
+        };
+
+        fillCount();
+    |}
 </script>
 {/if}

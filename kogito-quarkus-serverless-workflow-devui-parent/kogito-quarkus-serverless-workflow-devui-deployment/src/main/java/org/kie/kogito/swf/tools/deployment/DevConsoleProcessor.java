@@ -38,11 +38,8 @@ import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.vertx.http.deployment.RouteBuildItem;
 import io.quarkus.vertx.http.runtime.devmode.DevConsoleRecorder;
 
-import static org.kie.kogito.swf.tools.dataindex.DataIndexClient.DATA_INDEX_CONFIG_KEY;
-
 public class DevConsoleProcessor {
 
-    private static final String DATA_INDEX_CLIENT_KEY = "quarkus.rest-client.\"" + DATA_INDEX_CONFIG_KEY + "\".url";
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
     private static final String BASE_RELATIVE_URL = "/q/dev/org.kie.kogito.kogito-quarkus-serverless-workflow-devui";
     private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";

@@ -46,19 +46,49 @@
 {/if}
 {#if info:isProcessEnabled}
 <script>
-    const fillCount = (resourceType) => {
-        fetch("http://localhost:8080/dataindex/" + resourceType + "/count")
-                .then(response => response.text())
-                .then(count => {
-                    document.getElementById(resourceType + "Count").innerText = count;
-                }).catch(function () {
-            console.log("Error while trying to fetch " + resourceType + " count.");
-        });
-    };
+    const graphqlUrl = "{config:property('kogito.data-index.url') ?: ''}/graphql";
 
-    fillCount("processInstances");
-    fillCount("tasks");
-    fillCount("jobs");
-    fillCount("forms")
+    {|
+        const fillFormsCount = () => {
+            fetch("/forms/count")
+                .then(response => response.text())
+                .then(count => $("#formsCount").text(count))
+                .catch(error => {
+                    console.log("Error while trying to fetch forms count.");
+                    console.error(error);
+                });
+        };
+
+        const fillGraphqlCount = (callback, graphql) => {
+            fetch(graphqlUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({ query: graphql }),
+            })
+                .then(r => r.json())
+                .then(callback)
+                .catch(error => {
+                    console.log("Error while trying to fetch workflow instances count.");
+                    console.error(error);
+                });
+        };
+
+        fillGraphqlCount(function (json) {
+            $("#processInstancesCount").text(json.data.ProcessInstances.length)
+        }, "query getAllProcessesIds{  ProcessInstances{ id } }");
+
+        fillGraphqlCount(function (json) {
+            $("#tasksCount").text(json.data.UserTaskInstances.length)
+        }, "query getAllTasksIds{  UserTaskInstances{ id } }");
+
+        fillGraphqlCount(function (json) {
+            $("#jobsCount").text(json.data.Jobs.length)
+        }, "query getAllJobsIds{  Jobs{ id } }");
+
+        fillFormsCount("forms");
+    |}
 </script>
 {/if}
