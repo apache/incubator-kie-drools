@@ -24,3 +24,20 @@ index 78097f1ba0..ad5c428f94 100644
  import org.springframework.test.annotation.DirtiesContext;
  import org.springframework.test.context.junit.jupiter.SpringExtension;
  import org.springframework.test.context.junit4.SpringRunner;
+diff --git a/springboot/archetype/src/main/resources/archetype-resources/pom.xml b/springboot/archetype/src/main/resources/archetype-resources/pom.xml
+index 3fc02e2ac6..86664a7b41 100644
+--- a/springboot/archetype/src/main/resources/archetype-resources/pom.xml
++++ b/springboot/archetype/src/main/resources/archetype-resources/pom.xml
+@@ -40,6 +40,11 @@
+       <artifactId>spring-boot-starter</artifactId>
+     </dependency>
+ 
++    <dependency>
++      <groupId>org.springframework.boot</groupId>
++      <artifactId>spring-boot-starter-webflux</artifactId>
++    </dependency>
++
+     <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-actuator</artifactId>
+
