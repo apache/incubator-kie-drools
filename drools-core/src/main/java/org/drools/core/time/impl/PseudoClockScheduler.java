@@ -147,6 +147,9 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); // use only inside synchronized
 
+    private long lastIncrease = 0;
+    private int increasingCount = 0;
+
     @SuppressWarnings("unchecked")
     private synchronized long runCallBacksAndIncreaseTimer( long increase ) {
         long endTime = this.timer.get() + increase;
@@ -156,6 +159,16 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
             if (item != null && item.getTrigger().hasNextFireTime() != null) {
                 logger.info("item nextFireTime : {}", sdf.format(item.getTrigger().hasNextFireTime().getTime()));
             }
+            if (increase > lastIncrease) {
+                increasingCount++;
+            } else {
+                increasingCount = 0;
+            }
+            if (increasingCount == 4) {
+                logger.info("increasing 4 times in a row. increase = " + increase, new Exception("DEBUG"));
+                increasingCount = 0;
+            }
+            lastIncrease = increase;
         }
         long fireTime;
         while (item != null && item.getTrigger().hasNextFireTime() != null && (fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime) {
