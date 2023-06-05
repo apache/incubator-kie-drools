@@ -180,13 +180,12 @@ public class JavaGroupByBuilder
         map.put( "readLocalsFromTuple",
                 readLocalsFromTuple ? Boolean.TRUE : Boolean.FALSE );
 
-        SelfReferenceClassFieldReader fieldReader = new SelfReferenceClassFieldReader(String.class);
-        fieldReader.setFieldType(String.class);
-        fieldReader.setValueType(ValueType.determineValueType(String.class));
+        Class<?> keyType = MVELExprAnalyzer.getExpressionType(context, DeclarationScopeResolver.getDeclarationClasses(declsInScope), pattern, groupByDescr.getGroupingFunction());
+
         bindGroupingFunctionReaderToDeclaration(context, groupByDescr,
                 pattern,
-                fieldReader,
-                String.class);
+                new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class), groupByDescr.getFunctions().size(), keyType ),
+                keyType);
 
         generateTemplates("returnValueMethod",
                 "returnValueInvoker",
@@ -231,11 +230,11 @@ public class JavaGroupByBuilder
                 bindReaderToDeclaration(context, groupByDescr, pattern, fc, new ArrayElementReader(reader, index, function.getResultType()), function.getResultType(), index);
                 accumulators[index++] = buildAccumulator(context, groupByDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, fc, function);
             }
-
+            requiredDecl.addAll(List.of(sourceDeclArr));
             MultiAccumulate out = new MultiAccumulate( source,
                                                        requiredDecl.toArray(new Declaration[requiredDecl.size()]),
                                                        accumulators,
-                                                       accumulators.length);
+                                                       accumulators.length + 1);
 
             addGroupingFunctionCompilation(context,
                     groupByDescr,
@@ -263,7 +262,7 @@ public class JavaGroupByBuilder
                 return null;
             }
 
-            bindReaderToDeclaration(context, groupByDescr, pattern, fc, new SelfReferenceClassFieldReader( function.getResultType() ), function.getResultType(), -1);
+            bindReaderToDeclaration(context, groupByDescr, pattern, fc, new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class), 0, function.getResultType() ), function.getResultType(), -1);
             Accumulator accumulator = buildAccumulator(context, groupByDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, fc, function);
 
             requiredDecl.addAll(List.of(sourceDeclArr));

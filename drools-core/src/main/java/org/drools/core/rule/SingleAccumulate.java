@@ -32,6 +32,7 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.Accumulator;
 import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.accessor.FieldValue;
 import org.drools.core.rule.accessor.ReturnValueExpression;
 import org.drools.core.rule.accessor.Wireable;
 import org.drools.core.util.index.TupleList;
@@ -99,8 +100,8 @@ public class SingleAccumulate extends Accumulate {
     private Object getKey( final InternalFactHandle handle, final Object context, final Tuple tuple, final ReteEvaluator reteEvaluator ) {
         try {
             Tuple keyTuple = new BaseLeftTuple(handle, (LeftTuple) tuple, tuple.getTupleSink());
-            Object out = grouppingFunction.evaluate(handle, keyTuple, requiredDeclarations, getInnerDeclarationCache(), reteEvaluator, grouppingFunction.createContext());
-            return out;
+            FieldValue out = grouppingFunction.evaluate(handle, keyTuple, requiredDeclarations, getInnerDeclarationCache(), reteEvaluator, grouppingFunction.createContext());
+            return out.getValue();
         } catch (Exception e) {
             throw new RuntimeException("The grouping function threw an exception", e);
         }
@@ -160,14 +161,22 @@ public class SingleAccumulate extends Accumulate {
                               final RightTuple rightParent,
                               final LeftTuple match,
                               final ReteEvaluator reteEvaluator) {
-        return this.accumulator.tryReverse( workingMemoryContext,
-                                            ((AccumulateContextEntry)context).getFunctionContext(),
-                                            leftTuple,
-                                            handle,
-                                            match.getContextObject(),
-                                            this.requiredDeclarations,
-                                            getInnerDeclarationCache(),
-                                            reteEvaluator );
+        if (context instanceof GroupByContext) {
+            GroupByContext groupByContext = ( GroupByContext ) context;
+            TupleList<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, this,
+                    match, getKey(handle, context, match, reteEvaluator), reteEvaluator);
+            groupByContext.moveToPropagateTupleList(tupleList);
+            return tryReverse(workingMemoryContext, tupleList.getContext(), leftTuple, handle, rightParent, match, reteEvaluator);
+        } else {
+            return this.accumulator.tryReverse( workingMemoryContext,
+                                                ((AccumulateContextEntry)context).getFunctionContext(),
+                                                leftTuple,
+                                                handle,
+                                                match.getContextObject(),
+                                                this.requiredDeclarations,
+                                                getInnerDeclarationCache(),
+                                                reteEvaluator );
+        }
     }
 
     public boolean supportsReverse() {

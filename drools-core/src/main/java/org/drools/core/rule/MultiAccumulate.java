@@ -26,11 +26,13 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
+import org.drools.core.reteoo.BaseLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.Accumulator;
 import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.accessor.FieldValue;
 import org.drools.core.rule.accessor.ReturnValueExpression;
 import org.drools.core.rule.accessor.Wireable;
 import org.drools.core.util.index.TupleList;
@@ -93,7 +95,9 @@ public class MultiAccumulate extends Accumulate {
 
     private Object getKey( InternalFactHandle handle, Object context, Tuple tuple, ReteEvaluator reteEvaluator ) {
         try {
-            return grouppingFunction.evaluate(handle, tuple, requiredDeclarations, requiredDeclarations, reteEvaluator, context);
+            Tuple keyTuple = new BaseLeftTuple(handle, (LeftTuple) tuple, tuple.getTupleSink());
+            FieldValue out = grouppingFunction.evaluate(handle, keyTuple, requiredDeclarations, getInnerDeclarationCache(), reteEvaluator, grouppingFunction.createContext());
+            return out.getValue();
         } catch (Exception e) {
             throw new RuntimeException("The grouping function threw an exception", e);
         }
@@ -178,6 +182,14 @@ public class MultiAccumulate extends Accumulate {
                               final RightTuple rightParent,
                               final LeftTuple match,
                               final ReteEvaluator reteEvaluator) {
+        if (context instanceof GroupByContext) {
+            GroupByContext groupByContext = ( GroupByContext ) context;
+            TupleList<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, this,
+                    match, getKey(handle, context, match, reteEvaluator), reteEvaluator);
+            groupByContext.moveToPropagateTupleList(tupleList);
+            return tryReverse(workingMemoryContext, tupleList.getContext(), leftTuple, handle, rightParent, match, reteEvaluator);
+        }
+
         Object[] values = (Object[]) match.getContextObject();
         for ( int i = 0; i < this.accumulators.length; i++ ) {
             Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
@@ -223,6 +235,10 @@ public class MultiAccumulate extends Accumulate {
                                                          this.requiredDeclarations,
                                                          reteEvaluator );
         }
+
+        if (grouppingFunction != null) {
+            results[arraySize - 1] = ((AccumulateContextEntry)context).getKey();
+        }
         return results;
     }
 
@@ -260,6 +276,7 @@ public class MultiAccumulate extends Accumulate {
 
         public void wire( Object object ) {
             ReturnValueExpression expression = (ReturnValueExpression) object;
+            grouppingFunction = expression;
             for ( Accumulate clone : cloned ) {
                 ((MultiAccumulate)clone).grouppingFunction = expression;
             }

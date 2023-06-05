@@ -21,7 +21,6 @@ import org.drools.model.codegen.execmodel.domain.Child;
 import org.drools.model.codegen.execmodel.domain.Parent;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.functions.accumulate.GroupKey;
-import org.junit.Assume;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -49,11 +48,7 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void providedInstance() throws Exception {
-        //Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
-        // TODO: class [Ljava.lang.Object; cannot be cast to class java.lang.Number
-        //       The array contains the tuple [sumOfAges, groupKey],
-        //       but only sumOfAges was expected in the code
+    public void providedInstance() {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "import " + Map.class.getCanonicalName() + ";\n" +
                 "global Map<String, Integer> results;\n" +
@@ -100,8 +95,7 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testSumPersonAgeGroupByInitialWithAcc() throws Exception {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+    public void testSumPersonAgeGroupByInitialWithAcc() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + GroupKey.class.getCanonicalName() + ";" +
@@ -110,7 +104,7 @@ public class GroupByTest extends BaseModelTest {
                 "\n" +
                 "global Map<Object, Integer> results\n" +
                 "rule R1 when\n" +
-                "    Person($initial: name.substring(0,1))" +
+                "    Person($initial: getName().substring(0,1))" +
                 "    not GroupKey(key == $initial)" +
                 "then\n" +
                 "    insert(new GroupKey(\"a\", $initial));\n" +
@@ -118,13 +112,13 @@ public class GroupByTest extends BaseModelTest {
                 "\n" +
                 "rule R2 when\n" +
                 "    $k: GroupKey(topic == \"a\", $key: key)" +
-                "    not Person($key == name.substring(0, 1))" +
+                "    not Person($key == getName().substring(0, 1))" +
                 "then\n" +
                 "    delete($k);\n" +
                 "end\n" +
                 "rule R3 when\n" +
                 "    GroupKey(topic == \"a\", $key: key)" +
-                "    accumulate($p: Person($age: age, $key == name.substring(0, 1)); $sumOfAges: sum($age); $sumOfAges > 10)" +
+                "    accumulate($p: Person($age: age, $key == getName().substring(0, 1)); $sumOfAges: sum($age); $sumOfAges > 10)" +
                 "then\n" +
                 "    results.put($key, $sumOfAges);\n" +
                 "end";
@@ -164,8 +158,7 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testGroupPersonsInitial() throws Exception {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+    public void testGroupPersonsInitial() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + List.class.getCanonicalName() + ";" +
@@ -212,9 +205,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testSumPersonAgeGroupByInitial() throws Exception {
+    public void testSumPersonAgeGroupByInitial() {
         // Note: this appears to be a duplicate of providedInstance
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Map.class.getCanonicalName() + ";" +
@@ -262,8 +254,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testSumPersonAgeGroupByInitialWithBetaFilter() throws Exception {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+    public void testSumPersonAgeGroupByInitialWithBetaFilter() {
+        // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Map.class.getCanonicalName() + ";" +
@@ -313,8 +305,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testSumPersonAgeGroupByInitialWithExists() throws Exception {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+    public void testSumPersonAgeGroupByInitialWithExists() {
+        // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Map.class.getCanonicalName() + ";" +
@@ -387,7 +379,6 @@ public class GroupByTest extends BaseModelTest {
 
     @Test
     public void testWithNull() {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + MyType.class.getCanonicalName() + ";" +
                 "import " + List.class.getCanonicalName() + ";" +
@@ -422,7 +413,6 @@ public class GroupByTest extends BaseModelTest {
 
     @Test
     public void testWithGroupByAfterExists() {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Map.class.getCanonicalName() + ";" +
                 "import " + Math.class.getCanonicalName() + ";" +
@@ -453,7 +443,6 @@ public class GroupByTest extends BaseModelTest {
     @Test
     public void testWithGroupByAfterExistsWithFrom() {
         // Note: this looks exactly the same as testWithGroupByAfterExists
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Map.class.getCanonicalName() + ";" +
                 "import " + Math.class.getCanonicalName() + ";" +
@@ -483,14 +472,14 @@ public class GroupByTest extends BaseModelTest {
 
     @Test
     public void testGroupBy2Vars() {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Map.class.getCanonicalName() + ";" +
                 "global Map<Object, Integer> results;\n" +
                 "rule X when\n" +
                 "groupby ( $p : Person ( $age : age ) and $s : String( $l : length );\n" +
-                "          $key : $p.name.substring(0, 1) + $l;\n" +
+                "          $key : $p.getName().substring(0, 1) + $l;\n" +
                 "          $sum : sum( $age ); $sum > 10 )" +
                 "then\n" +
                 "  results.put($key, $sum);\n" +
@@ -541,7 +530,6 @@ public class GroupByTest extends BaseModelTest {
 
     @Test
     public void testUnexpectedRuleMatch() {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Parent.class.getCanonicalName() + ";" +
                 "import " + Child.class.getCanonicalName() + ";" +
@@ -584,7 +572,7 @@ public class GroupByTest extends BaseModelTest {
 
     @Test
     public void testCompositeKey() {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + CompositeKey.class.getCanonicalName() + ";" +
@@ -679,7 +667,7 @@ public class GroupByTest extends BaseModelTest {
     @Test
     public void testTwoExpressionsOnSecondPattern() {
         // DROOLS-5704
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Set.class.getCanonicalName() + ";" +
@@ -709,15 +697,14 @@ public class GroupByTest extends BaseModelTest {
 
     @Test
     public void testFromAfterGroupBy() {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Set.class.getCanonicalName() + ";" +
                 "global Set<Object> results;\n" +
                 "rule X when\n" +
                 "    groupby(" +
-                "        $p : Person ( name != null );" +
-                "        $key : $p.name;" +
+                "        $p : Person ( getName() != null );" +
+                "        $key : $p.getName();" +
                 "        $count : count()" +
                 "    )\n" +
                 "    $remappedKey: Object() from $key\n" +
@@ -742,15 +729,14 @@ public class GroupByTest extends BaseModelTest {
 
     @Test
     public void testBindingRemappedAfterGroupBy() {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Set.class.getCanonicalName() + ";" +
                         "global Set<Object> results;\n" +
                         "rule X when\n" +
                         "    groupby(" +
-                        "        $p : Person ( name != null );" +
-                        "        $key : $p.name;" +
+                        "        $p : Person ( getName() != null );" +
+                        "        $key : $p.getName();" +
                         "        $count : count()" +
                         "    )\n" +
                         "    $remappedKey: Object() from $key\n" +
@@ -774,8 +760,7 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testGroupByUpdatingKey() throws Exception {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+    public void testGroupByUpdatingKey() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Map.class.getCanonicalName() + ";" +
@@ -820,7 +805,6 @@ public class GroupByTest extends BaseModelTest {
 
     @Test
     public void doesNotRemoveProperly() {
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Set.class.getCanonicalName() + ";" +
@@ -881,7 +865,7 @@ public class GroupByTest extends BaseModelTest {
     @Test
     public void testTwoGroupBy() {
         // DROOLS-5697
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Group.class.getCanonicalName() + ";" +
@@ -960,7 +944,7 @@ public class GroupByTest extends BaseModelTest {
     @Test
     public void testTwoGroupByUsingBindings() {
         // DROOLS-5697
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Group.class.getCanonicalName() + ";" +
@@ -1055,9 +1039,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testEmptyPatternOnGroupByKey() throws Exception {
+    public void testEmptyPatternOnGroupByKey() {
         // DROOLS-6031
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + List.class.getCanonicalName() + ";" +
@@ -1088,9 +1071,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testFilterOnGroupByKey() throws Exception {
+    public void testFilterOnGroupByKey() {
         // DROOLS-6031
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + List.class.getCanonicalName() + ";" +
@@ -1122,9 +1104,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testDecomposedGroupByKey() throws Exception {
+    public void testDecomposedGroupByKey() {
         // DROOLS-6031
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + List.class.getCanonicalName() + ";" +
@@ -1158,9 +1139,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testDecomposedGroupByKeyAndAccumulate() throws Exception {
+    public void testDecomposedGroupByKeyAndAccumulate() {
         // DROOLS-6031
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Pair.class.getCanonicalName() + ";" +
@@ -1197,9 +1177,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testDecomposedGroupByKeyAnd2Accumulates() throws Exception {
+    public void testDecomposedGroupByKeyAnd2Accumulates() {
         // DROOLS-6031
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Pair.class.getCanonicalName() + ";" +
@@ -1235,9 +1214,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testDecomposedGroupByKeyAnd2AccumulatesInConsequence() throws Exception {
+    public void testDecomposedGroupByKeyAnd2AccumulatesInConsequence() {
         // DROOLS-6031
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Pair.class.getCanonicalName() + ";" +
@@ -1267,9 +1245,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testNestedGroupBy1a() throws Exception {
+    public void testNestedGroupBy1a() {
         // DROOLS-6045
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + List.class.getCanonicalName() + ";" +
@@ -1295,9 +1272,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testNestedGroupBy1b() throws Exception {
+    public void testNestedGroupBy1b() {
         // DROOLS-6045
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + List.class.getCanonicalName() + ";" +
@@ -1322,9 +1298,8 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testNestedGroupBy2() throws Exception {
+    public void testNestedGroupBy2() {
         // DROOLS-6045
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + List.class.getCanonicalName() + ";" +
@@ -1352,7 +1327,7 @@ public class GroupByTest extends BaseModelTest {
     @Test
     public void testNestedGroupBy3() {
         // DROOLS-6045
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Pair.class.getCanonicalName() + ";" +
@@ -1380,9 +1355,9 @@ public class GroupByTest extends BaseModelTest {
     }
 
     @Test
-    public void testFilterOnAccumulateResultWithDecomposedGroupByKey() throws Exception {
+    public void testFilterOnAccumulateResultWithDecomposedGroupByKey() {
         // DROOLS-6045
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
+        // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Pair.class.getCanonicalName() + ";" +
@@ -1488,7 +1463,6 @@ public class GroupByTest extends BaseModelTest {
     @Test
     public void testNestedRewrite() {
         // DROOLS-5697
-        Assume.assumeTrue("Only PATTERN_DSL work for now", testRunType == RUN_TYPE.PATTERN_DSL);
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Pair.class.getCanonicalName() + ";" +

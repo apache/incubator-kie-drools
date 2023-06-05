@@ -157,7 +157,7 @@ public class MVELGroupByBuilder
                                                   requiredDeclarations.toArray( new Declaration[ requiredDeclarations.size() ] ),
                                                   null,
                                                   accumulators,
-                                                  accumulators.length);
+                                                  accumulators.length + 1);
                 int index = 0;
                 data.addCompileable( ((MultiAccumulate)accumulate).new GrouppingFunctionWirer( ),
                         groupingFunctionCompilation );
