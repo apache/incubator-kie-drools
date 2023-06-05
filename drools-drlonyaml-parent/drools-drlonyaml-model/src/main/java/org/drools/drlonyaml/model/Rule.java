@@ -19,6 +19,7 @@ package org.drools.drlonyaml.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.RuleDescr;
@@ -36,6 +37,7 @@ public class Rule {
     private AbstractThen then;
 
     public static Rule from(RuleDescr r) {
+        Objects.requireNonNull(r);
         Rule result = new Rule();
         result.name = r.getName();
         for (BaseDescr dd: r.getLhs().getDescrs()) {

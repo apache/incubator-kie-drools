@@ -17,6 +17,8 @@
 
 package org.drools.drlonyaml.model;
 
+import java.util.Objects;
+
 import org.drools.drl.ast.descr.GlobalDescr;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,6 +32,7 @@ public class Global {
     private String id;
 
     public static Global from(GlobalDescr r) {
+        Objects.requireNonNull(r);
         Global result = new Global();
         result.type = r.getType();
         result.id = r.getIdentifier();

@@ -19,6 +19,7 @@ package org.drools.drlonyaml.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.drl.ast.descr.ExistsDescr;
 
@@ -31,6 +32,7 @@ public class Exists implements Base {
     private List<Base> exists = new ArrayList<>();
     
     public static Exists from(ExistsDescr o) {
+        Objects.requireNonNull(o);
         Exists result = new Exists();
         result.exists = Utils.from(o.getDescrs());
         return result;
