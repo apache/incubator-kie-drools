@@ -19,7 +19,7 @@ UNSTABLE_STAGES = [:]
 // Should be multibranch pipeline
 pipeline {
     agent {
-        label 'kie-rhel7 && !built-in'
+        label 'rhel8 && !built-in'
     }
 
     options {

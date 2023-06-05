@@ -8,7 +8,7 @@ quickstartsRepo = 'optaplanner-quickstarts'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g'
+        label 'kie-rhel8 && docker && kie-mem16g'
     }
     environment {
         // DROOLS_BRANCH should be defined directly into the job environment

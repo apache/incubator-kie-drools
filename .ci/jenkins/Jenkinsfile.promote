@@ -13,7 +13,7 @@ imageUtils = null
 
 pipeline {
     agent {
-        label 'kie-rhel7 && !built-in'
+        label 'kie-rhel8 && docker && !built-in'
     }
 
     tools {
