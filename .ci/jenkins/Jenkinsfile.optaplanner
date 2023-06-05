@@ -9,7 +9,7 @@ kogitoAppsRepo = 'kogito-apps'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g'
+        label 'kie-rhel8 && docker && kie-mem16g'
     }
     tools {
         maven env.BUILD_MAVEN_TOOL
