@@ -5,18 +5,20 @@ properties:
   chartsWidth: 95%
   chartsHeight: 450px
 
-  cardsHeight: 20
+  cardsHeight: 80
   cardsWidth: 90%
 
-  workflowId: 6164b616-45d6-4ad9-8d46-8ede7b6957fd
+  workflowId: c1722210-c0ba-4449-a007-f1725fd8afe4
 
-  # cards template
-  cardTemplate: >-
-    >-
-                          <div id="${this}" class="card-pf card-pf-aggregate-status" style="background-color: ${bgColor}; width: ${cardsWidth}; height: ${cardsHeight};">
-                            <h2 style="font-weight: 600; font-size: large" id="${this}Value">${value}</h2>
-                            <p style="font-weight: 400" id="${this}Title"><em id="${this}Icon" class=""></em> ${title}</p>
-                          </div>
+global:
+  allowUrlProperties: true
+  settings:
+    html:
+      html: >-
+        <div id="${this}" class="card-pf card-pf-aggregate-status" style="background-color: ${bgColor}; width: ${cardsWidth}; height: ${cardsHeight}px;">
+          <h2 style="font-weight: 600; font-size: large" id="${this}Value">${value}</h2>
+          <p style="font-weight: 400" id="${this}Title"><em id="${this}Icon" class=""></em> ${title}</p>
+        </div>
 datasets:
   - uuid: nodes
     expression: >-
@@ -31,7 +33,8 @@ datasets:
                   start,
                   0,
                   $end , 
-                  $end / 2, 
+                  $end / 2,
+                  variables,
                   $n.type, 
                   $n.name,
                   $n.nodeId, 
@@ -42,7 +45,7 @@ datasets:
               ]
           });
       )
-    url: ${dataIndexUrl}/graphql/?query=%7BProcessInstances(where%3A%7Bid%3A%7Bin%3A%20%5B"${workflowId}"%5D%7D%7D)%7BprocessId%20state%20id%20start%20lastUpdate%20nodes%20%7Bid%20nodeId%20name%20type%20enter%20exit%7D%7D%7D%0A
+    url: ${dataIndexUrl}/graphql/?query=%7BProcessInstances(where%3A%7Bid%3A%7Bin%3A%20%5B"${workflowId}"%5D%7D%7D)%7BprocessId%20state%20id%20start%20lastUpdate%20variables%20nodes%20%7Bid%20nodeId%20name%20type%20enter%20exit%7D%7D%7D%0A
     columns:
       - id: workflowId
         type: label
@@ -58,6 +61,8 @@ datasets:
         type: number
       - id: middle
         type: label
+      - id: variables
+        type: label
       - id: type
         type: label
       - id: name
@@ -67,64 +72,57 @@ datasets:
       - id: nodeStartMillis
         type: number
       - id: nodeStart
-        type: label
+        type: number
       - id: nodeEnd
         type: number
       - id: duration
         type: label
 pages:
-  - rows:
+  - properties:
+      margin-left: 10px
+    rows:
       - columns:
           - components:
               - settings:
                   type: METRIC
                   general:
                     title: State
-                    visible: "true"
                   html:
                     html: >-
-                        <strong style="font-size: x-large; margin-bottom: 10px">${value} <small style="font-size: small">${workflowId}</small></strong>
+                      <strong style="font-size: x-large; margin-bottom: 10px">${value} <small style="font-size: small">${workflowId}</small></strong>
                   columns:
                     - id: end
                       pattern: "#"
-                  dataSetLookup:
-                    uuid: nodes                   
+                  lookup:
+                    uuid: nodes
                     group:
-                      - groupFunctions:
+                      - functions:
                           - source: workflowId
       - columns:
-          - span: "4"
+          - span: 4
             components:
               - settings:
                   type: METRIC
                   general:
                     title: Start
-                    visible: "true"
                   html:
-                    html: ${cardTemplate}
-                    javascript: >-                      
-                        document.getElementById(${this}.id + "Icon").className = "fa fa-calendar";
-                      
-                  chart:
-                    height: "${cardsHeight}"
+                    javascript: >-
+                      document.getElementById(${this}.id + "Icon").className = "fa fa-calendar";
                   columns:
                     - id: end
                       pattern: "#"
-                  dataSetLookup:
+                  lookup:
                     uuid: nodes
-                    filter:
                     group:
-                      - groupFunctions:
+                      - functions:
                           - source: workflowStartDate
-          - span: "4"
+          - span: 4
             components:
               - settings:
                   type: METRIC
                   general:
                     title: State
-                    visible: "true"
                   html:
-                    html: ${cardTemplate}
                     javascript: >-
                       if ( "${value}" === "ERROR") {
                         ${this}.style.color = 'red';
@@ -139,37 +137,30 @@ pages:
                       } else {
                         document.getElementById(${this}.id + "Icon").className = "";
                       }
-                  chart:
-                    height: "${cardsHeight}"
                   columns:
                     - id: end
                       pattern: "#"
-                  dataSetLookup:
-                    uuid: nodes                  
+                  lookup:
+                    uuid: nodes
                     group:
-                      - groupFunctions:
+                      - functions:
                           - source: state
-          - span: "4"
+          - span: 4
             components:
               - settings:
                   type: METRIC
                   general:
                     title: Duration (ms)
-                    visible: "true"
                   html:
-                    html: ${cardTemplate}
-                    javascript: >-                      
-                        document.getElementById(${this}.id + "Icon").className = "fa fa-clock-o";
-                  chart:
-                    height: "${cardsHeight}"
+                    javascript: >-
+                      document.getElementById(${this}.id + "Icon").className = "fa fa-clock-o";
                   columns:
                     - id: end
                       pattern: "#"
-                  dataSetLookup:
+                  lookup:
                     uuid: nodes
-                    filter:                                              
                     group:
-                      - groupFunctions:
+                      - functions:
                           - source: end
       - columns:
           - components:
@@ -178,67 +169,71 @@ pages:
                   echarts:
                     option: >-
                       {
-                          "xAxis":{
-                            "position": "top"
+                        "xAxis":{
+                          "position": "top",
+                          "type": "value"
+                        },
+                        "yAxis": {
+                          "type": "category"
+                        },
+                        "series":[
+                          {
+                            "itemStyle": {
+                                "color": "#b8f2c5",
+                                "opacity": "0.5"
+                            },
+                            "emphasis" : {
+                              "disabled": "true"
+                            },
+                            "tooltip": {
+                              "formatter": "{b}"
+                            },
+                            "type":"boxplot",
+                            "name": "Duration",
+                            "encode":{
+                                "x": ["start", "nodeStart", "middle", "nodeEnd", "end"],
+                                "y": "name",
+                                "itemName": ["Node Duration"]
+                            }
                           },
-                          "series":[
-                              {
-                                  "itemStyle": {
-                                      "color": "#b8f2c5",
-                                      "opacity": "0.5"
-                                  },                                  
-                                  "emphasis" : {
-                                    "disabled": "true"
-                                  },
-                                  "tooltip": {
-                                    "formatter": "{b}"                                    
-                                  },
-                                  "type":"boxplot",
-                                  "name": "Duration",
-                                  "encode":{
-                                      "x": ["start", "nodeStart", "middle", "nodeEnd", "end"],
-                                      "y": "name"
-
-                                  }
-                              },
-                              {
-                                  "name": "detail",
-                                  "type": "scatter",                                  
-                                  "symbolSize": "0",
-                                  "tooltip": {
-                                    "trigger": "none"                                    
-                                  },
-                                  "label": {
-                                    "show": "true",
-                                    "position": "right",
-                                    "align": "left",
-                                    "verticalAlign": "middle",                                    
-                                    "fontSize": "15",
-                                    "formatter": "{@duration} ms",
-                                    "fontWeight": "bolder"
-                                  },
-                                  "emphasis" : {
-                                    "disabled": "true"
-                                  },
-                                  "itemStyle": {
-                                    "color": "#d00000"
-                                  },
-                                  "encode": {
-                                    "x": "nodeStart",
-                                    "y": "name",
-                                    "label": "Duration",
-                                    "itemName": "Duration"
-                                  }
-                                }
-                          ]
+                          {
+                            "name": "detail",
+                            "type": "scatter",
+                            "symbolSize": "0",
+                            "tooltip": {
+                              "trigger": "none"
+                            },
+                            "label": {
+                              "show": "true",
+                              "position": "right",
+                              "align": "left",
+                              "verticalAlign": "middle",
+                              "fontSize": "15",
+                              "formatter": "{@duration} ms",
+                              "fontWeight": "bolder"
+                            },
+                            "emphasis" : {
+                              "disabled": "true"
+                            },
+                            "itemStyle": {
+                              "color": "#d00000"
+                            },
+                            "encode": {
+                              "x": "nodeStart",
+                              "y": "name",
+                              "label": "Duration",
+                              "itemName": "Duration"
+                            }
+                          }
+                        ]
                       }
-                    yAxis:
-                      type: "category"
                   external:
                     width: "${chartsWidth}"
                     height: "${chartsHeight}"
-                  dataSetLookup:
-                    dataSetUuid: nodes
+                  filter:
+                    listening: "true"
+                  lookup:
+                    uuid: nodes
                     filter:
                       - column: name
                         function: NOT_IN

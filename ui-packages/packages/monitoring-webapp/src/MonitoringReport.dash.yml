@@ -4,20 +4,21 @@ properties:
   # seconds
   refresh: 10
 
-  # charts size
-  chartsWidth: 100%
-  chartsHeight: 280px
-
   # cards size (change the template for width)
   cardsHeight: 80
-
-  # cards template
-  cardTemplate: >-
-    >-
-                          <div id="${this}" class="card-pf card-pf-accented card-pf-aggregate-status" style="background-color: ${bgColor}; width: 95%; height:${height}px;">
-                            <h2 style="font-weight: 600;" id="${this}Value">${value}</h2>
-                            <p style="font-weight: 400" id="${this}Title">${title}</p>
-                          </div>
+global:
+  settings:
+    refresh:
+      interval: ${refresh}
+    columns:
+      - id: Total
+        pattern: "#"
+    html:
+      html: >-
+        <div id="${this}" class="card-pf card-pf-aggregate-status" style="background-color: ${bgColor}; width: 90%; height: 80px">
+          <h2 style="font-weight: 600; font-size: large" id="${this}Value">${value}</h2>
+          <p style="font-weight: 400" id="${this}Title"><em id="${this}Icon" class=""></em> ${title}</p>
+        </div>
 datasets:
   - uuid: nodes
     expression: >-
@@ -29,11 +30,8 @@ datasets:
     url: ${dataIndexUrl}/graphql/?query=%7BProcessInstances%7BprocessId%20nodes%7B%20nodeId%20type%20name%20enter%20exit%20%7D%7D%7D%0A
     columns:
       - id: workflowId
-        type: label
       - id: type
-        type: label
       - id: name
-        type: label
       - id: time
         type: number
   - uuid: workflows
@@ -42,15 +40,10 @@ datasets:
     url: ${dataIndexUrl}/graphql/?query=%7BProcessInstances%7Bid%20processId%20businessKey%20processName%20serviceUrl%20state%20start%20end%20lastUpdate%20error%20%7Bmessage%7D%7D%7D%0A
     columns:
       - id: id
-        type: LABEL
       - id: businessKey
-        type: LABEL
       - id: workflowId
-        type: LABEL
       - id: workflowName
-        type: LABEL
       - id: state
-        type: LABEL
       - id: startDate
         type: DATE
       - id: lastUpdate
@@ -58,9 +51,10 @@ datasets:
       - id: duration
         type: number
       - id: errorMessage
-        type: LABEL
 pages:
-  - rows:
+  - properties:
+      margin-left: 5px
+    rows:
       - columns:
           - span: "11"
             components:
@@ -72,73 +66,49 @@ pages:
                   margin-bottom: "20px"
                 settings:
                   type: SELECTOR
-                  refresh:
-                    interval: "${refresh}"
-                  general:
-                    visible: "true"
-                    text: "Filter"
                   filter:
-                    enabled: "true"
-                    notification: "true"
-                  dataSetLookup:
+                    notification: true
+                  lookup:
                     uuid: workflows
                     group:
                       - columnGroup:
                           source: workflowId
-                        groupFunctions:
+                        functions:
                           - source: workflowId
                             column: Workflow
       - properties:
           margin-left: 30px
           text-align: center
         columns:
-          - span: "2"
+          - span: 2
             components:
               - settings:
                   type: METRIC
+                  html:
+                    javascript: document.getElementById(${this}.id + "Icon").className = "fa fa-cubes";
                   filter:
-                    enabled: "true"
-                    listening: "true"
-                  refresh:
-                    interval: "${refresh}"
+                    listening: true
                   general:
                     title: Workflows
-                    visible: "true"
-                  html:
-                    html: ${cardTemplate}
-                  chart:
-                    height: "${cardsHeight}"
-                  columns:
-                    - id: Total
-                      pattern: "#"
-                  dataSetLookup:
+                  lookup:
                     uuid: workflows
                     group:
-                      - groupFunctions:
+                      - functions:
                           - source: Total
                             function: COUNT
-          - span: "2"
+          - span: 2
             properties:
               color: blue
             components:
               - settings:
                   type: METRIC
+                  html:
+                    javascript: document.getElementById(${this}.id + "Icon").className = "fa fa-check";
                   filter:
-                    enabled: "true"
-                    listening: "true"
-                  refresh:
-                    interval: "${refresh}"
+                    listening: true
                   general:
                     title: Completed
-                    visible: "true"
-                  html:
-                    html: ${cardTemplate}
-                  chart:
-                    height: "${cardsHeight}"
-                  columns:
-                    - id: Total
-                      pattern: "#"
-                  dataSetLookup:
+                  lookup:
                     uuid: workflows
                     filter:
                       - column: state
@@ -146,31 +116,22 @@ pages:
                         args:
                           - COMPLETED
                     group:
-                      - groupFunctions:
+                      - functions:
                           - source: Total
                             function: COUNT
-          - span: "2"
+          - span: 2
             properties:
               color: green
             components:
               - settings:
                   type: METRIC
+                  html:
+                    javascript: document.getElementById(${this}.id + "Icon").className = "pficon pficon-ok";
                   filter:
-                    enabled: "true"
-                    listening: "true"
-                  refresh:
-                    interval: "${refresh}"
+                    listening: true
                   general:
                     title: Active
-                    visible: "true"
-                  html:
-                    html: ${cardTemplate}
-                  chart:
-                    height: "${cardsHeight}"
-                  columns:
-                    - id: Total
-                      pattern: "#"
-                  dataSetLookup:
+                  lookup:
                     uuid: workflows
                     filter:
                       - column: state
@@ -178,31 +139,22 @@ pages:
                         args:
                           - ACTIVE
                     group:
-                      - groupFunctions:
+                      - functions:
                           - source: Total
                             function: COUNT
-          - span: "2"
+          - span: 2
             properties:
               color: orange
             components:
               - settings:
                   type: METRIC
+                  html:
+                    javascript: document.getElementById(${this}.id + "Icon").className = "fa fa-clock-o";
                   filter:
-                    enabled: "true"
-                    listening: "true"
-                  refresh:
-                    interval: "${refresh}"
+                    listening: true
                   general:
                     title: Pending
-                    visible: "true"
-                  html:
-                    html: ${cardTemplate}
-                  chart:
-                    height: "${cardsHeight}"
-                  columns:
-                    - id: Total
-                      pattern: "#"
-                  dataSetLookup:
+                  lookup:
                     uuid: workflows
                     filter:
                       - column: state
@@ -213,28 +165,19 @@ pages:
                       - functions:
                           - source: Total
                             function: COUNT
-          - span: "2"
+          - span: 2
             properties:
               color: orange
             components:
               - settings:
                   type: METRIC
+                  html:
+                    javascript: document.getElementById(${this}.id + "Icon").className = "fa fa-ban";
                   filter:
-                    enabled: "true"
-                    listening: "true"
-                  refresh:
-                    interval: "${refresh}"
+                    listening: true
                   general:
                     title: Aborted
-                    visible: "true"
-                  html:
-                    html: ${cardTemplate}
-                  chart:
-                    height: "${cardsHeight}"
-                  columns:
-                    - id: Total
-                      pattern: "#"
-                  dataSetLookup:
+                  lookup:
                     uuid: workflows
                     filter:
                       - column: state
@@ -245,36 +188,27 @@ pages:
                       - functions:
                           - source: Total
                             function: COUNT
-          - span: "2"
+          - span: 2
             properties:
               color: red
             components:
               - settings:
                   type: METRIC
+                  html:
+                    javascript: document.getElementById(${this}.id + "Icon").className = "pficon-error-circle-o";
                   filter:
-                    enabled: "true"
-                    listening: "true"
-                  refresh:
-                    interval: "${refresh}"
+                    listening: true
                   general:
                     title: Error
-                    visible: "true"
-                  html:
-                    html: ${cardTemplate}
-                  chart:
-                    height: "${cardsHeight}"
-                  columns:
-                    - id: Total
-                      pattern: "#"
-                  dataSetLookup:
-                    dataSetUuid: workflows
+                  lookup:
+                    uuid: workflows
                     filter:
                       - column: state
                         function: EQUALS_TO
                         args:
                           - ERROR
                     group:
-                      - groupFunctions:
+                      - functions:
                           - source: Total
                             function: COUNT
       - columns:
@@ -283,31 +217,26 @@ pages:
       - columns:
           - components:
               - settings:
-                  component: echarts
-                  echarts:
-                    series:
-                      type: "bar"
-                    title:
-                      text: Functions and States Average Duration
-                    xAxis:
-                      axisLabel:
-                        interval: "0"
-                    yAxis:
-                      name: Time (ms)
-                      nameLocation: middle
-                      nameGap: "35"
-                      nameTextStyle:
-                        fontStyle: italic
-                  external:
-                    width: "${chartsWidth}"
-                    height: "${chartsHeight}"
+                  type: barchart
+                  general:
+                    title: Functions and States Average Duration
+                  chart:
+                    resizable: true
+                  extraConfiguration: >-
+                    {
+                      "yAxis": {
+                        "name": "Time (ms)",
+                        "nameLocation": "middle",
+                        "nameGap": "45",
+                        "nameTextStyle": {
+                          "fontStyle": "italic"
+                         }
+                      }
+                    }
                   filter:
-                    enabled: "true"
-                    listening: "true"
-                  refresh:
-                    interval: "${refresh}"
-                  dataSetLookup:
-                    dataSetUuid: nodes
+                    listening: true
+                  lookup:
+                    uuid: nodes
                     filter:
                       - column: name
                         function: NOT_IN
@@ -340,11 +269,8 @@ pages:
                   external:
                     width: 100%
                     height: 500px
-                  refresh:
-                    interval: "${refresh}"
                   filter:
-                    enabled: "true"
-                    listening: "true"
+                    listening: true
                   lookup:
                     uuid: workflows
                     sort:
