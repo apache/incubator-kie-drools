@@ -93,11 +93,11 @@ public class ReliableSessionInitializer {
             }
 
             public void objectInserted(ObjectInsertedEvent ev) {
-                // no-op
+                // no-op. The object is already added in the storage by addHandle
             }
 
             public void objectDeleted(ObjectDeletedEvent ev) {
-                // no-op
+                // no-op. The object is already removed in the storage by removeHandle
             }
 
             public void objectUpdated(ObjectUpdatedEvent ev) {
