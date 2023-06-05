@@ -8,7 +8,7 @@ deployProperties = [:]
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g && !built-in'
+        label 'kie-rhel8 && docker && kie-mem16g && !built-in'
     }
 
     tools {
