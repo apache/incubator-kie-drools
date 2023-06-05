@@ -1,7 +1,7 @@
 # We use author-mode for antora build because we generate antora.yml during the maven build
 site:
   title: Drools Documentation
-  url: https://www.drools.org/docs
+  url: https://docs.drools.org/latest/drools-docs
   start_page: drools::introduction/index.adoc
   robots: allow
 content:
