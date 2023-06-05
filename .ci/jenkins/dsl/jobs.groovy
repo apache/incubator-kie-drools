@@ -53,6 +53,7 @@ void createProjectSetupBranchJob() {
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DROOLS_VERSION', '', 'Drools version')
+            booleanParam('DEPLOY_ARTIFACTS', true, 'Deploy artifacts')
         }
     }
 }
