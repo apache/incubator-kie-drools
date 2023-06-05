@@ -42,7 +42,7 @@ public class StandaloneDocBuilder {
         drl += "# Another line because one was not enough \n";
         drl += "#  \n";
         drl += "# @author: trikkola \n";
-        drl += "rule \"First\" \n";
+        drl += "rule \"First\" extends \"OtherRule\" \n";
         drl += "	dialect \"mvel\" \n";
         drl += "	when \n ";
         drl += "		Person() \n ";
@@ -83,7 +83,7 @@ public class StandaloneDocBuilder {
 
         DroolsDocsBuilder ddBuilder = DroolsDocsBuilder.getInstance( drl );
 
-        File file = new File( "/Users/rikkola/Desktop/DroolsDoc.pdf" );
+        File file = new File( "DroolsDoc.pdf" );
         OutputStream out = new FileOutputStream( file );
 
         ddBuilder.writePDF( out );

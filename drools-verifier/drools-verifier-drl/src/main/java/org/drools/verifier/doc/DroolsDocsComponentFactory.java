@@ -13,333 +13,278 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.verifier.doc;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
+import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
 
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Cell;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Image;
-import com.lowagie.text.List;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.Table;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfPageEventHelper;
-import com.lowagie.text.pdf.PdfWriter;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class DroolsDocsComponentFactory {
-
-    private static final int INDENTATION_LEFT = 20;
-
     private static final String INDENT             = "    ";
 
-    private static final Font   CHAPTER_TITLE      = FontFactory.getFont( FontFactory.TIMES,
-                                                                          20,
-                                                                          Font.BOLD );
-    private static final Font   PACKAGE_NAME       = FontFactory.getFont( FontFactory.TIMES,
-                                                                          10,
-                                                                          Font.BOLD );
-    private static final Font   RULE_PACKAGE_TITLE = FontFactory.getFont( FontFactory.TIMES,
-                                                                          24,
-                                                                          Font.BOLD );
-    private static final Font   CATEGORIES_TEXT    = FontFactory.getFont( FontFactory.TIMES,
-                                                                          12 );
-    private static final Font   BODY_TEXT          = FontFactory.getFont( FontFactory.TIMES,
-                                                                          10 );
-    static final Font           HEADER_FOOTER_TEXT = FontFactory.getFont( FontFactory.TIMES,
-                                                                          8 );
+    public static void createToC(PDDocument doc, int pageNumber, DrlPackageParser packageData) throws IOException {
+        final PDPage page = new PDPage(PDRectangle.A4);
+        float yPosition = page.getMediaBox().getHeight() - 50;  // Start position for the table
 
-    public static Table newDescription(String description) throws DocumentException {
-        if ( description == null || "".equals( description ) ) {
-            description = " - ";
-        }
+        doc.addPage(page);
+        try (PDPageContentStream contentStream = new PDPageContentStream(doc, page)) {
 
-        Table table = newTable();
-
-        Cell headerCell = newHeaderCell( "Description",
-                                         CATEGORIES_TEXT );
-        table.addCell( headerCell );
-
-        table.addCell( newCell( description ) );
-
-        return table;
-    }
-
-    private static Table newTable() throws BadElementException {
-        Table table = new Table( 1 );
-
-        table.setBorderWidthTop( 1 );
-        table.setBorderWidthLeft( 1 );
-        table.setBorderWidthRight( 1 );
-        table.setBorderWidthBottom( 0 );
-        table.setWidth( 100 );
-        table.setPadding( 3 );
-        table.setAlignment( Table.ALIGN_LEFT );
-
-        return table;
-    }
-
-    public static void createOtherItems(Document document,
-                                        Map<String, java.util.List<String>> other) throws DocumentException {
-
-        for ( String key : other.keySet() ) {
-            document.add( newTable( key,
-                                    other.get( key ) ) );
-        }
-    }
-
-    public static Table newRuleTable(DrlRuleParser drl) throws BadElementException,
-                                                     DocumentException {
-        Table table = newTable();
-
-        Cell headerCell = newHeaderCell( "Attributes",
-                                         CATEGORIES_TEXT );
-        table.addCell( headerCell );
-
-        for ( String s : drl.getHeader() ) {
-            table.addCell( newCell( INDENT + s.trim() ) );
-        }
-
-        table.addCell( newHeaderCell( INDENT + "WHEN",
-                                      BODY_TEXT ) );
-        for ( String s : drl.getLhs() ) {
-            table.addCell( newCell( INDENT + INDENT + s.trim() ) );
-        }
-
-        table.addCell( newHeaderCell( INDENT + "THEN",
-                                      BODY_TEXT ) );
-        for ( String s : drl.getRhs() ) {
-            table.addCell( newCell( INDENT + INDENT + s.trim() ) );
-        }
-        // table.addCell( newEmptyWhenThenCell( "END" ) );
-
-        return table;
-    }
-
-    public static Table newTable(final String topic,
-                                 Collection<String> items) throws BadElementException,
-                                                          DocumentException {
-        Table table = newTable();
-
-        Cell headerCell = newHeaderCell( topic,
-                                         CATEGORIES_TEXT );
-        table.addCell( headerCell );
-
-        if ( items.isEmpty() ) {
-            table.addCell( newCell( " - " ) );
-        } else {
-            for ( String s : items ) {
-                table.addCell( newCell( s ) );
-            }
-        }
-
-        return table;
-    }
-
-    public static List createContents(java.util.List<DrlRuleParser> rules) {
-        List index = new List( true );
-
-        for ( DrlRuleParser drlRuleData : rules ) {
-            Chunk chunk = new Chunk( drlRuleData.getName() );
-            // chunk.setLocalGoto( item.getName() );
-            ListItem listItem = new ListItem( chunk );
-            index.add( listItem );
-        }
-
-        return index;
-    }
-
-    private static Cell newHeaderCell(String text,
-                                      Font font) throws BadElementException {
-        Cell c = new Cell( new Phrase( text,
-                                       font ) );
-        c.setBackgroundColor( Color.decode( "#CCCCFF" ) );
-        c.setLeading( 10 );
-        c.setBorder( 1 );
-
-        return c;
-    }
-
-    private static Cell newCell(String text) throws BadElementException {
-        Cell c = new Cell( new Phrase( text,
-                                       BODY_TEXT ) );
-        c.setLeading( 10 );
-        c.setBorder( 0 );
-        c.setBorderWidthBottom( 1 );
-
-        return c;
-    }
-
-    public static HeaderFooter createFooter(String packageName) {
-        HeaderFooter footer = new HeaderFooter( new Phrase( packageName + "-",
-                                                            HEADER_FOOTER_TEXT ),
-                                                true );
-        footer.setBorder( 1 );
-        footer.setAlignment( Element.ALIGN_RIGHT );
-
-        return footer;
-    }
-    
-    private static String[] splitFirst(String source, String splitter) {
-        java.util.List<String> rv = new ArrayList<>();
-        int last = 0;
-        int next;
-
-        next = source.indexOf(splitter, last);
-        if (next != -1)
-        {
-          rv.add(source.substring(last, next));
-          last = next + splitter.length();
-        }
-
-        if (last < source.length())
-        {
-          rv.add(source.substring(last));
-        }
-        return rv.toArray(new String[rv.size()]);
-      }
-
-
-    public static void newRulePage(Document document,
-                                   String packageName,
-                                   DrlRuleParser drlData) throws DocumentException {
-
-        document.add( new Paragraph( packageName,
-                                     PACKAGE_NAME ) );
-        document.add( new Paragraph( "Rule " + drlData.getName(),
-                                     CHAPTER_TITLE ) );
-
-        // Extends
-        int index = drlData.getName().lastIndexOf( "extends" );
-        if ( index > 0 ) {
-            document.add( new Paragraph( "Extends:",
-                                         BODY_TEXT ) );
-
-            Paragraph ext = new Paragraph( drlData.getName().substring( "extends".length() + index ),
-                                           BODY_TEXT );
-            ext.setIndentationLeft(INDENTATION_LEFT);
-            document.add( ext );
-        }
-
-        // if the data came from guvnor, this will be empty
-        if(drlData.getDescription() != null && drlData.getDescription().trim().equals("")) {
-            Iterator<String> iter = drlData.getMetadata().iterator();
-            while(iter.hasNext()) {
-                String nextDesc = iter.next();
-                if(nextDesc.startsWith("Description")) {
-                    String[] parts = splitFirst(nextDesc, ":");
-                    // no description
-                    if(parts.length == 1) {
-                        // guvnor did not have it
-                        document.add( newDescription( drlData.getDescription() ) );
-                    } else {
-                        document.add(newDescription(parts[1]));
-                    }
-                }
+            StringBuilder sb = new StringBuilder("Table of Contents\n");
+            int count = 0;
+            for (DrlRuleParser rule : packageData.getRules()) {
+                count++;
+                sb.append(count).append(". ").append(rule.getName().replaceAll("\"","")).append("\n");
             }
 
+            drawText(contentStream, page, yPosition, 15, sb.toString());
+            addFooter(contentStream, page, pageNumber, packageData.getName());
+        }
+    }
+
+    public static void createRulePage(PDDocument doc, int pageNumber, String packageName, DrlRuleParser drlData) throws IOException {
+        final PDPage page = new PDPage(PDRectangle.A4);
+        doc.addPage(page);
+
+        try (PDPageContentStream contentStream = new PDPageContentStream(doc, page)) {
+            createHeader(contentStream, page, packageName);
+            float yPosition = createRuleHeader(contentStream, page, drlData.getName().replaceAll("\"",""));
+
+            // Extends
+            int extendIndex = drlData.getName().lastIndexOf( "extends" );
+            if ( extendIndex > 0 ) {
+                yPosition = drawText(contentStream, page, yPosition + 20, 12, "Extends: " + drlData.getName().substring( "extends".length() + extendIndex ).replaceAll("\"", ""));
+            }
+
+            if (!drlData.getDescription().trim().isEmpty()) {
+                yPosition = createTable(contentStream, page, yPosition, Map.of("Description", List.of(drlData.getDescription())));
+            } else {
+                yPosition = yPosition + 40;
+            }
+
+            final LinkedHashMap<String, Collection<String>> content = new LinkedHashMap<>();
+
+            content.put("Attributes", dashIfEmpty(prefix(INDENT, drlData.getHeader())));
+            content.put(INDENT + "WHEN", dashIfEmpty(prefix(INDENT + INDENT, drlData.getLhs())));
+            content.put(INDENT + "THEN", dashIfEmpty(prefix(INDENT + INDENT, drlData.getRhs())));
+
+            yPosition = createTable(contentStream, page, yPosition - 40, content);
+            createTable(contentStream, page, yPosition - 40, Map.of("Metadata", dashIfEmpty(drlData.getMetadata())));
+
+            createOtherItems(contentStream, page, yPosition, drlData.getOtherInformation());
+
+            addFooter(contentStream, page, pageNumber, packageName);
+        }
+    }
+
+    private static Collection<String> prefix(String prefix, Collection<String> input){
+        final Collection<String> result = new ArrayList<>(input.size());
+        for (String s : input) {
+            result.add(prefix + s.replaceAll("\t", "    "));
+        }
+        return result;
+    }
+
+    private static Collection<String> dashIfEmpty(Collection<String> input){
+        return input.isEmpty() ? List.of("-") : input;
+    }
+
+    private static float createRuleHeader(PDPageContentStream contentStream, PDPage page, String string) throws IOException {
+        float yPosition = page.getMediaBox().getHeight() - 50;
+        return drawText(contentStream, page, yPosition, PDType1Font.TIMES_BOLD, 20, "Rule " + string);
+    }
+
+    public static void createFirstPage(PDDocument doc, String date, DrlPackageParser packageData) throws IOException {
+        final PDPage page = new PDPage(PDRectangle.A4);
+        doc.addPage(page);
+        try (PDPageContentStream contentStream = new PDPageContentStream(doc, page)) {
+            float lastContentY = writeCenteredTitleAndDate(contentStream, page, packageData.getName().toUpperCase(), date);
+
+            lastContentY = drawText(contentStream, page, lastContentY, 10, "\n\n\n\n\n" + packageData.getDescription());
+
+            lastContentY = createTable(contentStream, page, lastContentY, Map.of("Metadata", packageData.getMetadata().isEmpty() ? List.of("-") : packageData.getMetadata()));
+            lastContentY = createTable(contentStream, page, lastContentY - 20, Map.of("Globals", packageData.getGlobals()));
+
+            createOtherItems(contentStream, page, lastContentY, packageData.getOtherInformation());
+
+            addFooter(contentStream, page, 1, packageData.getName());
+        }
+    }
+
+    private static float createOtherItems(PDPageContentStream contentStream, PDPage page, float lastContentY, Map<String, List<String>> otherInformation) throws IOException {
+        for (Map.Entry<String, List<String>> other : otherInformation.entrySet()) {
+            lastContentY = createTable(contentStream, page, lastContentY - 20, Map.of(other.getKey(), other.getValue()));
+        }
+        return lastContentY;
+    }
+
+    private static void addFooter(PDPageContentStream contentStream, PDPage page, int pageNumber, String footerText) throws IOException {
+        contentStream.moveTo(50, 50); // Starting point of line
+        contentStream.lineTo(page.getMediaBox().getWidth() - 50, 50); // Ending point of line
+        contentStream.stroke();
+
+        String text = footerText + " - " + pageNumber;
+        int fontSize = 8;
+        float width = PDType1Font.TIMES_ROMAN.getStringWidth(text) / 1000 * fontSize;
+        float pageWidth = page.getMediaBox().getWidth();
+        float xPosition = pageWidth - width - 50;  // subtract 50 (or whatever your right margin is)
+
+        contentStream.beginText();
+        contentStream.setFont(PDType1Font.TIMES_ROMAN, fontSize);
+        contentStream.newLineAtOffset(xPosition, 40);  // 50 (or whatever your bottom margin is)
+        contentStream.showText(text);
+        contentStream.endText();
+    }
+
+    private static float createTable(PDPageContentStream contentStream, PDPage page, float yPosition, Map<String, Collection<String>> icontent) throws IOException {
+        float margin = 50;
+        float tableWidth = page.getMediaBox().getWidth() - 2 * margin;
+        float tableRowHeight = 20f;
+        float colWidth = tableWidth;
+        float contentY = 0;
+
+        float tableTopY = yPosition;  // Save initial yPosition as the top of the table
+        float tableBottomY = 0;  // Placeholder for bottom of the table
+
+        for (Entry<String, Collection<String>> entry : icontent.entrySet()) {
+            String header = entry.getKey();
+            Collection<String> content = entry.getValue();
+
+            // Draw header row
+            float headerY = drawRow(contentStream, page, header, yPosition, tableWidth, tableRowHeight, colWidth, true);
+            drawLine(contentStream, margin, headerY, margin + tableWidth, headerY);  // Header bottom border
+            contentY = headerY;
+
+            // Add content
+            for (String rowContent : content) {
+                contentY = drawRow(contentStream, page, rowContent, contentY, tableWidth, tableRowHeight, colWidth, false);
+                drawLine(contentStream, margin, contentY, margin + tableWidth, contentY);  // Row bottom border
+            }
+            yPosition = contentY;
+        }
+
+        tableBottomY = yPosition;  // Save final yPosition as the bottom of the table
+
+        // Draw table borders
+        drawLine(contentStream, margin, tableTopY, margin + tableWidth, tableTopY);  // Top border
+        drawLine(contentStream, margin, tableBottomY, margin + tableWidth, tableBottomY);  // Bottom border
+        drawLine(contentStream, margin, tableTopY, margin, tableBottomY);  // Left border
+        drawLine(contentStream, margin + colWidth, tableTopY, margin + colWidth, tableBottomY);  // Right border
+
+        return contentY;
+    }
+
+    private static void drawLine(PDPageContentStream contentStream, float xStart, float yStart, float xEnd, float yEnd) throws IOException {
+        contentStream.moveTo(xStart, yStart);
+        contentStream.lineTo(xEnd, yEnd);
+        contentStream.stroke();
+    }
+
+
+    private static float drawRow(PDPageContentStream contentStream, PDPage page, String text, float yPosition, float tableWidth, float rowHeight, float colWidth, boolean header) throws IOException {
+        float margin = 50;
+        float textx = margin + 5;
+        String[] lines = text.split("\n");
+        float currentY = yPosition;
+
+        // Draw background for header
+        if (header) {
+            PDColor headerBgColor = new PDColor(new float[]{0.8f, 0.8f, 1.0f}, PDDeviceRGB.INSTANCE);
+            contentStream.setNonStrokingColor(headerBgColor);
+            contentStream.addRect(margin, currentY - rowHeight * lines.length, tableWidth, rowHeight * lines.length);
+            contentStream.fill();
+            contentStream.setNonStrokingColor(new PDColor(new float[]{0, 0, 0}, PDDeviceRGB.INSTANCE));
+            contentStream.setFont(PDType1Font.TIMES_ROMAN, 12);
         } else {
-            document.add( newDescription( drlData.getDescription() ) );
+            contentStream.setFont(PDType1Font.TIMES_ROMAN, 10);
         }
-        
-        // DRL
-        document.add( newRuleTable( drlData ) );
 
-        // Meta data
-        document.add( newTable( "Metadata",
-                                drlData.getMetadata() ) );
-
-        // Other
-        createOtherItems( document,
-                          drlData.getOtherInformation() );
-
-        document.newPage();
-    }
-
-    public static void createFirstPage(Document document,
-                                       String currentDate,
-                                       DrlPackageParser packageData) throws DocumentException {
-        Paragraph title = new Paragraph( "\n\n\n\n\n" + packageData.getName().toUpperCase(),
-                                         RULE_PACKAGE_TITLE );
-        title.setAlignment( Element.ALIGN_CENTER );
-        document.add( title );
-
-        Paragraph date = new Paragraph( "Documentation created: " + currentDate,
-                                        BODY_TEXT );
-        date.setAlignment( Element.ALIGN_CENTER );
-        document.add( date );
-
-        document.add( new Paragraph( "\n\n\n\n\n" + packageData.getDescription(),
-                                     BODY_TEXT ) );
-        document.add( newTable( "Metadata ",
-                                packageData.getMetadata() ) );
-        document.add( newTable( "Globals ",
-                                packageData.getGlobals() ) );
-        createOtherItems( document,
-                          packageData.getOtherInformation() );
-    }
-}
-
-class EndPage extends PdfPageEventHelper {
-    private final String currentDate;
-
-    public EndPage(String currentDate) {
-        this.currentDate = currentDate;
-    }
-
-    public void onEndPage(PdfWriter writer,
-                          Document document) {
-
-        try {
-            Image image = Image.getInstance( DroolsDocsBuilder.class.getResource( "guvnor-webapp.png" ) ); // TODO this image never existed
-            image.setAlignment( Image.RIGHT );
-            image.scaleAbsolute( 100,
-                                 30 );
-            Rectangle page = document.getPageSize();
-            PdfPTable head = new PdfPTable( 2 );
-
-            PdfPCell cell1 = new PdfPCell( image );
-            cell1.setHorizontalAlignment( Element.ALIGN_LEFT );
-            cell1.setBorder( 0 );
-
-            head.addCell( cell1 );
-
-            PdfPCell cell2 = new PdfPCell( new Phrase( currentDate,
-                                                       DroolsDocsComponentFactory.HEADER_FOOTER_TEXT ) );
-            cell2.setHorizontalAlignment( Element.ALIGN_RIGHT );
-            cell2.setBorder( 0 );
-
-            head.addCell( cell2 );
-
-            head.setTotalWidth( page.getWidth() - document.leftMargin() - document.rightMargin() );
-            head.writeSelectedRows( 0,
-                                    -1,
-                                    document.leftMargin(),
-                                    page.getHeight() - document.topMargin() + head.getTotalHeight(),
-                                    writer.getDirectContent() );
-
-        } catch ( Exception e ) {
-            throw new ExceptionConverter( e );
+        // Add row content
+        for (String line : lines) {
+            contentStream.beginText();
+            contentStream.newLineAtOffset(textx, currentY - 15);
+            contentStream.showText(line);
+            contentStream.endText();
+            currentY -= rowHeight;
         }
+
+        return currentY;
+    }
+
+    private static float drawText(PDPageContentStream contentStream, PDPage page, float yPosition, int fontSize, String text) throws IOException {
+        return drawText(contentStream, page, yPosition, PDType1Font.TIMES_ROMAN, fontSize, text);
+    }
+
+    private static float drawText(PDPageContentStream contentStream, PDPage page, float yPosition, PDFont font, int fontSize, String text) throws IOException {
+        float margin = 50;
+        float textx = margin + 5;
+        float currentY = yPosition;
+        float height = fontSize + 5f;
+
+        contentStream.setFont(font, fontSize);
+        for (String line : text.split("\n")) {
+            contentStream.beginText();
+            contentStream.newLineAtOffset(textx, currentY - (fontSize + 5f));
+            contentStream.showText(line);
+            contentStream.endText();
+            currentY -= height;
+        }
+
+        return currentY - height;
+    }
+
+    private static float writeCenteredTitleAndDate(PDPageContentStream contentStream, PDPage page, String title, String currentDate) throws IOException {
+        float yStart = (page.getMediaBox().getHeight() / 3) * 2;
+        float xStart = page.getMediaBox().getWidth() / 2;
+        float titleFontSize = 24;
+        float dateFontSize = 10;
+
+        // Center title
+        float titleWidth = PDType1Font.TIMES_BOLD.getStringWidth(title) / 1000 * titleFontSize;
+        float titleX = xStart - titleWidth / 2;
+        float titleY = yStart;
+
+        contentStream.setFont(PDType1Font.TIMES_BOLD, titleFontSize);
+        contentStream.beginText();
+        contentStream.newLineAtOffset(titleX, titleY);
+        contentStream.showText(title);
+        contentStream.endText();
+
+        // Center date
+        String textContent = "Documentation created: " + currentDate;
+        float dateWidth = PDType1Font.TIMES_ROMAN.getStringWidth(textContent) / 1000 * dateFontSize;
+        float dateX = xStart - dateWidth / 2;
+        float dateY = yStart - titleFontSize + 5;
+
+        contentStream.setFont(PDType1Font.TIMES_ROMAN, dateFontSize);
+        contentStream.beginText();
+        contentStream.newLineAtOffset(dateX, dateY);
+        contentStream.showText(textContent);
+        contentStream.endText();
+
+        return dateY;
+    }
+
+    private static void createHeader(PDPageContentStream contentStream, PDPage page, String header) throws IOException {
+        float margin = 40;
+        float headerFontSize = 10;
+        float xPosition = margin;
+        float yPosition = page.getMediaBox().getHeight() - margin;
+
+        contentStream.setFont(PDType1Font.TIMES_BOLD, headerFontSize);
+        contentStream.beginText();
+        contentStream.newLineAtOffset(xPosition, yPosition);
+        contentStream.showText(header);
+        contentStream.endText();
     }
 }

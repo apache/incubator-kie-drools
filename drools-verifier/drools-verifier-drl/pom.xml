@@ -21,9 +21,9 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.lowagie</groupId>
-        <artifactId>itext</artifactId>
-        <version>${version.com.lowagie.itext}</version>
+        <groupId>org.apache.pdfbox</groupId>
+        <artifactId>pdfbox</artifactId>
+        <version>${version.org.apache.pdfbox}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -63,25 +63,9 @@
       <artifactId>mvel2</artifactId>
     </dependency>
 
-
     <dependency>
-      <groupId>com.lowagie</groupId>
-      <artifactId>itext</artifactId>
-      <exclusions>
-        <!-- The bouncycastle dependencies should be optional=true in itext's pom -->
-        <exclusion>
-          <groupId>bouncycastle</groupId>
-          <artifactId>bcmail-jdk14</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>bouncycastle</groupId>
-          <artifactId>bcprov-jdk14</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>bouncycastle</groupId>
-          <artifactId>bctsp-jdk14</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
     </dependency>
 
     <dependency>
