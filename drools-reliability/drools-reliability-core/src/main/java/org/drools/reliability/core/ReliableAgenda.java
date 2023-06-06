@@ -16,7 +16,7 @@
 package org.drools.reliability.core;
 
 import org.drools.core.common.Storage;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationList;
 import org.drools.kiesession.agenda.DefaultAgenda;
 
@@ -26,11 +26,11 @@ public class ReliableAgenda extends DefaultAgenda {
 
     public ReliableAgenda() { }
 
-    public ReliableAgenda(RuleBase kBase) {
+    public ReliableAgenda(InternalRuleBase kBase) {
         super( kBase );
     }
 
-    public ReliableAgenda(RuleBase kBase, boolean initMain) {
+    public ReliableAgenda(InternalRuleBase kBase, boolean initMain) {
         super( kBase, initMain );
     }
 

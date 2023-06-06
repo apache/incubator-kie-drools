@@ -24,7 +24,7 @@ import java.util.Map;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
-import org.drools.core.util.CloneUtil;
+import org.drools.base.util.CloneUtil;
 import org.junit.jupiter.api.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;

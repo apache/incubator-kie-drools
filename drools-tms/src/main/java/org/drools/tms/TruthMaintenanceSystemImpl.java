@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.core.beliefsystem.Mode;
+import org.drools.base.beliefsystem.Mode;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;

@@ -28,9 +28,9 @@ import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.AsyncSendNode.AsyncSendMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.rule.accessor.DataProvider;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.accessor.DataProvider;
 import org.drools.core.common.PropagationContext;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 
@@ -97,7 +97,6 @@ public class PhreakAsyncSendNode {
                                       DataProvider dataProvider, Class<?> resultClass, LeftTuple leftTuple, PropagationContext propagationContext ) {
         for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple,
                                                                       reteEvaluator,
-                                                                      propagationContext,
                                                                       memory.providerContext); it.hasNext(); ) {
             final Object object = it.next();
             if ( (object == null) || !resultClass.isAssignableFrom( object.getClass() ) ) {

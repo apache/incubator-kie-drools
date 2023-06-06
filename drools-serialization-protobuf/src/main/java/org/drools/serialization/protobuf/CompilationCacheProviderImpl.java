@@ -24,7 +24,7 @@ import org.drools.compiler.kie.builder.impl.CompilationCacheProvider;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 import org.drools.serialization.protobuf.kie.KieModuleCache.CompDataEntry;
 import org.drools.serialization.protobuf.kie.KieModuleCache.CompilationData;
 import org.drools.serialization.protobuf.kie.KieModuleCache.Header;

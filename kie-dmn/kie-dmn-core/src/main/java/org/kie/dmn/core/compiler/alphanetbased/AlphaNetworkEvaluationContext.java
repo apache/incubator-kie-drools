@@ -16,9 +16,9 @@
 
 package org.kie.dmn.core.compiler.alphanetbased;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
 import org.drools.model.Variable;
 
 import static org.drools.model.DSL.declarationOf;

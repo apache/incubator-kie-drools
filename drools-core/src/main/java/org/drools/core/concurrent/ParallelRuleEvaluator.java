@@ -24,7 +24,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.kie.api.runtime.rule.AgendaFilter;

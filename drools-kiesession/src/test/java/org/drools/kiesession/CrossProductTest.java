@@ -22,16 +22,16 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.consequence.Consequence;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Before;
@@ -67,12 +67,12 @@ public class CrossProductTest {
 
         this.values = new ArrayList();
 
-        rule.setConsequence( new Consequence() {
+        rule.setConsequence( new Consequence<KnowledgeHelper>() {
 
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
-                                 final ReteEvaluator reteEvaluator) throws Exception {
+                                 final ValueResolver valueResolver) throws Exception {
                 final String s1 = (String) knowledgeHelper.get( s1Declaration );
                 final String s2 = (String) knowledgeHelper.get( s2Declaration );
                 CrossProductTest.this.values.add( new String[]{s1, s2} );

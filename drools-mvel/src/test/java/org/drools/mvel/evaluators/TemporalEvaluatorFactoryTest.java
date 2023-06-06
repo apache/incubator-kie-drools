@@ -21,17 +21,17 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.mvel.field.FieldFactory;
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
 import org.drools.kiesession.entrypoints.DisconnectedWorkingMemoryEntryPoint;
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Evaluator;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.common.DefaultEventHandle;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,24 +47,24 @@ public class TemporalEvaluatorFactoryTest {
     public void testAfter() {
         registry.addEvaluatorDefinition( AfterEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   1,
-                                                   2,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ));
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   4,
-                                                   3,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     5,
-                                                     2,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        1,
+                                                        2,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ));
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        4,
+                                                        3,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          5,
+                                                          2,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                 {drool, "after", foo, Boolean.TRUE}, 
@@ -136,24 +136,24 @@ public class TemporalEvaluatorFactoryTest {
     public void testBefore() {
         registry.addEvaluatorDefinition( BeforeEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   1,
-                                                   2,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   2,
-                                                   2,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     5,
-                                                     3,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        1,
+                                                        2,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        2,
+                                                        2,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          5,
+                                                          3,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                 {foo, "before", drool, Boolean.TRUE}, 
@@ -225,30 +225,30 @@ public class TemporalEvaluatorFactoryTest {
     public void testCoincides() {
         registry.addEvaluatorDefinition( CoincidesEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   2,
-                                                   3,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   2,
-                                                   3,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     2,
-                                                     2,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle mole = new EventFactHandle( 1,
-                                                    "mole",
-                                                    1,
-                                                    1,
-                                                    2,
-                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        2,
+                                                        3,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        2,
+                                                        3,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          2,
+                                                          2,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle mole = new DefaultEventHandle(1,
+                                                         "mole",
+                                                         1,
+                                                         1,
+                                                         2,
+                                                         new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                 {foo, "coincides", bar, Boolean.TRUE}, 
@@ -292,30 +292,30 @@ public class TemporalEvaluatorFactoryTest {
     public void testDuring() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   2,
-                                                   10,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   4,
-                                                   7,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     1,
-                                                     5,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle mole = new EventFactHandle( 1,
-                                                    "mole",
-                                                    1,
-                                                    7,
-                                                    6,
-                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        2,
+                                                        10,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        4,
+                                                        7,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          1,
+                                                          5,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle mole = new DefaultEventHandle(1,
+                                                         "mole",
+                                                         1,
+                                                         7,
+                                                         6,
+                                                         new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {foo, "during", bar, Boolean.FALSE}, 
@@ -362,30 +362,30 @@ public class TemporalEvaluatorFactoryTest {
     public void testIncludes() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   2,
-                                                   10,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   4,
-                                                   7,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     1,
-                                                     5,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle mole = new EventFactHandle( 1,
-                                                    "mole",
-                                                    1,
-                                                    7,
-                                                    6,
-                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        2,
+                                                        10,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        4,
+                                                        7,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          1,
+                                                          5,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle mole = new DefaultEventHandle(1,
+                                                         "mole",
+                                                         1,
+                                                         7,
+                                                         6,
+                                                         new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {bar, "includes", foo, Boolean.FALSE}, 
@@ -432,30 +432,30 @@ public class TemporalEvaluatorFactoryTest {
     public void testFinishes() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   2,
-                                                   10,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   5,
-                                                   7,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     2,
-                                                     10,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle mole = new EventFactHandle( 1,
-                                                    "mole",
-                                                    1,
-                                                    7,
-                                                    6,
-                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        2,
+                                                        10,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        5,
+                                                        7,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          2,
+                                                          10,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle mole = new DefaultEventHandle(1,
+                                                         "mole",
+                                                         1,
+                                                         7,
+                                                         6,
+                                                         new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {bar,   "finishes", foo, Boolean.TRUE}, 
@@ -489,30 +489,30 @@ public class TemporalEvaluatorFactoryTest {
     public void testFinishedBy() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   2,
-                                                   10,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   5,
-                                                   7,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     2,
-                                                     10,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle mole = new EventFactHandle( 1,
-                                                    "mole",
-                                                    1,
-                                                    7,
-                                                    6,
-                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        2,
+                                                        10,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        5,
+                                                        7,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          2,
+                                                          10,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle mole = new DefaultEventHandle(1,
+                                                         "mole",
+                                                         1,
+                                                         7,
+                                                         6,
+                                                         new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {foo, "finishedby", bar, Boolean.TRUE}, 
@@ -546,30 +546,30 @@ public class TemporalEvaluatorFactoryTest {
     public void testStarts() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   2,
-                                                   10,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   2,
-                                                   7,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     2,
-                                                     10,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle mole = new EventFactHandle( 1,
-                                                    "mole",
-                                                    1,
-                                                    1,
-                                                    4,
-                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        2,
+                                                        10,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        2,
+                                                        7,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          2,
+                                                          10,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle mole = new DefaultEventHandle(1,
+                                                         "mole",
+                                                         1,
+                                                         1,
+                                                         4,
+                                                         new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {bar,   "starts", foo, Boolean.TRUE}, 
@@ -603,30 +603,30 @@ public class TemporalEvaluatorFactoryTest {
     public void testStartedBy() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   2,
-                                                   10,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   2,
-                                                   7,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     2,
-                                                     10,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle mole = new EventFactHandle( 1,
-                                                    "mole",
-                                                    1,
-                                                    1,
-                                                    6,
-                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        2,
+                                                        10,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        2,
+                                                        7,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          2,
+                                                          10,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle mole = new DefaultEventHandle(1,
+                                                         "mole",
+                                                         1,
+                                                         1,
+                                                         6,
+                                                         new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
                  {foo, "startedby", bar, Boolean.TRUE}, 
@@ -660,30 +660,30 @@ public class TemporalEvaluatorFactoryTest {
     public void testMeets() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   2,
-                                                   8,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   10,
-                                                   7,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     8,
-                                                     5,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle mole = new EventFactHandle( 1,
-                                                    "mole",
-                                                    1,
-                                                    11,
-                                                    4,
-                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        2,
+                                                        8,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        10,
+                                                        7,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          8,
+                                                          5,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle mole = new DefaultEventHandle(1,
+                                                         "mole",
+                                                         1,
+                                                         11,
+                                                         4,
+                                                         new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
              {foo,   "meets", bar, Boolean.TRUE}, 
@@ -713,30 +713,30 @@ public class TemporalEvaluatorFactoryTest {
     public void testMetBy() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   10,
-                                                   8,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   2,
-                                                   8,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     5,
-                                                     3,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle mole = new EventFactHandle( 1,
-                                                    "mole",
-                                                    1,
-                                                    4,
-                                                    7,
-                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        10,
+                                                        8,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        2,
+                                                        8,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          5,
+                                                          3,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle mole = new DefaultEventHandle(1,
+                                                         "mole",
+                                                         1,
+                                                         4,
+                                                         7,
+                                                         new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
              {foo,   "metby", bar, Boolean.TRUE}, 
@@ -766,30 +766,30 @@ public class TemporalEvaluatorFactoryTest {
     public void testOverlaps() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   2,
-                                                   8,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   7,
-                                                   7,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     11,
-                                                     5,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle mole = new EventFactHandle( 1,
-                                                    "mole",
-                                                    1,
-                                                    5,
-                                                    5,
-                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        2,
+                                                        8,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        7,
+                                                        7,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          11,
+                                                          5,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle mole = new DefaultEventHandle(1,
+                                                         "mole",
+                                                         1,
+                                                         5,
+                                                         5,
+                                                         new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
              {foo,   "overlaps", bar, Boolean.TRUE}, 
@@ -833,30 +833,30 @@ public class TemporalEvaluatorFactoryTest {
     public void testOverlapedBy() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
-        EventFactHandle foo = new EventFactHandle( 1,
-                                                   "foo",
-                                                   1,
-                                                   7,
-                                                   8,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle bar = new EventFactHandle( 2,
-                                                   "bar",
-                                                   1,
-                                                   2,
-                                                   8,
-                                                   new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle drool = new EventFactHandle( 1,
-                                                     "drool",
-                                                     1,
-                                                     11,
-                                                     5,
-                                                     new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
-        EventFactHandle mole = new EventFactHandle( 1,
-                                                    "mole",
-                                                    1,
-                                                    7,
-                                                    3,
-                                                    new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle foo = new DefaultEventHandle(1,
+                                                        "foo",
+                                                        1,
+                                                        7,
+                                                        8,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle bar = new DefaultEventHandle(2,
+                                                        "bar",
+                                                        1,
+                                                        2,
+                                                        8,
+                                                        new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle drool = new DefaultEventHandle(1,
+                                                          "drool",
+                                                          1,
+                                                          11,
+                                                          5,
+                                                          new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
+        DefaultEventHandle mole = new DefaultEventHandle(1,
+                                                         "mole",
+                                                         1,
+                                                         7,
+                                                         3,
+                                                         new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ) );
 
         final Object[][] data = {
              {foo,   "overlappedby", bar, Boolean.TRUE}, 
@@ -943,9 +943,9 @@ public class TemporalEvaluatorFactoryTest {
                                                      final MvelEvaluator evaluator) {
         final boolean result = evaluator.evaluate( null,
                                                    extractor,
-                                                   ( EventFactHandle ) row[0],
+                                                   (DefaultEventHandle) row[0],
                                                    extractor,
-                                                   ( EventFactHandle ) row[2] );
+                                                   (DefaultEventHandle) row[2]);
         final String message = "The evaluator type: [" + valueType + "] with 2 extractors incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -966,7 +966,7 @@ public class TemporalEvaluatorFactoryTest {
                                                                    false );
         final boolean result = evaluator.evaluateCachedRight( null,
                                                               context,
-                                                              ( EventFactHandle ) row[2] );
+                                                              (DefaultEventHandle) row[2]);
         final String message = "The evaluator type: [" + valueType + "] with CachedRight incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -987,7 +987,7 @@ public class TemporalEvaluatorFactoryTest {
                                                                    true );
         final boolean result = evaluator.evaluateCachedLeft( null,
                                                              context,
-                                                             ( EventFactHandle ) row[0] );
+                                                             (DefaultEventHandle) row[0]);
         final String message = "The evaluator type: [" + valueType + "] with CachedLeft incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -1006,7 +1006,7 @@ public class TemporalEvaluatorFactoryTest {
         try {
             evaluator.evaluate( null,
                                 extractor,
-                                ( EventFactHandle ) row[0],
+                                (DefaultEventHandle) row[0],
                                 value );
         } catch ( RuntimeException e ) {
             exc = e;
@@ -1030,9 +1030,9 @@ public class TemporalEvaluatorFactoryTest {
                                                                                            declaration,
                                                                                            evaluator );
                 if (left) {
-                    context.timestamp = ((EventFactHandle) row[2]).getStartTimestamp();
+                    context.timestamp = ((DefaultEventHandle) row[2]).getStartTimestamp();
                 } else {
-                    context.timestamp = ((EventFactHandle) row[0]).getEndTimestamp();
+                    context.timestamp = ((DefaultEventHandle) row[0]).getEndTimestamp();
                 }
                 return context;
             }
@@ -1042,9 +1042,9 @@ public class TemporalEvaluatorFactoryTest {
                                                                                            declaration,
                                                                                            evaluator );
                 if (left) {
-                    context.timestamp = ((EventFactHandle) row[2]).getEndTimestamp();
+                    context.timestamp = ((DefaultEventHandle) row[2]).getEndTimestamp();
                 } else {
-                    context.timestamp = ((EventFactHandle) row[0]).getStartTimestamp();
+                    context.timestamp = ((DefaultEventHandle) row[0]).getStartTimestamp();
                 }
                 return context;
             }
@@ -1054,11 +1054,11 @@ public class TemporalEvaluatorFactoryTest {
                                                                                      declaration,
                                                                                      evaluator );
             if (left) {
-                context.startTS = ((EventFactHandle) row[2]).getStartTimestamp();
-                context.endTS = ((EventFactHandle) row[2]).getEndTimestamp();
+                context.startTS = ((DefaultEventHandle) row[2]).getStartTimestamp();
+                context.endTS = ((DefaultEventHandle) row[2]).getEndTimestamp();
             } else {
-                context.startTS = ((EventFactHandle) row[0]).getStartTimestamp();
-                context.endTS = ((EventFactHandle) row[0]).getEndTimestamp();
+                context.startTS = ((DefaultEventHandle) row[0]).getStartTimestamp();
+                context.endTS = ((DefaultEventHandle) row[0]).getEndTimestamp();
             }
             return context;
         }
@@ -1166,22 +1166,22 @@ public class TemporalEvaluatorFactoryTest {
             return true;
         }
 
-        public boolean getBooleanValue(ReteEvaluator reteEvaluator,
+        public boolean getBooleanValue(ValueResolver valueResolver,
                                        final Object object) {
             return object != null ? ((Boolean) object).booleanValue() : false;
         }
 
-        public byte getByteValue(ReteEvaluator reteEvaluator,
+        public byte getByteValue(ValueResolver valueResolver,
                                  final Object object) {
             return object != null ? ((Number) object).byteValue() : (byte) 0;
         }
 
-        public char getCharValue(ReteEvaluator reteEvaluator,
+        public char getCharValue(ValueResolver valueResolver,
                                  final Object object) {
             return object != null ? ((Character) object).charValue() : '\0';
         }
 
-        public double getDoubleValue(ReteEvaluator reteEvaluator,
+        public double getDoubleValue(ValueResolver valueResolver,
                                      final Object object) {
             return object != null ? ((Number) object).doubleValue() : 0.0;
         }
@@ -1194,22 +1194,22 @@ public class TemporalEvaluatorFactoryTest {
             return null;
         }
 
-        public float getFloatValue(ReteEvaluator reteEvaluator,
+        public float getFloatValue(ValueResolver valueResolver,
                                    final Object object) {
             return object != null ? ((Number) object).floatValue() : (float) 0.0;
         }
 
-        public int getHashCode(ReteEvaluator reteEvaluator,
+        public int getHashCode(ValueResolver valueResolver,
                                final Object object) {
             return 0;
         }
 
-        public int getIntValue(ReteEvaluator reteEvaluator,
+        public int getIntValue(ValueResolver valueResolver,
                                final Object object) {
             return object != null ? ((Number) object).intValue() : 0;
         }
 
-        public long getLongValue(ReteEvaluator reteEvaluator,
+        public long getLongValue(ValueResolver valueResolver,
                                  final Object object) {
             return object != null ? ((Number) object).longValue() : 0;
         }
@@ -1222,17 +1222,17 @@ public class TemporalEvaluatorFactoryTest {
             return null;
         }
 
-        public short getShortValue(ReteEvaluator reteEvaluator,
+        public short getShortValue(ValueResolver valueResolver,
                                    final Object object) {
             return object != null ? ((Number) object).shortValue() : (short) 0;
         }
 
-        public Object getValue(ReteEvaluator reteEvaluator,
+        public Object getValue(ValueResolver valueResolver,
                                final Object object) {
             return object;
         }
 
-        public boolean isNullValue(ReteEvaluator reteEvaluator,
+        public boolean isNullValue(ValueResolver valueResolver,
                                    final Object object) {
             return object == null;
         }

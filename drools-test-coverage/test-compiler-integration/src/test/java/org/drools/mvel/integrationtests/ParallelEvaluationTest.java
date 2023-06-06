@@ -31,7 +31,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.ClockType;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
@@ -39,7 +39,7 @@ import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.mvel.compiler.util.debug.DebugList;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -85,7 +85,7 @@ public class ParallelEvaluationTest {
         final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
 
-        EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNode( EntryPointId.DEFAULT );
+        EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNode(EntryPointId.DEFAULT);
         ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( Integer.class ) );
         assertThat(((CompositePartitionAwareObjectSinkAdapter) otn.getObjectSinkPropagator()).isHashed()).isTrue();
 

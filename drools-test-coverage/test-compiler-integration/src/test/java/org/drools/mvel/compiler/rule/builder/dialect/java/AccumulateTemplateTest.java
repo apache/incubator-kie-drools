@@ -22,9 +22,9 @@ import java.util.Map;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.PatternExtractor;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.PatternExtractor;
 import org.drools.util.StringUtils;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;

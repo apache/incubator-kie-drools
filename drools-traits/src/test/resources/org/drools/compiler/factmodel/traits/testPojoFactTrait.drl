@@ -17,8 +17,8 @@ package org.drools.compiler.test;
 
 import java.util.List;
 import org.drools.traits.compiler.factmodel.traits.PojoFact;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.Traitable;
 
 global List trueTraits;
 global List untrueTraits;

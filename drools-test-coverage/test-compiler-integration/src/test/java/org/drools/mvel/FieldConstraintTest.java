@@ -20,23 +20,23 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.mvel.accessors.ClassFieldReader;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.RightTupleImpl;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.PredicateConstraint;
-import org.drools.core.rule.PredicateConstraint.PredicateContextEntry;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.accessor.PredicateExpression;
-import org.drools.core.reteoo.Tuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.PredicateConstraint;
+import org.drools.base.rule.PredicateConstraint.PredicateContextEntry;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.PredicateExpression;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.model.Cheese;
@@ -44,6 +44,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -191,15 +192,15 @@ public class FieldConstraintTest {
 
             private static final long serialVersionUID = 510l;
 
-            public boolean evaluate(InternalFactHandle handle,
-                                    Tuple tuple,
+            public boolean evaluate(FactHandle handle,
+                                    BaseTuple tuple,
                                     Declaration[] previousDeclarations,
                                     Declaration[] localDeclarations,
-                                    ReteEvaluator reteEvaluator,
+                                    ValueResolver valueResolver,
                                     Object context) {
-                int price1 = previousDeclarations[0].getIntValue( reteEvaluator,
+                int price1 = previousDeclarations[0].getIntValue( valueResolver,
                                                                   tuple.getObject( previousDeclarations[0] ) );
-                int price2 = localDeclarations[0].getIntValue( reteEvaluator,
+                int price2 = localDeclarations[0].getIntValue( valueResolver,
                                                                handle.getObject() );
 
                 return (price2 == (price1 * 2));

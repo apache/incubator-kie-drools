@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Lists;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.reteoo.Tuple;
 import org.junit.Test;

@@ -19,10 +19,10 @@ package org.drools.core.time.impl;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
+import org.drools.base.time.JobHandle;
 import org.drools.core.time.SessionPseudoClock;
 import org.drools.core.time.TimerService;
-import org.drools.core.time.Trigger;
+import org.drools.base.time.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +64,7 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
         if ( tmp != null ) {
             queue = tmp;
         }
+//        session = ((DroolsObjectInputStream) in).getWorkingMemory();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -112,10 +113,8 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
 
     @Override
     public synchronized void removeJob(JobHandle jobHandle) {
-        jobHandle.setCancel(true);
-        TimerJobInstance timerJobInstance = jobHandle.getTimerJobInstance();
-        jobFactoryManager.removeTimerJobInstance(timerJobInstance);
-        timerJobInstance.cancel();
+        jobHandle.cancel();
+        jobFactoryManager.removeTimerJobInstance(jobHandle);
         if ( ++cancelledJob > 1000 ) {
             purgeCancelledJob();
         }

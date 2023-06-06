@@ -25,12 +25,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.NetworkNode;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.JoinNode;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -333,10 +333,10 @@ public final class KieUtil {
     }
 
     public static ObjectTypeNode getObjectTypeNode(final KieBase kbase, final Class<?> nodeClass) {
-        return getObjectTypeNode((RuleBase) kbase, nodeClass);
+        return getObjectTypeNode((InternalRuleBase) kbase, nodeClass);
     }
 
-    public static ObjectTypeNode getObjectTypeNode(final RuleBase kbase, final Class<?> nodeClass) {
+    public static ObjectTypeNode getObjectTypeNode(final InternalRuleBase kbase, final Class<?> nodeClass) {
         final List<ObjectTypeNode> nodes = kbase.getRete().getObjectTypeNodes();
         for (final ObjectTypeNode n : nodes) {
             if (((ClassObjectType) n.getObjectType()).getClassType() == nodeClass) {
@@ -348,7 +348,7 @@ public final class KieUtil {
 
     // This method returns the first JoinNode found which meets the factClass
     public static JoinNode getJoinNode(final KieBase kbase, final Class<?> factClass) {
-        Collection<EntryPointNode> entryPointNodes = ((RuleBase) kbase).getRete().getEntryPointNodes().values();
+        Collection<EntryPointNode> entryPointNodes = ((InternalRuleBase) kbase).getRete().getEntryPointNodes().values();
         for (EntryPointNode entryPointNode : entryPointNodes) {
             JoinNode joinNode = findNode(entryPointNode, JoinNode.class);
             if (((ClassObjectType)joinNode.getObjectTypeNode().getObjectType()).getClassType().equals(factClass)) {

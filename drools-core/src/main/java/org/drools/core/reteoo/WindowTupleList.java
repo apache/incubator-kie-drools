@@ -16,7 +16,7 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 
 /**
  * A class to hold a list of the right tuples that belong to a 
@@ -24,7 +24,7 @@ import org.drools.core.common.EventFactHandle;
  * 
  */
 public class WindowTupleList {
-    protected EventFactHandle    handle;
+    protected DefaultEventHandle handle;
 
     private WindowTupleList      listPrevious;
     private WindowTupleList      listNext;
@@ -37,7 +37,7 @@ public class WindowTupleList {
     public WindowTupleList() {
     }
     
-    public WindowTupleList( EventFactHandle handle,
+    public WindowTupleList( DefaultEventHandle handle,
                             WindowNode node) {
         this.handle = handle;
         this.node = node;
@@ -56,7 +56,7 @@ public class WindowTupleList {
         this.listNext = null;
     }
 
-    public EventFactHandle getHandle() {
+    public DefaultEventHandle getHandle() {
         return this.handle;
     }
 

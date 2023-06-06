@@ -19,7 +19,7 @@ package org.drools.ancompiler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;

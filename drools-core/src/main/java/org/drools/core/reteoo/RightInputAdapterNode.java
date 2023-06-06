@@ -21,17 +21,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.bitmask.BitMask;
@@ -191,7 +192,7 @@ public class RightInputAdapterNode extends ObjectSource
     
     public SubnetworkTuple createPeer(LeftTuple original) {
         SubnetworkTuple peer = new SubnetworkTuple();
-        peer.initPeer( (BaseLeftTuple) original, this );
+        peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer( peer );
         return peer;
     }     

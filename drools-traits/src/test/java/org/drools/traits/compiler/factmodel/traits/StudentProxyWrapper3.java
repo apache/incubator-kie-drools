@@ -22,8 +22,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.accessor.WriteAccessor;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.WriteAccessor;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 import org.drools.traits.core.factmodel.TripleBasedStruct;
 import org.drools.traits.core.factmodel.TripleStore;

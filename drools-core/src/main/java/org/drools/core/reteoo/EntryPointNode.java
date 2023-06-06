@@ -21,19 +21,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.slf4j.Logger;
@@ -51,9 +52,7 @@ import org.slf4j.LoggerFactory;
  * @see ObjectTypeNode
  */
 public class EntryPointNode extends ObjectSource implements ObjectSink {
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     private static final long               serialVersionUID = 510l;
 
@@ -314,7 +313,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
         }
 
         if (handle.isEvent()) {
-            ((EventFactHandle) handle).unscheduleAllJobs(reteEvaluator);
+            ((DefaultEventHandle) handle).unscheduleAllJobs(reteEvaluator);
         }
     }
 

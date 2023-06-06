@@ -17,7 +17,7 @@
 package org.drools.examples.traits
 
 import org.drools.examples.traits.Scholar;
-import org.drools.core.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.Thing;
 
 
 declare Person

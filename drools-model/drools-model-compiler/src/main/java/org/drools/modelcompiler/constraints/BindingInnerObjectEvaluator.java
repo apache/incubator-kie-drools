@@ -16,12 +16,12 @@
 
 package org.drools.modelcompiler.constraints;
 
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.Declaration;
+import org.drools.base.rule.Declaration;
 import org.drools.core.reteoo.Tuple;
 import org.drools.model.Binding;
 import org.drools.model.view.BindViewItem1;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class BindingInnerObjectEvaluator extends BindingEvaluator {
 
@@ -30,7 +30,7 @@ public class BindingInnerObjectEvaluator extends BindingEvaluator {
     }
 
     @Override
-    public Object evaluate(InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator, Declaration[] declarations, Declaration[] innerDeclarations ) {
+    public Object evaluate(FactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator, Declaration[] declarations, Declaration[] innerDeclarations) {
         return (( BindViewItem1 ) binding).eval( handle.getObject() );
     }
 }

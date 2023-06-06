@@ -25,6 +25,7 @@ import java.util.List;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.PropagationContext;
+import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * A class to encapsulate behavior management for a given beta node
@@ -33,27 +34,27 @@ public class BehaviorManager
     implements
     Externalizable {
 
-    public static final Behavior[] NO_BEHAVIORS = new Behavior[0];
+    public static final BehaviorRuntime[] NO_BEHAVIORS = new BehaviorRuntime[0];
 
-    private Behavior[]             behaviors;
+    private BehaviorRuntime[]             behaviors;
 
     public BehaviorManager() {
         this( NO_BEHAVIORS );
     }
 
-    public BehaviorManager(List<Behavior> behaviors) {
+    public BehaviorManager(List<BehaviorRuntime> behaviors) {
         super();
-        this.behaviors = behaviors.toArray( new Behavior[behaviors.size()] );
+        this.behaviors = behaviors.toArray( new BehaviorRuntime[behaviors.size()]);
     }
 
-    public BehaviorManager(Behavior[] behaviors) {
+    public BehaviorManager(BehaviorRuntime[] behaviors) {
         super();
         this.behaviors = behaviors;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        behaviors = (Behavior[]) in.readObject();
+        behaviors = (BehaviorRuntime[]) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -63,8 +64,8 @@ public class BehaviorManager
     /**
      * Creates the behaviors' context 
      */
-    public Behavior.Context[] createBehaviorContext() {
-        Behavior.Context[] behaviorCtx = new Behavior.Context[behaviors.length];
+    public BehaviorContext[] createBehaviorContext() {
+        BehaviorContext[] behaviorCtx = new BehaviorContext[behaviors.length];
         for ( int i = 0; i < behaviors.length; i++ ) {
             behaviorCtx[i] = behaviors[i].createContext();
         }
@@ -92,7 +93,7 @@ public class BehaviorManager
      * Removes a newly asserted fact handle from the behaviors' context
      */
     public void retractFact(final Object behaviorContext,
-                            final InternalFactHandle factHandle,
+                            final FactHandle factHandle,
                             final PropagationContext pctx,
                             final ReteEvaluator reteEvaluator) {
         for ( int i = 0; i < behaviors.length; i++ ) {
@@ -106,7 +107,7 @@ public class BehaviorManager
     /**
      * @return the behaviors
      */
-    public Behavior[] getBehaviors() {
+    public BehaviorRuntime[] getBehaviors() {
         return behaviors;
     }
 

@@ -21,8 +21,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -31,12 +32,13 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Behavior;
+import org.drools.core.rule.BehaviorRuntime;
 import org.drools.core.rule.BehaviorManager;
-import org.drools.core.rule.EntryPointId;
+import org.drools.core.rule.BehaviorContext;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.rule.SlidingTimeWindow;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 
@@ -77,7 +79,7 @@ public class WindowNode extends ObjectSource
      */
     public WindowNode(final int id,
                       final List<AlphaNodeFieldConstraint> constraints,
-                      final List<Behavior> behaviors,
+                      final List<BehaviorRuntime> behaviors,
                       final ObjectSource objectSource,
                       final BuildContext context) {
         super(id,
@@ -90,7 +92,7 @@ public class WindowNode extends ObjectSource
         this.constraints = new ArrayList<>(constraints);
         this.behavior = new BehaviorManager(behaviors);
         this.entryPoint = context.getCurrentEntryPoint();
-        for ( Behavior b :  behaviors ) {
+        for ( BehaviorRuntime b :  behaviors ) {
             if ( b instanceof SlidingTimeWindow ) {
                 ((SlidingTimeWindow)b).setWindowNode( this );
             }
@@ -115,7 +117,7 @@ public class WindowNode extends ObjectSource
     /**
      * Returns the list of behaviors for this window node
      */
-    public Behavior[] getBehaviors() {
+    public BehaviorRuntime[] getBehaviors() {
         return behavior.getBehaviors();
     }
 
@@ -126,7 +128,7 @@ public class WindowNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext pctx,
                              final ReteEvaluator reteEvaluator) {
-        EventFactHandle evFh = ( EventFactHandle ) factHandle;
+        DefaultEventHandle evFh = (DefaultEventHandle) factHandle;
         for (AlphaNodeFieldConstraint constraint : constraints) {
             if (!constraint.isAllowed(evFh, reteEvaluator)) {
                 return;
@@ -163,8 +165,8 @@ public class WindowNode extends ObjectSource
 
     @Override
     public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
-        EventFactHandle originalFactHandle = ( EventFactHandle ) rightTuple.getFactHandle();
-        EventFactHandle cloneFactHandle  = ( EventFactHandle ) rightTuple.getContextObject();
+        DefaultEventHandle originalFactHandle = (DefaultEventHandle) rightTuple.getFactHandle();
+        DefaultEventHandle cloneFactHandle  = (DefaultEventHandle) rightTuple.getContextObject();
         originalFactHandle.quickCloneUpdate( cloneFactHandle ); // make sure all fields are updated
 
         // behavior modify
@@ -314,7 +316,7 @@ public class WindowNode extends ObjectSource
     }
 
     public static class WindowMemory implements Memory {
-        public Behavior.Context[] behaviorContext;
+        public BehaviorContext[] behaviorContext;
 
         public short getNodeType() {
             return NodeTypeEnums.WindowNode;
@@ -351,10 +353,10 @@ public class WindowNode extends ObjectSource
         public void reset() {
         }
 
-        public Collection<EventFactHandle> getFactHandles() {
-            List<EventFactHandle> eventFactHandles = new ArrayList<>(  );
-            for (Behavior.Context ctx : behaviorContext) {
-                for (EventFactHandle efh : ctx.getFactHandles()) {
+        public Collection<DefaultEventHandle> getFactHandles() {
+            List<DefaultEventHandle> eventFactHandles = new ArrayList<>(  );
+            for (BehaviorContext ctx : behaviorContext) {
+                for (DefaultEventHandle efh : ctx.getFactHandles()) {
                     eventFactHandles.add(efh.getLinkedFactHandle());
                 }
             }

@@ -16,19 +16,19 @@
 
 package org.drools.core.reteoo;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
 
-import org.drools.core.base.SalienceInteger;
+import org.drools.base.base.SalienceInteger;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.GroupElement;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.GroupElement;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.rule.consequence.InternalMatch;
 
@@ -144,17 +144,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
             }
             RuleExecutor ruleExecutor = ((RuleTerminalNodeLeftTuple)leftTuple).getRuleAgendaItem().getRuleExecutor();
             PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualActivationsManager( reteEvaluator ), ruleExecutor, leftTuple);
-        }
-    }
-
-    public static class SortDeclarations
-            implements
-            Comparator<Declaration> {
-        public final static SortDeclarations instance = new SortDeclarations();
-
-        public int compare(Declaration d1,
-                           Declaration d2) {
-            return (d1.getIdentifier().compareTo( d2.getIdentifier() ));
         }
     }
 

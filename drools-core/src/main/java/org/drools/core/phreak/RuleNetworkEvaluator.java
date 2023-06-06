@@ -15,11 +15,13 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.base.DroolsQuery;
+import java.util.List;
+
+import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.Memory;
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
@@ -45,7 +47,7 @@ import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.PathMemory;
@@ -63,13 +65,11 @@ import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.rule.ContextEntry;
+import org.drools.base.rule.ContextEntry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.phreak.PhreakNotNode.updateBlockersAndPropagate;
@@ -964,7 +964,7 @@ public class RuleNetworkEvaluator {
         if (!tupleSource.isLeftTupleMemoryEnabled()) {
             // This is a hack, to not add closed DroolsQuery objects
             Object object = tuple.getRootTuple().getFactHandle().getObject();
-            if (!(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen()) {
+            if (!(object instanceof DroolsQueryImpl) || !((DroolsQueryImpl) object).isOpen()) {
                 useLeftMemory = false;
             }
         }

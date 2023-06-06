@@ -19,11 +19,11 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.drools.compiler.builder.impl.classbuilder.BuildUtils;
-import org.drools.core.factmodel.ClassDefinition;
+import org.drools.base.factmodel.ClassDefinition;
 import org.drools.compiler.builder.impl.classbuilder.EnumClassBuilder;
 import org.drools.compiler.builder.impl.classbuilder.EnumClassDefinition;
 import org.drools.compiler.builder.impl.classbuilder.EnumLiteralDefinition;
-import org.drools.core.factmodel.FieldDefinition;
+import org.drools.base.factmodel.FieldDefinition;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.MethodVisitor;

@@ -19,6 +19,7 @@ package org.drools.core.time;
 import java.io.Serializable;
 import java.util.Optional;
 
+import org.drools.base.time.JobHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;

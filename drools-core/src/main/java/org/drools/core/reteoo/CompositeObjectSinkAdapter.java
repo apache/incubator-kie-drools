@@ -28,20 +28,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.index.AlphaRangeIndex;
-import org.drools.core.util.index.IndexUtil.ConstraintType;
+import org.drools.base.util.index.ConstraintTypeOperator;
 
-import static org.drools.core.util.index.IndexUtil.isBigDecimalEqualityConstraint;
+import static org.drools.base.util.index.IndexUtil.isBigDecimalEqualityConstraint;
 
 public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
@@ -206,10 +207,10 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     }
 
     private static boolean isHashable( IndexableConstraint indexableConstraint ) {
-        return indexableConstraint.getConstraintType() == ConstraintType.EQUAL && indexableConstraint.getField() != null &&
+        return indexableConstraint.getConstraintType() == ConstraintTypeOperator.EQUAL && indexableConstraint.getField() != null &&
                 indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
-                !isBigDecimalEqualityConstraint(indexableConstraint) &&
-                // our current implementation does not support hashing of deeply nested properties
+               !isBigDecimalEqualityConstraint(indexableConstraint) &&
+               // our current implementation does not support hashing of deeply nested properties
                 indexableConstraint.getFieldExtractor().getIndex() >= 0;
     }
 
@@ -472,7 +473,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
         if (fieldConstraint instanceof IndexableConstraint) {
             IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
-            ConstraintType constraintType = indexableConstraint.getConstraintType();
+            ConstraintTypeOperator constraintType = indexableConstraint.getConstraintType();
             return (constraintType.isAscending() || constraintType.isDescending()) &&
                     indexableConstraint.getField() != null && !indexableConstraint.getField().isNull() &&
                     indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&

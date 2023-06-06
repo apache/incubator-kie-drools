@@ -20,7 +20,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.tms.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.Mode;
+import org.drools.base.beliefsystem.Mode;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.tms.beliefsystem.ModedAssertion;
 

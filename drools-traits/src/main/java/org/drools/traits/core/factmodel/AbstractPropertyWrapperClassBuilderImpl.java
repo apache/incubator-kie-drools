@@ -22,10 +22,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.builder.impl.classbuilder.BuildUtils;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.factmodel.FieldDefinition;
+import org.drools.base.factmodel.traits.TraitFieldTMS;
+import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.mvel.asm.AsmUtil;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;

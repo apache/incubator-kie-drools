@@ -16,9 +16,8 @@
 
 package org.drools.core.runtime.rule.impl;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Declaration;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.Declaration;
 import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Row;
@@ -27,7 +26,7 @@ public class RowAdapter implements Row {
 
     private RuleImpl             rule;
     private Tuple                tuple;
-    private InternalFactHandle[] factHandles;
+    private FactHandle[] factHandles;
 
     public RowAdapter(final RuleImpl rule,
                       final Tuple leftTuple) {
@@ -35,7 +34,7 @@ public class RowAdapter implements Row {
         this.tuple = leftTuple;
     }
 
-    private InternalFactHandle getFactHandle(Declaration declr) {
+    private FactHandle getFactHandle(Declaration declr) {
         return this.factHandles[ declr.getPattern().getPatternId() ];
     }
 
@@ -47,7 +46,7 @@ public class RowAdapter implements Row {
         if ( declr == null ) {
             throw new RuntimeException("The identifier '" + identifier + "' does not exist as a bound variable for this query" );
         }
-        InternalFactHandle factHandle = getFactHandle( declr );
+        FactHandle factHandle = getFactHandle( declr );
         return declr.getValue( null, factHandle );
     }
 
@@ -59,7 +58,7 @@ public class RowAdapter implements Row {
         if ( declr == null ) {
             throw new RuntimeException("The identifier '" + identifier + "' does not exist as a bound variable for this query" );
         }
-        InternalFactHandle factHandle = getFactHandle( declr );
+        FactHandle factHandle = getFactHandle( declr );
         return factHandle;
     }
 

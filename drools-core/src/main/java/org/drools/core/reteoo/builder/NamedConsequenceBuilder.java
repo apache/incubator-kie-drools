@@ -15,10 +15,10 @@
 
 package org.drools.core.reteoo.builder;
 
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.NamedConsequence;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.time.impl.Timer;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.NamedConsequence;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.time.impl.Timer;
 
 public class NamedConsequenceBuilder implements ReteooComponentBuilder {
 

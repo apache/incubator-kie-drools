@@ -23,8 +23,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 
 import org.drools.drl.parser.DroolsParserException;
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.base.common.DroolsObjectInputStream;
+import org.drools.base.common.DroolsObjectOutputStream;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.KieBase;

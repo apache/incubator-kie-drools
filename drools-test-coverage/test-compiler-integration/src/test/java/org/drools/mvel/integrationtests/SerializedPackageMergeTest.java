@@ -28,8 +28,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.base.common.DroolsObjectInputStream;
+import org.drools.base.common.DroolsObjectOutputStream;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.compiler.Message;

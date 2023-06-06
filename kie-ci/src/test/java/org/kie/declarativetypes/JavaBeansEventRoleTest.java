@@ -15,7 +15,7 @@
 
 package org.kie.declarativetypes;
 
-import org.drools.core.rule.TypeMetaInfo;
+import org.drools.base.rule.TypeMetaInfo;
 import org.drools.mvel.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.api.KieServices;

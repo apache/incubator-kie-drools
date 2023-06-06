@@ -20,12 +20,11 @@ import java.io.StringReader;
 import java.util.Collections;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.drl.parser.DroolsParserException;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.mvel.integrationtests.LargeRuleBase;
 import org.junit.Ignore;
@@ -68,7 +67,7 @@ public class ReteooBuilderPerformanceTest {
         CompositeBaseConfiguration conf = (CompositeBaseConfiguration) RuleBaseFactory.newKnowledgeBaseConfiguration();
 
         for (int i = 0; i < reteBuilders.length; i++) {
-            reteBuilders[i] = new ReteooBuilder(new KnowledgeBaseImpl( "id1", conf ));
+            reteBuilders[i] = new ReteooBuilder(new KnowledgeBaseImpl("id1", conf ));
         }
         return reteBuilders;
     }

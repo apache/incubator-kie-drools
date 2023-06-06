@@ -17,8 +17,8 @@
 
 package org.drools.mvel.field;
 
-import org.drools.core.base.ValueType;
-import org.drools.core.rule.accessor.FieldValue;
+import org.drools.base.base.ValueType;
+import org.drools.base.rule.accessor.FieldValue;
 
 
 public interface FieldDataFactory {

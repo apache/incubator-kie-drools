@@ -19,10 +19,10 @@ import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.Map;
 
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.Declaration;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.time.TimeUtils;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.time.TimeUtils;
 import org.drools.core.time.TimerExpression;
 import org.drools.core.time.impl.CronExpression;
 import org.drools.util.ClassUtils;
@@ -123,8 +123,8 @@ public class TimerUtil {
         }
 
         @Override
-        public Object getValue( Tuple leftTuple, Declaration[] declrs, ReteEvaluator reteEvaluator ) {
-            return declrs[0].getValue( reteEvaluator, leftTuple );
+        public Object getValue(BaseTuple leftTuple, Declaration[] declrs, ValueResolver valueResolver) {
+            return declrs[0].getValue( valueResolver, leftTuple );
         }
     }
 
@@ -143,9 +143,9 @@ public class TimerUtil {
         }
 
         @Override
-        public Object getValue( Tuple leftTuple, Declaration[] declrs, ReteEvaluator reteEvaluator ) {
+        public Object getValue(BaseTuple leftTuple, Declaration[] declrs, ValueResolver valueResolver) {
             try {
-                return method.invoke( declrs[0].getValue( reteEvaluator, leftTuple ) );
+                return method.invoke( declrs[0].getValue( valueResolver, leftTuple ) );
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException( e );
             }
@@ -165,7 +165,7 @@ public class TimerUtil {
         }
 
         @Override
-        public Object getValue( Tuple leftTuple, Declaration[] declrs, ReteEvaluator reteEvaluator ) {
+        public Object getValue(BaseTuple leftTuple, Declaration[] declrs, ValueResolver valueResolver) {
             return value;
         }
     }

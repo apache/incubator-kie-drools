@@ -21,22 +21,22 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Pattern;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.Pattern;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode {
     /** The rule to invoke upon match. */
@@ -214,7 +214,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         Pattern pattern = context.getLastBuiltPatterns()[0];
         ObjectType objectType = pattern.getObjectType();
 
-        if ( isPropertyReactive(context, objectType) ) {
+        if ( isPropertyReactive(context.getRuleBase(), objectType) ) {
             List<String> accessibleProperties = pattern.getAccessibleProperties( context.getRuleBase() );
             setDeclaredMask( pattern.getPositiveWatchMask(accessibleProperties) );
             setNegativeMask( pattern.getNegativeWatchMask(accessibleProperties) );
@@ -256,7 +256,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     public LeftTuple createPeer(LeftTuple original) {
         RuleTerminalNodeLeftTuple peer = (RuleTerminalNodeLeftTuple) AgendaComponentFactory.get().createTerminalTuple();
-        peer.initPeer( (BaseLeftTuple) original, this );
+        peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer( peer );
         return peer;
     }
@@ -330,15 +330,6 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     public final boolean hasPathNode(LeftTupleNode node) {
         for (LeftTupleNode pathNode : getPathNodes()) {
             if (node.getId() == pathNode.getId()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final boolean isTerminalNodeOf(LeftTupleNode node) {
-        for (PathEndNode pathEndNode : getPathEndNodes()) {
-            if (pathEndNode.hasPathNode( node )) {
                 return true;
             }
         }

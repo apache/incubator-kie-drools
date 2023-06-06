@@ -23,21 +23,22 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexFactory;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
-import static org.drools.core.util.index.IndexUtil.compositeAllowed;
-import static org.drools.core.util.index.IndexUtil.isIndexableForNode;
+import static org.drools.base.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.base.util.index.IndexUtil.compositeAllowed;
+import static org.drools.base.util.index.IndexUtil.isIndexableForNode;
 
 
 public class DefaultBetaConstraints
@@ -155,7 +156,7 @@ public class DefaultBetaConstraints
      */
     public void updateFromFactHandle(final ContextEntry[] context,
                                      final ReteEvaluator reteEvaluator,
-                                     final InternalFactHandle handle) {
+                                     final FactHandle handle) {
         for (ContextEntry aContext : context) {
             aContext.updateFromFactHandle(reteEvaluator, handle);
         }
@@ -177,7 +178,7 @@ public class DefaultBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
-                                       final InternalFactHandle handle) {
+                                       final FactHandle handle) {
         for (int i = indexed; i < constraints.length; i++) {
             if ( !constraints[i].isAllowedCachedLeft(context[i], handle) ) {
                 return false;

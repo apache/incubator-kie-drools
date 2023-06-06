@@ -16,7 +16,7 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.time.Trigger;
+import org.drools.base.time.Trigger;
 
 import java.io.Externalizable;
 import java.io.IOException;

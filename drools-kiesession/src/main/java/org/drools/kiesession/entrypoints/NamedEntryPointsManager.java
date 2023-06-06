@@ -24,15 +24,15 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.EntryPointsManager;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 
 public class NamedEntryPointsManager implements EntryPointsManager {
 
     private final ReteEvaluator reteEvaluator;
-    private final RuleBase ruleBase;
+    private final InternalRuleBase ruleBase;
 
     InternalWorkingMemoryEntryPoint defaultEntryPoint;
 

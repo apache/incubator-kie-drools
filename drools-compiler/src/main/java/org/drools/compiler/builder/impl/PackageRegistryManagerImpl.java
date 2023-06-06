@@ -17,7 +17,7 @@ package org.drools.compiler.builder.impl;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.ImportDescr;

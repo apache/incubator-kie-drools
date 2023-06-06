@@ -21,8 +21,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
-import org.drools.core.base.ValueType;
-import org.drools.core.rule.accessor.WriteAccessor;
+import org.drools.base.base.ValueType;
+import org.drools.base.rule.accessor.WriteAccessor;
 
 /**
  * This class implements the WriteAccessor interface

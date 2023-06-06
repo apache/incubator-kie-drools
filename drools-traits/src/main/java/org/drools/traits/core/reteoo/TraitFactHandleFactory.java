@@ -18,7 +18,7 @@ package org.drools.traits.core.reteoo;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.reteoo.InitialFactImpl;
+import org.drools.base.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.traits.core.common.TraitDefaultFactHandle;

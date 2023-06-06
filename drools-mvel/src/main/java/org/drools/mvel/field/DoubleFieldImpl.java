@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.core.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.FieldValue;
 
 public class DoubleFieldImpl
     implements

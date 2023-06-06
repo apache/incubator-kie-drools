@@ -19,7 +19,7 @@ package org.drools.modelcompiler;
 import java.util.Collection;
 import java.util.Map;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.kie.api.definition.KiePackage;
 
 public class CanonicalKiePackages {

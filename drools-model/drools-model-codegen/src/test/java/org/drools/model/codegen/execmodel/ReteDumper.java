@@ -25,7 +25,7 @@ public class ReteDumper {
     private ReteDumper() { }
 
     public static Set<BaseNode> collectNodes(KieBase kbase) {
-        return visitRete( ((InternalKnowledgeBase) kbase).getRete(), voidConsumer );
+        return visitRete(((InternalKnowledgeBase) kbase).getRete(), voidConsumer);
     }
 
     public static Set<BaseNode> collectNodes(KieSession session) {
@@ -33,7 +33,7 @@ public class ReteDumper {
     }
 
     public static Set<BaseNode> dumpRete(KieBase kbase) {
-        return visitRete( ((InternalKnowledgeBase) kbase).getRete(), dumpConsumer );
+        return visitRete(((InternalKnowledgeBase) kbase).getRete(), dumpConsumer);
     }
 
     public static Set<BaseNode> dumpRete(KieSession session) {
@@ -41,7 +41,7 @@ public class ReteDumper {
     }
 
     public static Set<BaseNode> checkRete(KieBase kbase, Predicate<BaseNode> predicate) {
-        return visitRete(((InternalKnowledgeBase) kbase).getRete(), toConsumer( predicate ));
+        return visitRete(((InternalKnowledgeBase) kbase).getRete(), toConsumer(predicate));
     }
 
     public static Set<BaseNode> checkRete(KieSession session, Predicate<BaseNode> predicate) {

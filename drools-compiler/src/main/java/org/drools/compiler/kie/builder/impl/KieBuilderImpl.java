@@ -69,7 +69,7 @@ import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.Drools.hasXmlSupport;
+import static org.drools.base.util.Drools.hasXmlSupport;
 import static org.drools.util.StringUtils.codeAwareIndexOf;
 import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
 

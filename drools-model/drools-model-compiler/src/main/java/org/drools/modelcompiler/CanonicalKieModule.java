@@ -59,10 +59,10 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.factmodel.GeneratedFact;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.factmodel.GeneratedFact;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.Model;
 import org.drools.model.NamedModelItem;
@@ -79,7 +79,6 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.internal.utils.KieService;
@@ -284,7 +283,7 @@ public class CanonicalKieModule implements InternalKieModule {
         compositeUpdater.run();
     }
 
-    private void registerNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, InternalKnowledgeBase kieBase, BuildContext buildContext ) {
+    private void registerNonNativeResources(KieBaseModelImpl kBaseModel, KieProject kieProject, InternalKnowledgeBase kieBase, BuildContext buildContext) {
         KnowledgeBuilder kbuilder = getKnowledgeBuilderForKieBase(kBaseModel.getName());
         if (kbuilder == null) {
             kbuilder = kieProject.buildKnowledgePackages(kBaseModel, buildContext, NON_MODEL_RESOURCES);

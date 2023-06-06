@@ -14,55 +14,52 @@
 
 package org.drools.mvel.builder;
 
-import org.drools.compiler.compiler.AnalysisResult;
-import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.rule.builder.GroupByBuilder;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.RuleConditionBuilder;
-import org.drools.compiler.rule.builder.util.AccumulateUtil;
-import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
-import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
-import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.MultiAccumulate;
-import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.rule.SingleAccumulate;
-import org.drools.core.rule.accessor.Accumulator;
-import org.drools.core.rule.accessor.DeclarationScopeResolver;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.rule.constraint.Constraint;
-import org.drools.core.util.index.IndexUtil;
-import org.drools.drl.ast.descr.AccumulateDescr.AccumulateFunctionCallDescr;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.GroupByDescr;
-import org.drools.mvel.MVELConstraint;
-import org.drools.mvel.MVELDialectRuntimeData;
-import org.drools.mvel.asm.AsmUtil;
-import org.drools.mvel.expr.MVELAccumulator;
-import org.drools.mvel.expr.MVELAccumulatorFunctionExecutor;
-import org.drools.mvel.expr.MVELCompilationUnit;
-import org.drools.mvel.expr.MVELCompileable;
-import org.drools.mvel.expr.MVELEvalExpression;
-import org.drools.mvel.expr.MVELObjectExpression;
-import org.drools.mvel.expr.MVELReturnValueExpression;
-import org.kie.api.runtime.rule.AccumulateFunction;
-import org.kie.internal.builder.conf.AccumulateFunctionOption;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.compiler.rule.builder.GroupByBuilder;
+import org.drools.drl.ast.descr.AccumulateDescr.AccumulateFunctionCallDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleConditionBuilder;
+import org.drools.compiler.rule.builder.util.AccumulateUtil;
+import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
+import org.drools.base.base.extractors.ArrayElementReader;
+import org.drools.base.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.base.reteoo.SortDeclarations;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.MultiAccumulate;
+import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.SingleAccumulate;
+import org.drools.base.rule.accessor.Accumulator;
+import org.drools.base.rule.constraint.Constraint;
+import org.drools.base.rule.accessor.DeclarationScopeResolver;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.drl.ast.descr.GroupByDescr;
+import org.drools.mvel.MVELConstraint;
+import org.drools.mvel.MVELDialectRuntimeData;
+import org.drools.mvel.MVELGroupByAccumulate;
+import org.drools.mvel.asm.AsmUtil;
+import org.drools.mvel.expr.MVELAccumulator;
+import org.drools.mvel.expr.MVELAccumulatorFunctionExecutor;
+import org.drools.mvel.expr.MVELCompilationUnit;
+import org.drools.mvel.expr.MVELCompileable;
+import org.drools.mvel.expr.MVELReturnValueExpression;
+import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.internal.builder.conf.AccumulateFunctionOption;
 
 /**
  * A builder for the mvel dialect groupby version
@@ -151,30 +148,33 @@ public class MVELGroupByBuilder
 
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
 
-            Accumulate accumulate;
+            MVELGroupByAccumulate accumulate;
             if (groupByDescr.isMultiFunction()) {
-                accumulate = new MultiAccumulate( source,
-                                                  requiredDeclarations.toArray( new Declaration[ requiredDeclarations.size() ] ),
-                                                  null,
-                                                  accumulators,
-                                                  accumulators.length + 1);
+                accumulate = new MVELGroupByAccumulate(new MultiAccumulate( source,
+                                                       requiredDeclarations.toArray( new Declaration[ requiredDeclarations.size() ] ),
+                                                       accumulators,
+                                                       accumulators.length + 1),
+                                                       null,
+                                                       groupingFunctionCompilation);
                 int index = 0;
-                data.addCompileable( ((MultiAccumulate)accumulate).new GrouppingFunctionWirer( ),
+                data.addCompileable( accumulate.new GroupingFunctionWirer( ),
                         groupingFunctionCompilation );
                 ((MVELCompileable) groupingFunctionCompilation).compile( data, context.getRule() );
                 for ( Accumulator accumulator : accumulators ) {
-                    data.addCompileable( ((MultiAccumulate)accumulate).new Wirer( index++ ),
+                    data.addCompileable( ((MultiAccumulate)((MVELGroupByAccumulate) accumulate).getInnerAccumulate()).new Wirer( index++ ),
                                          ( MVELCompileable ) accumulator );
                     ((MVELCompileable) accumulator).compile( data, context.getRule() );
                 }
             } else {
-                accumulate = new SingleAccumulate( source,
+                accumulate = new MVELGroupByAccumulate(new SingleAccumulate( source,
                                                    requiredDeclarations.toArray( new Declaration[ requiredDeclarations.size() ] ),
-                                                   accumulators[0] );
-                data.addCompileable( ((SingleAccumulate)accumulate).new GrouppingFunctionWirer( ),
+                                                   accumulators[0] ),
+                                                   null,
+                                                    groupingFunctionCompilation);
+                data.addCompileable( ((MVELGroupByAccumulate)accumulate).new GroupingFunctionWirer( ),
                         groupingFunctionCompilation );
                 ((MVELCompileable) groupingFunctionCompilation).compile( data, context.getRule() );
-                data.addCompileable( ((SingleAccumulate)accumulate).new Wirer( ),
+                data.addCompileable( ((SingleAccumulate) accumulate.getInnerAccumulate()).new Wirer( ),
                                          (MVELCompileable) accumulators[0] );
                     ((MVELCompileable) accumulators[0]).compile( data, context.getRule() );
             }
@@ -317,7 +317,7 @@ public class MVELGroupByBuilder
                                                                      new Declaration[] { inner },
                                                                      null,
                                                                      null,
-                                                                     IndexUtil.ConstraintType.EQUAL,
+                                                                     ConstraintTypeOperator.EQUAL,
                                                                      context.getDeclarationResolver().getDeclaration( func.getBind() ),
                                                                      groupByDescr.isMultiFunction()
                                                                 ? new ArrayElementReader( arrayReader, index, function.getResultType() )

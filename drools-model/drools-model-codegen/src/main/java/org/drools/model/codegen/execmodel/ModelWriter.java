@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 import org.kie.api.builder.ReleaseId;
 import org.drools.util.PortablePath;
 

@@ -20,10 +20,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EvalCondition;
-import org.drools.core.rule.accessor.EvalExpression;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.EvalCondition;
+import org.drools.base.rule.accessor.EvalExpression;
 
 public class MockEvalCondition extends EvalCondition {
 
@@ -36,9 +37,9 @@ public class MockEvalCondition extends EvalCondition {
 
                                                       public Object createContext() { return null; }
 
-                                                      public boolean evaluate(Tuple tuple,
+                                                      public boolean evaluate(BaseTuple tuple,
                                                                               Declaration[] requiredDeclarations,
-                                                                              ReteEvaluator reteEvaluator,
+                                                                              ValueResolver valueResolver,
                                                                               Object context ) {
                                                           return MockEvalCondition.this.isAllowed.booleanValue();
                                                       }

@@ -16,10 +16,10 @@
 
 package org.drools.traits.core.factmodel;
 
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitFieldTMS;
+import org.drools.base.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.TraitableBean;
 import org.kie.api.definition.type.PropertyReactive;
 
 import java.io.Serializable;

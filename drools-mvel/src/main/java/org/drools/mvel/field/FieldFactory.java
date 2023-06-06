@@ -21,9 +21,9 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.drools.core.base.ValueType;
-import org.drools.core.base.field.ObjectFieldImpl;
-import org.drools.core.rule.accessor.FieldValue;
+import org.drools.base.base.ValueType;
+import org.drools.base.base.field.ObjectFieldImpl;
+import org.drools.base.rule.accessor.FieldValue;
 import org.drools.util.DateUtils;
 import org.drools.util.MathUtils;
 

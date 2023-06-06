@@ -15,7 +15,7 @@
 
 package org.drools.traits.core.reteoo;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.traits.core.definitions.impl.TraitKnowledgePackageImpl;

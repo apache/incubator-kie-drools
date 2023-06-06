@@ -31,13 +31,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.DialectRuntimeData;
-import org.drools.core.rule.DialectRuntimeRegistry;
+import org.drools.base.definitions.impl.KnowledgePackageImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.Function;
+import org.drools.base.rule.DialectRuntimeData;
+import org.drools.base.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.accessor.Wireable;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.Wireable;
 import org.drools.mvel.expr.MVELCompileable;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.integration.VariableResolver;
@@ -222,7 +223,7 @@ public class MVELDialectRuntimeData
 
     // TODO: FIXME: make it consistent with above
     public void removeFunction(KnowledgePackageImpl pkg,
-                               org.drools.core.rule.Function function) {
+                               Function function) {
         this.functionFactory.removeFunction( function.getName() );
 
     }

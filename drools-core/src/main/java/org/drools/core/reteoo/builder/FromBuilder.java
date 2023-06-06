@@ -19,9 +19,9 @@ package org.drools.core.reteoo.builder;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.FromNode;
-import org.drools.core.rule.From;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.From;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 
 public class FromBuilder
     implements

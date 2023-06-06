@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.ConditionalBranchNode;
-import org.drools.core.reteoo.InitialFactImpl;
+import org.drools.base.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
@@ -548,7 +548,7 @@ public class SegmentCreationTest {
     }
 
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
-        List<ObjectTypeNode> nodes = ((RuleBase)kbase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((InternalRuleBase)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {
                 return n;

@@ -89,8 +89,8 @@ public abstract class AbstractFactHandleFactory implements FactHandleFactory  {
     }
 
     @Override
-    public EventFactHandle createEventFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, long timestamp, long duration) {
-        return new EventFactHandle(id, object, recency, timestamp, duration, entryPoint);
+    public DefaultEventHandle createEventFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, long timestamp, long duration) {
+        return new DefaultEventHandle(id, object, recency, timestamp, duration, entryPoint);
     }
 
     protected WorkingMemoryEntryPoint getWmEntryPoint(ReteEvaluator reteEvaluator, WorkingMemoryEntryPoint wmEntryPoint) {

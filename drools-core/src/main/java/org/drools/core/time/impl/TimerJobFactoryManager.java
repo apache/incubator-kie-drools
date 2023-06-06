@@ -18,8 +18,8 @@ package org.drools.core.time.impl;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
-import org.drools.core.time.Trigger;
+import org.drools.base.time.JobHandle;
+import org.drools.base.time.Trigger;
 
 import java.util.Collection;
 
@@ -33,6 +33,8 @@ public interface TimerJobFactoryManager {
     void addTimerJobInstance(TimerJobInstance instance);
     
     void removeTimerJobInstance(TimerJobInstance instance);
+
+    void removeTimerJobInstance(JobHandle handle);
 
     Collection<TimerJobInstance> getTimerJobInstances();
 }

@@ -14,50 +14,6 @@
 
 package org.drools.mvel.java;
 
-import org.drools.compiler.compiler.AnalysisResult;
-import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.rule.builder.GroupByBuilder;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.RuleConditionBuilder;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
-import org.drools.compiler.rule.builder.util.AccumulateUtil;
-import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
-import org.drools.core.base.ObjectType;
-import org.drools.core.base.ValueType;
-import org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor;
-import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.base.extractors.ConstantValueReader;
-import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.facttemplates.FactTemplateImpl;
-import org.drools.core.facttemplates.FactTemplateObjectType;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.MultiAccumulate;
-import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.rule.SingleAccumulate;
-import org.drools.core.rule.accessor.Accumulator;
-import org.drools.core.rule.accessor.DeclarationScopeResolver;
-import org.drools.core.rule.accessor.EvalExpression;
-import org.drools.core.rule.accessor.PatternExtractor;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.accessor.Wireable;
-import org.drools.core.rule.constraint.Constraint;
-import org.drools.core.util.index.IndexUtil;
-import org.drools.drl.ast.descr.AccumulateDescr;
-import org.drools.drl.ast.descr.AccumulateDescr.AccumulateFunctionCallDescr;
-import org.drools.drl.ast.descr.AndDescr;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.GroupByDescr;
-import org.drools.mvel.MVELConstraint;
-import org.drools.mvel.builder.MVELExprAnalyzer;
-import org.drools.mvel.extractors.MVELObjectClassFieldReader;
-import org.kie.api.runtime.rule.AccumulateFunction;
-import org.kie.internal.builder.conf.AccumulateFunctionOption;
-
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
@@ -71,6 +27,41 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.drools.base.reteoo.SortDeclarations;
+import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.rule.builder.GroupByBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleConditionBuilder;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
+import org.drools.compiler.rule.builder.util.AccumulateUtil;
+import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
+import org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor;
+import org.drools.base.base.extractors.ArrayElementReader;
+import org.drools.base.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.base.rule.Accumulate;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.MultiAccumulate;
+import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.SingleAccumulate;
+import org.drools.base.rule.accessor.Accumulator;
+import org.drools.base.rule.accessor.DeclarationScopeResolver;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.constraint.Constraint;
+import org.drools.drl.ast.descr.AccumulateDescr.AccumulateFunctionCallDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.GroupByDescr;
+import org.drools.mvel.MVELConstraint;
+import org.drools.mvel.MVELGroupByAccumulate;
+import org.drools.mvel.builder.MVELExprAnalyzer;
+import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.internal.builder.conf.AccumulateFunctionOption;
 
 import static org.drools.mvel.java.JavaRuleBuilderHelper.createVariableContext;
 import static org.drools.mvel.java.JavaRuleBuilderHelper.generateTemplates;
@@ -141,14 +132,14 @@ public class JavaGroupByBuilder
         return accumulate;
     }
 
-    private void addGroupingFunctionCompilation(
+    private MVELGroupByAccumulate addGroupingFunctionCompilation(
             RuleBuildContext context,
             GroupByDescr groupByDescr,
             Pattern pattern,
             Map<String, Declaration> declsInScope,
             Declaration[] sourceDeclArr,
             boolean readLocalsFromTuple,
-            Wireable wireable) {
+            Accumulate innerAccumulate) {
         // analyze the expression
         final JavaAnalysisResult analysis = (JavaAnalysisResult) context.getDialect().analyzeExpression( context,
                 groupByDescr,
@@ -157,7 +148,7 @@ public class JavaGroupByBuilder
 
         if ( analysis == null ) {
             // not possible to get the analysis results - compilation error has been already logged
-            return;
+            return null;
         }
 
         // create the array of used declarations
@@ -168,6 +159,8 @@ public class JavaGroupByBuilder
         final Declaration[] requiredDeclarations = collectRequiredDeclarations( declsInScope,
                 new HashSet<>(),
                 usedIdentifiers );
+
+        MVELGroupByAccumulate out = new MVELGroupByAccumulate(innerAccumulate, requiredDeclarations, null);
 
         final String className = "groupbyExpression" + context.getNextId();
         final Map<String, Object> map = createVariableContext( className,
@@ -192,8 +185,10 @@ public class JavaGroupByBuilder
                 context,
                 className,
                 map,
-                wireable,
+                out.new GroupingFunctionWirer(),
                 groupByDescr);
+
+        return out;
     }
 
     private Accumulate buildExternalFunctionCall( RuleBuildContext context,
@@ -206,7 +201,7 @@ public class JavaGroupByBuilder
         final List<AccumulateFunctionCallDescr> funcCalls = groupByDescr.getFunctions();
         // list of available source declarations
         final Declaration[] sourceDeclArr = source.getOuterDeclarations().values().toArray( new Declaration[source.getOuterDeclarations().size()] );
-        Arrays.sort( sourceDeclArr, RuleTerminalNode.SortDeclarations.instance );
+        Arrays.sort( sourceDeclArr, SortDeclarations.instance );
 
         // set of required previous declarations
         Set<Declaration> requiredDecl = new HashSet<>();
@@ -231,20 +226,18 @@ public class JavaGroupByBuilder
                 accumulators[index++] = buildAccumulator(context, groupByDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, fc, function);
             }
             requiredDecl.addAll(List.of(sourceDeclArr));
-            MultiAccumulate out = new MultiAccumulate( source,
-                                                       requiredDecl.toArray(new Declaration[requiredDecl.size()]),
-                                                       accumulators,
-                                                       accumulators.length + 1);
+            MultiAccumulate innerAccumulate = new MultiAccumulate( source,
+                                                                   requiredDecl.toArray(new Declaration[requiredDecl.size()]),
+                                                                   accumulators,
+                                                                   accumulators.length);
 
-            addGroupingFunctionCompilation(context,
-                    groupByDescr,
-                    pattern,
-                    declsInScope,
-                    sourceDeclArr,
-                    readLocalsFromTuple,
-                    out.new GrouppingFunctionWirer());
-
-            return out;
+            return addGroupingFunctionCompilation(context,
+                                                  groupByDescr,
+                                                  pattern,
+                                                  declsInScope,
+                                                  sourceDeclArr,
+                                                  readLocalsFromTuple,
+                                                  innerAccumulate);
         } else {
             AccumulateFunctionCallDescr fc = groupByDescr.getFunctions().get(0);
             AccumulateFunction function = getAccumulateFunction(context, groupByDescr, fc, source, declCls);
@@ -266,18 +259,16 @@ public class JavaGroupByBuilder
             Accumulator accumulator = buildAccumulator(context, groupByDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, fc, function);
 
             requiredDecl.addAll(List.of(sourceDeclArr));
-            SingleAccumulate out = new SingleAccumulate( source,
-                                                         requiredDecl.toArray(new Declaration[requiredDecl.size()]),
-                                                         accumulator );
-            addGroupingFunctionCompilation(context,
-                    groupByDescr,
-                    pattern,
-                    declsInScope,
-                    sourceDeclArr,
-                    readLocalsFromTuple,
-                    out.new GrouppingFunctionWirer());
-
-            return out;
+            SingleAccumulate innerAccumulate = new SingleAccumulate( source,
+                                                                     requiredDecl.toArray(new Declaration[requiredDecl.size()]),
+                                                                     accumulator );
+            return addGroupingFunctionCompilation(context,
+                                                  groupByDescr,
+                                                  pattern,
+                                                  declsInScope,
+                                                  sourceDeclArr,
+                                                  readLocalsFromTuple,
+                                                  innerAccumulate);
         }
     }
 
@@ -313,7 +304,7 @@ public class JavaGroupByBuilder
                                                                  new Declaration[] { inner },
                                                                  null,
                                                                  null,
-                                                                 IndexUtil.ConstraintType.EQUAL,
+                                                                 ConstraintTypeOperator.EQUAL,
                                                                  context.getDeclarationResolver().getDeclaration( fc.getBind() ),
                                                        index >= 0
                                                             ? new ArrayElementReader( readAccessor, index, resultType )
@@ -479,7 +470,7 @@ public class JavaGroupByBuilder
             declarations[i] = decls.get( it.next() );
         }
         final Declaration[] sourceDeclArr = source.getOuterDeclarations().values().toArray( new Declaration[source.getOuterDeclarations().size()] );
-        Arrays.sort( sourceDeclArr, RuleTerminalNode.SortDeclarations.instance );
+        Arrays.sort( sourceDeclArr, SortDeclarations.instance );
 
         final Map<String, Object> map = createVariableContext( className,
                                                                null,
@@ -552,7 +543,7 @@ public class JavaGroupByBuilder
                 null,
                 sourceDeclArr,
                 readLocalsFromTuple,
-                accumulate.new GrouppingFunctionWirer());
+                accumulate);
 
         return accumulate;
     }

@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.definitions.impl.KnowledgePackageImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.util.FileManager;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;

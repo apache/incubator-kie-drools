@@ -23,9 +23,9 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.Evaluator;
 
 /**
  * A simple helper class to store Evaluators for a given set of

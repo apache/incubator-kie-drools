@@ -22,7 +22,7 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
-import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
+import org.drools.base.reteoo.AccumulateContextEntry;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AccumulateNode.BaseAccumulation;
 import org.drools.core.reteoo.BetaMemory;
@@ -30,13 +30,14 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.Accumulate;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
@@ -573,8 +574,8 @@ public class PhreakAccumulateNode {
     protected void propagateDelete( TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, Object accPropCtx ) {
         AccumulateContextEntry entry =  (AccumulateContextEntry) accPropCtx;
         if ( entry.isPropagated() ) {
-            normalizeStagedTuples( stagedLeftTuples, entry.getResultLeftTuple() );
-            trgLeftTuples.addDelete( entry.getResultLeftTuple() );
+            normalizeStagedTuples( stagedLeftTuples, (LeftTuple) entry.getResultLeftTuple() );
+            trgLeftTuples.addDelete( (LeftTuple) entry.getResultLeftTuple() );
         }
     }
 
@@ -642,7 +643,7 @@ public class PhreakAccumulateNode {
         if ( !allowNullPropagation && result == null) {
             if ( accPropCtx.isPropagated()) {
                 // retract
-                trgLeftTuples.addDelete( accPropCtx.getResultLeftTuple());
+                trgLeftTuples.addDelete( (LeftTuple) accPropCtx.getResultLeftTuple());
                 accPropCtx.setPropagated( false );
             }
             return;
@@ -653,7 +654,7 @@ public class PhreakAccumulateNode {
             accPropCtx.setResultFactHandle(handle);
             accPropCtx.setResultLeftTuple( sink.createLeftTuple(handle, leftTuple, sink ));
         } else {
-            accPropCtx.getResultFactHandle().setObject( createResult(accNode, key, result) );
+            ((InternalFactHandle)accPropCtx.getResultFactHandle()).setObject( createResult(accNode, key, result) );
         }
 
         // First alpha node filters
@@ -675,7 +676,7 @@ public class PhreakAccumulateNode {
         }
 
 
-        LeftTuple childLeftTuple = accPropCtx.getResultLeftTuple();
+        LeftTuple childLeftTuple = (LeftTuple) accPropCtx.getResultLeftTuple();
         childLeftTuple.setPropagationContext( propagationContext != null ? propagationContext : leftTuple.getPropagationContext() );
 
         if ( accPropCtx.isPropagated()) {
@@ -712,7 +713,7 @@ public class PhreakAccumulateNode {
                           final boolean useLeftMemory,
                           final boolean leftPropagation) {
         LeftTuple tuple = leftTuple;
-        InternalFactHandle handle = rightTuple.getFactHandle();
+        InternalFactHandle handle = (InternalFactHandle) rightTuple.getFactHandle();
 
         if (accNode.isRightInputIsRiaNode()) {
             // if there is a subnetwork, handle must be unwrapped
@@ -767,7 +768,7 @@ public class PhreakAccumulateNode {
         match.unlinkFromRightParent();
 
         // if there is a subnetwork, we need to unwrap the object from inside the tuple
-        InternalFactHandle handle = rightTuple.getFactHandle();
+        FactHandle handle = rightTuple.getFactHandle();
         LeftTuple tuple = leftParent;
         if (accNode.isRightInputIsRiaNode()) {
             tuple = (LeftTuple) rightTuple;
@@ -779,7 +780,6 @@ public class PhreakAccumulateNode {
                                                  accctx,
                                                  tuple,
                                                  handle,
-                                                 rightParent,
                                                  match,
                                                  reteEvaluator);
         if (!reversed) {
@@ -813,7 +813,7 @@ public class PhreakAccumulateNode {
 
             for (LeftTuple childMatch = leftParent.getFirstChild(); childMatch != null; childMatch = childMatch.getHandleNext()) {
                 RightTuple         rightTuple  = childMatch.getRightParent();
-                InternalFactHandle childHandle = rightTuple.getFactHandle();
+                FactHandle childHandle = rightTuple.getFactHandle();
                 LeftTuple          tuple       = leftParent;
                 if (accNode.isRightInputIsRiaNode()) {
                     // if there is a subnetwork, handle must be unwrapped

@@ -21,8 +21,8 @@ import java.util.Collections;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
-import org.drools.core.time.Trigger;
+import org.drools.base.time.JobHandle;
+import org.drools.base.time.Trigger;
 
 public class DefaultTimerJobFactoryManager
     implements
@@ -30,6 +30,7 @@ public class DefaultTimerJobFactoryManager
     
     public static final DefaultTimerJobFactoryManager INSTANCE = new DefaultTimerJobFactoryManager();
 
+    @Override
     public TimerJobInstance createTimerJobInstance(Job job,
                                                    JobContext ctx,
                                                    Trigger trigger,
@@ -43,11 +44,19 @@ public class DefaultTimerJobFactoryManager
                                             scheduler );
     }
 
+    @Override
     public Collection<TimerJobInstance> getTimerJobInstances() {
         return Collections.emptyList();
     }
 
+    @Override
     public void addTimerJobInstance(TimerJobInstance instance) { }
 
+    @Override
     public void removeTimerJobInstance(TimerJobInstance instance) { }
+
+    @Override
+    public void removeTimerJobInstance(JobHandle handle) {
+
+    }
 }

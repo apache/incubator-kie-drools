@@ -17,10 +17,9 @@ package org.drools.mvel.integrationtests.phreak;
 
 import java.util.Collections;
 
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.phreak.PhreakNotNode;
@@ -29,7 +28,7 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.BetaMemoryPrototype;
@@ -158,8 +157,8 @@ public class PhreakNotNodeTest {
 
         CompositeBaseConfiguration conf = (CompositeBaseConfiguration) RuleBaseFactory.newKnowledgeBaseConfiguration();
 
-        KnowledgeBaseImpl rbase = new KnowledgeBaseImpl( "ID",
-                                                         conf );
+        KnowledgeBaseImpl rbase = new KnowledgeBaseImpl("ID",
+                                                        conf );
         BuildContext buildContext = new BuildContext( rbase, Collections.emptyList() );
 
         RuleImpl rule = new RuleImpl( "rule1").setPackage( "org.pkg1" );

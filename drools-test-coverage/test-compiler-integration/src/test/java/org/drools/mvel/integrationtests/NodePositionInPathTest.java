@@ -18,8 +18,8 @@ package org.drools.mvel.integrationtests;
 
 import java.util.Collection;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.base.ClassObjectType;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -71,9 +71,9 @@ public class NodePositionInPathTest {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         
-        ReteDumper.dumpRete( ( (RuleBase) kbase ) );
+        ReteDumper.dumpRete( ( (InternalRuleBase) kbase ));
 
-        Rete rete = ( (RuleBase) kbase ).getRete();
+        Rete rete = ( (InternalRuleBase) kbase ).getRete();
         LeftInputAdapterNode liaNode = null;
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             Class<?> otnType = ( (ClassObjectType) otn.getObjectType() ).getClassType();

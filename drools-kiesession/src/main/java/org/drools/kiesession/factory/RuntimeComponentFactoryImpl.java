@@ -28,13 +28,12 @@ import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.factmodel.traits.TraitFactory;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.core.rule.accessor.GlobalResolver;
+import org.drools.base.rule.accessor.GlobalResolver;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.time.TimerService;
 import org.drools.kiesession.agenda.DefaultAgendaFactory;
@@ -45,6 +44,7 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.KieSessionsPoolImpl;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
+import org.drools.base.RuleBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.Globals;
@@ -120,7 +120,7 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
     }
 
     public StatelessKieSession createStatelessSession(RuleBase ruleBase, KieSessionConfiguration conf) {
-        return new StatelessKnowledgeSessionImpl( (InternalKnowledgeBase) ruleBase, conf );
+        return new StatelessKnowledgeSessionImpl((InternalKnowledgeBase) ruleBase, conf );
     }
 
     public KieSessionsPool createSessionsPool(RuleBase ruleBase, int initialSize) {

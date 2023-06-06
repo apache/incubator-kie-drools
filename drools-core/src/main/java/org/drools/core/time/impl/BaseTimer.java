@@ -15,10 +15,10 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.rule.ConditionalElement;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.RuleConditionElement;
+import org.drools.base.reteoo.SortDeclarations;
+import org.drools.base.rule.ConditionalElement;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.RuleConditionElement;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,7 +61,7 @@ public abstract class BaseTimer extends ConditionalElement{
         for ( int i = 0; i < sortedDeclrs.length; i++  ) {
             sortedDeclrs[i] = outerDeclrs.get( sortedDeclrs[i].getIdentifier() );
         }
-        Arrays.sort(sortedDeclrs, RuleTerminalNode.SortDeclarations.instance);
+        Arrays.sort(sortedDeclrs, SortDeclarations.instance);
         return sortedDeclrs;
     }
 }

@@ -18,8 +18,8 @@ package org.drools.compiler.integrationtests;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.base.ClassObjectType;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -52,7 +52,7 @@ public class AlphaNetworkModifyTest {
     }
 
     private ObjectTypeNode getObjectTypeNode(final KieBase kbase, final String nodeName) {
-        final List<ObjectTypeNode> nodes = ((RuleBase)kbase).getRete().getObjectTypeNodes();
+        final List<ObjectTypeNode> nodes = ((InternalRuleBase)kbase).getRete().getObjectTypeNodes();
         for ( final ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType().getSimpleName().equals( nodeName ) ) {
                 return n;

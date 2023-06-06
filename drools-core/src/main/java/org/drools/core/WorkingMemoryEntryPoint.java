@@ -20,11 +20,11 @@ package org.drools.core;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.util.bitmask.BitMask;
@@ -61,7 +61,7 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
 
     ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
 
-    RuleBase getKnowledgeBase();
+    InternalRuleBase getKnowledgeBase();
 
     void delete(FactHandle factHandle,
                 RuleImpl rule,

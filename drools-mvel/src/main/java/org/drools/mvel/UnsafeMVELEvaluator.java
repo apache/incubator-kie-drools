@@ -14,7 +14,7 @@
 
 package org.drools.mvel;
 
-import org.drools.core.util.MVELExecutor;
+import org.drools.base.util.MVELExecutor;
 import org.drools.mvel.util.RawMVELEvaluator;
 import org.mvel2.util.Soundex;
 

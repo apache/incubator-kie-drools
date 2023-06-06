@@ -14,7 +14,7 @@
 
 package org.drools.mvel.expr;
 
-import org.drools.core.rule.Declaration;
+import org.drools.base.rule.Declaration;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.VariableResolver;

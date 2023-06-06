@@ -16,7 +16,6 @@
 
 package org.drools.traits.core.factmodel;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,8 +28,8 @@ import java.util.jar.JarOutputStream;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.compiler.builder.impl.classbuilder.ClassBuilder;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.factmodel.FieldDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.wiring.dynamic.PackageClassLoader;
 import org.drools.wiring.api.classloader.ProjectClassLoader;

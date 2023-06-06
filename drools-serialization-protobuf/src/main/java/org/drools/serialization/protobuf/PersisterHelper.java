@@ -33,11 +33,11 @@ import com.google.protobuf.ByteString.Output;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import org.drools.tms.beliefsystem.simple.BeliefSystemLogicalCallback;
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.base.common.DroolsObjectInputStream;
+import org.drools.base.common.DroolsObjectOutputStream;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.factmodel.traits.TraitFactory;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.serialization.protobuf.marshalling.ActivationKey;
 import org.drools.core.marshalling.MarshallerReaderContext;
@@ -48,7 +48,7 @@ import org.drools.core.marshalling.TupleKey;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorExpireWMAction;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.drools.serialization.protobuf.ProtobufMessages.Header;
@@ -158,7 +158,7 @@ public class PersisterHelper extends MarshallingHelper {
         
         writeStrategiesIndex( context, _header );
 
-        RuleBase kBase = context.getKnowledgeBase();
+        InternalRuleBase kBase = context.getKnowledgeBase();
         if (kBase != null) {
             TraitFactory traitFactory = RuntimeComponentFactory.get().getTraitFactory(kBase);
             if (traitFactory != null) {

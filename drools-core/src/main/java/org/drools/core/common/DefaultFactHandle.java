@@ -16,26 +16,28 @@
 
 package org.drools.core.common;
 
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.factmodel.traits.TraitTypeEnum;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.util.StringUtils;
 import org.kie.api.runtime.rule.FactHandle;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -45,10 +47,6 @@ import org.kie.api.runtime.rule.FactHandle;
 public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHandle>
                               implements
                               InternalFactHandle {
-
-    // ----------------------------------------------------------------------
-    // Instance members
-    // ----------------------------------------------------------------------
 
     private static final long       serialVersionUID = 510l;
     /** Handle id. */
@@ -77,10 +75,6 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     private InternalFactHandle parentHandle;
 
     protected transient WorkingMemoryEntryPoint wmEntryPoint;
-
-    // ----------------------------------------------------------------------
-    // Constructors
-    // ----------------------------------------------------------------------
 
     public DefaultFactHandle() {
     }
@@ -122,10 +116,10 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     protected DefaultFactHandle(final long id,
-                             final int identityHashCode,
-                             final Object object,
-                             final long recency,
-                             final EntryPointId entryPointId ) {
+                                final int identityHashCode,
+                                final Object object,
+                                final long recency,
+                                final EntryPointId entryPointId ) {
         this.id = id;
         this.entryPointId = entryPointId;
         this.recency = recency;
@@ -134,11 +128,11 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     public DefaultFactHandle(long id,
-            String wmEntryPointId,
-            int identityHashCode,
-            int objectHashCode,
-            long recency,
-            Object object) {
+                             String wmEntryPointId,
+                             int identityHashCode,
+                             int objectHashCode,
+                             long recency,
+                             Object object) {
         this.id = id;
         this.entryPointId = new EntryPointId( wmEntryPointId );
         this.recency = recency;
@@ -147,10 +141,6 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.objectHashCode = objectHashCode;
         this.disconnected = true;
     }
-
-    // ----------------------------------------------------------------------
-    // Instance members
-    // ----------------------------------------------------------------------
 
     /**
      * @see Object
@@ -175,7 +165,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     @Override
-    public <K> K as( Class<K> klass ) throws ClassCastException {
+    public <K> K as(Class<K> klass) throws ClassCastException {
         if ( klass.isAssignableFrom( object.getClass() ) ) {
             return (K) object;
         }
@@ -365,7 +355,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return wmEntryPoint;
     }
 
-    protected void setLinkedTuples( RuleBase kbase ) {
+    protected void setLinkedTuples( InternalRuleBase kbase) {
         linkedTuples = kbase != null && kbase.getRuleBaseConfiguration().isMultithreadEvaluation() ?
                        new CompositeLinkedTuples() :
                        new SingleLinkedTuples();
@@ -424,8 +414,8 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         DefaultFactHandle handle;
         if (FACT_FORMAT_VERSION.equals( elements[0]) ) {
             handle = new DefaultFactHandle();
-        } else if (EventFactHandle.EVENT_FORMAT_VERSION.equals( elements[0])) {
-            handle = new EventFactHandle();
+        } else if (DefaultEventHandle.EVENT_FORMAT_VERSION.equals(elements[0])) {
+            handle = new DefaultEventHandle();
         } else {
             throw new RuntimeException( "Unknown fact handle version format: " + elements[0]);
         }
@@ -709,19 +699,19 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         }
 
         @Override
-        public void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer) {
+        public void forEachLeftTuple(Consumer<AbstractLeftTuple> leftTupleConsumer) {
             for ( LeftTuple leftTuple = firstLeftTuple; leftTuple != null; ) {
                 LeftTuple nextLeftTuple = leftTuple.getHandleNext();
-                leftTupleConsumer.accept( leftTuple );
+                leftTupleConsumer.accept( (AbstractLeftTuple) leftTuple );
                 leftTuple = nextLeftTuple;
             }
         }
 
-        public LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate ) {
+        public AbstractLeftTuple findFirstLeftTuple(Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
             for ( LeftTuple leftTuple = firstLeftTuple; leftTuple != null; ) {
                 LeftTuple nextLeftTuple = leftTuple.getHandleNext();
-                if (lefttTuplePredicate.test( leftTuple )) {
-                    return leftTuple;
+                if (lefttTuplePredicate.test( (AbstractLeftTuple) leftTuple )) {
+                    return (AbstractLeftTuple) leftTuple;
                 }
                 leftTuple = nextLeftTuple;
             }
@@ -874,18 +864,18 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         }
 
         @Override
-        public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer ) {
+        public void forEachLeftTuple( Consumer<AbstractLeftTuple> leftTupleConsumer ) {
             for (int i = 0; i < partitionedTuples.length; i++) {
                 forEachLeftTuple( i, leftTupleConsumer );
             }
         }
 
-        public void forEachLeftTuple( int partition, Consumer<LeftTuple> leftTupleConsumer ) {
+        public void forEachLeftTuple( int partition, Consumer<AbstractLeftTuple> leftTupleConsumer ) {
             partitionedTuples[partition].forEachLeftTuple( leftTupleConsumer );
         }
 
         @Override
-        public LeftTuple findFirstLeftTuple( Predicate<LeftTuple> lefttTuplePredicate ) {
+        public AbstractLeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
             return Stream.of( partitionedTuples )
                          .map( t -> t.findFirstLeftTuple( lefttTuplePredicate ) )
                          .filter( Objects::nonNull )
@@ -920,12 +910,12 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     @Override
-    public void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer) {
+    public void forEachLeftTuple(Consumer<AbstractLeftTuple> leftTupleConsumer) {
         linkedTuples.forEachLeftTuple( leftTupleConsumer );
     }
 
     @Override
-    public LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate ) {
+    public LeftTuple findFirstLeftTuple(Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
         return linkedTuples.findFirstLeftTuple( lefttTuplePredicate );
     }
 

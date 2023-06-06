@@ -25,9 +25,9 @@ import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 import org.drools.core.ClockType;
-import org.drools.core.facttemplates.Event;
-import org.drools.core.facttemplates.Fact;
-import org.drools.core.facttemplates.FactTemplateObjectType;
+import org.drools.base.facttemplates.Event;
+import org.drools.base.facttemplates.Fact;
+import org.drools.base.facttemplates.FactTemplateObjectType;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -396,7 +396,7 @@ public class FactTemplateTest {
     }
 
     private ObjectTypeNode getFactTemplateObjectTypeNode( KieSession ksession, String name ) {
-        EntryPointNode epn = (( InternalKnowledgeBase ) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
+        EntryPointNode epn = ((InternalKnowledgeBase) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
         for (ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
             if (otn.getObjectType() instanceof FactTemplateObjectType && (( FactTemplateObjectType ) otn.getObjectType()).getFactTemplate().getName().equals( name )) {
                 return otn;

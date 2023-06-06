@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.facttemplates.Event;
-import org.drools.core.facttemplates.FactTemplate;
+import org.drools.base.facttemplates.Event;
+import org.drools.base.facttemplates.FactTemplate;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 

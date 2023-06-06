@@ -17,14 +17,14 @@ package org.drools.mvel.asm;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.CompiledInvoker;
-import org.drools.core.rule.accessor.EvalExpression;
-import org.drools.core.reteoo.Tuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.CompiledInvoker;
+import org.drools.base.rule.accessor.EvalExpression;
 import org.drools.mvel.asm.GeneratorHelper.DeclarationMatcher;
+import org.kie.api.runtime.rule.FactHandle;
 import org.mvel2.asm.MethodVisitor;
 
 import static org.drools.mvel.asm.GeneratorHelper.createInvokerClassGenerator;
@@ -43,9 +43,9 @@ public class EvalGenerator {
     private static final AtomicInteger evalId = new AtomicInteger();
 
     public static void generate(final EvalStub stub ,
-                                final Tuple tuple,
+                                final BaseTuple tuple,
                                 final Declaration[] declarations,
-                                final ReteEvaluator reteEvaluator) {
+                                final ValueResolver reteEvaluator) {
 
         final String[] globals = stub.getGlobals();
         final String[] globalTypes = stub.getGlobalTypes();
@@ -67,7 +67,7 @@ public class EvalGenerator {
                 mv.visitInsn(ARETURN);
             }
         }).addMethod(ACC_PUBLIC, "replaceDeclaration", generator.methodDescr(null, Declaration.class, Declaration.class)
-        ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Tuple.class, Declaration[].class, ReteEvaluator.class, Object.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
+        ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, BaseTuple.class, Declaration[].class, ValueResolver.class, Object.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
             public void body(MethodVisitor mv) {
                 objAstorePos = 7;
 
@@ -78,7 +78,7 @@ public class EvalGenerator {
                 cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 5); // LeftTuple
 
-                Tuple currentTuple = tuple;
+                BaseTuple currentTuple = tuple;
                 for (DeclarationMatcher matcher : declarationMatchers) {
                     int i = matcher.getMatcherIndex();
                     declarationsParamsPos[i] = objAstorePos;
@@ -91,8 +91,8 @@ public class EvalGenerator {
                     mv.visitVarInsn(ALOAD, 3); // reteEvaluator
 
                     mv.visitVarInsn(ALOAD, 5);
-                    invokeInterface(LeftTuple.class, "getFactHandle", InternalFactHandle.class);
-                    invokeInterface(InternalFactHandle.class, "getObject", Object.class); // tuple.getFactHandle().getObject()
+                    invokeInterface(LeftTuple.class, "getFactHandle", FactHandle.class);
+                    invokeInterface(FactHandle.class, "getObject", Object.class); // tuple.getFactHandle().getObject()
 
                     storeObjectFromDeclaration(declarations[i], expectedDeclarations[i]);
                 }

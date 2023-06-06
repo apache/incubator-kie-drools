@@ -16,9 +16,9 @@
 
 package org.drools.metric.rule;
 
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EvalCondition;
-import org.drools.core.rule.EvalConditionFactory;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.EvalCondition;
+import org.drools.base.rule.EvalConditionFactory;
 import org.drools.metric.util.MetricLogUtils;
 
 public class MetricEvalConditionFactoryImpl implements EvalConditionFactory {

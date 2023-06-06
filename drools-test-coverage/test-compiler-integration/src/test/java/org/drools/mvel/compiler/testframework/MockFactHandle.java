@@ -37,6 +37,31 @@ public class MockFactHandle
         this.id = id;
     }
 
+    @Override
+    public Object getObject() {
+        return null;
+    }
+
+    @Override
+    public boolean isNegated() {
+        return false;
+    }
+
+    @Override
+    public boolean isEvent() {
+        return false;
+    }
+
+    @Override
+    public <K> K as(Class<K> klass) throws ClassCastException {
+        return null;
+    }
+
+    @Override
+    public boolean isValid() {
+        return false;
+    }
+
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         id  = in.readInt();
     }

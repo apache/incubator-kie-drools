@@ -49,11 +49,9 @@ import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.management.KieBaseConfigurationMonitorMBean;
 import org.kie.api.management.ObjectTypeNodeMonitorMBean;
 import org.slf4j.Logger;
@@ -79,7 +77,7 @@ public class KnowledgeBaseMonitoring
     // ************************************************************************************************
     // MBean attributes
     //
-    private RuleBase kbase;
+    private InternalRuleBase kbase;
     private ObjectName name;
 
     private OpenMBeanInfoSupport info;
@@ -113,7 +111,7 @@ public class KnowledgeBaseMonitoring
     // ************************************************************************************************
 
     // Constructor
-    public KnowledgeBaseMonitoring(RuleBase kbase) {
+    public KnowledgeBaseMonitoring(InternalRuleBase kbase) {
         this.kbase = kbase;
         this.name = DroolsManagementAgent.createObjectNameFor(kbase);
 

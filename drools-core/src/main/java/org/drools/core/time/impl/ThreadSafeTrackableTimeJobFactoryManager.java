@@ -26,6 +26,7 @@ public class ThreadSafeTrackableTimeJobFactoryManager extends TrackableTimeJobFa
         super(new ConcurrentHashMap<>());
     }
 
+    @Override
     protected SelfRemovalJobContext createJobContext( JobContext ctx ) {
         return new SelfRemovalJobContext( ctx, timerInstances );
     }

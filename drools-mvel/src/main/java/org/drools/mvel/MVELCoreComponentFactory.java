@@ -15,7 +15,7 @@
 
 package org.drools.mvel;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 
 public class MVELCoreComponentFactory extends CoreComponentFactory.DroolsCoreComponentFactory {

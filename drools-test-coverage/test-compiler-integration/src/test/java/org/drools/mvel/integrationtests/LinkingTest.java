@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -1617,7 +1617,7 @@ public class LinkingTest {
     }      
     
     public static ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
-        List<ObjectTypeNode> nodes = ((RuleBase)kbase).getRete().getObjectTypeNodes();
+        List<ObjectTypeNode> nodes = ((InternalRuleBase)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {
                 return n;

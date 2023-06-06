@@ -42,22 +42,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.base.ObjectType;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.drools.core.util.TimeIntervalParser;
+import org.drools.base.util.TimeIntervalParser;
 import org.drools.kiesession.audit.WorkingMemoryFileLogger;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.OrderEvent;
@@ -133,7 +133,7 @@ public class CepEspTest extends AbstractCepEspTest {
             props.put("duration", 52);
             msg.setProperties(props);
 
-            final EventFactHandle efh = (EventFactHandle) ksession.insert(msg);
+            final DefaultEventHandle efh = (DefaultEventHandle) ksession.insert(msg);
             assertThat(efh.getStartTimestamp()).isEqualTo(98);
             assertThat(efh.getDuration()).isEqualTo(53);
         } finally {
@@ -157,7 +157,7 @@ public class CepEspTest extends AbstractCepEspTest {
             msg.setStartTime(new Timestamp(10000));
             msg.setDuration(1000L);
 
-            final EventFactHandle efh = (EventFactHandle) ksession.insert(msg);
+            final DefaultEventHandle efh = (DefaultEventHandle) ksession.insert(msg);
             assertThat(efh.getStartTimestamp()).isEqualTo(10000);
             assertThat(efh.getDuration()).isEqualTo(1000);
         } finally {
@@ -346,10 +346,10 @@ public class CepEspTest extends AbstractCepEspTest {
             assertThat(handle3.isEvent()).isTrue();
             assertThat(handle4.isEvent()).isTrue();
 
-            final EventFactHandle eh1 = (EventFactHandle) handle1;
-            final EventFactHandle eh2 = (EventFactHandle) handle2;
-            final EventFactHandle eh3 = (EventFactHandle) handle3;
-            final EventFactHandle eh4 = (EventFactHandle) handle4;
+            final DefaultEventHandle eh1 = (DefaultEventHandle) handle1;
+            final DefaultEventHandle eh2 = (DefaultEventHandle) handle2;
+            final DefaultEventHandle eh3 = (DefaultEventHandle) handle3;
+            final DefaultEventHandle eh4 = (DefaultEventHandle) handle4;
 
             assertThat(eh1.getStartTimestamp()).isEqualTo(tick1.getTime());
             assertThat(eh2.getStartTimestamp()).isEqualTo(tick2.getTime());
@@ -416,10 +416,10 @@ public class CepEspTest extends AbstractCepEspTest {
             assertThat(handle3.isEvent()).isTrue();
             assertThat(handle4.isEvent()).isTrue();
 
-            final EventFactHandle eh1 = (EventFactHandle) handle1;
-            final EventFactHandle eh2 = (EventFactHandle) handle2;
-            final EventFactHandle eh3 = (EventFactHandle) handle3;
-            final EventFactHandle eh4 = (EventFactHandle) handle4;
+            final DefaultEventHandle eh1 = (DefaultEventHandle) handle1;
+            final DefaultEventHandle eh2 = (DefaultEventHandle) handle2;
+            final DefaultEventHandle eh3 = (DefaultEventHandle) handle3;
+            final DefaultEventHandle eh4 = (DefaultEventHandle) handle4;
 
             assertThat(eh1.getStartTimestamp()).isEqualTo(tick1.getTime());
             assertThat(eh2.getStartTimestamp()).isEqualTo(tick2.getTime());
@@ -455,7 +455,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
         // read in the source
-        final TypeDeclaration factType = ((RuleBase) kbase).getTypeDeclaration(StockTick.class);
+        final TypeDeclaration factType = ((InternalRuleBase) kbase).getTypeDeclaration(StockTick.class);
         assertThat(factType.getExpirationOffset()).isEqualTo(TimeIntervalParser.parse("1h30m")[0]);
     }
 
@@ -498,7 +498,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
 
-        final Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((RuleBase) kbase).getRete().getObjectTypeNodes(EntryPointId.DEFAULT);
+        final Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((InternalRuleBase) kbase).getRete().getObjectTypeNodes(EntryPointId.DEFAULT);
         final ObjectTypeNode node = objectTypeNodes.get(new ClassObjectType(StockTick.class));
 
         assertThat(node).isNotNull();
@@ -536,7 +536,7 @@ public class CepEspTest extends AbstractCepEspTest {
             final List results = new ArrayList();
             ksession.setGlobal("results", results);
 
-            final EventFactHandle handle1 = (EventFactHandle) eventStream.insert(new StockTick(1, "ACME", 50, System.currentTimeMillis(), 3));
+            final DefaultEventHandle handle1 = (DefaultEventHandle) eventStream.insert(new StockTick(1, "ACME", 50, System.currentTimeMillis(), 3));
 
             ksession.fireAllRules();
 
@@ -876,7 +876,7 @@ public class CepEspTest extends AbstractCepEspTest {
             final SessionPseudoClock clock = wm.getSessionClock();
 
             clock.advanceTime(5, TimeUnit.SECONDS); // 5 seconds
-            final EventFactHandle handle1 = (EventFactHandle) wm.insert(new OrderEvent("1", "customer A", 70));
+            final DefaultEventHandle handle1 = (DefaultEventHandle) wm.insert(new OrderEvent("1", "customer A", 70));
             assertThat(handle1.getStartTimestamp()).isEqualTo(5000);
             assertThat(handle1.getDuration()).isEqualTo(0);
 
@@ -887,7 +887,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
             // advance clock and assert new data
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
-            final EventFactHandle handle2 = (EventFactHandle) wm.insert(new OrderEvent("2", "customer A", 60));
+            final DefaultEventHandle handle2 = (DefaultEventHandle) wm.insert(new OrderEvent("2", "customer A", 60));
             assertThat(handle2.getStartTimestamp()).isEqualTo(15000);
             assertThat(handle2.getDuration()).isEqualTo(0);
 
@@ -898,7 +898,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
             // advance clock and assert new data
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
-            final EventFactHandle handle3 = (EventFactHandle) wm.insert(new OrderEvent("3", "customer A", 50));
+            final DefaultEventHandle handle3 = (DefaultEventHandle) wm.insert(new OrderEvent("3", "customer A", 50));
             assertThat(handle3.getStartTimestamp()).isEqualTo(25000);
             assertThat(handle3.getDuration()).isEqualTo(0);
 
@@ -909,7 +909,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
             // advance clock and assert new data
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
-            final EventFactHandle handle4 = (EventFactHandle) wm.insert(new OrderEvent("4", "customer A", 25));
+            final DefaultEventHandle handle4 = (DefaultEventHandle) wm.insert(new OrderEvent("4", "customer A", 25));
             assertThat(handle4.getStartTimestamp()).isEqualTo(35000);
             assertThat(handle4.getDuration()).isEqualTo(0);
 
@@ -920,7 +920,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
             // advance clock and assert new data
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
-            final EventFactHandle handle5 = (EventFactHandle) wm.insert(new OrderEvent("5", "customer A", 70));
+            final DefaultEventHandle handle5 = (DefaultEventHandle) wm.insert(new OrderEvent("5", "customer A", 70));
             assertThat(handle5.getStartTimestamp()).isEqualTo(45000);
             assertThat(handle5.getDuration()).isEqualTo(0);
 
@@ -931,7 +931,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
             // advance clock and assert new data
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
-            final EventFactHandle handle6 = (EventFactHandle) wm.insert(new OrderEvent("6", "customer A", 115));
+            final DefaultEventHandle handle6 = (DefaultEventHandle) wm.insert(new OrderEvent("6", "customer A", 115));
             assertThat(handle6.getStartTimestamp()).isEqualTo(55000);
             assertThat(handle6.getDuration()).isEqualTo(0);
 
@@ -4310,11 +4310,11 @@ public class CepEspTest extends AbstractCepEspTest {
             final DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert("goodbye");
 
             FactHandle key = DefaultFactHandle.createFromExternalFormat(helloHandle.toExternalForm());
-            assertThat(key instanceof EventFactHandle).as("FactHandle not deserialized as EventFactHandle").isTrue();
+            assertThat(key instanceof DefaultEventHandle).as("FactHandle not deserialized as EventFactHandle").isTrue();
             assertThat(ksession.getObject(key)).isEqualTo("hello");
 
             key = DefaultFactHandle.createFromExternalFormat(goodbyeHandle.toExternalForm());
-            assertThat(key instanceof EventFactHandle).as("FactHandle not deserialized as EventFactHandle").isTrue();
+            assertThat(key instanceof DefaultEventHandle).as("FactHandle not deserialized as EventFactHandle").isTrue();
             assertThat(ksession.getObject(key)).isEqualTo("goodbye");
         } finally {
             ksession.dispose();
@@ -4377,7 +4377,7 @@ public class CepEspTest extends AbstractCepEspTest {
         try {
             final PseudoClockScheduler clock = ksession.getSessionClock();
 
-            final EventFactHandle handle1 = (EventFactHandle) ksession.insert(new StockTick(1, "ACME", 50));
+            final DefaultEventHandle handle1 = (DefaultEventHandle) ksession.insert(new StockTick(1, "ACME", 50));
             ksession.fireAllRules();
 
             clock.advanceTime(2, TimeUnit.SECONDS);
@@ -4414,7 +4414,7 @@ public class CepEspTest extends AbstractCepEspTest {
             final PseudoClockScheduler clock = ksession.getSessionClock();
             clock.setStartupTime(5000L);
 
-            final EventFactHandle handle1 = (EventFactHandle) ksession.insert(new StockTick(1, "ACME", 50, 0L));
+            final DefaultEventHandle handle1 = (DefaultEventHandle) ksession.insert(new StockTick(1, "ACME", 50, 0L));
 
             clock.advanceTime(2, TimeUnit.SECONDS);
             ksession.fireAllRules();
@@ -4592,7 +4592,7 @@ public class CepEspTest extends AbstractCepEspTest {
         try {
             final PseudoClockScheduler clock = ksession.getSessionClock();
 
-            final EventFactHandle handle1 = (EventFactHandle) ksession.insert(new SubClass());
+            final DefaultEventHandle handle1 = (DefaultEventHandle) ksession.insert(new SubClass());
             ksession.fireAllRules();
 
             clock.advanceTime(15, TimeUnit.SECONDS);
@@ -4631,7 +4631,7 @@ public class CepEspTest extends AbstractCepEspTest {
         try {
             PseudoClockScheduler clock = ksession.getSessionClock();
 
-            final EventFactHandle handle1 = (EventFactHandle) ksession.insert(new SubClass());
+            final DefaultEventHandle handle1 = (DefaultEventHandle) ksession.insert(new SubClass());
             ksession.fireAllRules();
 
             clock.advanceTime(15, TimeUnit.SECONDS);
@@ -5085,8 +5085,8 @@ public class CepEspTest extends AbstractCepEspTest {
 
             // actually should be empty..
             for (final Object o : session.getFactHandles()) {
-                if (o instanceof EventFactHandle) {
-                    final EventFactHandle eventFactHandle = (EventFactHandle) o;
+                if (o instanceof DefaultEventHandle) {
+                    final DefaultEventHandle eventFactHandle = (DefaultEventHandle) o;
                     assertThat(eventFactHandle.isExpired()).isFalse();
                 }
             }

@@ -16,7 +16,7 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 
 /**
  * Items placed in a <code>LinkedList<code> must implement this interface .

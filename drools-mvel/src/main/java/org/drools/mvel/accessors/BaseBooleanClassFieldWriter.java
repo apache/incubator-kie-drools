@@ -19,7 +19,7 @@ package org.drools.mvel.accessors;
 import java.lang.reflect.Method;
 
 import org.drools.core.base.BaseClassFieldWriter;
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
 
 /**
  * A Base class for primitive boolean class field

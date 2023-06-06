@@ -2,9 +2,9 @@ package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.kie.internal.builder.ResourceChange;
@@ -14,9 +14,9 @@ import java.util.Collection;
 
 public class ReteCompiler extends AbstractPackageCompilationPhase {
     private final AssetFilter assetFilter;
-    private RuleBase kBase;
+    private InternalRuleBase kBase;
 
-    public ReteCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, RuleBase kBase, AssetFilter assetFilter) {
+    public ReteCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalRuleBase kBase, AssetFilter assetFilter) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.assetFilter = assetFilter;

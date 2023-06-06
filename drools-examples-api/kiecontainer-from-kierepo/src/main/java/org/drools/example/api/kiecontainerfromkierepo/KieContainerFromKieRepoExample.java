@@ -15,7 +15,7 @@
 
 package org.drools.example.api.kiecontainerfromkierepo;
 
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;

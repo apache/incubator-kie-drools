@@ -20,7 +20,7 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.conf.RuleConfig;
@@ -53,17 +53,17 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
 
     @Override
     public RuleUnitInstance<T> internalCreateInstance(T data, RuleConfig ruleConfig) {
-        RuleBase ruleBase = createRuleBase(data);
+        InternalRuleBase ruleBase = createRuleBase(data);
         ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl(ruleBase);
         return new InterpretedRuleUnitInstance<>(this, data, reteEvaluator, ruleConfig);
     }
 
-    private RuleBase createRuleBase(T data) {
+    private InternalRuleBase createRuleBase(T data) {
         InternalKieModule kieModule = createRuleUnitKieModule(data.getClass(), false);
         KieModuleKieProject kieProject = createRuleUnitKieProject(kieModule, false);
 
         BuildContext buildContext = new BuildContext();
-        RuleBase kBase = kieModule.createKieBase((KieBaseModelImpl) defaultKieBaseModel(), kieProject, buildContext, null);
+        InternalRuleBase kBase = kieModule.createKieBase((KieBaseModelImpl) defaultKieBaseModel(), kieProject, buildContext, null);
         if (kBase == null) {
             // build error, throw runtime exception
             throw new RuntimeException("Error while creating KieBase" + buildContext.getMessages().filterMessages(Message.Level.ERROR));

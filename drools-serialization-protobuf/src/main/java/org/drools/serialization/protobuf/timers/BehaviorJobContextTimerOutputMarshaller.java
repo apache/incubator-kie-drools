@@ -16,7 +16,7 @@ package org.drools.serialization.protobuf.timers;
 
 import java.io.IOException;
 
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.serialization.protobuf.marshalling.PersisterEnums;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContext;
@@ -35,7 +35,7 @@ public class BehaviorJobContextTimerOutputMarshaller implements TimersOutputMars
         // write out SlidingTimeWindowContext
         SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
 
-        EventFactHandle handle = slCtx.peek();
+        DefaultEventHandle handle = slCtx.peek();
         outputCtx.writeLong( handle.getId() );
     }
 
@@ -46,7 +46,7 @@ public class BehaviorJobContextTimerOutputMarshaller implements TimersOutputMars
         // write out SlidingTimeWindowContext
         SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
 
-        EventFactHandle handle = slCtx.peek();
+        DefaultEventHandle handle = slCtx.peek();
 
         return ProtobufMessages.Timers.Timer.newBuilder()
                 .setType( ProtobufMessages.Timers.TimerType.BEHAVIOR )

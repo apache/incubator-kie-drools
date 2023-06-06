@@ -28,9 +28,9 @@ import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.common.DefaultEventHandle;
+import org.drools.base.definitions.impl.KnowledgePackageImpl;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -527,7 +527,7 @@ public class TypeDeclarationTest {
         KieSession knowledgeSession = kBase.newKieSession();
         FactHandle handle = knowledgeSession.insert( new EventBar.Foo() );
 
-        assertThat(handle instanceof EventFactHandle).isTrue();
+        assertThat(handle instanceof DefaultEventHandle).isTrue();
 
     }
 
@@ -549,7 +549,7 @@ public class TypeDeclarationTest {
         KieSession knowledgeSession = kBase.newKieSession();
         FactHandle handle = knowledgeSession.insert( new EventBar.Foo() );
 
-        assertThat(handle instanceof EventFactHandle).isTrue();
+        assertThat(handle instanceof DefaultEventHandle).isTrue();
 
     }
 
@@ -952,7 +952,7 @@ public class TypeDeclarationTest {
         FactHandle handle = session.insert( foo );
         int n = session.fireAllRules( 5 );
 
-        assertThat(handle instanceof EventFactHandle).isTrue();
+        assertThat(handle instanceof DefaultEventHandle).isTrue();
         assertThat(n).isEqualTo(1);
         assertThat(type.get(foo, "age")).isEqualTo(99);
     }

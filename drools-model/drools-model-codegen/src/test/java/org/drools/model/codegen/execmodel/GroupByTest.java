@@ -104,7 +104,7 @@ public class GroupByTest extends BaseModelTest {
                 "\n" +
                 "global Map<Object, Integer> results\n" +
                 "rule R1 when\n" +
-                "    Person($initial: getName().substring(0,1))" +
+                "    Person($initial: name.substring(0,1))" +
                 "    not GroupKey(key == $initial)" +
                 "then\n" +
                 "    insert(new GroupKey(\"a\", $initial));\n" +
@@ -112,13 +112,13 @@ public class GroupByTest extends BaseModelTest {
                 "\n" +
                 "rule R2 when\n" +
                 "    $k: GroupKey(topic == \"a\", $key: key)" +
-                "    not Person($key == getName().substring(0, 1))" +
+                "    not Person($key == name.substring(0, 1))" +
                 "then\n" +
                 "    delete($k);\n" +
                 "end\n" +
                 "rule R3 when\n" +
                 "    GroupKey(topic == \"a\", $key: key)" +
-                "    accumulate($p: Person($age: age, $key == getName().substring(0, 1)); $sumOfAges: sum($age); $sumOfAges > 10)" +
+                "    accumulate($p: Person($age: age, $key == name.substring(0, 1)); $sumOfAges: sum($age); $sumOfAges > 10)" +
                 "then\n" +
                 "    results.put($key, $sumOfAges);\n" +
                 "end";
@@ -209,16 +209,16 @@ public class GroupByTest extends BaseModelTest {
         // Note: this appears to be a duplicate of providedInstance
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "import " + Map.class.getCanonicalName() + ";" +
-                        "global Map<String, Integer> results;\n" +
-                        "rule X when\n" +
-                        "groupby( $p: Person (); " +
-                        "$key : $p.getName().substring(0, 1); " +
-                        "$sumOfAges : sum($p.getAge()); " +
-                        "$sumOfAges > 36)" +
-                        "then\n" +
-                        "  results.put($key, $sumOfAges);\n" +
-                        "end";
+                "import " + Map.class.getCanonicalName() + ";" +
+                "global Map<String, Integer> results;\n" +
+                "rule X when\n" +
+                "groupby( $p: Person (); " +
+                "$key : $p.getName().substring(0, 1); " +
+                "$sumOfAges : sum($p.getAge()); " +
+                "$sumOfAges > 36)" +
+                "then\n" +
+                "  results.put($key, $sumOfAges);\n" +
+                "end";
         KieSession ksession = getKieSession(str);
 
         Map results = new HashMap();
@@ -479,7 +479,7 @@ public class GroupByTest extends BaseModelTest {
                 "global Map<Object, Integer> results;\n" +
                 "rule X when\n" +
                 "groupby ( $p : Person ( $age : age ) and $s : String( $l : length );\n" +
-                "          $key : $p.getName().substring(0, 1) + $l;\n" +
+                "          $key : $p.name.substring(0, 1) + $l;\n" +
                 "          $sum : sum( $age ); $sum > 10 )" +
                 "then\n" +
                 "  results.put($key, $sum);\n" +
@@ -647,7 +647,7 @@ public class GroupByTest extends BaseModelTest {
             if ( o == null || getClass() != o.getClass() ) return false;
             CompositeKey that = ( CompositeKey ) o;
             return Objects.equals( key1, that.key1 ) &&
-                    Objects.equals( key2, that.key2 );
+                   Objects.equals( key2, that.key2 );
         }
 
         @Override
@@ -658,9 +658,9 @@ public class GroupByTest extends BaseModelTest {
         @Override
         public String toString() {
             return "CompositeKey{" +
-                    "key1=" + key1 +
-                    ", key2=" + key2 +
-                    '}';
+                   "key1=" + key1 +
+                   ", key2=" + key2 +
+                   '}';
         }
     }
 
@@ -703,8 +703,8 @@ public class GroupByTest extends BaseModelTest {
                 "global Set<Object> results;\n" +
                 "rule X when\n" +
                 "    groupby(" +
-                "        $p : Person ( getName() != null );" +
-                "        $key : $p.getName();" +
+                "        $p : Person ( name != null );" +
+                "        $key : $p.name;" +
                 "        $count : count()" +
                 "    )\n" +
                 "    $remappedKey: Object() from $key\n" +
@@ -731,21 +731,21 @@ public class GroupByTest extends BaseModelTest {
     public void testBindingRemappedAfterGroupBy() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "import " + Set.class.getCanonicalName() + ";" +
-                        "global Set<Object> results;\n" +
-                        "rule X when\n" +
-                        "    groupby(" +
-                        "        $p : Person ( getName() != null );" +
-                        "        $key : $p.getName();" +
-                        "        $count : count()" +
-                        "    )\n" +
-                        "    $remappedKey: Object() from $key\n" +
-                        "    $remappedCount: Long() from $count\n" +
-                        "then\n" +
-                        "    if (!($remappedKey instanceof String)) {\n" +
-                        "        throw new IllegalStateException( \"Name not String, but \" + $remappedKey.getClass() );\n" +
-                        "    }\n" +
-                        "end";
+                "import " + Set.class.getCanonicalName() + ";" +
+                "global Set<Object> results;\n" +
+                "rule X when\n" +
+                "    groupby(" +
+                "        $p : Person ( name != null );" +
+                "        $key : $p.name;" +
+                "        $count : count()" +
+                "    )\n" +
+                "    $remappedKey: Object() from $key\n" +
+                "    $remappedCount: Long() from $count\n" +
+                "then\n" +
+                "    if (!($remappedKey instanceof String)) {\n" +
+                "        throw new IllegalStateException( \"Name not String, but \" + $remappedKey.getClass() );\n" +
+                "    }\n" +
+                "end";
 
         KieSession ksession = getKieSession(str);
 
@@ -947,24 +947,24 @@ public class GroupByTest extends BaseModelTest {
         // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "import " + Group.class.getCanonicalName() + ";" +
-                        "import " + Map.class.getCanonicalName() + ";" +
-                        "global Map<String, Integer> results;\n" +
-                        "rule R1 when\n" +
-                        "    groupby(" +
-                        "        groupby(" +
-                        "            $p : Person ($age: age);" +
-                        "            $key1 : $p.getName().substring(0, 3);" +
-                        "            $sumOfAges : sum($age)" +
-                        "        ) and $g1: Group() from new Group($key1, $sumOfAges) and " +
-                        "        $g1SumOfAges: Integer() from $g1.getValue();" +
-                        "        $key : ((String) ($g1.getKey())).substring(0, 2);" +
-                        "        $maxOfValues : max($g1SumOfAges)" +
-                        "    )\n" +
-                        "then\n" +
-                        "    System.out.println($key + \" -> \" + $maxOfValues);\n" +
-                        "    results.put($key, $maxOfValues);\n" +
-                        "end";
+                "import " + Group.class.getCanonicalName() + ";" +
+                "import " + Map.class.getCanonicalName() + ";" +
+                "global Map<String, Integer> results;\n" +
+                "rule R1 when\n" +
+                "    groupby(" +
+                "        groupby(" +
+                "            $p : Person ($age: age);" +
+                "            $key1 : $p.getName().substring(0, 3);" +
+                "            $sumOfAges : sum($age)" +
+                "        ) and $g1: Group() from new Group($key1, $sumOfAges) and " +
+                "        $g1SumOfAges: Integer() from $g1.getValue();" +
+                "        $key : ((String) ($g1.getKey())).substring(0, 2);" +
+                "        $maxOfValues : max($g1SumOfAges)" +
+                "    )\n" +
+                "then\n" +
+                "    System.out.println($key + \" -> \" + $maxOfValues);\n" +
+                "    results.put($key, $maxOfValues);\n" +
+                "end";
 
         KieSession ksession = getKieSession(str);
 
@@ -1502,4 +1502,3 @@ public class GroupByTest extends BaseModelTest {
         assertThat(results.contains(84)).isTrue();
     }
 }
-

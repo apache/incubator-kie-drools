@@ -18,7 +18,7 @@ package org.drools.kiesession.agenda;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.common.PropagationContext;
 
@@ -26,7 +26,7 @@ public class PartitionedDefaultAgenda extends DefaultAgenda {
 
     private final int partition;
 
-    PartitionedDefaultAgenda(RuleBase kBase,
+    PartitionedDefaultAgenda(InternalRuleBase kBase,
                              boolean initMain,
                              ExecutionStateMachine executionStateMachine,
                              int partition) {
@@ -43,7 +43,7 @@ public class PartitionedDefaultAgenda extends DefaultAgenda {
 
     @Override
     protected void doRetract( PropagationContext ectx ) {
-        InternalFactHandle factHandle = ectx.getFactHandle();
+        InternalFactHandle factHandle = (InternalFactHandle) ectx.getFactHandle();
         ObjectTypeNode.retractLeftTuples( factHandle, ectx, workingMemory, partition );
         ObjectTypeNode.retractRightTuples( factHandle, ectx, workingMemory, partition );
         if ( isMainPartition() && factHandle.isPendingRemoveFromStore() ) {

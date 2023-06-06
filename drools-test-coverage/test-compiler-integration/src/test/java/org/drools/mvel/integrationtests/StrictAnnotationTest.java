@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -254,7 +254,7 @@ public class StrictAnnotationTest {
             msg.setStartTime( new Timestamp( 10000 ) );
             msg.setDuration( 1000l );
 
-            EventFactHandle efh = (EventFactHandle) ksession.insert( msg );
+            DefaultEventHandle efh = (DefaultEventHandle) ksession.insert(msg);
             assertThat(efh.getStartTimestamp()).isEqualTo(10000);
             assertThat(efh.getDuration()).isEqualTo(1000);
         } finally {

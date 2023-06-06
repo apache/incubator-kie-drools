@@ -28,8 +28,8 @@ import org.drools.core.WorkingMemoryEventManager;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleFlowGroup;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Declaration;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.Declaration;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.reteoo.Tuple;
@@ -319,7 +319,7 @@ public abstract class WorkingMemoryLogger
             String declaration = declarations.get(i);
 
             Declaration decl = declsMap.get(declaration);
-            InternalFactHandle handle = ( (Tuple) match ).get( decl );
+            FactHandle handle = ( (Tuple) match ).get( decl );
             if (!handle.isValid()) {
                 continue;
             }
@@ -341,12 +341,12 @@ public abstract class WorkingMemoryLogger
     }
 
     private String extractFactHandleIds(InternalMatch internalMatch) {
-        InternalFactHandle activatingFact = internalMatch.getPropagationContext().getFactHandle();
+        FactHandle activatingFact = internalMatch.getPropagationContext().getFactHandle();
         StringBuilder sb = new StringBuilder();
         if (activatingFact != null) {
             sb.append(activatingFact.getId());
         }
-        InternalFactHandle[] factHandles = internalMatch.getTuple().toFactHandles();
+        FactHandle[] factHandles = internalMatch.getTuple().toFactHandles();
         for (int i = 0; i < factHandles.length; i++) {
             if (activatingFact != null) {
                 if (activatingFact.getId() == factHandles[i].getId()) {

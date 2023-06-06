@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.base.XMLSupport;
+import org.drools.base.base.XMLSupport;
 import org.drools.util.IoUtils;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.logger.KieRuntimeLogger;

@@ -20,14 +20,13 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.accessor.Evaluator;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.mvel.evaluators.BaseEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -36,6 +35,7 @@ import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.conf.EvaluatorOption;
 
 @RunWith(Parameterized.class)
@@ -167,23 +167,23 @@ public class CustomOperatorOnlyDrlTest {
             super(type, isNegated ? F_StrEvaluatorDefinition.NOT_STR_COMPARE : F_StrEvaluatorDefinition.STR_COMPARE);
         }
 
-        public boolean evaluate(final ReteEvaluator reteEvaluator, final ReadAccessor extractor, final InternalFactHandle factHandle, final FieldValue value) {
-            final Object objectValue = extractor.getValue(reteEvaluator, factHandle);
+        public boolean evaluate(final ValueResolver valueResolver, final ReadAccessor extractor, final FactHandle factHandle, final FieldValue value) {
+            final Object objectValue = extractor.getValue(valueResolver, factHandle);
             final String objectValueString = (String) objectValue;
             return evaluateAll((String) value.getValue(), objectValueString);
         }
 
-        public boolean evaluate(final ReteEvaluator reteEvaluator, final ReadAccessor ira, final InternalFactHandle left, final ReadAccessor ira1, final InternalFactHandle right) {
+        public boolean evaluate(final ValueResolver valueResolver, final ReadAccessor ira, final FactHandle left, final ReadAccessor ira1, final FactHandle right) {
             return evaluateAll((String) left.getObject(), (String) right.getObject());
         }
 
-        public boolean evaluateCachedLeft(final ReteEvaluator reteEvaluator, final VariableRestriction.VariableContextEntry context, final InternalFactHandle right) {
-            final Object valRight = context.extractor.getValue(reteEvaluator, right);
+        public boolean evaluateCachedLeft(final ValueResolver valueResolver, final VariableRestriction.VariableContextEntry context, final FactHandle right) {
+            final Object valRight = context.extractor.getValue(valueResolver, right);
             return evaluateAll((String) ((VariableRestriction.ObjectVariableContextEntry) context).left, (String) valRight);
         }
 
-        public boolean evaluateCachedRight(final ReteEvaluator reteEvaluator, final VariableRestriction.VariableContextEntry context, final InternalFactHandle left) {
-            final Object varLeft = context.declaration.getExtractor().getValue(reteEvaluator, left);
+        public boolean evaluateCachedRight(final ValueResolver valueResolver, final VariableRestriction.VariableContextEntry context, final FactHandle left) {
+            final Object varLeft = context.declaration.getExtractor().getValue(valueResolver, left);
             return evaluateAll((String) varLeft, (String) ((VariableRestriction.ObjectVariableContextEntry) context).right);
         }
 

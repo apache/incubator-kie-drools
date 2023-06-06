@@ -20,11 +20,13 @@ import java.io.Serializable;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.base.factmodel.traits.TraitTypeEnum;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -118,16 +120,14 @@ public interface InternalFactHandle
     boolean isNegated();
     void setNegated(boolean negated);
 
-    <K> K as( Class<K> klass ) throws ClassCastException;
-
     boolean isExpired();
     boolean isPendingRemoveFromStore();
 
     void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer );
-    void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer);
+    void forEachLeftTuple(Consumer<AbstractLeftTuple> leftTupleConsumer);
 
     RightTuple findFirstRightTuple(Predicate<RightTuple> rightTuplePredicate );
-    LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate );
+    LeftTuple findFirstLeftTuple(Predicate<AbstractLeftTuple> lefttTuplePredicate );
 
     void setFirstLeftTuple( LeftTuple firstLeftTuple );
 
@@ -164,8 +164,8 @@ public interface InternalFactHandle
         void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer);
         RightTuple findFirstRightTuple(Predicate<RightTuple> rightTuplePredicate );
 
-        void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer);
-        LeftTuple findFirstLeftTuple(Predicate<LeftTuple> leftTuplePredicate );
+        void forEachLeftTuple(Consumer<AbstractLeftTuple> leftTupleConsumer);
+        AbstractLeftTuple findFirstLeftTuple(Predicate<AbstractLeftTuple> leftTuplePredicate );
 
         LeftTuple getFirstLeftTuple( int partition);
         void setFirstLeftTuple( LeftTuple firstLeftTuple, int partition );
@@ -314,7 +314,6 @@ public interface InternalFactHandle
             throw new UnsupportedOperationException();
         }
 
-
         @Override
         public InternalFactHandle clone() {
             throw new UnsupportedOperationException();
@@ -386,7 +385,7 @@ public interface InternalFactHandle
         }
 
         @Override
-        public <K> K as( Class<K> klass ) throws ClassCastException {
+        public <K> K as(Class<K> klass) throws ClassCastException {
             throw new UnsupportedOperationException();
         }
 
@@ -406,7 +405,7 @@ public interface InternalFactHandle
         }
 
         @Override
-        public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer ) {
+        public void forEachLeftTuple( Consumer<AbstractLeftTuple> leftTupleConsumer ) {
             throw new UnsupportedOperationException();
         }
 
@@ -416,7 +415,7 @@ public interface InternalFactHandle
         }
 
         @Override
-        public LeftTuple findFirstLeftTuple( Predicate<LeftTuple> lefttTuplePredicate ) {
+        public LeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
             throw new UnsupportedOperationException();
         }
 

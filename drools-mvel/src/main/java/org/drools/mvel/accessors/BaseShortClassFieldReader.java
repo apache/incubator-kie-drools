@@ -18,9 +18,9 @@ package org.drools.mvel.accessors;
 
 import java.lang.reflect.Method;
 
-import org.drools.core.base.BaseClassFieldReader;
-import org.drools.core.base.ValueType;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.base.BaseClassFieldReader;
+import org.drools.base.base.ValueType;
 
 public abstract class BaseShortClassFieldReader extends BaseClassFieldReader {
 
@@ -44,56 +44,56 @@ public abstract class BaseShortClassFieldReader extends BaseClassFieldReader {
     public BaseShortClassFieldReader() {
     }
 
-    public Object getValue(ReteEvaluator reteEvaluator, final Object object) {
-        return getShortValue( reteEvaluator, object );
+    public Object getValue(ValueResolver valueResolver, final Object object) {
+        return getShortValue( valueResolver, object );
     }
 
-    public boolean getBooleanValue(ReteEvaluator reteEvaluator, final Object object) {
+    public boolean getBooleanValue(ValueResolver valueResolver, final Object object) {
         throw new RuntimeException( "Conversion to boolean not supported from short" );
     }
 
-    public byte getByteValue(ReteEvaluator reteEvaluator, final Object object) {
-        return (byte) getShortValue( reteEvaluator, object );
+    public byte getByteValue(ValueResolver valueResolver, final Object object) {
+        return (byte) getShortValue( valueResolver, object );
 
     }
 
-    public char getCharValue(ReteEvaluator reteEvaluator, final Object object) {
+    public char getCharValue(ValueResolver valueResolver, final Object object) {
         throw new RuntimeException( "Conversion to char not supported from short" );
     }
 
-    public double getDoubleValue(ReteEvaluator reteEvaluator, final Object object) {
-        return getShortValue( reteEvaluator, object );
+    public double getDoubleValue(ValueResolver valueResolver, final Object object) {
+        return getShortValue( valueResolver, object );
     }
 
-    public float getFloatValue(ReteEvaluator reteEvaluator, final Object object) {
-        return getShortValue( reteEvaluator, object );
+    public float getFloatValue(ValueResolver valueResolver, final Object object) {
+        return getShortValue( valueResolver, object );
     }
 
-    public int getIntValue(ReteEvaluator reteEvaluator, final Object object) {
-        return getShortValue( reteEvaluator, object );
+    public int getIntValue(ValueResolver valueResolver, final Object object) {
+        return getShortValue( valueResolver, object );
     }
 
-    public long getLongValue(ReteEvaluator reteEvaluator, final Object object) {
-        return getShortValue( reteEvaluator, object );
+    public long getLongValue(ValueResolver valueResolver, final Object object) {
+        return getShortValue( valueResolver, object );
     }
 
-    public abstract short getShortValue(ReteEvaluator reteEvaluator, Object object);
+    public abstract short getShortValue(ValueResolver valueResolver, Object object);
     
-    public boolean isNullValue(ReteEvaluator reteEvaluator, final Object object) {
+    public boolean isNullValue(ValueResolver valueResolver, final Object object) {
         return false;
     }
 
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod("getShortValue",
-                                                     ReteEvaluator.class, Object.class);
+                                                     ValueResolver.class, Object.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );
         }
     }
 
-    public int getHashCode(ReteEvaluator reteEvaluator, final Object object) {
-        return getShortValue( reteEvaluator, object );
+    public int getHashCode(ValueResolver valueResolver, final Object object) {
+        return getShortValue( valueResolver, object );
     }
 }

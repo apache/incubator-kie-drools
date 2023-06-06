@@ -19,9 +19,9 @@ package org.drools.core.time.impl;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
+import org.drools.base.time.JobHandle;
 import org.drools.core.time.TimerService;
-import org.drools.core.time.Trigger;
+import org.drools.base.time.Trigger;
 import org.kie.api.time.SessionClock;
 
 import java.util.Collection;
@@ -130,9 +130,10 @@ public class JDKTimerService implements TimerService, SessionClock, InternalSche
     }
 
     public void removeJob(JobHandle jobHandle) {
-        jobHandle.setCancel(true);
+        jobHandle.cancel();
+        jobFactoryManager.removeTimerJobInstance(jobHandle);
+
         JDKJobHandle jdkJobHandle = (JDKJobHandle) jobHandle;
-        jobFactoryManager.removeTimerJobInstance(jdkJobHandle.getTimerJobInstance());
         this.scheduler.remove((Runnable) jdkJobHandle.getFuture());
     }
 

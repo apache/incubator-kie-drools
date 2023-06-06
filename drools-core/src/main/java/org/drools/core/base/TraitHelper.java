@@ -3,13 +3,13 @@ package org.drools.core.base;
 import java.util.Collection;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.beliefsystem.Mode;
+import org.drools.base.beliefsystem.Mode;
 
 public interface TraitHelper {
 

@@ -16,7 +16,7 @@
 
 package org.kie.dmn.ruleset2dmn.cli;
 
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 import picocli.CommandLine.IVersionProvider;
 
 public class RuleSet2DMNVersionProvider implements IVersionProvider {

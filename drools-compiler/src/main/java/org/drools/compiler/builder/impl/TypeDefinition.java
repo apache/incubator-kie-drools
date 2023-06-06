@@ -16,7 +16,7 @@
 package org.drools.compiler.builder.impl;
 
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.rule.TypeDeclaration;
 
 public class TypeDefinition {
 

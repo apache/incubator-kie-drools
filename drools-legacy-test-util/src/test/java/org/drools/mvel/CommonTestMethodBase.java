@@ -19,7 +19,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.common.InternalAgenda;

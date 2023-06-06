@@ -33,7 +33,7 @@ import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.io.InternalResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.wiring.api.ResourceProvider;
@@ -122,7 +122,7 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     KnowledgeBuilderConfiguration createBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader );
 
-    InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf );
+    InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf);
 
     default void afterKieBaseCreationUpdate(String name, InternalKnowledgeBase kBase) { }
 

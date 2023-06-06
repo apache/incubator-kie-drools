@@ -23,7 +23,7 @@ import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
 import org.drools.core.reteoo.builder.BetaNodeConstraintFactory;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.metric.common.DefaultBetaConstraintsMetric;
 import org.drools.metric.common.DoubleBetaConstraintsMetric;
 import org.drools.metric.common.QuadroupleBetaConstraintsMetric;

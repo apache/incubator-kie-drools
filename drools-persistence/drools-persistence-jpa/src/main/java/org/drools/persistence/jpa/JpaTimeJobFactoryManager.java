@@ -19,9 +19,9 @@ import org.kie.api.runtime.ExecutableRunner;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
+import org.drools.base.time.JobHandle;
 import org.drools.core.time.SelfRemovalJob;
-import org.drools.core.time.Trigger;
+import org.drools.base.time.Trigger;
 import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
 import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
 import org.drools.core.time.impl.TimerJobInstance;
@@ -40,6 +40,7 @@ public class JpaTimeJobFactoryManager
         return runner;
     }
 
+    @Override
     public TimerJobInstance createTimerJobInstance(Job job,
                                                    JobContext ctx,
                                                    Trigger trigger,

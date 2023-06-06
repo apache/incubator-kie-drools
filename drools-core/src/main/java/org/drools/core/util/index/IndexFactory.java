@@ -1,13 +1,11 @@
 package org.drools.core.util.index;
 
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-
-import static org.drools.core.util.index.IndexUtil.isBigDecimalEqualityConstraint;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 
 public interface IndexFactory {
 
@@ -31,7 +29,7 @@ public interface IndexFactory {
             return new TupleList();
         }
 
-        if (indexSpec.getConstraintType() == IndexUtil.ConstraintType.EQUAL) {
+        if (indexSpec.getConstraintType() == ConstraintTypeOperator.EQUAL) {
             return IndexMemory.createEqualityMemory(indexSpec, false);
         }
 
@@ -50,7 +48,7 @@ public interface IndexFactory {
             return new TupleList();
         }
 
-        if (indexSpec.getConstraintType() == IndexUtil.ConstraintType.EQUAL) {
+        if (indexSpec.getConstraintType() == ConstraintTypeOperator.EQUAL) {
             return IndexMemory.createEqualityMemory(indexSpec, true);
         }
 

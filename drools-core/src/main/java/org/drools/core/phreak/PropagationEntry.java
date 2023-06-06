@@ -15,12 +15,14 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.EventFactHandle;
+import java.util.concurrent.CountDownLatch;
+
+import org.drools.core.base.DroolsQueryImpl;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.facttemplates.Event;
+import org.drools.base.facttemplates.Event;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
@@ -28,24 +30,23 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ModifyPreviousTuples;
-import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
+import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.concurrent.CountDownLatch;
 
 import static org.drools.core.reteoo.EntryPointNode.removeRightTuplesMatchingOTN;
-import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
+import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
 public interface PropagationEntry {
 
@@ -145,12 +146,12 @@ public interface PropagationEntry {
     class ExecuteQuery extends PropagationEntry.PropagationEntryWithResult<QueryTerminalNode[]> {
 
         private final String queryName;
-        private final DroolsQuery queryObject;
+        private final DroolsQueryImpl queryObject;
         private final InternalFactHandle handle;
         private final PropagationContext pCtx;
         private final boolean calledFromRHS;
 
-        public ExecuteQuery( String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx, boolean calledFromRHS ) {
+        public ExecuteQuery(String queryName, DroolsQueryImpl queryObject, InternalFactHandle handle, PropagationContext pCtx, boolean calledFromRHS) {
             this.queryName = queryName;
             this.queryObject = queryObject;
             this.handle = handle;
@@ -264,24 +265,22 @@ public interface PropagationEntry {
             }
 
             // DROOLS-455 the calculation of the effectiveEnd may overflow and become negative
-            EventFactHandle eventFactHandle = (EventFactHandle) handle;
+            DefaultEventHandle eventFactHandle = (DefaultEventHandle) handle;
             long nextTimestamp = getNextTimestamp( insertionTime, expirationOffset, eventFactHandle );
 
-            WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
+            WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction((DefaultEventHandle) handle, otn );
             if (nextTimestamp <= reteEvaluator.getTimerService().getCurrentTime()) {
                 reteEvaluator.addPropagation( action );
             } else {
                 JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, reteEvaluator );
-                JobHandle jobHandle = reteEvaluator.getTimerService()
-                                        .scheduleJob( job,
-                                                      jobctx,
-                                                      PointInTimeTrigger.createPointInTimeTrigger( nextTimestamp, null ) );
+                DefaultJobHandle jobHandle = (DefaultJobHandle) reteEvaluator.getTimerService()
+                                                                             .scheduleJob( job, jobctx, PointInTimeTrigger.createPointInTimeTrigger( nextTimestamp, null ) );
                 jobctx.setJobHandle( jobHandle );
                 eventFactHandle.addJob( jobHandle );
             }
         }
 
-        private static long getNextTimestamp( long insertionTime, long expirationOffset, EventFactHandle eventFactHandle ) {
+        private static long getNextTimestamp( long insertionTime, long expirationOffset, DefaultEventHandle eventFactHandle) {
             long effectiveEnd = eventFactHandle.getEndTimestamp() + expirationOffset;
             return Math.max( insertionTime, effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
         }
@@ -466,7 +465,7 @@ public interface PropagationEntry {
             }
 
             if (handle.isEvent() && isMainPartition()) {
-                ((EventFactHandle) handle).unscheduleAllJobs(reteEvaluator);
+                ((DefaultEventHandle) handle).unscheduleAllJobs(reteEvaluator);
             }
         }
 

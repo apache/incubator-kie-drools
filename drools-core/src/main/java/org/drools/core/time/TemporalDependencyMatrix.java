@@ -19,9 +19,10 @@ package org.drools.core.time;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.drools.core.rule.Pattern;
+import org.drools.base.rule.Pattern;
+import org.drools.base.time.Interval;
 
-import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
+import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
 /**
  * A class to abstract the management of temporal

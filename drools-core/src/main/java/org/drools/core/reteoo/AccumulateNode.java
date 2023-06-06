@@ -21,23 +21,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.reteoo.AccumulateContextEntry;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakAccumulateNode;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.rule.accessor.Accumulator;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.Accumulate;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.rule.accessor.Accumulator;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.BitMask;
@@ -92,7 +94,7 @@ public class AccumulateNode extends BetaNode {
 
     }
 
-    private void addAccFunctionDeclarationsToLeftMask(RuleBase ruleBase, LeftTupleSource leftInput, Accumulate accumulate ) {
+    private void addAccFunctionDeclarationsToLeftMask(InternalRuleBase ruleBase, LeftTupleSource leftInput, Accumulate accumulate) {
         BitMask leftMask = getLeftInferredMask();
         ObjectType leftObjectType = leftInput.getObjectType();
         if (leftObjectType instanceof ClassObjectType ) {
@@ -281,72 +283,6 @@ public class AccumulateNode extends BetaNode {
     }
 
 
-    public static class AccumulateContextEntry {
-        private Object             key;
-        private InternalFactHandle resultFactHandle;
-        private LeftTuple          resultLeftTuple;
-        private boolean            propagated;
-        private Object             functionContext;
-        private boolean            toPropagate;
-        private boolean            empty = true;
-
-        public AccumulateContextEntry(Object key) {
-            this.key = key;
-        }
-
-        public InternalFactHandle getResultFactHandle() {
-            return resultFactHandle;
-        }
-
-        public void setResultFactHandle(InternalFactHandle resultFactHandle) {
-            this.resultFactHandle = resultFactHandle;
-        }
-
-        public LeftTuple getResultLeftTuple() {
-            return resultLeftTuple;
-        }
-
-        public void setResultLeftTuple(LeftTuple resultLeftTuple) {
-            this.resultLeftTuple = resultLeftTuple;
-        }
-
-        public boolean isPropagated() {
-            return propagated;
-        }
-
-        public void setPropagated( boolean propagated ) {
-            this.propagated = propagated;
-        }
-
-        public boolean isToPropagate() {
-            return toPropagate;
-        }
-
-        public void setToPropagate(boolean toPropagate) {
-            this.toPropagate = toPropagate;
-        }
-
-        public Object getFunctionContext() {
-            return functionContext;
-        }
-
-        public void setFunctionContext(Object context) {
-            this.functionContext = context;
-        }
-
-        public Object getKey() {
-            return this.key;
-        }
-
-        public boolean isEmpty() {
-            return empty;
-        }
-
-        public void setEmpty( boolean empty ) {
-            this.empty = empty;
-        }
-    }
-
     public static class AccumulateContext extends AccumulateContextEntry implements BaseAccumulation {
         private PropagationContext  propagationContext;
 
@@ -468,7 +404,7 @@ public class AccumulateNode extends BetaNode {
 
     public LeftTuple createPeer(LeftTuple original) {
         JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
-        peer.initPeer((BaseLeftTuple) original, this);
+        peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer(peer);
         return peer;
     }

@@ -24,14 +24,15 @@ import java.util.List;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.base.ObjectType;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexFactory;
-import org.drools.core.util.index.IndexUtil;
+import org.drools.base.util.index.IndexUtil;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class SingleBetaConstraints
     implements
@@ -122,7 +123,7 @@ public class SingleBetaConstraints
      */
     public void updateFromFactHandle(final ContextEntry[] context,
                                      final ReteEvaluator reteEvaluator,
-                                     final InternalFactHandle handle) {
+                                     final FactHandle handle) {
         context[0].updateFromFactHandle(reteEvaluator, handle);
     }
 
@@ -130,7 +131,7 @@ public class SingleBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
-                                       final InternalFactHandle handle) {
+                                       final FactHandle handle) {
         return this.indexed || this.constraint.isAllowedCachedLeft(context[0],
                                                                    handle);
     }

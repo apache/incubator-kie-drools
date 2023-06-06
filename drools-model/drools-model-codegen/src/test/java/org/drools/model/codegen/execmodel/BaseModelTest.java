@@ -217,7 +217,7 @@ public abstract class BaseModelTest {
     }
 
     protected ObjectTypeNode getObjectTypeNodeForClass( KieSession ksession, Class<?> clazz ) {
-        EntryPointNode epn = (( InternalKnowledgeBase ) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
+        EntryPointNode epn = ((InternalKnowledgeBase) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
         for (ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
             if (otn.getObjectType().isAssignableFrom( clazz )) {
                 return otn;

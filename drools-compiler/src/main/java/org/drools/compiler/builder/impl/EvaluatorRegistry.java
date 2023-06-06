@@ -26,9 +26,9 @@ import java.util.Set;
 
 import org.drools.compiler.rule.builder.ConstraintBuilder;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
-import org.drools.core.base.ValueType;
-import org.drools.core.common.DroolsObjectInput;
-import org.drools.core.rule.accessor.Evaluator;
+import org.drools.base.base.ValueType;
+import org.drools.base.common.DroolsObjectInput;
+import org.drools.base.rule.accessor.Evaluator;
 import org.drools.drl.parser.impl.Operator;
 
 /**

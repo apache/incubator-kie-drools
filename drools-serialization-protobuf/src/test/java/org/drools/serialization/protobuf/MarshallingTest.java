@@ -14,35 +14,15 @@
 
 package org.drools.serialization.protobuf;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-
+import org.drools.base.base.ValueResolver;
+import org.drools.base.common.DroolsObjectInputStream;
+import org.drools.base.common.DroolsObjectOutputStream;
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.base.ClassObjectType;
+import org.drools.core.common.*;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.marshalling.ClassObjectMarshallingStrategyAcceptor;
@@ -51,9 +31,9 @@ import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.MapBackedClassLoader;
-import org.drools.core.rule.consequence.Consequence;
-import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.base.rule.MapBackedClassLoader;
+import org.drools.base.rule.consequence.Consequence;
+import org.drools.base.rule.consequence.ConsequenceContext;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.KeyStoreConstants;
@@ -61,15 +41,7 @@ import org.drools.core.util.KeyStoreHelper;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.CommonTestMethodBase;
-import org.drools.mvel.compiler.Address;
-import org.drools.mvel.compiler.Cell;
-import org.drools.mvel.compiler.Cheese;
-import org.drools.mvel.compiler.FactA;
-import org.drools.mvel.compiler.FactB;
-import org.drools.mvel.compiler.FactC;
-import org.drools.mvel.compiler.Message;
-import org.drools.mvel.compiler.Person;
-import org.drools.mvel.compiler.Primitives;
+import org.drools.mvel.compiler.*;
 import org.drools.mvel.integrationtests.IteratorToList;
 import org.drools.serialization.protobuf.marshalling.IdentityPlaceholderResolverStrategy;
 import org.drools.serialization.protobuf.marshalling.RuleBaseNodes;
@@ -87,11 +59,7 @@ import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.Globals;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.*;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
@@ -101,6 +69,14 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.utils.KieHelper;
+
+import java.io.*;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -961,7 +937,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule2 += "    list.add( \"fired2\" );\n";
         rule2 += "end";
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) loadKnowledgeBaseFromString( rule1 );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) loadKnowledgeBaseFromString(rule1);
 
         // Make sure the rete node map is created correctly
         Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap(kBase);
@@ -1051,7 +1027,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KieBase kBase = loadKnowledgeBaseFromString( rule );
 
         // Make sure the rete node map is created correctly
-        Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap( (InternalKnowledgeBase) kBase );
+        Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap( (InternalKnowledgeBase) kBase);
 
         assertThat(nodes.size()).isEqualTo(5);
         assertThat(((ClassObjectType) ((ObjectTypeNode) nodes.get(3)).getObjectType()).getClassType().getSimpleName()).isEqualTo("Cheese");
@@ -2046,13 +2022,14 @@ public class MarshallingTest extends CommonTestMethodBase {
         final List<String> fired = new ArrayList<String>();
 
         rule.setConsequence( new Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 ReteEvaluator reteEvaluator) throws Exception {
-                fired.add( "a" );
-            }
-
+            @Override
             public String getName() {
                 return "default";
+            }
+
+            @Override
+            public void evaluate(ConsequenceContext knowledgeHelper, ValueResolver valueResolver) throws Exception {
+                fired.add( "a" );
             }
         } );
 

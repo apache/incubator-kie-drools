@@ -35,9 +35,9 @@ import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.util.TypeResolver;
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.definitions.rule.impl.QueryImpl;
+import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
@@ -52,7 +52,7 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
-import static org.drools.core.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
+import static org.drools.base.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
 
 /**
  * A Dialect implementation handles the building and execution of code

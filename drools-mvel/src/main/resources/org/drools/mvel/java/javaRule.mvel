@@ -1,5 +1,5 @@
 @declare{"returnValueMethod"}
-public static org.drools.core.rule.accessor.FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
+public static org.drools.base.rule.accessor.FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
                                                       @foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
                                                       @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws java.lang.Exception {
     return org.drools.mvel.field.FieldFactory.getInstance().getFieldValue( @{text} );
@@ -40,9 +40,9 @@ public static class @{className} implements java.io.Serializable {
         @{initCode}
     }
     
-    public Object accumulate(org.drools.core.common.ReteEvaluator reteEvaluator,
-                           org.drools.core.common.InternalFactHandle handle,
-                           org.drools.core.rule.Declaration[] innerDeclarations@if{declarations != empty}, @end{}
+    public Object accumulate(org.drools.base.base.ValueResolver valueResolver,
+                           org.kie.api.runtime.rule.FactHandle handle,
+                           org.drools.base.rule.Declaration[] innerDeclarations@if{declarations != empty}, @end{}
                            @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
                            @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
@@ -60,8 +60,8 @@ public static class @{className} implements java.io.Serializable {
         return value;
     }
     
-    public void reverse(org.drools.core.common.ReteEvaluator reteEvaluator,
-                           org.drools.core.common.InternalFactHandle handle,
+    public void reverse(org.drools.base.base.ValueResolver valueResolver,
+                           org.kie.api.runtime.rule.FactHandle handle,
                            Object value@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
                            ) throws java.lang.Exception {
@@ -100,7 +100,9 @@ public static class @{className} implements java.io.Serializable {
 @end{}
 
 @declare{"consequenceMethod"}
-public static void @{methodName}(KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.kie.api.runtime.rule.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws java.lang.Exception { org.kie.api.runtime.rule.RuleContext kcontext = drools;
+public static void @{methodName}(org.drools.base.rule.consequence.ConsequenceContext consequenceCtx @if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.kie.api.runtime.rule.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws java.lang.Exception {
+    org.kie.api.runtime.rule.RuleContext kcontext = (org.kie.api.runtime.rule.RuleContext) consequenceCtx;
+    KnowledgeHelper drools = (KnowledgeHelper) consequenceCtx;
     @{text}
 }
 @end{}

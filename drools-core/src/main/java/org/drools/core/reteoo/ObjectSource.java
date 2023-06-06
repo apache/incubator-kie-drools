@@ -18,22 +18,23 @@ package org.drools.core.reteoo;
 
 import java.util.List;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Pattern;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.Pattern;
+import org.drools.base.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import static org.drools.base.reteoo.PropertySpecificUtil.getAccessibleProperties;
+import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * A source of <code>FactHandle</code>s for an <code>ObjectSink</code>.
@@ -47,9 +48,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
  */
 public abstract class ObjectSource extends BaseNode {
 
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     /** The destination for <code>FactHandleImpl</code>. */
     protected ObjectSinkPropagator sink;
@@ -112,7 +111,7 @@ public abstract class ObjectSource extends BaseNode {
         this.source = source;
     }
 
-    public RuleBase getRuleBase() {
+    public InternalRuleBase getRuleBase() {
         return source.getRuleBase();
     }
 
@@ -126,7 +125,7 @@ public abstract class ObjectSource extends BaseNode {
         Pattern pattern = context.getLastBuiltPatterns()[0];
         ObjectType objectType = pattern.getObjectType();
         
-        if ( isPropertyReactive(context, objectType) ) {
+        if ( isPropertyReactive(context.getRuleBase(), objectType) ) {
             List<String> settableProperties = getAccessibleProperties( context.getRuleBase(), objectType );
             declaredMask = calculateDeclaredMask(objectType, settableProperties);
         } else {

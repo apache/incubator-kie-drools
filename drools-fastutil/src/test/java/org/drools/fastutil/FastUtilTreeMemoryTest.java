@@ -1,18 +1,19 @@
 package org.drools.fastutil;
 
-import org.drools.core.base.ValueType;
-import org.drools.core.base.extractors.BaseObjectClassFieldReader;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.base.ValueType;
+import org.drools.base.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.accessor.TupleValueExtractor;
-import org.drools.core.util.AbstractHashTable;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.core.util.FastIterator;
+import org.drools.base.util.FieldIndex;
 import org.drools.fastutil.FastUtilTreeMemory.TreeFastIterator;
-import org.drools.core.util.index.IndexUtil.ConstraintType;
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,14 +27,14 @@ public class FastUtilTreeMemoryTest {
 
         Tuple tuple10 = getLeftTuple(10);
 
-        AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(rightValueExtractor, leftValueExtractor);
+        FieldIndex fieldIndex = new FieldIndex(rightValueExtractor, leftValueExtractor);
         assertThat(fieldIndex.getLeftExtractor().getValue(tuple10)).isEqualTo(10);
     }
 
     @Test
     public void testGreaterThan() {
-        AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_THAN, fieldIndex, !true);
+        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
+        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.GREATER_THAN, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
         Tuple tuple20 = getLeftTuple(20);
@@ -64,8 +65,8 @@ public class FastUtilTreeMemoryTest {
 
     @Test
     public void testGreaterOrEqual() {
-        AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_OR_EQUAL, fieldIndex, !true);
+        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
+        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.GREATER_OR_EQUAL, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
         Tuple tuple20 = getLeftTuple(20);
@@ -96,8 +97,8 @@ public class FastUtilTreeMemoryTest {
 
     @Test
     public void testLessOrEqual() {
-        AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.LESS_OR_EQUAL, fieldIndex, !true);
+        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
+        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.LESS_OR_EQUAL, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
         Tuple tuple20 = getLeftTuple(20);
@@ -150,8 +151,8 @@ public class FastUtilTreeMemoryTest {
 
     @Test
     public void testLessThan() {
-        AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.LESS_THAN, fieldIndex, !true);
+        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
+        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.LESS_THAN, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
         Tuple tuple20 = getLeftTuple(20);
@@ -201,8 +202,8 @@ public class FastUtilTreeMemoryTest {
 
     @Test
     public void testSharedFirstBucket() {
-        AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory  treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_THAN, fieldIndex, !true);
+        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
+        FastUtilTreeMemory  treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.GREATER_THAN, fieldIndex, !true);
 
         Tuple tuple10_1 = getLeftTuple(10);
         Tuple tuple10_2 = getLeftTuple(10);
@@ -247,8 +248,8 @@ public class FastUtilTreeMemoryTest {
 
     @Test
     public void testSharedLastBucket() {
-        AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_THAN, fieldIndex, !true);
+        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
+        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.GREATER_THAN, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
         Tuple tuple20 = getLeftTuple(20);
@@ -340,7 +341,7 @@ public class FastUtilTreeMemoryTest {
             }
 
             @Override
-            public Object getValue(ReteEvaluator reteEvaluator, Tuple tuple) {
+            public Object getValue(ValueResolver valueResolver, BaseTuple tuple) {
                 return tuple.getFactHandle().getObject();
             }
 
@@ -356,7 +357,7 @@ public class FastUtilTreeMemoryTest {
     public static ReadAccessor getRightExtractor() {
         ReadAccessor readAccessor = new BaseObjectClassFieldReader() {
             @Override
-            public Object getValue(ReteEvaluator reteEvaluator, Object object) {
+            public Object getValue(ValueResolver valueResolver, Object object) {
                 return object;
             }
         };

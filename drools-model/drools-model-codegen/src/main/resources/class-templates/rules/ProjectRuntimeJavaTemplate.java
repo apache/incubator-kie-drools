@@ -17,6 +17,7 @@ package org.drools.project.model;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.base.util.Drools;
 import org.drools.core.SessionConfiguration;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
@@ -32,7 +33,7 @@ public class ProjectRuntime implements KieRuntimeBuilder {
 
     private static java.util.Map<String, KieBase> initKieBases() {
         java.util.Map<String, KieBase> kbaseMap = new ConcurrentHashMap<>();
-        if (org.drools.core.util.Drools.isNativeImage()) {
+        if (Drools.isNativeImage()) {
         }
         return kbaseMap;
     }

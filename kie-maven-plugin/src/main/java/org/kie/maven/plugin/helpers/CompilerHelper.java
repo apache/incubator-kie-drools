@@ -22,8 +22,8 @@ import org.apache.maven.plugin.logging.Log;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieMetaInfoBuilder;
-import org.drools.core.rule.KieModuleMetaInfo;
-import org.drools.core.rule.TypeMetaInfo;
+import org.drools.base.rule.KieModuleMetaInfo;
+import org.drools.base.rule.TypeMetaInfo;
 
 public class CompilerHelper {
 

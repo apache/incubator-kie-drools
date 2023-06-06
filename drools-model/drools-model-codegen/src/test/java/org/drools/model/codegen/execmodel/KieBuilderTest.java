@@ -20,7 +20,7 @@ import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
@@ -64,7 +64,7 @@ public class KieBuilderTest {
     }
 
     private AlphaNodeFieldConstraint getAlphaConstraint( KieSession ksession ) {
-        EntryPointNode epn = (( InternalKnowledgeBase ) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
+        EntryPointNode epn = ((InternalKnowledgeBase) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
         for (ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
             if (otn.getObjectType().isAssignableFrom( String.class )) {
                 AlphaNode alpha = (AlphaNode) otn.getObjectSinkPropagator().getSinks()[0];

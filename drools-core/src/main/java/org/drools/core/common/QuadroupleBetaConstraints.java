@@ -20,12 +20,13 @@ import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.base.ObjectType;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
 public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
@@ -87,7 +88,7 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
      */
     public void updateFromFactHandle(final ContextEntry[] context,
                                      final ReteEvaluator reteEvaluator,
-                                     final InternalFactHandle handle) {
+                                     final FactHandle handle) {
         context[0].updateFromFactHandle(reteEvaluator,
                 handle);
         context[1].updateFromFactHandle(reteEvaluator,
@@ -116,7 +117,7 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
      * @see org.kie.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
-                                       final InternalFactHandle handle) {
+                                       final FactHandle handle) {
         return (indexed[0] || constraints[0].isAllowedCachedLeft(context[0], handle)) &&
                (indexed[1] || constraints[1].isAllowedCachedLeft(context[1], handle)) &&
                (indexed[2] || constraints[2].isAllowedCachedLeft( context[2], handle )) &&

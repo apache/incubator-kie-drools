@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
@@ -30,9 +31,9 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.AsyncReceive;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.AsyncReceive;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.TupleList;
@@ -172,7 +173,7 @@ public class AsyncReceiveNode extends LeftTupleSource
     @Override
     public LeftTuple createPeer( LeftTuple original ) {
         EvalNodeLeftTuple peer = new EvalNodeLeftTuple();
-        peer.initPeer( ( BaseLeftTuple ) original, this );
+        peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer( peer );
         return peer;
     }

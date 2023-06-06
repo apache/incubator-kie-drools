@@ -17,7 +17,7 @@
 
 package org.drools.model.codegen.execmodel.generator.operatorspec;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.model.functions.Operator;

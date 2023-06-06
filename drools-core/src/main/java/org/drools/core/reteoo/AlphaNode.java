@@ -18,15 +18,17 @@ package org.drools.core.reteoo;
 
 import java.util.List;
 
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ObjectType;
+import org.drools.base.reteoo.BaseTerminalNode;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 
@@ -279,12 +281,12 @@ public class AlphaNode extends ObjectSource
         }
 
         @Override
-        public void addAssociatedTerminal(TerminalNode terminalNode) {
+        public void addAssociatedTerminal(BaseTerminalNode terminalNode) {
             sink.addAssociatedTerminal(terminalNode);
         }
 
         @Override
-        public void removeAssociatedTerminal(TerminalNode terminalNode) {
+        public void removeAssociatedTerminal(BaseTerminalNode terminalNode) {
             sink.removeAssociatedTerminal(terminalNode);
         }
 
@@ -294,7 +296,7 @@ public class AlphaNode extends ObjectSource
         }
 
         @Override
-        public boolean hasAssociatedTerminal(NetworkNode terminalNode) {
+        public boolean hasAssociatedTerminal(BaseTerminalNode terminalNode) {
             return sink.hasAssociatedTerminal(terminalNode);
         }
 

@@ -23,15 +23,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.util.TypeResolver;
-import org.drools.core.factmodel.AccessibleFact;
-import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.factmodel.AccessibleFact;
+import org.drools.base.factmodel.AnnotationDefinition;
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.factmodel.FieldDefinition;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
-import org.drools.core.util.PropertyReactivityUtil;
-import org.drools.core.util.TimeIntervalParser;
+import org.drools.base.util.PropertyReactivityUtil;
+import org.drools.base.util.TimeIntervalParser;
 import org.drools.model.AnnotationValue;
 import org.drools.model.TypeMetaData;
 import org.drools.modelcompiler.constraints.LambdaFieldReader;
@@ -43,7 +43,7 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
-import static org.drools.core.rule.TypeDeclaration.createTypeDeclarationForBean;
+import static org.drools.base.rule.TypeDeclaration.createTypeDeclarationForBean;
 
 public class TypeDeclarationUtil {
 

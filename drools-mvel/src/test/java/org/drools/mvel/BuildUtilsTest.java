@@ -16,24 +16,24 @@
 
 package org.drools.mvel;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.ValueType;
-import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ValueType;
+import org.drools.base.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.reteoo.builder.BuildUtils;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.GroupElement.Type;
-import org.drools.core.rule.Pattern;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.GroupElement.Type;
+import org.drools.base.rule.Pattern;
 import org.drools.core.test.model.StockTick;
-import org.drools.core.time.Interval;
+import org.drools.base.time.Interval;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.mvel.evaluators.AfterEvaluatorDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.core.time.Interval.MAX;
-import static org.drools.core.time.Interval.MIN;
+import static org.drools.base.time.Interval.MAX;
+import static org.drools.base.time.Interval.MIN;
 
 public class BuildUtilsTest {
     
@@ -45,7 +45,7 @@ public class BuildUtilsTest {
     }
 
     /**
-     * Test method for {@link org.drools.core.reteoo.builder.BuildUtils#calculateTemporalDistance(org.drools.core.rule.GroupElement)}.
+     * Test method for {@link org.drools.core.reteoo.builder.BuildUtils#calculateTemporalDistance(GroupElement)}.
      */
     @Test
     public void testCalculateTemporalDistance() {

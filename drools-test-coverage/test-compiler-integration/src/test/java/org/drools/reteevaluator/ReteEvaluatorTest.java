@@ -74,7 +74,7 @@ public class ReteEvaluatorTest {
             fail( messages.toString() );
         }
 
-        return (InternalKnowledgeBase) ks.newKieContainer( releaseId ).getKieBase();
+        return (InternalKnowledgeBase) ks.newKieContainer(releaseId).getKieBase();
     }
 
     private static String getPom(ReleaseId releaseId) {

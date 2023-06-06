@@ -24,10 +24,9 @@ import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
-import org.drools.core.reteoo.NodeTypeEnums;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleIndexHashTable.FieldIndexHashTableFullIterator;
@@ -41,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class LeftTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTableIteratorTest {
+public class LeftTupleIndexHashTableIteratorTest extends AbstractTupleIndexHashTableIteratorTest {
 
     public LeftTupleIndexHashTableIteratorTest(boolean useLambdaConstraint) {
         this.useLambdaConstraint = useLambdaConstraint;

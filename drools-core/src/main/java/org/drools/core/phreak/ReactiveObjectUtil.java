@@ -18,15 +18,17 @@ package org.drools.core.phreak;
 
 import java.util.Collection;
 
+import org.drools.base.phreak.ReactiveObject;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.ReactiveFromNodeLeftTuple;
 import org.drools.core.reteoo.RightTupleImpl;
-import org.drools.core.rule.ContextEntry;
+import org.drools.base.rule.ContextEntry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
 
@@ -41,21 +43,22 @@ public class ReactiveObjectUtil {
     }
 
     public static void notifyModification(ReactiveObject reactiveObject) {
-        notifyModification( reactiveObject, reactiveObject.getLeftTuples(), ModificationType.MODIFY);
+        notifyModification(reactiveObject, reactiveObject.getTuples(), ModificationType.MODIFY);
     }
 
-    public static void notifyModification( Object object, Collection<Tuple> leftTuples, ModificationType type ) {
-        for (Tuple leftTuple : leftTuples) {
-            if (!( (ReactiveFromNodeLeftTuple) leftTuple ).updateModificationState( object, type )) {
+    public static void notifyModification(Object object, Collection<BaseTuple> leftTuples, ModificationType type) {
+        for (BaseTuple baseTuple : leftTuples) {
+            Tuple tuple = (Tuple) baseTuple;
+            if (!( (ReactiveFromNodeLeftTuple) tuple ).updateModificationState( object, type )) {
                 continue;
             }
-            PropagationContext propagationContext = leftTuple.getPropagationContext();
-            ReactiveFromNode node = leftTuple.getTupleSink();
+            PropagationContext propagationContext = tuple.getPropagationContext();
+            ReactiveFromNode node = tuple.getTupleSink();
 
             LeftTupleSinkNode sink = node.getSinkPropagator().getFirstLeftTupleSink();
-            ReteEvaluator reteEvaluator = propagationContext.getFactHandle().getReteEvaluator();
+            ReteEvaluator reteEvaluator =((InternalFactHandle) propagationContext.getFactHandle()).getReteEvaluator();
 
-            reteEvaluator.addPropagation(new ReactivePropagation(object, (ReactiveFromNodeLeftTuple)leftTuple, propagationContext, node, sink, type));
+            reteEvaluator.addPropagation(new ReactivePropagation(object, (ReactiveFromNodeLeftTuple)tuple, propagationContext, node, sink, type));
         }
     }
 

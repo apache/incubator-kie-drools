@@ -75,7 +75,7 @@ public class FailureOnRemovalTest {
     }
 
     private void runTest(boolean shareBetaNodes) throws Exception {
-        InternalKnowledgeBase kbase = (InternalKnowledgeBase) createKnowledgeBase( shareBetaNodes );
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) createKnowledgeBase(shareBetaNodes);
         Collection<KiePackage> rule1 = compileRule( RULE_1 );
         kbase.addPackages( rule1 );
 

@@ -27,16 +27,15 @@ import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode;
-import org.drools.core.reteoo.InitialFactImpl;
+import org.drools.base.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Accumulate;
+import org.drools.base.rule.Accumulate;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.MVELDialectRuntimeData;
@@ -133,7 +132,6 @@ public class MVELAccumulateBuilderTest {
                        accContext,
                        tuple,
                        f1,
-                       null,
                        match,
                        ksession);
 

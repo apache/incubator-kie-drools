@@ -17,7 +17,7 @@ package org.drools.core.phreak;
 
 import java.util.List;
 
-import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftTuple;
@@ -67,7 +67,7 @@ public class PhreakQueryTerminalNode {
             // find the DroolsQuery object
             Tuple rootEntry = leftTuple.getRootTuple();
 
-            DroolsQuery dquery = (DroolsQuery) rootEntry.getFactHandle().getObject();
+            DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
             if (dquery.getStackEntry() != null) {
                 checkAndTriggerQueryReevaluation(activationsManager, stack, rootEntry, dquery);
@@ -95,7 +95,7 @@ public class PhreakQueryTerminalNode {
             // find the DroolsQuery object
             LeftTuple rootEntry = (LeftTuple) leftTuple.getRootTuple();
 
-            DroolsQuery dquery = (DroolsQuery) rootEntry.getFactHandle().getObject();
+            DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
             if (dquery.getStackEntry() != null) {
                 checkAndTriggerQueryReevaluation(activationsManager, stack, rootEntry, dquery);
@@ -124,7 +124,7 @@ public class PhreakQueryTerminalNode {
             // find the DroolsQuery object
             LeftTuple rootEntry = (LeftTuple) leftTuple.getRootTuple();
 
-            DroolsQuery dquery = (DroolsQuery) rootEntry.getFactHandle().getObject();
+            DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
 
             if (dquery.getStackEntry() != null) {
@@ -142,7 +142,7 @@ public class PhreakQueryTerminalNode {
     }
 
 
-    public static void checkAndTriggerQueryReevaluation(ActivationsManager activationsManager, LinkedList<StackEntry> stack, Tuple rootEntry, DroolsQuery dquery) {
+    public static void checkAndTriggerQueryReevaluation(ActivationsManager activationsManager, LinkedList<StackEntry> stack, Tuple rootEntry, DroolsQueryImpl dquery) {
         StackEntry stackEntry = dquery.getStackEntry();
         if (!isAdded(stack, stackEntry)) {
             // Ignore unless stackEntry is not added to stack
