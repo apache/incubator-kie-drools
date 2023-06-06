@@ -38,7 +38,6 @@ import org.drools.base.time.Interval;
 import org.drools.base.util.FieldIndex;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
@@ -177,7 +176,7 @@ public class LambdaConstraint extends AbstractConstraint {
     @Override
     public boolean isAllowed(FactHandle handle, ValueResolver valueResolver) {
         try {
-            return evaluator.evaluate((InternalFactHandle) handle, (ReteEvaluator) valueResolver);
+            return evaluator.evaluate((InternalFactHandle) handle, valueResolver);
         } catch (RuntimeException e) {
             throw new ConstraintEvaluationException(predicateInformation, e);
         }
@@ -320,8 +319,8 @@ public class LambdaConstraint extends AbstractConstraint {
             return handle;
         }
 
-        public ReteEvaluator getReteEvaluator() {
-            return (ReteEvaluator) valueResolver;
+        public ValueResolver getReteEvaluator() {
+            return valueResolver;
         }
 
         public ContextEntry getNext() {

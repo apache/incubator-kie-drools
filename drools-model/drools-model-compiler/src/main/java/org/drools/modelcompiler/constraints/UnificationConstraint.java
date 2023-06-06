@@ -28,7 +28,6 @@ import org.drools.base.util.FieldIndex;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.model.Index;
 import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
 import org.kie.api.KieBaseConfiguration;
@@ -137,7 +136,7 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
         return evaluateUnification( ((LambdaContextEntry) context).getHandle(), tuple, ((LambdaContextEntry) context).getReteEvaluator() );
     }
 
-    private boolean evaluateUnification( InternalFactHandle handle, BaseTuple tuple, ReteEvaluator reteEvaluator ) {
+    private boolean evaluateUnification( InternalFactHandle handle, BaseTuple tuple, ValueResolver reteEvaluator ) {
         if (!unification) {
             return evaluator.evaluate(handle, tuple, reteEvaluator);
         }
