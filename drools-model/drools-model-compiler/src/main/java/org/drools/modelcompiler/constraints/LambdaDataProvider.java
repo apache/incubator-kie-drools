@@ -22,12 +22,11 @@ import java.util.Iterator;
 import java.util.Objects;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.base.phreak.ReactiveObject;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.DataProvider;
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.model.functions.FunctionN;
 
 public class LambdaDataProvider implements DataProvider {
@@ -54,7 +53,7 @@ public class LambdaDataProvider implements DataProvider {
 
     @Override
     public Iterator getResults(BaseTuple tuple, ValueResolver valueResolver, Object providerContext) {
-        Object result = getResult( (Tuple) tuple, (ReteEvaluator) valueResolver );
+        Object result = getResult(tuple, (ReteEvaluator) valueResolver );
 
         if (isReactive()) {
             if ( result instanceof ReactiveObject ) {
@@ -81,7 +80,7 @@ public class LambdaDataProvider implements DataProvider {
         return Collections.singletonList( result ).iterator();
     }
 
-    private Object getResult( Tuple tuple, ReteEvaluator reteEvaluator ) {
+    private Object getResult( BaseTuple tuple, ReteEvaluator reteEvaluator ) {
         Object result;
         if (declarations.length == 0) {
             result = providerFunction.apply();
@@ -100,7 +99,7 @@ public class LambdaDataProvider implements DataProvider {
         return result;
     }
 
-    private Object getValueForDeclaration( Tuple tuple, ReteEvaluator reteEvaluator, Declaration declaration ) {
+    private Object getValueForDeclaration( BaseTuple tuple, ReteEvaluator reteEvaluator, Declaration declaration ) {
         return declaration.getExtractor().isGlobal() ?
                 declaration.getExtractor().getValue( reteEvaluator, declaration.getIdentifier() ) :
                 declaration.getValue( reteEvaluator, tuple );

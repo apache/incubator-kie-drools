@@ -17,29 +17,29 @@
 
 package org.drools.modelcompiler.constraints;
 
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
+import org.drools.base.base.ObjectType;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
 import org.drools.base.base.field.ObjectFieldImpl;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.reteoo.PropertySpecificUtil;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.base.ObjectType;
-import org.drools.core.reteoo.Tuple;
 import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.base.time.Interval;
 import org.drools.base.util.FieldIndex;
-import org.drools.core.util.bitmask.BitMask;
 import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.util.bitmask.BitMask;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
 import org.drools.model.BetaIndex2;
@@ -197,7 +197,7 @@ public class LambdaConstraint extends AbstractConstraint {
     public boolean isAllowedCachedRight(BaseTuple tuple, ContextEntry context) {
         LambdaContextEntry lambdaContext = ((LambdaContextEntry) context);
         try {
-            return evaluator.evaluate(lambdaContext.getHandle(), (Tuple) tuple, lambdaContext.getReteEvaluator());
+            return evaluator.evaluate(lambdaContext.getHandle(), tuple, lambdaContext.getReteEvaluator());
         } catch (RuntimeException e) {
             throw new ConstraintEvaluationException(predicateInformation, e);
         }
@@ -278,13 +278,13 @@ public class LambdaConstraint extends AbstractConstraint {
 
     public static class LambdaContextEntry implements ContextEntry {
 
-        private Tuple tuple;
+        private BaseTuple tuple;
         private InternalFactHandle handle;
 
         private transient ValueResolver valueResolver;
 
         public void updateFromTuple(ValueResolver valueResolver, BaseTuple tuple) {
-            this.tuple = (Tuple) tuple;
+            this.tuple = tuple;
             this.valueResolver = valueResolver;
         }
 
@@ -308,11 +308,11 @@ public class LambdaConstraint extends AbstractConstraint {
         }
 
         public void readExternal(ObjectInput in ) throws IOException, ClassNotFoundException {
-            tuple = (Tuple)in.readObject();
+            tuple = (BaseTuple) in.readObject();
             handle = (InternalFactHandle) in.readObject();
         }
 
-        public Tuple getTuple() {
+        public BaseTuple getTuple() {
             return tuple;
         }
 

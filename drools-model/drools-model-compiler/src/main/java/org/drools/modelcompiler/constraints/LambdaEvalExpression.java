@@ -17,13 +17,12 @@
 package org.drools.modelcompiler.constraints;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.accessor.EvalExpression;
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.model.SingleConstraint;
 
 public class LambdaEvalExpression implements EvalExpression {
@@ -49,7 +48,7 @@ public class LambdaEvalExpression implements EvalExpression {
 
     @Override
     public boolean evaluate(BaseTuple tuple, Declaration[] requiredDeclarations, ValueResolver valueResolver, Object context) throws Exception {
-        return evaluator.evaluate((InternalFactHandle) tuple.getFactHandle(), (Tuple) tuple, (ReteEvaluator) valueResolver);
+        return evaluator.evaluate((InternalFactHandle) tuple.getFactHandle(), tuple, (ReteEvaluator) valueResolver);
     }
 
     @Override

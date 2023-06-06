@@ -35,7 +35,7 @@ public class LambdaEnabled extends DynamicAttributeEvaluator<Boolean> implements
 
     @Override
     public boolean getValue(BaseTuple tuple, Declaration[] declrs, RuleImpl rule, ValueResolver valueResolver) {
-        Object[] facts = declarationsToFacts( (ReteEvaluator) valueResolver, (Tuple) tuple, getDeclarations((Tuple) tuple), supplier.getVariables() );
+        Object[] facts = declarationsToFacts( (ReteEvaluator) valueResolver, tuple, getDeclarations((Tuple) tuple), supplier.getVariables() );
         return supplier.supply( facts );
     }
 }
