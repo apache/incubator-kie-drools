@@ -1,0 +1,22 @@
+## This is basic continuous integration build for your Quarkus application.
+
+name: Drools auto PR review
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  #gpt-code-review-action for PR check provided by AI
+  code-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: sshnaidm/gpt-code-review-action@v1.0
+        with:
+          openai-key: ${{ secrets.OPENAI_API_KEY }}
