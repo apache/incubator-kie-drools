@@ -1,9 +1,9 @@
 package org.drools.compiler.rule.builder.util;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.rule.Pattern;
-import org.drools.core.base.ObjectType;
-import org.drools.core.util.index.ConstraintTypeOperator;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.rule.Pattern;
+import org.drools.base.base.ObjectType;
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.OperatorDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;

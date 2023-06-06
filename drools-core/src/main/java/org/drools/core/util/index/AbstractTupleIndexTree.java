@@ -1,7 +1,8 @@
 package org.drools.core.util.index;
 
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.util.FieldIndex;
+import org.drools.base.util.FieldIndex;
 
 public abstract class AbstractTupleIndexTree {
     protected FieldIndex index;

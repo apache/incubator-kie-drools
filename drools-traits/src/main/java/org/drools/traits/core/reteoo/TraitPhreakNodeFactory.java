@@ -16,8 +16,8 @@
 
 package org.drools.traits.core.reteoo;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ValueType;
 import org.drools.traits.core.factmodel.TraitProxy;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.EntryPointNode;
@@ -26,8 +26,8 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.base.ObjectType;
 
 public class TraitPhreakNodeFactory extends PhreakNodeFactory {
 

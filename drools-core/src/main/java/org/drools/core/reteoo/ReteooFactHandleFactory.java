@@ -18,6 +18,7 @@ package org.drools.core.reteoo;
 
 import java.io.Serializable;
 
+import org.drools.base.reteoo.InitialFactImpl;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.AbstractFactHandleFactory;
 import org.drools.core.common.DefaultFactHandle;

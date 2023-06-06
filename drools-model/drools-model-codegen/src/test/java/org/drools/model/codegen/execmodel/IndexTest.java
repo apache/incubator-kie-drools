@@ -18,15 +18,15 @@ package org.drools.model.codegen.execmodel;
 
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.util.index.ConstraintTypeOperator;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.util.DateUtils;

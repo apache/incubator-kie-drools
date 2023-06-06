@@ -23,8 +23,11 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.accessor.WriteAccessor;
+import org.drools.base.base.AccessorKey;
+import org.drools.base.base.ClassFieldInspector;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.WriteAccessor;
 import org.drools.wiring.api.ComponentsFactory;
 import org.drools.wiring.api.util.ByteArrayClassLoader;
 
@@ -103,7 +106,7 @@ public class ClassFieldAccessorCache {
         getCacheEntry( cls ).setReadAccessor( getAccessorKey( className, fieldName ), readAccessor );
     }
 
-    private AccessorKey getAccessorKey( String className, String fieldName ) {
+    private AccessorKey getAccessorKey(String className, String fieldName ) {
         return new AccessorKey( className, fieldName, AccessorKey.AccessorType.FieldAccessor );
     }
 

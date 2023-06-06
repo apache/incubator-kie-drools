@@ -24,10 +24,10 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.FieldIndex;
+import org.drools.base.util.FieldIndex;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.AbstractTupleIndexTree;
-import org.drools.core.util.index.ConstraintTypeOperator;
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.util.index.TupleIndexRBTree;
 import org.drools.core.util.index.TupleList;
 

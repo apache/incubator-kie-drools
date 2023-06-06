@@ -16,8 +16,9 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.TupleList;

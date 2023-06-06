@@ -17,6 +17,7 @@ package org.drools.core.time;
 
 import java.util.Map;
 
+import org.drools.base.time.JobHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.time.impl.TimerJobInstance;
 

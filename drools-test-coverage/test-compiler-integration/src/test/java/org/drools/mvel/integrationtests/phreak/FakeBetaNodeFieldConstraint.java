@@ -21,12 +21,12 @@ import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.drools.core.reteoo.BaseTuple;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.rule.constraint.Constraint;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.Constraint;
 import org.drools.core.reteoo.Tuple;
 import org.drools.util.ClassUtils;
 import org.kie.api.runtime.rule.FactHandle;

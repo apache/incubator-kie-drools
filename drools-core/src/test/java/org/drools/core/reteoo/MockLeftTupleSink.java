@@ -19,6 +19,7 @@ package org.drools.core.reteoo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;

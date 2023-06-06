@@ -26,7 +26,7 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
-import org.drools.core.definitions.rule.impl.QueryImpl;
+import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.tms.beliefsystem.abductive.Abductive;
 
 public class TruthMaintenanceSystemFactoryImpl implements TruthMaintenanceSystemFactory {

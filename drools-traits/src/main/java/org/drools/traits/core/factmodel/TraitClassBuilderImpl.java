@@ -18,13 +18,13 @@ package org.drools.traits.core.factmodel;
 
 import java.io.Serializable;
 
-import org.drools.core.factmodel.AnnotationDefinition;
+import org.drools.base.factmodel.AnnotationDefinition;
 import org.drools.compiler.builder.impl.classbuilder.BuildUtils;
 import org.drools.compiler.builder.impl.classbuilder.ClassBuilder;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.factmodel.GeneratedFact;
-import org.drools.core.factmodel.traits.Trait;
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.factmodel.FieldDefinition;
+import org.drools.base.factmodel.GeneratedFact;
+import org.drools.base.factmodel.traits.Trait;
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;

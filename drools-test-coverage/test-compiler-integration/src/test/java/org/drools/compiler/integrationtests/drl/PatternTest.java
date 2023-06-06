@@ -24,7 +24,7 @@ import java.util.List;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.reteoo.InitialFactImpl;
+import org.drools.base.reteoo.InitialFactImpl;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.ClassA;
 import org.drools.testcoverage.common.model.ClassB;

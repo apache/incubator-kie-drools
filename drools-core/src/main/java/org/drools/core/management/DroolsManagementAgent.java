@@ -35,7 +35,7 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.Drools.isNativeImage;
+import static org.drools.base.util.Drools.isNativeImage;
 
 /**
  * The main management agent for Drools. The purpose of this 

@@ -21,14 +21,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitFieldTMS;
+import org.drools.base.factmodel.traits.Traitable;
+import org.drools.base.rule.TypeDeclaration;
 
-import static org.drools.core.factmodel.traits.TraitConstants.FIELDTMS_FIELD_NAME;
-import static org.drools.core.factmodel.traits.TraitConstants.TRAITSET_FIELD_NAME;
+import static org.drools.base.factmodel.traits.TraitConstants.FIELDTMS_FIELD_NAME;
+import static org.drools.base.factmodel.traits.TraitConstants.TRAITSET_FIELD_NAME;
 
 @Traitable
 public class MapCore<K> implements TraitableMap {

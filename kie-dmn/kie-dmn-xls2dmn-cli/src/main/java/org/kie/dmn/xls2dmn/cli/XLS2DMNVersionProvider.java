@@ -16,7 +16,7 @@
 
 package org.kie.dmn.xls2dmn.cli;
 
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 
 import picocli.CommandLine.IVersionProvider;
 

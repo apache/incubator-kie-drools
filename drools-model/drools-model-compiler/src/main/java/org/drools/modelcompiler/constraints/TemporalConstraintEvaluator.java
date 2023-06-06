@@ -19,10 +19,10 @@ package org.drools.modelcompiler.constraints;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.time.Interval;
+import org.drools.base.time.Interval;
 import org.drools.model.SingleConstraint;
 import org.drools.model.constraints.FixedTemporalConstraint;
 import org.drools.model.constraints.TemporalConstraint;
@@ -30,7 +30,7 @@ import org.drools.model.functions.Function1;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.drools.core.util.TimeIntervalParser.getTimestampFromDate;
+import static org.drools.base.util.TimeIntervalParser.getTimestampFromDate;
 
 public class TemporalConstraintEvaluator extends ConstraintEvaluator {
 

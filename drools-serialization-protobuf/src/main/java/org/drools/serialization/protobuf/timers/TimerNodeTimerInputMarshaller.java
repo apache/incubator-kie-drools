@@ -17,7 +17,7 @@ package org.drools.serialization.protobuf.timers;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.TupleKey;
 import org.drools.core.phreak.PhreakTimerNode;
-import org.drools.core.time.Trigger;
+import org.drools.base.time.Trigger;
 import org.drools.serialization.protobuf.PersisterHelper;
 import org.drools.serialization.protobuf.ProtobufInputMarshaller;
 import org.drools.serialization.protobuf.ProtobufMessages;

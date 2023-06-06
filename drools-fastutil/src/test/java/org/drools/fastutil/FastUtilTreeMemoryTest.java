@@ -1,21 +1,19 @@
 package org.drools.fastutil;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.base.ValueType;
-import org.drools.core.base.extractors.BaseObjectClassFieldReader;
+import org.drools.base.base.ValueType;
+import org.drools.base.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.BaseTuple;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.accessor.TupleValueExtractor;
-import org.drools.core.util.AbstractHashTable;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.FieldIndex;
+import org.drools.base.util.FieldIndex;
 import org.drools.fastutil.FastUtilTreeMemory.TreeFastIterator;
-import org.drools.core.util.index.ConstraintTypeOperator;
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

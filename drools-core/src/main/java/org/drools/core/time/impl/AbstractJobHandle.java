@@ -15,7 +15,7 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.time.JobHandle;
+import org.drools.base.time.JobHandle;
 import org.drools.core.util.LinkedListNode;
 
 public abstract class AbstractJobHandle<T extends AbstractJobHandle> implements JobHandle,

@@ -20,7 +20,7 @@ import org.drools.compiler.builder.impl.classbuilder.BeanClassBuilder;
 import org.drools.compiler.builder.impl.classbuilder.ClassBuilder;
 import org.drools.compiler.builder.impl.classbuilder.ClassBuilderFactory;
 import org.drools.compiler.builder.impl.classbuilder.EnumClassBuilder;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.rule.TypeDeclaration;
 
 public class DefaultClassBuilderFactory implements Serializable, ClassBuilderFactory {
 

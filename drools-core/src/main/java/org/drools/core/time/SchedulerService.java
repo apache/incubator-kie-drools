@@ -16,6 +16,9 @@
  */
 package org.drools.core.time;
 
+import org.drools.base.time.JobHandle;
+import org.drools.base.time.Trigger;
+
 public interface SchedulerService {
 
     /**

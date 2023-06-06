@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.drools.core.factmodel.ClassDefinition;
+import org.drools.base.factmodel.ClassDefinition;
 
 /**
  * Declares an enum class to be dynamically created

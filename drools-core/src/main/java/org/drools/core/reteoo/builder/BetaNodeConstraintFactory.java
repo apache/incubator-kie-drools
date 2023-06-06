@@ -22,7 +22,7 @@ import org.drools.core.common.DoubleBetaConstraints;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.kie.api.internal.utils.KieService;
 
 public interface BetaNodeConstraintFactory extends KieService {

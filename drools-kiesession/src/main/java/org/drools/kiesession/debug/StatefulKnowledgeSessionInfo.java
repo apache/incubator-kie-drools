@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.drools.core.common.NetworkNode;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 
 public class StatefulKnowledgeSessionInfo {

@@ -17,7 +17,7 @@ package org.drools.ruleunits.impl.facthandles;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.impl.InternalStoreCallback;
 

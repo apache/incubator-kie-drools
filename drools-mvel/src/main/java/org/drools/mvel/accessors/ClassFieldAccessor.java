@@ -23,10 +23,10 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.base.FieldAccessor;
-import org.drools.core.base.ValueType;
-import org.drools.core.rule.accessor.AcceptsReadAccessor;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.base.FieldAccessor;
+import org.drools.base.base.ValueType;
+import org.drools.base.rule.accessor.AcceptsReadAccessor;
+import org.drools.base.rule.accessor.ReadAccessor;
 
 /**
  * This is a wrapper for a ClassFieldExtractor that provides

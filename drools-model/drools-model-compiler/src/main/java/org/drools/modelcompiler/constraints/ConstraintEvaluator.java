@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.time.Interval;
+import org.drools.base.time.Interval;
 import org.drools.model.BitMask;
 import org.drools.model.Index;
 import org.drools.model.SingleConstraint;

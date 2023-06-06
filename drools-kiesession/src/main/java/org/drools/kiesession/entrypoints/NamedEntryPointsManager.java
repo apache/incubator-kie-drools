@@ -27,7 +27,7 @@ import org.drools.core.EntryPointsManager;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 
 public class NamedEntryPointsManager implements EntryPointsManager {
 

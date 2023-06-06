@@ -19,10 +19,10 @@ import org.drools.core.time.EnqueuedSelfRemovalJobContext;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
+import org.drools.base.time.JobHandle;
 import org.drools.core.time.SelfRemovalJob;
 import org.drools.core.time.SelfRemovalJobContext;
-import org.drools.core.time.Trigger;
+import org.drools.base.time.Trigger;
 
 import java.util.Collection;
 import java.util.HashMap;

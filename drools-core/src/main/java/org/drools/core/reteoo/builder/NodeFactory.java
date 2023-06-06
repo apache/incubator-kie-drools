@@ -21,8 +21,8 @@ package org.drools.core.reteoo.builder;
 import java.util.List;
 
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.AsyncReceiveNode;
@@ -45,20 +45,20 @@ import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.WindowNode;
-import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.AsyncReceive;
-import org.drools.core.rule.AsyncSend;
+import org.drools.base.rule.Accumulate;
+import org.drools.base.rule.AsyncReceive;
+import org.drools.base.rule.AsyncSend;
 import org.drools.core.rule.BehaviorRuntime;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.EvalCondition;
-import org.drools.core.rule.From;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.QueryElement;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.rule.accessor.DataProvider;
-import org.drools.core.base.ObjectType;
-import org.drools.core.time.impl.Timer;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.EvalCondition;
+import org.drools.base.rule.From;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.QueryElement;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.accessor.DataProvider;
+import org.drools.base.base.ObjectType;
+import org.drools.base.time.impl.Timer;
 
 public interface NodeFactory {
 

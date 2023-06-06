@@ -23,11 +23,12 @@ import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.accessor.FieldValue;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.accessor.FieldValue;
 import org.drools.core.util.index.RangeIndex.IndexType;
 
 /**

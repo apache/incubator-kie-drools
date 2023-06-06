@@ -18,7 +18,7 @@ package org.drools.core.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 
 public class KieBaseUpdate {
     private final List<RuleImpl> rulesToBeRemoved;

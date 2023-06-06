@@ -23,14 +23,14 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.WindowNode;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.IndexableConstraint;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.IndexableConstraint;
 import org.drools.core.util.index.AlphaRangeIndex;
 
 /**

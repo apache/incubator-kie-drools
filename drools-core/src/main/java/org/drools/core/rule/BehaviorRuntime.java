@@ -16,7 +16,8 @@
 
 package org.drools.core.rule;
 
-import org.drools.base.base.ValueResolver;
+import org.drools.base.rule.Behavior;
+import org.drools.base.rule.RuleComponent;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.kie.api.runtime.rule.FactHandle;

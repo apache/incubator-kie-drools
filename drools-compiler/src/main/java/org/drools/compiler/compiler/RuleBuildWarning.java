@@ -16,7 +16,7 @@
 package org.drools.compiler.compiler;
 
 import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 
 public class RuleBuildWarning extends DescrBuildWarning {
     private final RuleImpl rule;

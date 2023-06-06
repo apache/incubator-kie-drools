@@ -24,15 +24,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.core.common.PropagationContext;
 
 public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropagator {

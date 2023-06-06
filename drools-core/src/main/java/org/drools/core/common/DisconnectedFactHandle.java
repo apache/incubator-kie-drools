@@ -32,12 +32,12 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ArrayElements;
 import org.drools.core.base.DroolsQueryImpl;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.kie.api.runtime.rule.FactHandle;
 
 @XmlRootElement(name="disconnected-fact-handle")

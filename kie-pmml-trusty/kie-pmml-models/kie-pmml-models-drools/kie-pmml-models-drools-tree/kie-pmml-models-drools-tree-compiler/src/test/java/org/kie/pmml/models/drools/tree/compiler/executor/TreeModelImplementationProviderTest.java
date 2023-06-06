@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
-import org.drools.core.util.CloneUtil;
+import org.drools.base.util.CloneUtil;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;

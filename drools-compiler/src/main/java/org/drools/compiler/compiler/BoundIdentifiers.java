@@ -24,12 +24,12 @@ import java.util.Map;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.ObjectType;
-import org.drools.core.facttemplates.Fact;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.XpathBackReference;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
+import org.drools.base.facttemplates.Fact;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.XpathBackReference;
 
 import static org.drools.util.ClassUtils.rawType;
 

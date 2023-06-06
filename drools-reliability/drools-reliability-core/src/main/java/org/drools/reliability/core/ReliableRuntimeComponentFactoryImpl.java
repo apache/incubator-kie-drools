@@ -21,12 +21,12 @@ import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.Storage;
-import org.drools.core.rule.accessor.GlobalResolver;
+import org.drools.base.rule.accessor.GlobalResolver;
 import org.drools.core.time.TimerService;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 import org.drools.kiesession.factory.WorkingMemoryFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.kie.api.definition.rule.RuleBase;
+import org.drools.base.RuleBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 

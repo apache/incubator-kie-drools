@@ -26,7 +26,7 @@ import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.SelfRemovalJob;
 import org.drools.core.time.SelfRemovalJobContext;
-import org.drools.core.time.Trigger;
+import org.drools.base.time.Trigger;
 import org.drools.core.time.impl.DefaultTimerJobInstance;
 import org.drools.core.time.impl.JDKTimerService;
 import org.drools.core.time.impl.TimerJobInstance;

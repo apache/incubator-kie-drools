@@ -18,11 +18,10 @@ package org.drools.core.base.extractors;
 import java.lang.reflect.Method;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.base.ValueType;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.base.ValueType;
+import org.drools.base.rule.accessor.ReadAccessor;
 
-import static org.drools.core.util.TimeIntervalParser.getTimestampFromDate;
+import static org.drools.base.util.TimeIntervalParser.getTimestampFromDate;
 
 public class ConstantValueReader implements ReadAccessor {
 

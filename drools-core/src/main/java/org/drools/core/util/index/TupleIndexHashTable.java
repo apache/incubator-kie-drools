@@ -24,7 +24,7 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.FieldIndex;
+import org.drools.base.util.FieldIndex;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 

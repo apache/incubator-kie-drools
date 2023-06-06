@@ -22,7 +22,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.reteoo.BaseTerminalNode;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
@@ -39,13 +41,13 @@ import org.kie.api.definition.rule.Rule;
  */
 public abstract class BaseNode
     implements
-    NetworkNode {
+        NetworkNode {
 
     protected int                        id;
 
     protected int                        memoryId = -1;
 
-    protected RuleBasePartitionId        partitionId;
+    protected RuleBasePartitionId partitionId;
     protected boolean                    partitionsEnabled;
     protected Set<Rule>                  associations;
 

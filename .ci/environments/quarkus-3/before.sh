@@ -74,6 +74,7 @@ if [ "$(git status --porcelain ${patch_file})" != '' ]; then
     git add "${patch_file}"
     git commit -m '[Quarkus 3] Updated rewrite data'
 
+    git reset --hard
     if [ "${behavior}" = 'push_changes' ]; then
         git_remote="${GIT_REMOTE:-origin}"
         branch=$(git branch --show-current)

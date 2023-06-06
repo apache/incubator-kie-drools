@@ -25,9 +25,9 @@ import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 import org.drools.core.ClockType;
-import org.drools.core.facttemplates.Event;
-import org.drools.core.facttemplates.Fact;
-import org.drools.core.facttemplates.FactTemplateObjectType;
+import org.drools.base.facttemplates.Event;
+import org.drools.base.facttemplates.Fact;
+import org.drools.base.facttemplates.FactTemplateObjectType;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;

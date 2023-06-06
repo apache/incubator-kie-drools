@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.Trait;
+import org.drools.base.factmodel.traits.Traitable;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.traits.compiler.CommonTraitTest;

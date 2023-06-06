@@ -22,11 +22,11 @@ import java.util.Set;
 
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.factmodel.traits.TraitableBean;
-import org.kie.api.definition.rule.RuleBase;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitFactory;
+import org.drools.base.factmodel.traits.TraitableBean;
+import org.drools.base.RuleBase;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.util.ClassUtils;

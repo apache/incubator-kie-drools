@@ -25,9 +25,9 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.PatternExtractor;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.PatternExtractor;
 import org.drools.drl.ast.descr.BehaviorDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
 import org.drools.drl.ast.descr.PatternDescr;

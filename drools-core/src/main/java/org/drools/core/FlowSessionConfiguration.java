@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.base.CoreComponentsBuilder;
+import org.drools.base.base.CoreComponentsBuilder;
 import org.drools.core.process.WorkItemManagerFactory;
 import org.drools.core.util.ConfFileUtils;
 import org.kie.api.conf.ConfigurationKey;

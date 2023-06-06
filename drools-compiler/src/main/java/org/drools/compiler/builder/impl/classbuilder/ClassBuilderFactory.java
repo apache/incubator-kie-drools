@@ -16,10 +16,10 @@
 
 package org.drools.compiler.builder.impl.classbuilder;
 
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.rule.TypeDeclaration;
 import org.kie.api.internal.utils.KieService;
 
-import static org.drools.core.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
+import static org.drools.base.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
 
 public interface ClassBuilderFactory extends KieService {
 

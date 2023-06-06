@@ -25,8 +25,8 @@ import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.OtherDeclarationCompilationPhase;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.EnumDeclarationDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
@@ -44,7 +44,7 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static java.util.Collections.emptyList;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
-import static org.drools.core.util.Drools.hasMvel;
+import static org.drools.base.util.Drools.hasMvel;
 
 public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
 

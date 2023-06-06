@@ -19,13 +19,13 @@ package org.drools.modelcompiler.facttemplate;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.facttemplates.Event;
-import org.drools.core.facttemplates.Fact;
-import org.drools.core.facttemplates.FactTemplate;
-import org.drools.core.facttemplates.FactTemplateImpl;
-import org.drools.core.facttemplates.FieldTemplate;
-import org.drools.core.facttemplates.FieldTemplateImpl;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.facttemplates.Event;
+import org.drools.base.facttemplates.Fact;
+import org.drools.base.facttemplates.FactTemplate;
+import org.drools.base.facttemplates.FactTemplateImpl;
+import org.drools.base.facttemplates.FieldTemplate;
+import org.drools.base.facttemplates.FieldTemplateImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.model.Prototype;
 
