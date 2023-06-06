@@ -21,7 +21,11 @@ import SwfCombinedEditor from '../SwfCombinedEditor';
 describe('SwfCombinedEditor component tests', () => {
   it('snapshot of the emedded editor', () => {
     const props = {
-      sourceString: '',
+      workflowInstance: {
+        source: '',
+        error: null,
+        nodes: []
+      },
       height: 600,
       width: 600,
       isStunnerEnabled: true

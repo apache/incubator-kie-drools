@@ -317,10 +317,10 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       <Flex>
         <FlexItem>
           <SwfCombinedEditor
-            sourceString={data?.source}
             isStunnerEnabled={isStunnerEnabled}
             height={diagramPreviewSize?.height}
             width={diagramPreviewSize?.width}
+            workflowInstance={data}
           />
         </FlexItem>
       </Flex>

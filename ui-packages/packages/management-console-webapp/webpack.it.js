@@ -8,6 +8,19 @@ const PORT = process.env.PORT || '9000';
 
 module.exports = merge(common(), {
   output: {
-      path: path.resolve(__dirname, 'dist-it'),
+    path: path.resolve(__dirname, 'dist-it')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(css|sass|scss)$/,
+        include: [
+          path.resolve(
+            '../../node_modules/@kie-tools-core/editor/dist/envelope'
+          )
+        ],
+        loaders: ['style-loader', 'css-loader', 'sass-loader']
+      }
+    ]
   }
 });

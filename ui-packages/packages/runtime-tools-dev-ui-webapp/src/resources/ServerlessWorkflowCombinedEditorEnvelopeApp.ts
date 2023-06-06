@@ -14,16 +14,32 @@
  * limitations under the License.
  */
 
-import { init } from '@kie-tools-core/editor/dist/envelope';
+import * as EditorEnvelope from '@kie-tools-core/editor/dist/envelope';
 import { NoOpKeyboardShortcutsService } from '@kie-tools-core/keyboard-shortcuts/dist/envelope';
-import { ServerlessWorkflowCombinedEditorFactory } from '@kie-tools/serverless-workflow-combined-editor/dist/editor';
+import { ServerlessWorkflowCombinedEditorChannelApi } from '@kie-tools/serverless-workflow-combined-editor/dist/api';
+import { ServerlessWorkflowCombinedEditorEnvelopeApi } from '@kie-tools/serverless-workflow-combined-editor/dist/api/ServerlessWorkflowCombinedEditorEnvelopeApi';
+import {
+  ServerlessWorkflowCombinedEditorApi,
+  ServerlessWorkflowCombinedEditorFactory
+} from '@kie-tools/serverless-workflow-combined-editor/dist/editor';
+import { ServerlessWorkflowCombinedEditorEnvelopeApiImpl } from '@kie-tools/serverless-workflow-combined-editor/dist/impl';
 
-init({
+EditorEnvelope.initCustom<
+  ServerlessWorkflowCombinedEditorApi,
+  ServerlessWorkflowCombinedEditorEnvelopeApi,
+  ServerlessWorkflowCombinedEditorChannelApi
+>({
   container: document.getElementById('swf-combined-editor-envelope-app')!,
   bus: {
-    postMessage: (message, targetOrigin, _) =>
+    postMessage: (message, _targetOrigin, _) =>
       window.parent.postMessage(message, window.location.origin, _)
   },
-  editorFactory: new ServerlessWorkflowCombinedEditorFactory(),
+  apiImplFactory: {
+    create: (args) =>
+      new ServerlessWorkflowCombinedEditorEnvelopeApiImpl(
+        args,
+        new ServerlessWorkflowCombinedEditorFactory()
+      )
+  },
   keyboardShortcutsService: new NoOpKeyboardShortcutsService()
 });

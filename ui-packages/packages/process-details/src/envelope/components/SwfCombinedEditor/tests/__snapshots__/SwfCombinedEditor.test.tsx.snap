@@ -48,10 +48,11 @@ exports[`SwfCombinedEditor component tests snapshot of the emedded editor 1`] = 
           "swfLanguageServiceChannelApiImpl": null,
           "swfPreviewOptionsChannelApiImpl": SwfPreviewOptionsChannelApiImpl {
             "swfPreviewOptions": Object {
-              "diagramDefaultWidth": "100%",
+              "defaultWidth": "100%",
             },
           },
           "swfServiceCatalogApiImpl": null,
+          "swfStaticEnvelopeContentProviderChannelApi": null,
         }
       }
       editorEnvelopeLocator={
@@ -59,7 +60,10 @@ exports[`SwfCombinedEditor component tests snapshot of the emedded editor 1`] = 
           "envelopeMappings": Array [
             EnvelopeMapping {
               "args": Object {
-                "envelopePath": "resources/serverless-workflow-combined-editor-envelope.html",
+                "envelopeContent": Object {
+                  "path": "resources/serverless-workflow-combined-editor-envelope.html",
+                  "type": 0,
+                },
                 "filePathGlob": "**/*.sw.+(json|yml|yaml)",
                 "resourcesPathPrefix": ".",
                 "type": "swf",

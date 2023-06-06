@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   EmbeddedEditor,
-  EmbeddedEditorChannelApiImpl
+  EmbeddedEditorChannelApiImpl,
+  EmbeddedEditorRef
 } from '@kie-tools-core/editor/dist/embedded';
 import {
   ChannelType,
   EditorEnvelopeLocator,
+  EnvelopeContentType,
   EnvelopeMapping
 } from '@kie-tools-core/editor/dist/api';
 import { Title, Card, CardHeader, CardBody } from '@patternfly/react-core';
@@ -35,33 +37,38 @@ import {
   SwfFeatureToggleChannelApiImpl,
   SwfPreviewOptionsChannelApiImpl
 } from '@kie-tools/serverless-workflow-combined-editor/dist/impl';
-
+import { useController } from '../../../hooks/useController';
+import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
+import { ServerlessWorkflowCombinedEditorChannelApi } from '@kie-tools/serverless-workflow-combined-editor/dist/api';
+import { ServerlessWorkflowCombinedEditorEnvelopeApi } from '@kie-tools/serverless-workflow-combined-editor/dist/api/ServerlessWorkflowCombinedEditorEnvelopeApi';
 interface ISwfCombinedEditorProps {
-  sourceString: string;
+  workflowInstance: Pick<ProcessInstance, 'source' | 'nodes' | 'error'>;
   isStunnerEnabled: boolean;
   width?: number;
   height?: number;
 }
 
 const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
-  sourceString,
+  workflowInstance,
   isStunnerEnabled,
   width,
   height,
   ouiaId,
   ouiaSafe
 }) => {
+  const { source, nodes, error } = workflowInstance;
+  const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [isReady, setReady] = useState<boolean>(false);
-  const stateControl = new StateControl();
 
   const getFileContent = useCallback(() => {
-    const arr = new Uint8Array(sourceString.length);
-    for (let i = 0; i < sourceString.length; i++) {
-      arr[i] = sourceString.charCodeAt(i);
+    const arr = new Uint8Array(source.length);
+    for (let i = 0; i < source.length; i++) {
+      arr[i] = source.charCodeAt(i);
     }
     const decoder = new TextDecoder('utf-8');
     return decoder.decode(arr);
-  }, [sourceString]);
+  }, [source]);
 
   const getFileType = useCallback(() => {
     const source = getFileContent();
@@ -70,7 +77,7 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
     } else {
       return 'yaml';
     }
-  }, [sourceString]);
+  }, [source]);
 
   const embeddedFile: EmbeddedEditorFile = useMemo(() => {
     return {
@@ -79,7 +86,12 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
       fileExtension: `sw.${getFileType()}`,
       fileName: `*.sw.${getFileType()}`
     };
-  }, [sourceString]);
+  }, [source]);
+
+  const stateControl = useMemo(
+    () => new StateControl(),
+    [embeddedFile?.getFileContents]
+  );
 
   const editorEnvelopeLocator = useMemo(
     () =>
@@ -89,11 +101,13 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
           filePathGlob: '**/*.sw.+(json|yml|yaml)',
           // look for the resources in the same path as the swf-diagram html
           resourcesPathPrefix: '.',
-          envelopePath:
-            'resources/serverless-workflow-combined-editor-envelope.html'
+          envelopeContent: {
+            type: EnvelopeContentType.PATH,
+            path: 'resources/serverless-workflow-combined-editor-envelope.html'
+          }
         })
       ]),
-    [sourceString]
+    [source]
   );
 
   const channelApiImpl = useMemo(
@@ -117,7 +131,7 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
   const swfPreviewOptionsChannelApiImpl = useMemo(
     () =>
       new SwfPreviewOptionsChannelApiImpl({
-        diagramDefaultWidth: '100%'
+        defaultWidth: '100%'
       }),
     []
   );
@@ -129,7 +143,8 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
         swfFeatureToggleChannelApiImpl,
         null,
         null,
-        swfPreviewOptionsChannelApiImpl
+        swfPreviewOptionsChannelApiImpl,
+        null
       ),
     [
       channelApiImpl,
@@ -137,6 +152,63 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
       swfPreviewOptionsChannelApiImpl
     ]
   );
+
+  useEffect(() => {
+    const combinedEditorChannelApi = embeddedFile
+      ? (editor?.getEnvelopeServer()
+          .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>)
+      : undefined;
+    const combinedEditorEnvelopeApi = embeddedFile
+      ? (editor?.getEnvelopeServer()
+          .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorEnvelopeApi>)
+      : undefined;
+
+    const nodeNames = [];
+
+    nodes.forEach((node) => {
+      nodeNames.push(node.name);
+    });
+
+    const colorConnectedEnds = nodeNames.includes('End');
+    const isStartNodeAvailable = nodeNames.includes('Start');
+
+    if (!isStartNodeAvailable) {
+      nodeNames.push('Start');
+    }
+    if (combinedEditorEnvelopeApi && combinedEditorChannelApi) {
+      let errorNode = null;
+      if (error) {
+        errorNode = nodes.filter(
+          (node) => node.nodeId === error.nodeDefinitionId
+        )[0];
+        combinedEditorChannelApi.notifications.kogitoSwfCombinedEditor_combinedEditorReady.subscribe(
+          () => {
+            combinedEditorEnvelopeApi.notifications.kogitoSwfCombinedEditor_colorNodes.send(
+              {
+                nodeNames: [errorNode.name],
+                color: '#f4d5d5',
+                colorConnectedEnds
+              }
+            );
+          }
+        );
+      }
+      const successNodes = errorNode
+        ? nodeNames.filter((nodeName) => nodeName !== errorNode.name)
+        : nodeNames;
+      combinedEditorChannelApi.notifications.kogitoSwfCombinedEditor_combinedEditorReady.subscribe(
+        () => {
+          combinedEditorEnvelopeApi.notifications.kogitoSwfCombinedEditor_colorNodes.send(
+            {
+              nodeNames: successNodes,
+              color: '#d5f4e6',
+              colorConnectedEnds
+            }
+          );
+        }
+      );
+    }
+  }, [editor, nodes, embeddedFile]);
 
   return (
     <Card
@@ -157,6 +229,7 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
           editorEnvelopeLocator={editorEnvelopeLocator}
           locale={'en'}
           stateControl={stateControl}
+          ref={editorRef}
         />
       </CardBody>
     </Card>

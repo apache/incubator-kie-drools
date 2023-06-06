@@ -23,11 +23,11 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",
-    "@kie-tools-core/editor": "0.24.0",
-    "@kie-tools-core/envelope": "0.24.0",
-    "@kie-tools-core/envelope-bus": "0.24.0",
-    "@kie-tools/serverless-workflow-combined-editor": "0.24.0",
-    "@kie-tools/serverless-workflow-diagram-editor-assets": "0.24.0",
+    "@kie-tools-core/editor": "0.29.0",
+    "@kie-tools-core/envelope": "0.29.0",
+    "@kie-tools-core/envelope-bus": "0.29.0",
+    "@kie-tools/serverless-workflow-combined-editor": "0.29.0",
+    "@kie-tools/serverless-workflow-diagram-editor-assets": "0.29.0",
     "@kogito-apps/management-console": "file:packages/management-console",
     "apollo-boost": "^0.4.4",
     "apollo-link-context": "^1.0.20",
@@ -143,7 +143,8 @@
     "webpack-dev-server": "^4.8.0",
     "webpack-merge": "^4.2.2",
     "webpack-node-externals": "^3.0.0",
-    "yarn": "1.22.10"
+    "yarn": "1.22.10",
+    "replace-in-file-webpack-plugin": "1.0.6"
   },
   "resolutions": {
     "@types/express-serve-static-core": "^4.17.21",

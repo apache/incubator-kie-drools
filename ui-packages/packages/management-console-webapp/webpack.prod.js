@@ -59,20 +59,19 @@ module.exports = merge(common, {
           path.resolve(
             '../../node_modules/@kogito-apps/process-list/dist/envelope/components/styles.css'
           ),
-          path.resolve(
-            '../../node_modules/react-calendar/dist/Calendar.css'
-          ),
-          path.resolve(
-            '../../node_modules/react-clock/dist/Clock.css'
-          ),
+          path.resolve('../../node_modules/react-calendar/dist/Calendar.css'),
+          path.resolve('../../node_modules/react-clock/dist/Clock.css'),
           path.resolve(
             '../../node_modules/react-datetime-picker/dist/DateTimePicker.css'
           ),
           path.resolve(
             '../../node_modules/@kie-tools-core/guided-tour/dist/components'
+          ),
+          path.resolve(
+            '../../node_modules/@kie-tools-core/editor/dist/envelope'
           )
         ],
-        loaders: ['style-loader', 'css-loader','sass-loader']
+        loaders: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
   }
