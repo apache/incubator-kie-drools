@@ -16,13 +16,12 @@
 
 package org.drools.verifier.doc;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.text.ParseException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
-import org.drools.verifier.doc.DroolsDocsBuilder;
+import java.io.*;
+import java.nio.file.Files;
+import java.text.ParseException;
 
 /**
  * Stand alone to test writing to a file.
@@ -31,7 +30,12 @@ public class StandaloneDocBuilder {
 
     public static void main(String[] args) throws FileNotFoundException,
                                           ParseException {
+        StandaloneDocBuilder docBuilder = new StandaloneDocBuilder();
+        docBuilder.buildDoc();
+    }
 
+    @Test
+    public void buildDoc() throws FileNotFoundException, ParseException {
         String drl = "";
         drl += "# important information\n";
         drl += "# about this package\n";
@@ -88,4 +92,10 @@ public class StandaloneDocBuilder {
 
         ddBuilder.writePDF( out );
     }
+
+    @AfterAll
+    static void cleanup() throws IOException {
+        Files.delete(new File( "DroolsDoc.pdf" ).toPath());
+    }
+
 }
