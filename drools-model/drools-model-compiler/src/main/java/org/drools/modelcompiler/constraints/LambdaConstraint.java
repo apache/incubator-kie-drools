@@ -17,7 +17,6 @@
 
 package org.drools.modelcompiler.constraints;
 
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
