@@ -22,6 +22,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MVELGroupByAccumulate extends Accumulate {
     private Accumulate innerAccumulate;
@@ -45,7 +48,7 @@ public class MVELGroupByAccumulate extends Accumulate {
         try {
             Tuple keyTuple = new EvalNodeLeftTuple((InternalFactHandle) handle, (LeftTuple) tuple, tuple
                     .getTupleSink());
-            FieldValue out = groupingFunction.evaluate(handle, keyTuple, requiredDeclarations,
+            FieldValue out = groupingFunction.evaluate(handle, keyTuple, groupingDeclarations,
                     getInnerDeclarationCache(), reteEvaluator, groupingFunction.createContext());
             return out.getValue();
         } catch (Exception e) {

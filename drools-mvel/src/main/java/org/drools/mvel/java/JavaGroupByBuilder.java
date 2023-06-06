@@ -141,10 +141,14 @@ public class JavaGroupByBuilder
             boolean readLocalsFromTuple,
             Accumulate innerAccumulate) {
         // analyze the expression
+        Map<String, Declaration> groupByDeclsInScope = new HashMap<>();
+        groupByDeclsInScope.putAll(Arrays.stream(sourceDeclArr)
+                .collect(Collectors.toMap(Declaration::getIdentifier, Function.identity())));
+
         final JavaAnalysisResult analysis = (JavaAnalysisResult) context.getDialect().analyzeExpression( context,
                 groupByDescr,
                 groupByDescr.getGroupingFunction(),
-                new BoundIdentifiers(DeclarationScopeResolver.getDeclarationClasses(declsInScope), context) );
+                new BoundIdentifiers(DeclarationScopeResolver.getDeclarationClasses(groupByDeclsInScope), context) );
 
         if ( analysis == null ) {
             // not possible to get the analysis results - compilation error has been already logged
@@ -153,32 +157,30 @@ public class JavaGroupByBuilder
 
         // create the array of used declarations
         final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-        declsInScope = new HashMap<>(declsInScope);
-        declsInScope.putAll(Arrays.stream(sourceDeclArr)
-                .collect(Collectors.toMap(Declaration::getIdentifier, Function.identity())));
-        final Declaration[] requiredDeclarations = collectRequiredDeclarations( declsInScope,
+        final Declaration[] requiredDeclarations = collectRequiredDeclarations( groupByDeclsInScope,
                 new HashSet<>(),
                 usedIdentifiers );
 
         MVELGroupByAccumulate out = new MVELGroupByAccumulate(innerAccumulate, requiredDeclarations, null);
 
         final String className = "groupbyExpression" + context.getNextId();
-        final Map<String, Object> map = createVariableContext( className,
-                groupByDescr.getGroupingFunction(),
-                context,
-                sourceDeclArr,
-                requiredDeclarations,
-                usedIdentifiers.getGlobals()
-        );
-        map.put( "readLocalsFromTuple",
-                readLocalsFromTuple ? Boolean.TRUE : Boolean.FALSE );
 
-        Class<?> keyType = MVELExprAnalyzer.getExpressionType(context, DeclarationScopeResolver.getDeclarationClasses(declsInScope), pattern, groupByDescr.getGroupingFunction());
+        Class<?> keyType = MVELExprAnalyzer.getExpressionType(context, DeclarationScopeResolver.getDeclarationClasses(groupByDeclsInScope), pattern, groupByDescr.getGroupingFunction());
 
         bindGroupingFunctionReaderToDeclaration(context, groupByDescr,
                 pattern,
                 new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class), groupByDescr.getFunctions().size(), keyType ),
                 keyType);
+
+        final Map<String, Object> map = createVariableContext( className,
+                groupByDescr.getGroupingFunction(),
+                context,
+                requiredDeclarations,
+                new Declaration[] {},
+                usedIdentifiers.getGlobals()
+        );
+        map.put( "readLocalsFromTuple",
+                readLocalsFromTuple ? Boolean.TRUE : Boolean.FALSE );
 
         generateTemplates("returnValueMethod",
                 "returnValueInvoker",

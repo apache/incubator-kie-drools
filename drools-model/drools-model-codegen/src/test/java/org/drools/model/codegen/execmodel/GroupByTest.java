@@ -479,7 +479,7 @@ public class GroupByTest extends BaseModelTest {
                 "global Map<Object, Integer> results;\n" +
                 "rule X when\n" +
                 "groupby ( $p : Person ( $age : age ) and $s : String( $l : length );\n" +
-                "          $key : $p.name.substring(0, 1) + $l;\n" +
+                "          $key : $p.getName().substring(0, 1) + $l;\n" +
                 "          $sum : sum( $age ); $sum > 10 )" +
                 "then\n" +
                 "  results.put($key, $sum);\n" +
@@ -704,7 +704,7 @@ public class GroupByTest extends BaseModelTest {
                 "rule X when\n" +
                 "    groupby(" +
                 "        $p : Person ( name != null );" +
-                "        $key : $p.name;" +
+                "        $key : $p.getName();" +
                 "        $count : count()" +
                 "    )\n" +
                 "    $remappedKey: Object() from $key\n" +
@@ -736,7 +736,7 @@ public class GroupByTest extends BaseModelTest {
                 "rule X when\n" +
                 "    groupby(" +
                 "        $p : Person ( name != null );" +
-                "        $key : $p.name;" +
+                "        $key : $p.getName();" +
                 "        $count : count()" +
                 "    )\n" +
                 "    $remappedKey: Object() from $key\n" +
