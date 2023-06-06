@@ -24,10 +24,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.base.factmodel.traits.TraitTypeEnum;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.reteoo.Tuple;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -263,7 +264,7 @@ public class QueryElementFactHandle
     }
 
     @Override
-    public <K> K as( Class<K> klass ) throws ClassCastException {
+    public <K> K as(Class<K> klass) throws ClassCastException {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not yet support this method" );
     }
 
@@ -280,7 +281,7 @@ public class QueryElementFactHandle
     public void forEachRightTuple( Consumer<RightTuple> rightTupleConsumer ) { }
 
     @Override
-    public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer ) { }
+    public void forEachLeftTuple( Consumer<AbstractLeftTuple> leftTupleConsumer) { }
 
     @Override
     public RightTuple findFirstRightTuple( Predicate<RightTuple> rightTuplePredicate ) {
@@ -288,7 +289,7 @@ public class QueryElementFactHandle
     }
 
     @Override
-    public LeftTuple findFirstLeftTuple( Predicate<LeftTuple> lefttTuplePredicate ) {
+    public AbstractLeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
         return null;
     }
 }

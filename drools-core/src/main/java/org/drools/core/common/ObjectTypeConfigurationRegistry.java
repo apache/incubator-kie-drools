@@ -21,24 +21,24 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.facttemplates.Fact;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.facttemplates.Fact;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.FactTemplateTypeConf;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ObjectType;
 
 public class ObjectTypeConfigurationRegistry implements Serializable {
     private static final long serialVersionUID = 510l;
 
     private final Map<Object, ObjectTypeConf> typeConfMap = new ConcurrentHashMap<>();
 
-    private final transient RuleBase ruleBase;
+    private final InternalRuleBase ruleBase;
 
-    public ObjectTypeConfigurationRegistry(RuleBase ruleBase) {
+    public ObjectTypeConfigurationRegistry(InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
 

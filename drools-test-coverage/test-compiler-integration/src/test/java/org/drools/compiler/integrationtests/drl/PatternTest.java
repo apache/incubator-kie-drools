@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.impl.RuleBase;
-import org.drools.core.reteoo.InitialFactImpl;
+import org.drools.core.impl.InternalRuleBase;
+import org.drools.base.reteoo.InitialFactImpl;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.ClassA;
 import org.drools.testcoverage.common.model.ClassB;
@@ -683,7 +683,7 @@ public class PatternTest {
             ksession.fireAllRules();
 
             // selects p1 and p3
-            if (((RuleBase) kbase).getRuleBaseConfiguration().getAssertBehaviour().equals( RuleBaseConfiguration.AssertBehaviour.IDENTITY )) {
+            if (((InternalRuleBase) kbase).getRuleBaseConfiguration().getAssertBehaviour().equals(RuleBaseConfiguration.AssertBehaviour.IDENTITY)) {
                 assertThat(list.size()).isEqualTo(2);
                 assertThat(list.get(0)).isSameAs(p1);
                 assertThat(list.get(1)).isSameAs(p3);

@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Collection;
 
-import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.base.common.DroolsObjectOutputStream;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.KiePackage;

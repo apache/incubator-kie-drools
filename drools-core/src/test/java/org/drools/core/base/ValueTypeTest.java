@@ -16,6 +16,7 @@
 
 package org.drools.core.base;
 
+import org.drools.base.base.ValueType;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

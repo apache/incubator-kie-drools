@@ -32,11 +32,11 @@ import org.drools.core.common.AgendaGroupsManager;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
@@ -74,11 +74,11 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     public CompositeDefaultAgenda() { }
 
-    public CompositeDefaultAgenda(RuleBase kBase) {
+    public CompositeDefaultAgenda(InternalRuleBase kBase) {
         this( kBase, true );
     }
 
-    public CompositeDefaultAgenda(RuleBase kBase, boolean initMain) {
+    public CompositeDefaultAgenda(InternalRuleBase kBase, boolean initMain) {
         for ( int i = 0; i < agendas.length; i++ ) {
             agendas[i] = new PartitionedDefaultAgenda(kBase, initMain, executionStateMachine, i);
         }

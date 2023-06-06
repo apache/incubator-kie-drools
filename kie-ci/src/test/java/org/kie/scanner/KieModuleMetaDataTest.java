@@ -16,7 +16,7 @@
 package org.kie.scanner;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.core.rule.TypeMetaInfo;
+import org.drools.base.rule.TypeMetaInfo;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -31,7 +31,6 @@ import org.kie.util.maven.support.DependencyFilter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;

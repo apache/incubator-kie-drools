@@ -15,7 +15,7 @@
 
 package org.drools.decisiontable;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;

@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -312,7 +312,7 @@ public class PassiveQueryTest {
         FactHandle fh = ksession.insert(1);
         ksession.insert("1");
 
-        Rete rete = ((RuleBase)kbase).getRete();
+        Rete rete = ((InternalRuleBase)kbase).getRete();
         LeftInputAdapterNode lia = null;
 
         for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {

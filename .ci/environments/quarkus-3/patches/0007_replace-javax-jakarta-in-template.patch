@@ -1,47 +1,37 @@
-Subject: [PATCH] [fix_pmml_test] Add patch to change javax -> jakarta in template
----
-Index: drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
-diff --git a/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java b/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java
---- a/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java	(revision 1ab119fc25590caf49c7c476c346bf117fb56646)
-+++ b/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java	(date 1678362274098)
-@@ -12,7 +12,7 @@
- import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
- import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
-
--@javax.enterprise.context.ApplicationScoped
-+@jakarta.enterprise.context.ApplicationScoped
- public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
-
-     private static final RuleBase ruleBase = KieBaseBuilder.createKieBaseFromModel( new RULE_UNIT_MODEL(), $KieBaseOptions$ );
-@@ -27,8 +27,8 @@
-         this((RuleUnits) null);
-     }
-
--    @javax.inject.Inject
--    public CLASS_NAME(javax.enterprise.inject.Instance<RuleUnits> ruleUnits) {
-+    @jakarta.inject.Inject
-+    public CLASS_NAME(jakarta.enterprise.inject.Instance<RuleUnits> ruleUnits) {
-         this(ruleUnits == null || ruleUnits.isUnsatisfied() ? AbstractRuleUnits.DummyRuleUnits.INSTANCE : ruleUnits.get());
-     }
-
-Index: drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
 diff --git a/drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java b/drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java
---- a/drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java	(revision 4766094314288e7d1b4335d789374d7cc05cea74)
-+++ b/drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java	(date 1679061647250)
-@@ -23,7 +23,7 @@
+index 86624b74e3..ec5c238bb6 100644
+--- a/drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java
++++ b/drools-model/drools-model-codegen/src/main/resources/class-templates/rules/ProjectRuntimeQuarkusTemplate.java
+@@ -23,7 +23,7 @@ import org.kie.api.runtime.KieSession;
  import org.kie.api.runtime.KieRuntimeBuilder;
  import org.drools.modelcompiler.KieBaseBuilder;
-
+ 
 -@javax.enterprise.context.ApplicationScoped
 +@jakarta.enterprise.context.ApplicationScoped
  public class ProjectRuntime implements KieRuntimeBuilder {
-
+ 
      private static final ProjectModel model = new ProjectModel();
+diff --git a/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java b/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java
+index 35e6387505..ec89fb8a04 100644
+--- a/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java
++++ b/drools-model/drools-model-codegen/src/main/resources/class-templates/ruleunits/RuleUnitQuarkusTemplate.java
+@@ -10,7 +10,7 @@ import org.drools.ruleunits.impl.factory.AbstractRuleUnits;
+ import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
+ import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
+ 
+-@javax.enterprise.context.ApplicationScoped
++@jakarta.enterprise.context.ApplicationScoped
+ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
+ 
+     private static final InternalRuleBase ruleBase = KieBaseBuilder.createKieBaseFromModel(new RULE_UNIT_MODEL(), $KieBaseOptions$);
+@@ -25,8 +25,8 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
+         this((RuleUnits) null);
+     }
+ 
+-    @javax.inject.Inject
+-    public CLASS_NAME(javax.enterprise.inject.Instance<RuleUnits> ruleUnits) {
++    @jakarta.inject.Inject
++    public CLASS_NA(jakarta.enterprise.inject.Instance<RuleUnits> ruleUnits) {
+         this(ruleUnits == null || ruleUnits.isUnsatisfied() ? AbstractRuleUnits.DummyRuleUnits.INSTANCE : ruleUnits.get());
+     }
+ 

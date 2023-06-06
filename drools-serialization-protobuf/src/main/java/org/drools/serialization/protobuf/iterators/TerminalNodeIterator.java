@@ -17,13 +17,13 @@ package org.drools.serialization.protobuf.iterators;
 
 import java.util.Map;
 
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.util.Iterator;
 import org.kie.api.KieBase;
 
 public class TerminalNodeIterator implements Iterator {
-    private RuleBase kBase;
+    private InternalRuleBase kBase;
     private TerminalNode[][] nodes;
 
     private int i = 0;
@@ -34,7 +34,7 @@ public class TerminalNodeIterator implements Iterator {
     }
 
     private TerminalNodeIterator(KieBase kBase) {
-        this.kBase = (RuleBase)kBase;
+        this.kBase = (InternalRuleBase)kBase;
         Map<String, TerminalNode[]> rules = this.kBase.getReteooBuilder().getTerminalNodes();
         nodes = rules.values().toArray( new TerminalNode[rules.size()][] );
     }

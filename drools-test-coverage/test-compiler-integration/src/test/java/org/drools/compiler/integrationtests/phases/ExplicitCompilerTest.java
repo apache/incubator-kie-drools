@@ -43,8 +43,8 @@ import org.drools.compiler.builder.impl.processors.TypeDeclarationCompilationPha
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -53,12 +53,9 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.io.ClassPathResource;
 import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.conf.CompositeBaseConfiguration;
-import org.kie.internal.utils.ChainedProperties;
 
 import java.io.IOException;
 import java.util.List;
@@ -147,7 +144,7 @@ public class ExplicitCompilerTest {
         List<InternalKnowledgePackage> packages =
                 packageRegistryManager.getPackageRegistry().values()
                         .stream().map(PackageRegistry::getPackage).collect(Collectors.toList());
-        RuleBase kbase = RuleBaseFactory.newRuleBase();
+        InternalRuleBase kbase = RuleBaseFactory.newRuleBase();
         kbase.addPackages(packages);
         SessionsAwareKnowledgeBase sessionsAwareKnowledgeBase =
                 new SessionsAwareKnowledgeBase(kbase);

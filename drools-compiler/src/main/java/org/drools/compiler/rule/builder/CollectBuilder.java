@@ -19,9 +19,9 @@ package org.drools.compiler.rule.builder;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.CollectDescr;
 import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.core.rule.Collect;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
+import org.drools.base.rule.Collect;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
 
 public class CollectBuilder
     implements

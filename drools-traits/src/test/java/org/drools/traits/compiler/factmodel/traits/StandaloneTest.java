@@ -15,11 +15,11 @@
 
 package org.drools.traits.compiler.factmodel.traits;
 
-import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.Trait;
+import org.drools.base.factmodel.traits.CoreWrapper;
+import org.drools.base.factmodel.traits.Trait;
 import org.drools.traits.core.factmodel.Entity;
 import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
-import org.drools.core.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.Thing;
 import org.drools.traits.core.util.StandaloneTraitFactory;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Before;

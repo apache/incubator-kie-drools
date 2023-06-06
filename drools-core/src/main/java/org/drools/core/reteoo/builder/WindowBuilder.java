@@ -16,9 +16,9 @@
 
 package org.drools.core.reteoo.builder;
 
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.rule.WindowDeclaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.WindowDeclaration;
 
 /**
  * A builder for patterns

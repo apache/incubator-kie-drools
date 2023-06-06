@@ -31,7 +31,7 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.common.TupleSets;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
@@ -107,7 +107,7 @@ public class MemoryLeakTest {
             ksession.fireAllRules();
         }
 
-        Rete rete = ( (RuleBase) kbase ).getRete();
+        Rete rete = ( (InternalRuleBase) kbase ).getRete();
         JoinNode joinNode = null;
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
@@ -150,7 +150,7 @@ public class MemoryLeakTest {
             ksession.fireAllRules();
         }
 
-        Rete rete = ( (RuleBase) kbase ).getRete();
+        Rete rete = ( (InternalRuleBase) kbase ).getRete();
         LeftInputAdapterNode liaNode = null;
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             if ( String.class == otn.getObjectType().getValueType().getClassType() ) {

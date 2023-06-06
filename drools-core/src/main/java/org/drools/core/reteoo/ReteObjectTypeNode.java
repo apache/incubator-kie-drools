@@ -18,7 +18,7 @@ package org.drools.core.reteoo;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 
 public class ReteObjectTypeNode extends ObjectTypeNode {

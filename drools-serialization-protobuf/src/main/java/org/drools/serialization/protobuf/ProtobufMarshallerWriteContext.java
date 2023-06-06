@@ -43,7 +43,7 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.marshalling.MarshallerFactory;
 
 public class ProtobufMarshallerWriteContext extends ObjectOutputStream implements MarshallerWriteContext {
-    private final InternalKnowledgeBase                                            kBase;
+    private final InternalKnowledgeBase kBase;
     private final InternalWorkingMemory                                            wm;
     private final Map<Integer, BaseNode>                                           sinks;
 

@@ -22,14 +22,14 @@ import java.io.ObjectOutput;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.index.IndexFactory;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
-import static org.drools.core.util.index.IndexUtil.compositeAllowed;
-import static org.drools.core.util.index.IndexUtil.isIndexableForNode;
+import static org.drools.base.util.index.IndexUtil.compositeAllowed;
+import static org.drools.base.util.index.IndexUtil.isIndexableForNode;
 
 public abstract class MultipleBetaConstraint implements BetaConstraints {
     protected BetaNodeFieldConstraint[] constraints;

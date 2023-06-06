@@ -21,8 +21,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DoubleBetaConstraints;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
@@ -33,7 +34,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.QuadroupleNonIndexSkipBetaConstraints;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.SingleNonIndexSkipBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
@@ -42,20 +43,20 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-import org.drools.core.util.index.IndexUtil;
+import org.drools.base.util.index.IndexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.doUpdatesReorderChildLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 public abstract class BetaNode extends LeftTupleSource
         implements
@@ -165,7 +166,7 @@ public abstract class BetaNode extends LeftTupleSource
         if (!isRightInputIsRiaNode()) {
             ObjectType objectType = pattern.getObjectType();
 
-            if (isPropertyReactive(context, objectType)) {
+            if (isPropertyReactive(context.getRuleBase(), objectType)) {
                 rightListenedProperties = pattern.getListenedProperties();
                 List<String> accessibleProperties = pattern.getAccessibleProperties( context.getRuleBase() );
                 rightDeclaredMask = pattern.getPositiveWatchMask(accessibleProperties);

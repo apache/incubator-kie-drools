@@ -35,7 +35,7 @@ import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -51,7 +51,7 @@ import org.kie.internal.marshalling.MarshallerFactory;
 
 public class ProtobufMarshallerReaderContext extends ObjectInputStream implements MarshallerReaderContext {
 
-    private final InternalKnowledgeBase                                            kBase;
+    private final InternalKnowledgeBase kBase;
     private InternalWorkingMemory                                                  wm;
     public KieRuntime                                                              kruntime;
     private final Map<Integer, BaseNode>                                           sinks;

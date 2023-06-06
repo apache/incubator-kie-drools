@@ -17,22 +17,9 @@
 package org.drools.core.rule.consequence;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
 
+import org.drools.base.rule.consequence.ConsequenceContext;
 import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.rule.Declaration;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.beliefsystem.Mode;
-import org.kie.api.runtime.Channel;
-import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.RuleContext;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -44,141 +31,18 @@ import org.kie.api.runtime.rule.RuleContext;
  * passed to the consequence at runtime. To achieve this the implementation will
  * need to lookup the fact handle of the object form the WorkingMemory.
  */
-public interface KnowledgeHelper extends RuleContext, Serializable {
+public interface KnowledgeHelper extends ConsequenceContext, Serializable {
     
     void setActivation(InternalMatch internalMatch);
 
     default void restoreActivationOnConsequenceFailure(InternalMatch internalMatch) { }
 
-    void reset();
-    
-    
-    /**
-     * Asserts an object
-     * 
-     * @param object -
-     *            the object to be asserted
-     */
-    InternalFactHandle insert(Object object) ;
 
-    FactHandle insertAsync( Object object );
-    
-    /**
-     * Asserts an object specifying that it implement the onPropertyChange
-     * listener
-     * 
-     * @param object -
-     *            the object to be asserted
-     * @param dynamic -
-     *            specifies the object implements onPropertyChangeListener
-     */
-    InternalFactHandle insert(Object object, boolean dynamic);
-    
-    InternalFactHandle insertLogical(Object object) ;
-
-    InternalFactHandle insertLogical(Object object, Object value);
-    
-    InternalFactHandle insertLogical(Object object, Mode belief) ;
-
-    InternalFactHandle insertLogical(Object object, Mode... beliefs) ;
-    
-    InternalFactHandle getFactHandle(Object object);
-    
-    InternalFactHandle getFactHandle(InternalFactHandle handle);
-    
-    void update(FactHandle handle, Object newObject);
-
-    void update(FactHandle newObject);
-    void update(FactHandle newObject, BitMask mask, Class<?> modifiedClass);
-    
-    void update(Object newObject);
-    void update(Object newObject, BitMask mask, Class<?> modifiedClass);
-
-    /**
-     * @deprecated Use delete
-     */
-    void retract(FactHandle handle) ;
-
-    /**
-     * @deprecated Use delete
-     */
-    void retract(Object handle);
-
-
-    void delete(Object handle);
-    void delete(Object object, FactHandle.State fhState);
-
-    void delete(FactHandle handle);
-    void delete(FactHandle handle, FactHandle.State fhState);
-
-    Object get(Declaration declaration);
-
-    /**
-     * @return - The rule name
-     */
-    RuleImpl getRule();
-
-    Tuple getTuple();
+    WorkingMemory getWorkingMemory();
 
     InternalMatch getMatch();
 
-    WorkingMemory getWorkingMemory();
-    
-    EntryPoint getEntryPoint( String id );
-    
-    Channel getChannel( String id );
-    
-    Map<String, Channel> getChannels();
-
-    void setFocus(String focus);
-
-    Declaration getDeclaration(String identifier);
-    
-    void halt();
-
-    <T> T getContext(Class<T> contextClass);
-
-    <T, K> T don( K core, Class<T> trait, boolean logical );
-
-    <T, K> T don( K core, Class<T> trait, Mode... modes );
-
-    <T, K> T don( K core, Class<T> trait );
-
-    <T, K> T don( Thing<K> core, Class<T> trait );
-
-    <T, K> T don( K core, Collection<Class<? extends Thing>> trait, boolean logical );
-
-    <T, K> T don( K core, Collection<Class<? extends Thing>> trait, Mode... modes );
-
-    <T, K> T don( K core, Collection<Class<? extends Thing>> trait );
-
-    <T, K> Thing<K> shed( Thing<K> thing, Class<T> trait );
-
-    <T, K, X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait );
-
-    InternalFactHandle bolster( Object object );
-
-    InternalFactHandle bolster( Object object, Object value );
 
     ClassLoader getProjectClassLoader();
 
-    default void run(String ruleUnitName) {
-        throw new UnsupportedOperationException();
-    }
-
-    default void run(Object ruleUnit) {
-        throw new UnsupportedOperationException();
-    }
-
-    default void run(Class<?> ruleUnitClass) {
-        throw new UnsupportedOperationException();
-    }
-
-    default void guard(Object ruleUnit) {
-        throw new UnsupportedOperationException();
-    }
-
-    default void guard(Class<?> ruleUnitClass) {
-        throw new UnsupportedOperationException();
-    }
 }

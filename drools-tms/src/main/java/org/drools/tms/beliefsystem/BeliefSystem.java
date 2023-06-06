@@ -17,7 +17,7 @@ package org.drools.tms.beliefsystem;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.PropagationContext;

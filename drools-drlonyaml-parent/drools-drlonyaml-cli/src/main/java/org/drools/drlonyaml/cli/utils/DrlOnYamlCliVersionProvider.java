@@ -16,7 +16,7 @@
 
 package org.drools.drlonyaml.cli.utils;
 
-import org.drools.core.util.Drools;
+import org.drools.base.util.Drools;
 
 import picocli.CommandLine.IVersionProvider;
 

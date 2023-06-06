@@ -36,21 +36,21 @@ import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclaration
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
 import org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor;
-import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.MultiAccumulate;
-import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.rule.SingleAccumulate;
-import org.drools.core.rule.accessor.Accumulator;
-import org.drools.core.rule.accessor.DeclarationScopeResolver;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.constraint.Constraint;
-import org.drools.core.util.index.IndexUtil;
+import org.drools.base.base.extractors.ArrayElementReader;
+import org.drools.base.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.base.reteoo.SortDeclarations;
+import org.drools.base.rule.Accumulate;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.MultiAccumulate;
+import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.SingleAccumulate;
+import org.drools.base.rule.accessor.Accumulator;
+import org.drools.base.rule.accessor.DeclarationScopeResolver;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.constraint.Constraint;
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.drl.ast.descr.AndDescr;
@@ -139,7 +139,7 @@ public class JavaAccumulateBuilder
         final List<AccumulateFunctionCallDescr> funcCalls = accumDescr.getFunctions();
         // list of available source declarations
         final Declaration[] sourceDeclArr = source.getOuterDeclarations().values().toArray( new Declaration[source.getOuterDeclarations().size()] );
-        Arrays.sort( sourceDeclArr, RuleTerminalNode.SortDeclarations.instance );
+        Arrays.sort(sourceDeclArr, SortDeclarations.instance);
 
         // set of required previous declarations
         Set<Declaration> requiredDecl = new HashSet<>();
@@ -211,7 +211,7 @@ public class JavaAccumulateBuilder
                                                                  new Declaration[] { inner },
                                                                  null,
                                                                  null,
-                                                                 IndexUtil.ConstraintType.EQUAL,
+                                                                 ConstraintTypeOperator.EQUAL,
                                                                  context.getDeclarationResolver().getDeclaration( fc.getBind() ),
                                                        index >= 0
                                                             ? new ArrayElementReader( readAccessor, index, resultType )
@@ -377,7 +377,7 @@ public class JavaAccumulateBuilder
             declarations[i] = decls.get( it.next() );
         }
         final Declaration[] sourceDeclArr = source.getOuterDeclarations().values().toArray( new Declaration[source.getOuterDeclarations().size()] );
-        Arrays.sort( sourceDeclArr, RuleTerminalNode.SortDeclarations.instance );
+        Arrays.sort(sourceDeclArr, SortDeclarations.instance);
 
         final Map<String, Object> map = createVariableContext( className,
                                                                null,

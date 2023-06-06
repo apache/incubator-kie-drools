@@ -18,10 +18,10 @@ package org.drools.modelcompiler.constraints;
 
 import java.util.Objects;
 
-import org.drools.core.base.ValueType;
-import org.drools.core.base.extractors.BaseObjectClassFieldReader;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.base.ValueType;
+import org.drools.base.base.extractors.BaseObjectClassFieldReader;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.model.functions.Function1;
 
 public class LambdaReadAccessor extends BaseObjectClassFieldReader implements ReadAccessor {
@@ -38,7 +38,7 @@ public class LambdaReadAccessor extends BaseObjectClassFieldReader implements Re
     }
 
     @Override
-    public Object getValue( ReteEvaluator reteEvaluator, Object object ) {
+    public Object getValue(ValueResolver valueResolver, Object object) {
         return lambda.apply( object );
     }
 

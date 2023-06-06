@@ -18,12 +18,13 @@ package org.drools.core.common;
 
 import java.io.Externalizable;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.base.ObjectType;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.rule.FactHandle;
 
 public interface PropagationContext extends Externalizable {
 
@@ -42,8 +43,8 @@ public interface PropagationContext extends Externalizable {
     /**
      * @return fact handle that was inserted, updated or retracted that created the PropagationContext
      */
-    InternalFactHandle getFactHandle();
-    void setFactHandle(InternalFactHandle factHandle);
+    FactHandle getFactHandle();
+    void setFactHandle(FactHandle factHandle);
 
     EntryPointId getEntryPoint();
     

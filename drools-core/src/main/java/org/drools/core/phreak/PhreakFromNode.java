@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
@@ -30,13 +29,14 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.rule.accessor.DataProvider;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.accessor.DataProvider;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
@@ -95,7 +95,6 @@ public class PhreakFromNode {
             betaConstraints.updateFromTuple(context, reteEvaluator, leftTuple);
 
             for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple, reteEvaluator,
-                                                                          propagationContext,
                                                                           fm.providerContext); it.hasNext(); ) {
                 final Object object = it.next();
                 if ( (object == null) || !resultClass.isAssignableFrom( object.getClass() ) ) {
@@ -146,7 +145,7 @@ public class PhreakFromNode {
             betaConstraints.updateFromTuple(context, reteEvaluator, leftTuple);
 
             FastIterator rightIt = LinkedList.fastIterator;
-            for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple, reteEvaluator, propagationContext, fm.providerContext); it.hasNext(); ) {
+            for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple, reteEvaluator, fm.providerContext); it.hasNext(); ) {
                 final Object object = it.next();
                 if ( (object == null) || !resultClass.isAssignableFrom( object.getClass() ) ) {
                     continue; // skip anything if it not assignable
@@ -215,7 +214,7 @@ public class PhreakFromNode {
         }
     }
 
-    public static boolean isAllowed( InternalFactHandle factHandle,
+    public static boolean isAllowed( FactHandle factHandle,
                                      AlphaNodeFieldConstraint[] alphaConstraints,
                                      ReteEvaluator reteEvaluator,
                                      FromMemory fm ) {

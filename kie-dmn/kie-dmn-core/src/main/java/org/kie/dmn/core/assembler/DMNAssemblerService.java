@@ -17,7 +17,6 @@
 package org.kie.dmn.core.assembler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,8 +28,8 @@ import javax.xml.namespace.QName;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.ResourceTypePackageRegistry;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.ResourceTypePackageRegistry;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.Resource;

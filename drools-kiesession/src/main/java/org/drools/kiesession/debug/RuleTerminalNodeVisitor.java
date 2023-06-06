@@ -18,8 +18,8 @@ package org.drools.kiesession.debug;
 
 import java.util.Collection;
 
-import org.drools.core.common.NetworkNode;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 
 public class RuleTerminalNodeVisitor extends AbstractNetworkNodeVisitor {

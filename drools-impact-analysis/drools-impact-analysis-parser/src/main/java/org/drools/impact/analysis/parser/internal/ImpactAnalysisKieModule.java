@@ -30,7 +30,7 @@ import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.io.InternalResource;
 import org.drools.impact.analysis.model.AnalysisModel;
@@ -209,12 +209,12 @@ public class ImpactAnalysisKieModule implements InternalKieModule {
     }
 
     @Override
-    public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf ) {
+    public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf) {
         return internalKieModule.createKieBase( kBaseModel, kieProject, buildContext, conf );
     }
 
     @Override
-    public void afterKieBaseCreationUpdate( String name, InternalKnowledgeBase kBase ) {
+    public void afterKieBaseCreationUpdate( String name, InternalKnowledgeBase kBase) {
         internalKieModule.afterKieBaseCreationUpdate( name, kBase );
     }
 

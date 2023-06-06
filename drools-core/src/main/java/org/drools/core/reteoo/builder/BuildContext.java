@@ -25,31 +25,32 @@ import java.util.List;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NetworkNode;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.rule.constraint.XpathConstraint;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.rule.RuleComponent;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.constraint.XpathConstraint;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.RuleComponent;
 import org.drools.core.time.TemporalDependencyMatrix;
+import org.drools.base.RuleBuildContext;
 
-import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
+import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
 /**
  * A build context for Reteoo Builder
  */
-public class BuildContext {
+public class BuildContext implements RuleBuildContext {
 
     private List<TerminalNode> terminals = new ArrayList<>();
 
@@ -61,7 +62,7 @@ public class BuildContext {
     private List<Pattern> patterns;
 
     // rule base to add rules to
-    private final RuleBase ruleBase;
+    private final InternalRuleBase ruleBase;
     // rule being added at this moment
     private RuleImpl rule;
     private GroupElement subRule;
@@ -111,7 +112,7 @@ public class BuildContext {
 
     private final Collection<InternalWorkingMemory> workingMemories;
 
-    public BuildContext(RuleBase ruleBase, Collection<InternalWorkingMemory> workingMemories) {
+    public BuildContext(InternalRuleBase ruleBase, Collection<InternalWorkingMemory> workingMemories) {
         this.ruleBase = ruleBase;
         this.workingMemories = workingMemories;
         this.tupleMemoryEnabled = true;
@@ -186,7 +187,7 @@ public class BuildContext {
     /**
      * Returns context rulebase
      */
-    public RuleBase getRuleBase() {
+    public InternalRuleBase getRuleBase() {
         return this.ruleBase;
     }
 

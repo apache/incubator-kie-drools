@@ -12,7 +12,7 @@ import java.util.concurrent.locks.Lock;
 import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.beliefsystem.Mode;
+import org.drools.base.beliefsystem.Mode;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
@@ -26,26 +26,27 @@ import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.EntryPointId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.core.rule.accessor.GlobalResolver;
+import org.drools.base.rule.accessor.GlobalResolver;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
+import org.drools.base.RuleBase;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -575,6 +576,16 @@ public class StatefulKnowledgeSessionForRHS
 
     public Collection<? extends Object> getObjects(ObjectFilter filter) {
         return delegate.getObjects(filter);
+    }
+
+    @Override
+    public long getCurrentTime() {
+        return this.delegate.getCurrentTime();
+    }
+
+    @Override
+    public RuleBase getRuleBase() {
+        return delegate.getRuleBase();
     }
 
     public long getIdleTime() {

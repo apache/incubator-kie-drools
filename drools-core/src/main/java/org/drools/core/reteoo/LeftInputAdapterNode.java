@@ -21,22 +21,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.base.reteoo.BaseTerminalNode;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.ObjectType;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.ObjectTypeNode.Id;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Pattern;
+import org.drools.base.rule.Pattern;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.AllSetBitMask;
@@ -51,7 +53,7 @@ import static org.drools.core.phreak.TupleEvaluationUtil.findPathsToFlushFromRia
 import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushPath;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -118,7 +120,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return AllSetBitMask.get();
         }
 
-        return isPropertyReactive( context, objectType ) ?
+        return isPropertyReactive( context.getRuleBase(), objectType ) ?
                pattern.getPositiveWatchMask( pattern.getAccessibleProperties( context.getRuleBase() ) ) :
                AllSetBitMask.get();
     }
@@ -652,12 +654,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         @Override
-        public void addAssociatedTerminal(TerminalNode terminalNode) {
+        public void addAssociatedTerminal(BaseTerminalNode terminalNode) {
             sink.addAssociatedTerminal(terminalNode);
         }
 
         @Override
-        public void removeAssociatedTerminal(TerminalNode terminalNode) {
+        public void removeAssociatedTerminal(BaseTerminalNode terminalNode) {
             sink.removeAssociatedTerminal(terminalNode);
         }
 
@@ -667,7 +669,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         @Override
-        public boolean hasAssociatedTerminal(NetworkNode terminalNode) {
+        public boolean hasAssociatedTerminal(BaseTerminalNode terminalNode) {
             return sink.hasAssociatedTerminal(terminalNode);
         }
     }

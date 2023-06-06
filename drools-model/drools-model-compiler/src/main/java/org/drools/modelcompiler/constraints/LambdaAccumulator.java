@@ -17,17 +17,20 @@
 
 package org.drools.modelcompiler.constraints;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.SubnetworkTuple;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Accumulator;
-import org.kie.api.runtime.rule.AccumulateFunction;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
+
+import org.drools.base.base.ValueResolver;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.core.reteoo.SubnetworkTuple;
+import org.drools.core.reteoo.Tuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Accumulator;
+import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.api.runtime.rule.FactHandle;
 
 public abstract class LambdaAccumulator implements Accumulator {
 
@@ -66,14 +69,14 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public Object init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, ReteEvaluator reteEvaluator) {
+    public Object init(Object workingMemoryContext, Object context, BaseTuple leftTuple, Declaration[] declarations, ValueResolver valueResolver) {
         context = accumulateFunction.initContext( (Serializable) context );
         return context;
     }
 
     @Override
-    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
-        final Object accumulatedObject = getAccumulatedObject(declarations, innerDeclarations, handle, leftTuple, reteEvaluator);
+    public Object accumulate(Object workingMemoryContext, Object context, BaseTuple leftTuple, FactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, ValueResolver valueResolver) {
+        final Object accumulatedObject = getAccumulatedObject(declarations, innerDeclarations, (InternalFactHandle) handle, (Tuple) leftTuple, (ReteEvaluator) valueResolver);
         return accumulateFunction.accumulateValue( (Serializable) context, accumulatedObject);
     }
 
@@ -85,8 +88,8 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value,
-                              Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
+    public boolean tryReverse(Object workingMemoryContext, Object context, BaseTuple leftTuple, FactHandle handle, Object value,
+                              Declaration[] declarations, Declaration[] innerDeclarations, ValueResolver valueResolver) {
         if (value == null) {
             throw new IllegalStateException("Reversing a not existing accumulated object for fact " + handle);
         }
@@ -94,7 +97,7 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, ReteEvaluator reteEvaluator) {
+    public Object getResult(Object workingMemoryContext, Object context, BaseTuple leftTuple, Declaration[] declarations, ValueResolver valueResolver) {
         try {
             return accumulateFunction.getResult( (Serializable) context );
         } catch (Exception e) {

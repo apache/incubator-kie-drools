@@ -16,7 +16,7 @@
 
 package org.drools.model.codegen.execmodel.generator.operatorspec;
 
-import org.drools.core.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.Evaluator;
 import org.drools.model.functions.Operator;
 
 import static org.drools.core.common.InternalFactHandle.dummyFactHandleOf;

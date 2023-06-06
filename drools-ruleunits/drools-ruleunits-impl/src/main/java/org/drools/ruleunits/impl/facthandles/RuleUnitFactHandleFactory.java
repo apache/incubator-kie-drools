@@ -17,7 +17,7 @@ package org.drools.ruleunits.impl.facthandles;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
 import org.drools.core.rule.accessor.FactHandleFactory;
 
@@ -37,7 +37,7 @@ public class RuleUnitFactHandleFactory extends ReteooFactHandleFactory {
     }
 
     @Override
-    public EventFactHandle createEventFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, long timestamp, long duration) {
+    public DefaultEventHandle createEventFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, long timestamp, long duration) {
         return new RuleUnitEventFactHandle(id, object, recency, timestamp, duration, entryPoint);
     }
 

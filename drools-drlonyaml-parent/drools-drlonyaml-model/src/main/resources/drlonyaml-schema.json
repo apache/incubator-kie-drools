@@ -61,6 +61,18 @@
         }
       }
     },
+    "Global" : {
+      "type" : "object",
+      "properties" : {
+        "type" : {
+          "type" : "string"
+        },
+        "id" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "type", "id" ]
+    },
     "Import" : {
       "type" : "string"
     },
@@ -155,6 +167,12 @@
       "type" : "array",
       "items" : {
         "$ref" : "#/definitions/Import"
+      }
+    },
+    "globals" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/Global"
       }
     },
     "rules" : {

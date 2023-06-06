@@ -21,14 +21,15 @@ import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.rule.constraint.Constraint;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.Constraint;
 import org.drools.core.reteoo.Tuple;
 import org.drools.util.ClassUtils;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
 
@@ -84,23 +85,23 @@ public class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
     }
 
     @Override
-    public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
+    public boolean isAllowedCachedLeft(ContextEntry context, FactHandle handle) {
         Object fact = handle.getObject();
-        Tuple tuple = ((FakeContextEntry) context).getTuple();
+        BaseTuple tuple = ((FakeContextEntry) context).getTuple();
         return evaluate(fact, tuple, context);
     }
 
     @Override
-    public boolean isAllowedCachedRight(Tuple tuple, ContextEntry context) {
+    public boolean isAllowedCachedRight(BaseTuple tuple, ContextEntry context) {
         Object fact = ((FakeContextEntry) context).getHandle().getObject();
-        return evaluate(fact, tuple, context);
+        return evaluate(fact, (Tuple) tuple, context);
     }
 
-    private boolean evaluate(Object fact, Tuple tuple, ContextEntry context) {
+    private boolean evaluate(Object fact, BaseTuple tuple, ContextEntry context) {
         try {
             Object value = accessor.invoke(fact);
             Object declObj = tuple.getObject(declaration);
-            Object declValue = declaration.getValue(((FakeContextEntry) context).getReteEvaluator(), declObj);
+            Object declValue = declaration.getValue(((FakeContextEntry) context).getValueResolver(), declObj);
             if (operator == Operator.BuiltInOperator.EQUAL.getOperator()) {
                 return value.equals(declValue);
             } else if (operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator()) {

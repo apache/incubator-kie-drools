@@ -16,6 +16,7 @@
 
 package org.drools.core.common;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;

@@ -23,15 +23,16 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Accumulator;
-import org.drools.core.reteoo.Tuple;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Accumulator;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompilationUnit.DroolsVarFactory;
+import org.kie.api.runtime.rule.FactHandle;
 import org.mvel2.integration.VariableResolverFactory;
 
 import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
@@ -109,16 +110,16 @@ public class MVELAccumulator
      */
     public Object init(Object workingMemoryContext,
                        Object context,
-                       Tuple tuple,
+                       BaseTuple tuple,
                        Declaration[] declarations,
-                       ReteEvaluator reteEvaluator) {
+                       ValueResolver valueResolver) {
         Object[] localVars = new Object[initUnit.getOtherIdentifiers().length];
         
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         VariableResolverFactory factory = factoryContext.getInitFactory();
-        initUnit.updateFactory( null, tuple, localVars, reteEvaluator, reteEvaluator.getGlobalResolver(), factory );
+        initUnit.updateFactory( null, tuple, localVars, valueResolver, valueResolver.getGlobalResolver(), factory );
 
-        InternalKnowledgePackage pkg = reteEvaluator.getKnowledgeBase().getPackage( "MAIN" );
+        InternalKnowledgePackage pkg = ((InternalKnowledgeBase)valueResolver.getRuleBase()).getPackage("MAIN");
         if ( pkg != null ) {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );
@@ -143,15 +144,15 @@ public class MVELAccumulator
      */
     public Object accumulate(Object workingMemoryContext,
                            Object context,
-                           Tuple tuple,
-                           InternalFactHandle handle,
+                           BaseTuple tuple,
+                           FactHandle handle,
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
-                           ReteEvaluator reteEvaluator) {
+                           ValueResolver valueResolver) {
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         VariableResolverFactory factory = factoryContext.getActionFactory();
-        actionUnit.updateFactory( handle, tuple, localVars, reteEvaluator, reteEvaluator.getGlobalResolver(), factory );
+        actionUnit.updateFactory( handle, tuple, localVars, valueResolver, valueResolver.getGlobalResolver(), factory );
 
         DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
 
@@ -178,12 +179,12 @@ public class MVELAccumulator
 
     public boolean tryReverse(Object workingMemoryContext,
                               Object context,
-                              Tuple leftTuple,
-                              InternalFactHandle handle,
+                              BaseTuple leftTuple,
+                              FactHandle handle,
                               Object value,
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
-                              ReteEvaluator reteEvaluator) {
+                              ValueResolver valueResolver) {
 
         if (!supportsReverse()) {
             return false;
@@ -224,14 +225,14 @@ public class MVELAccumulator
      */
     public Object getResult(Object workingMemoryContext,
                             Object context,
-                            Tuple tuple,
+                            BaseTuple tuple,
                             Declaration[] declarations,
-                            ReteEvaluator reteEvaluator) {
+                            ValueResolver valueResolver) {
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
         
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         VariableResolverFactory factory = factoryContext.getResultFactory();
-        resultUnit.updateFactory( null, tuple, localVars, reteEvaluator, reteEvaluator.getGlobalResolver(), factory );
+        resultUnit.updateFactory( null, tuple, localVars, valueResolver, valueResolver.getGlobalResolver(), factory );
 
         return this.result.evaluate( factory );
     }

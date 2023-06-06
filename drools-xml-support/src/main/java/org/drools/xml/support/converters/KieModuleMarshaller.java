@@ -31,7 +31,7 @@ import org.drools.compiler.kproject.models.ListenerModelImpl;
 import org.drools.compiler.kproject.models.QualifierModelImpl;
 import org.drools.compiler.kproject.models.RuleTemplateModelImpl;
 import org.drools.compiler.kproject.models.WorkItemHandlerModelImpl;
-import org.drools.core.base.XMLSupport;
+import org.drools.base.base.XMLSupport;
 import org.kie.api.builder.model.KieModuleModel;
 
 import static org.drools.util.IoUtils.readBytesFromInputStream;

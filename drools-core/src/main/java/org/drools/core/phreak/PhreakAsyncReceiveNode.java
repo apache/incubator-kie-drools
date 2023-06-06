@@ -23,7 +23,7 @@ import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.rule.ContextEntry;
+import org.drools.base.rule.ContextEntry;
 import org.drools.core.util.index.TupleList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -24,12 +24,13 @@ import java.util.List;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.base.ObjectType;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class SingleNonIndexSkipBetaConstraints 
     implements
@@ -87,7 +88,7 @@ public class SingleNonIndexSkipBetaConstraints
 
     public void updateFromFactHandle(ContextEntry[] context,
                                      ReteEvaluator reteEvaluator,
-                                     InternalFactHandle handle) {
+                                     FactHandle handle) {
         constraints.updateFromFactHandle( context, reteEvaluator, handle );
     }
 
@@ -134,7 +135,7 @@ public class SingleNonIndexSkipBetaConstraints
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
-                                       final InternalFactHandle handle) {
+                                       final FactHandle handle) {
         return this.constraint.isAllowedCachedLeft( context[0],
                                                      handle );
     }

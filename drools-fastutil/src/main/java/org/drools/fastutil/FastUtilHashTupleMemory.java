@@ -21,7 +21,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.AbstractHashTable.DoubleCompositeIndex;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
+import org.drools.base.util.FieldIndex;
 import org.drools.core.util.AbstractHashTable.HashEntry;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.AbstractHashTable.SingleIndex;

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
@@ -32,21 +33,21 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.From;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.rule.accessor.DataProvider;
-import org.drools.core.base.ObjectType;
+import org.drools.base.rule.From;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.accessor.DataProvider;
+import org.drools.base.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import static org.drools.base.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.getAccessibleProperties;
+import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     implements
@@ -162,7 +163,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         ObjectType objectType = pattern.getObjectType();
 
         // if pattern is null (e.g. for eval or query nodes) we cannot calculate the mask, so we set it all
-        if ( isPropertyReactive( context, objectType ) ) {
+        if ( isPropertyReactive( context.getRuleBase(), objectType ) ) {
             Collection<String> leftListenedProperties = pattern.getListenedProperties();
             List<String> accessibleProperties = getAccessibleProperties( context.getRuleBase(), objectType );
             leftDeclaredMask = leftDeclaredMask.setAll( calculatePositiveMask( objectType, leftListenedProperties, accessibleProperties ) );
@@ -245,7 +246,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     @Override
     public LeftTuple createPeer(LeftTuple original) {
         JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
-        peer.initPeer( (BaseLeftTuple) original, this );
+        peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer( peer );
         return peer;
     }    

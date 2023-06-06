@@ -54,7 +54,7 @@ import org.kie.internal.utils.ChainedProperties;
  * properties.setProperty( "org.kie.sequential", "true");
  * </pre>
  *
- * @see RuleBase
+ * @see InternalRuleBase
  */
 public class RuleBaseFactory {
 
@@ -63,7 +63,7 @@ public class RuleBaseFactory {
      * @return
      *     The KnowledgeBase
      */
-    public static RuleBase newRuleBase() {
+    public static InternalRuleBase newRuleBase() {
         return newRuleBase( UUID.randomUUID().toString() );
     }
 
@@ -79,7 +79,7 @@ public class RuleBaseFactory {
      * @return
      *     The KnowledgeBase
      */
-    public static RuleBase newRuleBase(String kbaseId) {
+    public static InternalRuleBase newRuleBase(String kbaseId) {
         return newRuleBase( kbaseId,  RuleBaseFactory.newKnowledgeBaseConfiguration() );
     }
 
@@ -88,7 +88,7 @@ public class RuleBaseFactory {
      * @return
      *     The KnowledgeBase
      */
-    public static RuleBase newRuleBase(KieBaseConfiguration conf) {
+    public static InternalRuleBase newRuleBase(KieBaseConfiguration conf) {
         return newRuleBase( UUID.randomUUID().toString(), conf );
     }
 
@@ -104,8 +104,8 @@ public class RuleBaseFactory {
      * @return
      *     The KnowledgeBase
      */
-    public static RuleBase newRuleBase(String kbaseId, KieBaseConfiguration conf) {
-        return new KnowledgeBaseImpl( kbaseId, (CompositeBaseConfiguration) conf);
+    public static InternalRuleBase newRuleBase(String kbaseId, KieBaseConfiguration conf) {
+        return new KnowledgeBaseImpl(kbaseId, (CompositeBaseConfiguration) conf);
     }
 
     /**

@@ -20,20 +20,21 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.IntervalProviderConstraint;
-import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.accessor.Evaluator;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.time.Interval;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.IntervalProviderConstraint;
+import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.time.Interval;
 import org.drools.mvel.evaluators.MvelEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class EvaluatorConstraint extends MutableTypeConstraint implements IntervalProviderConstraint {
 
@@ -61,40 +62,40 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return declarations.length == 0;
     }
 
-    public boolean isAllowed(InternalFactHandle handle, ReteEvaluator reteEvaluator) {
+    public boolean isAllowed(FactHandle handle, ValueResolver valueResolver) {
         if (isLiteral()) {
-            return evaluator.evaluate(reteEvaluator, rightReadAccessor, handle, field);
+            return evaluator.evaluate(valueResolver, rightReadAccessor, handle, field);
         }
 
-        return evaluator.evaluate( reteEvaluator,
+        return evaluator.evaluate( valueResolver,
                                    rightReadAccessor,
                                    handle,
                                    declarations[0].getExtractor(),
                                    handle );
     }
 
-    public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
+    public boolean isAllowedCachedLeft(ContextEntry context, FactHandle handle) {
         if (isLiteral()) {
-            return evaluator.evaluate( ((LiteralContextEntry) context).reteEvaluator,
+            return evaluator.evaluate( ((LiteralContextEntry) context).valueResolver,
                                        ((LiteralContextEntry) context).getFieldExtractor(),
                                        handle,
                                        field );
         }
 
-        return ((MvelEvaluator) evaluator).evaluateCachedLeft( ((VariableContextEntry) context).reteEvaluator,
+        return ((MvelEvaluator) evaluator).evaluateCachedLeft( ((VariableContextEntry) context).valueResolver,
                                              (VariableContextEntry) context,
                                              handle );
     }
 
-    public boolean isAllowedCachedRight(Tuple tuple, ContextEntry context) {
+    public boolean isAllowedCachedRight(BaseTuple tuple, ContextEntry context) {
         if (isLiteral()) {
-            return evaluator.evaluate( ((LiteralContextEntry) context).reteEvaluator,
+            return evaluator.evaluate( ((LiteralContextEntry) context).valueResolver,
                                        ((LiteralContextEntry) context).getFieldExtractor(),
                                        ((LiteralContextEntry) context).getFactHandle(),
                                        field );
         }
 
-        return ((MvelEvaluator) evaluator).evaluateCachedRight( ((VariableContextEntry) context).reteEvaluator,
+        return ((MvelEvaluator) evaluator).evaluateCachedRight( ((VariableContextEntry) context).valueResolver,
                                               (VariableContextEntry) context,
                                               tuple.get(declarations[0]));
     }
@@ -169,9 +170,9 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
 
         private static final long   serialVersionUID = 510l;
         public ReadAccessor         extractor;
-        public InternalFactHandle   factHandle;
+        public FactHandle           factHandle;
         public ContextEntry         next;
-        public ReteEvaluator        reteEvaluator;
+        public ValueResolver        valueResolver;
 
         public LiteralContextEntry() {
         }
@@ -185,21 +186,21 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
             extractor = (ReadAccessor) in.readObject();
             factHandle = ( InternalFactHandle ) in.readObject();
             next = (ContextEntry) in.readObject();
-            reteEvaluator = ( ReteEvaluator ) in .readObject();
+            valueResolver = ( ValueResolver ) in .readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( extractor );
             out.writeObject( factHandle );
             out.writeObject( next );
-            out.writeObject( reteEvaluator );
+            out.writeObject( valueResolver );
         }
 
         public ReadAccessor getFieldExtractor() {
             return this.extractor;
         }
 
-        public InternalFactHandle getFactHandle() {
+        public FactHandle getFactHandle() {
             return this.factHandle;
         }
 
@@ -211,15 +212,15 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
             this.next = entry;
         }
 
-        public void updateFromFactHandle(final ReteEvaluator reteEvaluator,
-                                         final InternalFactHandle handle) {
+        public void updateFromFactHandle(final ValueResolver valueResolver,
+                                         final FactHandle handle) {
             this.factHandle = handle;
-            this.reteEvaluator = reteEvaluator;
+            this.valueResolver = valueResolver;
         }
 
-        public void updateFromTuple(final ReteEvaluator reteEvaluator,
-                                    final Tuple tuple) {
-            this.reteEvaluator = reteEvaluator;
+        public void updateFromTuple(final ValueResolver valueResolver,
+                                    final BaseTuple tuple) {
+            this.valueResolver = valueResolver;
         }
 
         public void resetTuple() {

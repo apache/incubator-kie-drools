@@ -18,49 +18,20 @@ package org.drools.core.reteoo;
 
 import java.util.function.Consumer;
 
-import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NetworkNode;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.reteoo.BaseTerminalNode;
 
 /**
  * A markup interface for terminal nodes
  */
 public interface TerminalNode
     extends
-    NetworkNode, Sink, PathEndNode {
+        BaseTerminalNode, NetworkNode, Sink, PathEndNode {
 
     LeftTupleSource getLeftTupleSource();
     
     LeftTupleSource unwrapTupleSource();
-    
-    void initInferredMask();
-
-    BitMask getDeclaredMask();
-    void setDeclaredMask(BitMask mask);
-
-    BitMask getInferredMask();
-    void setInferredMask(BitMask mask);
-
-    BitMask getNegativeMask();
-    void setNegativeMask(BitMask mask);
-    
-    RuleImpl getRule();
-
-    GroupElement getSubRule();
-
-    boolean isFireDirect();
-
-    Declaration[] getAllDeclarations();
-    Declaration[] getRequiredDeclarations();
-
-    Declaration[] getSalienceDeclarations();
-
-    boolean isTerminalNodeOf(LeftTupleNode node);
 
     void visitLeftTupleNodes(Consumer<LeftTupleNode> func);
 
-    int getSubruleIndex();
 }

@@ -30,7 +30,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
-import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.base.common.DroolsObjectInputStream;
 import org.drools.persistence.api.TransactionAware;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.serialization.protobuf.ProtobufProcessMarshallerWriteContext;

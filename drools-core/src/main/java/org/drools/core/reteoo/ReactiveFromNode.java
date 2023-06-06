@@ -16,6 +16,7 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
@@ -23,9 +24,9 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.From;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.rule.accessor.DataProvider;
+import org.drools.base.rule.From;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.accessor.DataProvider;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.index.TupleList;
 
@@ -118,7 +119,7 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
     @Override
     public LeftTuple createPeer(LeftTuple original) {
         ReactiveFromNodeLeftTuple peer = new ReactiveFromNodeLeftTuple();
-        peer.initPeer( (BaseLeftTuple) original, this );
+        peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer( peer );
         return peer;
     }

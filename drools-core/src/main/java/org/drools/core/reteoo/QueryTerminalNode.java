@@ -18,12 +18,13 @@ package org.drools.core.reteoo;
 
 import java.util.Map;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.definitions.rule.impl.QueryImpl;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.core.common.PropagationContext;
 
 /**
@@ -34,9 +35,7 @@ import org.drools.core.common.PropagationContext;
  */
 public class QueryTerminalNode extends AbstractTerminalNode implements LeftTupleSinkNode {
 
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
+
 
     private static final long serialVersionUID = 510l;
 

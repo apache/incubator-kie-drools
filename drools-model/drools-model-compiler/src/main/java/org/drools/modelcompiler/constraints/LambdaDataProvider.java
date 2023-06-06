@@ -21,11 +21,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.phreak.ReactiveObject;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.DataProvider;
-import org.drools.core.common.PropagationContext;
+import org.drools.base.phreak.ReactiveObject;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.DataProvider;
 import org.drools.core.reteoo.Tuple;
 import org.drools.model.functions.FunctionN;
 
@@ -52,17 +53,17 @@ public class LambdaDataProvider implements DataProvider {
     }
 
     @Override
-    public Iterator getResults(Tuple tuple, ReteEvaluator reteEvaluator, PropagationContext ctx, Object providerContext ) {
-        Object result = getResult( tuple, reteEvaluator );
+    public Iterator getResults(BaseTuple tuple, ValueResolver valueResolver, Object providerContext) {
+        Object result = getResult( (Tuple) tuple, (ReteEvaluator) valueResolver );
 
         if (isReactive()) {
             if ( result instanceof ReactiveObject ) {
-                (( ReactiveObject ) result).addLeftTuple( tuple );
+                (( ReactiveObject ) result).addTuple(tuple);
             }
             if ( result instanceof Iterable ) {
                 for (Object value : ( Iterable<?> ) result) {
                     if ( value instanceof ReactiveObject ) {
-                        (( ReactiveObject ) value).addLeftTuple( tuple );
+                        (( ReactiveObject ) value).addTuple(tuple);
                     }
                 }
             }

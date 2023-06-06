@@ -22,16 +22,16 @@ import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.GroupElementFactory;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.consequence.Consequence;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.GroupElementFactory;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,9 +69,9 @@ public class ReteooRuleBuilderTest {
 
         rule.setLhs( lhsroot );
 
-        final Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence<KnowledgeHelper>() {
             public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 ReteEvaluator reteEvaluator) throws Exception {
+                                 ValueResolver valueResolver) throws Exception {
                 System.out.println( "Consequence!" );
             }
 

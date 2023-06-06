@@ -14,21 +14,22 @@
 
 package org.drools.serialization.protobuf.timers;
 
-import java.io.IOException;
-
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJob;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContext;
 import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
+import org.drools.base.time.JobHandle;
 import org.drools.core.time.TimerService;
+import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.serialization.protobuf.ProtobufMarshallerReaderContext;
 import org.drools.serialization.protobuf.ProtobufMessages;
 import org.drools.serialization.protobuf.TimersInputMarshaller;
+
+import java.io.IOException;
 
 public class ExpireJobContextTimerInputMarshaller implements TimersInputMarshaller {
     private static final transient ExpireJob job = new ExpireJob();
@@ -42,7 +43,7 @@ public class ExpireJobContextTimerInputMarshaller implements TimersInputMarshall
 
         TimerService clock = inCtx.getWorkingMemory().getTimerService();
 
-        JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction( ( EventFactHandle ) factHandle ), inCtx.getWorkingMemory() );
+        JobContext jobctx = new ExpireJobContext(new WorkingMemoryReteExpireAction( (DefaultEventHandle) factHandle ), inCtx.getWorkingMemory() );
         JobHandle handle = clock.scheduleJob( job,
                 jobctx,
                 PointInTimeTrigger.createPointInTimeTrigger( nextTimeStamp, null ) );
@@ -57,12 +58,11 @@ public class ExpireJobContextTimerInputMarshaller implements TimersInputMarshall
 
         TimerService clock = inCtx.getWorkingMemory().getTimerService();
 
-        JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction((EventFactHandle)factHandle),
+        JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction((DefaultEventHandle)factHandle),
                 inCtx.getWorkingMemory() );
-        JobHandle jobHandle = clock.scheduleJob( job,
-                jobctx,
+        DefaultJobHandle jobHandle = (DefaultJobHandle) clock.scheduleJob( job, jobctx,
                 PointInTimeTrigger.createPointInTimeTrigger( expire.getNextFireTimestamp(), null ) );
         jobctx.setJobHandle( jobHandle );
-        ((EventFactHandle) factHandle).addJob(jobHandle);
+        ((DefaultEventHandle) factHandle).addJob(jobHandle);
     }
 }

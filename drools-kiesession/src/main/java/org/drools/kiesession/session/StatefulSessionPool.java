@@ -26,7 +26,7 @@ public class StatefulSessionPool {
     private final InternalKnowledgeBase kbase;
     private final ScalablePool<StatefulKnowledgeSessionImpl> pool;
 
-    public StatefulSessionPool( InternalKnowledgeBase kbase, int initialSize, Supplier<StatefulKnowledgeSessionImpl> supplier ) {
+    public StatefulSessionPool(InternalKnowledgeBase kbase, int initialSize, Supplier<StatefulKnowledgeSessionImpl> supplier) {
         this.kbase = kbase;
         this.pool = new ScalablePool<>(initialSize, supplier, s -> s.reset(), s -> s.fromPool(null).dispose());
     }

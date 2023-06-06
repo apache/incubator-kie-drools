@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.SegmentMemory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -34,9 +34,9 @@ public class ConcurrentNodeMemories implements NodeMemories {
     private AtomicReferenceArray<Memory> memories;
 
     private final Lock lock = new ReentrantLock();
-    private final RuleBase ruleBase;
+    private final InternalRuleBase ruleBase;
 
-    public ConcurrentNodeMemories( RuleBase ruleBase) {
+    public ConcurrentNodeMemories( InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
         this.memories = new AtomicReferenceArray<>( this.ruleBase.getMemoryCount() );
     }
@@ -52,7 +52,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
     }
 
     public void resetAllMemories(StatefulKnowledgeSession session) {
-        RuleBase kBase = (RuleBase) session.getKieBase();
+        InternalRuleBase kBase = (InternalRuleBase) session.getKieBase();
         Set<SegmentMemory> smemSet = new HashSet<>();
 
         for (int i = 0; i < memories.length(); i++) {
@@ -66,7 +66,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
         smemSet.forEach(smem -> resetSegmentMemory(session, kBase, smem));
     }
 
-    private void resetSegmentMemory(StatefulKnowledgeSession session, RuleBase kBase, SegmentMemory smem) {
+    private void resetSegmentMemory(StatefulKnowledgeSession session, InternalRuleBase kBase, SegmentMemory smem) {
         if (smem != null) {
             smem.reset(kBase.getSegmentPrototype(smem));
             if (smem.isSegmentLinked()) {

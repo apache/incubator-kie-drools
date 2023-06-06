@@ -23,10 +23,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.TraitField;
-import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.traits.CoreWrapper;
+import org.drools.base.factmodel.traits.TraitField;
+import org.drools.base.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.TraitableBean;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.serialization.protobuf.SerializationHelper;
@@ -84,7 +85,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
 
@@ -119,8 +120,8 @@ public class LogicalTraitTest extends CommonTraitTest {
     public void testShadowAliasTraitOnClass() {
 
         String drl = "package org.drools.test; \n" +
-                     "import org.drools.core.factmodel.traits.*; \n" +
-                     "import org.drools.core.factmodel.traits.Trait; \n" +
+                     "import org.drools.base.factmodel.traits.*; \n" +
+                     "import org.drools.base.factmodel.traits.Trait; \n" +
                      "" +
                      "global java.util.List list; \n" +
                      "" +
@@ -158,7 +159,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -184,8 +185,8 @@ public class LogicalTraitTest extends CommonTraitTest {
     public void testShadowAliasClassOnTrait() {
 
         String drl = "package org.drools.test; \n" +
-                     "import org.drools.core.factmodel.traits.*; \n" +
-                     "import org.drools.core.factmodel.traits.Trait; \n" +
+                     "import org.drools.base.factmodel.traits.*; \n" +
+                     "import org.drools.base.factmodel.traits.Trait; \n" +
                      "" +
                      "global java.util.List list; \n" +
                      "" +
@@ -237,7 +238,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -265,8 +266,8 @@ public class LogicalTraitTest extends CommonTraitTest {
     public void testShadowAliasTraitOnTrait() {
 
         String drl = "package org.drools.test; \n" +
-                     "import org.drools.core.factmodel.traits.*; \n" +
-                     "import org.drools.core.factmodel.traits.Trait; \n" +
+                     "import org.drools.base.factmodel.traits.*; \n" +
+                     "import org.drools.base.factmodel.traits.Trait; \n" +
                      "" +
                      "global java.util.List list; \n" +
                      "" +
@@ -311,7 +312,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -744,8 +745,8 @@ public class LogicalTraitTest extends CommonTraitTest {
     public void shadowAliasSelf() {
 
         String drl = "package org.drools.test; \n" +
-                     "import org.drools.core.factmodel.traits.*; \n" +
-                     "import org.drools.core.factmodel.traits.Trait; \n" +
+                     "import org.drools.base.factmodel.traits.*; \n" +
+                     "import org.drools.base.factmodel.traits.Trait; \n" +
                      "" +
                      "global java.util.List list; \n" +
                      "" +
@@ -785,7 +786,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -808,8 +809,8 @@ public class LogicalTraitTest extends CommonTraitTest {
     public void traitOnSet() {
 
         String drl = "package org.drools.test; \n" +
-                     "import org.drools.core.factmodel.traits.*; \n" +
-                     "import org.drools.core.factmodel.traits.Trait; \n" +
+                     "import org.drools.base.factmodel.traits.*; \n" +
+                     "import org.drools.base.factmodel.traits.Trait; \n" +
                      "" +
                      "global java.util.List list; \n" +
                      "" +
@@ -878,7 +879,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
 
@@ -915,8 +916,8 @@ public class LogicalTraitTest extends CommonTraitTest {
     public void testShadowAliasTraitOnClassLogicalRetract() {
 
         String drl = "package org.drools.test; \n" +
-                     "import org.drools.core.factmodel.traits.*; \n" +
-                     "import org.drools.core.factmodel.traits.Trait; \n" +
+                     "import org.drools.base.factmodel.traits.*; \n" +
+                     "import org.drools.base.factmodel.traits.Trait; \n" +
                      "" +
                      "global java.util.List list; \n" +
                      "" +
@@ -996,7 +997,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -1053,8 +1054,8 @@ public class LogicalTraitTest extends CommonTraitTest {
     public void testShadowAliasClassOnTraitLogicalRetract() {
 
         String drl = "package org.drools.test; \n" +
-                     "import org.drools.core.factmodel.traits.*; \n" +
-                     "import org.drools.core.factmodel.traits.Trait; \n" +
+                     "import org.drools.base.factmodel.traits.*; \n" +
+                     "import org.drools.base.factmodel.traits.Trait; \n" +
                      "" +
                      "global java.util.List list; \n" +
                      "" +
@@ -1132,7 +1133,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -1170,8 +1171,8 @@ public class LogicalTraitTest extends CommonTraitTest {
     public void testSerial() {
 
         String drl = "package org.drools.test; \n" +
-                     "import org.drools.core.factmodel.traits.*; \n" +
-                     "import org.drools.core.factmodel.traits.Trait; \n" +
+                     "import org.drools.base.factmodel.traits.*; \n" +
+                     "import org.drools.base.factmodel.traits.Trait; \n" +
                      "" +
                      "global java.util.List list; \n" +
                      "" +
@@ -1201,7 +1202,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactoryImpl.setMode(mode, kbase );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -1231,12 +1232,12 @@ public class LogicalTraitTest extends CommonTraitTest {
     public void testTraitMismatchTypes()
     {
         String drl = "" +
-                     "package org.drools.core.factmodel.traits.test;\n" +
+                     "package org.drools.base.factmodel.traits.test;\n" +
                      "\n" +
-                     "import org.drools.core.factmodel.traits.Thing;\n" +
-                     "import org.drools.core.factmodel.traits.Traitable;\n" +
-                     "import org.drools.core.factmodel.traits.Trait;\n" +
-                     "import org.drools.core.factmodel.traits.Alias;\n" +
+                     "import org.drools.base.factmodel.traits.Thing;\n" +
+                     "import org.drools.base.factmodel.traits.Traitable;\n" +
+                     "import org.drools.base.factmodel.traits.Trait;\n" +
+                     "import org.drools.base.factmodel.traits.Alias;\n" +
                      "\n" +
                      "global java.util.List list;\n" +
                      "\n" +
@@ -1283,12 +1284,12 @@ public class LogicalTraitTest extends CommonTraitTest {
     public void testTraitMismatchTypes2()
     {
         String drl = "" +
-                     "package org.drools.core.factmodel.traits.test;\n" +
+                     "package org.drools.base.factmodel.traits.test;\n" +
                      "\n" +
-                     "import org.drools.core.factmodel.traits.Thing;\n" +
-                     "import org.drools.core.factmodel.traits.Traitable;\n" +
-                     "import org.drools.core.factmodel.traits.Trait;\n" +
-                     "import org.drools.core.factmodel.traits.Alias;\n" +
+                     "import org.drools.base.factmodel.traits.Thing;\n" +
+                     "import org.drools.base.factmodel.traits.Traitable;\n" +
+                     "import org.drools.base.factmodel.traits.Trait;\n" +
+                     "import org.drools.base.factmodel.traits.Alias;\n" +
                      "\n" +
                      "global java.util.List list;\n" +
                      "\n" +
@@ -1337,11 +1338,11 @@ public class LogicalTraitTest extends CommonTraitTest {
     public void testTraitMismatchTypes3()
     {
         String drl = "" +
-                     "package org.drools.core.factmodel.traits.test;\n" +
+                     "package org.drools.base.factmodel.traits.test;\n" +
                      "\n" +
-                     "import org.drools.core.factmodel.traits.Traitable;\n" +
-                     "import org.drools.core.factmodel.traits.Trait;\n" +
-                     "import org.drools.core.factmodel.traits.Alias;\n" +
+                     "import org.drools.base.factmodel.traits.Traitable;\n" +
+                     "import org.drools.base.factmodel.traits.Trait;\n" +
+                     "import org.drools.base.factmodel.traits.Alias;\n" +
                      "\n" +
                      "global java.util.List list;\n" +
                      "\n" +
@@ -1387,6 +1388,6 @@ public class LogicalTraitTest extends CommonTraitTest {
         System.out.println( "list" + list );
 
         assertThat(list.size()).isEqualTo(1);
-        assertThat(list.get(0).getClass().getName()).isEqualTo("org.drools.core.factmodel.traits.test.Bar");
+        assertThat(list.get(0).getClass().getName()).isEqualTo("org.drools.base.factmodel.traits.test.Bar");
     }
 }

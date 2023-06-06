@@ -24,13 +24,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.base.ValueResolver;
+import org.drools.base.time.impl.Timer;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.ConditionalElement;
-import org.drools.core.rule.Declaration;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.ConditionalElement;
+import org.drools.base.rule.Declaration;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.time.Trigger;
+import org.drools.base.time.JobHandle;
+import org.drools.base.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
 /**
@@ -40,7 +42,7 @@ import org.kie.api.runtime.Calendars;
  */
 public class CompositeMaxDurationTimer extends BaseTimer
     implements
-    Timer {
+        Timer {
 
     private static final long   serialVersionUID = -2531364489959820962L;
 
@@ -76,12 +78,12 @@ public class CompositeMaxDurationTimer extends BaseTimer
     }
 
     public Trigger createTrigger(long timestamp,
-                                 Tuple leftTuple,
-                                 DefaultJobHandle jh,
+                                 BaseTuple leftTuple,
+                                 JobHandle jh,
                                  String[] calendarNames,
                                  Calendars calendars,
                                  Declaration[][] declrs,
-                                 ReteEvaluator reteEvaluator) {
+                                 ValueResolver valueResolver) {
         return createTrigger( getMaxTimestamp(leftTuple, timestamp), calendarNames, calendars );
     }
 
@@ -100,7 +102,7 @@ public class CompositeMaxDurationTimer extends BaseTimer
                                                                                      calendars ) : null );
     }
 
-    private long getMaxTimestamp(Tuple leftTuple, long timestamp) {
+    private long getMaxTimestamp(BaseTuple leftTuple, long timestamp) {
         if (timer != null) {
             return timestamp;
         }

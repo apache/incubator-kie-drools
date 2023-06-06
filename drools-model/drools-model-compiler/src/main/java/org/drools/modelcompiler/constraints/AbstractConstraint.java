@@ -16,9 +16,9 @@
 
 package org.drools.modelcompiler.constraints;
 
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.IntervalProviderConstraint;
-import org.drools.core.rule.MutableTypeConstraint;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.IntervalProviderConstraint;
+import org.drools.base.rule.MutableTypeConstraint;
 
 public abstract class AbstractConstraint extends MutableTypeConstraint implements IndexableConstraint, IntervalProviderConstraint {
     @Override

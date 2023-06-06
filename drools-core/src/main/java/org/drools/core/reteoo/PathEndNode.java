@@ -18,6 +18,7 @@ package org.drools.core.reteoo;
 
 import java.io.Serializable;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;

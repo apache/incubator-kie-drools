@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
-import org.drools.core.rule.Declaration;
+import org.drools.base.rule.Declaration;
 import org.mvel2.Operator;
 import org.mvel2.ParserContext;
 import org.mvel2.ast.ASTNode;

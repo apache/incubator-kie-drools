@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalRuleBase;
 
 /**
  * This context class is used during rule removal to ensure
@@ -33,7 +33,7 @@ public class RuleRemovalContext implements Externalizable {
     // the rule being removed
     private RuleImpl rule;
 
-    private RuleBase ruleBase;
+    private InternalRuleBase ruleBase;
 
     private int subRuleIndex;
 
@@ -44,7 +44,7 @@ public class RuleRemovalContext implements Externalizable {
         this.rule = rule;
     }
 
-    public RuleRemovalContext(RuleImpl rule, RuleBase ruleBase) {
+    public RuleRemovalContext(RuleImpl rule, InternalRuleBase ruleBase) {
         this.rule = rule;
         this.ruleBase = ruleBase;
     }
@@ -65,11 +65,11 @@ public class RuleRemovalContext implements Externalizable {
         return rule;
     }
 
-    public RuleBase getRuleBase() {
+    public InternalRuleBase getRuleBase() {
         return ruleBase;
     }
 
-    public void setRuleBase(RuleBase ruleBase) {
+    public void setRuleBase(InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
 

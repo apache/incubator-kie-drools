@@ -14,19 +14,19 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AccumulateNode;
-import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
+import org.drools.base.reteoo.AccumulateContextEntry;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.rule.Accumulate;
+import org.drools.base.rule.Accumulate;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.index.TupleList;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class PhreakGroupByNode extends PhreakAccumulateNode {
 
@@ -103,7 +103,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
 
                 for (LeftTuple childMatch = (LeftTuple) tupleList.getFirst(); childMatch != null; childMatch = (LeftTuple) childMatch.getNext()) {
                     RightTuple         rightTuple  = childMatch.getRightParent();
-                    InternalFactHandle childHandle = rightTuple.getFactHandle();
+                    FactHandle childHandle = rightTuple.getFactHandle();
                     LeftTuple          tuple       = leftTuple;
                     if (accNode.isRightInputIsRiaNode()) {
                         // if there is a subnetwork, handle must be unwrapped

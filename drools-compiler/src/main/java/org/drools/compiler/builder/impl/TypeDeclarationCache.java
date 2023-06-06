@@ -27,13 +27,12 @@ import java.util.Set;
 
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.rule.Annotated;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.factmodel.FieldDefinition;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.rule.Annotated;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.util.ClassUtils;
 import org.kie.api.definition.type.Position;
 import org.kie.api.io.Resource;
@@ -43,7 +42,7 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.compiler.builder.impl.TypeDeclarationConfigurator.processMvelBasedAccessors;
 import static org.drools.util.BitMaskUtil.isSet;
-import static org.drools.core.util.Drools.hasMvel;
+import static org.drools.base.util.Drools.hasMvel;
 
 public class TypeDeclarationCache {
 

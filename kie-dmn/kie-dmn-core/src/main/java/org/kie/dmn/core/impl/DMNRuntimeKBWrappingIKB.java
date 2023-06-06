@@ -25,12 +25,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.ResourceTypePackageRegistry;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.ResourceTypePackageRegistry;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNModel;
@@ -48,7 +47,7 @@ import org.slf4j.LoggerFactory;
 public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
     private static final Logger logger = LoggerFactory.getLogger( DMNRuntimeKBWrappingIKB.class );
 
-    private final InternalKnowledgeBase        knowledgeBase;
+    private final InternalKnowledgeBase knowledgeBase;
 
     public DMNRuntimeKBWrappingIKB(InternalKnowledgeBase knowledgeBase) {
         this.knowledgeBase = knowledgeBase;

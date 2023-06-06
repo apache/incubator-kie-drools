@@ -23,7 +23,7 @@ import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.conflict.RuleAgendaConflictResolver;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -65,7 +65,7 @@ public class AgendaGroupQueueImpl
     private final boolean         sequential;
 
     public AgendaGroupQueueImpl(final String name,
-                                final RuleBase kBase) {
+                                final InternalRuleBase kBase) {
         this.name = name;
         this.sequential = kBase.getRuleBaseConfiguration().isSequential();
 

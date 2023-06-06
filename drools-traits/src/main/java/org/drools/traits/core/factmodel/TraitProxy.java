@@ -18,7 +18,7 @@ package org.drools.traits.core.factmodel;
 
 import java.util.BitSet;
 
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.traits.TraitableBean;
 
 public interface TraitProxy {
     TraitableBean getObject();

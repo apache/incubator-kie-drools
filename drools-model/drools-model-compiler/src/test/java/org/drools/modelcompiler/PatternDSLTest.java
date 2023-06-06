@@ -25,12 +25,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.drools.core.ClockType;
-import org.drools.core.base.ClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
-import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.Pattern;
+import org.drools.base.definitions.rule.impl.QueryImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.Accumulate;
+import org.drools.base.rule.Pattern;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.model.DSL;
 import org.drools.model.Global;

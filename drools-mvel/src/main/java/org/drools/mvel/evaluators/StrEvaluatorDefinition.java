@@ -19,16 +19,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
-import org.drools.core.rule.accessor.Evaluator;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * <p>The implementation of the 'str' evaluator definition.</p>
@@ -156,9 +156,11 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
         /**
          * @inheridDoc
          */
-        public boolean evaluate(ReteEvaluator reteEvaluator,
-                                ReadAccessor extractor, InternalFactHandle factHandle, FieldValue value) {
-            final Object objectValue = extractor.getValue(reteEvaluator, factHandle.getObject());
+        public boolean evaluate(final ValueResolver valueResolver,
+                                final ReadAccessor extractor,
+                                final FactHandle factHandle,
+                                final FieldValue value) {
+            final Object objectValue = extractor.getValue(valueResolver, factHandle.getObject());
 
             switch (parameter) {
                 case startsWith:
@@ -172,11 +174,11 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
             }
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
-                ReadAccessor leftExtractor, InternalFactHandle left,
-                ReadAccessor rightExtractor, InternalFactHandle right) {
-            final Object value1 = leftExtractor.getValue(reteEvaluator, left.getObject());
-            final Object value2 = rightExtractor.getValue(reteEvaluator, right.getObject());
+        public boolean evaluate(final ValueResolver valueResolver,
+                                final ReadAccessor leftExtractor, final FactHandle left,
+                                final ReadAccessor rightExtractor, final FactHandle right) {
+            final Object value1 = leftExtractor.getValue(valueResolver, left.getObject());
+            final Object value2 = rightExtractor.getValue(valueResolver, right.getObject());
 
             switch (parameter) {
                 case startsWith:
@@ -191,8 +193,9 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
 
         }
 
-        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
-                VariableContextEntry context, InternalFactHandle right) {
+        public boolean evaluateCachedLeft(final ValueResolver valueResolver,
+                                          final VariableContextEntry context,
+                                          final FactHandle right) {
 
                 switch (parameter) {
                 case startsWith:
@@ -210,8 +213,9 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
 
         }
 
-        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
-                VariableContextEntry context, InternalFactHandle left) {
+        public boolean evaluateCachedRight(final ValueResolver valueResolver,
+                                           final VariableContextEntry context,
+                                           final FactHandle left) {
                 switch (parameter) {
                 case startsWith:
                     return this.getOperator().isNegated() ^ (((String)left.getObject()).startsWith((String)((ObjectVariableContextEntry)

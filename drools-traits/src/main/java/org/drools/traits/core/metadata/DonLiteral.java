@@ -19,8 +19,8 @@ import java.net.URI;
 
 import org.drools.traits.core.factmodel.AbstractTraitFactory;
 import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.traits.core.util.StandaloneTraitFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

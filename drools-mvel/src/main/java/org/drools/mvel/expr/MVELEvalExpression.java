@@ -19,12 +19,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.EvalExpression;
-import org.drools.core.reteoo.Tuple;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.EvalExpression;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.mvel2.integration.VariableResolverFactory;
 
@@ -75,21 +76,21 @@ public class MVELEvalExpression
         return this.unit.createFactory();
     }    
 
-    public boolean evaluate(final Tuple tuple,
+    public boolean evaluate(final BaseTuple tuple,
                             final Declaration[] requiredDeclarations,
-                            final ReteEvaluator reteEvaluator,
+                            final ValueResolver valueResolver,
                             final Object context) throws Exception {
         VariableResolverFactory factory = ( VariableResolverFactory ) context;
         
         unit.updateFactory( null,
                             tuple,
                             null,
-                            reteEvaluator,
-                            reteEvaluator.getGlobalResolver(),
+                            valueResolver,
+                            valueResolver.getGlobalResolver(),
                             factory );
 
         // do we have any functions for this namespace?
-        InternalKnowledgePackage pkg = reteEvaluator.getKnowledgeBase().getPackage( "MAIN" );
+        InternalKnowledgePackage pkg = ((InternalKnowledgeBase)valueResolver.getRuleBase()).getPackage("MAIN");
         if ( pkg != null ) {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );

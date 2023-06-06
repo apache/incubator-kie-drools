@@ -105,7 +105,7 @@ public class GeneratedClassDeclaration {
                 , false
                 , generatedClassName);
 
-        basicDeclaredClass.addImplementedType(Serializable.class.getName()); // Ref: {@link org.drools.core.factmodel.DefaultBeanClassBuilder} by default always receive is Serializable.
+        basicDeclaredClass.addImplementedType(Serializable.class.getName()); // Ref: {@link org.drools.base.factmodel.DefaultBeanClassBuilder} by default always receive is Serializable.
 
         markerInterfaceAnnotations.stream().map(Class::getCanonicalName).forEach(basicDeclaredClass::addImplementedType);
         basicDeclaredClass.addConstructor(Modifier.publicModifier().getKeyword()); // No-args ctor

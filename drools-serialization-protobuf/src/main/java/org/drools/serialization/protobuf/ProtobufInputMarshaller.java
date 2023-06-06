@@ -37,7 +37,7 @@ import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
@@ -47,7 +47,7 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.TupleKey;
@@ -60,10 +60,10 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.core.rule.accessor.GlobalResolver;
+import org.drools.base.rule.accessor.GlobalResolver;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.time.Trigger;
+import org.drools.base.time.Trigger;
 import org.drools.core.time.impl.CompositeMaxDurationTrigger;
 import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
@@ -552,14 +552,14 @@ public class ProtobufInputMarshaller {
                 break;
             }
             case EVENT : {
-                handle = new EventFactHandle( _handle.getId(),
-                                              object,
-                                              _handle.getRecency(),
-                                              _handle.getTimestamp(),
-                                              _handle.getDuration(),
-                                              (WorkingMemoryEntryPoint) entryPoint );
-                ((EventFactHandle) handle).setExpired( _handle.getIsExpired() );
-                ((EventFactHandle) handle).setOtnCount( _handle.getOtnCount() );
+                handle = new DefaultEventHandle(_handle.getId(),
+                                                object,
+                                                _handle.getRecency(),
+                                                _handle.getTimestamp(),
+                                                _handle.getDuration(),
+                                                (WorkingMemoryEntryPoint) entryPoint );
+                ((DefaultEventHandle) handle).setExpired(_handle.getIsExpired());
+                ((DefaultEventHandle) handle).setOtnCount(_handle.getOtnCount());
                 // the event is re-propagated through the network, so the activations counter will be recalculated
                 //((EventFactHandle) handle).setActivationsCount( _handle.getActivationsCount() );
                 break;

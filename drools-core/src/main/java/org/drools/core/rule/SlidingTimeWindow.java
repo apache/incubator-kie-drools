@@ -23,8 +23,9 @@ import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.PriorityQueue;
 
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
@@ -35,16 +36,15 @@ import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
+import org.drools.base.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.PointInTimeTrigger;
-
-import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class SlidingTimeWindow
         implements
         Externalizable,
-        Behavior {
+        BehaviorRuntime {
 
     protected long size;
     // stateless job
@@ -108,17 +108,17 @@ public class SlidingTimeWindow
     }
 
     @Override
-    public Behavior.Context createContext() {
+    public BehaviorContext createContext() {
         return new SlidingTimeWindowContext();
     }
 
     @Override
     public boolean assertFact(final Object context,
-                              final InternalFactHandle fact,
+                              final FactHandle fact,
                               final PropagationContext pctx,
                               final ReteEvaluator reteEvaluator) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
-        final EventFactHandle handle = (EventFactHandle) fact;
+        final DefaultEventHandle handle = (DefaultEventHandle) fact;
         long currentTime = reteEvaluator.getTimerService().getCurrentTime();
         if ( isExpired( currentTime, handle ) ) {
             return false;
@@ -138,12 +138,12 @@ public class SlidingTimeWindow
 
     @Override
     public void retractFact(final Object context,
-                            final InternalFactHandle fact,
+                            final FactHandle fact,
                             final PropagationContext pctx,
                             final ReteEvaluator reteEvaluator) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
-        final EventFactHandle handle = (EventFactHandle) fact;
-        final EventFactHandle peekEvent = queue.peek();
+        final DefaultEventHandle handle = (DefaultEventHandle) fact;
+        final DefaultEventHandle peekEvent = queue.peek();
         if (peekEvent != null) {
             if (handle.equals(peekEvent)) {
                 // it was the head of the queue
@@ -169,12 +169,12 @@ public class SlidingTimeWindow
         long currentTime = clock.getCurrentTime();
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
 
-        EventFactHandle handle = queue.peek();
+        DefaultEventHandle handle = queue.peek();
         while ( handle != null && isExpired( currentTime, handle ) ) {
             queue.remove();
             if( handle.isValid()) {
                 // if not expired yet, expire it
-                final PropagationContext expiresPctx = createPropagationContextForFact( reteEvaluator, handle, PropagationContext.Type.EXPIRATION );
+                final PropagationContext expiresPctx = PhreakPropagationContextFactory.createPropagationContextForFact(reteEvaluator, handle, PropagationContext.Type.EXPIRATION);
                 ObjectTypeNode.doRetractObject(handle, expiresPctx, reteEvaluator);
             }
             handle = queue.peek();
@@ -184,17 +184,17 @@ public class SlidingTimeWindow
     }
 
     protected boolean isExpired(final long currentTime,
-                                final EventFactHandle handle) {
+                                final DefaultEventHandle handle) {
         return handle.getStartTimestamp() + this.size <= currentTime;
     }
 
     protected void updateNextExpiration(final InternalFactHandle fact,
                                         final ReteEvaluator reteEvaluator,
-                                        final Behavior.Context context,
+                                        final BehaviorContext context,
                                         final int nodeId) {
         TimerService clock = reteEvaluator.getTimerService();
         if ( fact != null ) {
-            long nextTimestamp = ((EventFactHandle) fact).getStartTimestamp() + getSize();
+            long nextTimestamp = ((DefaultEventHandle) fact).getStartTimestamp() + getSize();
             if ( nextTimestamp < clock.getCurrentTime() ) {
                 // Past and out-of-order events should not be insert,
                 // but the engine silently accepts them anyway, resulting in possibly undesirable behaviors
@@ -227,10 +227,10 @@ public class SlidingTimeWindow
 
     public static class SlidingTimeWindowContext
             implements
-            Behavior.Context,
+            BehaviorContext,
             Externalizable {
 
-        private PriorityQueue<EventFactHandle> queue;
+        private PriorityQueue<DefaultEventHandle> queue;
         private JobHandle                      jobHandle;
 
         public SlidingTimeWindowContext() {
@@ -251,7 +251,7 @@ public class SlidingTimeWindow
         @SuppressWarnings("unchecked")
         public void readExternal(ObjectInput in) throws IOException,
                                                         ClassNotFoundException {
-            this.queue = (PriorityQueue<EventFactHandle>) in.readObject();
+            this.queue = (PriorityQueue<DefaultEventHandle>) in.readObject();
         }
 
         @Override
@@ -259,11 +259,11 @@ public class SlidingTimeWindow
             out.writeObject( this.queue );
         }
 
-        public void add(EventFactHandle handle) {
+        public void add(DefaultEventHandle handle) {
             queue.add( handle );
         }
 
-        public void remove(EventFactHandle handle) {
+        public void remove(DefaultEventHandle handle) {
             queue.remove( handle );
         }
 
@@ -271,20 +271,20 @@ public class SlidingTimeWindow
             return queue.isEmpty();
         }
 
-        public EventFactHandle peek() {
+        public DefaultEventHandle peek() {
             return queue.peek( );
         }
 
-        public EventFactHandle poll() {
+        public DefaultEventHandle poll() {
             return queue.poll( );
         }
 
-        public EventFactHandle remove() {
+        public DefaultEventHandle remove() {
             return queue.remove( );
         }
 
         @Override
-        public Collection<EventFactHandle> getFactHandles() {
+        public Collection<DefaultEventHandle> getFactHandles() {
             return queue;
         }
     }
@@ -295,13 +295,13 @@ public class SlidingTimeWindow
             Externalizable {
         public ReteEvaluator         reteEvaluator;
         public int                   nodeId;
-        public Behavior              behavior;
-        public Behavior.Context      behaviorContext;
+        public BehaviorRuntime       behavior;
+        public BehaviorContext      behaviorContext;
 
-        public BehaviorJobContext(int                   nodeId,
-                                  ReteEvaluator reteEvaluator,
-                                  Behavior behavior,
-                                  Behavior.Context behaviorContext) {
+        public BehaviorJobContext(int             nodeId,
+                                  ReteEvaluator   reteEvaluator,
+                                  BehaviorRuntime behavior,
+                                  BehaviorContext behaviorContext) {
             super();
             this.nodeId = nodeId;
             this.reteEvaluator = reteEvaluator;
@@ -357,15 +357,15 @@ public class SlidingTimeWindow
     public static class BehaviorExpireWMAction
             extends PropagationEntry.AbstractPropagationEntry
             implements WorkingMemoryAction {
-        protected Behavior behavior;
-        protected Behavior.Context context;
+        protected BehaviorRuntime behavior;
+        protected BehaviorContext context;
         protected int nodeId;
 
         protected BehaviorExpireWMAction() { }
 
         public BehaviorExpireWMAction(final int nodeId,
-                                      Behavior behavior,
-                                      Behavior.Context context) {
+                                      BehaviorRuntime behavior,
+                                      BehaviorContext context) {
             super();
             this.nodeId = nodeId;
             this.behavior = behavior;
@@ -378,7 +378,7 @@ public class SlidingTimeWindow
 
             WindowMemory memory = inCtx.getWorkingMemory().getNodeMemory( windowNode );
 
-            Behavior.Context[] behaviorContext = memory.behaviorContext;
+            BehaviorContext[] behaviorContext = memory.behaviorContext;
 
             int i = inCtx.readInt();
 

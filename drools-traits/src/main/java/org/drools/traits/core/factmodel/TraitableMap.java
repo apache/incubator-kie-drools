@@ -19,14 +19,14 @@ package org.drools.traits.core.factmodel;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.base.factmodel.traits.CoreWrapper;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitFieldTMS;
+import org.drools.base.factmodel.traits.Traitable;
+import org.drools.base.factmodel.traits.TraitableBean;
 
-import static org.drools.core.factmodel.traits.TraitConstants.FIELDTMS_FIELD_NAME;
-import static org.drools.core.factmodel.traits.TraitConstants.TRAITSET_FIELD_NAME;
+import static org.drools.base.factmodel.traits.TraitConstants.FIELDTMS_FIELD_NAME;
+import static org.drools.base.factmodel.traits.TraitConstants.TRAITSET_FIELD_NAME;
 
 @Traitable
 public interface TraitableMap extends TraitableBean<Map, CoreWrapper<Map>>, Serializable, Map<String,Object>, CoreWrapper<Map> {

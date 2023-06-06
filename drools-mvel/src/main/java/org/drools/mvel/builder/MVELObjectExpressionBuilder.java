@@ -20,9 +20,9 @@ import java.util.Map;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.DeclarationScopeResolver;
+import org.drools.base.reteoo.SortDeclarations;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.DeclarationScopeResolver;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.asm.AsmUtil;
@@ -57,7 +57,7 @@ public class MVELObjectExpressionBuilder {
             for ( String id :  usedIdentifiers.getDeclrClasses().keySet() ) {
                 previousDeclarations[i++] = decls.get( id );
             }
-            Arrays.sort(previousDeclarations, RuleTerminalNode.SortDeclarations.instance);
+            Arrays.sort(previousDeclarations, SortDeclarations.instance);
 
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( expression,
                                                                        analysis,

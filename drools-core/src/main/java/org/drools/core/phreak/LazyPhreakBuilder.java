@@ -15,7 +15,17 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.common.EventFactHandle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -25,8 +35,8 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
@@ -47,7 +57,7 @@ import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -70,16 +80,6 @@ import org.drools.core.util.FastIterator;
 import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.JOIN_NODE_BIT;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.NOT_NODE_BIT;
@@ -105,7 +105,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
      * For add tuples are processed after the segments and pmems have been adjusted
      */
     @Override
-    public void addRule(TerminalNode tn, Collection<InternalWorkingMemory> wms, RuleBase kBase) {
+    public void addRule(TerminalNode tn, Collection<InternalWorkingMemory> wms, InternalRuleBase kBase) {
         if (log.isTraceEnabled()) {
             log.trace("Adding Rule {}", tn.getRule().getName());
         }
@@ -165,7 +165,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
      * For remove tuples are processed before the segments and pmems have been adjusted
      */
     @Override
-    public void removeRule( TerminalNode tn, Collection<InternalWorkingMemory> wms, RuleBase kBase) {
+    public void removeRule( TerminalNode tn, Collection<InternalWorkingMemory> wms, InternalRuleBase kBase) {
         if (log.isTraceEnabled()) {
             log.trace("Removing Rule {}", tn.getRule().getName());
         }
@@ -771,7 +771,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         ObjectSource source = bn.getRightInput();
         if (source instanceof WindowNode) {
             WindowNode.WindowMemory memory = wm.getNodeMemory(((WindowNode) source));
-            for (EventFactHandle factHandle : memory.getFactHandles()) {
+            for (DefaultEventHandle factHandle : memory.getFactHandles()) {
                 factHandle.forEachRightTuple( rt -> {
                     if (source.equals(rt.getTupleSink())) {
                         rt.unlinkFromRightParent();
@@ -826,7 +826,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     Tuple        lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                        visitChild(accctx.getResultLeftTuple(), insert, wm, rule);
+                        visitChild( (LeftTuple) accctx.getResultLeftTuple(), insert, wm, rule);
                     }
                 } else if (NodeTypeEnums.ExistsNode == node.getType() &&
                         !((BetaNode)node).isRightInputIsRiaNode()) { // do not process exists with subnetworks
@@ -1017,7 +1017,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
             }
         } else {
             if (lt.getContextObject() instanceof AccumulateContext) {
-                LeftTuple resultLt = (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
+                LeftTuple resultLt = (LeftTuple) (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
                 if (resultLt != null) {
                     iterateLeftTuple( resultLt, wm );
                 }
@@ -1257,7 +1257,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         List<PathMemory> otherPmems = new ArrayList<>();
     }
 
-    private static PathEndNodes getPathEndNodes(RuleBase kBase,
+    private static PathEndNodes getPathEndNodes(InternalRuleBase kBase,
                                                 LeftTupleNode lt,
                                                 TerminalNode tn,
                                                 Rule processedRule,
@@ -1280,7 +1280,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         return endNodes;
     }
 
-    private static void collectPathEndNodes(RuleBase kBase,
+    private static void collectPathEndNodes(InternalRuleBase kBase,
                                             LeftTupleNode lt,
                                             PathEndNodes endNodes,
                                             TerminalNode tn,
@@ -1329,7 +1329,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void invalidateRootNode( RuleBase kBase, LeftTupleNode lt ) {
+    private static void invalidateRootNode(InternalRuleBase kBase, LeftTupleNode lt) {
         while (!isRootNode( lt, null )) {
             lt = lt.getLeftTupleSource();
         }

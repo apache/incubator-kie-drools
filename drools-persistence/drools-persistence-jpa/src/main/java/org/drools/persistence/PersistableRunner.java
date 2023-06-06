@@ -27,7 +27,6 @@ import org.drools.commands.fluent.InternalExecutable;
 import org.drools.commands.fluent.PseudoClockRunner;
 import org.drools.commands.impl.AbstractInterceptor;
 import org.drools.commands.impl.CommandBasedEntryPoint;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;

@@ -16,8 +16,8 @@
 
 package org.drools.kiesession.rulebase;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AbstractEventSupport;
 import org.drools.core.event.knowlegebase.impl.AfterFunctionRemovedEventImpl;
 import org.drools.core.event.knowlegebase.impl.AfterKiePackageAddedEventImpl;

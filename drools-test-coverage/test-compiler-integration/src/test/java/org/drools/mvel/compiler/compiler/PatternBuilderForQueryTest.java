@@ -31,7 +31,6 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
 import org.junit.Test;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 

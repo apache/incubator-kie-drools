@@ -22,12 +22,12 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
-import org.drools.core.base.AccessorKey;
-import org.drools.core.base.AccessorKeySupplier;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.base.AccessorKey;
+import org.drools.base.base.AccessorKeySupplier;
 import org.drools.core.base.FieldNameSupplier;
-import org.drools.core.base.ValueType;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.base.base.ValueType;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
 
 import static org.drools.util.StringUtils.lcFirstForBean;
@@ -86,9 +86,9 @@ public class ClassFieldReader implements Externalizable, ReadAccessor, FieldName
         return this.reader != null;
     }
     
-    public Object getValue(ReteEvaluator reteEvaluator,
+    public Object getValue(final ValueResolver valueResolver,
                            final Object object) {
-        return this.reader.getValue( reteEvaluator,
+        return this.reader.getValue( valueResolver,
                                      object );
     }
 
@@ -130,57 +130,57 @@ public class ClassFieldReader implements Externalizable, ReadAccessor, FieldName
         return true;
     }
 
-    public boolean getBooleanValue(ReteEvaluator reteEvaluator,
+    public boolean getBooleanValue(final ValueResolver valueResolver,
                                    final Object object) {
-        return this.reader.getBooleanValue( reteEvaluator,
+        return this.reader.getBooleanValue( valueResolver,
                                             object );
     }
 
-    public byte getByteValue(ReteEvaluator reteEvaluator,
+    public byte getByteValue(final ValueResolver valueResolver,
                              final Object object) {
-        return this.reader.getByteValue( reteEvaluator,
+        return this.reader.getByteValue( valueResolver,
                                          object );
     }
 
-    public char getCharValue(ReteEvaluator reteEvaluator,
+    public char getCharValue(ValueResolver valueResolver,
                              final Object object) {
-        return this.reader.getCharValue( reteEvaluator,
+        return this.reader.getCharValue( valueResolver,
                                          object );
     }
 
-    public double getDoubleValue(ReteEvaluator reteEvaluator,
+    public double getDoubleValue(ValueResolver valueResolver,
                                  final Object object) {
-        return this.reader.getDoubleValue( reteEvaluator,
+        return this.reader.getDoubleValue( valueResolver,
                                            object );
     }
 
-    public float getFloatValue(ReteEvaluator reteEvaluator,
+    public float getFloatValue(ValueResolver valueResolver,
                                final Object object) {
-        return this.reader.getFloatValue( reteEvaluator,
+        return this.reader.getFloatValue( valueResolver,
                                           object );
     }
 
-    public int getIntValue(ReteEvaluator reteEvaluator,
+    public int getIntValue(ValueResolver valueResolver,
                            final Object object) {
-        return this.reader.getIntValue( reteEvaluator,
+        return this.reader.getIntValue( valueResolver,
                                         object );
     }
 
-    public long getLongValue(ReteEvaluator reteEvaluator,
+    public long getLongValue(ValueResolver valueResolver,
                              final Object object) {
-        return this.reader.getLongValue( reteEvaluator,
+        return this.reader.getLongValue( valueResolver,
                                          object );
     }
 
-    public short getShortValue(ReteEvaluator reteEvaluator,
+    public short getShortValue(ValueResolver valueResolver,
                                final Object object) {
-        return this.reader.getShortValue( reteEvaluator,
+        return this.reader.getShortValue( valueResolver,
                                           object );
     }
 
-    public boolean isNullValue(ReteEvaluator reteEvaluator,
+    public boolean isNullValue(ValueResolver valueResolver,
                                final Object object) {
-        return this.reader.isNullValue( reteEvaluator,
+        return this.reader.isNullValue( valueResolver,
                                         object );
     }
 
@@ -192,9 +192,9 @@ public class ClassFieldReader implements Externalizable, ReadAccessor, FieldName
         return this.reader.getNativeReadMethod().getName();
     }
 
-    public int getHashCode(ReteEvaluator reteEvaluator,
+    public int getHashCode(ValueResolver valueResolver,
                            final Object object) {
-        return this.reader.getHashCode( reteEvaluator,
+        return this.reader.getHashCode( valueResolver,
                                         object );
     }
 

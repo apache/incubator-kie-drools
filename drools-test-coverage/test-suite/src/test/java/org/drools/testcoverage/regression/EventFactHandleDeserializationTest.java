@@ -18,7 +18,7 @@ package org.drools.testcoverage.regression;
 
 import org.assertj.core.api.SoftAssertions;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.DefaultEventHandle;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -49,11 +49,11 @@ public class EventFactHandleDeserializationTest {
         final SoftAssertions softly = new SoftAssertions();
 
         FactHandle key = DefaultFactHandle.createFromExternalFormat(helloHandle.toExternalForm());
-        softly.assertThat(key).isInstanceOf(EventFactHandle.class);
+        softly.assertThat(key).isInstanceOf(DefaultEventHandle.class);
         softly.assertThat(ksession.getObject(key)).isEqualTo("hello");
 
         key = DefaultFactHandle.createFromExternalFormat(goodbyeHandle.toExternalForm());
-        softly.assertThat(key).isInstanceOf(EventFactHandle.class);
+        softly.assertThat(key).isInstanceOf(DefaultEventHandle.class);
         softly.assertThat(ksession.getObject(key)).isEqualTo("goodbye");
 
         softly.assertAll();

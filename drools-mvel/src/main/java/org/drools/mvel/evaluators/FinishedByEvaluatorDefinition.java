@@ -23,19 +23,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.base.ValueType;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.util.TimeIntervalParser;
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.util.TimeIntervalParser;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.mvel.evaluators.VariableRestriction.TemporalVariableContextEntry;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
-import org.drools.core.rule.accessor.Evaluator;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.time.Interval;
+import org.drools.base.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.time.Interval;
+import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * <p>The implementation of the <code>finishedby</code> evaluator definition.</p>
@@ -239,51 +239,51 @@ public class FinishedByEvaluatorDefinition
                                  0 );
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(final ValueResolver valueResolver,
                                 final ReadAccessor extractor,
-                                final InternalFactHandle object1,
+                                final FactHandle object1,
                                 final FieldValue object2) {
             throw new RuntimeException( "The 'finishedby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
-        public boolean evaluateCachedRight(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedRight(final ValueResolver valueResolver,
                                            final VariableContextEntry context,
-                                           final InternalFactHandle left) {
+                                           final FactHandle left) {
             if ( context.rightNull || 
-                    context.declaration.getExtractor().isNullValue( reteEvaluator, left.getObject() )) {
+                 context.declaration.getExtractor().isNullValue( valueResolver, left.getObject() )) {
                 return false;
             }
             
-            long distStart = ((EventFactHandle) left).getStartTimestamp() - ((TemporalVariableContextEntry) context).startTS;
-            long distEnd = Math.abs( ((EventFactHandle) left).getEndTimestamp() - ((TemporalVariableContextEntry) context).endTS );
+            long distStart = ((DefaultEventHandle) left).getStartTimestamp() - ((TemporalVariableContextEntry) context).startTS;
+            long distEnd = Math.abs(((DefaultEventHandle) left).getEndTimestamp() - ((TemporalVariableContextEntry) context).endTS);
             return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
         }
 
-        public boolean evaluateCachedLeft(ReteEvaluator reteEvaluator,
+        public boolean evaluateCachedLeft(ValueResolver valueResolver,
                                           final VariableContextEntry context,
-                                          final InternalFactHandle right) {
+                                          final FactHandle right) {
             if ( context.leftNull ||
-                    context.extractor.isNullValue( reteEvaluator, right.getObject() ) ) {
+                    context.extractor.isNullValue( valueResolver, right.getObject() ) ) {
                 return false;
             }
             
-            long distStart = ((TemporalVariableContextEntry) context).startTS - ((EventFactHandle) right).getStartTimestamp();
-            long distEnd = Math.abs( ((TemporalVariableContextEntry) context).endTS - ((EventFactHandle) right).getEndTimestamp() );
+            long distStart = ((TemporalVariableContextEntry) context).startTS - ((DefaultEventHandle) right).getStartTimestamp();
+            long distEnd = Math.abs( ((TemporalVariableContextEntry) context).endTS - ((DefaultEventHandle) right).getEndTimestamp());
             return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
         }
 
-        public boolean evaluate(ReteEvaluator reteEvaluator,
+        public boolean evaluate(ValueResolver valueResolver,
                                 final ReadAccessor extractor1,
-                                final InternalFactHandle handle1,
+                                final FactHandle handle1,
                                 final ReadAccessor extractor2,
-                                final InternalFactHandle handle2) {
-            if ( extractor1.isNullValue( reteEvaluator, handle1.getObject() ) ||
-                    extractor2.isNullValue( reteEvaluator, handle2.getObject() ) ) {
+                                final FactHandle handle2) {
+            if ( extractor1.isNullValue( valueResolver, handle1.getObject() ) ||
+                    extractor2.isNullValue( valueResolver, handle2.getObject() ) ) {
                 return false;
             }
             
-            long distStart = ((EventFactHandle) handle2).getStartTimestamp() - ((EventFactHandle) handle1).getStartTimestamp();
-            long distEnd = Math.abs( ((EventFactHandle) handle2).getEndTimestamp() - ((EventFactHandle) handle1).getEndTimestamp() );
+            long distStart = ((DefaultEventHandle) handle2).getStartTimestamp() - ((DefaultEventHandle) handle1).getStartTimestamp();
+            long distEnd = Math.abs(((DefaultEventHandle) handle2).getEndTimestamp() - ((DefaultEventHandle) handle1).getEndTimestamp());
             return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
         }
 

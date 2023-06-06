@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.builder.impl.classbuilder.BuildUtils;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.factmodel.FieldDefinition;
 import org.drools.mvel.asm.AsmUtil;
 import org.mvel2.asm.ClassVisitor;
 import org.mvel2.asm.ClassWriter;

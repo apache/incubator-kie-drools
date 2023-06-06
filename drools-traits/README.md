@@ -15,7 +15,7 @@ We have now `org.drools.traits.core.*` and `org.drools.traits.compiler.*` depend
 
 You'll find many classes with only the package changed, such as 
 
-`org.drools.core.factmodel.traits.LogicalTypeInconsistencyException.java` 
+`org.drools.base.factmodel.traits.LogicalTypeInconsistencyException.java` 
 
 became
 
@@ -26,12 +26,12 @@ Notice the double `.traits`, I'm open for suggestions here
 Interfaces
 ===========
 
-Inside the `org.drools.core.factmodel.traits` package, in the `drools-core` module, there are now only interfaces. 
+Inside the `org.drools.base.factmodel.traits` package, in the `drools-core` module, there are now only interfaces. 
 I tried to keep them to the bare minimum but I couldn't remove most of them as the traits-related method (such as `don`, `shed`) are in `DefaultKnowledgeHelper` and they cannot be removed without breaking the API. 
 
 When I moved the classes between modules I tried to keep the source code identical except for changing the package (as described in the Packages section) and to rename the class with the `-Impl` suffix, keeping the interface in the original module, i.e.
 
-`org.drools.core.factmodel.traits.TraitFactory` was transformed into an interface with just one method, and it was created a 
+`org.drools.base.factmodel.traits.TraitFactory` was transformed into an interface with just one method, and it was created a 
 `org.drools.traits.core.factmodel.TraitFactoryImpl` inside the `drools-traits` module.
 https://github.com/kiegroup/drools/pull/2887/files#diff-08cd5643f232535394581edeab619a00
 

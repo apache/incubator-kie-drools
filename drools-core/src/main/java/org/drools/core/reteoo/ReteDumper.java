@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.NetworkNode;
-import org.drools.core.impl.RuleBase;
+import org.drools.base.common.NetworkNode;
+import org.drools.core.impl.InternalRuleBase;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieRuntime;
@@ -88,18 +88,18 @@ public class ReteDumper {
     }
 
     public static void dumpRete(KieBase kbase ) {
-        new ReteDumper().dump((RuleBase) kbase);
+        new ReteDumper().dump((InternalRuleBase) kbase);
     }
 
     public static void dumpRete(KieRuntime session ) {
-        new ReteDumper().dump((RuleBase)session.getKieBase());
+        new ReteDumper().dump((InternalRuleBase)session.getKieBase());
     }
 
     public static void dumpRete(KieSession session) {
-        new ReteDumper().dump((RuleBase)session.getKieBase());
+        new ReteDumper().dump((InternalRuleBase)session.getKieBase());
     }
 
-    public static void dumpRete(RuleBase kBase) {
+    public static void dumpRete(InternalRuleBase kBase) {
         new ReteDumper().dump(kBase.getRete());
     }
 
@@ -108,18 +108,18 @@ public class ReteDumper {
     }
 
     public void dump(KieBase kbase ) {
-        dump((RuleBase) kbase);
+        dump((InternalRuleBase) kbase);
     }
 
     public void dump(KieRuntime session ) {
-        dump((RuleBase)session.getKieBase());
+        dump((InternalRuleBase)session.getKieBase());
     }
 
     public void dump(KieSession session) {
-        dump((RuleBase)session.getKieBase());
+        dump((InternalRuleBase)session.getKieBase());
     }
 
-    public void dump(RuleBase kBase) {
+    public void dump(InternalRuleBase kBase) {
         dump(kBase.getRete());
     }
 
@@ -140,18 +140,18 @@ public class ReteDumper {
     }
 
     public static Set<BaseNode> collectRete(KieBase kbase ) {
-        return new ReteDumper().collect((RuleBase) kbase);
+        return new ReteDumper().collect((InternalRuleBase) kbase);
     }
 
     public static Set<BaseNode> collectRete(KieRuntime session ) {
-        return new ReteDumper().collect((RuleBase)session.getKieBase());
+        return new ReteDumper().collect((InternalRuleBase)session.getKieBase());
     }
 
     public static Set<BaseNode> collectRete(KieSession session) {
-        return new ReteDumper().collect((RuleBase)session.getKieBase());
+        return new ReteDumper().collect((InternalRuleBase)session.getKieBase());
     }
 
-    public static Set<BaseNode> collectRete(RuleBase kBase) {
+    public static Set<BaseNode> collectRete(InternalRuleBase kBase) {
         return new ReteDumper().collect(kBase.getRete());
     }
 
@@ -160,18 +160,18 @@ public class ReteDumper {
     }
 
     public Set<BaseNode> collect(KieBase kbase ) {
-        return collect((RuleBase) kbase);
+        return collect((InternalRuleBase) kbase);
     }
 
     public Set<BaseNode> collect(KieRuntime session ) {
-        return collect((RuleBase)session.getKieBase());
+        return collect((InternalRuleBase)session.getKieBase());
     }
 
     public Set<BaseNode> collect(KieSession session) {
-        return collect((RuleBase)session.getKieBase());
+        return collect((InternalRuleBase)session.getKieBase());
     }
 
-    public Set<BaseNode> collect(RuleBase kBase) {
+    public Set<BaseNode> collect(InternalRuleBase kBase) {
         return collect(kBase.getRete());
     }
 
@@ -272,7 +272,7 @@ public class ReteDumper {
     }
 
     public static void dumpAssociatedRulesRete(KieBase kieBase) {
-        new ReteDumper().dumpAssociatedRules(((RuleBase) kieBase).getRete());
+        new ReteDumper().dumpAssociatedRules(((InternalRuleBase) kieBase).getRete());
     }
 
     /**
@@ -280,7 +280,7 @@ public class ReteDumper {
      * @param kieBase
      */
     public void dumpAssociatedRules(KieBase kieBase) {
-        dumpAssociatedRules(((RuleBase) kieBase).getRete());
+        dumpAssociatedRules(((InternalRuleBase) kieBase).getRete());
     }
 
     public void dumpAssociatedRules(Rete rete) {

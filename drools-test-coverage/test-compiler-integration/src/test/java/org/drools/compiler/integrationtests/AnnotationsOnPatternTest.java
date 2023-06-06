@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.factmodel.AnnotationDefinition;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;

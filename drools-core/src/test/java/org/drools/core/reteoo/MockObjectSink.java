@@ -19,11 +19,13 @@ package org.drools.core.reteoo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.base.reteoo.BaseTerminalNode;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.NetworkNode;
+import org.drools.base.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.RuleBasePartitionId;
+import org.drools.base.common.RuleBasePartitionId;
 import org.kie.api.definition.rule.Rule;
 
 public class MockObjectSink
@@ -152,11 +154,11 @@ public class MockObjectSink
     }
 
     @Override
-    public void addAssociatedTerminal(TerminalNode terminalNode) {
+    public void addAssociatedTerminal(BaseTerminalNode terminalNode) {
     }
 
     @Override
-    public void removeAssociatedTerminal(TerminalNode terminalNode) {
+    public void removeAssociatedTerminal(BaseTerminalNode terminalNode) {
     }
 
     @Override
@@ -165,7 +167,7 @@ public class MockObjectSink
     }
 
     @Override
-    public boolean hasAssociatedTerminal(NetworkNode terminalNode) {
+    public boolean hasAssociatedTerminal(BaseTerminalNode terminalNode) {
         return false;
     }
 

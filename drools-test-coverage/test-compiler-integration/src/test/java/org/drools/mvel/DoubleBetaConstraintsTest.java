@@ -16,8 +16,8 @@ package org.drools.mvel;
 
 import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.DoubleBetaConstraints;
-import org.drools.core.reteoo.NodeTypeEnums;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.junit.Test;
 
 public class DoubleBetaConstraintsTest extends BaseBetaConstraintsTest {

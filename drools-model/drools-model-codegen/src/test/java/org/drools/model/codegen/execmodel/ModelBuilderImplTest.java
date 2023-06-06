@@ -18,7 +18,7 @@ package org.drools.model.codegen.execmodel;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.PackageDescr;

@@ -95,7 +95,7 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
     public KnowledgeBuilder newKnowledgeBuilder(KieBase kbase,
                                                 KnowledgeBuilderConfiguration conf) {
         if ( kbase != null ) {
-            return new KnowledgeBuilderImpl( (InternalKnowledgeBase)kbase, conf );
+            return new KnowledgeBuilderImpl((InternalKnowledgeBase)kbase, conf );
         } else {
             return new KnowledgeBuilderImpl(conf );
         }

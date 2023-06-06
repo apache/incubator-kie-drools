@@ -20,26 +20,28 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
+import org.drools.base.base.ValueResolver;
+import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.base.util.index.IndexUtil;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueType;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.rule.accessor.TupleValueExtractor;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.rule.constraint.Constraint;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.TupleValueExtractor;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.Constraint;
 import org.drools.core.util.AbstractHashTable.DoubleCompositeIndex;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.Index;
+import org.drools.base.util.FieldIndex;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.CompositeConfiguration;
 import org.kie.internal.conf.IndexPrecedenceOption;
 import org.kie.internal.utils.ChainedProperties;
@@ -50,20 +52,20 @@ public class IndexUtilTest {
 
     @Test
     public void isEqualIndexable() {
-        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
+        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
         assertThat(IndexUtil.isEqualIndexable(intEqualsConstraint)).isTrue();
 
-        FakeBetaNodeFieldConstraint intLessThanConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.LESS_THAN, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
+        FakeBetaNodeFieldConstraint intLessThanConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.LESS_THAN, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
         assertThat(IndexUtil.isEqualIndexable(intLessThanConstraint)).isFalse();
 
-        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
+        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
         assertThat(IndexUtil.isEqualIndexable(bigDecimalEqualsConstraint)).as("BigDecimal equality cannot be indexed because of scale").isFalse();
     }
 
     @Test
     public void createBetaMemoryWithIntEquals_shouldBeTupleIndexHashTable() {
         RuleBaseConfiguration config = getRuleBaseConfiguration();
-        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
+        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
         BetaMemory betaMemory = IndexFactory.createBetaMemory(config, NodeTypeEnums.JoinNode, intEqualsConstraint);
         assertThat(betaMemory.getLeftTupleMemory()).isInstanceOf(TupleIndexHashTable.class);
         assertThat(betaMemory.getRightTupleMemory()).isInstanceOf(TupleIndexHashTable.class);
@@ -76,7 +78,7 @@ public class IndexUtilTest {
     @Test
     public void createBetaMemoryWithBigDecimalEquals_shouldNotBeTupleIndexHashTable() {
         RuleBaseConfiguration config = getRuleBaseConfiguration();
-        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
+        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
         BetaMemory betaMemory = IndexFactory.createBetaMemory(config, NodeTypeEnums.JoinNode, bigDecimalEqualsConstraint);
         assertThat(betaMemory.getLeftTupleMemory()).isInstanceOf(TupleList.class);
         assertThat(betaMemory.getRightTupleMemory()).isInstanceOf(TupleList.class);
@@ -85,9 +87,9 @@ public class IndexUtilTest {
     @Test
     public void createBetaMemoryWithBigDecimalEqualsAndOtherIndexableConstraints_shouldBeTupleIndexHashTableButBigDecimalIsNotIndexed() {
         RuleBaseConfiguration config = getRuleBaseConfiguration();
-        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
-        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
-        FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.STRING_TYPE));
+        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
+        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
+        FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.STRING_TYPE));
         BetaMemory betaMemory = IndexFactory.createBetaMemory(config, NodeTypeEnums.JoinNode, intEqualsConstraint, bigDecimalEqualsConstraint, stringEqualsConstraint);
 
         // BigDecimal is not included in Indexes
@@ -111,8 +113,8 @@ public class IndexUtilTest {
     @Test
     public void isIndexableForNodeWithIntAndString() {
         RuleBaseConfiguration config = getRuleBaseConfiguration();
-        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
-        FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.STRING_TYPE));
+        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
+        FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.STRING_TYPE));
         BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{intEqualsConstraint, stringEqualsConstraint};
         boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
         assertThat(indexed).containsExactly(true, true);
@@ -121,9 +123,9 @@ public class IndexUtilTest {
     @Test
     public void isIndexableForNodeWithIntAndBigDecimalAndString() {
         RuleBaseConfiguration config = getRuleBaseConfiguration();
-        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
-        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
-        FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.STRING_TYPE));
+        FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
+        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
+        FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.STRING_TYPE));
         BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{intEqualsConstraint, bigDecimalEqualsConstraint, stringEqualsConstraint};
         boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
         assertThat(indexed).as("BigDecimal is sorted to the last").containsExactly(true, true, false);
@@ -132,7 +134,7 @@ public class IndexUtilTest {
     @Test
     public void isIndexableForNodeWithBigDecimal() {
         RuleBaseConfiguration config = getRuleBaseConfiguration();
-        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
+        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
         BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{bigDecimalEqualsConstraint};
         boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
         assertThat(indexed).as("BigDecimal is not indexed").containsExactly(false);
@@ -141,12 +143,12 @@ public class IndexUtilTest {
     static class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint,
                                                         IndexableConstraint {
 
-        private IndexUtil.ConstraintType constraintType;
+        private ConstraintTypeOperator constraintType;
         private ReadAccessor fieldExtractor;
 
         public FakeBetaNodeFieldConstraint() {}
 
-        public FakeBetaNodeFieldConstraint(IndexUtil.ConstraintType constraintType, ReadAccessor fieldExtractor) {
+        public FakeBetaNodeFieldConstraint(ConstraintTypeOperator constraintType, ReadAccessor fieldExtractor) {
             this.constraintType = constraintType;
             this.fieldExtractor = fieldExtractor;
         }
@@ -162,7 +164,7 @@ public class IndexUtilTest {
         }
 
         @Override
-        public IndexUtil.ConstraintType getConstraintType() {
+        public ConstraintTypeOperator getConstraintType() {
             return constraintType;
         }
 
@@ -187,12 +189,12 @@ public class IndexUtilTest {
         }
 
         @Override
-        public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
+        public boolean isAllowedCachedLeft(ContextEntry context, FactHandle handle) {
             return false;
         }
 
         @Override
-        public boolean isAllowedCachedRight(Tuple tuple, ContextEntry context) {
+        public boolean isAllowedCachedRight(BaseTuple tuple, ContextEntry context) {
             return false;
         }
 
@@ -296,57 +298,57 @@ public class IndexUtilTest {
         }
 
         @Override
-        public Object getValue(ReteEvaluator reteEvaluator, Object object) {
+        public Object getValue(ValueResolver valueResolver, Object object) {
             return null;
         }
 
         @Override
-        public char getCharValue(ReteEvaluator reteEvaluator, Object object) {
+        public char getCharValue(ValueResolver valueResolver, Object object) {
             return 0;
         }
 
         @Override
-        public int getIntValue(ReteEvaluator reteEvaluator, Object object) {
+        public int getIntValue(ValueResolver valueResolver, Object object) {
             return 0;
         }
 
         @Override
-        public byte getByteValue(ReteEvaluator reteEvaluator, Object object) {
+        public byte getByteValue(ValueResolver valueResolver, Object object) {
             return 0;
         }
 
         @Override
-        public short getShortValue(ReteEvaluator reteEvaluator, Object object) {
+        public short getShortValue(ValueResolver valueResolver, Object object) {
             return 0;
         }
 
         @Override
-        public long getLongValue(ReteEvaluator reteEvaluator, Object object) {
+        public long getLongValue(ValueResolver valueResolver, Object object) {
             return 0;
         }
 
         @Override
-        public float getFloatValue(ReteEvaluator reteEvaluator, Object object) {
+        public float getFloatValue(ValueResolver valueResolver, Object object) {
             return 0;
         }
 
         @Override
-        public double getDoubleValue(ReteEvaluator reteEvaluator, Object object) {
+        public double getDoubleValue(ValueResolver valueResolver, Object object) {
             return 0;
         }
 
         @Override
-        public boolean getBooleanValue(ReteEvaluator reteEvaluator, Object object) {
+        public boolean getBooleanValue(ValueResolver valueResolver, Object object) {
             return false;
         }
 
         @Override
-        public boolean isNullValue(ReteEvaluator reteEvaluator, Object object) {
+        public boolean isNullValue(ValueResolver valueResolver, Object object) {
             return false;
         }
 
         @Override
-        public int getHashCode(ReteEvaluator reteEvaluator, Object object) {
+        public int getHashCode(ValueResolver valueResolver, Object object) {
             return 0;
         }
 

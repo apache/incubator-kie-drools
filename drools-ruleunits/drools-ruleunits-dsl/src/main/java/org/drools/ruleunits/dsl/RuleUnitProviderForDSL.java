@@ -18,7 +18,7 @@ package org.drools.ruleunits.dsl;
 import java.util.Map;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.model.Model;
 import org.drools.modelcompiler.KieBaseBuilder;
@@ -58,7 +58,7 @@ public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
     public static class ModelRuleUnit<T extends RuleUnitData> extends AbstractRuleUnit<T> {
 
         private final UnitGlobalsResolver unitGlobalsResolver;
-        private final RuleBase ruleBase;
+        private final InternalRuleBase ruleBase;
 
         public ModelRuleUnit(Class<T> type, Model model, UnitGlobalsResolver unitGlobalsResolver) {
             super(type);
