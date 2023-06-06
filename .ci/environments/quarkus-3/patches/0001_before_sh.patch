@@ -355,6 +355,21 @@ index 99282e0b8..e953db86c 100644
  
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.kie.kogito.event.DataEvent;
+diff --git a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/messaging/KogitoIndexEventConverter.java b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/messaging/KogitoIndexEventConverter.java
+index e75147bab..3603a7e60 100644
+--- a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/messaging/KogitoIndexEventConverter.java
++++ b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/messaging/KogitoIndexEventConverter.java
+@@ -18,8 +18,8 @@ package org.kie.kogito.index.service.messaging;
+ import java.io.IOException;
+ import java.lang.reflect.Type;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.eclipse.microprofile.reactive.messaging.Message;
+ import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 diff --git a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/messaging/ReactiveMessagingEventConsumer.java b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/messaging/ReactiveMessagingEventConsumer.java
 index c86ff6036..e9d5e6476 100644
 --- a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/messaging/ReactiveMessagingEventConsumer.java
@@ -3747,15 +3762,15 @@ index 361aa9932..a9069cf8d 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.event.EventPublisher;
 diff --git a/kogito-apps-build-parent/pom.xml b/kogito-apps-build-parent/pom.xml
-index a9aaa3cfa..ff0bd027f 100644
+index 9365f3bba..40cee9ed4 100644
 --- a/kogito-apps-build-parent/pom.xml
 +++ b/kogito-apps-build-parent/pom.xml
 @@ -45,7 +45,7 @@
          <container.image.integration-tests-trusty-service-quarkus>org.kie.kogito/integration-tests-trusty-service-quarkus:${project.version}</container.image.integration-tests-trusty-service-quarkus>
  
          <!-- OptaPlanner version -->
--        <version.org.optaplanner>8.37.0.Final</version.org.optaplanner>
-+        <version.org.optaplanner>9.37.0.Final</version.org.optaplanner>
+-        <version.org.optaplanner>8.38.0.Final</version.org.optaplanner>
++        <version.org.optaplanner>9.38.0.Final</version.org.optaplanner>
  
          <version.com.vladmihalcea.hibernate-types-55>2.12.1</version.com.vladmihalcea.hibernate-types-55>
          <version.org.apache.opennlp>1.9.2</version.org.apache.opennlp>
@@ -3851,63 +3866,6 @@ index ffa89a80a..5d7c7a71f 100644
  
  import org.apache.commons.io.FileUtils;
  import org.apache.commons.io.IOUtils;
-diff --git a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/dataindex/DataIndexClient.java b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/dataindex/DataIndexClient.java
-index 25e3800ee..c10aa82a4 100644
---- a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/dataindex/DataIndexClient.java
-+++ b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/dataindex/DataIndexClient.java
-@@ -16,11 +16,11 @@
- 
- package org.kie.kogito.swf.tools.dataindex;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.ws.rs.Consumes;
--import javax.ws.rs.POST;
--import javax.ws.rs.Path;
--import javax.ws.rs.core.MediaType;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.ws.rs.Consumes;
-+import jakarta.ws.rs.POST;
-+import jakarta.ws.rs.Path;
-+import jakarta.ws.rs.core.MediaType;
- 
- import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
- 
-diff --git a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/dataindex/DataIndexService.java b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/dataindex/DataIndexService.java
-index 1f70a5300..bb2ebb113 100644
---- a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/dataindex/DataIndexService.java
-+++ b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/dataindex/DataIndexService.java
-@@ -16,12 +16,12 @@
- 
- package org.kie.kogito.swf.tools.dataindex;
- 
--import javax.inject.Inject;
--import javax.ws.rs.GET;
--import javax.ws.rs.Path;
--import javax.ws.rs.Produces;
--import javax.ws.rs.core.MediaType;
--import javax.ws.rs.core.Response;
-+import jakarta.inject.Inject;
-+import jakarta.ws.rs.GET;
-+import jakarta.ws.rs.Path;
-+import jakarta.ws.rs.Produces;
-+import jakarta.ws.rs.core.MediaType;
-+import jakarta.ws.rs.core.Response;
- 
- import org.eclipse.microprofile.rest.client.inject.RestClient;
- import org.kie.kogito.swf.tools.dataindex.jobs.JobsResponse;
-diff --git a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/test/java/org/kie/kogito/swf/tools/dataindex/DataIndexServiceTest.java b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/test/java/org/kie/kogito/swf/tools/dataindex/DataIndexServiceTest.java
-index aad9f9c51..c721d27ca 100644
---- a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/test/java/org/kie/kogito/swf/tools/dataindex/DataIndexServiceTest.java
-+++ b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/test/java/org/kie/kogito/swf/tools/dataindex/DataIndexServiceTest.java
-@@ -16,7 +16,7 @@
- 
- package org.kie.kogito.swf.tools.dataindex;
- 
--import javax.ws.rs.core.Response;
-+import jakarta.ws.rs.core.Response;
- 
- import org.junit.jupiter.api.BeforeEach;
- import org.junit.jupiter.api.Test;
 diff --git a/management-console/src/main/java/org/kie/kogito/mgmt/VertxRouter.java b/management-console/src/main/java/org/kie/kogito/mgmt/VertxRouter.java
 index 8f87e4e56..33808440a 100644
 --- a/management-console/src/main/java/org/kie/kogito/mgmt/VertxRouter.java
@@ -4904,50 +4862,6 @@ index bd503cd4b..514d67fd6 100644
          <version>${version.io.quarkus}</version>
          <executions>
            <execution>
-diff --git a/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexClient.java b/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexClient.java
-index 2475aedbf..abb6b766e 100644
---- a/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexClient.java
-+++ b/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexClient.java
-@@ -16,11 +16,11 @@
- 
- package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.ws.rs.Consumes;
--import javax.ws.rs.POST;
--import javax.ws.rs.Path;
--import javax.ws.rs.core.MediaType;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.ws.rs.Consumes;
-+import jakarta.ws.rs.POST;
-+import jakarta.ws.rs.Path;
-+import jakarta.ws.rs.core.MediaType;
- 
- import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
- 
-diff --git a/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexService.java b/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexService.java
-index 09a48f8d2..a6a7fe05b 100644
---- a/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexService.java
-+++ b/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexService.java
-@@ -16,12 +16,12 @@
- 
- package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex;
- 
--import javax.inject.Inject;
--import javax.ws.rs.GET;
--import javax.ws.rs.Path;
--import javax.ws.rs.Produces;
--import javax.ws.rs.core.MediaType;
--import javax.ws.rs.core.Response;
-+import jakarta.inject.Inject;
-+import jakarta.ws.rs.GET;
-+import jakarta.ws.rs.Path;
-+import jakarta.ws.rs.Produces;
-+import jakarta.ws.rs.core.MediaType;
-+import jakarta.ws.rs.core.Response;
- 
- import org.eclipse.microprofile.rest.client.inject.RestClient;
- import org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.jobs.JobsResponse;
 diff --git a/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/forms/FormsService.java b/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/forms/FormsService.java
 index 9d6b1f1b1..4677b67e1 100644
 --- a/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/forms/FormsService.java
@@ -5032,19 +4946,6 @@ index 11812e67f..442b2dc84 100644
  
  import org.apache.commons.io.FileUtils;
  import org.apache.commons.io.FilenameUtils;
-diff --git a/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/test/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexServiceTest.java b/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/test/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexServiceTest.java
-index a353eb992..abc003a1a 100644
---- a/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/test/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexServiceTest.java
-+++ b/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension/src/test/java/org/kie/kogito/runtime/tools/quarkus/extension/runtime/dataindex/DataIndexServiceTest.java
-@@ -16,7 +16,7 @@
- 
- package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex;
- 
--import javax.ws.rs.core.Response;
-+import jakarta.ws.rs.core.Response;
- 
- import org.junit.jupiter.api.BeforeEach;
- import org.junit.jupiter.api.Test;
 diff --git a/security-commons/src/main/java/org/kie/kogito/security/UserResource.java b/security-commons/src/main/java/org/kie/kogito/security/UserResource.java
 index e9cfce2af..8c1be8fdc 100644
 --- a/security-commons/src/main/java/org/kie/kogito/security/UserResource.java
