@@ -37,7 +37,6 @@ import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.base.time.Interval;
 import org.drools.base.util.FieldIndex;
 import org.drools.base.util.index.ConstraintTypeOperator;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
@@ -176,7 +175,7 @@ public class LambdaConstraint extends AbstractConstraint {
     @Override
     public boolean isAllowed(FactHandle handle, ValueResolver valueResolver) {
         try {
-            return evaluator.evaluate((InternalFactHandle) handle, valueResolver);
+            return evaluator.evaluate(handle, valueResolver);
         } catch (RuntimeException e) {
             throw new ConstraintEvaluationException(predicateInformation, e);
         }
@@ -186,7 +185,7 @@ public class LambdaConstraint extends AbstractConstraint {
     public boolean isAllowedCachedLeft(ContextEntry context, FactHandle handle) {
         LambdaContextEntry lambdaContext = ((LambdaContextEntry) context);
         try {
-            return evaluator.evaluate((InternalFactHandle) handle, lambdaContext.getTuple(), lambdaContext.getReteEvaluator());
+            return evaluator.evaluate(handle, lambdaContext.getTuple(), lambdaContext.getReteEvaluator());
         } catch (RuntimeException e) {
             throw new ConstraintEvaluationException(predicateInformation, e);
         }
@@ -278,7 +277,7 @@ public class LambdaConstraint extends AbstractConstraint {
     public static class LambdaContextEntry implements ContextEntry {
 
         private BaseTuple tuple;
-        private InternalFactHandle handle;
+        private FactHandle handle;
 
         private transient ValueResolver valueResolver;
 
@@ -289,7 +288,7 @@ public class LambdaConstraint extends AbstractConstraint {
 
         public void updateFromFactHandle(ValueResolver valueResolver, FactHandle handle) {
             this.valueResolver = valueResolver;
-            this.handle = (InternalFactHandle) handle;
+            this.handle = handle;
         }
 
         public void resetTuple() {
@@ -308,14 +307,14 @@ public class LambdaConstraint extends AbstractConstraint {
 
         public void readExternal(ObjectInput in ) throws IOException, ClassNotFoundException {
             tuple = (BaseTuple) in.readObject();
-            handle = (InternalFactHandle) in.readObject();
+            handle = (FactHandle) in.readObject();
         }
 
         public BaseTuple getTuple() {
             return tuple;
         }
 
-        public InternalFactHandle getHandle() {
+        public FactHandle getHandle() {
             return handle;
         }
 
