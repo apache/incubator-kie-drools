@@ -23,8 +23,8 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.base.ValueType;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
 
 public class FactTemplateFieldExtractor
@@ -174,13 +174,21 @@ public class FactTemplateFieldExtractor
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         FactTemplateFieldExtractor other = (FactTemplateFieldExtractor) obj;
         
         if ( factTemplate == null ) {
-            if ( other.factTemplate != null ) return false;
+            if ( other.factTemplate != null ) {
+                return false;
+            }
         } else if ( !factTemplate.equals( other.factTemplate ) ) {
             return false;
         }

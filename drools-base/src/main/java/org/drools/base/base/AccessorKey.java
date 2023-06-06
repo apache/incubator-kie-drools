@@ -84,22 +84,40 @@ public class AccessorKey implements Externalizable {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         AccessorKey other = (AccessorKey) obj;
         
         if ( className == null ) {
-            if ( other.className != null ) return false;
-        } else if ( !className.equals( other.className ) ) return false;
+            if ( other.className != null ) {
+                return false;
+            }
+        } else if ( !className.equals( other.className ) ) {
+            return false;
+        }
         
         if ( fieldName == null ) {
-            if ( other.fieldName != null ) return false;
-        } else if ( !fieldName.equals( other.fieldName ) ) return false;
+            if ( other.fieldName != null ) {
+                return false;
+            }
+        } else if ( !fieldName.equals( other.fieldName ) ) {
+            return false;
+        }
 
         if ( type == null ) {
-            if ( other.type != null ) return false;
-        } else if ( !type.equals( other.type ) ) return false;
+            if ( other.type != null ) {
+                return false;
+            }
+        } else if ( !type.equals( other.type ) ) {
+            return false;
+        }
         return true;
     }
 

@@ -15,7 +15,6 @@
  */
 package org.drools.base;
 
-
 import org.drools.base.rule.TypeDeclaration;
 import org.kie.api.KieBaseConfiguration;
 

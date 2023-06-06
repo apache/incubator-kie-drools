@@ -16,12 +16,12 @@
 
 package org.drools.base.definitions.rule.impl;
 
-import org.kie.api.definition.rule.Global;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.kie.api.definition.rule.Global;
 
 public class GlobalImpl implements Global, Externalizable {
     
@@ -62,13 +62,21 @@ public class GlobalImpl implements Global, Externalizable {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         GlobalImpl global = (GlobalImpl) o;
 
-        if (name != null ? !name.equals(global.name) : global.name != null) return false;
-        if (type != null ? !type.equals(global.type) : global.type != null) return false;
+        if (name != null ? !name.equals(global.name) : global.name != null) {
+            return false;
+        }
+        if (type != null ? !type.equals(global.type) : global.type != null) {
+            return false;
+        }
 
         return true;
     }

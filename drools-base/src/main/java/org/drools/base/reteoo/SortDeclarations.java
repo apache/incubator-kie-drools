@@ -15,9 +15,9 @@
  */
 package org.drools.base.reteoo;
 
-import org.drools.base.rule.Declaration;
-
 import java.util.Comparator;
+
+import org.drools.base.rule.Declaration;
 
 public class SortDeclarations
         implements

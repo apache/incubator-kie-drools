@@ -31,25 +31,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.base.EnabledBoolean;
+import org.drools.base.base.SalienceInteger;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ConsequenceMetaData;
+import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Dialectable;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.GroupElementFactory;
 import org.drools.base.rule.InvalidPatternException;
 import org.drools.base.rule.InvalidRuleException;
 import org.drools.base.rule.LogicTransformer;
+import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.rule.accessor.CompiledInvoker;
 import org.drools.base.rule.accessor.Enabled;
 import org.drools.base.rule.accessor.Salience;
 import org.drools.base.rule.accessor.Wireable;
 import org.drools.base.rule.consequence.Consequence;
 import org.drools.base.time.impl.Timer;
-import org.drools.base.base.EnabledBoolean;
-import org.drools.base.base.SalienceInteger;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.GroupElement;
-import org.drools.base.rule.GroupElementFactory;
-import org.drools.base.rule.RuleConditionElement;
 import org.drools.util.StringUtils;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.io.Resource;
@@ -353,16 +353,16 @@ public class RuleImpl implements Externalizable,
      * @return The salience value.
      */
     public int getSalienceValue() {
-    	return getSalience().getValue();
+        return getSalience().getValue();
     }
 
     /**
-	 * Returns <code>true</code> if the rule uses dynamic salience, <code>false</code> otherwise.
-	 *
-	 * @return <code>true</code> if the rule uses dynamic salience, else <code>false</code>.
-	 */
+     * Returns <code>true</code> if the rule uses dynamic salience, <code>false</code> otherwise.
+     *
+     * @return <code>true</code> if the rule uses dynamic salience, else <code>false</code>.
+     */
     public boolean isSalienceDynamic() {
-    	return getSalience().isDynamic();
+        return getSalience().isDynamic();
     }
 
     /**
@@ -696,15 +696,25 @@ public class RuleImpl implements Externalizable,
     }
 
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null || getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null || getClass() != obj.getClass() ) {
+            return false;
+        }
         final RuleImpl other = (RuleImpl) obj;
         if ( name == null ) {
-            if ( other.name != null ) return false;
-        } else if ( !name.equals( other.name ) ) return false;
+            if ( other.name != null ) {
+                return false;
+            }
+        } else if ( !name.equals( other.name ) ) {
+            return false;
+        }
         if ( pkg == null ) {
             return other.pkg == null;
-        } else return pkg.equals(other.pkg);
+        } else{
+            return pkg.equals(other.pkg);
+        }
     }
 
     public void setSemanticallyValid(final boolean valid) {

@@ -37,6 +37,7 @@ import org.kie.internal.ruleunit.RuleUnitDescription;
 import static org.drools.util.ClassUtils.rawType;
 import static org.kie.internal.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
+
 /**
  * A class capable of resolving a declaration in the current build context
  */

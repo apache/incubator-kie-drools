@@ -15,9 +15,9 @@
 
 package org.drools.base.rule;
 
-import org.kie.api.definition.type.Role;
-
 import java.io.Serializable;
+
+import org.kie.api.definition.type.Role;
 
 public class TypeMetaInfo implements Serializable{
     private TypeDeclaration.Kind kind;

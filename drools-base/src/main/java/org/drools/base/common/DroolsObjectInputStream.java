@@ -27,11 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.RuleBase;
 import org.drools.base.base.AccessorKey;
 import org.drools.base.base.ReadAccessorSupplier;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
-import org.drools.base.RuleBase;
 
 public class DroolsObjectInputStream extends ObjectInputStream
     implements

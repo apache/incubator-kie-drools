@@ -15,15 +15,15 @@
  */
 package org.drools.base.util;
 
-import org.drools.base.reteoo.BaseTuple;
-import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.rule.accessor.TupleValueExtractor;
-import org.drools.base.rule.Declaration;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.TupleValueExtractor;
 
 public class FieldIndex implements Externalizable {
 

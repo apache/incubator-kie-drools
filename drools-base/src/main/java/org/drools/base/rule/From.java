@@ -24,10 +24,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.rule.accessor.DataProvider;
-import org.drools.base.rule.accessor.Wireable;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.facttemplates.Fact;
+import org.drools.base.rule.accessor.DataProvider;
+import org.drools.base.rule.accessor.Wireable;
 
 public class From extends ConditionalElement
         implements

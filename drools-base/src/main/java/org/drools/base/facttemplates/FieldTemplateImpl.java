@@ -42,8 +42,9 @@ public class FieldTemplateImpl implements FieldTemplate, Externalizable {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         name    = (String)in.readObject();
         valueType   = (ValueType)in.readObject();
-        if (valueType != null)
+        if (valueType != null) {
             valueType   = ValueType.determineValueType(valueType.getClassType());
+        }
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

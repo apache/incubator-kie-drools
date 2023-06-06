@@ -125,13 +125,23 @@ public class EntryPointId extends ConditionalElement
      */
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         final EntryPointId other = (EntryPointId) obj;
         if ( entryPointId == null ) {
-            if ( other.entryPointId != null ) return false;
-        } else if ( !entryPointId.equals( other.entryPointId ) ) return false;
+            if ( other.entryPointId != null ) {
+                return false;
+            }
+        } else if ( !entryPointId.equals( other.entryPointId ) ) {
+            return false;
+        }
         return true;
     }
 

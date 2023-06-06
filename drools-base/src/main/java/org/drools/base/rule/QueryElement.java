@@ -163,22 +163,44 @@ public class QueryElement extends ConditionalElement
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         QueryElement other = (QueryElement) obj;
         if ( !Arrays.equals( arguments,
-                             other.arguments ) ) return false;
-        if ( openQuery != other.openQuery ) return false;
-        if ( abductive != other.abductive ) return false;
+                             other.arguments ) ) {
+            return false;
+        }
+        if ( openQuery != other.openQuery ) {
+            return false;
+        }
+        if ( abductive != other.abductive ) {
+            return false;
+        }
         if ( queryName == null ) {
-            if ( other.queryName != null ) return false;
-        } else if ( !queryName.equals( other.queryName ) ) return false;
+            if ( other.queryName != null ) {
+                return false;
+            }
+        } else if ( !queryName.equals( other.queryName ) ) {
+            return false;
+        }
         if ( !Arrays.equals( requiredDeclarations,
-                             other.requiredDeclarations ) ) return false;
+                             other.requiredDeclarations ) ) {
+            return false;
+        }
         if ( resultPattern == null ) {
-            if ( other.resultPattern != null ) return false;
-        } else if ( !resultPattern.equals( other.resultPattern ) ) return false;
+            if ( other.resultPattern != null ) {
+                return false;
+            }
+        } else if ( !resultPattern.equals( other.resultPattern ) ) {
+            return false;
+        }
         return true;
     }
 }

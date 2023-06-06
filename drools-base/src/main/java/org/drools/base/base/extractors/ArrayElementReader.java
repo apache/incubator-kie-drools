@@ -22,11 +22,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
+import org.drools.base.base.ClassWireable;
 import org.drools.base.base.ValueResolver;
+import org.drools.base.base.ValueType;
 import org.drools.base.rule.accessor.AcceptsReadAccessor;
 import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.base.ValueType;
-import org.drools.base.base.ClassWireable;
 import org.drools.util.ClassUtils;
 import org.drools.util.StringUtils;
 
@@ -190,14 +190,26 @@ public class ArrayElementReader
     }
 
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         final ArrayElementReader other = (ArrayElementReader) obj;
         if ( arrayReadAccessor == null ) {
-            if ( other.arrayReadAccessor != null ) return false;
-        } else if ( !arrayReadAccessor.equals( other.arrayReadAccessor ) ) return false;
-        if ( index != other.index ) return false;
+            if ( other.arrayReadAccessor != null ) {
+                return false;
+            }
+        } else if ( !arrayReadAccessor.equals( other.arrayReadAccessor ) ) {
+            return false;
+        }
+        if ( index != other.index ) {
+            return false;
+        }
         return true;
     }
 

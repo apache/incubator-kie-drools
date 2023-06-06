@@ -16,9 +16,9 @@
 
 package org.drools.base.common;
 
-import org.drools.base.RuleBase;
-
 import java.io.ObjectInput;
+
+import org.drools.base.RuleBase;
 
 public interface DroolsObjectInput extends ObjectInput {
     ClassLoader getParentClassLoader();

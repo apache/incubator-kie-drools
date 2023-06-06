@@ -15,6 +15,9 @@
  */
 package org.drools.base.rule.consequence;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.drools.base.beliefsystem.Mode;
 import org.drools.base.factmodel.traits.Thing;
 import org.drools.base.factmodel.traits.TraitableBean;
@@ -27,9 +30,6 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.RuleContext;
-
-import java.util.Collection;
-import java.util.Map;
 
 public interface ConsequenceContext extends RuleContext {
 

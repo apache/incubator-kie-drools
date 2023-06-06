@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.base.rule.accessor.PatternExtractor;
 import org.drools.base.base.ClassObjectType;
+import org.drools.base.rule.accessor.PatternExtractor;
 
 public class XpathBackReference {
     public static final String BACK_REFERENCE_HEAD = "$back$ref$";

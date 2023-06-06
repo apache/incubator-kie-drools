@@ -15,9 +15,9 @@
 
 package org.drools.base.phreak;
 
-import org.drools.base.reteoo.BaseTuple;
-
 import java.util.Collection;
+
+import org.drools.base.reteoo.BaseTuple;
 
 public interface ReactiveObject {
     void addTuple(BaseTuple tuple);

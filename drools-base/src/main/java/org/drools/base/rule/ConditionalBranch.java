@@ -109,9 +109,15 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
      */
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         final ConditionalBranch other = (ConditionalBranch) obj;
         return condition.equals( other.condition ) && consequence.equals( other.consequence );
     }

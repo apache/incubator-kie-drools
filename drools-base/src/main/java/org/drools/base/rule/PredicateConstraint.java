@@ -26,12 +26,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.base.base.ValueResolver;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.accessor.CompiledInvoker;
 import org.drools.base.rule.accessor.Evaluator;
 import org.drools.base.rule.accessor.PredicateExpression;
-import org.drools.base.rule.accessor.Wireable;
-import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.Wireable;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**

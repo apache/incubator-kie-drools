@@ -183,13 +183,25 @@ public class SingleAccumulate extends Accumulate {
     }
 
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         SingleAccumulate other = (SingleAccumulate) obj;
-        if ( !accumulator.equals( other.accumulator ) ) return false;
-        if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) return false;
-        if ( !Arrays.equals( innerDeclarationCache, other.innerDeclarationCache ) ) return false;
+        if ( !accumulator.equals( other.accumulator ) ) {
+            return false;
+        }
+        if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) {
+            return false;
+        }
+        if ( !Arrays.equals( innerDeclarationCache, other.innerDeclarationCache ) ) {
+            return false;
+        }
         if ( source == null ) {
             return other.source == null;
         } else {

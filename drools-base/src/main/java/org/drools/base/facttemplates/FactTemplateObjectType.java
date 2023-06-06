@@ -21,8 +21,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 
-import org.drools.base.base.ValueType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueType;
 
 public class FactTemplateObjectType
     implements

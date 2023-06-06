@@ -16,7 +16,6 @@
 
 package org.drools.base.factmodel.traits;
 
-
 import java.util.BitSet;
 
 public interface TraitType {

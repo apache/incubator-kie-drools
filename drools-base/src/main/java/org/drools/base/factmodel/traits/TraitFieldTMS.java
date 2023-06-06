@@ -15,9 +15,9 @@
 
 package org.drools.base.factmodel.traits;
 
-import org.drools.core.util.bitmask.BitMask;
-
 import java.io.Externalizable;
+
+import org.drools.core.util.bitmask.BitMask;
 
 public interface TraitFieldTMS extends Externalizable {
 

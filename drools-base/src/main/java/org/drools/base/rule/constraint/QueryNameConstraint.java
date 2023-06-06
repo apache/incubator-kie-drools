@@ -22,14 +22,14 @@ import java.io.ObjectOutput;
 
 import org.drools.base.base.DroolsQuery;
 import org.drools.base.base.ValueResolver;
-import org.drools.base.rule.accessor.FieldValue;
-import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.base.base.field.ObjectFieldImpl;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.accessor.AcceptsReadAccessor;
+import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.util.FieldIndex;
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 
