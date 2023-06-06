@@ -5,7 +5,7 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.Storage;
-import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.SegmentMemory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -18,7 +18,7 @@ public class ReliableNodeMemories extends ConcurrentNodeMemories {
     private final Map<Integer,SegmentMemory> changedSegments = new HashMap<>();
     private final Storage<Integer, Object> storage;
 
-    public ReliableNodeMemories(RuleBase ruleBase, Storage<Integer, Object> storage) {
+    public ReliableNodeMemories(InternalRuleBase ruleBase, Storage<Integer, Object> storage) {
         super(ruleBase);
         this.storage = storage;
     }
