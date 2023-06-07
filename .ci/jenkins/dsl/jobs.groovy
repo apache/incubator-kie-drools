@@ -87,13 +87,19 @@ KogitoJobUtils.createAllEnvironmentsPerRepoPRJobs(this) { jobFolder -> getMultij
 createSetupBranchJob()
 
 // Nightly jobs
-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
-setupSpecificBuildChainNightlyJob('sonarcloud')
-setupSpecificBuildChainNightlyJob('native')
-setupNightlyQuarkusIntegrationJob('quarkus-main')
-setupNightlyQuarkusIntegrationJob('quarkus-branch')
-setupNightlyQuarkusIntegrationJob('quarkus-lts')
-setupNightlyQuarkusIntegrationJob('native-lts')
+Closure addNodeOptionsEnvJobParamsGetter = { script ->
+    def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
+    jobParams.env.put('NODE_OPTIONS', '--max_old_space_size=4096')
+    return jobParams
+}
+
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, addNodeOptionsEnvJobParamsGetter)
+setupSpecificBuildChainNightlyJob('sonarcloud', addNodeOptionsEnvJobParamsGetter)
+setupSpecificBuildChainNightlyJob('native', addNodeOptionsEnvJobParamsGetter)
+setupNightlyQuarkusIntegrationJob('quarkus-main', addNodeOptionsEnvJobParamsGetter)
+setupNightlyQuarkusIntegrationJob('quarkus-branch', addNodeOptionsEnvJobParamsGetter)
+setupNightlyQuarkusIntegrationJob('quarkus-lts', addNodeOptionsEnvJobParamsGetter)
+setupNightlyQuarkusIntegrationJob('native-lts', addNodeOptionsEnvJobParamsGetter)
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
@@ -123,8 +129,8 @@ void setupNightlyQuarkusIntegrationJob(String envName, Closure defaultJobParamsG
     KogitoJobUtils.createNightlyBuildChainIntegrationJob(this, envName, Utils.getRepoName(this), true, defaultJobParamsGetter)
 }
 
-void setupSpecificBuildChainNightlyJob(String envName) {
-    KogitoJobUtils.createNightlyBuildChainBuildAndTestJobForCurrentRepo(this, envName, true)
+void setupSpecificBuildChainNightlyJob(String envName, Closure defaultJobParamsGetter = JobParamsUtils.DEFAULT_PARAMS_GETTER) {
+    KogitoJobUtils.createNightlyBuildChainBuildAndTestJobForCurrentRepo(this, envName, true, defaultJobParamsGetter)
 }
 
 void setupOptaplannerJob(String optaplannerBranch) {

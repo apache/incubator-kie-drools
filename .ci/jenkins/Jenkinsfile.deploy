@@ -32,6 +32,7 @@ pipeline {
 
         // Keep here for visitibility
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
+        NODE_OPTIONS = '--max_old_space_size=4096'
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
         MAVEN_DEPLOY_LOCAL_DIR = "${WORKSPACE}/maven_deploy_dir"

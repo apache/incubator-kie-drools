@@ -23,6 +23,7 @@ pipeline {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
         SONARCLOUD_TOKEN = credentials('SONARCLOUD_TOKEN')
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
+        NODE_OPTIONS = '--max_old_space_size=4096'
     }
 
     stages {
