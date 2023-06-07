@@ -28,6 +28,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 id: 'kogito-apps',
                 primary: true,
                 env : [
+                    NODE_OPTIONS: '--max_old_space_size=4096',
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
                     ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
