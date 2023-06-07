@@ -142,10 +142,9 @@ public class KieModuleBuilderTest extends AbstractKieCiTest {
         ReleaseId releaseIdNoDep = ks.newReleaseId( "org.kie", "test-no-dep", "1.0-SNAPSHOT" );
         ReleaseId releaseIdWithDep = ks.newReleaseId( "org.kie", "test-with-dep", "1.0-SNAPSHOT" );
 
-        ReleaseId ejbReleaseId = ks.newReleaseId( "org.jboss.as", "jboss-as-ejb-client-bom", "7.1.1.Final" );
-        ReleaseId jmsReleaseId = ks.newReleaseId( "org.jboss.as", "jboss-as-jms-client-bom", "7.1.1.Final" );
+        ReleaseId bomTypeDependency = ks.newReleaseId( "org.kie.ci.test", "kie-ci-test-bom", "1.2.3.Final" );
 
-        String pom = getPomWithPomDependencies(releaseIdNoDep, ejbReleaseId, jmsReleaseId);
+        String pom = getPomWithPomDependencies(releaseIdNoDep, bomTypeDependency);
         File pomFile = fileManager.newFile("pom.xml");
         fileManager.write(pomFile, pom);
 
