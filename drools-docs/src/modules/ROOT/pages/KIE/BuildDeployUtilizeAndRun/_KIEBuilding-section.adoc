@@ -347,6 +347,43 @@ For example:
 ----
 ====
 
+[[_buildingwithmavenandrunningdroolsinauberjarorfatjar]]
+== Building with Maven and running Drools in a uber-jar or fat jar
+
+When building and running Drools in a _uber-jar_ (also known as a _fat JAR_ or _JAR with dependencies_), for example created by the Maven Shade Plugin, you will need to maintain conflicting resources from all dependencies.
+For instance when depending on `org.drools:drools-ecj` in your build, the `org.eclipse.jdt:ecj` dependency is transitively added, and you might want to remove signature files from the _ECJ artifact_ which would not match in the final artifact.
+In this case the Maven Shade Plugin could be configured as it follows:
+// example from https://docs.oracle.com/en-us/iaas/data-flow/data-flow-tutorial/develop-apps-locally/create-fat-jars.htm -->
+[source]
+----
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-shade-plugin</artifactId>
+  <version>3.1.0</version>
+  <executions>
+    <execution>
+      <phase>package</phase>
+      <goals>
+          <goal>shade</goal>
+      </goals>
+      <configuration>
+        <filters>
+          <filter>
+          <artifact>*:*</artifact>
+          <excludes>
+            <exclude>META-INF/*.SF</exclude>
+            <exclude>META-INF/*.DSA</exclude>
+            <exclude>META-INF/*.RSA</exclude>
+          </excludes>
+          </filter>
+        </filters>
+        <!-- ... additional configuration ... -->
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+----
+
 [[_definingakiemoduleprogrammatically]]
 == Defining a KieModule programmatically
 
