@@ -2,17 +2,33 @@
 
 exports[`ProcessListContainer tests Snapshot 1`] = `
 <DevUIAppContextProvider
+  availablePages={Array []}
   customLabels={
     Object {
-      "pluralProcessLabel": "Workflows",
-      "singularProcessLabel": "Workflow",
+      "pluralProcessLabel": "test-plural",
+      "singularProcessLabel": "test-singular",
     }
   }
-  devUIUrl="http://devUIUrl"
-  isProcessEnabled={true}
-  isTracingEnabled={true}
-  openApiPath="http://openApiPath"
-  users={Array []}
+  devUIUrl="http://localhost:9000"
+  diagramPreviewSize={
+    Object {
+      "height": 100,
+      "width": 100,
+    }
+  }
+  isProcessEnabled={false}
+  isStunnerEnabled={false}
+  isTracingEnabled={false}
+  omittedProcessTimelineEvents={Array []}
+  openApiPath="/mocked"
+  users={
+    Array [
+      DefaultUser {
+        "groups": Array [],
+        "id": "jon",
+      },
+    ]
+  }
 >
   <ProcessListContainer
     initialState={Object {}}
@@ -41,11 +57,7 @@ exports[`ProcessListContainer tests Snapshot 1`] = `
               "onOpen": [Function],
             },
           ],
-          "onOpenTriggerCloudEventListeners": Array [
-            Object {
-              "onOpen": [Function],
-            },
-          ],
+          "onOpenTriggerCloudEventListeners": Array [],
           "openProcess": [Function],
           "queries": Object {
             "getChildProcessInstances": [MockFunction],
@@ -58,11 +70,11 @@ exports[`ProcessListContainer tests Snapshot 1`] = `
         }
       }
       initialState={Object {}}
-      isTriggerCloudEventEnabled={true}
-      isWorkflow={true}
-      pluralProcessLabel="Workflows"
-      singularProcessLabel="Workflow"
-      targetOrigin="*"
+      isTriggerCloudEventEnabled={false}
+      isWorkflow={false}
+      pluralProcessLabel="test-plural"
+      singularProcessLabel="test-singular"
+      targetOrigin="http://localhost:9000"
     >
       <ForwardRef>
         <div />

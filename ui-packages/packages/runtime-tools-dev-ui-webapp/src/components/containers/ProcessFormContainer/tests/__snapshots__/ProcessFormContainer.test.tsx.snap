@@ -26,7 +26,7 @@ exports[`ProcessFormContainer tests Snapshot 1`] = `
         "processName": "process1",
       }
     }
-    targetOrigin="*"
+    targetOrigin="http://localhost:9000"
   >
     <ForwardRef>
       <div />

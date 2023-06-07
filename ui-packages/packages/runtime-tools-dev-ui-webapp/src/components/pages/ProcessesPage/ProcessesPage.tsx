@@ -119,11 +119,7 @@ const ProcessesPage: React.FC<
               )}
             >
               <Card className="Dev-ui__card-size">
-                <ProcessDefinitionListContainer
-                  singularProcessLabel={
-                    apiContext.customLabels.singularProcessLabel
-                  }
-                />
+                <ProcessDefinitionListContainer />
               </Card>
             </PageSection>
           </Tab>

@@ -19,38 +19,49 @@ import { mount } from 'enzyme';
 import ProcessDefinitionListContainer from '../ProcessDefinitionListContainer';
 import * as ProcessDefinitionListContext from '../../../../channel/ProcessDefinitionList/ProcessDefinitionListContext';
 import { ProcessDefinitionListGatewayApiImpl } from '../../../../channel/ProcessDefinitionList/ProcessDefinitionListGatewayApi';
-import { ProcessDefinitionListQueries } from '../../../../channel/ProcessDefinitionList/ProcessDefinitionListQueries';
-import * as RuntimeToolsDevUIAppContext from '../../../contexts/DevUIAppContext';
-
-const MockQueries = jest.fn<ProcessDefinitionListQueries>(() => ({
-  getProcessDefinitions: jest.fn()
-}));
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import { EmbeddedProcessDefinitionList } from '@kogito-apps/process-definition-list';
 
 jest
   .spyOn(ProcessDefinitionListContext, 'useProcessDefinitionListGatewayApi')
   .mockImplementation(
-    () => new ProcessDefinitionListGatewayApiImpl(new MockQueries())
+    () =>
+      new ProcessDefinitionListGatewayApiImpl(
+        'http://localhost:9000',
+        '/mocked'
+      )
   );
 
-jest
-  .spyOn(RuntimeToolsDevUIAppContext, 'useDevUIAppContext')
-  .mockImplementation(() => {
-    return {
-      isWorkflow: () => {
-        return false;
-      }
-    };
-  });
+const user: User = new DefaultUser('jon', []);
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
 
 describe('ProcessDefinitionListContainer tests', () => {
   it('Snapshot', () => {
-    const wrapper = mount(<ProcessDefinitionListContainer />);
+    const wrapper = mount(
+      <DevUIAppContextProvider users={[user]} {...appContextProps}>
+        <ProcessDefinitionListContainer />
+      </DevUIAppContextProvider>
+    );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find('ProcessDefinitionListContainer')).toMatchSnapshot();
 
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedProcessDefinitionList);
 
     expect(forwardRef.props().driver).not.toBeNull();
-    expect(forwardRef.props().targetOrigin).toBe('*');
+    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
   });
 });

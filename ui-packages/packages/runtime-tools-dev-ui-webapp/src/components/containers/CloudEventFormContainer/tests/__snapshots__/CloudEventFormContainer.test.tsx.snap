@@ -21,7 +21,7 @@ exports[`CloudEventFormContainer tests Snapshot - with router param 1`] = `
       }
     }
     isNewInstanceEvent={false}
-    targetOrigin="*"
+    targetOrigin="http://localhost:9000"
   >
     <MockedComponent />
   </EmbeddedCloudEventForm>
@@ -49,7 +49,7 @@ exports[`CloudEventFormContainer tests Snapshot 1`] = `
       }
     }
     isNewInstanceEvent={false}
-    targetOrigin="*"
+    targetOrigin="http://localhost:9000"
   >
     <MockedComponent />
   </EmbeddedCloudEventForm>

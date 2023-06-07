@@ -19,21 +19,44 @@ import { mount } from 'enzyme';
 import FormsListContainer from '../FormsListContainer';
 import * as FormsListContext from '../../../../channel/FormsList/FormsListContext';
 import { FormsListGatewayApiImpl } from '../../../../channel/FormsList/FormsListGatewayApi';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import { EmbeddedFormsList } from '@kogito-apps/forms-list';
 
 jest
   .spyOn(FormsListContext, 'useFormsListGatewayApi')
   .mockImplementation(() => new FormsListGatewayApiImpl());
 
+const user: User = new DefaultUser('jon', []);
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
+
 describe('FormsListContainer tests', () => {
   it('Snapshot', () => {
-    const wrapper = mount(<FormsListContainer />);
+    const wrapper = mount(
+      <DevUIAppContextProvider users={[user]} {...appContextProps}>
+        <FormsListContainer />
+      </DevUIAppContextProvider>
+    );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find('FormsListContainer')).toMatchSnapshot();
 
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedFormsList);
 
     expect(forwardRef.props().driver).not.toBeNull();
 
-    expect(forwardRef.props().targetOrigin).toBe('*');
+    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
   });
 });

@@ -19,6 +19,9 @@ import { mount } from 'enzyme';
 import WorkflowFormContainer from '../WorkflowFormContainer';
 import * as WorkflowFormContext from '../../../../channel/WorkflowForm/WorkflowFormContext';
 import { WorkflowFormGatewayApi } from '../../../../channel/WorkflowForm/WorkflowFormGatewayApi';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import { EmbeddedWorkflowForm } from '@kogito-apps/workflow-form';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -48,7 +51,11 @@ jest
   .mockImplementation(() => gatewayApi);
 
 const getWrapper = () => {
-  return mount(<WorkflowFormContainer {...props} />);
+  return mount(
+    <DevUIAppContextProvider users={[user]} {...appContextProps}>
+      <WorkflowFormContainer {...props} />
+    </DevUIAppContextProvider>
+  );
 };
 
 const props = {
@@ -61,6 +68,22 @@ const props = {
   onResetForm: jest.fn()
 };
 
+const user: User = new DefaultUser('jon', []);
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
+
 describe('WorkflowFormContainer tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -69,20 +92,19 @@ describe('WorkflowFormContainer tests', () => {
 
   it('Snapshot', () => {
     const wrapper = getWrapper();
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find('WorkflowFormContainer')).toMatchSnapshot();
 
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
 
     expect(forwardRef.props().driver).not.toBeNull();
 
-    expect(forwardRef.props().targetOrigin).toBe('*');
+    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
   });
 
   it('test get custom workflow schema', () => {
     const wrapper = getWrapper();
-    const forwardRef = wrapper.childAt(0);
-    const workflowName = 'expression';
-    forwardRef.props().driver['getCustomWorkflowSchema'](workflowName);
+    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
+    forwardRef.props().driver['getCustomWorkflowSchema']();
     expect(gatewayApi.getCustomWorkflowSchema).toHaveBeenCalled();
   });
 
@@ -92,9 +114,9 @@ describe('WorkflowFormContainer tests', () => {
       .mockImplementation(() => Promise.resolve('1234'));
 
     const wrapper = getWrapper();
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
 
-    forwardRef.props().driver['startWorkflow']();
+    forwardRef.props().driver['startWorkflow']('/endpoint', {});
     expect(gatewayApi.startWorkflow).toHaveBeenCalled();
   });
 
@@ -110,9 +132,9 @@ describe('WorkflowFormContainer tests', () => {
       })
     );
     const wrapper = getWrapper();
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
 
-    forwardRef.props().driver['startWorkflow']();
+    forwardRef.props().driver['startWorkflow']('/endpoint', {});
     expect(gatewayApi.startWorkflow).toHaveBeenCalled();
   });
 
@@ -121,9 +143,9 @@ describe('WorkflowFormContainer tests', () => {
       .fn()
       .mockImplementation(() => Promise.resolve('1234'));
     const wrapper = getWrapper();
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
 
-    forwardRef.props().driver['startWorkflow']();
+    forwardRef.props().driver['startWorkflow']('/endpoint', {});
     expect(gatewayApi.startWorkflow).toHaveBeenCalled();
   });
 
@@ -139,15 +161,15 @@ describe('WorkflowFormContainer tests', () => {
       })
     );
     const wrapper = getWrapper();
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
 
-    forwardRef.props().driver['startWorkflow']();
+    forwardRef.props().driver['startWorkflow']('/endpoint', {});
     expect(gatewayApi.startWorkflow).toHaveBeenCalled();
   });
 
   it('test reset businesskey', () => {
     const wrapper = getWrapper();
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
 
     forwardRef.props().driver['resetBusinessKey']();
     expect(props.onResetForm).toHaveBeenCalled();

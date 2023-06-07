@@ -22,6 +22,7 @@ import {
   EmbeddedWorkflowForm,
   WorkflowDefinition
 } from '@kogito-apps/workflow-form';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface WorkflowFormContainerProps {
   workflowDefinitionData: WorkflowDefinition;
@@ -40,6 +41,7 @@ const WorkflowFormContainer: React.FC<
   ouiaSafe
 }) => {
   const gatewayApi: WorkflowFormGatewayApi = useWorkflowFormGatewayApi();
+  const appContext = useDevUIAppContext();
 
   return (
     <EmbeddedWorkflowForm
@@ -75,7 +77,7 @@ const WorkflowFormContainer: React.FC<
             });
         }
       }}
-      targetOrigin={'*'}
+      targetOrigin={appContext.getDevUIUrl()}
       workflowDefinition={{
         workflowName: workflowDefinitionData.workflowName,
         endpoint: workflowDefinitionData.endpoint

@@ -22,6 +22,9 @@ import CloudEventFormContainer, {
 import { CloudEventFormGatewayApiImpl } from '../../../../channel/CloudEventForm/CloudEventFormGatewayApi';
 import * as CloudEventFormContext from '../../../../channel/CloudEventForm/CloudEventFormContext';
 import { EmbeddedCloudEventForm } from '@kogito-apps/cloud-event-form/dist/embedded';
+import * as DevUIAppContext from '../../../contexts/DevUIAppContext';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import { DefaultUser, User } from '@kogito-apps/consoles-common';
 
 const routerParams: CloudEventFormContainerParams = {};
 
@@ -59,6 +62,21 @@ const properties = {
   onSuccess: jest.fn(),
   onError: jest.fn()
 };
+const user: User = new DefaultUser('jon', []);
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
 
 describe('CloudEventFormContainer tests', () => {
   beforeEach(() => {
@@ -67,9 +85,11 @@ describe('CloudEventFormContainer tests', () => {
   });
 
   it('Snapshot', () => {
-    const wrapper = mount(<CloudEventFormContainer {...properties} />).find(
-      CloudEventFormContainer
-    );
+    const wrapper = mount(
+      <DevUIAppContextProvider users={[user]} {...appContextProps}>
+        <CloudEventFormContainer {...properties} />
+      </DevUIAppContextProvider>
+    ).find(CloudEventFormContainer);
 
     expect(wrapper).toMatchSnapshot();
 
@@ -77,17 +97,19 @@ describe('CloudEventFormContainer tests', () => {
     expect(embeddedForm.props().isNewInstanceEvent).toBeFalsy();
     expect(embeddedForm.props().driver).not.toBeUndefined();
     expect(
-      embeddedForm.props().defaultValues.cloudEventSource
+      embeddedForm.props().defaultValues?.cloudEventSource
     ).not.toBeUndefined();
-    expect(embeddedForm.props().defaultValues.instanceId).toBeUndefined();
+    expect(embeddedForm.props().defaultValues?.instanceId).toBeUndefined();
   });
 
   it('Snapshot - with router param', () => {
     routerParams.instanceId = '1234';
 
-    const wrapper = mount(<CloudEventFormContainer {...properties} />).find(
-      CloudEventFormContainer
-    );
+    const wrapper = mount(
+      <DevUIAppContextProvider users={[user]} {...appContextProps}>
+        <CloudEventFormContainer {...properties} />
+      </DevUIAppContextProvider>
+    ).find(CloudEventFormContainer);
 
     expect(wrapper).toMatchSnapshot();
 
@@ -95,8 +117,8 @@ describe('CloudEventFormContainer tests', () => {
     expect(embeddedForm.props().isNewInstanceEvent).toBeFalsy();
     expect(embeddedForm.props().driver).not.toBeUndefined();
     expect(
-      embeddedForm.props().defaultValues.cloudEventSource
+      embeddedForm.props().defaultValues?.cloudEventSource
     ).not.toBeUndefined();
-    expect(embeddedForm.props().defaultValues.instanceId).toBe('1234');
+    expect(embeddedForm.props().defaultValues?.instanceId).toBe('1234');
   });
 });

@@ -45,7 +45,7 @@ export interface UnSubscribeHandler {
   unSubscribe: () => void;
 }
 
-type DevUIAppContextArgs = {
+export type DevUIAppContextArgs = {
   users?: User[];
   devUIUrl: string;
   openApiPath: string;

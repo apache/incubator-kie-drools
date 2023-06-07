@@ -82,7 +82,7 @@ exports[`WebApp - JobsManagementPage tests Snapshot test with default values 1`]
               data-ouia-component-type="jobs-management-container"
               data-ouia-safe={true}
               driver={null}
-              targetOrigin="*"
+              targetOrigin="http://localhost:9000"
             >
               <ForwardRef>
                 <div />

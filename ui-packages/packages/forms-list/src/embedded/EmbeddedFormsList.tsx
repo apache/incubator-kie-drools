@@ -49,7 +49,7 @@ export const EmbeddedFormsList = React.forwardRef<FormsListApi, Props>(
           container: container(),
           bus: {
             postMessage(message, targetOrigin, transfer) {
-              window.postMessage(message, '*', transfer);
+              window.postMessage(message, targetOrigin, transfer);
             }
           }
         });

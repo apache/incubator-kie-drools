@@ -121,13 +121,7 @@ const ProcessDetailsPage: React.FC<
           {processInstance &&
           Object.keys(processInstance).length > 0 &&
           !fetchError ? (
-            <ProcessDetailsContainer
-              processInstance={processInstance}
-              omittedProcessTimelineEvents={
-                appContext.omittedProcessTimelineEvents
-              }
-              diagramPreviewSize={appContext.diagramPreviewSize}
-            />
+            <ProcessDetailsContainer processInstance={processInstance} />
           ) : (
             <>
               {fetchError.length > 0 && (

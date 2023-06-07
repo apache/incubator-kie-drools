@@ -56,7 +56,7 @@ const TaskInboxContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
       driver={gatewayApi}
       allTaskStates={getAllTaskStates()}
       activeTaskStates={getActiveTaskStates()}
-      targetOrigin={'*'}
+      targetOrigin={appContext.getDevUIUrl()}
       ref={taskInboxApiRef}
     />
   );

@@ -17,10 +17,32 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import JobsManagementContainer from '../JobsManagementContainer';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import { DefaultUser, User } from '@kogito-apps/consoles-common';
+
+const user: User = new DefaultUser('jon', []);
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
 
 describe('WebApp - JobsManagementContainer tests', () => {
   it('Snapshot test with default values', () => {
-    const wrapper = mount(<JobsManagementContainer />);
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = mount(
+      <DevUIAppContextProvider users={[user]} {...appContextProps}>
+        <JobsManagementContainer />
+      </DevUIAppContextProvider>
+    );
+    expect(wrapper.find('JobsManagementContainer')).toMatchSnapshot();
   });
 });

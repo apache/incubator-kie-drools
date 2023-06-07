@@ -22,22 +22,24 @@ import * as TaskFormContext from '../../../../channel/TaskForms/TaskFormContext'
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { DefaultUser, User } from '@kogito-apps/consoles-common';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import * as DevUIAppContext from '../../../contexts/DevUIAppContext';
+import { EmbeddedTaskForm } from '@kogito-apps/task-form';
 
 const testUserTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
-  description: null,
+  description: undefined,
   name: 'VisaApplication',
   referenceName: 'Apply for visa',
   priority: '1',
   processInstanceId: '9ae7ce3b-d49c-4f35-b843-8ac3d22fa427',
   processId: 'travels',
-  rootProcessInstanceId: null,
-  rootProcessId: null,
+  rootProcessInstanceId: undefined,
+  rootProcessId: undefined,
   state: 'Ready',
-  actualOwner: null,
+  actualOwner: undefined,
   adminGroups: [],
   adminUsers: [],
-  completed: null,
+  completed: undefined,
   started: new Date('2020-02-19T11:11:56.282Z'),
   excludedUsers: [],
   potentialGroups: [],
@@ -61,13 +63,27 @@ jest
   .mockImplementation(() => new MockTaskFormGatewayApi());
 
 const user: User = new DefaultUser('jon', []);
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
 
 describe('TaskFormContainer tests', () => {
   it('Snapshot', () => {
     const onSubmit = jest.fn();
     const onFailure = jest.fn();
     const wrapper = mount(
-      <DevUIAppContextProvider users={[user]}>
+      <DevUIAppContextProvider users={[user]} {...appContextProps}>
         <TaskFormContainer
           userTask={testUserTask}
           onSubmitSuccess={onSubmit}
@@ -78,9 +94,9 @@ describe('TaskFormContainer tests', () => {
 
     expect(wrapper).toMatchSnapshot();
 
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedTaskForm);
     expect(forwardRef.props().driver).not.toBeNull();
     expect(forwardRef.props().user).toStrictEqual(user);
-    expect(forwardRef.props().targetOrigin).toBe('*');
+    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
   });
 });

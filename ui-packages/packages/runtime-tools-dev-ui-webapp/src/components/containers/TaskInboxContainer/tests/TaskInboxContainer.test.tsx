@@ -22,6 +22,7 @@ import { TaskInboxQueries } from '../../../../channel/TaskInbox/TaskInboxQueries
 import { TaskInboxGatewayApiImpl } from '../../../../channel/TaskInbox/TaskInboxGatewayApi';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
 import { TaskInboxContextProvider } from '../../../../channel/TaskInbox';
+import { EmbeddedTaskInbox } from '@kogito-apps/task-inbox';
 
 const MockQueries = jest.fn<TaskInboxQueries, []>(() => ({
   getUserTaskById: jest.fn(),
@@ -31,22 +32,38 @@ const getCurrentUser = jest.fn();
 jest
   .spyOn(TaskInboxContext, 'useTaskInboxGatewayApi')
   .mockImplementation(
-    () => new TaskInboxGatewayApiImpl(getCurrentUser(), new MockQueries())
+    () => new TaskInboxGatewayApiImpl(new MockQueries(), getCurrentUser)
   );
+
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
 
 describe('TaskInboxContainer tests', () => {
   it('Snapshot', () => {
     const wrapper = mount(
-      <DevUIAppContextProvider users={[{ id: 'John snow', groups: ['admin'] }]}>
-        <TaskInboxContextProvider apolloClient={new MockQueries()}>
-          <TaskInboxContainer />
-        </TaskInboxContextProvider>
+      <DevUIAppContextProvider
+        users={[{ id: 'John snow', groups: ['admin'] }]}
+        {...appContextProps}
+      >
+        <TaskInboxContainer />
       </DevUIAppContextProvider>
     ).find('TaskInboxContainer');
 
     expect(wrapper).toMatchSnapshot();
 
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedTaskInbox);
     expect(forwardRef.props().activeTaskStates).toStrictEqual([
       'Ready',
       'Reserved'
@@ -59,6 +76,6 @@ describe('TaskInboxContainer tests', () => {
       'Skipped'
     ]);
     expect(forwardRef.props().driver).not.toBeNull();
-    expect(forwardRef.props().targetOrigin).toBe('*');
+    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
   });
 });

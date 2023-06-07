@@ -56,6 +56,7 @@ import { useTaskInboxGatewayApi } from '../../../channel/TaskInbox/TaskInboxCont
 import TaskFormContainer from '../../containers/TaskFormContainer/TaskFormContainer';
 import '../../styles.css';
 import { EmbeddedTaskDetails } from '@kogito-apps/task-details';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface Props {
   taskId?: string;
@@ -67,6 +68,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
   ...props
 }) => {
   const taskInboxGatewayApi: TaskInboxGatewayApi = useTaskInboxGatewayApi();
+  const appContext = useDevUIAppContext();
 
   const [taskId] = useState<string>(props.match.params.taskId);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -225,7 +227,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
       </DrawerHead>
       <DrawerPanelBody>
         <EmbeddedTaskDetails
-          targetOrigin={window.location.origin}
+          targetOrigin={appContext.getDevUIUrl()}
           userTask={userTask}
         />
       </DrawerPanelBody>

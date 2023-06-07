@@ -6,9 +6,11 @@ exports[`FormDetailsContainer tests Snapshot 1`] = `
     Object {
       "lastModified": 2021-08-23T13:26:02.130Z,
       "name": "form1",
-      "type": "html",
+      "type": "HTML",
     }
   }
+  onError={[Function]}
+  onSuccess={[Function]}
 >
   <ForwardRef
     data-ouia-component-type="form-details-container"
@@ -23,10 +25,10 @@ exports[`FormDetailsContainer tests Snapshot 1`] = `
       Object {
         "lastModified": 2021-08-23T13:26:02.130Z,
         "name": "form1",
-        "type": "html",
+        "type": "HTML",
       }
     }
-    targetOrigin="*"
+    targetOrigin="http://localhost:9000"
   >
     <ForwardRef>
       <div />

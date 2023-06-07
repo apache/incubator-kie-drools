@@ -22,19 +22,19 @@ exports[`TaskInboxContainer tests Snapshot 1`] = `
     data-ouia-safe={true}
     driver={
       TaskInboxGatewayApiImpl {
-        "getCurrentUser": Object {
-          "getUserTaskById": [MockFunction],
-          "getUserTasks": [MockFunction],
-        },
+        "getCurrentUser": [MockFunction],
         "listeners": Array [
           Object {
             "onOpen": [Function],
           },
         ],
-        "queries": undefined,
+        "queries": Object {
+          "getUserTaskById": [MockFunction],
+          "getUserTasks": [MockFunction],
+        },
       }
     }
-    targetOrigin="*"
+    targetOrigin="http://localhost:9000"
   >
     <ForwardRef>
       <div />

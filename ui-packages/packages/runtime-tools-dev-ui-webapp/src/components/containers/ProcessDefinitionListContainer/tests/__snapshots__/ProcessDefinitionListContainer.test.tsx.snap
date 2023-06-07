@@ -7,21 +7,20 @@ exports[`ProcessDefinitionListContainer tests Snapshot 1`] = `
     data-ouia-safe={true}
     driver={
       ProcessDefinitionListGatewayApiImpl {
-        "devUIUrl": Object {
-          "getProcessDefinitions": [MockFunction],
-        },
+        "devUIUrl": "http://localhost:9000",
         "onOpenProcessListeners": Array [
           Object {
             "onOpen": [Function],
           },
         ],
         "onOpenTriggerCloudEventListeners": Array [],
-        "openApiPath": undefined,
+        "openApiPath": "/mocked",
         "processDefinitonFilter": Array [],
       }
     }
     isTriggerCloudEventEnabled={false}
-    targetOrigin="*"
+    singularProcessLabel="test-singular"
+    targetOrigin="http://localhost:9000"
   >
     <ForwardRef>
       <div />

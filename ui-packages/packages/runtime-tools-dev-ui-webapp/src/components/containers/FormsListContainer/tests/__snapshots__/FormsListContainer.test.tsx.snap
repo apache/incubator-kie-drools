@@ -18,7 +18,7 @@ exports[`FormsListContainer tests Snapshot 1`] = `
         "openForm": [Function],
       }
     }
-    targetOrigin="*"
+    targetOrigin="http://localhost:9000"
   >
     <ForwardRef>
       <div />

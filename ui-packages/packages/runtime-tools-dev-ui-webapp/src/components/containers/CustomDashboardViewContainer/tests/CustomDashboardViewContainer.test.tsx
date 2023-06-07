@@ -19,21 +19,44 @@ import { mount } from 'enzyme';
 import CustomDashboardViewContainer from '../CustomDashboardViewContainer';
 import { CustomDashboardViewGatewayApiImpl } from '../../../../channel/CustomDashboardView/CustomDashboardViewGatewayApi';
 import * as CustomDashboardViewContext from '../../../../channel/CustomDashboardView/CustomDashboardViewContext';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import { EmbeddedCustomDashboardView } from '@kogito-apps/custom-dashboard-view';
 
 jest
   .spyOn(CustomDashboardViewContext, 'useCustomDashboardViewGatewayApi')
   .mockImplementation(() => new CustomDashboardViewGatewayApiImpl());
 
+const user: User = new DefaultUser('jon', []);
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
+
 describe('CustomDashboardViewContainer tests', () => {
   it('Snapshot', () => {
-    const wrapper = mount(<CustomDashboardViewContainer />);
+    const wrapper = mount(
+      <DevUIAppContextProvider users={[user]} {...appContextProps}>
+        <CustomDashboardViewContainer dashboardName="test-dashboard-name" />
+      </DevUIAppContextProvider>
+    );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find('CustomDashboardViewContainer')).toMatchSnapshot();
 
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedCustomDashboardView);
 
     expect(forwardRef.props().driver).not.toBeNull();
 
-    expect(forwardRef.props().targetOrigin).toBe('*');
+    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
   });
 });

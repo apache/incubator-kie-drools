@@ -280,7 +280,7 @@ exports[`TaskDetailsPage tests Error notification 1`] = `
                 </DrawerHead>
                 <DrawerPanelBody>
                   <EmbeddedTaskDetails
-                    targetOrigin="http://localhost"
+                    targetOrigin="http://localhost:9000"
                     userTask={
                       Object {
                         "actualOwner": null,
@@ -577,7 +577,7 @@ exports[`TaskDetailsPage tests Error notification 2`] = `
                 </DrawerHead>
                 <DrawerPanelBody>
                   <EmbeddedTaskDetails
-                    targetOrigin="http://localhost"
+                    targetOrigin="http://localhost:9000"
                     userTask={
                       Object {
                         "actualOwner": null,
@@ -968,7 +968,7 @@ exports[`TaskDetailsPage tests Normal State 1`] = `
                 </DrawerHead>
                 <DrawerPanelBody>
                   <EmbeddedTaskDetails
-                    targetOrigin="http://localhost"
+                    targetOrigin="http://localhost:9000"
                     userTask={
                       Object {
                         "actualOwner": null,
@@ -1287,7 +1287,7 @@ exports[`TaskDetailsPage tests Success notification 1`] = `
                 </DrawerHead>
                 <DrawerPanelBody>
                   <EmbeddedTaskDetails
-                    targetOrigin="http://localhost"
+                    targetOrigin="http://localhost:9000"
                     userTask={
                       Object {
                         "actualOwner": null,
@@ -1584,7 +1584,7 @@ exports[`TaskDetailsPage tests Success notification 2`] = `
                 </DrawerHead>
                 <DrawerPanelBody>
                   <EmbeddedTaskDetails
-                    targetOrigin="http://localhost"
+                    targetOrigin="http://localhost:9000"
                     userTask={
                       Object {
                         "actualOwner": null,

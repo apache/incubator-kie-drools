@@ -22,7 +22,7 @@ exports[`WorkflowFormContainer tests Snapshot 1`] = `
         "startWorkflow": [Function],
       }
     }
-    targetOrigin="*"
+    targetOrigin="http://localhost:9000"
     workflowDefinition={
       Object {
         "endpoint": "http://localhost:4000",

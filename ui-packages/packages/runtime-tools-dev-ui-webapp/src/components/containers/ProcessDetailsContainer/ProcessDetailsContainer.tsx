@@ -21,24 +21,15 @@ import { EmbeddedProcessDetails } from '@kogito-apps/process-details';
 import { ProcessDetailsGatewayApi } from '../../../channel/ProcessDetails';
 import { useProcessDetailsGatewayApi } from '../../../channel/ProcessDetails/ProcessDetailsContext';
 import { useHistory } from 'react-router-dom';
-import { DiagramPreviewSize } from '@kogito-apps/process-details/dist/api';
 import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface ProcessDetailsContainerProps {
   processInstance: ProcessInstance;
-  omittedProcessTimelineEvents: string[];
-  diagramPreviewSize?: DiagramPreviewSize;
 }
 
 const ProcessDetailsContainer: React.FC<
   ProcessDetailsContainerProps & OUIAProps
-> = ({
-  processInstance,
-  omittedProcessTimelineEvents,
-  diagramPreviewSize,
-  ouiaId,
-  ouiaSafe
-}) => {
+> = ({ processInstance, ouiaId, ouiaSafe }) => {
   const history = useHistory();
   const appContext = useDevUIAppContext();
   const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
@@ -58,10 +49,10 @@ const ProcessDetailsContainer: React.FC<
     <EmbeddedProcessDetails
       {...componentOuiaProps(ouiaId, 'process-details-container', ouiaSafe)}
       driver={gatewayApi}
-      targetOrigin={'*'}
+      targetOrigin={appContext.getDevUIUrl()}
       processInstance={processInstance}
-      omittedProcessTimelineEvents={omittedProcessTimelineEvents}
-      diagramPreviewSize={diagramPreviewSize}
+      omittedProcessTimelineEvents={appContext.omittedProcessTimelineEvents}
+      diagramPreviewSize={appContext.diagramPreviewSize}
       showSwfDiagram={appContext.isWorkflow()}
       isStunnerEnabled={appContext.getIsStunnerEnabled()}
       singularProcessLabel={appContext.customLabels.singularProcessLabel}

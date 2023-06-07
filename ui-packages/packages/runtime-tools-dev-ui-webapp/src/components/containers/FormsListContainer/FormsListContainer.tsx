@@ -20,10 +20,12 @@ import { EmbeddedFormsList, FormInfo } from '@kogito-apps/forms-list';
 import { FormsListGatewayApi } from '../../../channel/FormsList';
 import { useFormsListGatewayApi } from '../../../channel/FormsList/FormsListContext';
 import { useHistory } from 'react-router-dom';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 const FormsListContainer: React.FC<OUIAProps> = () => {
   const history = useHistory();
   const gatewayApi: FormsListGatewayApi = useFormsListGatewayApi();
+  const appContext = useDevUIAppContext();
 
   useEffect(() => {
     const unsubscriber = gatewayApi.onOpenFormListen({
@@ -42,7 +44,12 @@ const FormsListContainer: React.FC<OUIAProps> = () => {
     };
   }, []);
 
-  return <EmbeddedFormsList driver={gatewayApi} targetOrigin={'*'} />;
+  return (
+    <EmbeddedFormsList
+      driver={gatewayApi}
+      targetOrigin={appContext.getDevUIUrl()}
+    />
+  );
 };
 
 export default FormsListContainer;

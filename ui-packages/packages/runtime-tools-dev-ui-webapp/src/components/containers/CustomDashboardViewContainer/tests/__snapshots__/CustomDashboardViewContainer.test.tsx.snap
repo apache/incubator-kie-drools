@@ -1,12 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CustomDashboardViewContainer tests Snapshot 1`] = `
-<CustomDashboardViewContainer>
+<CustomDashboardViewContainer
+  dashboardName="test-dashboard-name"
+>
   <ForwardRef
+    dashboardName="test-dashboard-name"
     data-ouia-component-type="process-details-container"
     data-ouia-safe={true}
     driver={CustomDashboardViewGatewayApiImpl {}}
-    targetOrigin="*"
+    targetOrigin="http://localhost:9000"
   >
     <ForwardRef>
       <div />

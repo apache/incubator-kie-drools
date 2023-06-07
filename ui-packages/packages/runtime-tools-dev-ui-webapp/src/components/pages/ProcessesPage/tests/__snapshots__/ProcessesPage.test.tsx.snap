@@ -417,9 +417,7 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
               <Card
                 className="Dev-ui__card-size"
               >
-                <MockedProcessDefinitionContainer
-                  singularProcessLabel="Workflow"
-                />
+                <MockedProcessDefinitionContainer />
               </Card>
             </PageSection>
           </Tab>
@@ -447,9 +445,7 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
                 <Card
                   className="Dev-ui__card-size"
                 >
-                  <MockedProcessDefinitionContainer
-                    singularProcessLabel="Workflow"
-                  />
+                  <MockedProcessDefinitionContainer />
                 </Card>
               </PageSection>
             </Tab>
@@ -486,9 +482,7 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
                     data-ouia-safe={true}
                     id=""
                   >
-                    <MockedProcessDefinitionContainer
-                      singularProcessLabel="Workflow"
-                    />
+                    <MockedProcessDefinitionContainer />
                   </article>
                 </Card>
               </section>

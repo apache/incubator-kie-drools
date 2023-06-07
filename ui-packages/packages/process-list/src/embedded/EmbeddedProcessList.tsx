@@ -56,7 +56,7 @@ export const EmbeddedProcessList = React.forwardRef<ProcessListApi, Props>(
           container: container(),
           bus: {
             postMessage(message, targetOrigin, transfer) {
-              window.postMessage(message, '*', transfer);
+              window.postMessage(message, targetOrigin, transfer);
             }
           }
         });

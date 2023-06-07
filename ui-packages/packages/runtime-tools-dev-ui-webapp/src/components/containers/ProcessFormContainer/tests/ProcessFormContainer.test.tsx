@@ -19,10 +19,29 @@ import { mount } from 'enzyme';
 import ProcessFormContainer from '../ProcessFormContainer';
 import * as FormDetailsContext from '../../../../channel/FormDetails/FormDetailsContext';
 import { FormDetailsGatewayApiImpl } from '../../../../channel/FormDetails/FormDetailsGatewayApi';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import { EmbeddedProcessForm } from '@kogito-apps/process-form';
 
 jest
   .spyOn(FormDetailsContext, 'useFormDetailsGatewayApi')
   .mockImplementation(() => new FormDetailsGatewayApiImpl());
+
+const user: User = new DefaultUser('jon', []);
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
 
 describe('ProcessFormContainer tests', () => {
   it('Snapshot', () => {
@@ -34,14 +53,18 @@ describe('ProcessFormContainer tests', () => {
       onSubmitSuccess: jest.fn(),
       onSubmitError: jest.fn()
     };
-    const wrapper = mount(<ProcessFormContainer {...props} />);
+    const wrapper = mount(
+      <DevUIAppContextProvider users={[user]} {...appContextProps}>
+        <ProcessFormContainer {...props} />
+      </DevUIAppContextProvider>
+    );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find('ProcessFormContainer')).toMatchSnapshot();
 
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedProcessForm);
 
     expect(forwardRef.props().driver).not.toBeNull();
 
-    expect(forwardRef.props().targetOrigin).toBe('*');
+    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
   });
 });

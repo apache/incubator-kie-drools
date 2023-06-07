@@ -73,7 +73,7 @@ const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({
     <EmbeddedProcessList
       {...componentOuiaProps(ouiaId, 'process-list-container', ouiaSafe)}
       driver={gatewayApi}
-      targetOrigin={'*'}
+      targetOrigin={appContext.getDevUIUrl()}
       initialState={initialState}
       singularProcessLabel={appContext.customLabels.singularProcessLabel}
       pluralProcessLabel={appContext.customLabels.pluralProcessLabel}

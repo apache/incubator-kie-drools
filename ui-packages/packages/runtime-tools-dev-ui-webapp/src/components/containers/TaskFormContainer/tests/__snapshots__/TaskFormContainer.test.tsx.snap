@@ -6,11 +6,11 @@ exports[`TaskFormContainer tests Snapshot 1`] = `
   onSubmitSuccess={[MockFunction]}
   userTask={
     Object {
-      "actualOwner": null,
+      "actualOwner": undefined,
       "adminGroups": Array [],
       "adminUsers": Array [],
-      "completed": null,
-      "description": null,
+      "completed": undefined,
+      "description": undefined,
       "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
       "excludedUsers": Array [],
       "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
@@ -24,8 +24,8 @@ exports[`TaskFormContainer tests Snapshot 1`] = `
       "processId": "travels",
       "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
       "referenceName": "Apply for visa",
-      "rootProcessId": null,
-      "rootProcessInstanceId": null,
+      "rootProcessId": undefined,
+      "rootProcessInstanceId": undefined,
       "started": 2020-02-19T11:11:56.282Z,
       "state": "Ready",
     }
@@ -41,7 +41,7 @@ exports[`TaskFormContainer tests Snapshot 1`] = `
         "getTaskFormSchema": [Function],
       }
     }
-    targetOrigin="*"
+    targetOrigin="http://localhost:9000"
     user={
       DefaultUser {
         "groups": Array [],
@@ -50,11 +50,11 @@ exports[`TaskFormContainer tests Snapshot 1`] = `
     }
     userTask={
       Object {
-        "actualOwner": null,
+        "actualOwner": undefined,
         "adminGroups": Array [],
         "adminUsers": Array [],
-        "completed": null,
-        "description": null,
+        "completed": undefined,
+        "description": undefined,
         "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
         "excludedUsers": Array [],
         "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
@@ -68,8 +68,8 @@ exports[`TaskFormContainer tests Snapshot 1`] = `
         "processId": "travels",
         "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
         "referenceName": "Apply for visa",
-        "rootProcessId": null,
-        "rootProcessInstanceId": null,
+        "rootProcessId": undefined,
+        "rootProcessInstanceId": undefined,
         "started": 2020-02-19T11:11:56.282Z,
         "state": "Ready",
       }

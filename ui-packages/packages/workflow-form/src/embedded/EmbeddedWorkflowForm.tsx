@@ -54,7 +54,7 @@ export const EmbeddedWorkflowForm = React.forwardRef<
         container: container(),
         bus: {
           postMessage(message, targetOrigin, transfer) {
-            window.postMessage(message, '*', transfer);
+            window.postMessage(message, targetOrigin, transfer);
           }
         }
       });

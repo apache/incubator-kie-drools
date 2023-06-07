@@ -53,7 +53,7 @@ export const EmbeddedTaskInbox = React.forwardRef<TaskInboxApi, Props>(
           container: container(),
           bus: {
             postMessage(message, targetOrigin, transfer) {
-              window.postMessage(message, '*', transfer);
+              window.postMessage(message, targetOrigin, transfer);
             }
           }
         });

@@ -21,7 +21,8 @@ import ProcessDetailsContainer from '../ProcessDetailsContainer';
 import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/ProcessDetailsContext';
 import { ProcessDetailsGatewayApiImpl } from '../../../../channel/ProcessDetails/ProcessDetailsGatewayApi';
 import { ProcessDetailsQueries } from '../../../../channel/ProcessDetails/ProcessDetailsQueries';
-import * as RuntimeToolsDevUIAppContext from '../../../contexts/DevUIAppContext';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import { DefaultUser, User } from '@kogito-apps/consoles-common';
 
 const getJobsMock = jest.fn();
 const getProcessDetailsMock = jest.fn();
@@ -59,26 +60,30 @@ jest
     () => new ProcessDetailsGatewayApiImpl(new MockQueries())
   );
 
-jest
-  .spyOn(RuntimeToolsDevUIAppContext, 'useDevUIAppContext')
-  .mockImplementation(() => {
-    return {
-      isWorkflow: jest.fn(),
-      getIsStunnerEnabled: jest.fn(),
-      customLabels: {
-        singularProcessLabel: 'workflow',
-        pluralProcessLabel: 'workflows'
-      }
-    };
-  });
-
 const processInstance: ProcessInstance = {} as ProcessInstance;
+const user: User = new DefaultUser('jon', []);
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
 
 describe('WebApp - ProcessDetailsContainer tests', () => {
   it('Snapshot test with default values', () => {
     const wrapper = mount(
-      <ProcessDetailsContainer processInstance={processInstance} />
+      <DevUIAppContextProvider users={[user]} {...appContextProps}>
+        <ProcessDetailsContainer processInstance={processInstance} />
+      </DevUIAppContextProvider>
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find('ProcessDetailsContainer')).toMatchSnapshot();
   });
 });

@@ -20,6 +20,7 @@ import { ProcessFormGatewayApi } from '../../../channel/ProcessForm/ProcessFormG
 import { useProcessFormGatewayApi } from '../../../channel/ProcessForm/ProcessFormContext';
 import { EmbeddedProcessForm } from '@kogito-apps/process-form';
 import { ProcessDefinition } from '@kogito-apps/process-definition-list';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface ProcessFormContainerProps {
   processDefinitionData: ProcessDefinition;
@@ -34,6 +35,7 @@ const ProcessFormContainer: React.FC<ProcessFormContainerProps & OUIAProps> = ({
   ouiaSafe
 }) => {
   const gatewayApi: ProcessFormGatewayApi = useProcessFormGatewayApi();
+  const appContext = useDevUIAppContext();
   return (
     <EmbeddedProcessForm
       {...componentOuiaProps(ouiaId, 'process-form-container', ouiaSafe)}
@@ -58,7 +60,7 @@ const ProcessFormContainer: React.FC<ProcessFormContainerProps & OUIAProps> = ({
             });
         }
       }}
-      targetOrigin={'*'}
+      targetOrigin={appContext.getDevUIUrl()}
       processDefinition={processDefinitionData}
     />
   );

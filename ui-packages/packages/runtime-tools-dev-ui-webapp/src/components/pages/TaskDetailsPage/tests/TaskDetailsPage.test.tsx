@@ -26,6 +26,8 @@ import { TaskInboxGatewayApi } from '../../../../channel/TaskInbox';
 import * as TaskInboxContext from '../../../../channel/TaskInbox/TaskInboxContext';
 import TaskDetailsPage from '../TaskDetailsPage';
 import TaskFormContainer from '../../../containers/TaskFormContainer/TaskFormContainer';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import { DefaultUser, User } from '@kogito-apps/consoles-common';
 
 import { Button, DrawerPanelContent } from '@patternfly/react-core';
 
@@ -145,12 +147,30 @@ jest
 
 let gatewayApi: TaskInboxGatewayApi;
 
+const user: User = new DefaultUser('jon', []);
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
+
 const getTaskDetailsPageWrapper = async () => {
   let wrapper = null;
   await act(async () => {
     wrapper = mount(
       <MemoryRouter keyLength={0} initialEntries={['/']}>
-        <TaskDetailsPage {...props} />
+        <DevUIAppContextProvider users={[user]} {...appContextProps}>
+          <TaskDetailsPage {...props} />
+        </DevUIAppContextProvider>
       </MemoryRouter>
     );
     wait();

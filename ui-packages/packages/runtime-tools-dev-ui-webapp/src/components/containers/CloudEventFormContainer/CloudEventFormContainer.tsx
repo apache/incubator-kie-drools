@@ -20,6 +20,7 @@ import { useCloudEventFormGatewayApi } from '../../../channel/CloudEventForm';
 import { EmbeddedCloudEventForm } from '@kogito-apps/cloud-event-form/dist/embedded';
 import { CloudEventRequest } from '@kogito-apps/cloud-event-form/dist/api';
 import { useParams } from 'react-router';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 export type CloudEventFormContainerProps = {
   isTriggerNewInstance: boolean;
@@ -35,6 +36,7 @@ const CloudEventFormContainer: React.FC<
   CloudEventFormContainerProps & OUIAProps
 > = ({ isTriggerNewInstance, onSuccess, onError, ouiaId, ouiaSafe }) => {
   const gatewayApi = useCloudEventFormGatewayApi();
+  const appContext = useDevUIAppContext();
 
   const { instanceId } = useParams<CloudEventFormContainerParams>();
 
@@ -78,7 +80,7 @@ const CloudEventFormContainer: React.FC<
   return (
     <EmbeddedCloudEventForm
       {...componentOuiaProps(ouiaId, 'cloud-event-form-container', ouiaSafe)}
-      targetOrigin={'*'}
+      targetOrigin={appContext.getDevUIUrl()}
       isNewInstanceEvent={isTriggerNewInstance}
       defaultValues={{
         cloudEventSource: '/local/quarkus-devUi',

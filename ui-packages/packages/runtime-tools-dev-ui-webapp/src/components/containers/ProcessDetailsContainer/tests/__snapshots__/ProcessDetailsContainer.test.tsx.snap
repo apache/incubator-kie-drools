@@ -7,6 +7,12 @@ exports[`WebApp - ProcessDetailsContainer tests Snapshot test with default value
   <ForwardRef
     data-ouia-component-type="process-details-container"
     data-ouia-safe={true}
+    diagramPreviewSize={
+      Object {
+        "height": 100,
+        "width": 100,
+      }
+    }
     driver={
       ProcessDetailsGatewayApiImpl {
         "_ProcessDetailsState": Object {
@@ -39,10 +45,13 @@ exports[`WebApp - ProcessDetailsContainer tests Snapshot test with default value
         "rescheduleJob": [Function],
       }
     }
-    pluralProcessLabel="workflows"
+    isStunnerEnabled={false}
+    omittedProcessTimelineEvents={Array []}
+    pluralProcessLabel="test-plural"
     processInstance={Object {}}
-    singularProcessLabel="workflow"
-    targetOrigin="*"
+    showSwfDiagram={false}
+    singularProcessLabel="test-singular"
+    targetOrigin="http://localhost:9000"
   >
     <ForwardRef>
       <div />

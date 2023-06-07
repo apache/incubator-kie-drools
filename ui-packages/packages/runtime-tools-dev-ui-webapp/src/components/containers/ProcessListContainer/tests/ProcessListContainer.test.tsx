@@ -21,9 +21,9 @@ import ProcessListContainer from '../ProcessListContainer';
 import * as ProcessListContext from '../../../../channel/ProcessList/ProcessListContext';
 import { ProcessListQueries } from '../../../../channel/ProcessList/ProcessListQueries';
 import { ProcessListGatewayApiImpl } from '../../../../channel/ProcessList/ProcessListGatewayApi';
-import { MemoryRouter } from 'react-router-dom';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
 import { EmbeddedProcessList } from '@kogito-apps/process-list';
+import { DefaultUser, User } from '@kogito-apps/consoles-common';
 
 const MockQueries = jest.fn<ProcessListQueries, []>(() => ({
   getProcessInstances: jest.fn(),
@@ -38,23 +38,28 @@ jest
   .spyOn(ProcessListContext, 'useProcessListGatewayApi')
   .mockImplementation(() => new ProcessListGatewayApiImpl(new MockQueries()));
 
+const user: User = new DefaultUser('jon', []);
+const appContextProps = {
+  devUIUrl: 'http://localhost:9000',
+  openApiPath: '/mocked',
+  isProcessEnabled: false,
+  isTracingEnabled: false,
+  omittedProcessTimelineEvents: [],
+  isStunnerEnabled: false,
+  availablePages: [],
+  customLabels: {
+    singularProcessLabel: 'test-singular',
+    pluralProcessLabel: 'test-plural'
+  },
+  diagramPreviewSize: { width: 100, height: 100 }
+};
 describe('ProcessListContainer tests', () => {
   const props = {
     initialState: {} as ProcessListState
   };
   it('Snapshot', () => {
     const wrapper = mount(
-      <DevUIAppContextProvider
-        users={[]}
-        devUIUrl="http://devUIUrl"
-        openApiPath="http://openApiPath"
-        isProcessEnabled={true}
-        isTracingEnabled={true}
-        customLabels={{
-          singularProcessLabel: 'Workflow',
-          pluralProcessLabel: 'Workflows'
-        }}
-      >
+      <DevUIAppContextProvider users={[user]} {...appContextProps}>
         <ProcessListContainer {...props} />
       </DevUIAppContextProvider>
     );
@@ -64,6 +69,6 @@ describe('ProcessListContainer tests', () => {
     const forwardRef = wrapper.find(EmbeddedProcessList);
 
     expect(forwardRef.props().driver).not.toBeNull();
-    expect(forwardRef.props().targetOrigin).toBe('*');
+    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
   });
 });

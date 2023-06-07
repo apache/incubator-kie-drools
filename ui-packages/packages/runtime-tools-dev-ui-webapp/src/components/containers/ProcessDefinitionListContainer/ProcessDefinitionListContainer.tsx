@@ -28,17 +28,14 @@ import { useHistory } from 'react-router-dom';
 import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 import { CloudEventPageSource } from '../../pages/CloudEventFormPage/CloudEventFormPage';
 
-interface ProcessDefinitionListProps {
-  singularProcessLabel: string;
-}
-
-const ProcessDefinitionListContainer: React.FC<
-  ProcessDefinitionListProps & OUIAProps
-> = ({ singularProcessLabel, ouiaId, ouiaSafe }) => {
+const ProcessDefinitionListContainer: React.FC<OUIAProps> = ({
+  ouiaId,
+  ouiaSafe
+}) => {
   const history = useHistory();
-  const appContext = useDevUIAppContext();
   const gatewayApi: ProcessDefinitionListGatewayApi =
     useProcessDefinitionListGatewayApi();
+  const appContext = useDevUIAppContext();
 
   useEffect(() => {
     const onOpenProcess = {
@@ -94,8 +91,8 @@ const ProcessDefinitionListContainer: React.FC<
         ouiaSafe
       )}
       driver={gatewayApi}
-      targetOrigin={'*'}
-      singularProcessLabel={singularProcessLabel}
+      targetOrigin={appContext.getDevUIUrl()}
+      singularProcessLabel={appContext.customLabels.singularProcessLabel}
       isTriggerCloudEventEnabled={appContext.isWorkflow()}
     />
   );
