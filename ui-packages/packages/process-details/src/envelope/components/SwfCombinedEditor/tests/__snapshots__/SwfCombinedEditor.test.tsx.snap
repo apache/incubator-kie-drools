@@ -85,6 +85,7 @@ exports[`SwfCombinedEditor component tests snapshot of the emedded editor 1`] = 
                   "dot": true,
                   "nocase": true,
                 },
+                "partial": false,
                 "pattern": "**/*.sw.+(json|yml|yaml)",
                 "regexp": null,
                 "set": Array [
