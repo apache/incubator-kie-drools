@@ -40,9 +40,9 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.11.0</version.commons-io>
     <version.common-text>1.10.0</version.common-text>
-    <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.14.2</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.14.2</version.com.fasterxml.jackson.annotations>
+    <version.com.fasterxml.jackson>2.15.2</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.15.2</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.15.2</version.com.fasterxml.jackson.annotations>
     <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.lowagie.itext>2.1.7</version.com.lowagie.itext>
     <version.com.miglayout>3.7.4</version.com.miglayout>
