@@ -1870,7 +1870,7 @@ index 5cd6e541a5..b38cf3801b 100644
  /**
   * Provides a abstract base implementation that an object can extend so that it can be used in a LinkedList.
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
-index 75848ee1fe..9b879819ef 100644
+index a17475e17d..c6083e2f78 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
 +++ b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
 @@ -23,7 +23,7 @@ import java.util.Optional;
@@ -2103,7 +2103,7 @@ index 61d43070ed..58406ae103 100644
                  <executions>
                      <execution>
 diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/main/java/org/drools/drl/quarkus/testext/deployment/DroolsTestExtAssetsProcessor.java b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/main/java/org/drools/drl/quarkus/testext/deployment/DroolsTestExtAssetsProcessor.java
-index 7912b11dda..9d79d13914 100644
+index 21147da894..b7ada84931 100644
 --- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/main/java/org/drools/drl/quarkus/testext/deployment/DroolsTestExtAssetsProcessor.java
 +++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/main/java/org/drools/drl/quarkus/testext/deployment/DroolsTestExtAssetsProcessor.java
 @@ -22,7 +22,7 @@ import java.util.Optional;
@@ -2113,21 +2113,21 @@ index 7912b11dda..9d79d13914 100644
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
  
+ import org.drools.drl.quarkus.util.deployment.GlobalsBuildItem;
  import org.drools.drl.quarkus.util.deployment.KmoduleKieBaseModelsBuiltItem;
- import org.drools.drl.quarkus.util.deployment.PatternsTypesBuildItem;
 diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java
-index be6385b9ac..b67a1b17ac 100644
+index 624a0ce29b..66ffca1f2f 100644
 --- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java
 +++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext-deployment/src/test/java/org/drools/quarkus/testext/test/ExtensionTest.java
-@@ -17,7 +17,7 @@ package org.drools.quarkus.testext.test;
- 
+@@ -18,7 +18,7 @@ package org.drools.quarkus.testext.test;
  import static org.assertj.core.api.Assertions.assertThat;
+ import static org.assertj.core.api.Assertions.as;
  
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
  
- import org.drools.drl.quarkus.testext.deployment.OtnClassesSingleton;
- import org.drools.quarkus.examples.otn.model.ASubclassOfMeasurement;
+ import org.assertj.core.api.InstanceOfAssertFactories;
+ import org.drools.drl.quarkus.testext.deployment.GlobalsSingleton;
 diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
 index 84853c8a22..29751dabb2 100644
 --- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
@@ -2141,6 +2141,21 @@ index 84853c8a22..29751dabb2 100644
                  <version>${version.io.quarkus}</version>
                  <executions>
                      <execution>
+diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/src/main/java/org/drools/drl/quarkus/testext/deployment/GlobalsSingleton.java b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/src/main/java/org/drools/drl/quarkus/testext/deployment/GlobalsSingleton.java
+index 0deaa79713..7f640ed582 100644
+--- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/src/main/java/org/drools/drl/quarkus/testext/deployment/GlobalsSingleton.java
++++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/src/main/java/org/drools/drl/quarkus/testext/deployment/GlobalsSingleton.java
+@@ -18,8 +18,8 @@ package org.drools.drl.quarkus.testext.deployment;
+ 
+ import java.util.Map;
+ 
+-import javax.enterprise.event.Observes;
+-import javax.inject.Singleton;
++import jakarta.enterprise.event.Observes;
++import jakarta.inject.Singleton;
+ 
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
 diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/src/main/java/org/drools/drl/quarkus/testext/deployment/OtnClassesSingleton.java b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/src/main/java/org/drools/drl/quarkus/testext/deployment/OtnClassesSingleton.java
 index 21a9a01650..8860daacad 100644
 --- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/src/main/java/org/drools/drl/quarkus/testext/deployment/OtnClassesSingleton.java
