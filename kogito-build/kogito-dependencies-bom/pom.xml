@@ -24,7 +24,8 @@
     <!-- dependencies versions -->
     <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
     <version.com.fasterxml.jackson.databind>2.14.2</version.com.fasterxml.jackson.databind>
-    <version.com.jayway.jsonpath>2.6.0</version.com.jayway.jsonpath>
+    <version.com.jayway.jsonpath>2.8.0</version.com.jayway.jsonpath>
+    <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20220705</version.net.thisptr.jackson-jq>
     <version.io.quarkiverse.jackson-jq>1.1.0</version.io.quarkiverse.jackson-jq>
     <version.io.quarkiverse.openapi.generator>1.2.1</version.io.quarkiverse.openapi.generator>
@@ -276,6 +277,11 @@
         <groupId>com.jayway.jsonpath</groupId>
         <artifactId>json-path-assert</artifactId>
         <version>${version.com.jayway.jsonpath}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.minidev</groupId>
+        <artifactId>json-smart</artifactId>
+        <version>${version.net.minidev.jsonsmart}</version>
       </dependency>
       <dependency>
         <groupId>net.thisptr</groupId>
