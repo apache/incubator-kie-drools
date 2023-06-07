@@ -330,7 +330,7 @@ index 3ff556aee1..32889f3f21 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index c0602eb81a..fdfc41d9ea 100644
+index 57fd4e0656..be30a370af 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,9 +16,9 @@
@@ -345,9 +345,9 @@ index c0602eb81a..fdfc41d9ea 100644
      <version.org.apache.kafka>3.4.0</version.org.apache.kafka>
  
      <!-- dependencies versions -->
-@@ -26,13 +26,13 @@
-     <version.com.fasterxml.jackson.databind>2.14.2</version.com.fasterxml.jackson.databind>
-     <version.com.jayway.jsonpath>2.6.0</version.com.jayway.jsonpath>
+@@ -27,13 +27,13 @@
+     <version.com.jayway.jsonpath>2.8.0</version.com.jayway.jsonpath>
+     <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
      <version.net.thisptr.jackson-jq>1.0.0-preview.20220705</version.net.thisptr.jackson-jq>
 -    <version.io.quarkiverse.jackson-jq>1.1.0</version.io.quarkiverse.jackson-jq>
 -    <version.io.quarkiverse.openapi.generator>1.2.1</version.io.quarkiverse.openapi.generator>
@@ -364,7 +364,7 @@ index c0602eb81a..fdfc41d9ea 100644
      <version.com.github.java-json-tools>2.2.14</version.com.github.java-json-tools>
      <version.com.fasterxml.jackson.datatype>2.14.2</version.com.fasterxml.jackson.datatype>
      <version.com.github.erosb>1.14.1</version.com.github.erosb>
-@@ -43,31 +43,31 @@
+@@ -44,31 +44,31 @@
      <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
      <version.com.sun.xml.bind.core>2.3.0.1</version.com.sun.xml.bind.core>
      <version.com.sun.xml.bind.impl>2.3.5</version.com.sun.xml.bind.impl>
@@ -405,7 +405,7 @@ index c0602eb81a..fdfc41d9ea 100644
  
      <version.io.swagger.parser.v3>2.0.26</version.io.swagger.parser.v3>
  
-@@ -76,14 +76,14 @@
+@@ -77,14 +77,14 @@
  
      <version.org.graalvm.nativeimage>22.3.0</version.org.graalvm.nativeimage>
  
@@ -425,7 +425,7 @@ index c0602eb81a..fdfc41d9ea 100644
      <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
      <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
      <version.org.mongo>4.6.1</version.org.mongo>
-@@ -101,19 +101,19 @@
+@@ -102,19 +102,19 @@
      <version.org.junit.vintage>5.9.2</version.org.junit.vintage>
      <version.org.junit.platform>1.9.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
      <version.org.junit.pioneer>1.5.0</version.org.junit.pioneer>
@@ -450,7 +450,7 @@ index c0602eb81a..fdfc41d9ea 100644
      <version.maven.invoker>3.2.0</version.maven.invoker>
  
      <version.plexus>1.6</version.plexus>
-@@ -248,8 +248,8 @@
+@@ -249,8 +249,8 @@
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
@@ -461,7 +461,7 @@ index c0602eb81a..fdfc41d9ea 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -259,7 +259,7 @@
+@@ -260,7 +260,7 @@
        </dependency>
        <dependency>
          <groupId>com.fasterxml.jackson.module</groupId>
@@ -470,7 +470,7 @@ index c0602eb81a..fdfc41d9ea 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -527,9 +527,9 @@
+@@ -533,9 +533,9 @@
        </dependency>
  
        <dependency>
@@ -483,7 +483,7 @@ index c0602eb81a..fdfc41d9ea 100644
        </dependency>
        <dependency>
          <groupId>com.sun.xml.bind</groupId>
-@@ -537,19 +537,19 @@
+@@ -543,19 +543,19 @@
          <version>${version.com.sun.xml.bind.core}</version>
        </dependency>
        <dependency>
@@ -511,7 +511,7 @@ index c0602eb81a..fdfc41d9ea 100644
        </dependency>
        <dependency>
          <groupId>javax.inject</groupId>
-@@ -557,9 +557,9 @@
+@@ -563,9 +563,9 @@
          <version>${version.javax.inject}</version>
        </dependency>
        <dependency>
@@ -524,7 +524,7 @@ index c0602eb81a..fdfc41d9ea 100644
        </dependency>
        <dependency>
          <groupId>org.eclipse.microprofile.openapi</groupId>
-@@ -605,7 +605,7 @@
+@@ -611,7 +611,7 @@
        </dependency>
        <dependency>
          <groupId>org.infinispan</groupId>
@@ -3079,10 +3079,10 @@ index 579ca04ddb..fcdc3f09ad 100644
  import org.drools.codegen.common.DroolsModelBuildContext;
  import org.drools.codegen.common.GeneratedFile;
 diff --git a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml
-index 99b0ccc3d0..d0750de75b 100644
+index 439018b04f..8ccba5cd78 100644
 --- a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml
 +++ b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml
-@@ -91,7 +91,7 @@
+@@ -95,7 +95,7 @@
          <plugins>
              <plugin>
                  <groupId>io.quarkus</groupId>
