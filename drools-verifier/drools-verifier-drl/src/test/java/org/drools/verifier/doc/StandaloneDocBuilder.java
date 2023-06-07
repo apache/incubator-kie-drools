@@ -16,13 +16,12 @@
 
 package org.drools.verifier.doc;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.text.ParseException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
-import org.drools.verifier.doc.DroolsDocsBuilder;
+import java.io.*;
+import java.nio.file.Files;
+import java.text.ParseException;
 
 /**
  * Stand alone to test writing to a file.
@@ -31,7 +30,12 @@ public class StandaloneDocBuilder {
 
     public static void main(String[] args) throws FileNotFoundException,
                                           ParseException {
+        StandaloneDocBuilder docBuilder = new StandaloneDocBuilder();
+        docBuilder.buildDoc();
+    }
 
+    @Test
+    public void buildDoc() throws FileNotFoundException, ParseException {
         String drl = "";
         drl += "# important information\n";
         drl += "# about this package\n";
@@ -42,7 +46,7 @@ public class StandaloneDocBuilder {
         drl += "# Another line because one was not enough \n";
         drl += "#  \n";
         drl += "# @author: trikkola \n";
-        drl += "rule \"First\" \n";
+        drl += "rule \"First\" extends \"OtherRule\" \n";
         drl += "	dialect \"mvel\" \n";
         drl += "	when \n ";
         drl += "		Person() \n ";
@@ -83,9 +87,15 @@ public class StandaloneDocBuilder {
 
         DroolsDocsBuilder ddBuilder = DroolsDocsBuilder.getInstance( drl );
 
-        File file = new File( "/Users/rikkola/Desktop/DroolsDoc.pdf" );
+        File file = new File( "DroolsDoc.pdf" );
         OutputStream out = new FileOutputStream( file );
 
         ddBuilder.writePDF( out );
     }
+
+    @AfterAll
+    static void cleanup() throws IOException {
+        Files.delete(new File( "DroolsDoc.pdf" ).toPath());
+    }
+
 }

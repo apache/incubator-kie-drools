@@ -44,7 +44,6 @@
     <version.com.fasterxml.jackson.databind>2.15.2</version.com.fasterxml.jackson.databind>
     <version.com.fasterxml.jackson.annotations>2.15.2</version.com.fasterxml.jackson.annotations>
     <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
-    <version.com.lowagie.itext>2.1.7</version.com.lowagie.itext>
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
     <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
@@ -71,6 +70,7 @@
     <version.org.apache.maven>3.8.6</version.org.apache.maven>
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
     <version.org.apache.maven.wagon>3.5.1</version.org.apache.maven.wagon>
+    <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
     <version.org.apache.poi>5.1.0</version.org.apache.poi>
     <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
     <version.org.assertj>3.23.1</version.org.assertj>

@@ -22,16 +22,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfWriter;
-
 import static org.drools.util.Config.getConfig;
+import static org.drools.verifier.doc.DroolsDocsComponentFactory.*;
 
 public class DroolsDocsBuilder {
 
@@ -63,43 +60,23 @@ public class DroolsDocsBuilder {
 
         // TODO: Use i18n!
 
-        Document document = new Document();
+        try (PDDocument doc = new PDDocument()) {
+            PDDocumentInformation info = new PDDocumentInformation();
+            info.setTitle(packageData.getName().toUpperCase());
+            doc.setDocumentInformation(info);
 
-        try {
-            PdfWriter.getInstance( document,
-                                   out );
-
-            HeaderFooter footer = DroolsDocsComponentFactory.createFooter( packageData.getName() );
-
-            document.setFooter( footer );
-
-            document.addTitle( packageData.getName().toUpperCase() );
-            document.open();
-
-            // First page, documentation info.            
-            DroolsDocsComponentFactory.createFirstPage( document,
-                                                        currentDate,
-                                                        packageData );
-
-            document.newPage();
-
-            // List index of the rules            
-            document.add( new Phrase( "Table of Contents" ) );
-            document.add( DroolsDocsComponentFactory.createContents( packageData.getRules() ) );
-
-            document.newPage();
-
+            createFirstPage(doc, currentDate, packageData);
+            int pageNumber = 2;
+            createToC(doc, pageNumber, packageData);
             for ( DrlRuleParser ruleData : packageData.getRules() ) {
-                DroolsDocsComponentFactory.newRulePage( document,
-                                                        packageData.getName(),
-                                                        ruleData );
+                pageNumber++;
+                createRulePage(doc, pageNumber, packageData.getName(), ruleData);
             }
 
-        } catch ( DocumentException de ) {
-            System.err.println( de.getMessage() );
+            doc.save(out);
+        } catch (Exception ex){
+            System.err.println( ex.getMessage() );
         }
-
-        document.close();
     }
 
     public static String getDateFormatMask() {
