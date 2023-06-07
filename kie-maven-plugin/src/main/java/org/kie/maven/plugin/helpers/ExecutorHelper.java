@@ -36,8 +36,8 @@ public class ExecutorHelper {
                 if (property.getKey().equals(JavaConfiguration.JAVA_LANG_LEVEL_PROPERTY)) {
                     log.warn("It seems you are setting `" + 
                             JavaConfiguration.JAVA_LANG_LEVEL_PROPERTY + 
-                            "` while building a KJAR in a Maven-based build; " +
-                            " you should consider relying on properly setting `maven.compiler.release` instead.");
+                            "` while building a KJAR in a Maven-based build." +
+                            " It is recommended to properly set `maven.compiler.release` instead.");
                 }
                 System.setProperty(property.getKey(), property.getValue());
             }
