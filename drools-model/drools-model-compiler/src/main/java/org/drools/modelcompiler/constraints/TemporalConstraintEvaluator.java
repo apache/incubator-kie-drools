@@ -16,13 +16,12 @@
 
 package org.drools.modelcompiler.constraints;
 
-import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
-import org.drools.core.reteoo.Tuple;
 import org.drools.base.time.Interval;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.model.SingleConstraint;
 import org.drools.model.constraints.FixedTemporalConstraint;
 import org.drools.model.constraints.TemporalConstraint;
@@ -44,7 +43,7 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
     }
 
     @Override
-    public boolean evaluate( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator  ) {
+    public boolean evaluate(FactHandle handle, BaseTuple tuple, ValueResolver reteEvaluator  ) {
         TemporalConstraint temporalConstraint = (TemporalConstraint) constraint;
         FactHandle[] fhs = getBetaInvocationFactHandles( handle, tuple );
         long start1 = getStartTimestamp( fhs[0], reteEvaluator, getDeclarations()[0], temporalConstraint.getF1() );
@@ -61,7 +60,7 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
         }
     }
 
-    private FactHandle[] getBetaInvocationFactHandles(InternalFactHandle handle, Tuple tuple) {
+    private FactHandle[] getBetaInvocationFactHandles(FactHandle handle, BaseTuple tuple) {
         FactHandle[] fhs = new FactHandle[declarations.length];
         for (int i = 0; i < fhs.length; i++) {
             fhs[i] = declarations[i] == patternDeclaration ?
@@ -75,7 +74,7 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
         return fh instanceof DefaultEventHandle ? ( (DefaultEventHandle) fh).getDuration() : 0L;
     }
 
-    private long getStartTimestamp( FactHandle fh, ReteEvaluator reteEvaluator, Declaration decl, Function1<Object, ?> f ) {
+    private long getStartTimestamp( FactHandle fh, ValueResolver reteEvaluator, Declaration decl, Function1<Object, ?> f ) {
         if (f != null) {
             return getTimestampFromDate( f.apply( decl.getValue( reteEvaluator, fh.getObject() ) ) );
         }
@@ -85,7 +84,7 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
     }
 
     @Override
-    public boolean evaluate( InternalFactHandle handle, ReteEvaluator reteEvaluator ) {
+    public boolean evaluate(FactHandle handle, ValueResolver reteEvaluator ) {
         TemporalConstraint temporalConstraint = (TemporalConstraint) constraint;
         long start1 = getStartTimestamp( handle, reteEvaluator, getDeclarations()[0], temporalConstraint.getF1() );
         long duration1 = getDuration( handle );
@@ -101,7 +100,7 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
         }
     }
 
-    private long getNonEventTimestamp(TemporalConstraint temporalConstraint, InternalFactHandle handle, ReteEvaluator reteEvaluator) {
+    private long getNonEventTimestamp(TemporalConstraint temporalConstraint, FactHandle handle, ValueResolver reteEvaluator) {
         return constraint instanceof FixedTemporalConstraint ?
                 (( FixedTemporalConstraint ) constraint).getValue() :
                 getStartTimestamp( handle, reteEvaluator, getDeclarations()[1], temporalConstraint.getF2() );

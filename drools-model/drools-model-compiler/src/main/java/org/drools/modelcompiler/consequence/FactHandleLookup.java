@@ -17,7 +17,6 @@ package org.drools.modelcompiler.consequence;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.core.common.InternalFactHandle;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface FactHandleLookup {
