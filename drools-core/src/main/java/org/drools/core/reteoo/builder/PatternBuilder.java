@@ -19,7 +19,18 @@ package org.drools.core.reteoo.builder;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.DroolsQuery;
 import org.drools.base.base.ObjectType;
-import org.drools.base.rule.*;
+import org.drools.base.rule.Accumulate;
+import org.drools.base.rule.Behavior;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.IntervalProviderConstraint;
+import org.drools.base.rule.InvalidPatternException;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.PatternSource;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.rule.WindowReference;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.base.rule.constraint.Constraint;
@@ -42,7 +53,6 @@ import java.util.stream.Collectors;
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildJoinNode;
 import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildTupleSource;
-
 /**
  * A builder for patterns
  */

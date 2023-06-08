@@ -16,15 +16,33 @@
 
 package org.drools.kiesession.entrypoints;
 
+
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.facttemplates.Fact;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
-import org.drools.core.common.*;
+import org.drools.core.common.ClassAwareObjectStore;
+import org.drools.core.common.DefaultEventHandle;
+import org.drools.core.common.EqualityKey;
+import org.drools.core.common.IdentityObjectStore;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.ObjectStore;
+import org.drools.core.common.ObjectStoreWrapper;
+import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RuntimeComponentFactory;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.bitmask.AllSetBitMask;
@@ -38,7 +56,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;

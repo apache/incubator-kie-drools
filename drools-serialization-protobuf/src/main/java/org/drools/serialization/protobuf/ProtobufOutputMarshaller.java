@@ -22,25 +22,50 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.time.Trigger;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.*;
+import org.drools.core.common.AgendaGroupQueueImpl;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.DefaultEventHandle;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.EqualityKey;
+import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
+import org.drools.core.common.NodeMemories;
+import org.drools.core.common.ObjectStore;
+import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.QueryElementFactHandle;
+import org.drools.core.common.RuleFlowGroup;
+import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.WorkItem;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.AbstractTuple;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.Sink;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.SelfRemovalJobContext;
-import org.drools.core.time.impl.*;
+import org.drools.core.time.impl.CompositeMaxDurationTrigger;
+import org.drools.core.time.impl.CronTrigger;
+import org.drools.core.time.impl.IntervalTrigger;
+import org.drools.core.time.impl.PointInTimeTrigger;
+import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.core.time.impl.TimerJobInstance;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.serialization.protobuf.ProtobufMessages.FactHandle;
 import org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration;
-import org.drools.serialization.protobuf.ProtobufMessages.ProcessData.Builder;
-import org.drools.serialization.protobuf.ProtobufMessages.Timers;
 import org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer;
 import org.drools.serialization.protobuf.ProtobufMessages.Tuple;
 import org.drools.serialization.protobuf.iterators.ActivationIterator;
@@ -58,7 +83,15 @@ import org.kie.api.runtime.rule.EntryPoint;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An output marshaller that uses ProtoBuf as the marshalling framework
@@ -151,7 +184,7 @@ public class ProtobufOutputMarshaller {
                     .setRuleData( _ruleData.build() );
 
             if ( processMarshaller != null ) {
-                Builder _pdata = ProtobufMessages.ProcessData.newBuilder();
+                ProtobufMessages.ProcessData.Builder _pdata = ProtobufMessages.ProcessData.newBuilder();
                 if ( context.isMarshalProcessInstances() ) {
                     context.setParameterObject( _pdata );
                     processMarshaller.writeProcessInstances( context );
@@ -169,7 +202,7 @@ public class ProtobufOutputMarshaller {
                 _session.setProcessData( _pdata.build() );
             }
 
-            Timers _timers = writeTimers( context.getWorkingMemory().getTimerJobInstances( context.getWorkingMemory().getIdentifier() ),
+            ProtobufMessages.Timers _timers = writeTimers( context.getWorkingMemory().getTimerJobInstances( context.getWorkingMemory().getIdentifier() ),
                                           context );
             if ( _timers != null ) {
                 _session.setTimers( _timers );
