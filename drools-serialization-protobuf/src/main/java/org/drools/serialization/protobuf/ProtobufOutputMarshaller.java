@@ -16,63 +16,23 @@
 
 package org.drools.serialization.protobuf;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.google.protobuf.ByteString;
 import org.drools.base.InitialFact;
-import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.AgendaGroupQueueImpl;
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.EqualityKey;
-import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Memory;
-import org.drools.core.common.NodeMemories;
-import org.drools.core.common.ObjectStore;
-import org.drools.core.common.ObjectTypeConfigurationRegistry;
-import org.drools.core.common.QueryElementFactHandle;
-import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.time.Trigger;
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.*;
 import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.WorkItem;
-import org.drools.core.reteoo.AbstractTuple;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
+import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.Sink;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.common.RuleFlowGroup;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.SelfRemovalJobContext;
-import org.drools.base.time.Trigger;
-import org.drools.core.time.impl.CompositeMaxDurationTrigger;
-import org.drools.core.time.impl.CronTrigger;
-import org.drools.core.time.impl.IntervalTrigger;
-import org.drools.core.time.impl.PointInTimeTrigger;
-import org.drools.core.time.impl.PseudoClockScheduler;
-import org.drools.core.time.impl.TimerJobInstance;
+import org.drools.core.time.impl.*;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
@@ -95,6 +55,10 @@ import org.drools.tms.beliefsystem.ModedAssertion;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
+
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.*;
 
 /**
  * An output marshaller that uses ProtoBuf as the marshalling framework
@@ -165,9 +129,7 @@ public class ProtobufOutputMarshaller {
                 ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
                 _epb.setEntryPointId( wmep.getEntryPointId() );
 
-                writeObjectTypeConfiguration( context,
-                                              ((WorkingMemoryEntryPoint)wmep).getObjectTypeConfigurationRegistry(),
-                                              _epb );
+                writeObjectTypeConfiguration( ((WorkingMemoryEntryPoint)wmep).getObjectTypeConfigurationRegistry(), _epb );
 
                 writeFactHandles( context,
                                   _epb,
@@ -224,30 +186,20 @@ public class ProtobufOutputMarshaller {
         }
     }
 
-    private static void writeObjectTypeConfiguration( MarshallerWriteContext context,
-    		                                          ObjectTypeConfigurationRegistry otcr,
+    private static void writeObjectTypeConfiguration( ObjectTypeConfigurationRegistry otcr,
     		                                          ProtobufMessages.EntryPoint.Builder _epb) {
         
         Collection<ObjectTypeConf> values = otcr.values();
     	ObjectTypeConf[] otcs = values.toArray( new ObjectTypeConf[ values.size() ] );
-    	Arrays.sort( otcs,
-    	        new Comparator<ObjectTypeConf>() {
-                    @Override
-                    public int compare(ObjectTypeConf o1, ObjectTypeConf o2) {
-                        return o1.getTypeName().compareTo(o2.getTypeName());
-                    }
-    	});
+    	Arrays.sort( otcs, Comparator.comparing(ObjectTypeConf::getTypeName));
         for( ObjectTypeConf otc : otcs ) {
             ObjectTypeNode objectTypeNode = otc.getConcreteObjectTypeNode();
             if (objectTypeNode != null) {
-                final ObjectTypeNodeMemory memory = context.getWorkingMemory().getNodeMemory(objectTypeNode);
-                if (memory != null) {
-                    ObjectTypeConfiguration _otc = ObjectTypeConfiguration.newBuilder()
-                                                                          .setType(otc.getTypeName())
-                                                                          .setTmsEnabled(otc.isTMSEnabled())
-                                                                          .build();
-                    _epb.addOtc(_otc);
-                }
+                ObjectTypeConfiguration _otc = ObjectTypeConfiguration.newBuilder()
+                                                                      .setType(otc.getTypeName())
+                                                                      .setTmsEnabled(otc.isTMSEnabled())
+                                                                      .build();
+                _epb.addOtc(_otc);
             }
     	}
 	}

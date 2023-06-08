@@ -29,7 +29,7 @@ public class NamedConsequenceBuilder implements ReteooComponentBuilder {
 
         ReteooRuleBuilder.buildTerminalNodeForConsequence(context, (GroupElement) context.peek(), context.getSubRuleIndex(),
                                                           namedConsequence, timer, utils);
-        context.setTerminated(true); // assumes named consequences, not in a conditional branch are always terminal.
+        context.terminate(); // assumes named consequences, not in a conditional branch are always terminal.
     }
 
     public boolean requiresLeftActivation(BuildUtils utils, RuleConditionElement rce) {

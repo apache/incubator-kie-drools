@@ -16,10 +16,10 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.Collection;
-
 import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+
+import java.util.Collection;
 
 public class ObjectTypeNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -34,7 +34,6 @@ public class ObjectTypeNodeVisitor extends AbstractNetworkNodeVisitor {
                            StatefulKnowledgeSessionInfo info) {
         ObjectTypeNode otn = (ObjectTypeNode) node;
         DefaultNodeInfo ni = info.getNodeInfo(node);
-        ni.setMemoryEnabled( otn.isObjectMemoryEnabled() );
     }
 
 }

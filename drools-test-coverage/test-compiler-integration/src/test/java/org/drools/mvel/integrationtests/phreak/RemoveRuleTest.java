@@ -15,24 +15,13 @@
 
 package org.drools.mvel.integrationtests.phreak;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.EvalConditionNode;
-import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.SegmentMemory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -44,6 +33,10 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.rule.Match;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.phreak.PhreakBuilder.isEagerSegmentCreation;
@@ -99,7 +92,7 @@ public class RemoveRuleTest {
         assertThat(eMem.getRightTupleMemory().size()).isEqualTo(1);
 
         NodeMemories nms = wm.getNodeMemories();
-        assertThat(countNodeMemories(nms)).isEqualTo(12);
+        assertThat(countNodeMemories(nms)).isEqualTo(6);
 
         assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNull();
         assertThat(list.size()).isEqualTo(1);
@@ -108,7 +101,7 @@ public class RemoveRuleTest {
 
         kbase.removeRule("org.kie", "r1");
 
-        assertThat(countNodeMemories(nms)).isEqualTo(6); // still has OTN
+        assertThat(countNodeMemories(nms)).isEqualTo(0);
     }
 
     @Test
@@ -169,7 +162,7 @@ public class RemoveRuleTest {
         wm.insert(new E(1));
         wm.fireAllRules();
 
-        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B() C(2;) X() E()\n") );
         wm.fireAllRules();
@@ -198,7 +191,7 @@ public class RemoveRuleTest {
 
 
         kbase1.removeRule("org.kie", "r2");
-        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(10);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
 
         assertThat(sm.getFirst()).isNull();
 
@@ -229,7 +222,7 @@ public class RemoveRuleTest {
         wm.insert(new E(1));
         wm.fireAllRules();
 
-        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   a:A() B() eval(1==1) eval(1==1) C(2;) \n") );
         wm.fireAllRules();
@@ -261,7 +254,7 @@ public class RemoveRuleTest {
 
 
         kbase1.removeRule("org.kie", "r2");
-        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(8);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
 
         assertThat(sm.getFirst()).isNull();
 
@@ -292,11 +285,11 @@ public class RemoveRuleTest {
 
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(3);
-        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B(2;) C() X() E()\n") );
         wm.fireAllRules();
-        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(17);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(11);
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
@@ -325,10 +318,10 @@ public class RemoveRuleTest {
 
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(6);
-        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(17);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(11);
 
         kbase1.removeRule("org.kie", "r2");
-        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(12);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
 
         assertThat(b1Mem.getSegmentMemory()).isSameAs(sm);
         assertThat(c1Mem.getSegmentMemory()).isSameAs(sm);
@@ -412,11 +405,11 @@ public class RemoveRuleTest {
 
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(2);
-        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   A() B() C() X() E()\n") );
         wm.fireAllRules();
-        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(8);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
         assertThat(list.size()).isEqualTo(4);
 
         RuleTerminalNode rtn1 = getRtn("org.kie.r1", kbase1);
@@ -442,7 +435,7 @@ public class RemoveRuleTest {
         pmem1 = wm.getNodeMemory(rtn1);
         kbase1.removeRule("org.kie", "r2");
         System.out.println( "---" );
-        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
         assertThat(sm.getFirst()).isNull();
 
         pmem1 = wm.getNodeMemory(rtn1);

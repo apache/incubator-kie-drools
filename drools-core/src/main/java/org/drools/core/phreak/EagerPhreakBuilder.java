@@ -15,61 +15,25 @@
 
 package org.drools.core.phreak;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Memory;
 import org.drools.base.common.NetworkNode;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.TupleSets;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.core.WorkingMemory;
+import org.drools.core.common.*;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.core.reteoo.AlphaTerminalNode;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.FromNode.FromMemory;
-import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.RightTupleSinkAdapter;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleNode;
-import org.drools.core.reteoo.LeftTupleSinkNode;
-import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.ObjectSink;
-import org.drools.core.reteoo.ObjectSource;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
-import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathEndNode.PathMemSpec;
-import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.QueryElementNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.MemoryPrototype;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
-import org.drools.core.reteoo.SegmentNodeMemory;
-import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.reteoo.WindowNode;
 import org.drools.core.util.FastIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.isAssociatedWith;
 
@@ -1116,10 +1080,9 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
             os = os.getParentObjectSource();
         }
-        ObjectTypeNode otn  = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory<?> omem = wm.getNodeMemory(otn); // For some reason cannot move this to peek, as TruthMaintenanceTEst.testLogicalInsertionsDynamicRule fails
 
-        Iterator<InternalFactHandle> it = omem.iterator();
+        ObjectTypeNode otn  = (ObjectTypeNode) os;
+        Iterator<InternalFactHandle> it = otn.getFactHandlesIterator(wm);
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
             fh.forEachLeftTuple( lt -> {
