@@ -11,6 +11,8 @@ This chapter contains the release notes for the {PRODUCT} 8-series.
 
 For the release notes of the _previous releases_, you can refer to the {PRODUCT} documentation of link:https://docs.drools.org/7.73.0.Final/drools-docs/html_single/index.html#droolsreleasenoteschapter[version 7].
 
+include::_release-notes-8.40.adoc[leveloffset=0]
+
 include::_release-notes-8.33.adoc[leveloffset=0]
 
 include::_release-notes-8.32.adoc[leveloffset=0]
