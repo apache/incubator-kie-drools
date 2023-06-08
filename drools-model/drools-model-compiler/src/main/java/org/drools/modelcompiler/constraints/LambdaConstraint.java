@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
+import java.util.Optional;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ValueType;
@@ -30,6 +31,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.Tuple;
@@ -130,15 +132,18 @@ public class LambdaConstraint extends AbstractConstraint {
         }
     }
 
+    /*
+     * pattern is not used in this method because reactOnProperties are already filtered by ExpressionTyper.addReactOnPropertyForArgument
+     */
     @Override
-    public BitMask getListenedPropertyMask( Class modifiedClass, List<String> settableProperties ) {
+    public BitMask getListenedPropertyMask( Optional<Pattern> pattern, Class modifiedClass, List<String> settableProperties ) {
         BitMask mask = adaptBitMask( evaluator.getReactivityBitMask() );
         if (mask != null) {
             return mask;
         }
 
         if (evaluator.getReactiveProps().length == 0) {
-            return super.getListenedPropertyMask( modifiedClass, settableProperties );
+            return super.getListenedPropertyMask( pattern, modifiedClass, settableProperties );
         }
 
         mask = getEmptyPropertyReactiveMask(settableProperties.size());

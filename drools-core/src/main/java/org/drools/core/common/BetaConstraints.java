@@ -23,6 +23,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
@@ -64,7 +65,7 @@ public interface BetaConstraints
 
     void resetFactHandle(final ContextEntry[] context);
 
-    BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties);
+    BitMask getListenedPropertyMask(Pattern pattern, Class modifiedClass, List<String> settableProperties);
 
     void init(BuildContext context, short betaNodeType);
     void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config);

@@ -17,11 +17,13 @@
 package org.drools.core.common;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
@@ -168,10 +170,10 @@ public class TripleBetaConstraints extends MultipleBetaConstraint {
         throw new UnsupportedOperationException();
     }
 
-    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
-        return constraints[0].getListenedPropertyMask(modifiedClass, settableProperties)
-                             .setAll(constraints[1].getListenedPropertyMask(modifiedClass, settableProperties))
-                             .setAll(constraints[2].getListenedPropertyMask(modifiedClass, settableProperties));
+    public BitMask getListenedPropertyMask(Pattern pattern, Class modifiedClass, List<String> settableProperties) {
+        return constraints[0].getListenedPropertyMask(Optional.of(pattern), modifiedClass, settableProperties)
+                             .setAll(constraints[1].getListenedPropertyMask(Optional.of(pattern), modifiedClass, settableProperties))
+                             .setAll(constraints[2].getListenedPropertyMask(Optional.of(pattern), modifiedClass, settableProperties));
     }
 
     public void registerEvaluationContext(BuildContext buildContext) {
