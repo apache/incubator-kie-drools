@@ -16,24 +16,25 @@
 
 package org.drools.modelcompiler.consequence;
 
+import org.drools.base.base.ValueResolver;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.consequence.Consequence;
+import org.drools.core.common.DefaultEventHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.model.Variable;
+import org.kie.api.runtime.rule.FactHandle;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.base.base.ValueResolver;
-import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.reteoo.BaseTuple;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.consequence.Consequence;
-import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.reteoo.Tuple;
-import org.drools.model.Variable;
-import org.kie.api.runtime.rule.FactHandle;
-
-public class LambdaConsequence implements Consequence<KnowledgeHelper> {
+public class LambdaConsequence implements Consequence<KnowledgeHelper>, Serializable {
 
     // Enable the optimization to extract from the activation tuple the arguments to be passed to this
     // consequence in linear time by traversing the tuple only once.
@@ -224,7 +225,7 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
         return facts;
     }
 
-    private static class GlobalSupplier implements Comparable<GlobalSupplier> {
+    private static class GlobalSupplier implements Comparable<GlobalSupplier>, Serializable {
         private final int supplierIndex;
         private final String globalName;
 
@@ -242,7 +243,7 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
         }
     }
 
-    private static class TupleFactSupplier implements Comparable<TupleFactSupplier> {
+    private static class TupleFactSupplier implements Comparable<TupleFactSupplier>, Serializable {
         private final int         supplierIndex;
         private final Declaration declaration;
         private final int         declarationTupleIndex;

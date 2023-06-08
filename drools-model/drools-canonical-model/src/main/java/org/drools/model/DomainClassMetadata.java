@@ -17,7 +17,9 @@
 
 package org.drools.model;
 
-public interface DomainClassMetadata {
+import java.io.Serializable;
+
+public interface DomainClassMetadata extends Serializable {
     Class<?> getDomainClass();
     int getPropertiesSize();
     int getPropertyIndex(String name);
