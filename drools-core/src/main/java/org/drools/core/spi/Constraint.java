@@ -20,10 +20,12 @@ import java.io.Externalizable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
 import org.drools.core.util.bitmask.BitMask;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -76,7 +78,19 @@ public interface Constraint
      */
     boolean isTemporal();
 
-    default BitMask getListenedPropertyMask( Class modifiedClass, List<String> settableProperties ) {
+    default BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties ) {
+        return getListenedPropertyMask(Optional.empty(), modifiedClass, settableProperties);
+    }
+
+    /**
+     * Returns property reactivity BitMask of this constraint.
+     * 
+     * @param pattern which this constraint belongs to. if pattern is empty, bind variables are considered to be declared in the same pattern. It should be fine for alpha constraints
+     * @param modifiedClass
+     * @param settableProperties
+     * @return property reactivity BitMask
+     */
+    default BitMask getListenedPropertyMask(Optional<Pattern> pattern, Class modifiedClass, List<String> settableProperties ) {
         return allSetButTraitBitMask();
     }
 

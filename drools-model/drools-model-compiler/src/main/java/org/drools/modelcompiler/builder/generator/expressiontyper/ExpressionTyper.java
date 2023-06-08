@@ -633,7 +633,14 @@ public class ExpressionTyper {
             String name = ((NameExpr) arg).getNameAsString();
             ruleContext.getDeclarationById(name)
                        .filter(decl -> decl.getBelongingPatternDescr().isPresent())
-                       .filter(decl -> decl.getBelongingPatternDescr().equals(ruleContext.getCurrentPatternDescr()))
+                       .filter(decl -> {
+                           if (decl.getBelongingPatternDescr().equals(ruleContext.getCurrentPatternDescr())) {
+                               return true;
+                           } else {
+                               context.addVariableFromDifferentPattern(name);
+                               return false;
+                           }
+                       })
                        .flatMap(decl -> decl.getBoundVariable())
                        .ifPresent(context::addReactOnProperties);
             return;
