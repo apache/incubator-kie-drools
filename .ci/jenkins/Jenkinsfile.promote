@@ -53,6 +53,8 @@ pipeline {
 
                         assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
+
+                    setupCypressEnv('9.7.0')
                 }
             }
         }
@@ -119,6 +121,12 @@ void sendNotification() {
         mailer.sendMarkdownTestSummaryNotification('Promote', "[${getBuildBranch()}] Kogito Apps", [env.KOGITO_CI_EMAIL_TO])
     } else {
         echo 'No notification sent per configuration'
+    }
+}
+
+void setupCypressEnv(String cypressVersion) {
+    if (env.CYPRESS_BINARY_URL) {
+        env.CYPRESS_INSTALL_BINARY = "${CYPRESS_BINARY_URL}/cypress-${cypressVersion}.zip"
     }
 }
 

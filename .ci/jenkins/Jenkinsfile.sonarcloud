@@ -27,6 +27,13 @@ pipeline {
     }
 
     stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    setupCypressEnv('9.7.0')
+                }
+            }
+        }
         stage('Checkout') {
             steps {
                 script {
@@ -77,4 +84,10 @@ pipeline {
 MavenCommand getMavenCommand(){
     return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId('kogito_release_settings')
+}
+
+void setupCypressEnv(String cypressVersion) {
+    if (env.CYPRESS_BINARY_URL) {
+        env.CYPRESS_INSTALL_BINARY = "${CYPRESS_BINARY_URL}/cypress-${cypressVersion}.zip"
+    }
 }
