@@ -21,6 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
@@ -28,6 +29,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
@@ -260,10 +262,10 @@ public class DefaultBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
+    public BitMask getListenedPropertyMask(Pattern pattern, Class modifiedClass, List<String> settableProperties) {
         BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
         for (BetaNodeFieldConstraint constraint : constraints) {
-            mask = mask.setAll(constraint.getListenedPropertyMask(modifiedClass, settableProperties));
+            mask = mask.setAll(constraint.getListenedPropertyMask(Optional.of(pattern), modifiedClass, settableProperties));
         }
         return mask;
     }

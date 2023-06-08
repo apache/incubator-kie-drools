@@ -25,6 +25,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
@@ -151,7 +152,7 @@ public class EmptyBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
+    public BitMask getListenedPropertyMask(Pattern pattern, Class modifiedClass, List<String> settableProperties) {
         return getEmptyPropertyReactiveMask(settableProperties.size());
     }
 
