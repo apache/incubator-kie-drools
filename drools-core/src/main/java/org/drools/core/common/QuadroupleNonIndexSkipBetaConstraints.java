@@ -20,15 +20,17 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
+import java.util.Optional;
 
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.base.base.ObjectType;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.base.base.ObjectType;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -154,11 +156,11 @@ public class QuadroupleNonIndexSkipBetaConstraints
         return this.constraints.isAllowedCachedRight(context, tuple);
     }
 
-    public BitMask getListenedPropertyMask(ObjectType modifiedType, List<String> settableProperties) {
-        return constraint0.getListenedPropertyMask(modifiedType, settableProperties)
-                .setAll(constraint1.getListenedPropertyMask(modifiedType, settableProperties))
-                .setAll(constraint2.getListenedPropertyMask(modifiedType, settableProperties))
-                .setAll(constraint3.getListenedPropertyMask(modifiedType, settableProperties));
+    public BitMask getListenedPropertyMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties) {
+        return constraint0.getListenedPropertyMask(Optional.of(pattern), modifiedType, settableProperties)
+                .setAll(constraint1.getListenedPropertyMask(Optional.of(pattern), modifiedType, settableProperties))
+                .setAll(constraint2.getListenedPropertyMask(Optional.of(pattern), modifiedType, settableProperties))
+                .setAll(constraint3.getListenedPropertyMask(Optional.of(pattern), modifiedType, settableProperties));
     }
 
     public boolean isLeftUpdateOptimizationAllowed() {
