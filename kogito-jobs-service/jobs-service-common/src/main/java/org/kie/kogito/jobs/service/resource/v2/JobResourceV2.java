@@ -27,6 +27,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.kie.kogito.jobs.service.adapter.JobDetailsAdapter;
 import org.kie.kogito.jobs.service.api.Job;
 import org.kie.kogito.jobs.service.model.JobDetails;
@@ -57,6 +58,7 @@ public class JobResourceV2 {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(operationId = "createJobV2")
     public Uni<Job> create(Job job) {
         LOGGER.debug("REST create {}", job);
         jobValidator.validateToCreate(job);
@@ -69,6 +71,7 @@ public class JobResourceV2 {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
+    @Operation(operationId = "deleteJobV2")
     public Uni<Job> delete(@PathParam("id") String id) {
         return Uni.createFrom().completionStage(scheduler.cancel(id))
                 .onItem().ifNull().failWith(new NotFoundException("Failed to cancel job scheduling for jobId " + id))
@@ -78,6 +81,7 @@ public class JobResourceV2 {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
+    @Operation(operationId = "getJobV2")
     public Uni<Job> get(@PathParam("id") String id) {
         return Uni.createFrom().completionStage(jobRepository.get(id))
                 .onItem().ifNull().failWith(new NotFoundException("Job not found id " + id))

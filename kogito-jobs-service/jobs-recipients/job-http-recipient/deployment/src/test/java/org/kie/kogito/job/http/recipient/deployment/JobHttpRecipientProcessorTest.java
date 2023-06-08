@@ -19,6 +19,7 @@ package org.kie.kogito.job.http.recipient.deployment;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.job.http.recipient.HttpJobExecutor;
 import org.kie.kogito.job.http.recipient.HttpRecipientValidator;
+import org.kie.kogito.jobs.service.api.TemporalUnit;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
@@ -69,6 +70,7 @@ class JobHttpRecipientProcessorTest {
                 HttpRecipientBinaryPayloadData.class.getName(),
                 HttpRecipientJsonPayloadData.class.getName(),
                 CronSchedule.class.getName(),
-                TimerSchedule.class.getName());
+                TimerSchedule.class.getName(),
+                TemporalUnit.class.getName());
     }
 }

@@ -37,7 +37,7 @@ public class JacksonConfiguration {
     @Produces
     public ObjectMapperCustomizer customizer() {
         return objectMapper -> {
-            LOGGER.info("Jackson customization initialized.");
+            LOGGER.debug("Jackson customization initialized.");
             objectMapper
                     .registerModule(new JavaTimeModule())
                     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)

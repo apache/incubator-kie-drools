@@ -26,6 +26,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,7 @@ public class CallbackResourceTest {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(operationId = "postCallbackTest")
     public CompletionStage<String> post(@QueryParam("limit") String limit) {
         LOGGER.debug("post received with 'limit' param = {}", limit);
         return CompletableFuture.completedFuture("Post Success");
@@ -44,6 +46,7 @@ public class CallbackResourceTest {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
+    @Operation(operationId = "getCallbackTest")
     public CompletionStage<String> get() {
         LOGGER.debug("get received");
         return CompletableFuture.completedFuture("Get Success");

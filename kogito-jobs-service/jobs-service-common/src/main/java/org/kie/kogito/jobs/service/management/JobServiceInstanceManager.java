@@ -120,7 +120,7 @@ public class JobServiceInstanceManager {
         //enable producing events
         messagingChangeEventEvent.fire(new MessagingChangeEvent(true));
 
-        LOGGER.warn("Enabled communication for leader instance");
+        LOGGER.info("Enabled communication for leader instance");
     }
 
     void onShutdown(@Observes ShutdownEvent event) {

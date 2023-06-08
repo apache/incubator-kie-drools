@@ -19,6 +19,7 @@ package org.kie.kogito.job.sink.recipient.deployment;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.job.sink.recipient.SinkJobExecutor;
 import org.kie.kogito.job.sink.recipient.SinkRecipientValidator;
+import org.kie.kogito.jobs.service.api.TemporalUnit;
 import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient;
 import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientBinaryPayloadData;
 import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientJsonPayloadData;
@@ -28,6 +29,7 @@ import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import io.cloudevents.SpecVersion;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.AdditionalIndexedClassesBuildItem;
@@ -66,7 +68,10 @@ class JobSinkRecipientProcessorTest {
                 SinkRecipientPayloadData.class.getName(),
                 SinkRecipientBinaryPayloadData.class.getName(),
                 SinkRecipientJsonPayloadData.class.getName(),
+                SinkRecipient.ContentMode.class.getName(),
                 CronSchedule.class.getName(),
-                TimerSchedule.class.getName());
+                TimerSchedule.class.getName(),
+                TemporalUnit.class.getName(),
+                SpecVersion.class.getName());
     }
 }
