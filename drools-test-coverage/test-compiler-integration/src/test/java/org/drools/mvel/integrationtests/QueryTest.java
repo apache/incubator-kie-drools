@@ -14,32 +14,15 @@
 */
 package org.drools.mvel.integrationtests;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-import javax.xml.bind.JAXBContext;
-
-import org.drools.base.base.DroolsQuery;
-import org.drools.core.QueryResultsImpl;
 import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.DroolsQuery;
+import org.drools.base.base.ObjectType;
+import org.drools.commands.runtime.FlatQueryResults;
+import org.drools.core.QueryResultsImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteDumper;
-import org.drools.commands.runtime.FlatQueryResults;
-import org.drools.base.base.ObjectType;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cheese;
@@ -70,6 +53,23 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
+
+import javax.xml.bind.JAXBContext;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -436,7 +436,7 @@ public class QueryTest {
 
         ObjectType key = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode droolsQueryNode = obnodes.get( key );
-        Iterator<InternalFactHandle> it = sessionImpl.getNodeMemory( droolsQueryNode ).iterator();
+        Iterator<InternalFactHandle> it = droolsQueryNode.getFactHandlesIterator(sessionImpl);
         assertThat(it.hasNext()).isFalse();
     }
 

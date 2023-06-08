@@ -16,31 +16,30 @@
 
 package org.drools.core.reteoo;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
+import org.drools.base.base.ObjectType;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.BehaviorRuntime;
-import org.drools.core.rule.BehaviorManager;
 import org.drools.core.rule.BehaviorContext;
-import org.drools.base.rule.EntryPointId;
+import org.drools.core.rule.BehaviorManager;
+import org.drools.core.rule.BehaviorRuntime;
 import org.drools.core.rule.SlidingTimeWindow;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.base.ObjectType;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * <code>WindowNodes</code> are nodes in the <code>Rete</code> network used
@@ -221,12 +220,8 @@ public class WindowNode extends ObjectSource
         sink.byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, reteEvaluator);
     }
 
-    public void updateSink(final ObjectSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-        final ObjectTypeNodeMemory omem = workingMemory.getNodeMemory( getObjectTypeNode());
-        Iterator<InternalFactHandle> it = omem.iterator();
-
+    public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
+        Iterator<InternalFactHandle> it = getObjectTypeNode().getFactHandlesIterator(workingMemory);
         while (it.hasNext()) {
             assertObject( it.next(), context, workingMemory );
         }

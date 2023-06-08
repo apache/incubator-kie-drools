@@ -17,6 +17,7 @@ package org.drools.serialization.protobuf.iterators;
 
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
@@ -24,7 +25,6 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.FromNode.FromMemory;
-import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
@@ -176,10 +176,9 @@ public class PhreakActivationIterator
             os = os.getParentObjectSource();
         }
         ObjectTypeNode otn = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = reteEvaluator.getNodeMemory(otn);
         LeftTupleSink firstLiaSink = lian.getSinkPropagator().getFirstLeftTupleSink();
 
-        java.util.Iterator<InternalFactHandle> it = omem.iterator();
+        java.util.Iterator<InternalFactHandle> it = otn.getFactHandlesIterator((InternalWorkingMemory) reteEvaluator);
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
             fh.forEachLeftTuple( lt -> {

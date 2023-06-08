@@ -16,12 +16,12 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.Collection;
-import java.util.Set;
-
 import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+
+import java.util.Collection;
+import java.util.Set;
 
 public interface NodeInfo {
 
@@ -29,50 +29,44 @@ public interface NodeInfo {
      * Returns this node ID
      * @return
      */
-    public int getId();
+    int getId();
 
     /**
      * Returns the partition ID this node belongs to
      * @return
      */
-    public RuleBasePartitionId getPartitionId();
+    RuleBasePartitionId getPartitionId();
 
     /**
      * Returns the set of rules this node belongs to
      * @return
      */
-    public Set<RuleImpl> getRules();
+    Set<RuleImpl> getRules();
 
     /**
      * Returns the actual node
      * @return
      */
-    public NetworkNode getNode();
+    NetworkNode getNode();
     
-    /**
-     * Returns true if memory is enabled for this node
-     * @return
-     */
-    public boolean isMemoryEnabled();
-
     /**
      * Returns the number of tuples in the tuple memory 
      * @return
      */
-    public long getTupleMemorySize();
+    long getTupleMemorySize();
 
     /**
      * Returns the number of facts in the fact memory
      * @return
      */
-    public long getFactMemorySize();
+    long getFactMemorySize();
 
     /**
      * Returns the number of infered fact handles created in this node
      * @return
      */
-    public long getCreatedFactHandles();
+    long getCreatedFactHandles();
     
-    public Collection<? extends NetworkNode> getSinkList();
+    Collection<? extends NetworkNode> getSinkList();
 
 }

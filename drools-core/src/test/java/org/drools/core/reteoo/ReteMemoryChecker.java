@@ -37,11 +37,7 @@ public class ReteMemoryChecker {
     private static void checkNodeMemory(InternalWorkingMemory wm, BaseNode node) {
         if (node instanceof MemoryFactory) {
             Memory memory = wm.getNodeMemory( (MemoryFactory) node );
-            if ( NodeTypeEnums.ObjectTypeNode == node.getType() ) {
-                if ( !( memory instanceof ObjectTypeNode.ObjectTypeNodeMemory ) ) {
-                    throw new RuntimeException( "Invalid memory type. Node: " + node + " has memory " + memory );
-                }
-            } else if ( NodeTypeEnums.LeftInputAdapterNode == node.getType() ) {
+            if ( NodeTypeEnums.LeftInputAdapterNode == node.getType() ) {
                 if ( !( memory instanceof LeftInputAdapterNode.LiaNodeMemory ) ) {
                     throw new RuntimeException( "Invalid memory type. Node: " + node + " has memory " + memory );
                 }

@@ -16,15 +16,15 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.Collection;
-
-import org.drools.core.common.Memory;
 import org.drools.base.common.NetworkNode;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.core.common.Memory;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.RightInputAdapterNode;
+
+import java.util.Collection;
 
 public class RightInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -51,7 +51,6 @@ public class RightInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
             bm =  (BetaMemory) childMemory;
         }
 
-        ni.setMemoryEnabled( true );
         ni.setTupleMemorySize( bm.getRightTupleMemory().size() );
         ni.setCreatedFactHandles( bm.getRightTupleMemory().size() );
     }

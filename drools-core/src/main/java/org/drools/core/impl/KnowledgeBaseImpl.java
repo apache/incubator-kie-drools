@@ -848,7 +848,6 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         BuildContext context = new BuildContext(this, Collections.emptyList());
         context.setCurrentEntryPoint(epn.getEntryPoint());
         context.setTupleMemoryEnabled(true);
-        context.setObjectTypeNodeMemoryEnabled(true);
         context.setPartitionId(RuleBasePartitionId.MAIN_PARTITION);
 
         ObjectTypeNode otn = nodeFactory.buildObjectTypeNode(this.reteooBuilder.getNodeIdsGenerator().getNextId(),

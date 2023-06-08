@@ -16,34 +16,34 @@
 
 package org.drools.core.reteoo.builder;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
-
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.base.RuleBuildContext;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleComponent;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.XpathConstraint;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.base.rule.EntryPointId;
-import org.drools.base.rule.GroupElement;
-import org.drools.base.rule.Pattern;
-import org.drools.base.rule.RuleConditionElement;
-import org.drools.base.rule.constraint.XpathConstraint;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.base.rule.RuleComponent;
 import org.drools.core.time.TemporalDependencyMatrix;
-import org.drools.base.RuleBuildContext;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.List;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
@@ -52,7 +52,7 @@ import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
  */
 public class BuildContext implements RuleBuildContext {
 
-    private List<TerminalNode> terminals = new ArrayList<>();
+    private final List<TerminalNode> terminals = new ArrayList<>();
 
     // tuple source to attach next node to
     private LeftTupleSource tupleSource;
@@ -80,7 +80,6 @@ public class BuildContext implements RuleBuildContext {
     // the current entry point
     private EntryPointId                     currentEntryPoint;
     private boolean                          tupleMemoryEnabled;
-    private boolean                          objectTypeNodeMemoryEnabled;
     private boolean                          query;
 
     private int                              subRuleIndex;
@@ -116,7 +115,6 @@ public class BuildContext implements RuleBuildContext {
         this.ruleBase = ruleBase;
         this.workingMemories = workingMemories;
         this.tupleMemoryEnabled = true;
-        this.objectTypeNodeMemoryEnabled = true;
         this.currentEntryPoint = EntryPointId.DEFAULT;
         this.attachPQN = true;
         this.emptyForAllBetaConstraints = false;
@@ -285,14 +283,6 @@ public class BuildContext implements RuleBuildContext {
         this.tupleMemoryEnabled = hasLeftMemory;
     }
 
-    public boolean isObjectTypeNodeMemoryEnabled() {
-        return objectTypeNodeMemoryEnabled;
-    }
-
-    public void setObjectTypeNodeMemoryEnabled(boolean hasObjectTypeMemory) {
-        this.objectTypeNodeMemoryEnabled = hasObjectTypeMemory;
-    }
-
     public boolean isQuery() {
         return query;
     }
@@ -438,8 +428,8 @@ public class BuildContext implements RuleBuildContext {
         return terminated;
     }
 
-    void setTerminated(boolean terminated) {
-        this.terminated = terminated;
+    void terminate() {
+        this.terminated = true;
     }
 
     public String getConsequenceName() {
