@@ -16,6 +16,27 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.base.InitialFact;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.time.JobHandle;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.UpdateContext;
+import org.drools.core.impl.WorkingMemoryReteExpireAction;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.time.Job;
+import org.drools.core.time.JobContext;
+import org.drools.core.time.impl.DefaultJobHandle;
+import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.util.bitmask.EmptyBitMask;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,32 +44,6 @@ import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import org.drools.base.InitialFact;
-import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.base.base.ClassObjectType;
-import org.drools.base.base.ObjectType;
-import org.drools.base.base.ValueType;
-import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.FactHandleClassStore;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Memory;
-import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.base.common.RuleBasePartitionId;
-import org.drools.core.common.UpdateContext;
-import org.drools.core.impl.WorkingMemoryReteExpireAction;
-import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.common.PropagationContext;
-import org.drools.base.rule.EntryPointId;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
-import org.drools.base.time.JobHandle;
-import org.drools.core.time.impl.DefaultJobHandle;
-import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.bitmask.EmptyBitMask;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
@@ -66,7 +61,7 @@ import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
  *
  * @see Rete
  */
-public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFactory<ObjectTypeNode.ObjectTypeNodeMemory> {
+public class ObjectTypeNode extends ObjectSource implements ObjectSink {
 
 
     private static final long serialVersionUID = 510l;
@@ -76,9 +71,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
      */
     protected ObjectType objectType;
 
-    private boolean objectMemoryEnabled;
-
-    private long                            expirationOffset = -1;
+    private long expirationOffset = -1;
 
     /* always dirty after serialisation */
     private transient volatile boolean dirty;
@@ -113,8 +106,6 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
               context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeRangeIndexThreshold());
         this.objectType = objectType;
         idGenerator = new IdGenerator(id);
-
-        setObjectMemoryEnabled(context.isObjectTypeNodeMemoryEnabled());
 
         this.dirty = true;
 
@@ -218,11 +209,6 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
     public void assertInitialFact(final InternalFactHandle factHandle,
                                   final PropagationContext context,
                                   final ReteEvaluator reteEvaluator) {
-        if (objectMemoryEnabled) {
-            InitialFactObjectTypeNodeMemory memory = (InitialFactObjectTypeNodeMemory) reteEvaluator.getNodeMemory(this);
-            memory.add(factHandle);
-        }
-
         checkDirty();
         propagateAssert(factHandle, context, reteEvaluator);
     }
@@ -343,12 +329,8 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
     }
 
     @Override
-    public void modifyObject(InternalFactHandle factHandle,
-                             ModifyPreviousTuples modifyPreviousTuples,
-                             PropagationContext context,
-                             ReteEvaluator reteEvaluator) {
+    public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator) {
         checkDirty();
-
         this.sink.propagateModifyObject(factHandle,
                                         modifyPreviousTuples,
                                         context.adaptModificationMaskForObjectType(objectType, reteEvaluator),
@@ -356,18 +338,24 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
     }
 
     @Override
-    public void updateSink(final ObjectSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
+    public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
         checkDirty();
-
-        // Regular updateSink
-        final ObjectTypeNodeMemory memory = workingMemory.getNodeMemory(this);
-        Iterator<InternalFactHandle> it = memory.iterator();
-
-        while (it.hasNext()) {
-            sink.assertObject(it.next(), context, workingMemory);
+        Class<?> classType = ((ClassObjectType) getObjectType()).getClassType();
+        if (InitialFact.class.isAssignableFrom(classType)) {
+            sink.assertObject(workingMemory.getInitialFactHandle(), context, workingMemory);
+        } else {
+            Iterator<InternalFactHandle> it = workingMemory.getStoreForClass(classType).iterator();
+            while (it.hasNext()) {
+                sink.assertObject(it.next(), context, workingMemory);
+            }
         }
+    }
+
+    public Iterator<InternalFactHandle> getFactHandlesIterator(InternalWorkingMemory workingMemory) {
+        Class<?> classType = ((ClassObjectType) getObjectType()).getClassType();
+        return InitialFact.class.isAssignableFrom(classType) ?
+                Collections.singleton(workingMemory.getInitialFactHandle()).iterator() :
+                workingMemory.getStoreForClass(classType).iterator();
     }
 
     /**
@@ -435,31 +423,6 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         return false;
     }
 
-    /**
-     * Creates memory for the node using PrimitiveLongMap as its optimised for storage and reteivals of Longs.
-     * However PrimitiveLongMap is not ideal for spase data. So it should be monitored incase its more optimal
-     * to switch back to a standard HashMap.
-     */
-    @Override
-    public ObjectTypeNodeMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        if (objectType.isTemplate()) {
-            throw new UnsupportedOperationException("this method is used only for the initial fact and during incremental compilation which is not supported yet for fact templates");
-        }
-        Class classType = ((ClassObjectType) objectType).getClassType();
-        if (InitialFact.class.isAssignableFrom(classType)) {
-            return new InitialFactObjectTypeNodeMemory(classType);
-        }
-        return new ObjectTypeNodeMemory(classType, reteEvaluator);
-    }
-
-    public boolean isObjectMemoryEnabled() {
-        return this.objectMemoryEnabled;
-    }
-
-    public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
-        this.objectMemoryEnabled = objectMemoryEnabled;
-    }
-
     @Override
     public String toString() {
         return "[ObjectTypeNode(" + this.id + ")::" + ((EntryPointNode) this.source).getEntryPoint() + " objectType=" + this.objectType + " expiration=" + this.getExpirationOffset() + "ms ]";
@@ -496,15 +459,6 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
 
     public void setExpirationOffset(long expirationOffset) {
         this.expirationOffset = expirationOffset;
-        if (!this.objectType.getValueType().equals(ValueType.QUERY_TYPE)) {
-            if (expirationOffset > 0) {
-                // override memory enabled settings
-                this.setObjectMemoryEnabled(true);
-            } else if (expirationOffset == 0) {
-                // disable memory
-                this.setObjectMemoryEnabled(false);
-            }
-        }
     }
 
     public void mergeExpirationOffset(ObjectTypeNode other) {
@@ -586,94 +540,5 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
                                        PropagationContext context,
                                        ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException("This should never get called, as the PropertyReactive first happens at the AlphaNode");
-    }
-
-
-    public static class ObjectTypeNodeMemory<T> implements Memory {
-        private FactHandleClassStore store;
-        private Class classType;
-
-        ObjectTypeNodeMemory(Class classType) {
-            this.classType = classType;
-        }
-
-        ObjectTypeNodeMemory(Class classType, ReteEvaluator reteEvaluator) {
-            this(classType);
-            store = reteEvaluator.getStoreForClass(classType);
-        }
-
-        @Override
-        public short getNodeType() {
-            return NodeTypeEnums.ObjectTypeNode;
-        }
-
-        public <T> Iterator<InternalFactHandle> iterator() {
-            return (Iterator<InternalFactHandle>) store.iterator();
-        }
-
-        @Override
-        public SegmentMemory getSegmentMemory() {
-            return null;
-        }
-
-        @Override
-        public void setSegmentMemory(SegmentMemory segmentMemory) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Memory getPrevious() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void setPrevious(Memory previous) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void nullPrevNext() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void setNext(Memory next) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Memory getNext() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void reset() { }
-
-        @Override
-        public String toString() {
-            return "ObjectTypeMemory for " + classType;
-        }
-    }
-
-    public static class InitialFactObjectTypeNodeMemory<T> extends ObjectTypeNodeMemory<T>  {
-        private List<InternalFactHandle> list = Collections.emptyList();
-
-        InitialFactObjectTypeNodeMemory(Class classType) {
-            super(classType);
-        }
-
-        public void add(InternalFactHandle factHandle) {
-            list = Collections.singletonList( factHandle );
-        }
-
-        @Override
-        public Iterator<InternalFactHandle> iterator() {
-            return list.iterator();
-        }
-
-        @Override
-        public void reset() {
-            list = Collections.emptyList();
-        }
     }
 }

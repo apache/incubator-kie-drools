@@ -21,15 +21,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.consequence.Consequence;
+import org.drools.core.common.DefaultEventHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.reteoo.Tuple;
 import org.drools.model.Variable;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -76,7 +75,7 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
         consequence.getBlock().execute( fetchFacts( knowledgeHelper, valueResolver ) );
     }
 
-    public static Object[] declarationsToFacts(ReteEvaluator reteEvaluator, Tuple tuple, Declaration[] declarations, Variable[] vars ) {
+    public static Object[] declarationsToFacts(ValueResolver reteEvaluator, BaseTuple tuple, Declaration[] declarations, Variable[] vars ) {
         return declarationsToFacts( null, reteEvaluator, tuple, declarations, vars, false );
     }
 
@@ -265,7 +264,7 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
             }
         }
 
-        public BaseTuple resolveAndStore(Object[] facts, ReteEvaluator reteEvaluator, BaseTuple tuple, FactHandleLookup fhLookup) {
+        public BaseTuple resolveAndStore(Object[] facts, ValueResolver reteEvaluator, BaseTuple tuple, FactHandleLookup fhLookup) {
             // traverses the tuple of as many steps as distance between the former supplier and this one
             for (int i = 0; i < offsetFromPrior; i++) {
                 tuple = tuple.getParent();
@@ -274,7 +273,7 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
             return tuple;
         }
 
-        public void resolveAndStore(Object[] facts, ReteEvaluator reteEvaluator, FactHandle factHandle, FactHandleLookup fhLookup) {
+        public void resolveAndStore(Object[] facts, ValueResolver reteEvaluator, FactHandle factHandle, FactHandleLookup fhLookup) {
             FactHandle fh = getOriginalFactHandle( factHandle );
             if ( useDrools ) {
                 fhLookup.put( fh.getObject(), fh );

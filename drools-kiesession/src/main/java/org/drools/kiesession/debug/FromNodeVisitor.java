@@ -16,12 +16,12 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.Collection;
-
 import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
+
+import java.util.Collection;
 
 public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -37,8 +37,6 @@ public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
         FromNode fn = (FromNode) node;
         DefaultNodeInfo ni = info.getNodeInfo( node );
         final FromMemory memory = (FromMemory) info.getSession().getNodeMemory( fn );
-        
-        ni.setMemoryEnabled( true );
         
         if( fn.isLeftTupleMemoryEnabled() ) {
             ni.setTupleMemorySize( memory.getBetaMemory().getLeftTupleMemory().size() );

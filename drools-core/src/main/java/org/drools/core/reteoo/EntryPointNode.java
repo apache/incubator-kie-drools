@@ -16,29 +16,29 @@
 
 package org.drools.core.reteoo;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.EntryPointId;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.common.RuleBasePartitionId;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.EntryPointId;
-import org.drools.base.base.ObjectType;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A node that is an entry point into the Rete network.
@@ -378,20 +378,16 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
                  this.entryPoint.equals( ( (EntryPointNode) object ).entryPoint ) );
     }
 
-    public void updateSink(final ObjectSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
+    public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
         final ObjectTypeNode node = (ObjectTypeNode) sink;
-
         final ObjectType newObjectType = node.getObjectType();
-
         WorkingMemoryEntryPoint wmEntryPoint = workingMemory.getEntryPoint( this.entryPoint.getEntryPointId() );
 
         for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {
             if ( objectTypeConf.getConcreteObjectTypeNode() != null && newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
                 objectTypeConf.resetCache();
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
-                Iterator<InternalFactHandle> it = workingMemory.getNodeMemory( sourceNode ).iterator();
+                Iterator<InternalFactHandle> it = sourceNode.getFactHandlesIterator(workingMemory);
                 while ( it.hasNext() ) {
                     sink.assertObject( it.next(), context, workingMemory );
                 }

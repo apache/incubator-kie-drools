@@ -18,8 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.drools.base.base.CoreComponentsBuilder;
-import org.drools.util.ClassUtils;
 import org.drools.model.functions.Function1;
+import org.drools.util.ClassUtils;
 
 import static org.drools.base.util.Drools.hasMvel;
 

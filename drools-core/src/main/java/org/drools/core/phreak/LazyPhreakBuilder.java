@@ -15,16 +15,8 @@
 
 package org.drools.core.phreak;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -35,7 +27,6 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.AccumulateNode;
@@ -57,11 +48,9 @@ import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode;
@@ -80,6 +69,16 @@ import org.drools.core.util.FastIterator;
 import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.JOIN_NODE_BIT;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.NOT_NODE_BIT;
@@ -873,14 +872,9 @@ class LazyPhreakBuilder implements PhreakBuilder {
         while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
             os = os.getParentObjectSource();
         }
-        ObjectTypeNode otn  = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = wm.getNodeMemory(otn);
-        if (omem == null) {
-            // no OTN memory yet, i.e. no inserted matching objects, so no Tuples to process
-            return;
-        }
 
-        Iterator<InternalFactHandle> it = omem.iterator();
+        ObjectTypeNode otn  = (ObjectTypeNode) os;
+        Iterator<InternalFactHandle> it = otn.getFactHandlesIterator(wm);
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
             fh.forEachLeftTuple( lt -> {

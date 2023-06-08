@@ -151,7 +151,7 @@ public class LeftTupleIterator
                 }
 
                 ObjectTypeNode otn = (ObjectTypeNode) os;
-                otnIterator = wm.getNodeMemory( otn ).iterator();
+                otnIterator = otn.getFactHandlesIterator(wm);
 
                 while (otnIterator.hasNext()) {
                     InternalFactHandle handle = otnIterator.next();
