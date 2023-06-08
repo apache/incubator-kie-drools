@@ -21,7 +21,9 @@ import org.drools.model.DeclarationSource;
 import org.drools.model.DomainClassMetadata;
 import org.drools.model.Window;
 
-public class DeclarationImpl<T> extends VariableImpl<T> implements Declaration<T> {
+import java.io.Serializable;
+
+public class DeclarationImpl<T> extends VariableImpl<T> implements Declaration<T>, Serializable {
     private DeclarationSource source;
     private Window window;
     private DomainClassMetadata metadata;

@@ -19,7 +19,9 @@ package org.drools.model;
 
 import org.drools.model.functions.BlockN;
 
-public interface Consequence extends RuleItem {
+import java.io.Serializable;
+
+public interface Consequence extends RuleItem, Serializable {
 
     Variable[] getVariables();
     Variable[] getDeclarations();

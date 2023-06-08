@@ -17,16 +17,17 @@
 
 package org.drools.model.consequences;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 import org.drools.model.Consequence;
 import org.drools.model.Variable;
 import org.drools.model.functions.Block0;
 import org.drools.model.functions.BlockN;
 import org.drools.model.impl.ModelComponent;
 
-public class ConsequenceImpl implements Consequence, ModelComponent {
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+public class ConsequenceImpl implements Consequence, ModelComponent, Serializable {
     private final Variable[] variables;
     private final Variable[] declarations;
     private final BlockN block;

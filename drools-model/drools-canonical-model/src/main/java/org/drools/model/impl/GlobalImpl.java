@@ -18,7 +18,9 @@ package org.drools.model.impl;
 
 import org.drools.model.Global;
 
-public class GlobalImpl<T> extends VariableImpl<T> implements Global<T>, ModelComponent {
+import java.io.Serializable;
+
+public class GlobalImpl<T> extends VariableImpl<T> implements Global<T>, ModelComponent, Serializable {
     private final String pkg;
 
     public GlobalImpl(Class<T> type, String pkg) {

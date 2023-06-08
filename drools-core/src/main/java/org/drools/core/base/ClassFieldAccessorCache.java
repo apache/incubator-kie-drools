@@ -16,13 +16,6 @@
 
 package org.drools.core.base;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import org.drools.base.base.AccessorKey;
 import org.drools.base.base.ClassFieldInspector;
 import org.drools.base.base.ClassObjectType;
@@ -31,9 +24,17 @@ import org.drools.base.rule.accessor.WriteAccessor;
 import org.drools.wiring.api.ComponentsFactory;
 import org.drools.wiring.api.util.ByteArrayClassLoader;
 
+import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import static org.drools.util.ClassUtils.convertPrimitiveNameToType;
 
-public class ClassFieldAccessorCache {
+public class ClassFieldAccessorCache implements Serializable {
 
     private Map<ClassLoader, CacheEntry> cacheByClassLoader;
 
@@ -233,6 +234,5 @@ public class ClassFieldAccessorCache {
 
             return existing;
         }
-
     }
 }
