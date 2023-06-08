@@ -19,6 +19,7 @@ package org.drools.drlonyaml.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.drl.ast.descr.NotDescr;
 
@@ -31,6 +32,7 @@ public class Not implements Base {
     private List<Base> not = new ArrayList<>();
     
     public static Not from(NotDescr o) {
+        Objects.requireNonNull(o);
         Not result = new Not();
         result.not = Utils.from(o.getDescrs());
         return result;

@@ -17,6 +17,8 @@
 
 package org.drools.drlonyaml.model;
 
+import java.util.Objects;
+
 import org.drools.drl.ast.descr.ImportDescr;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -36,6 +38,7 @@ public class Import {
     }
 
     public static Import from(ImportDescr i) {
+        Objects.requireNonNull(i);
         Import result = new Import();
         result.target = i.getTarget();
         return result;

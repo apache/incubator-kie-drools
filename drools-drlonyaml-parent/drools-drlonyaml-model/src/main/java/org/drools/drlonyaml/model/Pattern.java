@@ -19,6 +19,7 @@ package org.drools.drlonyaml.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
@@ -43,6 +44,7 @@ public class Pattern implements Base {
     private String from;
     
     public static Pattern from(PatternDescr o) {
+        Objects.requireNonNull(o);
         Pattern result = new Pattern();
         result.given = o.getObjectType();
         if (o.getAllBoundIdentifiers().isEmpty()) {

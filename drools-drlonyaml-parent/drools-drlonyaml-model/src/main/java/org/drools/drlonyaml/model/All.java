@@ -19,6 +19,7 @@ package org.drools.drlonyaml.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.drl.ast.descr.AndDescr;
 
@@ -31,6 +32,7 @@ public class All implements Base {
     private List<Base> all = new ArrayList<>();
     
     public static All from(AndDescr o) {
+        Objects.requireNonNull(o);
         All result = new All();
         result.all = Utils.from(o.getDescrs());
         return result;
