@@ -5,7 +5,6 @@ import org.drools.base.reteoo.AccumulateContextEntry;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.Declaration;
-import org.drools.base.rule.MultiAccumulate;
 import org.drools.base.rule.accessor.Accumulator;
 import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReturnValueExpression;
@@ -23,6 +22,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

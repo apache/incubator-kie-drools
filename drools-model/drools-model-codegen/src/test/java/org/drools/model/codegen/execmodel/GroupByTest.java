@@ -1186,7 +1186,7 @@ public class GroupByTest extends BaseModelTest {
                 "global List<Object> results;\n" +
                 "rule X when\n" +
                 "    groupby(" +
-                "        $p : Person () and $p2 : Person () and $accumulate : Pair() from eval(Pair.create($p, $p2));" +
+                "        $p : Person () and $p2 : Person () and $accumulate : Pair() from Pair.create($p, $p2);" +
                 "        $key : Pair.create($p.getName().substring(0, 1), $p.getName().substring(1, 2));" +
                 "        $accresult : collectList(), $accresult2 : collectList()" +
                 "    )\n" +
@@ -1223,7 +1223,7 @@ public class GroupByTest extends BaseModelTest {
                 "global List<Object> results;\n" +
                 "rule X when\n" +
                 "    groupby(" +
-                "        $p : Person () and $p2 : Person () and $accumulate : Pair() from eval(Pair.create($p, $p2));" +
+                "        $p : Person () and $p2 : Person () and $accumulate : Pair() from Pair.create($p, $p2);" +
                 "        $key : Pair.create($p.getName().substring(0, 1), $p.getName().substring(1, 2));" +
                 "        $accresult : collectList(), $accresult2 : collectList()" +
                 "    )\n" +
@@ -1307,7 +1307,9 @@ public class GroupByTest extends BaseModelTest {
                 "rule R1 when\n" +
                 "    groupby(" +
                 "        groupby($p: Person (); $key: $p.getAge(); count()) and eval($key > 0);" +
-                "        $keyOuter: $key * 2;" +
+                "        $keyOuter: (int)($key * 2);" + // MVEL thinks type(int * 2) == Double,
+                                                        // meaning we need to cast for it to get the
+                                                        // correct type
                 "        $accresult : collectList($keyOuter)" +
                 "    )\n" +
                 "then\n" +
@@ -1468,6 +1470,7 @@ public class GroupByTest extends BaseModelTest {
                 "import " + Pair.class.getCanonicalName() + ";" +
                 "import " + List.class.getCanonicalName() + ";" +
                 "global List<Object> results;\n" +
+                "function Integer eval( Integer value ){ return value; }\n" +
                 "rule R1 when\n" +
                 "    accumulate(" +
                 "        accumulate($p : Person ($age : age); $sumOfAges : sum($age)) " +

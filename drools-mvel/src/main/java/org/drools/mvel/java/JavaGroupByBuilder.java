@@ -16,6 +16,7 @@ package org.drools.mvel.java;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,7 +28,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.drools.base.base.ValueType;
 import org.drools.base.reteoo.SortDeclarations;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.compiler.compiler.AnalysisResult;
@@ -136,10 +139,10 @@ public class JavaGroupByBuilder
             RuleBuildContext context,
             GroupByDescr groupByDescr,
             Pattern pattern,
-            Map<String, Declaration> declsInScope,
+            Map<String, Class<?>> declCls,
             Declaration[] sourceDeclArr,
             boolean readLocalsFromTuple,
-            Accumulate innerAccumulate) {
+            Function<Collection<Declaration>, Accumulate> innerAccumulateSupplier) {
         // analyze the expression
         Map<String, Declaration> groupByDeclsInScope = new HashMap<>();
         groupByDeclsInScope.putAll(Arrays.stream(sourceDeclArr)
@@ -161,16 +164,18 @@ public class JavaGroupByBuilder
                 new HashSet<>(),
                 usedIdentifiers );
 
-        MVELGroupByAccumulate out = new MVELGroupByAccumulate(innerAccumulate, requiredDeclarations, null);
-
         final String className = "groupbyExpression" + context.getNextId();
 
         Class<?> keyType = MVELExprAnalyzer.getExpressionType(context, DeclarationScopeResolver.getDeclarationClasses(groupByDeclsInScope), pattern, groupByDescr.getGroupingFunction());
-
-        bindGroupingFunctionReaderToDeclaration(context, groupByDescr,
-                pattern,
-                new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class), groupByDescr.getFunctions().size(), keyType ),
-                keyType);
+        MVELGroupByAccumulate out = new MVELGroupByAccumulate(
+                innerAccumulateSupplier.apply(bindGroupingFunctionReaderToDeclaration(context,
+                        groupByDescr,
+                        pattern,
+                        declCls,
+                        new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class), groupByDescr.getFunctions().size(), keyType ),
+                        keyType)),
+                requiredDeclarations,
+                null);
 
         final Map<String, Object> map = createVariableContext( className,
                 groupByDescr.getGroupingFunction(),
@@ -210,71 +215,72 @@ public class JavaGroupByBuilder
 
         Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
 
+        Function<Collection<Declaration>, Accumulate> accumulateSupplier;
         if (groupByDescr.isMultiFunction()) {
-            // the accumulator array
-            Accumulator[] accumulators = new Accumulator[funcCalls.size()];
+            accumulateSupplier = keyDecls -> {
+                for (Declaration declaration : keyDecls) {
+                    declsInScope.put(declaration.getIdentifier(), declaration);
+                }
+                requiredDecl.addAll(keyDecls);
 
-            // creating the custom array reader
-            ReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
+                Accumulator[] accumulators = new Accumulator[funcCalls.size()];
+                // creating the custom array reader
+                ReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
 
-            int index = 0;
-            for ( AccumulateFunctionCallDescr fc : funcCalls ) {
+                int index = 0;
+                for ( AccumulateFunctionCallDescr fc : funcCalls ) {
+                    AccumulateFunction function = getAccumulateFunction(context, groupByDescr, fc, source, declCls);
+                    if (function == null) {
+                        return null;
+                    }
+
+                    bindReaderToDeclaration(context, groupByDescr, pattern, fc, new ArrayElementReader(reader, index, function.getResultType()), function.getResultType(), index);
+                    accumulators[index++] = buildAccumulator(context, groupByDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, keyDecls, fc, function);
+                }
+                requiredDecl.addAll(List.of(sourceDeclArr));
+                return new MultiAccumulate(source, requiredDecl.toArray(new Declaration[requiredDecl.size()]), accumulators, accumulators.length);
+            };
+        } else {
+            accumulateSupplier = keyDecls -> {
+                for (Declaration declaration : keyDecls) {
+                    declsInScope.put(declaration.getIdentifier(), declaration);
+                }
+                requiredDecl.addAll(keyDecls);
+                AccumulateFunctionCallDescr fc = groupByDescr.getFunctions().get(0);
                 AccumulateFunction function = getAccumulateFunction(context, groupByDescr, fc, source, declCls);
                 if (function == null) {
                     return null;
                 }
 
-                bindReaderToDeclaration(context, groupByDescr, pattern, fc, new ArrayElementReader(reader, index, function.getResultType()), function.getResultType(), index);
-                accumulators[index++] = buildAccumulator(context, groupByDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, fc, function);
-            }
-            requiredDecl.addAll(List.of(sourceDeclArr));
-            MultiAccumulate innerAccumulate = new MultiAccumulate( source,
-                                                                   requiredDecl.toArray(new Declaration[requiredDecl.size()]),
-                                                                   accumulators,
-                                                                   accumulators.length);
+                Class<?> returnType = function.getResultType();
+                if (!pattern.isCompatibleWithAccumulateReturnType(returnType)) {
+                    context.addError( new DescrBuildError( groupByDescr,
+                                                           context.getRuleDescr(),
+                                                           null,
+                                                           "Pattern of type: '" + pattern.getObjectType() + "' on rule '" + context.getRuleDescr().getName() +
+                                                           "' is not compatible with type " + returnType.getCanonicalName() + " returned by accumulate function.") );
+                    return null;
+                }
 
-            return addGroupingFunctionCompilation(context,
-                                                  groupByDescr,
-                                                  pattern,
-                                                  declsInScope,
-                                                  sourceDeclArr,
-                                                  readLocalsFromTuple,
-                                                  innerAccumulate);
-        } else {
-            AccumulateFunctionCallDescr fc = groupByDescr.getFunctions().get(0);
-            AccumulateFunction function = getAccumulateFunction(context, groupByDescr, fc, source, declCls);
-            if (function == null) {
-                return null;
-            }
+                bindReaderToDeclaration(context, groupByDescr, pattern, fc, new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class), 0, function.getResultType() ), function.getResultType(), -1);
+                Accumulator accumulator = buildAccumulator(context, groupByDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, keyDecls, fc, function);
 
-            Class<?> returnType = function.getResultType();
-            if (!pattern.isCompatibleWithAccumulateReturnType(returnType)) {
-                context.addError( new DescrBuildError( groupByDescr,
-                                                       context.getRuleDescr(),
-                                                       null,
-                                                       "Pattern of type: '" + pattern.getObjectType() + "' on rule '" + context.getRuleDescr().getName() +
-                                                       "' is not compatible with type " + returnType.getCanonicalName() + " returned by accumulate function.") );
-                return null;
-            }
-
-            bindReaderToDeclaration(context, groupByDescr, pattern, fc, new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class), 0, function.getResultType() ), function.getResultType(), -1);
-            Accumulator accumulator = buildAccumulator(context, groupByDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, fc, function);
-
-            requiredDecl.addAll(List.of(sourceDeclArr));
-            SingleAccumulate innerAccumulate = new SingleAccumulate( source,
-                                                                     requiredDecl.toArray(new Declaration[requiredDecl.size()]),
-                                                                     accumulator );
-            return addGroupingFunctionCompilation(context,
-                                                  groupByDescr,
-                                                  pattern,
-                                                  declsInScope,
-                                                  sourceDeclArr,
-                                                  readLocalsFromTuple,
-                                                  innerAccumulate);
+                requiredDecl.addAll(List.of(sourceDeclArr));
+                return new SingleAccumulate( source,
+                                             requiredDecl.toArray(new Declaration[requiredDecl.size()]),
+                                             accumulator );
+            };
         }
+        return addGroupingFunctionCompilation(context,
+            groupByDescr,
+            pattern,
+            declCls,
+            sourceDeclArr,
+            readLocalsFromTuple,
+            accumulateSupplier);
     }
 
-    private void bindGroupingFunctionReaderToDeclaration( RuleBuildContext context, GroupByDescr groupByDescr, Pattern pattern, ReadAccessor readAccessor, Class<?> resultType) {
+    private Collection<Declaration> bindGroupingFunctionReaderToDeclaration( RuleBuildContext context, GroupByDescr groupByDescr, Pattern pattern, Map<String, Class<?>> declCls, ReadAccessor readAccessor, Class<?> resultType) {
         if ( groupByDescr.getGroupingKey() != null ) {
             if ( context.getDeclarationResolver().isDuplicated( context.getRule(), groupByDescr.getGroupingKey(), resultType.getName() ) ) {
                 context.addError( new DescrBuildError( context.getParentDescr(),
@@ -285,8 +291,11 @@ public class JavaGroupByBuilder
                 Declaration declr = pattern.addDeclaration( groupByDescr.getGroupingKey() );
                 declr.setDeclarationClass(resultType);
                 declr.setReadAccessor( readAccessor );
+                declCls.put(groupByDescr.getGroupingKey(), resultType);
+                return Collections.singletonList(declr);
             }
         }
+        return Collections.emptyList();
     }
 
     private void bindReaderToDeclaration( RuleBuildContext context, GroupByDescr groupByDescr, Pattern pattern, AccumulateFunctionCallDescr fc, ReadAccessor readAccessor, Class<?> resultType, int index ) {
@@ -344,7 +353,7 @@ public class JavaGroupByBuilder
         return function;
     }
 
-    private Accumulator buildAccumulator(RuleBuildContext context, GroupByDescr groupByDescr, Map<String, Declaration> declsInScope, Map<String, Class<?>> declCls, boolean readLocalsFromTuple, Declaration[] sourceDeclArr, Set<Declaration> requiredDecl, AccumulateFunctionCallDescr fc, AccumulateFunction function) {
+    private Accumulator buildAccumulator(RuleBuildContext context, GroupByDescr groupByDescr, Map<String, Declaration> declsInScope, Map<String, Class<?>> declCls, boolean readLocalsFromTuple, Declaration[] sourceDeclArr, Set<Declaration> requiredDecl, Collection<Declaration> keyDeclarations, AccumulateFunctionCallDescr fc, AccumulateFunction function) {
         // analyze the expression
         final JavaAnalysisResult analysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                     groupByDescr,
@@ -356,12 +365,18 @@ public class JavaGroupByBuilder
             return null;
         }
 
+        // TODO: Find out why the grouping key is not put into BoundIdentifier despite
+        //       being accessible in context and being in declCls
         final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+        if (groupByDescr.getGroupingKey() != null && Stream.of(fc.getParams()).anyMatch(parameter -> parameter.contains(groupByDescr.getGroupingKey()))) {
+            usedIdentifiers.getDeclrClasses().put(groupByDescr.getGroupingKey(), declCls.get(groupByDescr.getGroupingKey()));
+        }
 
         // create the array of used declarations
-        final Declaration[] previousDeclarations = collectRequiredDeclarations( declsInScope,
-                                                                                requiredDecl,
-                                                                                usedIdentifiers );
+        Declaration[] previousDeclarations = collectRequiredDeclarations( declsInScope,
+                                                                          requiredDecl,
+                                                                          usedIdentifiers );
+
 
         // generate the code template
         return generateFunctionCallCodeTemplate( context,
@@ -425,129 +440,129 @@ public class JavaGroupByBuilder
                                               Map<String, Class< ? >> declCls,
                                               final boolean readLocalsFromTuple) {
         // ELSE, if it is not an external function, build it using the regular java builder
-        final String className = "Accumulate" + context.getNextId();
-        groupByDescr.setClassName( className );
-
-        BoundIdentifiers available = new BoundIdentifiers( declCls, context );
-
-        final JavaAnalysisResult initCodeAnalysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
-                                                                                                            groupByDescr,
-                                                                                                            groupByDescr.getInitCode(),
-                                                                                                            available );
-        final AnalysisResult actionCodeAnalysis = context.getDialect().analyzeBlock( context,
-                                                                                     groupByDescr,
-                                                                                     groupByDescr.getActionCode(),
-                                                                                     available );
-
-        final AnalysisResult resultCodeAnalysis = context.getDialect().analyzeExpression( context,
-                                                                                          groupByDescr,
-                                                                                          groupByDescr.getResultCode(),
-                                                                                          available );
-
-        if ( initCodeAnalysis == null || actionCodeAnalysis == null || resultCodeAnalysis == null ) {
-            // not possible to get the analysis results - compilation error has been already logged
-            return null;
-        }
-
-        final Set<String> requiredDeclarations = new HashSet<>( initCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
-        requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
-        requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
-
-        final Map<String, Type> requiredGlobals = new HashMap<>( initCodeAnalysis.getBoundIdentifiers().getGlobals() );
-        requiredGlobals.putAll( actionCodeAnalysis.getBoundIdentifiers().getGlobals() );
-        requiredGlobals.putAll( resultCodeAnalysis.getBoundIdentifiers().getGlobals() );
-
-        if ( groupByDescr.getReverseCode() != null ) {
-            final AnalysisResult reverseCodeAnalysis = context.getDialect().analyzeBlock( context,
-                                                                                          groupByDescr,
-                                                                                          groupByDescr.getActionCode(),
-                                                                                          available );
-            requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
-            requiredGlobals.putAll( reverseCodeAnalysis.getBoundIdentifiers().getGlobals() );
-        }
-
-        final Declaration[] declarations = new Declaration[requiredDeclarations.size()];
-        int i = 0;
-        for ( Iterator<String> it = requiredDeclarations.iterator(); it.hasNext(); i++ ) {
-            declarations[i] = decls.get( it.next() );
-        }
         final Declaration[] sourceDeclArr = source.getOuterDeclarations().values().toArray( new Declaration[source.getOuterDeclarations().size()] );
         Arrays.sort( sourceDeclArr, SortDeclarations.instance );
-
-        final Map<String, Object> map = createVariableContext( className,
-                                                               null,
-                                                               context,
-                                                               declarations,
-                                                               null,
-                                                               requiredGlobals
-        );
-
-        map.put( "className",
-                 groupByDescr.getClassName() );
-        map.put( "innerDeclarations",
-                 sourceDeclArr );
-        map.put( "isMultiPattern",
-                 readLocalsFromTuple ? Boolean.TRUE : Boolean.FALSE );
-
-        final String initCode = this.fixInitCode( initCodeAnalysis,
-                                                  groupByDescr.getInitCode() );
-        final String actionCode = groupByDescr.getActionCode();
-        final String resultCode = groupByDescr.getResultCode();
-
-        String[] attributesTypes = new String[initCodeAnalysis.getLocalVariablesMap().size()];
-        String[] attributes = new String[initCodeAnalysis.getLocalVariablesMap().size()];
-        int index = 0;
-        for ( Map.Entry<String, JavaLocalDeclarationDescr> entry : initCodeAnalysis.getLocalVariablesMap().entrySet() ) {
-            attributes[index] = entry.getKey();
-            attributesTypes[index] = entry.getValue().getType();
-            index++;
-        }
-
-        map.put( "attributes",
-                 attributes );
-        map.put( "attributesTypes",
-                 attributesTypes );
-
-        map.put( "initCode",
-                 initCode );
-        map.put( "actionCode",
-                 actionCode );
-        map.put( "resultCode",
-                 resultCode );
-        if ( groupByDescr.getReverseCode() == null ) {
-            map.put( "reverseCode",
-                     "" );
-            map.put( "supportsReverse",
-                     "false" );
-        } else {
-            map.put( "reverseCode",
-                     groupByDescr.getReverseCode() );
-            map.put( "supportsReverse",
-                     "true" );
-        }
-
-        map.put( "hashCode",
-                actionCode.hashCode());
-
-        SingleAccumulate accumulate = new SingleAccumulate(source, declarations);
-
-        generateTemplates("accumulateInnerClass",
-                "accumulateInvoker",
-                context,
-                className,
-                map,
-                accumulate.new Wirer(),
-                groupByDescr);
-
-        addGroupingFunctionCompilation(context,
+        return addGroupingFunctionCompilation(context,
                 groupByDescr,
                 (Pattern) context.getDeclarationResolver().peekBuildStack(),
-                null,
+                new HashMap<>(),
                 sourceDeclArr,
                 readLocalsFromTuple,
-                accumulate);
+                keyDecls -> {
+                    final String className = "Accumulate" + context.getNextId();
+                    groupByDescr.setClassName( className );
 
-        return accumulate;
+                    BoundIdentifiers available = new BoundIdentifiers( declCls, context );
+
+                    final JavaAnalysisResult initCodeAnalysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
+                            groupByDescr,
+                            groupByDescr.getInitCode(),
+                            available );
+                    final AnalysisResult actionCodeAnalysis = context.getDialect().analyzeBlock( context,
+                            groupByDescr,
+                            groupByDescr.getActionCode(),
+                            available );
+
+                    final AnalysisResult resultCodeAnalysis = context.getDialect().analyzeExpression( context,
+                            groupByDescr,
+                            groupByDescr.getResultCode(),
+                            available );
+
+                    if ( initCodeAnalysis == null || actionCodeAnalysis == null || resultCodeAnalysis == null ) {
+                        // not possible to get the analysis results - compilation error has been already logged
+                        return null;
+                    }
+
+                    final Set<String> requiredDeclarations = new HashSet<>( initCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
+                    requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
+                    requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
+
+                    final Map<String, Type> requiredGlobals = new HashMap<>( initCodeAnalysis.getBoundIdentifiers().getGlobals() );
+                    requiredGlobals.putAll( actionCodeAnalysis.getBoundIdentifiers().getGlobals() );
+                    requiredGlobals.putAll( resultCodeAnalysis.getBoundIdentifiers().getGlobals() );
+
+                    if ( groupByDescr.getReverseCode() != null ) {
+                        final AnalysisResult reverseCodeAnalysis = context.getDialect().analyzeBlock( context,
+                                groupByDescr,
+                                groupByDescr.getActionCode(),
+                                available );
+                        requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
+                        requiredGlobals.putAll( reverseCodeAnalysis.getBoundIdentifiers().getGlobals() );
+                    }
+
+                    final Declaration[] declarations = new Declaration[requiredDeclarations.size()];
+                    int i = 0;
+                    for ( Iterator<String> it = requiredDeclarations.iterator(); it.hasNext(); i++ ) {
+                        declarations[i] = decls.get( it.next() );
+                    }
+
+                    final Map<String, Object> map = createVariableContext( className,
+                            null,
+                            context,
+                            declarations,
+                            null,
+                            requiredGlobals
+                    );
+
+                    map.put( "className",
+                            groupByDescr.getClassName() );
+                    map.put( "innerDeclarations",
+                            sourceDeclArr );
+                    map.put( "isMultiPattern",
+                            readLocalsFromTuple ? Boolean.TRUE : Boolean.FALSE );
+
+                    final String initCode = this.fixInitCode( initCodeAnalysis,
+                            groupByDescr.getInitCode() );
+                    final String actionCode = groupByDescr.getActionCode();
+                    final String resultCode = groupByDescr.getResultCode();
+
+                    String[] attributesTypes = new String[initCodeAnalysis.getLocalVariablesMap().size()];
+                    String[] attributes = new String[initCodeAnalysis.getLocalVariablesMap().size()];
+                    int index = 0;
+                    for ( Map.Entry<String, JavaLocalDeclarationDescr> entry : initCodeAnalysis.getLocalVariablesMap().entrySet() ) {
+                        attributes[index] = entry.getKey();
+                        attributesTypes[index] = entry.getValue().getType();
+                        index++;
+                    }
+
+                    map.put( "attributes",
+                            attributes );
+                    map.put( "attributesTypes",
+                            attributesTypes );
+
+                    map.put( "initCode",
+                            initCode );
+                    map.put( "actionCode",
+                            actionCode );
+                    map.put( "resultCode",
+                            resultCode );
+                    if ( groupByDescr.getReverseCode() == null ) {
+                        map.put( "reverseCode",
+                                "" );
+                        map.put( "supportsReverse",
+                                "false" );
+                    } else {
+                        map.put( "reverseCode",
+                                groupByDescr.getReverseCode() );
+                        map.put( "supportsReverse",
+                                "true" );
+                    }
+
+                    map.put( "hashCode",
+                            actionCode.hashCode());
+
+                    SingleAccumulate accumulate = new SingleAccumulate(source, declarations);
+
+                    generateTemplates("accumulateInnerClass",
+                            "accumulateInvoker",
+                            context,
+                            className,
+                            map,
+                            accumulate.new Wirer(),
+                            groupByDescr);
+
+                    return accumulate;
+                });
     }
 
     public String fixInitCode( JavaAnalysisResult analysis,
