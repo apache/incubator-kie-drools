@@ -17,14 +17,18 @@ package org.kie.kogito.quarkus.serverless.workflow;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
+import java.util.WeakHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
@@ -32,6 +36,8 @@ import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationId;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactory;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactoryProvider;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.javaparser.ast.CompilationUnit;
 
@@ -39,7 +45,12 @@ import io.quarkus.deployment.CodeGenContext;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
+import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.FAIL_ON_ERROR_PROPERTY;
+
 public class WorkflowCodeGenUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowCodeGenUtils.class);
+    private static Map<Path, Optional<Workflow>> workflowCache = new WeakHashMap<>();
 
     private WorkflowCodeGenUtils() {
     }
@@ -83,16 +94,21 @@ public class WorkflowCodeGenUtils {
                 URIContentLoaderFactory.buildLoader(operationId.getUri(), Thread.currentThread().getContextClassLoader(), workflow, function.getAuthRef()));
     }
 
-    private static Optional<Workflow> getWorkflow(Path p) {
-        return ProcessCodegen.SUPPORTED_SW_EXTENSIONS.entrySet()
+    private static Optional<Workflow> getWorkflow(Path path) {
+        return workflowCache.computeIfAbsent(path, p -> ProcessCodegen.SUPPORTED_SW_EXTENSIONS.entrySet()
                 .stream()
                 .filter(e -> p.getFileName().toString().endsWith(e.getKey()))
                 .map(e -> {
                     try (Reader r = Files.newBufferedReader(p)) {
-                        return ServerlessWorkflowUtils.getWorkflow(r, e.getValue());
+                        return Optional.of(ServerlessWorkflowUtils.getWorkflow(r, e.getValue()));
                     } catch (IOException ex) {
-                        throw new IllegalStateException(ex);
+                        if (ConfigProvider.getConfig().getOptionalValue(FAIL_ON_ERROR_PROPERTY, Boolean.class).orElse(true)) {
+                            throw new UncheckedIOException(ex);
+                        } else {
+                            logger.error("Error reading workflow file {}", p, ex);
+                            return Optional.<Workflow> empty();
+                        }
                     }
-                }).findFirst();
+                }).flatMap(Optional::stream).findFirst());
     }
 }

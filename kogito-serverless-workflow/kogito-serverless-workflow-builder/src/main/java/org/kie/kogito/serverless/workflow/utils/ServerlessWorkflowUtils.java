@@ -58,6 +58,7 @@ public class ServerlessWorkflowUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerlessWorkflowUtils.class);
 
+    public static final String FAIL_ON_ERROR_PROPERTY = "kogito.codegen.process.failOnError";
     public static final String API_KEY_PREFIX = "api_key_prefix";
     public static final String API_KEY = "api_key";
     public static final String ACCESS_TOKEN = "access_token";

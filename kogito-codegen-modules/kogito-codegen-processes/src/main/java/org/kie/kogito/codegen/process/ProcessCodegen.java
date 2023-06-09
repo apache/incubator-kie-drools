@@ -74,6 +74,7 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.buildDashboardName;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.generateOperationalDashboard;
+import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.FAIL_ON_ERROR_PROPERTY;
 
 /**
  * Entry point to process code generation
@@ -168,7 +169,7 @@ public class ProcessCodegen extends AbstractGenerator {
             ValidationLogDecorator decorator = new ValidationLogDecorator(processesErrors);
             decorator.decorate();
             //rethrow exception to break the flow after decoration unless property is set to false
-            if (context.getApplicationProperty("kogito.codegen.process.failOnError", Boolean.class).orElse(true)) {
+            if (context.getApplicationProperty(FAIL_ON_ERROR_PROPERTY, Boolean.class).orElse(true)) {
                 throw new ProcessCodegenException("Processes with errors are " + decorator.toString());
             }
         }
