@@ -476,7 +476,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
     public static class StringCoercionCompatibilityEvaluator extends CompatibilityStrategy.DefaultCompatibilityEvaluator {
 
-        private static final CompatibilityStrategy.CompatibilityEvaluator INSTANCE = new StringCoercionCompatibilityEvaluator();
+        public static final CompatibilityStrategy.CompatibilityEvaluator INSTANCE = new StringCoercionCompatibilityEvaluator();
 
         private StringCoercionCompatibilityEvaluator() { }
 
