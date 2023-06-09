@@ -1,0 +1,32 @@
+commit 7d9a36b8b8fc07b953a3b3978a5fafc3fdf7c0fc
+Author: Pere Fernandez <pefernan@users.noreply.github.com>
+Date:   Wed May 24 16:18:13 2023 +0200
+
+    patch: dev-ui static content
+
+diff --git a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui-deployment/src/main/java/org/kie/kogito/swf/tools/deployment/DevConsoleProcessor.java b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui-deployment/src/main/java/org/kie/kogito/swf/tools/deployment/DevConsoleProcessor.java
+index 7b6c929e8..f15896e83 100644
+--- a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui-deployment/src/main/java/org/kie/kogito/swf/tools/deployment/DevConsoleProcessor.java
++++ b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui-deployment/src/main/java/org/kie/kogito/swf/tools/deployment/DevConsoleProcessor.java
+@@ -44,7 +44,7 @@ public class DevConsoleProcessor {
+
+     private static final String DATA_INDEX_CLIENT_KEY = "quarkus.rest-client.\"" + DATA_INDEX_CONFIG_KEY + "\".url";
+     private static final String STATIC_RESOURCES_PATH = "dev-static/";
+-    private static final String BASE_RELATIVE_URL = "/q/dev/org.kie.kogito.kogito-quarkus-serverless-workflow-devui";
++    private static final String BASE_RELATIVE_URL = "/q/dev-v1/org.kie.kogito.kogito-quarkus-serverless-workflow-devui";
+     private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
+
+     @BuildStep(onlyIf = IsDevelopment.class)
+diff --git a/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension-deployment/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/deployment/DevConsoleProcessor.java b/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension-deployment/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/deployment/DevConsoleProcessor.java
+index fab45dbe6..25a0317e9 100644
+--- a/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension-deployment/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/deployment/DevConsoleProcessor.java
++++ b/runtime-tools-quarkus-extension-parent/runtime-tools-quarkus-extension-deployment/src/main/java/org/kie/kogito/runtime/tools/quarkus/extension/deployment/DevConsoleProcessor.java
+@@ -77,7 +77,7 @@ public class DevConsoleProcessor {
+                 true);
+
+         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
+-                .route("/q/dev/org.kie.kogito.runtime-tools-quarkus-extension/resources/*")
++                .route("/q/dev-v1/org.kie.kogito.runtime-tools-quarkus-extension/resources/*")
+                 .handler(recorder.devConsoleHandler(devConsoleStaticResourcesDeploymentPath.toString(),
+                         shutdownContext))
+                 .build());
