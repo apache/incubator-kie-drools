@@ -171,12 +171,12 @@ index 485218875..58b366a3e 100644
              settings.put(Environment.USER, postgresql.getUsername());
              settings.put(Environment.PASS, postgresql.getPassword());
 diff --git a/kogito-apps-build-parent/pom.xml b/kogito-apps-build-parent/pom.xml
-index c7d927289..5b0eec732 100644
+index 40cee9ed4..4dcbf73e7 100644
 --- a/kogito-apps-build-parent/pom.xml
 +++ b/kogito-apps-build-parent/pom.xml
 @@ -47,7 +47,8 @@
          <!-- OptaPlanner version -->
-         <version.org.optaplanner>9.37.0.Final</version.org.optaplanner>
+         <version.org.optaplanner>9.38.0.Final</version.org.optaplanner>
  
 -        <version.com.vladmihalcea.hibernate-types-55>2.12.1</version.com.vladmihalcea.hibernate-types-55>
 +        <version.org.hibernate>6.2.0.Final</version.org.hibernate> <!-- Aligned with Quarkus bom -->
@@ -184,7 +184,7 @@ index c7d927289..5b0eec732 100644
          <version.org.apache.opennlp>1.9.2</version.org.apache.opennlp>
          <version.org.apache.commons.csv>1.8</version.org.apache.commons.csv>
          <version.org.jredisearch>2.0.0</version.org.jredisearch>
-@@ -140,6 +141,11 @@
+@@ -137,6 +138,11 @@
                  <type>pom</type>
                  <scope>import</scope>
              </dependency>
@@ -196,7 +196,7 @@ index c7d927289..5b0eec732 100644
              <dependency>
                  <groupId>com.redislabs</groupId>
                  <artifactId>jredisearch</artifactId>
-@@ -172,9 +178,9 @@
+@@ -164,9 +170,9 @@
                  <scope>test</scope>
              </dependency>
              <dependency>
@@ -210,7 +210,7 @@ index c7d927289..5b0eec732 100644
              <dependency>
                  <groupId>com.graphql-java</groupId>
 diff --git a/persistence-commons/persistence-commons-oracle/pom.xml b/persistence-commons/persistence-commons-oracle/pom.xml
-index 1bf5edcff..9d58b88b3 100644
+index c4ac717bb..d032b4016 100644
 --- a/persistence-commons/persistence-commons-oracle/pom.xml
 +++ b/persistence-commons/persistence-commons-oracle/pom.xml
 @@ -42,8 +42,12 @@
@@ -407,7 +407,7 @@ index 4c3faf1d0..642789526 100644
              settings.put(Environment.USER, oracle.getUsername());
              settings.put(Environment.PASS, oracle.getPassword());
 diff --git a/persistence-commons/persistence-commons-postgresql/pom.xml b/persistence-commons/persistence-commons-postgresql/pom.xml
-index 4685623d4..f95fc30a4 100644
+index 3715d7ab9..bde9f6f58 100644
 --- a/persistence-commons/persistence-commons-postgresql/pom.xml
 +++ b/persistence-commons/persistence-commons-postgresql/pom.xml
 @@ -42,8 +42,12 @@
