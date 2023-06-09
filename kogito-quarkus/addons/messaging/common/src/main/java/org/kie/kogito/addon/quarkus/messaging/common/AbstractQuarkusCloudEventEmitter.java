@@ -17,6 +17,7 @@ package org.kie.kogito.addon.quarkus.messaging.common;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
@@ -45,7 +46,11 @@ public abstract class AbstractQuarkusCloudEventEmitter<M> implements EventEmitte
     public CompletionStage<Void> emit(DataEvent<?> dataEvent) {
         logger.debug("publishing event {}", dataEvent);
         try {
-            Message<M> message = messageDecorator.decorate(Message.of(getPayload(dataEvent)));
+            Message<M> message = messageDecorator.decorate(Message.of(getPayload(dataEvent))
+                    .withNack(e -> {
+                        logger.error("Error publishing event {}", dataEvent, e);
+                        return CompletableFuture.completedFuture(null);
+                    }));
             emit(message);
             return message.getAck().get();
         } catch (IOException e) {
