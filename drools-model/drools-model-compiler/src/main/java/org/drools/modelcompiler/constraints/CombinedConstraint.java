@@ -27,8 +27,9 @@ import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.base.time.Interval;
-import org.drools.base.util.FieldIndex;
+import org.drools.base.util.IndexedValueReader;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.model.Constraint;
 import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
@@ -70,7 +71,7 @@ public class CombinedConstraint extends AbstractConstraint {
     }
 
     @Override
-    public FieldIndex getFieldIndex() {
+    public IndexedValueReader getFieldIndex() {
         throw new UnsupportedOperationException();
     }
 
@@ -80,7 +81,12 @@ public class CombinedConstraint extends AbstractConstraint {
     }
 
     @Override
-    public Declaration getIndexExtractor() {
+    public TupleValueExtractor getRightIndexExtractor() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Declaration getLeftIndexExtractor() {
         throw new UnsupportedOperationException();
     }
 
@@ -169,7 +175,7 @@ public class CombinedConstraint extends AbstractConstraint {
     }
 
     @Override
-    public ContextEntry createContextEntry() {
+    public ContextEntry createContext() {
         return new LambdaContextEntry();
     }
 }

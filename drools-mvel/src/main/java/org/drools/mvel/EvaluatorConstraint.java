@@ -26,7 +26,6 @@ import java.util.Arrays;
 import org.drools.base.base.ValueResolver;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.IntervalProviderConstraint;
 import org.drools.base.rule.MutableTypeConstraint;
@@ -38,8 +37,9 @@ import org.drools.mvel.evaluators.MvelEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.kie.api.runtime.rule.FactHandle;
+import org.drools.base.rule.ContextEntry;
 
-public class EvaluatorConstraint extends MutableTypeConstraint implements IntervalProviderConstraint {
+public class EvaluatorConstraint extends MutableTypeConstraint<ContextEntry> implements IntervalProviderConstraint {
 
     protected Declaration[] declarations;
     protected Evaluator evaluator;
@@ -147,7 +147,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return new EvaluatorConstraint(clonedDeclarations, evaluator, rightReadAccessor);
     }
 
-    public ContextEntry createContextEntry() {
+    public ContextEntry createContext() {
         return isLiteral() ? new LiteralContextEntry(rightReadAccessor) : VariableRestriction.createContextEntry(rightReadAccessor, declarations[0], evaluator);
     }
 

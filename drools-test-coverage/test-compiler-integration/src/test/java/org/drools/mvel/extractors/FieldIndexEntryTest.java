@@ -18,6 +18,7 @@
  */
 package org.drools.mvel.extractors;
 
+import org.drools.base.rule.accessor.RightTupleValueExtractor;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.mvel.accessors.ClassFieldReader;
@@ -29,7 +30,7 @@ import org.drools.base.rule.Declaration;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.AbstractHashTable;
-import org.drools.base.util.FieldIndex;
+import org.drools.base.util.IndexedValueReader;
 import org.drools.core.util.AbstractHashTable.SingleIndex;
 import org.drools.core.util.index.TupleList;
 import org.junit.Before;
@@ -52,9 +53,8 @@ public class FieldIndexEntryTest {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type" );
 
-        final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      new Declaration("id", extractor, null) );
-        final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
+        final IndexedValueReader fieldIndex = new IndexedValueReader(new Declaration("id", extractor, null), new RightTupleValueExtractor(extractor));
+        final SingleIndex singleIndex = new SingleIndex( new IndexedValueReader[]{fieldIndex},
                                                          1 );
 
         Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );
@@ -90,9 +90,8 @@ public class FieldIndexEntryTest {
     public void testTwoEntries() {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type" );
-        final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      new Declaration("id", extractor, null) );
-        final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
+        final IndexedValueReader fieldIndex = new IndexedValueReader(new Declaration("id", extractor, null), new RightTupleValueExtractor(extractor));
+        final SingleIndex singleIndex = new SingleIndex( new IndexedValueReader[]{fieldIndex},
                                                          1 );
 
         Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );
@@ -138,9 +137,8 @@ public class FieldIndexEntryTest {
     public void testThreeEntries() {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type" );
-        final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      new Declaration("id", extractor, null) );
-        final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
+        final IndexedValueReader fieldIndex = new IndexedValueReader(new Declaration("id", extractor, null), new RightTupleValueExtractor(extractor));
+        final SingleIndex singleIndex = new SingleIndex( new IndexedValueReader[]{fieldIndex},
                                                          1 );
 
         Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );

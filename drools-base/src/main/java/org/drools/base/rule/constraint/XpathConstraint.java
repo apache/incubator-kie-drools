@@ -52,7 +52,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.util.ClassUtils.convertFromPrimitiveType;
 
-public class XpathConstraint extends MutableTypeConstraint {
+public class XpathConstraint extends MutableTypeConstraint<ContextEntry> {
 
     private LinkedList<XpathChunk> chunks;
 
@@ -120,7 +120,7 @@ public class XpathConstraint extends MutableTypeConstraint {
     }
 
     @Override
-    public ContextEntry createContextEntry() {
+    public ContextEntry createContext() {
         throw new UnsupportedOperationException();
     }
 
@@ -401,7 +401,7 @@ public class XpathConstraint extends MutableTypeConstraint {
             return getConstraintsByType(ConstraintType.ALPHA);
         }
 
-        public List<BetaNodeFieldConstraint> getBetaConstraints() {
+        public List<BetaConstraint> getBetaConstraints() {
             return getConstraintsByType(ConstraintType.BETA);
         }
 

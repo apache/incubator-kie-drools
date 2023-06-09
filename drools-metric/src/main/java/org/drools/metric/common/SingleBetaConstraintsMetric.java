@@ -18,11 +18,12 @@
  */
 package org.drools.metric.common;
 
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.MutableTypeConstraint;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.core.reteoo.Tuple;
 import org.drools.metric.util.MetricLogUtils;
 import org.kie.api.runtime.rule.FactHandle;
@@ -33,17 +34,17 @@ public class SingleBetaConstraintsMetric extends SingleBetaConstraints {
 
     public SingleBetaConstraintsMetric() {}
 
-    public SingleBetaConstraintsMetric(final BetaNodeFieldConstraint[] constraint,
+    public SingleBetaConstraintsMetric(final BetaConstraint[] constraint,
                                        final RuleBaseConfiguration conf) {
         super(constraint[0], conf);
     }
 
-    public SingleBetaConstraintsMetric(final BetaNodeFieldConstraint constraint,
+    public SingleBetaConstraintsMetric(final BetaConstraint constraint,
                                        final RuleBaseConfiguration conf) {
         super(constraint, conf);
     }
 
-    public SingleBetaConstraintsMetric(final BetaNodeFieldConstraint constraint,
+    public SingleBetaConstraintsMetric(final BetaConstraint constraint,
                                        final RuleBaseConfiguration conf,
                                        final boolean disableIndex) {
         super(constraint, conf, disableIndex);
@@ -60,16 +61,16 @@ public class SingleBetaConstraintsMetric extends SingleBetaConstraints {
     }
 
     @Override
-    public boolean isAllowedCachedLeft(final ContextEntry[] context,
+    public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final FactHandle handle) {
         MetricLogUtils.getInstance().incrementEvalCount();
         return super.isAllowedCachedLeft(context, handle);
     }
 
     @Override
-    public boolean isAllowedCachedRight(final ContextEntry[] context,
-                                        final Tuple tuple) {
+    public boolean isAllowedCachedRight(final BaseTuple tuple,
+                                        final ContextEntry context) {
         MetricLogUtils.getInstance().incrementEvalCount();
-        return super.isAllowedCachedRight(context, tuple);
+        return super.isAllowedCachedRight(tuple, context);
     }
 }

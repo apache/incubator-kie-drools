@@ -23,7 +23,7 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.rule.accessor.TupleValueExtractor;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.internal.conf.IndexPrecedenceOption;
@@ -34,7 +34,7 @@ public class IndexUtil {
     static boolean USE_COMPARISON_INDEX = true;
     static boolean USE_COMPARISON_INDEX_JOIN = true;
 
-    public static boolean compositeAllowed(BetaNodeFieldConstraint[] constraints, short betaNodeType, KieBaseConfiguration config) {
+    public static boolean compositeAllowed(BetaConstraint[] constraints, short betaNodeType, KieBaseConfiguration config) {
         // 1) If there is 1 or more unification restrictions it cannot be composite
         // 2) Ensures any non unification restrictions are first
         int firstUnification = -1;
@@ -61,7 +61,7 @@ public class IndexUtil {
         return (firstUnification == -1);
     }
 
-    public static boolean isIndexable(BetaNodeFieldConstraint constraint, short nodeType, KieBaseConfiguration config) {
+    public static boolean isIndexable(BetaConstraint constraint, short nodeType, KieBaseConfiguration config) {
         return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).isIndexable(nodeType, config);
     }
 
@@ -71,6 +71,7 @@ public class IndexUtil {
 
     private static boolean canHaveRangeIndexForNodeType(short nodeType, KieBaseConfiguration config) {
         if (USE_COMPARISON_INDEX_JOIN && config.getOption(BetaRangeIndexOption.KEY).isBetaRangeIndexEnabled()) {
+            boolean b = USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode || nodeType == NodeTypeEnums.JoinNode);
             return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode || nodeType == NodeTypeEnums.JoinNode);
         } else {
             return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode);
@@ -78,20 +79,20 @@ public class IndexUtil {
     }
 
     private static boolean areRangeIndexCompatibleOperands(IndexableConstraint constraint) {
-        ReadAccessor fieldExtractor;
-        TupleValueExtractor indexingDeclaration;
+        TupleValueExtractor rightTupleExtractor;
+        TupleValueExtractor leftTupleExtractor;
         try {
-            fieldExtractor = constraint.getFieldExtractor();
-            indexingDeclaration = constraint.getIndexExtractor();
+            rightTupleExtractor = constraint.getRightIndexExtractor();
+            leftTupleExtractor = constraint.getLeftIndexExtractor();
         } catch (UnsupportedOperationException uoe) {
             return false;
         }
-        if (fieldExtractor == null || indexingDeclaration == null) {
+        if (rightTupleExtractor == null || leftTupleExtractor == null) {
             return false;
         }
 
-        ValueType leftValueType = fieldExtractor.getValueType();
-        ValueType rightValueType = indexingDeclaration.getValueType();
+        ValueType leftValueType = rightTupleExtractor.getValueType();
+        ValueType rightValueType = leftTupleExtractor.getValueType();
 
         if (leftValueType != null && rightValueType != null) {
             if (leftValueType.isNumber() && rightValueType.isNumber()) {
@@ -104,7 +105,7 @@ public class IndexUtil {
         return false;
     }
 
-    public static boolean isIndexableForNode(short nodeType, BetaNodeFieldConstraint constraint, KieBaseConfiguration config) {
+    public static boolean isIndexableForNode(short nodeType, BetaConstraint constraint, KieBaseConfiguration config) {
         if ( !(constraint instanceof IndexableConstraint) ) {
             return false;
         }
@@ -118,10 +119,21 @@ public class IndexUtil {
 
     public static boolean isBigDecimalEqualityConstraint(IndexableConstraint indexableConstraint) {
         // Note : BigDecimal is not indexable for equality, because new BigDecimal("10").equals(new BigDecimal("10.00")) returns false
-        return indexableConstraint.getConstraintType() == ConstraintTypeOperator.EQUAL && indexableConstraint.getFieldExtractor() != null && indexableConstraint.getFieldExtractor().getValueType() == ValueType.BIG_DECIMAL_TYPE;
+        if (indexableConstraint.getConstraintType() == ConstraintTypeOperator.EQUAL) {
+            if (indexableConstraint.getFieldExtractor() != null) {
+                return indexableConstraint.getFieldExtractor() != null && indexableConstraint.getFieldExtractor().getValueType() == ValueType.BIG_DECIMAL_TYPE;
+            } else {
+                return isBigDecimalEqualityConstraint(indexableConstraint.getLeftIndexExtractor()) || isBigDecimalEqualityConstraint(indexableConstraint.getRightIndexExtractor());
+            }
+        }
+        return false;
     }
 
-    public static boolean[] isIndexableForNode(IndexPrecedenceOption indexPrecedenceOption, short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints, KieBaseConfiguration config) {
+    private static boolean isBigDecimalEqualityConstraint(TupleValueExtractor tupleValueExtractor) {
+        return tupleValueExtractor != null && tupleValueExtractor.getValueType()  == ValueType.BIG_DECIMAL_TYPE;
+    }
+
+    public static boolean[] isIndexableForNode(IndexPrecedenceOption indexPrecedenceOption, short nodeType, int keyDepth, BetaConstraint[] constraints, KieBaseConfiguration config) {
         if (keyDepth < 1) {
             return new boolean[constraints.length];
         }
@@ -131,7 +143,7 @@ public class IndexUtil {
                 findIndexableWithPatternOrder(nodeType, keyDepth, constraints, config);
     }
 
-    private static boolean[] findIndexableWithEqualityPriority(short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints, KieBaseConfiguration config) {
+    private static boolean[] findIndexableWithEqualityPriority(short nodeType, int keyDepth, BetaConstraint[] constraints, KieBaseConfiguration config) {
         boolean[] indexable = new boolean[constraints.length];
         if (hasEqualIndexable(keyDepth, indexable, constraints)) {
             return indexable;
@@ -151,7 +163,7 @@ public class IndexUtil {
         return indexable;
     }
 
-    private static boolean[] findIndexableWithPatternOrder(short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints, KieBaseConfiguration config) {
+    private static boolean[] findIndexableWithPatternOrder(short nodeType, int keyDepth, BetaConstraint[] constraints, KieBaseConfiguration config) {
         boolean[] indexable = new boolean[constraints.length];
         for (int i = 0; i < constraints.length; i++) {
             if (isIndexable(constraints[i], nodeType, config)) {
@@ -167,11 +179,11 @@ public class IndexUtil {
         return indexable;
     }
 
-    private static boolean hasEqualIndexable(int keyDepth, boolean[] indexable, BetaNodeFieldConstraint[] constraints) {
+    private static boolean hasEqualIndexable(int keyDepth, boolean[] indexable, BetaConstraint[] constraints) {
         return sortEqualIndexable(keyDepth, indexable, constraints, 0);
     }
 
-    private static boolean sortEqualIndexable(int keyDepth, boolean[] indexable, BetaNodeFieldConstraint[] constraints, int start) {
+    private static boolean sortEqualIndexable(int keyDepth, boolean[] indexable, BetaConstraint[] constraints, int start) {
         boolean hasEqualIndexable = false;
         int indexableCouter = 0;
         for (int i = start; i < constraints.length; i++) {
@@ -186,18 +198,18 @@ public class IndexUtil {
         return hasEqualIndexable;
     }
 
-    private static void sortRangeIndexable(BetaNodeFieldConstraint[] constraints, boolean[] indexable, int i) {
+    private static void sortRangeIndexable(BetaConstraint[] constraints, boolean[] indexable, int i) {
         swap(constraints, i, 0);
         indexable[0] = true;
     }
 
-    public static boolean isEqualIndexable(BetaNodeFieldConstraint constraint) {
+    public static boolean isEqualIndexable(BetaConstraint constraint) {
         return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).getConstraintType() == ConstraintTypeOperator.EQUAL && !isBigDecimalEqualityConstraint((IndexableConstraint)constraint);
     }
 
-    private static void swap(BetaNodeFieldConstraint[] constraints, int p1, int p2) {
+    private static void swap(BetaConstraint[] constraints, int p1, int p2) {
         if (p1 != p2) {
-            BetaNodeFieldConstraint temp = constraints[p2];
+            BetaConstraint temp = constraints[p2];
             constraints[p2] = constraints[p1];
             constraints[p1] = temp;
         }

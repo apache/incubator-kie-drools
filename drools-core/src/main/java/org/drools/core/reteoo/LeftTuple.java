@@ -36,7 +36,7 @@ public class LeftTuple
         extends AbstractTuple {
     private static final long  serialVersionUID = 540l;
 
-    private int                index;
+    private int      index;
 
     private LeftTuple parent;
 

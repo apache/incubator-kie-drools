@@ -18,39 +18,85 @@
  */
 package org.drools.core.util.index;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.base.rule.IndexableConstraint;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.base.util.FieldIndex;
+import org.drools.base.rule.constraint.BetaConstraint;
+import org.drools.base.util.IndexedValueReader;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.util.AbstractHashTable.DoubleCompositeIndex;
+import org.drools.core.util.AbstractHashTable.Index;
+import org.drools.core.util.AbstractHashTable.SingleIndex;
+import org.drools.core.util.AbstractHashTable.TripleCompositeIndex;
 import org.kie.internal.conf.IndexPrecedenceOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 import static org.drools.base.util.index.IndexUtil.isEqualIndexable;
 
 public class IndexSpec {
     private ConstraintTypeOperator constraintType = ConstraintTypeOperator.UNKNOWN;
-    private FieldIndex[] indexes;
+    private IndexedValueReader[]   indexes;
 
-    IndexSpec(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
+    public IndexSpec(short nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
         init(nodeType, constraints, config);
+    }
+
+    public IndexSpec(IndexedValueReader[] indexes, ConstraintTypeOperator constraintType) {
+        this.indexes = indexes;
+        this.constraintType = constraintType;
+    }
+
+    public IndexSpec(IndexedValueReader[] indexes) {
+        this.indexes = indexes;
+        this.constraintType = ConstraintTypeOperator.EQUAL;
     }
 
     public ConstraintTypeOperator getConstraintType() {
         return constraintType;
     }
 
-    public FieldIndex[] getIndexes() {
+    public IndexedValueReader[] getIndexes() {
         return indexes;
     }
 
-    public FieldIndex getIndex(int pos) {
+    public Index getIndex() {
+        Index index;
+        int PRIME   = 31;
+        int startResult = PRIME;
+        int i = 1;
+        for ( IndexedValueReader j : indexes ) {
+            startResult += PRIME * startResult + i;
+            i++;
+        }
+
+        switch ( indexes.length ) {
+            case 0 :
+                throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  0" );
+            case 1 :
+                index = new SingleIndex(indexes,
+                                        startResult );
+                break;
+            case 2 :
+                index = new DoubleCompositeIndex(indexes,
+                                                 startResult );
+                break;
+            case 3 :
+                index = new TripleCompositeIndex(indexes,
+                                                 startResult );
+                break;
+            default :
+                throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  great than 3" );
+        }
+
+        return index;
+    }
+
+    public IndexedValueReader getIndex(int pos) {
         return indexes[pos];
     }
 
-    private void init(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
+    public void init(short nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
         int keyDepth = config.getCompositeKeyDepth();
         IndexPrecedenceOption indexPrecedenceOption = config.getIndexPrecedenceOption();
         int firstIndexableConstraint = indexPrecedenceOption == IndexPrecedenceOption.EQUALITY_PRIORITY ?
@@ -58,7 +104,7 @@ public class IndexSpec {
                 determineTypeWithPatternOrder(nodeType, constraints, config);
 
         if (constraintType == ConstraintTypeOperator.EQUAL) {
-            List<FieldIndex> indexList = new ArrayList<>();
+            List<IndexedValueReader> indexList = new ArrayList<>();
             if (isEqualIndexable(constraints[firstIndexableConstraint])) {
                 indexList.add(((IndexableConstraint) constraints[firstIndexableConstraint]).getFieldIndex());
             }
@@ -69,15 +115,15 @@ public class IndexSpec {
                     indexList.add(((IndexableConstraint)constraints[i]).getFieldIndex());
                 }
             }
-            indexes = indexList.toArray(new FieldIndex[indexList.size()]);
+            indexes = indexList.toArray(new IndexedValueReader[indexList.size()]);
 
         } else if (constraintType.isComparison()) {
             // look for a dual constraint to create a range index
-            indexes = new FieldIndex[]{((IndexableConstraint)constraints[firstIndexableConstraint]).getFieldIndex() };
+            indexes = new IndexedValueReader[]{((IndexableConstraint)constraints[firstIndexableConstraint]).getFieldIndex() };
         }
     }
 
-    private int determineTypeWithEqualityPriority(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
+    public int determineTypeWithEqualityPriority(short nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
         int indexedConstraintPos = 0;
         for (int i = 0; i < constraints.length; i++) {
             if (constraints[i] instanceof IndexableConstraint) {
@@ -95,7 +141,7 @@ public class IndexSpec {
         return indexedConstraintPos;
     }
 
-    private int determineTypeWithPatternOrder(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
+    public int determineTypeWithPatternOrder(short nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
         for (int i = 0; i < constraints.length; i++) {
             ConstraintTypeOperator type = ConstraintTypeOperator.getType(constraints[i]);
             if ( type.isIndexableForNode(nodeType, (IndexableConstraint) constraints[i], config) ) {

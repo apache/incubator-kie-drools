@@ -18,11 +18,12 @@
  */
 package org.drools.metric.common;
 
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.MutableTypeConstraint;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.core.reteoo.Tuple;
 import org.drools.metric.util.MetricLogUtils;
 import org.kie.api.runtime.rule.FactHandle;
@@ -33,13 +34,13 @@ public class DefaultBetaConstraintsMetric extends DefaultBetaConstraints {
 
     public DefaultBetaConstraintsMetric() {}
 
-    public DefaultBetaConstraintsMetric(final BetaNodeFieldConstraint[] constraints,
+    public DefaultBetaConstraintsMetric(final BetaConstraint[] constraints,
                                         final RuleBaseConfiguration conf) {
         super(constraints, conf);
 
     }
 
-    public DefaultBetaConstraintsMetric(final BetaNodeFieldConstraint[] constraints,
+    public DefaultBetaConstraintsMetric(final BetaConstraint[] constraints,
                                         final RuleBaseConfiguration conf,
                                         final boolean disableIndexing) {
         super(constraints, conf, disableIndexing);
@@ -48,7 +49,7 @@ public class DefaultBetaConstraintsMetric extends DefaultBetaConstraints {
     @Override
     public DefaultBetaConstraintsMetric cloneIfInUse() {
         if (constraints[0] instanceof MutableTypeConstraint && ((MutableTypeConstraint) constraints[0]).setInUse()) {
-            BetaNodeFieldConstraint[] clonedConstraints = new BetaNodeFieldConstraint[constraints.length];
+            BetaConstraint[] clonedConstraints = new BetaConstraint[constraints.length];
             for (int i = 0; i < constraints.length; i++) {
                 clonedConstraints[i] = constraints[i].cloneIfInUse();
             }
@@ -70,9 +71,8 @@ public class DefaultBetaConstraintsMetric extends DefaultBetaConstraints {
     }
 
     @Override
-    public boolean isAllowedCachedRight(final ContextEntry[] context,
-                                        final Tuple tuple) {
+    public boolean isAllowedCachedRight(final BaseTuple tuple, final ContextEntry[] context) {
         MetricLogUtils.getInstance().incrementEvalCount();
-        return super.isAllowedCachedRight(context, tuple);
+        return super.isAllowedCachedRight(tuple, context);
     }
 }

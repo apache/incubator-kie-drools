@@ -28,13 +28,13 @@ import org.drools.base.reteoo.BaseTuple;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.base.rule.constraint.Constraint;
 import org.drools.core.reteoo.Tuple;
 import org.drools.util.ClassUtils;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
+public class FakeBetaNodeFieldConstraint implements BetaConstraint<ContextEntry> {
 
     private Class clazz;
     private String fieldName;
@@ -122,12 +122,12 @@ public class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
     }
 
     @Override
-    public ContextEntry createContextEntry() {
+    public ContextEntry createContext() {
         return new FakeContextEntry();
     }
 
     @Override
-    public BetaNodeFieldConstraint cloneIfInUse() {
+    public BetaConstraint cloneIfInUse() {
         throw new UnsupportedOperationException();
     }
 

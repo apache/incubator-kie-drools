@@ -61,7 +61,7 @@ public class PhreakAsyncSendNode {
                               TupleSets<LeftTuple> srcLeftTuples) {
 
         BetaMemory bm = memory.getBetaMemory();
-        ContextEntry[] context = bm.getContext();
+        Object context = bm.getContext();
         BetaConstraints betaConstraints = node.getBetaConstraints();
         AlphaNodeFieldConstraint[] alphaConstraints = node.getAlphaConstraints();
         DataProvider dataProvider = node.getDataProvider();
@@ -96,7 +96,7 @@ public class PhreakAsyncSendNode {
     }
 
     private void fetchAndSendResults(AsyncSendNode node, AsyncSendMemory memory, ReteEvaluator reteEvaluator,
-                                     ContextEntry[] context, BetaConstraints betaConstraints, AlphaNodeFieldConstraint[] alphaConstraints,
+                                     Object context, BetaConstraints betaConstraints, AlphaNodeFieldConstraint[] alphaConstraints,
                                      DataProvider dataProvider, Class<?> resultClass, LeftTuple leftTuple, PropagationContext propagationContext ) {
         for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple,
                                                                       reteEvaluator,
@@ -131,7 +131,7 @@ public class PhreakAsyncSendNode {
                            ReteEvaluator reteEvaluator,
                            InternalFactHandle factHandle,
                            BetaConstraints betaConstraints,
-                           ContextEntry[] context ) {
+                           Object context ) {
         if (betaConstraints.isAllowedCachedLeft(context, factHandle)) {
             AsyncMessagesCoordinator.get().propagate( node.getMessageId(), new AsyncMessage( reteEvaluator, factHandle.getObject() ) );
         }
