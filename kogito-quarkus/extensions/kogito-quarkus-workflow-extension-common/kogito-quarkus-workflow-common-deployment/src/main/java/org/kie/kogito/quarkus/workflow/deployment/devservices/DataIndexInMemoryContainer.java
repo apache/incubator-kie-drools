@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.PullPolicy;
 import org.testcontainers.utility.DockerImageName;
 
@@ -56,6 +57,7 @@ public class DataIndexInMemoryContainer extends GenericContainer<DataIndexInMemo
         withEnv("KOGITO_DATAINDEX_GATEWAY_URL", "host.testcontainers.internal");
         withEnv("KOGITO_DATA_INDEX_VERTX_GRAPHQL_UI_PATH", "/q/graphql-ui");
         withEnv("KOGITO_DATA_INDEX_QUARKUS_PROFILE", "http-events-support");
+        waitingFor(Wait.forHttp("/q/health/ready").forStatusCode(200));
     }
 
     @Override
