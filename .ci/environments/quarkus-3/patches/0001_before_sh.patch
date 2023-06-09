@@ -1,5 +1,5 @@
 diff --git a/build-parent/pom.xml b/build-parent/pom.xml
-index fe8a9d6da9..0ca85002ed 100644
+index 3f2b02781d..07355b6fb7 100644
 --- a/build-parent/pom.xml
 +++ b/build-parent/pom.xml
 @@ -40,9 +40,9 @@
@@ -39,7 +39,7 @@ index fe8a9d6da9..0ca85002ed 100644
 -    <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
 +    <version.org.apache.tomcat.tomcat-dbcp>10.1.7</version.org.apache.tomcat.tomcat-dbcp>
      <version.org.assertj>3.23.1</version.org.assertj>
-     <version.org.eclipse.jdt>3.18.0</version.org.eclipse.jdt>
+     <version.org.eclipse.jdt>3.33.0</version.org.eclipse.jdt>
      <version.org.freemarker>2.3.32</version.org.freemarker>
 -    <version.org.glassfish.jaxb>2.3.6</version.org.glassfish.jaxb>
 +    <version.org.glassfish.jaxb>4.0.2</version.org.glassfish.jaxb>
@@ -89,7 +89,7 @@ index fe8a9d6da9..0ca85002ed 100644
 +    <version.jakarta.json-api>2.1.1</version.jakarta.json-api>
 +    <version.org.jpmml.model>1.6.4</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
      <version.org.junit>5.9.2</version.org.junit>
-     <version.org.mvel>2.4.15.Final</version.org.mvel>
+     <version.org.mvel>2.5.0.Final</version.org.mvel>
      <version.org.powermock>2.0.7</version.org.powermock>
 @@ -132,7 +132,7 @@
      <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
@@ -2836,18 +2836,18 @@ index 866fd03b54..b4fa18bf5c 100644
  import java.math.BigDecimal;
  import java.math.BigInteger;
 diff --git a/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/integrationtests/QueryTest.java b/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/integrationtests/QueryTest.java
-index df77c27809..d84fa2ba14 100644
+index c4902c912e..7091274b36 100644
 --- a/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/integrationtests/QueryTest.java
 +++ b/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/integrationtests/QueryTest.java
-@@ -29,7 +29,7 @@ import java.util.Set;
- import java.util.TreeSet;
- import java.util.stream.Collectors;
- import java.util.stream.StreamSupport;
+@@ -54,7 +54,7 @@ import org.kie.api.runtime.rule.Row;
+ import org.kie.api.runtime.rule.Variable;
+ import org.kie.api.runtime.rule.ViewChangedEventListener;
+ 
 -import javax.xml.bind.JAXBContext;
 +import jakarta.xml.bind.JAXBContext;
- 
- import org.drools.base.base.DroolsQuery;
- import org.drools.core.QueryResultsImpl;
+ import java.io.ByteArrayInputStream;
+ import java.io.IOException;
+ import java.io.StringWriter;
 diff --git a/drools-test-coverage/test-integration-nomvel/pom.xml b/drools-test-coverage/test-integration-nomvel/pom.xml
 index 7d9f51e8a0..37d3c8b126 100644
 --- a/drools-test-coverage/test-integration-nomvel/pom.xml
