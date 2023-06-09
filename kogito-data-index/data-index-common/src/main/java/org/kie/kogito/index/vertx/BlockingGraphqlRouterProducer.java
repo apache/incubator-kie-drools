@@ -28,6 +28,9 @@ import io.vertx.ext.web.handler.graphql.GraphQLHandlerOptions;
 
 import graphql.GraphQL;
 
+import static io.quarkus.vertx.web.Route.HttpMethod.GET;
+import static io.quarkus.vertx.web.Route.HttpMethod.POST;
+
 @ApplicationScoped
 @IfBuildProperty(name = "kogito.data-index.blocking", stringValue = "true")
 public class BlockingGraphqlRouterProducer {
@@ -45,13 +48,23 @@ public class BlockingGraphqlRouterProducer {
         apolloWSHandler = ApolloWSHandler.create(graphQL);
     }
 
-    @Route(path = "/graphql", type = Route.HandlerType.BLOCKING, order = 1)
-    public void apolloWSHandler(RoutingContext rc) {
+    @Route(path = "/graphql", type = Route.HandlerType.BLOCKING, order = 1, methods = { GET })
+    public void blockingApolloWSHandlerGet(RoutingContext rc) {
         apolloWSHandler.handle(rc);
     }
 
-    @Route(path = "/graphql", type = Route.HandlerType.BLOCKING, order = 2)
-    public void graphQLHandler(RoutingContext rc) {
+    @Route(path = "/graphql", type = Route.HandlerType.BLOCKING, order = 1, methods = { POST })
+    public void blockingApolloWSHandlerPost(RoutingContext rc) {
+        apolloWSHandler.handle(rc);
+    }
+
+    @Route(path = "/graphql", type = Route.HandlerType.BLOCKING, order = 2, methods = { GET })
+    public void blockingGraphQLHandlerGet(RoutingContext rc) {
+        graphQLHandler.handle(rc);
+    }
+
+    @Route(path = "/graphql", type = Route.HandlerType.BLOCKING, order = 2, methods = { POST })
+    public void blockingGraphQLHandlerPost(RoutingContext rc) {
         graphQLHandler.handle(rc);
     }
 
