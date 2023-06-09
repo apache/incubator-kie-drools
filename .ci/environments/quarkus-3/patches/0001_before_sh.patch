@@ -2665,7 +2665,7 @@ index 04aae3f39..70d74a9c3 100644
  import org.eclipse.microprofile.health.HealthCheck;
  import org.eclipse.microprofile.health.HealthCheckResponse;
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/json/JacksonConfiguration.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/json/JacksonConfiguration.java
-index 816031b60..15204bbdf 100644
+index e02ccf976..2f0dc5bb6 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/json/JacksonConfiguration.java
 +++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/json/JacksonConfiguration.java
 @@ -15,8 +15,8 @@
@@ -2695,7 +2695,7 @@ index bcbaf4f9a..66ad2417a 100644
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java
-index 1661efbf0..f819621fa 100644
+index 4c54f6461..1f6585c33 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java
 +++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java
 @@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit;
@@ -2886,7 +2886,7 @@ index b74f35cb5..a97231b26 100644
  import org.kie.kogito.timer.Trigger;
  import org.kie.kogito.timer.impl.IntervalTrigger;
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/CallbackResourceTest.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/CallbackResourceTest.java
-index ae9676574..4fff09afd 100644
+index 507dcc605..71c7f16b1 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/CallbackResourceTest.java
 +++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/CallbackResourceTest.java
 @@ -18,13 +18,13 @@ package org.kie.kogito.jobs.service.resource;
@@ -2908,10 +2908,10 @@ index ae9676574..4fff09afd 100644
 +import jakarta.ws.rs.QueryParam;
 +import jakarta.ws.rs.core.MediaType;
  
+ import org.eclipse.microprofile.openapi.annotations.Operation;
  import org.slf4j.Logger;
- import org.slf4j.LoggerFactory;
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/JobResource.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/JobResource.java
-index 269fb7fa0..6e819faa6 100644
+index 2608df99c..b4de77b37 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/JobResource.java
 +++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/JobResource.java
 @@ -15,18 +15,18 @@
@@ -2943,8 +2943,8 @@ index 269fb7fa0..6e819faa6 100644
 +import jakarta.ws.rs.Produces;
 +import jakarta.ws.rs.core.MediaType;
  
+ import org.eclipse.microprofile.openapi.annotations.Operation;
  import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
- import org.kie.kogito.jobs.api.Job;
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/JobServiceManagementResource.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/JobServiceManagementResource.java
 index edfed3472..edbdb857c 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/JobServiceManagementResource.java
@@ -3066,7 +3066,7 @@ index fb96f2b4e..44b2b5fd8 100644
  public class WebApplicationExceptionMapper extends BaseExceptionMapper<WebApplicationException> {
  
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/v2/JobResourceV2.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/v2/JobResourceV2.java
-index e85c01776..ff4a808d6 100644
+index 5c0f5eab7..f03cefc3e 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/v2/JobResourceV2.java
 +++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/resource/v2/JobResourceV2.java
 @@ -15,17 +15,17 @@
@@ -3096,8 +3096,8 @@ index e85c01776..ff4a808d6 100644
 +import jakarta.ws.rs.Produces;
 +import jakarta.ws.rs.core.MediaType;
  
+ import org.eclipse.microprofile.openapi.annotations.Operation;
  import org.kie.kogito.jobs.service.adapter.JobDetailsAdapter;
- import org.kie.kogito.jobs.service.api.Job;
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/scheduler/JobSchedulerManager.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/scheduler/JobSchedulerManager.java
 index 54b71d3e7..dae676e7d 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/scheduler/JobSchedulerManager.java
