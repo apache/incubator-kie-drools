@@ -90,7 +90,7 @@ index 85c613d88b..c48d871ad5 100755
  
      <dependency>
 diff --git a/jbpm/jbpm-bpmn2/pom.xml b/jbpm/jbpm-bpmn2/pom.xml
-index 92ba977bbd..92a1254696 100755
+index 92ba977bbd..6e816b43da 100755
 --- a/jbpm/jbpm-bpmn2/pom.xml
 +++ b/jbpm/jbpm-bpmn2/pom.xml
 @@ -54,9 +54,10 @@
@@ -115,7 +115,7 @@ index 92ba977bbd..92a1254696 100755
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.2</version>
++      <version>4.0.3</version>
      </dependency>
 -    <dependency>
 -      <groupId>com.sun.activation</groupId>
@@ -1596,11 +1596,11 @@ index 608b072048..26b16c3d65 100644
          <executions>
            <execution>
 diff --git a/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/AbstractQuarkusCloudEventEmitter.java b/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/AbstractQuarkusCloudEventEmitter.java
-index 28596bb1fe..393f186353 100644
+index 06a804316f..f4d14b6cd9 100644
 --- a/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/AbstractQuarkusCloudEventEmitter.java
 +++ b/quarkus/addons/messaging/common/src/main/java/org/kie/kogito/addon/quarkus/messaging/common/AbstractQuarkusCloudEventEmitter.java
-@@ -19,7 +19,7 @@ import java.io.IOException;
- import java.io.UncheckedIOException;
+@@ -20,7 +20,7 @@ import java.io.UncheckedIOException;
+ import java.util.concurrent.CompletableFuture;
  import java.util.concurrent.CompletionStage;
  
 -import javax.inject.Inject;
