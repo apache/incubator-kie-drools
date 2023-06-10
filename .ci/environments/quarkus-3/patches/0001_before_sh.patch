@@ -1,5 +1,5 @@
 diff --git a/build-parent/pom.xml b/build-parent/pom.xml
-index 3f2b02781d..07355b6fb7 100644
+index 3f2b02781d..575579926a 100644
 --- a/build-parent/pom.xml
 +++ b/build-parent/pom.xml
 @@ -40,9 +40,9 @@
@@ -42,7 +42,7 @@ index 3f2b02781d..07355b6fb7 100644
      <version.org.eclipse.jdt>3.33.0</version.org.eclipse.jdt>
      <version.org.freemarker>2.3.32</version.org.freemarker>
 -    <version.org.glassfish.jaxb>2.3.6</version.org.glassfish.jaxb>
-+    <version.org.glassfish.jaxb>4.0.2</version.org.glassfish.jaxb>
++    <version.org.glassfish.jaxb>4.0.3</version.org.glassfish.jaxb>
      <!--This needs to be in sync with JUnit-->
      <version.org.hamcrest>1.3</version.org.hamcrest>
 -    <version.org.hibernate>5.6.12.Final</version.org.hibernate>
@@ -249,7 +249,7 @@ index 3f2b02781d..07355b6fb7 100644
        </dependency>
  
 diff --git a/drools-base/pom.xml b/drools-base/pom.xml
-index ea261c97e1..2084f50450 100644
+index ea261c97e1..1663b45fc3 100644
 --- a/drools-base/pom.xml
 +++ b/drools-base/pom.xml
 @@ -63,9 +63,10 @@
@@ -261,7 +261,7 @@ index ea261c97e1..2084f50450 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.2</version>
++      <version>4.0.3</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
@@ -1631,7 +1631,7 @@ index 19c566794f..984f218d5f 100644
  import org.drools.core.common.DisconnectedFactHandle;
  import org.kie.api.command.ExecutableCommand;
 diff --git a/drools-compiler/pom.xml b/drools-compiler/pom.xml
-index 0747f9c0b0..6b810000de 100644
+index 0747f9c0b0..7de22d7b3f 100644
 --- a/drools-compiler/pom.xml
 +++ b/drools-compiler/pom.xml
 @@ -108,9 +108,10 @@
@@ -1643,7 +1643,7 @@ index 0747f9c0b0..6b810000de 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.2</version>
++      <version>4.0.3</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
@@ -1663,7 +1663,7 @@ index 1fcab7e603..a61c6ac6ef 100644
  import com.sun.codemodel.CodeWriter;
  import com.sun.codemodel.JCodeModel;
 diff --git a/drools-core/pom.xml b/drools-core/pom.xml
-index 53f3e4e3e8..e7fae51e99 100644
+index 53f3e4e3e8..e11311c77c 100644
 --- a/drools-core/pom.xml
 +++ b/drools-core/pom.xml
 @@ -76,9 +76,10 @@
@@ -1675,7 +1675,7 @@ index 53f3e4e3e8..e7fae51e99 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.2</version>
++      <version>4.0.3</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
@@ -2201,7 +2201,7 @@ index 3a767f8f52..4943dd1dff 100644
  import java.math.BigDecimal;
  import java.math.BigInteger;
 diff --git a/drools-mvel/pom.xml b/drools-mvel/pom.xml
-index 5c932d41d9..db230eb9d2 100644
+index 5c932d41d9..5515764cd4 100644
 --- a/drools-mvel/pom.xml
 +++ b/drools-mvel/pom.xml
 @@ -70,9 +70,10 @@
@@ -2213,7 +2213,7 @@ index 5c932d41d9..db230eb9d2 100644
 +            <groupId>org.glassfish.jaxb</groupId>
 +            <artifactId>jaxb-runtime</artifactId>
              <scope>provided</scope>
-+            <version>4.0.2</version>
++            <version>4.0.3</version>
          </dependency>
          <dependency>
              <groupId>jakarta.xml.bind</groupId>
@@ -2233,7 +2233,7 @@ index 866fd03b54..b4fa18bf5c 100644
  import java.math.BigDecimal;
  import java.math.BigInteger;
 diff --git a/drools-persistence/drools-persistence-api/pom.xml b/drools-persistence/drools-persistence-api/pom.xml
-index d8e0d7af5b..98aa7cc44f 100644
+index d8e0d7af5b..826d30926f 100644
 --- a/drools-persistence/drools-persistence-api/pom.xml
 +++ b/drools-persistence/drools-persistence-api/pom.xml
 @@ -41,9 +41,10 @@
@@ -2245,7 +2245,7 @@ index d8e0d7af5b..98aa7cc44f 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.2</version>
++      <version>4.0.3</version>
      </dependency>
      <dependency>
        <groupId>com.sun.xml.bind</groupId>
@@ -2392,7 +2392,7 @@ index 228078eec7..267c2fca72 100644
  import org.drools.commands.impl.AbstractInterceptor;
  import org.drools.persistence.api.OrderedTransactionSynchronization;
 diff --git a/drools-persistence/drools-persistence-jpa/pom.xml b/drools-persistence/drools-persistence-jpa/pom.xml
-index a694f0fabd..9961785cdf 100644
+index a694f0fabd..5b9f3d016f 100644
 --- a/drools-persistence/drools-persistence-jpa/pom.xml
 +++ b/drools-persistence/drools-persistence-jpa/pom.xml
 @@ -103,9 +103,10 @@
@@ -2404,7 +2404,7 @@ index a694f0fabd..9961785cdf 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.2</version>
++      <version>4.0.3</version>
      </dependency>
      <dependency>
        <groupId>com.sun.xml.bind</groupId>
@@ -2849,7 +2849,7 @@ index c4902c912e..7091274b36 100644
  import java.io.IOException;
  import java.io.StringWriter;
 diff --git a/drools-test-coverage/test-integration-nomvel/pom.xml b/drools-test-coverage/test-integration-nomvel/pom.xml
-index 7d9f51e8a0..37d3c8b126 100644
+index 7d9f51e8a0..e0ebca9868 100644
 --- a/drools-test-coverage/test-integration-nomvel/pom.xml
 +++ b/drools-test-coverage/test-integration-nomvel/pom.xml
 @@ -102,9 +102,10 @@
@@ -2861,7 +2861,7 @@ index 7d9f51e8a0..37d3c8b126 100644
 +            <groupId>org.glassfish.jaxb</groupId>
 +            <artifactId>jaxb-runtime</artifactId>
              <scope>test</scope>
-+            <version>4.0.2</version>
++            <version>4.0.3</version>
          </dependency>
          <dependency>
              <groupId>jakarta.xml.bind</groupId>
@@ -2922,7 +2922,7 @@ index aaf01f00a2..9d634ec94c 100644
  import org.drools.core.base.MapGlobalResolver;
  import org.drools.core.impl.EnvironmentFactory;
 diff --git a/drools-wiring/drools-wiring-dynamic/pom.xml b/drools-wiring/drools-wiring-dynamic/pom.xml
-index 447e660a2d..675ac0965e 100755
+index 447e660a2d..f12a74fe87 100755
 --- a/drools-wiring/drools-wiring-dynamic/pom.xml
 +++ b/drools-wiring/drools-wiring-dynamic/pom.xml
 @@ -34,9 +34,10 @@
@@ -2934,7 +2934,7 @@ index 447e660a2d..675ac0965e 100755
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.2</version>
++      <version>4.0.3</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
@@ -3244,7 +3244,7 @@ index 1e4a002044..0f043b9da0 100644
  import org.jboss.jandex.ClassInfo;
  import org.jboss.jandex.DotName;
 diff --git a/kie-dmn/kie-dmn-legacy-tests/pom.xml b/kie-dmn/kie-dmn-legacy-tests/pom.xml
-index e525713c19..12de41670a 100644
+index e525713c19..153d661555 100644
 --- a/kie-dmn/kie-dmn-legacy-tests/pom.xml
 +++ b/kie-dmn/kie-dmn-legacy-tests/pom.xml
 @@ -100,9 +100,10 @@
@@ -3256,7 +3256,7 @@ index e525713c19..12de41670a 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.2</version>
++      <version>4.0.3</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
@@ -3330,7 +3330,7 @@ index 14c47f65e8..4004e43729 100644
  import org.jboss.jandex.ClassInfo;
  import org.jboss.jandex.DotName;
 diff --git a/kie-dmn/kie-dmn-openapi/pom.xml b/kie-dmn/kie-dmn-openapi/pom.xml
-index fa47437585..d860b60d5e 100644
+index fa47437585..7d4d4bf34d 100644
 --- a/kie-dmn/kie-dmn-openapi/pom.xml
 +++ b/kie-dmn/kie-dmn-openapi/pom.xml
 @@ -62,9 +62,10 @@
@@ -3342,12 +3342,12 @@ index fa47437585..d860b60d5e 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.2</version>
++      <version>4.0.3</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
 diff --git a/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml b/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
-index f5c60e5a89..528df9e79c 100644
+index f5c60e5a89..bd0ac3d416 100644
 --- a/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
 +++ b/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
 @@ -62,9 +62,10 @@
@@ -3359,7 +3359,7 @@ index f5c60e5a89..528df9e79c 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.2</version>
++      <version>4.0.3</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
@@ -3555,7 +3555,7 @@ index f6c8310e3a..9b27fa3be2 100644
 -import javax.xml.bind.annotation.XmlNs;
 +import jakarta.xml.bind.annotation.XmlNs;
 diff --git a/kie-internal/pom.xml b/kie-internal/pom.xml
-index 3d950d6699..b57830aded 100644
+index 3d950d6699..7ec2497e45 100644
 --- a/kie-internal/pom.xml
 +++ b/kie-internal/pom.xml
 @@ -76,9 +76,10 @@
@@ -3567,7 +3567,7 @@ index 3d950d6699..b57830aded 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.2</version>
++      <version>4.0.3</version>
      </dependency>
  
      <dependency>
