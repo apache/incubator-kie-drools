@@ -205,7 +205,7 @@ index cd27e6f65..b6fa180e3 100644
  import org.kie.kogito.index.model.Job;
  import org.kie.kogito.index.model.NodeInstance;
 diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java
-index 8b2bfcc1f..cb8ab0b20 100644
+index 3008c56ae..fa5d6a83f 100644
 --- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java
 +++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java
 @@ -15,9 +15,8 @@
@@ -228,9 +228,9 @@ index 8b2bfcc1f..cb8ab0b20 100644
 +import jakarta.annotation.PostConstruct;
  import graphql.GraphQL;
  
- @ApplicationScoped
+ import static io.quarkus.vertx.web.Route.HttpMethod.GET;
 diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java
-index ab9d6f01d..6fdc22022 100644
+index f4c030201..182fb2e3c 100644
 --- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java
 +++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java
 @@ -15,9 +15,8 @@
@@ -253,7 +253,7 @@ index ab9d6f01d..6fdc22022 100644
 +import jakarta.annotation.PostConstruct;
  import graphql.GraphQL;
  
- @ApplicationScoped
+ import static io.quarkus.vertx.web.Route.HttpMethod.GET;
 diff --git a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/api/KogitoRuntimeClientImpl.java b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/api/KogitoRuntimeClientImpl.java
 index 3c74b1e28..f44d1ccab 100644
 --- a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/api/KogitoRuntimeClientImpl.java
