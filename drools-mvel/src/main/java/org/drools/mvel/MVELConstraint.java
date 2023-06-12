@@ -27,38 +27,38 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ClassFieldReader;
-import org.drools.core.base.DroolsQuery;
-import org.drools.core.base.EvaluatorWrapper;
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.PropertySpecificUtil;
-import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.constraint.ConditionEvaluator;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.TupleValueExtractor;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.MemoryUtil;
+import org.drools.base.RuleBase;
+import org.drools.base.RuleBuildContext;
+import org.drools.base.base.DroolsQuery;
+import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.common.DroolsObjectInputStream;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.reteoo.PropertySpecificUtil;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.accessor.AcceptsReadAccessor;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.TupleValueExtractor;
+import org.drools.base.rule.constraint.Constraint;
+import org.drools.base.util.FieldIndex;
+import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.index.IndexUtil;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.ConditionAnalyzer.CombinedCondition;
 import org.drools.mvel.ConditionAnalyzer.Condition;
 import org.drools.mvel.ConditionAnalyzer.EvaluatedExpression;
@@ -69,7 +69,9 @@ import org.drools.mvel.ConditionAnalyzer.MethodInvocation;
 import org.drools.mvel.ConditionAnalyzer.SingleCondition;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.extractors.MVELObjectClassFieldReader;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.mvel2.ParserConfiguration;
@@ -432,13 +434,16 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     // Slot specific
 
     @Override
-    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
+    public BitMask getListenedPropertyMask(Optional<Pattern> pattern, ObjectType modifiedType, List<String> settableProperties) {
         return analyzedCondition != null ?
-                calculateMask(modifiedClass, settableProperties) :
-                calculateMaskFromExpression(settableProperties);
+                calculateMask(modifiedType, settableProperties) :
+                calculateMaskFromExpression(pattern, settableProperties);
     }
 
-    private BitMask calculateMaskFromExpression(List<String> settableProperties) {
+    /*
+     * if pattern is empty, bind variables are considered to be declared in the same pattern. It should be fine for alpha constraints
+     */
+    private BitMask calculateMaskFromExpression(Optional<Pattern> pattern, List<String> settableProperties) {
         BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
         String[] simpleExpressions = expression.split("\\Q&&\\E|\\Q||\\E");
 
@@ -449,6 +454,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
             }
             boolean firstProp = true;
             for (String propertyName : properties) {
+                String originalPropertyName = propertyName;
                 if (propertyName == null || propertyName.equals("this") || propertyName.length() == 0) {
                     return allSetButTraitBitMask();
                 }
@@ -458,7 +464,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                         propertyName = propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1);
                         pos = settableProperties.indexOf(propertyName);
                     } else {
-                        propertyName = findBoundVariable(propertyName);
+                        propertyName = findBoundVariable(propertyName, pattern);
                         if (propertyName != null) {
                             pos = settableProperties.indexOf(propertyName);
                         }
@@ -469,6 +475,11 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                 } else {
                     // if it is not able to find the property name it could be a function invocation so property reactivity shouldn't filter anything
                     if (firstProp) {
+                        if (isBoundVariableFromDifferentPattern(originalPropertyName, pattern)) {
+                            logger.warn("{} is not relevant to this pattern, so it causes class reactivity." +
+                                        " Consider placing this constraint in the original pattern if possible : {}",
+                                        originalPropertyName, simpleExpression);
+                        }
                         return allSetBitMask();
                     }
                 }
@@ -479,16 +490,28 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         return mask;
     }
 
-    private String findBoundVariable(String variable) {
+    private String findBoundVariable(String variable, Optional<Pattern> pattern) {
         for (Declaration declaration : declarations) {
-            if (declaration.getIdentifier().equals(variable)) {
-                InternalReadAccessor accessor = declaration.getExtractor();
+            if (declaration.getIdentifier().equals(variable) && (!pattern.isPresent() || declaration.getPattern().equals(pattern.get()))) { // if pattern is not given, assume it's the same pattern
+                ReadAccessor accessor = declaration.getExtractor();
                 if (accessor instanceof ClassFieldReader) {
                     return ((ClassFieldReader) accessor).getFieldName();
                 }
             }
         }
         return null;
+    }
+
+    private boolean isBoundVariableFromDifferentPattern(String variable, Optional<Pattern> pattern) {
+        if (!pattern.isPresent()) {
+            return false;
+        }
+        for (Declaration declaration : declarations) {
+            if (declaration.getIdentifier().equals(variable) && !declaration.getPattern().equals(pattern.get())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<String> getPropertyNamesFromSimpleExpression(String expression) {

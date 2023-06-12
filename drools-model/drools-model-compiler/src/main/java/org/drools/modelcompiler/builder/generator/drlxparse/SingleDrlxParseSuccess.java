@@ -78,6 +78,8 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private Optional<Expression> implicitCastExpression = Optional.empty();
     private List<Expression> nullSafeExpressions = new ArrayList<>();
 
+    private Set<String> variablesFromDifferentPattern = new HashSet<>();
+
     public SingleDrlxParseSuccess(Class<?> patternType, String patternBinding, Expression expr, Type exprType) {
         this.patternType = patternType;
         this.patternBinding = patternBinding;
@@ -110,6 +112,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         this.combined = drlx.isCombined();
         this.implicitCastExpression = drlx.getImplicitCastExpression();
         this.nullSafeExpressions = drlx.getNullSafeExpressions();
+        this.variablesFromDifferentPattern = drlx.getVariablesFromDifferentPattern();
 
         this.watchedProperties = drlx.getWatchedProperties();
     }
@@ -476,6 +479,15 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public SingleDrlxParseSuccess setNullSafeExpressions(List<Expression> nullSafeExpressions) {
         this.nullSafeExpressions = nullSafeExpressions;
+        return this;
+    }
+
+    public Set<String> getVariablesFromDifferentPattern() {
+        return variablesFromDifferentPattern;
+    }
+
+    public SingleDrlxParseSuccess setVariablesFromDifferentPattern(Set<String> variablesFromDifferentPattern) {
+        this.variablesFromDifferentPattern = variablesFromDifferentPattern;
         return this;
     }
 
