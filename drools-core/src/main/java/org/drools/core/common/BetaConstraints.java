@@ -19,13 +19,14 @@ package org.drools.core.common;
 import java.io.Externalizable;
 import java.util.List;
 
+import org.drools.base.base.ObjectType;
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.ContextEntry;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.base.base.ObjectType;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -66,7 +67,7 @@ public interface BetaConstraints
 
     void resetFactHandle(final ContextEntry[] context);
 
-    BitMask getListenedPropertyMask(ObjectType modifiedType, List<String> settableProperties);
+    BitMask getListenedPropertyMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties);
 
     void init(BuildContext context, short betaNodeType);
     void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config);
