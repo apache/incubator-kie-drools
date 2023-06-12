@@ -1,18 +1,18 @@
 properties:
-  dataIndexUrl: http://localhost:8180
-
+  dataIndexUrl: http://localhost:8180/graphql
   # seconds
   refresh: 10
 
   # cards size (change the template for width)
   cardsHeight: 80
 global:
+  allowUrlProperties: true
   settings:
     refresh:
       interval: ${refresh}
     columns:
       - id: Total
-        pattern: "#"
+        pattern: '#'
     html:
       html: >-
         <div id="${this}" class="card-pf card-pf-aggregate-status" style="background-color: ${bgColor}; width: 90%; height: 80px">
@@ -27,7 +27,7 @@ datasets:
               [processId,$n.type, $n.name, $n.exit ? $toMillis($n.exit) - $toMillis($n.enter) : -1]
           });
       )
-    url: ${dataIndexUrl}/graphql/?query=%7BProcessInstances%7BprocessId%20nodes%7B%20nodeId%20type%20name%20enter%20exit%20%7D%7D%7D%0A
+    url: ${dataIndexUrl}/?query=%7BProcessInstances%7BprocessId%20nodes%7B%20nodeId%20type%20name%20enter%20exit%20%7D%7D%7D%0A
     columns:
       - id: workflowId
       - id: type
@@ -37,7 +37,7 @@ datasets:
   - uuid: workflows
     expression: >-
       $.data.ProcessInstances.[ id, businessKey ? businessKey : "", processId, processName, state, $fromMillis($toMillis(start)), $fromMillis($toMillis(lastUpdate)), end ? $toMillis(end) - $toMillis(start) : -1, error ? error.message : ""]
-    url: ${dataIndexUrl}/graphql/?query=%7BProcessInstances%7Bid%20processId%20businessKey%20processName%20serviceUrl%20state%20start%20end%20lastUpdate%20error%20%7Bmessage%7D%7D%7D%0A
+    url: ${dataIndexUrl}/?query=%7BProcessInstances%7Bid%20processId%20businessKey%20processName%20serviceUrl%20state%20start%20end%20lastUpdate%20error%20%7Bmessage%7D%7D%7D%0A
     columns:
       - id: id
       - id: businessKey
@@ -56,14 +56,14 @@ pages:
       margin-left: 5px
     rows:
       - columns:
-          - span: "11"
+          - span: '11'
             components:
-              - html: "Filter"
+              - html: 'Filter'
                 properties:
                   font-weight: bolder
               - properties:
-                  width: "150px"
-                  margin-bottom: "20px"
+                  width: '150px'
+                  margin-bottom: '20px'
                 settings:
                   type: SELECTOR
                   filter:
@@ -213,7 +213,7 @@ pages:
                             function: COUNT
       - columns:
           - components:
-              - html: "<hr />"
+              - html: '<hr />'
       - columns:
           - components:
               - settings:

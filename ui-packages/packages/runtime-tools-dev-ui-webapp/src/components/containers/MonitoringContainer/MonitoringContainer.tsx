@@ -33,7 +33,7 @@ const MonitoringContainer: React.FC<Props> = ({
     <MonitoringView
       dashboard={_dashboard}
       workflow={workflow}
-      dataIndexUrl={dataIndexUrl ? new URL(dataIndexUrl).origin : undefined}
+      dataIndexUrl={dataIndexUrl}
     />
   );
 };

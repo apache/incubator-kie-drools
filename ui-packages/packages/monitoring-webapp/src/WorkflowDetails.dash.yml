@@ -1,6 +1,5 @@
 properties:
-  dataIndexUrl: http://localhost:8180
-
+  dataIndexUrl: http://localhost:8180/graphql
   # charts size
   chartsWidth: 95%
   chartsHeight: 450px
@@ -45,7 +44,7 @@ datasets:
               ]
           });
       )
-    url: ${dataIndexUrl}/graphql/?query=%7BProcessInstances(where%3A%7Bid%3A%7Bin%3A%20%5B"${workflowId}"%5D%7D%7D)%7BprocessId%20state%20id%20start%20lastUpdate%20variables%20nodes%20%7Bid%20nodeId%20name%20type%20enter%20exit%7D%7D%7D%0A
+    url: ${dataIndexUrl}/?query=%7BProcessInstances(where%3A%7Bid%3A%7Bin%3A%20%5B"${workflowId}"%5D%7D%7D)%7BprocessId%20state%20id%20start%20lastUpdate%20variables%20nodes%20%7Bid%20nodeId%20name%20type%20enter%20exit%7D%7D%7D%0A
     columns:
       - id: workflowId
         type: label
@@ -92,7 +91,7 @@ pages:
                       <strong style="font-size: x-large; margin-bottom: 10px">${value} <small style="font-size: small">${workflowId}</small></strong>
                   columns:
                     - id: end
-                      pattern: "#"
+                      pattern: '#'
                   lookup:
                     uuid: nodes
                     group:
@@ -110,7 +109,7 @@ pages:
                       document.getElementById(${this}.id + "Icon").className = "fa fa-calendar";
                   columns:
                     - id: end
-                      pattern: "#"
+                      pattern: '#'
                   lookup:
                     uuid: nodes
                     group:
@@ -139,7 +138,7 @@ pages:
                       }
                   columns:
                     - id: end
-                      pattern: "#"
+                      pattern: '#'
                   lookup:
                     uuid: nodes
                     group:
@@ -156,7 +155,7 @@ pages:
                       document.getElementById(${this}.id + "Icon").className = "fa fa-clock-o";
                   columns:
                     - id: end
-                      pattern: "#"
+                      pattern: '#'
                   lookup:
                     uuid: nodes
                     group:
@@ -228,10 +227,10 @@ pages:
                         ]
                       }
                   external:
-                    width: "${chartsWidth}"
-                    height: "${chartsHeight}"
+                    width: '${chartsWidth}'
+                    height: '${chartsHeight}'
                   filter:
-                    listening: "true"
+                    listening: 'true'
                   lookup:
                     uuid: nodes
                     filter:
