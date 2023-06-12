@@ -43,6 +43,39 @@ const ServerErrors: React.FC<IOwnProps & OUIAProps> = ({
 }) => {
   const [displayError, setDisplayError] = useState(false);
 
+  const getErrorSubTitle = () => {
+    try {
+      const errorObject = JSON.parse(props.error);
+      if (
+        (errorObject.networkError && errorObject.networkError.name) ||
+        (errorObject.networkError &&
+          !errorObject.networkError.name &&
+          errorObject.graphQLErrors &&
+          !(errorObject.graphQLErrors.size > 0) &&
+          errorObject.message === 'Network error: Failed to fetch')
+      ) {
+        return 'An error occurred while accessing data. It is possible the data index is still being loaded, please try again in a few moments.';
+      } else {
+        return 'An error occurred while accessing data.';
+      }
+    } catch (error) {
+      return 'An error occurred while accessing data.';
+    }
+  };
+
+  const getErrorContent = () => {
+    try {
+      const errorObject = JSON.parse(props.error);
+      return errorObject.networkError && errorObject.networkError.name
+        ? JSON.stringify(errorObject.networkError)
+        : errorObject.graphQLErrors && errorObject.graphQLErrors.size > 0
+        ? JSON.stringify(errorObject.graphQLErrors)
+        : JSON.stringify(props.error);
+    } catch (error) {
+      return props.error;
+    }
+  };
+
   const renderContent = () => (
     <Bullseye {...componentOuiaProps(ouiaId, 'server-errors', ouiaSafe)}>
       <EmptyState variant={EmptyStateVariant.full}>
@@ -54,7 +87,7 @@ const ServerErrors: React.FC<IOwnProps & OUIAProps> = ({
           Error fetching data
         </Title>
         <EmptyStateBody>
-          An error occurred while accessing data.{' '}
+          {getErrorSubTitle()}{' '}
           <Button
             variant="link"
             isInline
@@ -72,7 +105,7 @@ const ServerErrors: React.FC<IOwnProps & OUIAProps> = ({
               isExpanded={true}
               className="pf-u-text-align-left"
             >
-              {JSON.stringify(props.error)}
+              {getErrorContent()}
             </ClipboardCopy>
           </EmptyStateBody>
         )}

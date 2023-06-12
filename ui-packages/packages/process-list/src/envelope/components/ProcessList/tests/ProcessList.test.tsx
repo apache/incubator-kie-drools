@@ -122,9 +122,10 @@ describe('ProcessList test', () => {
 
   it('error page', async () => {
     const driver = getProcessListDriver(3);
-    driverQueryMock.mockImplementation(() => {
-      throw new Error('404 error');
-    });
+    driverQueryMock.mockRejectedValue(
+      JSON.parse('{"errorMessage":"404 error"}')
+    );
+
     let wrapper;
     await act(async () => {
       wrapper = getProcessListWrapper();

@@ -340,7 +340,7 @@ exports[`ProcessList test Envelope not connected 1`] = `
 
 exports[`ProcessList test error page 1`] = `
 <ServerErrors
-  error={[Error: 404 error]}
+  error="404 error"
   variant="large"
 >
   <MockedComponent />

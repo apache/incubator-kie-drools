@@ -52,7 +52,7 @@ interface ProcessListProps {
   singularProcessLabel: string;
   pluralProcessLabel: string;
   isWorkflow: boolean;
-  isTriggerCloudEventEnabled?: boolean,
+  isTriggerCloudEventEnabled?: boolean;
 }
 const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
   driver,
@@ -168,7 +168,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
         setOffset(_offset);
       }
     } catch (err) {
-      setError(err);
+      setError(err.errorMessage);
     } finally {
       setIsLoading(false);
       setIsLoadingMore(false);

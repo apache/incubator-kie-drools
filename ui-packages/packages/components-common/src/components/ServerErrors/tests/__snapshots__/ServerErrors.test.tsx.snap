@@ -2,7 +2,19 @@
 
 exports[`ServerErrors component tests snapshot testing  1`] = `
 <ServerErrors
-  error="some error"
+  error="{
+  \\"graphQLErrors\\": [],
+  \\"networkError\\": {
+    \\"name\\": \\"ServerError\\",
+    \\"response\\": {},
+    \\"statusCode\\": 500,
+    \\"result\\": {
+      \\"details\\": \\"Error id 51742367-8b20-48c0-9fd6-29774e8256f6-2, java.lang.RuntimeException: network error\\",
+      \\"stack\\": \\"java.lang.RuntimeException: network error\\\\n\\\\tat org.kie.kogito.index.vertx.BlockingGraphqlRouterProducer.apolloWSHandler(BlockingGraphqlRouterProducer.java:51)\\\\n\\\\tat org.kie.kogito.index.vertx.BlockingGraphqlRouterProducer_RouteHandler_apolloWSHandler_08a09272f869f08e6baa194b6ae486ffb063912a.invoke(Unknown Source)\\\\n\\\\tat io.quarkus.vertx.web.runtime.RouteHandler.handle(RouteHandler.java:97)\\\\n\\\\tat io.quarkus.vertx.web.runtime.RouteHandler.handle(RouteHandler.java:22)\\\\n\\\\tat io.vertx.ext.web.impl.BlockingHandlerDecorator.lambda$handle$0(BlockingHandlerDecorator.java:48)\\\\n\\\\tat io.vertx.core.impl.ContextBase.lambda$null$0(ContextBase.java:137)\\\\n\\\\tat io.vertx.core.impl.ContextInternal.dispatch(ContextInternal.java:264)\\\\n\\\\tat io.vertx.core.impl.ContextBase.lambda$executeBlocking$1(ContextBase.java:135)\\\\n\\\\tat org.jboss.threads.ContextHandler$1.runWith(ContextHandler.java:18)\\\\n\\\\tat org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2449)\\\\n\\\\tat org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1478)\\\\n\\\\tat org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)\\\\n\\\\tat org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)\\\\n\\\\tat io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\\\\n\\\\tat java.base/java.lang.Thread.run(Thread.java:829)\\"
+    }
+  },
+  \\"message\\": \\"Network error: Response not successful: Received status code 500\\"
+}"
   variant="large"
 >
   <PageSection
@@ -78,7 +90,7 @@ exports[`ServerErrors component tests snapshot testing  1`] = `
                   <div
                     className="pf-c-empty-state__body"
                   >
-                    An error occurred while accessing data.
+                    An error occurred while accessing data. It is possible the data index is still being loaded, please try again in a few moments.
                      
                     <Button
                       id="display-error"
@@ -124,7 +136,13 @@ exports[`ServerErrors component tests snapshot testing  1`] = `
 
 exports[`ServerErrors component tests snapshot testing with small variant  1`] = `
 <ServerErrors
-  error="error occured"
+  error="{
+  \\"graphQLErrors\\": [],
+  \\"networkError\\": {
+    \\"name\\": \\"ServerError\\" 
+  },
+  \\"message\\": \\"Network error: Response not successful: Received status code 500\\"
+}"
   variant="small"
 >
   <Bullseye
@@ -194,7 +212,7 @@ exports[`ServerErrors component tests snapshot testing with small variant  1`] =
               <div
                 className="pf-c-empty-state__body"
               >
-                An error occurred while accessing data.
+                An error occurred while accessing data. It is possible the data index is still being loaded, please try again in a few moments.
                  
                 <Button
                   id="display-error"
@@ -238,7 +256,19 @@ exports[`ServerErrors component tests snapshot testing with small variant  1`] =
 
 exports[`ServerErrors component tests snapshot with children  1`] = `
 <ServerErrors
-  error="some error"
+  error="{
+  \\"graphQLErrors\\": [],
+  \\"networkError\\": {
+    \\"name\\": \\"ServerError\\",
+    \\"response\\": {},
+    \\"statusCode\\": 500,
+    \\"result\\": {
+      \\"details\\": \\"Error id 51742367-8b20-48c0-9fd6-29774e8256f6-2, java.lang.RuntimeException: network error\\",
+      \\"stack\\": \\"java.lang.RuntimeException: network error\\\\n\\\\tat org.kie.kogito.index.vertx.BlockingGraphqlRouterProducer.apolloWSHandler(BlockingGraphqlRouterProducer.java:51)\\\\n\\\\tat org.kie.kogito.index.vertx.BlockingGraphqlRouterProducer_RouteHandler_apolloWSHandler_08a09272f869f08e6baa194b6ae486ffb063912a.invoke(Unknown Source)\\\\n\\\\tat io.quarkus.vertx.web.runtime.RouteHandler.handle(RouteHandler.java:97)\\\\n\\\\tat io.quarkus.vertx.web.runtime.RouteHandler.handle(RouteHandler.java:22)\\\\n\\\\tat io.vertx.ext.web.impl.BlockingHandlerDecorator.lambda$handle$0(BlockingHandlerDecorator.java:48)\\\\n\\\\tat io.vertx.core.impl.ContextBase.lambda$null$0(ContextBase.java:137)\\\\n\\\\tat io.vertx.core.impl.ContextInternal.dispatch(ContextInternal.java:264)\\\\n\\\\tat io.vertx.core.impl.ContextBase.lambda$executeBlocking$1(ContextBase.java:135)\\\\n\\\\tat org.jboss.threads.ContextHandler$1.runWith(ContextHandler.java:18)\\\\n\\\\tat org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2449)\\\\n\\\\tat org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1478)\\\\n\\\\tat org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)\\\\n\\\\tat org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)\\\\n\\\\tat io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\\\\n\\\\tat java.base/java.lang.Thread.run(Thread.java:829)\\"
+    }
+  },
+  \\"message\\": \\"Network error: Response not successful: Received status code 500\\"
+}"
   variant="large"
 >
   <PageSection
@@ -314,7 +344,7 @@ exports[`ServerErrors component tests snapshot with children  1`] = `
                   <div
                     className="pf-c-empty-state__body"
                   >
-                    An error occurred while accessing data.
+                    An error occurred while accessing data. It is possible the data index is still being loaded, please try again in a few moments.
                      
                     <Button
                       id="display-error"
