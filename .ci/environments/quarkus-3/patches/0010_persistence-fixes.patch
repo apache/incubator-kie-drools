@@ -1,13 +1,3 @@
-commit 61a8bb3b194f5cd87294ef3498151d29fc52ce7f
-Author: Pere Fernandez <pefernan@users.noreply.github.com>
-Date:   Wed May 17 14:43:21 2023 +0200
-
-    kie-issues#261: Quarkus 3 Migration: Fix Persistence issues
-    - Change JSON mappings
-    - Fix array-argument parsing for SQL queries
-    - Fix IT tests
-    - Removed hypersistence
-
 diff --git a/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/main/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java b/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/main/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java
 index 3b29157b6..5ecd962a4 100644
 --- a/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/main/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java
@@ -37,7 +27,7 @@ index 3b29157b6..5ecd962a4 100644
 -                        .body("$.size", is(1))
 +                        .body("size()", is(1))
                          .body("[0].content", is(commentContent)));
-
+ 
          Map<String, String> commentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
 @@ -545,7 +545,7 @@ public abstract class AbstractProcessDataIndexIT {
                          .get("/approvals/{id}/firstLineApproval/{taskId}/attachments")
@@ -46,21 +36,21 @@ index 3b29157b6..5ecd962a4 100644
 -                        .body("$.size", is(1))
 +                        .body("size()", is(1))
                          .body("[0].name", is(attachmentName)));
-
+ 
          Map<String, String> attachmentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java
 index 6026abaf5..d7be19727 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java
 @@ -42,11 +42,27 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
-
+ 
  import static java.lang.String.format;
  import static java.util.stream.Collectors.joining;
 -import static org.apache.commons.lang3.ArrayUtils.insert;
  import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
-
+ 
  public class GraphQLUtils {
-
+ 
 +    private static final String ID = "id";
 +    private static final String STATE = "state";
 +    private static final String START = "start";
@@ -83,138 +73,138 @@ index 6026abaf5..d7be19727 100644
      private static final Map<String, String> QUERIES = new HashMap<>();
 @@ -72,103 +88,103 @@ public class GraphQLUtils {
      }
-
+ 
      public static String getProcessInstanceById(String id) {
 -        return getProcessInstanceQuery("ProcessInstanceById", id);
 +        return getProcessInstanceQuery("ProcessInstanceById", Map.of(ID, id));
      }
-
+ 
      public static String getProcessInstanceByIdAndState(String id, ProcessInstanceState state) {
 -        return getProcessInstanceQuery("ProcessInstanceByIdAndState", id, state.name());
 +        return getProcessInstanceQuery("ProcessInstanceByIdAndState", Map.of(ID, id, STATE, state.name()));
      }
-
+ 
      public static String getProcessInstanceByIdAndStart(String id, String start) {
 -        return getProcessInstanceQuery("ProcessInstanceByIdAndStart", id, start);
 +        return getProcessInstanceQuery("ProcessInstanceByIdAndStart", Map.of(ID, id, START, start));
      }
-
+ 
      public static String getProcessInstanceByIdAndProcessId(String id, String processId) {
 -        return getProcessInstanceQuery("ProcessInstanceByIdAndProcessId", id, processId);
 +        return getProcessInstanceQuery("ProcessInstanceByIdAndProcessId", Map.of(ID, id, PROCESS_ID, processId));
      }
-
+ 
      public static String getProcessInstanceByIdAndParentProcessInstanceId(String id, String parentProcessInstanceId) {
 -        return getProcessInstanceQuery("ProcessInstanceByIdAndParentProcessInstanceId", id, parentProcessInstanceId);
 +        return getProcessInstanceQuery("ProcessInstanceByIdAndParentProcessInstanceId", Map.of(ID, id, PARENT_PROCESS_INSTANCE_ID, parentProcessInstanceId));
      }
-
+ 
      public static String getProcessInstanceByParentProcessInstanceId(String parentProcessInstanceId) {
 -        return getProcessInstanceQuery("ProcessInstanceByParentProcessInstanceId", parentProcessInstanceId);
 +        return getProcessInstanceQuery("ProcessInstanceByParentProcessInstanceId", Map.of(PARENT_PROCESS_INSTANCE_ID, parentProcessInstanceId));
      }
-
+ 
      public static String getProcessInstanceByIdAndNullParentProcessInstanceId(String id, Boolean isNull) {
 -        return getProcessInstanceQuery("ProcessInstanceByIdAndNullParentProcessInstanceId", id, isNull.toString());
 +        return getProcessInstanceQuery("ProcessInstanceByIdAndNullParentProcessInstanceId",  Map.of(ID, id, IS_NULL, isNull));
      }
-
+ 
      public static String getProcessInstanceByIdAndNullRootProcessInstanceId(String id, Boolean isNull) {
 -        return getProcessInstanceQuery("ProcessInstanceByIdAndNullRootProcessInstanceId", id, isNull.toString());
 +        return getProcessInstanceQuery("ProcessInstanceByIdAndNullRootProcessInstanceId", Map.of(ID, id, IS_NULL, isNull));
      }
-
+ 
      public static String getProcessInstanceByRootProcessInstanceId(String rootProcessInstanceId) {
 -        return getProcessInstanceQuery("ProcessInstanceByRootProcessInstanceId", rootProcessInstanceId);
 +        return getProcessInstanceQuery("ProcessInstanceByRootProcessInstanceId", Map.of(ID, rootProcessInstanceId));
      }
-
+ 
      public static String getProcessInstanceByIdAndErrorNode(String id, String nodeDefinitionId) {
 -        return getProcessInstanceQuery("ProcessInstanceByIdAndErrorNode", id, nodeDefinitionId);
 +        return getProcessInstanceQuery("ProcessInstanceByIdAndErrorNode", Map.of(ID, id, NODE, nodeDefinitionId));
      }
-
+ 
      public static String getProcessInstanceByIdAndAddon(String id, String addon) {
 -        return getProcessInstanceQuery("ProcessInstanceByIdAndAddon", id, addon);
 +        return getProcessInstanceQuery("ProcessInstanceByIdAndAddon", Map.of(ID, id, ADDON, addon));
      }
-
+ 
      public static String getProcessInstanceByIdAndMilestoneName(String id, String milestone) {
 -        return getProcessInstanceQuery("ProcessInstanceByIdAndMilestoneName", id, milestone);
 +        return getProcessInstanceQuery("ProcessInstanceByIdAndMilestoneName", Map.of(ID, id, MILESTONE, milestone));
      }
-
+ 
      public static String getProcessInstanceByIdAndMilestoneStatus(String id, String status) {
 -        return getProcessInstanceQuery("ProcessInstanceByIdAndMilestoneStatus", id, status);
 +        return getProcessInstanceQuery("ProcessInstanceByIdAndMilestoneStatus", Map.of(ID, id, STATUS, status));
      }
-
+ 
 -    public static String getProcessInstanceByBusinessKey(String businessKeys) {
 -        return getProcessInstanceQuery("ProcessInstanceByBusinessKey", businessKeys);
 +    public static String getProcessInstanceByBusinessKey(String businessKey) {
 +        return getProcessInstanceQuery("ProcessInstanceByBusinessKey", Map.of(BUSSINES_KEY, businessKey));
      }
-
+ 
      public static String getUserTaskInstanceById(String id) {
 -        return getUserTaskInstanceQuery("UserTaskInstanceById", id);
 +        return getUserTaskInstanceQuery("UserTaskInstanceById", Map.of(ID, id));
      }
-
+ 
      public static String getUserTaskInstanceByProcessInstanceId(String id) {
 -        return getUserTaskInstanceQuery("UserTaskInstanceByProcessInstanceId", id);
 +        return getUserTaskInstanceQuery("UserTaskInstanceByProcessInstanceId", Map.of(ID, id));
      }
-
+ 
      public static String getUserTaskInstanceByIdAndActualOwner(String id, String actualOwner) {
 -        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndActualOwner", id, actualOwner);
 +        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndActualOwner", Map.of(ID, id, ACTUAL_OWNER, actualOwner));
      }
-
+ 
      public static String getUserTaskInstanceByIdAndProcessId(String id, String processId) {
 -        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndProcessId", id, processId);
 +        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndProcessId", Map.of(ID, id, PROCESS_ID, processId));
      }
-
+ 
      public static String getUserTaskInstanceByIdNoActualOwner(String id) {
 -        return getUserTaskInstanceQuery("UserTaskInstanceByIdNoActualOwner", id);
 +        return getUserTaskInstanceQuery("UserTaskInstanceByIdNoActualOwner", Map.of(ID, id));
      }
-
+ 
      public static String getUserTaskInstanceByIdAndState(String id, String state) {
 -        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndState", id, state);
 +        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndState", Map.of(ID, id, STATE, state));
      }
-
+ 
      public static String getUserTaskInstanceByIdAndStarted(String id, String started) {
 -        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndStarted", id, started);
 +        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndStarted", Map.of(ID, id, STARTED, started));
      }
-
+ 
      public static String getUserTaskInstanceByIdAndCompleted(String id, String completed) {
 -        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndCompleted", id, completed);
 +        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndCompleted", Map.of(ID, id, COMPLETED, completed));
      }
-
+ 
      public static String getUserTaskInstanceByIdAndPotentialGroups(String id, List<String> potentialGroups) throws Exception {
 -        return getUserTaskInstanceWithArray("UserTaskInstanceByIdAndPotentialGroups", potentialGroups, "potentialGroups", id);
 +        return getUserTaskInstanceWithArray("UserTaskInstanceByIdAndPotentialGroups", potentialGroups, POTENTIAL_GROUPS, Map.of(ID, id));
      }
-
+ 
      public static String getUserTaskInstanceByIdAndPotentialUsers(String id, List<String> potentialUsers) throws Exception {
 -        return getUserTaskInstanceWithArray("UserTaskInstanceByIdAndPotentialUsers", potentialUsers, "potentialUsers", id);
 +        return getUserTaskInstanceWithArray("UserTaskInstanceByIdAndPotentialUsers", potentialUsers, POTENTIAL_USERS, Map.of(ID, id));
      }
-
+ 
      public static String getJobById(String id) {
 -        return getJobQuery("JobById", id);
 +        return getJobQuery("JobById", Map.of(ID, id));
      }
-
+ 
      public static String getTravelsByUserTaskId(String id) {
 @@ -191,10 +207,10 @@ public class GraphQLUtils {
          return getQuery("DealsByTaskIdNoActualOwner", id);
      }
-
+ 
 -    private static String getUserTaskInstanceWithArray(String query, List<String> values, String variable, String... args) throws Exception {
 +    private static String getUserTaskInstanceWithArray(String query, List<String> values, String variable, Map<String, Object> args) throws Exception {
          String json = getUserTaskInstanceQuery(query, args);
@@ -227,22 +217,22 @@ index 6026abaf5..d7be19727 100644
 @@ -203,20 +219,30 @@ public class GraphQLUtils {
          return format(QUERIES.get(name), args);
      }
-
+ 
 -    private static String getProcessInstanceQuery(String name, String... args) {
 +    private static String getProcessInstanceQuery(String name, Map<String, Object> args) {
          return getQuery(name, ProcessInstance.class, args);
      }
-
+ 
 -    private static String getUserTaskInstanceQuery(String name, String... args) {
 +    private static String getUserTaskInstanceQuery(String name, Map<String, Object> args) {
          return getQuery(name, UserTaskInstance.class, args);
      }
-
+ 
 -    private static String getJobQuery(String name, String... args) {
 +    private static String getJobQuery(String name, Map<String, Object> args) {
          return getQuery(name, Job.class, args);
      }
-
+ 
 -    private static String getQuery(String name, Class clazz, String... args) {
 -        return format(QUERIES.get(name), insert(0, args, QUERY_FIELDS.get(clazz)));
 +    private static String getQuery(String name, Class clazz, Map<String, Object> args) {
@@ -258,7 +248,7 @@ index 6026abaf5..d7be19727 100644
 +            throw new RuntimeException(e);
 +        }
      }
-
+ 
      private static Stream<Field> getAllFieldsList(Class clazz) {
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/resources/graphql_queries.json b/data-index/data-index-service/data-index-service-common/src/test/resources/graphql_queries.json
 index 6f0f72396..4b22aa924 100644
@@ -500,12 +490,12 @@ index a9d93e6db..f4f218b30 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java
 @@ -39,7 +39,7 @@ import org.hibernate.annotations.Type;
-
+ 
  import com.fasterxml.jackson.databind.node.ObjectNode;
-
+ 
 -import io.hypersistence.utils.hibernate.type.json.JsonBlobType;
 +import org.kie.kogito.persistence.oracle.hibernate.JsonBinaryType;
-
+ 
  @Entity(name = "processes")
  @Table(name = "processes")
 @@ -67,7 +67,7 @@ public class ProcessInstanceEntity extends AbstractEntity {
@@ -523,12 +513,12 @@ index 60104cf2f..25ccf13d0 100644
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/UserTaskInstanceEntity.java
 @@ -37,8 +37,7 @@ import org.hibernate.annotations.OnDeleteAction;
  import org.hibernate.annotations.Type;
-
+ 
  import com.fasterxml.jackson.databind.node.ObjectNode;
 -
 -import io.hypersistence.utils.hibernate.type.json.JsonBlobType;
 +import org.kie.kogito.persistence.oracle.hibernate.JsonBinaryType;
-
+ 
  @Entity(name = "tasks")
  @Table(name = "tasks")
 @@ -89,9 +88,9 @@ public class UserTaskInstanceEntity extends AbstractEntity {
@@ -552,7 +542,7 @@ index a75c4c1b3..f698d913a 100644
  import jakarta.persistence.criteria.Predicate;
  import jakarta.persistence.criteria.Root;
 +import jakarta.persistence.metamodel.Attribute;
-
+ 
 -import org.hibernate.metamodel.mapping.ordering.ast.PluralAttributePath;
  import org.kie.kogito.index.oracle.model.AbstractEntity;
  import org.kie.kogito.persistence.api.query.AttributeFilter;
@@ -573,7 +563,7 @@ index a75c4c1b3..f698d913a 100644
 @@ -176,6 +176,12 @@ public class OracleQuery<E extends AbstractEntity, T> implements Query<T> {
          return join.get(split[split.length - 1]);
      }
-
+ 
 +    private boolean isPluralAttribute(final String attribute) {
 +        return this.repository.getEntityManager().getMetamodel().entity(this.entityClass).getDeclaredPluralAttributes().stream()
 +                .map(Attribute::getName)
@@ -592,7 +582,7 @@ index 9ec287dff..8952b9486 100644
  import jakarta.persistence.criteria.Predicate;
  import jakarta.persistence.criteria.Root;
 +import jakarta.persistence.metamodel.Attribute;
-
+ 
 -import org.hibernate.metamodel.mapping.ordering.ast.PluralAttributePath;
  import org.kie.kogito.index.postgresql.model.AbstractEntity;
  import org.kie.kogito.persistence.api.query.AttributeFilter;
@@ -613,7 +603,7 @@ index 9ec287dff..8952b9486 100644
 @@ -176,6 +176,12 @@ public class PostgreSqlQuery<E extends AbstractEntity, T> implements Query<T> {
          return join.get(split[split.length - 1]);
      }
-
+ 
 +    private boolean isPluralAttribute(final String attribute) {
 +        return this.repository.getEntityManager().getMetamodel().entity(this.entityClass).getDeclaredPluralAttributes().stream()
 +                .map(Attribute::getName)
@@ -624,12 +614,12 @@ index 9ec287dff..8952b9486 100644
          return ((List<AttributeFilter<?>>) filter.getValue())
                  .stream()
 diff --git a/kogito-apps-build-parent/pom.xml b/kogito-apps-build-parent/pom.xml
-index 5b0eec732..3119d4be3 100644
+index e192e55c4..f94060b86 100644
 --- a/kogito-apps-build-parent/pom.xml
 +++ b/kogito-apps-build-parent/pom.xml
 @@ -48,7 +48,6 @@
-         <version.org.optaplanner>9.37.0.Final</version.org.optaplanner>
-
+         <version.org.optaplanner>9.38.0.Final</version.org.optaplanner>
+ 
          <version.org.hibernate>6.2.0.Final</version.org.hibernate> <!-- Aligned with Quarkus bom -->
 -        <version.io.hypersistence.hypersistence-utils-hibernate-62>3.3.2</version.io.hypersistence.hypersistence-utils-hibernate-62>
          <version.org.apache.opennlp>1.9.2</version.org.apache.opennlp>
@@ -648,7 +638,7 @@ index 5b0eec732..3119d4be3 100644
                  <groupId>com.graphql-java</groupId>
                  <artifactId>graphql-java-extended-scalars</artifactId>
 diff --git a/persistence-commons/persistence-commons-oracle/pom.xml b/persistence-commons/persistence-commons-oracle/pom.xml
-index 9d58b88b3..d27a820c1 100644
+index d032b4016..08ae24324 100644
 --- a/persistence-commons/persistence-commons-oracle/pom.xml
 +++ b/persistence-commons/persistence-commons-oracle/pom.xml
 @@ -45,10 +45,6 @@
@@ -669,7 +659,7 @@ index 78deea035..0bb5a271b 100644
 @@ -21,13 +21,14 @@ import java.util.Map;
  import java.util.Objects;
  import java.util.stream.Collectors;
-
+ 
 -import org.hibernate.metamodel.model.domain.BasicDomainType;
  import org.hibernate.query.NativeQuery;
 -import org.hibernate.type.BasicTypeReference;
@@ -686,19 +676,19 @@ index 78deea035..0bb5a271b 100644
 @@ -35,8 +36,6 @@ import org.slf4j.LoggerFactory;
  import com.fasterxml.jackson.core.JsonProcessingException;
  import com.fasterxml.jackson.databind.ObjectMapper;
-
+ 
 -import io.hypersistence.utils.hibernate.type.json.JsonBlobType;
 -
  import static java.lang.String.format;
  import static java.util.stream.Collectors.joining;
-
+ 
 @@ -140,7 +139,7 @@ public class OracleQuery<T> implements Query<T> {
          jakarta.persistence.Query query = repository.getEntityManager()
                  .createNativeQuery(queryString.toString())
                  .unwrap(NativeQuery.class)
 -                .addScalar("json_value", type); // TODO Quarkus 3: This does not work and should be fix in a next PR
 +                .addScalar("json_value", new CustomType<>(new JsonBinaryType(), new TypeConfiguration()));
-
+ 
          if (limit != null) {
              query.setMaxResults(limit);
 diff --git a/persistence-commons/persistence-commons-oracle/src/main/java/org/kie/kogito/persistence/oracle/hibernate/JsonBinaryType.java b/persistence-commons/persistence-commons-oracle/src/main/java/org/kie/kogito/persistence/oracle/hibernate/JsonBinaryType.java
@@ -706,9 +696,9 @@ index 83847f502..2e1752247 100644
 --- a/persistence-commons/persistence-commons-oracle/src/main/java/org/kie/kogito/persistence/oracle/hibernate/JsonBinaryType.java
 +++ b/persistence-commons/persistence-commons-oracle/src/main/java/org/kie/kogito/persistence/oracle/hibernate/JsonBinaryType.java
 @@ -16,11 +16,12 @@
-
+ 
  package org.kie.kogito.persistence.oracle.hibernate;
-
+ 
 +import java.io.ByteArrayInputStream;
  import java.io.Serializable;
 +import java.sql.Blob;
@@ -717,24 +707,24 @@ index 83847f502..2e1752247 100644
  import java.sql.SQLException;
 -import java.sql.Types;
  import java.util.Objects;
-
+ 
  import org.hibernate.HibernateException;
 @@ -31,7 +32,6 @@ import org.hibernate.usertype.UserType;
  import com.fasterxml.jackson.core.JsonProcessingException;
  import com.fasterxml.jackson.databind.JsonNode;
  import com.fasterxml.jackson.databind.ObjectMapper;
 -import com.fasterxml.jackson.databind.node.ObjectNode;
-
+ 
  import static java.lang.String.format;
-
+ 
 @@ -41,7 +41,7 @@ public class JsonBinaryType implements UserType<JsonNode> {
-
+ 
      @Override
      public int getSqlType() {
 -        return SqlTypes.JAVA_OBJECT;
 +        return SqlTypes.BLOB;
      }
-
+ 
      @Override
 @@ -62,14 +62,14 @@ public class JsonBinaryType implements UserType<JsonNode> {
      @Override
@@ -754,7 +744,7 @@ index 83847f502..2e1752247 100644
 +            throw new RuntimeException("Failed to convert String to JSON: " + ex.getMessage(), ex);
          }
      }
-
+ 
 @@ -77,18 +77,13 @@ public class JsonBinaryType implements UserType<JsonNode> {
      public void nullSafeSet(PreparedStatement ps, JsonNode value, int index, SharedSessionContractImplementor session)
              throws SQLException {
@@ -778,7 +768,7 @@ index 83847f502..2e1752247 100644
 +            throw new RuntimeException(format("Failed to convert JSON to String: %s", ex.getMessage()), ex);
          }
      }
-
+ 
 @@ -97,11 +92,7 @@ public class JsonBinaryType implements UserType<JsonNode> {
          if (value == null) {
              return null;
@@ -790,16 +780,16 @@ index 83847f502..2e1752247 100644
 -        }
 +        return value.deepCopy();
      }
-
+ 
      @Override
 diff --git a/persistence-commons/persistence-commons-oracle/src/main/java/org/kie/kogito/persistence/oracle/model/CacheEntity.java b/persistence-commons/persistence-commons-oracle/src/main/java/org/kie/kogito/persistence/oracle/model/CacheEntity.java
 index 6ba957970..61de03cbf 100644
 --- a/persistence-commons/persistence-commons-oracle/src/main/java/org/kie/kogito/persistence/oracle/model/CacheEntity.java
 +++ b/persistence-commons/persistence-commons-oracle/src/main/java/org/kie/kogito/persistence/oracle/model/CacheEntity.java
 @@ -18,6 +18,11 @@ package org.kie.kogito.persistence.oracle.model;
-
+ 
  import java.util.Objects;
-
+ 
 +import org.hibernate.annotations.Type;
 +import org.kie.kogito.persistence.oracle.hibernate.JsonBinaryType;
 +
@@ -811,7 +801,7 @@ index 6ba957970..61de03cbf 100644
 @@ -26,12 +31,6 @@ import jakarta.persistence.Index;
  import jakarta.persistence.Table;
  import jakarta.persistence.UniqueConstraint;
-
+ 
 -import org.hibernate.annotations.Type;
 -
 -import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -824,14 +814,14 @@ index 6ba957970..61de03cbf 100644
 @@ -46,7 +45,7 @@ public class CacheEntity {
      @Column(nullable = false)
      private String key;
-
+ 
 -    @Type(value = JsonType.class)
 +    @Type(JsonBinaryType.class)
      @Column(name = "json_value")
      private ObjectNode value;
-
+ 
 diff --git a/persistence-commons/persistence-commons-postgresql/pom.xml b/persistence-commons/persistence-commons-postgresql/pom.xml
-index f95fc30a4..fa1a9b4c7 100644
+index bde9f6f58..dcdf7ab7c 100644
 --- a/persistence-commons/persistence-commons-postgresql/pom.xml
 +++ b/persistence-commons/persistence-commons-postgresql/pom.xml
 @@ -45,10 +45,6 @@
@@ -852,7 +842,7 @@ index 1abc2fdbc..b6851dcbb 100644
 @@ -21,10 +21,13 @@ import java.util.Map;
  import java.util.Objects;
  import java.util.stream.Collectors;
-
+ 
 +import org.hibernate.type.CustomType;
 +import org.hibernate.type.spi.TypeConfiguration;
  import org.kie.kogito.persistence.api.query.AttributeFilter;
@@ -866,19 +856,19 @@ index 1abc2fdbc..b6851dcbb 100644
 @@ -32,8 +35,6 @@ import org.slf4j.LoggerFactory;
  import com.fasterxml.jackson.core.JsonProcessingException;
  import com.fasterxml.jackson.databind.ObjectMapper;
-
+ 
 -import io.hypersistence.utils.hibernate.type.json.JsonNodeBinaryType;
 -
  import static java.lang.String.format;
  import static java.util.stream.Collectors.joining;
-
+ 
 @@ -135,7 +136,7 @@ public class PostgresQuery<T> implements Query<T> {
-
+ 
          LOGGER.debug("Executing PostgreSQL query: {}", queryString);
          jakarta.persistence.Query query = repository.getEntityManager().createNativeQuery(queryString.toString());
 -        query.unwrap(org.hibernate.query.NativeQuery.class).addScalar("json_value", type); // TODO Quarkus 3: This does not work and should be fix in a next PR
 +        query.unwrap(org.hibernate.query.NativeQuery.class).addScalar("json_value", new CustomType<>(new JsonBinaryType(), new TypeConfiguration()));
-
+ 
          if (limit != null) {
              query.setMaxResults(limit);
 diff --git a/persistence-commons/persistence-commons-postgresql/src/main/java/org/kie/kogito/persistence/postgresql/hibernate/JsonBinaryType.java b/persistence-commons/persistence-commons-postgresql/src/main/java/org/kie/kogito/persistence/postgresql/hibernate/JsonBinaryType.java
@@ -892,7 +882,7 @@ index 653aae0f1..550aa151b 100644
 -import com.fasterxml.jackson.databind.node.ObjectNode;
 -
  import static java.lang.String.format;
-
+ 
  public class JsonBinaryType implements UserType<JsonNode> {
 @@ -69,7 +67,7 @@ public class JsonBinaryType implements UserType<JsonNode> {
          try {
@@ -902,7 +892,7 @@ index 653aae0f1..550aa151b 100644
 +            throw new RuntimeException("Failed to convert String to JSON: " + ex.getMessage(), ex);
          }
      }
-
+ 
 @@ -80,14 +78,10 @@ public class JsonBinaryType implements UserType<JsonNode> {
              ps.setNull(index, Types.OTHER);
              return;
@@ -921,7 +911,7 @@ index 653aae0f1..550aa151b 100644
 +            throw new RuntimeException(format("Failed to convert JSON to String: %s", ex.getMessage()), ex);
          }
      }
-
+ 
 @@ -96,11 +90,7 @@ public class JsonBinaryType implements UserType<JsonNode> {
          if (value == null) {
              return null;
@@ -933,7 +923,7 @@ index 653aae0f1..550aa151b 100644
 -        }
 +        return value.deepCopy();
      }
-
+ 
      @Override
 diff --git a/persistence-commons/persistence-commons-postgresql/src/main/java/org/kie/kogito/persistence/postgresql/model/CacheEntity.java b/persistence-commons/persistence-commons-postgresql/src/main/java/org/kie/kogito/persistence/postgresql/model/CacheEntity.java
 index f4e95df2b..6092f048f 100644
@@ -942,7 +932,7 @@ index f4e95df2b..6092f048f 100644
 @@ -45,7 +45,7 @@ public class CacheEntity {
      @Column(nullable = false)
      private String key;
-
+ 
 -    @Type(value = JsonBinaryType.class)
 +    @Type(JsonBinaryType.class)
      @Column(name = "json_value", columnDefinition = "jsonb")
