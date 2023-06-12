@@ -166,18 +166,12 @@ public abstract class BetaNode extends LeftTupleSource
         if (!isRightInputIsRiaNode()) {
             ObjectType objectType = pattern.getObjectType();
 
-            if (objectType instanceof ClassObjectType) {
-                Class objectClass = ((ClassObjectType) objectType).getClassType();
-                if (isPropertyReactive(context, objectClass)) {
-                    rightListenedProperties = pattern.getListenedProperties();
-                    List<String> accessibleProperties = pattern.getAccessibleProperties( context.getKnowledgeBase() );
-                    rightDeclaredMask = pattern.getPositiveWatchMask(accessibleProperties);
-                    rightDeclaredMask = rightDeclaredMask.setAll(constraints.getListenedPropertyMask(objectClass, accessibleProperties));
-                    rightNegativeMask = pattern.getNegativeWatchMask(accessibleProperties);
-                } else {
-                    // if property reactive is not on, then accept all modification propagations
-                    rightDeclaredMask = AllSetBitMask.get();
-                }
+            if (isPropertyReactive(context.getRuleBase(), objectType)) {
+                rightListenedProperties = pattern.getListenedProperties();
+                List<String> accessibleProperties = pattern.getAccessibleProperties( context.getRuleBase() );
+                rightDeclaredMask = pattern.getPositiveWatchMask(accessibleProperties);
+                rightDeclaredMask = rightDeclaredMask.setAll(constraints.getListenedPropertyMask(pattern, objectType, accessibleProperties));
+                rightNegativeMask = pattern.getNegativeWatchMask(accessibleProperties);
             } else {
                 // InitialFact has no type declaration and cannot be property specific
                 // Only ClassObjectType can use property specific
