@@ -238,7 +238,7 @@ public class JavaGroupByBuilder
                     accumulators[index++] = buildAccumulator(context, groupByDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, keyDecls, fc, function);
                 }
                 requiredDecl.addAll(List.of(sourceDeclArr));
-                return new MultiAccumulate(source, requiredDecl.toArray(new Declaration[requiredDecl.size()]), accumulators, accumulators.length);
+                return new MultiAccumulate(source, requiredDecl.toArray(new Declaration[requiredDecl.size()]), accumulators, accumulators.length + 1);
             };
         } else {
             accumulateSupplier = keyDecls -> {
