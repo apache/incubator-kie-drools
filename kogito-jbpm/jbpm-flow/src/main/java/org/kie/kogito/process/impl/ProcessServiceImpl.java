@@ -78,17 +78,17 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process, String businessKey,
             T model,
+            Map<String, List<String>> headers,
             String startFromNodeId,
             String trigger,
             String kogitoReferenceId,
             CompositeCorrelation correlation) {
-
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
             ProcessInstance<T> pi = process.createInstance(businessKey, correlation, model);
             if (startFromNodeId != null) {
-                pi.startFrom(startFromNodeId, kogitoReferenceId);
+                pi.startFrom(startFromNodeId, kogitoReferenceId, headers);
             } else {
-                pi.start(trigger, kogitoReferenceId);
+                pi.start(trigger, kogitoReferenceId, headers);
             }
             return pi;
         });
@@ -397,5 +397,4 @@ public class ProcessServiceImpl implements ProcessService {
                 new Policy<?>[] { policy },
                 JsonSchemaUtil.load(Thread.currentThread().getContextClassLoader(), process.id(), taskName));
     }
-
 }

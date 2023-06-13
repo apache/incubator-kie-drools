@@ -43,7 +43,16 @@ public interface ProcessService {
             T model, Map<String, List<String>> headers,
             String startFromNodeId);
 
+    default <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process, String businessKey, T model,
+            String startFromNodeId,
+            String trigger,
+            String kogitoReferenceId,
+            CompositeCorrelation correlation) {
+        return createProcessInstance(process, businessKey, model, Collections.emptyMap(), startFromNodeId, trigger, kogitoReferenceId, correlation);
+    }
+
     <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process, String businessKey, T model,
+            Map<String, List<String>> headers,
             String startFromNodeId,
             String trigger,
             String kogitoReferenceId,

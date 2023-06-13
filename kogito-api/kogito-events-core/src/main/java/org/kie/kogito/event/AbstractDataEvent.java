@@ -19,6 +19,7 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -317,7 +318,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     @JsonIgnore
     @Override
     public Set<String> getAttributeNames() {
-        return DataEvent.super.getAttributeNames();
+        return specVersion == null ? Collections.emptySet() : DataEvent.super.getAttributeNames();
     }
 
     @JsonIgnore

@@ -264,7 +264,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         start(trigger, referenceId, Collections.emptyMap());
     }
 
-    private void start(String trigger, String referenceId, Map<String, List<String>> headers) {
+    @Override
+    public void start(String trigger, String referenceId, Map<String, List<String>> headers) {
         if (this.status != KogitoProcessInstance.STATE_PENDING) {
             throw new IllegalStateException("Impossible to start process instance that already has started");
         }
@@ -409,7 +410,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         startFrom(nodeId, referenceId, Collections.emptyMap());
     }
 
-    private void startFrom(String nodeId, String referenceId, Map<String, List<String>> headers) {
+    @Override
+    public void startFrom(String nodeId, String referenceId, Map<String, List<String>> headers) {
         processInstance.setStartDate(new Date());
         processInstance.setState(STATE_ACTIVE);
         getProcessRuntime().getProcessInstanceManager().addProcessInstance(this.processInstance);

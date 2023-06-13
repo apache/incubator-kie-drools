@@ -15,6 +15,9 @@
  */
 package org.kie.kogito.event.impl;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -73,7 +76,7 @@ class ProcessEventDispatcherTest {
         when(processInstances.findById(Mockito.anyString())).thenReturn(Optional.empty());
         when(processInstances.findById("1")).thenReturn(Optional.of(processInstance));
         processService = mock(ProcessService.class);
-        when(processService.createProcessInstance(eq(process), any(), any(), any(), any(), any(), any())).thenReturn(processInstance);
+        when(processService.createProcessInstance(eq(process), any(), any(), any(), any(), any(), any(), any())).thenReturn(processInstance);
         when(processService.signalProcessInstance(eq(process), any(), any(), any())).thenReturn(Optional.of(mock(DummyModel.class)));
         executor = Executors.newSingleThreadExecutor();
     }
@@ -113,7 +116,7 @@ class ProcessEventDispatcherTest {
 
         verify(processInstances, never()).findById(any());
         verify(processService, never()).signalProcessInstance(eq(process), any(), any(), signal.capture());
-        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), referenceId.capture(), isNull());
+        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), any(), signal.capture(), referenceId.capture(), isNull());
 
         assertThat(signal.getValue()).isEqualTo(DUMMY_TOPIC);
         assertThat(referenceId.getValue()).isEqualTo("1");
@@ -127,13 +130,15 @@ class ProcessEventDispatcherTest {
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> referenceId = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Map<String, List<String>>> headers = ArgumentCaptor.forClass(Map.class);
 
         verify(processInstances, times(1)).findById("invalidReference");
         verify(processService, never()).signalProcessInstance(eq(process), any(), any(), signal.capture());
-        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), referenceId.capture(), isNull());
+        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), headers.capture(), any(), signal.capture(), referenceId.capture(), isNull());
 
         assertThat(signal.getValue()).isEqualTo(DUMMY_TOPIC);
         assertThat(referenceId.getValue()).isEqualTo("1");
+        assertThat(headers.getValue()).containsEntry("source", Arrays.asList("source"));
         assertThat(processInstance).isEqualTo(instance);
     }
 
@@ -143,7 +148,7 @@ class ProcessEventDispatcherTest {
         ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, DataEventFactory.from(new TestEvent("pepe"))).toCompletableFuture().get();
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
-        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), isNull(), isNull());
+        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), any(), signal.capture(), isNull(), isNull());
         assertThat(signal.getValue()).isEqualTo(DUMMY_TOPIC);
         assertThat(processInstance).isEqualTo(instance);
     }
@@ -200,7 +205,7 @@ class ProcessEventDispatcherTest {
         ArgumentCaptor<String> referenceId = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<CompositeCorrelation> correlationCaptor = ArgumentCaptor.forClass(CompositeCorrelation.class);
 
-        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), referenceId.capture(), correlationCaptor.capture());
+        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), any(), signal.capture(), referenceId.capture(), correlationCaptor.capture());
 
         assertThat(signal.getValue()).isEqualTo(DUMMY_TOPIC);
         assertThat(referenceId.getValue()).isEqualTo("1");

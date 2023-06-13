@@ -62,6 +62,15 @@ public interface ProcessInstance<T> {
     void start(String trigger, String referenceId);
 
     /**
+     * Starts process instance with trigger
+     *
+     * @param trigger name of the trigger that will indicate what start node to trigger
+     * @param referenceId optional reference id that points to a another component triggering this instance
+     * @param headers process headers
+     */
+    void start(String trigger, String referenceId, Map<String, List<String>> headers);
+
+    /**
      * Starts process instance with trigger and headers
      *
      * @param trigger name of the trigger that will indicate what start node to trigger
@@ -91,6 +100,15 @@ public interface ProcessInstance<T> {
      * @param referenceId optional reference id that points to a another component triggering this instance
      */
     void startFrom(String nodeId, String referenceId);
+
+    /**
+     * Starts process instance from given node
+     *
+     * @param nodeId node id that should be used as the first node
+     * @param referenceId optional reference id that points to a another component triggering this instance
+     * @param headers process headers
+     */
+    void startFrom(String nodeId, String referenceId, Map<String, List<String>> headers);
 
     /**
      * Sends given signal into this process instance

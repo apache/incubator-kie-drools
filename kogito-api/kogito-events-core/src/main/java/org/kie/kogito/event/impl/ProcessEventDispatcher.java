@@ -15,6 +15,11 @@
  */
 package org.kie.kogito.event.impl;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -128,9 +133,29 @@ public class ProcessEventDispatcher<M extends Model, D> implements EventDispatch
     private ProcessInstance<M> startNewInstance(String trigger, DataEvent<D> event) {
         return modelConverter.map(m -> {
             LOGGER.info("Starting new process instance with signal '{}'", trigger);
-            return processService.createProcessInstance(process, event.getKogitoBusinessKey(), m.apply(dataResolver.apply(event)), event.getKogitoStartFromNode(), trigger,
+            return processService.createProcessInstance(process, event.getKogitoBusinessKey(), m.apply(dataResolver.apply(event)),
+                    headersFromEvent(event), event.getKogitoStartFromNode(), trigger,
                     event.getKogitoProcessInstanceId(), compositeCorrelation(event).orElse(null));
         }).orElse(null);
+    }
+
+    protected Map<String, List<String>> headersFromEvent(DataEvent<D> event) {
+        Map<String, List<String>> headers = new HashMap<>();
+        for (String name : event.getAttributeNames()) {
+            headers.put(name, toList(event.getAttribute(name)));
+        }
+        for (String name : event.getExtensionNames()) {
+            headers.put(name, toList(event.getExtension(name)));
+        }
+        return headers;
+    }
+
+    private List<String> toList(Object object) {
+        if (object instanceof Collection) {
+            return ((Collection<Object>) object).stream().map(Object::toString).collect(Collectors.toList());
+        } else {
+            return Arrays.asList(object.toString());
+        }
     }
 
     private boolean isEventTypeNotMatched(String trigger, DataEvent<?> event) {
