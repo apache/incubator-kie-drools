@@ -15,11 +15,12 @@
  */
 package org.kie.kogito.codegen.process;
 
-import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+
+import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
 
 public class OutputModelClassGenerator {
 
@@ -32,7 +33,7 @@ public class OutputModelClassGenerator {
 
     public OutputModelClassGenerator(KogitoBuildContext context, WorkflowProcess workFlowProcess) {
         String pid = workFlowProcess.getId();
-        className = StringUtils.ucFirst(ProcessToExecModelGenerator.extractProcessId(pid) + "ModelOutput");
+        className = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(pid) + "ModelOutput");
         this.modelClassName = workFlowProcess.getPackageName() + "." + className;
 
         this.context = context;

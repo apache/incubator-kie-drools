@@ -164,4 +164,25 @@ public class ConversionUtils {
     public static boolean isNotEmpty(String value) {
         return !isEmpty(value);
     }
+
+    public static String sanitizeClassName(String className) {
+        return sanitizeJavaName(className, true);
+    }
+
+    public static String sanitizeJavaName(String name) {
+        return sanitizeJavaName(name, false);
+    }
+
+    public static String sanitizeJavaName(String name, boolean capitalize) {
+        if (isEmpty(name)) {
+            return name;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(capitalize ? Character.toUpperCase(name.charAt(0)) : name.charAt(0));
+        for (int i = 1; i < name.length(); i++) {
+            char c = name.charAt(i);
+            sb.append(Character.isJavaIdentifierPart(c) ? c : "_");
+        }
+        return sb.toString();
+    }
 }

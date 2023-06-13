@@ -26,7 +26,6 @@ import java.util.Optional;
 import javax.lang.model.SourceVersion;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.Process;
@@ -68,6 +67,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
 
 /**
  * Generates the Process&lt;T&gt; container
@@ -492,7 +492,7 @@ public class ProcessGenerator {
                 ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()),
                         NodeList.nodeList(
                                 new ClassOrInterfaceType(null, processMetaData.getModelPackageName() != null ? processMetaData.getModelPackageName() + "." + processMetaData.getModelClassName()
-                                        : StringUtils.ucFirst(subProcess.getKey() + "Model"))));
+                                        : sanitizeClassName(subProcess.getKey() + "Model"))));
                 if (context.hasDI()) {
                     subprocessFieldDeclaration
                             .addVariable(new VariableDeclarator(modelType, fieldName));

@@ -50,7 +50,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.drools.util.StringUtils.ucFirst;
+import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
 
 public class ProcessToExecModelGenerator {
 
@@ -81,7 +81,7 @@ public class ProcessToExecModelGenerator {
             throw new NoSuchElementException("Cannot find class declaration in the template");
         }
         ClassOrInterfaceDeclaration processClazz = processClazzOptional.get();
-        processClazz.setName(ucFirst(extractedProcessId + PROCESS_CLASS_SUFFIX));
+        processClazz.setName(sanitizeClassName(extractedProcessId + PROCESS_CLASS_SUFFIX));
         String packageName = parsedClazzFile.getPackageDeclaration().map(NodeWithName::getNameAsString).orElse(null);
         ProcessMetaData metadata =
                 new ProcessMetaData(process.getId(), extractedProcessId, process.getName(), process.getVersion(),
@@ -229,7 +229,7 @@ public class ProcessToExecModelGenerator {
     }
 
     public static String extractModelClassName(String processId) {
-        return ucFirst(extractProcessId(processId) + MODEL_CLASS_SUFFIX);
+        return sanitizeClassName(extractProcessId(processId) + MODEL_CLASS_SUFFIX);
     }
 
     public List<UserTaskModelMetaData> generateUserTaskModel(WorkflowProcess process) {
@@ -256,10 +256,6 @@ public class ProcessToExecModelGenerator {
     }
 
     public static String extractProcessId(String processId) {
-        if (processId.contains(".")) {
-            return processId.substring(processId.lastIndexOf('.') + 1);
-        }
-
-        return processId;
+        return processId.contains(".") ? processId.substring(processId.lastIndexOf('.') + 1) : processId;
     }
 }

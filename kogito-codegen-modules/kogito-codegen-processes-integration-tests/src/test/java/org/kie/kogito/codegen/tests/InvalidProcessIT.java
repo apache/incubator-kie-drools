@@ -26,8 +26,8 @@ import org.kie.kogito.codegen.process.ProcessCodegenException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class InvalidProcessIT extends AbstractCodegenIT {
 
@@ -55,9 +55,7 @@ public class InvalidProcessIT extends AbstractCodegenIT {
 
     @Test
     public void testBasicUserTaskProcess() {
-        assertThrows(IllegalArgumentException.class,
-                () -> generateCodeProcessesOnly("invalid/invalid-process-id.bpmn2"),
-                "Process id '_7063C749-BCA8-4B6D-BC31-ACEE6FDF5512' is not valid");
+        assertDoesNotThrow(() -> generateCodeProcessesOnly("invalid/invalid-process-id.bpmn2"));
     }
 
     @Test

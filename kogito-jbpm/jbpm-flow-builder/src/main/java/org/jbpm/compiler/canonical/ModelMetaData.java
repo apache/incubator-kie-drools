@@ -59,6 +59,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.util.StringUtils.ucFirst;
+import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
 
 public class ModelMetaData {
 
@@ -176,7 +177,7 @@ public class ModelMetaData {
         if (!KogitoWorkflowProcess.PRIVATE_VISIBILITY.equals(visibility)) {
             modelClass.addAnnotation(new NormalAnnotationExpr(new Name(Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogito-codegen")),
                     new MemberValuePair("reference", new StringLiteralExpr(processId)),
-                    new MemberValuePair("name", new StringLiteralExpr(ucFirst(ProcessToExecModelGenerator.extractProcessId(processId)))),
+                    new MemberValuePair("name", new StringLiteralExpr(sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId)))),
                     new MemberValuePair("hidden", new BooleanLiteralExpr(hidden)))));
         }
         modelClass.setName(modelClassSimpleName);

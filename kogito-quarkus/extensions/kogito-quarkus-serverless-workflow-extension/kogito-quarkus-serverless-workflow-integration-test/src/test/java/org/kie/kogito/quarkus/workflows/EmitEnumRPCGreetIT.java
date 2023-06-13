@@ -36,7 +36,7 @@ class EmitEnumRPCGreetIT {
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\"workflowdata\" : {\"name\" : \"Javierito\", \"language\":\"Spanish\", \"unknown\": true}}").when()
-                .post("/rpcgreet")
+                .post("/rpc-greet")
                 .then()
                 .statusCode(201)
                 .body("workflowdata.state", is("UNKNOWN"))

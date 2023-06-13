@@ -57,6 +57,7 @@ import static org.kie.kogito.codegen.core.CodegenUtils.interpolateTypes;
 import static org.kie.kogito.codegen.core.CodegenUtils.isApplicationField;
 import static org.kie.kogito.codegen.core.CodegenUtils.isObjectMapperField;
 import static org.kie.kogito.codegen.core.CodegenUtils.isProcessField;
+import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
 
 public class MessageConsumerGenerator {
 
@@ -86,8 +87,7 @@ public class MessageConsumerGenerator {
         this.processPackageName = process.getPackageName();
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
-        String capitalizedProcessName = StringUtils.ucFirst(processName);
-        this.resourceClazzName = capitalizedProcessName + "MessageConsumer_" + trigger.getOwnerId();
+        this.resourceClazzName = sanitizeClassName(processName) + "MessageConsumer_" + trigger.getOwnerId();
         this.dataClazzName = modelfqcn.substring(modelfqcn.lastIndexOf('.') + 1);
         this.processClazzName = processfqcn;
         this.appCanonicalName = appCanonicalName;

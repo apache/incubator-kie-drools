@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -53,8 +52,9 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parse;
-import static org.drools.util.StringUtils.ucFirst;
 import static org.kie.kogito.codegen.core.CodegenUtils.interpolateTypes;
+import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
+import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeJavaName;
 
 /**
  * ProcessResourceGenerator
@@ -94,8 +94,7 @@ public class ProcessResourceGenerator {
         this.process = process;
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
-        String classPrefix = StringUtils.ucFirst(processName);
-        this.resourceClazzName = classPrefix + "Resource";
+        this.resourceClazzName = sanitizeClassName(processName + "Resource");
         this.relativePath = process.getPackageName().replace(".", "/") + "/" + resourceClazzName + ".java";
         this.modelfqcn = modelfqcn;
         this.dataClazzName = modelfqcn.substring(modelfqcn.lastIndexOf('.') + 1);
@@ -209,7 +208,7 @@ public class ProcessResourceGenerator {
 
         Map<String, String> typeInterpolations = new HashMap<>();
         taskModelFactoryUnit = parse(this.getClass().getResourceAsStream("/class-templates/TaskModelFactoryTemplate.java"));
-        String taskModelFactorySimpleClassName = ucFirst(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + "TaskModelFactory");
+        String taskModelFactorySimpleClassName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + "TaskModelFactory");
         taskModelFactoryUnit.setPackageDeclaration(process.getPackageName());
         taskModelFactoryClassName = process.getPackageName() + "." + taskModelFactorySimpleClassName;
         ClassOrInterfaceDeclaration taskModelFactoryClass = taskModelFactoryUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(IllegalStateException::new);
@@ -343,7 +342,7 @@ public class ProcessResourceGenerator {
     private void interpolateMethods(MethodDeclaration m) {
         SimpleName methodName = m.getName();
         String interpolated =
-                methodName.asString().replace("$name$", processName);
+                methodName.asString().replace("$name$", sanitizeJavaName(processName));
         m.setName(interpolated);
     }
 

@@ -30,13 +30,16 @@ import static org.hamcrest.Matchers.hasSize;
 @QuarkusTestResource(GrpcServerPortResource.class)
 @QuarkusIntegrationTest
 class RPCGreetIT {
+
+    private static final String FLOW_ID = "rpc-greet";
+
     @Test
     void testEnglish() {
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\"name\" : \"John\", \"language\":\"English\"}").when()
-                .post("/rpcgreet")
+                .post(FLOW_ID)
                 .then()
                 .statusCode(201)
                 .body("workflowdata.message", is("Hello from gRPC service John"))
@@ -54,7 +57,7 @@ class RPCGreetIT {
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\"workflowdata\" : {\"name\" : \"Javierito\", \"language\":\"Spanish\", \"unknown\": true}}").when()
-                .post("/rpcgreet")
+                .post(FLOW_ID)
                 .then()
                 .statusCode(201)
                 .body("workflowdata.message", is("Saludos desde gRPC service Javierito"))
@@ -67,7 +70,7 @@ class RPCGreetIT {
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\"workflowdata\" : {\"name\" : \"John\"}}").when()
-                .post("/rpcgreet")
+                .post(FLOW_ID)
                 .then()
                 .statusCode(201)
                 .body("workflowdata.message", containsString("Hello"));
@@ -79,7 +82,7 @@ class RPCGreetIT {
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\"workflowdata\" : {\"name\" : \"Jan\", \"language\":\"Czech\"}}").when()
-                .post("/rpcgreet")
+                .post(FLOW_ID)
                 .then()
                 .statusCode(201)
                 .body("workflowdata.message", containsString("Hello"));

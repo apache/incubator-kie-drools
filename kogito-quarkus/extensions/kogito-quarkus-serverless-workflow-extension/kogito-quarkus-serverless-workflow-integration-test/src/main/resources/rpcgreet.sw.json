@@ -1,5 +1,5 @@
 {
-  "id": "rpcgreet",
+  "id": "rpc-greet",
   "version": "1.0",
   "name": "Greeting workflow",
   "description": "JSON based greeting workflow using grpc",
