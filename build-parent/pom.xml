@@ -190,6 +190,8 @@
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
 
+    <version.com.google.guava>30.0-jre</version.com.google.guava>
+
     <!-- JaCoCo coverage data file location -->
     <!--suppress UnresolvedMavenProperty -->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
@@ -630,6 +632,10 @@
           <exclusion>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -1225,6 +1231,13 @@
         <artifactId>webdrivermanager</artifactId>
         <version>${version.io.github.bonigarcia}</version>
         <scope>test</scope>
+      </dependency>
+
+      <!-- Used inside kie-ci -->
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${version.com.google.guava}</version>
       </dependency>
 
       <!-- Used by kie-pmml-trusty projects -->

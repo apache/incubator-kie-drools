@@ -87,6 +87,12 @@
       <artifactId>javax.inject</artifactId>
     </dependency>
 
+    <!-- This dependency is necessary due to exclusion from maven-core -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
