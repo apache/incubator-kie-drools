@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -297,11 +298,7 @@ public class DynamicRulesTest {
                                            5 );
         workingMemory.insert( cheddar );
 
-        try {
-            workingMemory.fireAllRules();
-            fail( "Function should have been removed and NoClassDefFoundError thrown from the Consequence" );
-        } catch ( final Throwable e ) {
-        }
+        Assertions.assertThatThrownBy(() -> workingMemory.fireAllRules()).isInstanceOf(Throwable.class).hasMessage("Function should have been removed and NoClassDefFoundError thrown from the Consequence");
 
         // Check a new function can be added to replace an old function
         Collection<KiePackage> kpkgs2 = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_DynamicFunction2.drl").getKiePackages();

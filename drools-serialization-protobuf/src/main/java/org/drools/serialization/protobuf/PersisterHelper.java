@@ -205,10 +205,10 @@ public class PersisterHelper extends MarshallingHelper {
 			
             Context ctx = context.getStrategyContext().get( entry.getKey() );
             if( ctx != null ) {
-                Output os = ByteString.newOutput();
-                ctx.write( new DroolsObjectOutputStream( os ) );
-                _strat.setData( os.toByteString() );
-                os.close();
+                try (Output os = ByteString.newOutput()) {
+                    ctx.write( new DroolsObjectOutputStream( os ) );
+                    _strat.setData( os.toByteString() );
+                }
             }
             _header.addStrategy( _strat.build() );
         }

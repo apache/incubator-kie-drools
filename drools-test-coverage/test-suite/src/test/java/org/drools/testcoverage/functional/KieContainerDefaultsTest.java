@@ -189,9 +189,9 @@ public class KieContainerDefaultsTest {
         final StatelessKieSession firstKSession = kieContainer.newStatelessKieSession("firstKSession");
         final KieSession secondKSession = kieContainer.newKieSession("secondKSession");
 
-        try {
+    try {
             assertThat(firstKSession).isEqualTo(((InternalKieContainer) kieContainer).getStatelessKieSession());
-            assertThat(secondKSession).isNotEqualTo(((InternalKieContainer) kieContainer).getStatelessKieSession());
+            assertThat(secondKSession).isNotInstanceOf(StatelessKieSession.class);
         } finally {
             secondKSession.dispose();
         }

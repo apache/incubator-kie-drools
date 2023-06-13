@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -197,33 +198,27 @@ public class DrlSpecificFeaturesTest {
     }
 
     private void executeTypeSafeDeclarations(final String drl, final boolean mustSucceed) {
-        final KieBase kbase;
-        try {
-            kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
-            if (!mustSucceed) {
-                fail("Compilation Should fail");
-            }
-        } catch (final Throwable e) {
-            if (mustSucceed) {
-                fail("Compilation Should succeed");
-            }
-            return;
-        }
+        if (!mustSucceed) {
+            Assertions.assertThatThrownBy(()-> KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl)).isInstanceOf(Throwable.class);
+        } else {
+            Assertions.assertThatCode(() -> {
+                final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
+                final KieSession ksession = kbase.newKieSession();
+                try {
+                    final List list = new ArrayList();
+                    ksession.setGlobal("list", list);
 
-        final KieSession ksession = kbase.newKieSession();
-        try {
-            final List list = new ArrayList();
-            ksession.setGlobal("list", list);
+                    final Address a = new Address("s1", 10, "city");
+                    final Person p = new Person("yoda");
+                    p.setObject(a);
 
-            final Address a = new Address("s1", 10, "city");
-            final Person p = new Person("yoda");
-            p.setObject(a);
-
-            ksession.insert(p);
-            ksession.fireAllRules();
-            assertThat(list.get(0)).isEqualTo(p);
-        } finally {
-            ksession.dispose();
+                    ksession.insert(p);
+                    ksession.fireAllRules();
+                    assertThat(list.get(0)).isEqualTo(p);
+                } finally {
+                    ksession.dispose();
+                }
+            }).doesNotThrowAnyException();
         }
     }
 

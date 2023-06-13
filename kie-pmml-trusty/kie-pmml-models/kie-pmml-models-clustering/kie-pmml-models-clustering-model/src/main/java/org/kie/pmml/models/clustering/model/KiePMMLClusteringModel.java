@@ -140,7 +140,11 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
             denumerator *= weight * nonMissingFactor;
         }
 
-        return numerator / denumerator;
+        if (denumerator != 0) {
+            return numerator / denumerator;
+        } else {
+            throw new RuntimeException("Division by 0! Denumerator value is 0.");
+        }
     }
 
     private int findMinIndex(double[] values) {
