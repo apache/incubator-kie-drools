@@ -46,7 +46,6 @@
     <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
-    <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
     <version.com.google.protobuf>3.22.0</version.com.google.protobuf>
     <version.com.h2database>2.1.214</version.com.h2database>
     <version.com.networknt.json-schema-validator>1.0.43</version.com.networknt.json-schema-validator>
@@ -191,6 +190,8 @@
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
 
+    <version.com.google.guava>30.0-jre</version.com.google.guava>
+
     <!-- JaCoCo coverage data file location -->
     <!--suppress UnresolvedMavenProperty -->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
@@ -320,19 +321,6 @@
           <exclusion>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.inject</groupId>
-        <artifactId>guice</artifactId>
-        <version>${version.com.google.inject.guice}</version>
-        <classifier>no_aop</classifier>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -644,6 +632,10 @@
           <exclusion>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -1239,6 +1231,13 @@
         <artifactId>webdrivermanager</artifactId>
         <version>${version.io.github.bonigarcia}</version>
         <scope>test</scope>
+      </dependency>
+
+      <!-- Used inside kie-ci -->
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${version.com.google.guava}</version>
       </dependency>
 
       <!-- Used by kie-pmml-trusty projects -->
