@@ -484,17 +484,17 @@ public class MBeansMonitoringTest {
     }
 
     private void print(GenericKieSessionMonitoringMXBean mb) {
-        LOG.debug("total match created  : {}",mb.getTotalMatchesCreated());
-        LOG.debug("total match cancelled: {}",mb.getTotalMatchesCancelled());
-        LOG.debug("total match fired    : {}",mb.getTotalMatchesFired());
+        LOG.info("total match created  : {}",mb.getTotalMatchesCreated());
+        LOG.info("total match cancelled: {}",mb.getTotalMatchesCancelled());
+        LOG.info("total match fired    : {}",mb.getTotalMatchesFired());
         if (mb instanceof StatelessKieSessionMonitoringMXBean) {
             StatelessKieSessionMonitoringMXBean c = (StatelessKieSessionMonitoringMXBean) mb;
-            LOG.debug("inserted and deleted : +{} -{}",c.getTotalObjectsInserted(),c.getTotalObjectsDeleted());
+            LOG.info("inserted and deleted : +{} -{}",c.getTotalObjectsInserted(),c.getTotalObjectsDeleted());
         } else if (mb instanceof KieSessionMonitoringMXBean) {
             KieSessionMonitoringMXBean c = (KieSessionMonitoringMXBean) mb;
-            LOG.debug("total tact count     : {}",c.getTotalFactCount());
+            LOG.info("total tact count     : {}",c.getTotalFactCount());
         }
-        LOG.debug("{} ms .", mb.getTotalFiringTime());
+        LOG.info("{} ms .", mb.getTotalFiringTime());
     }
     
     private long checkTotalFiringTimeGEQ(GenericKieSessionMonitoringMXBean mb, long amount) {
