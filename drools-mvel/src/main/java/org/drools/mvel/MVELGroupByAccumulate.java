@@ -33,13 +33,16 @@ public class MVELGroupByAccumulate extends Accumulate {
     private Declaration[] groupingDeclarations;
     private ReturnValueExpression groupingFunction;
 
+    private boolean isMvel;
+
     public MVELGroupByAccumulate() { }
 
-    public MVELGroupByAccumulate( Accumulate innerAccumulate, Declaration[] groupingDeclarations, ReturnValueExpression groupingFunction ) {
+    public MVELGroupByAccumulate( Accumulate innerAccumulate, Declaration[] groupingDeclarations, ReturnValueExpression groupingFunction, boolean isMvel ) {
         super(innerAccumulate.getSource(), innerAccumulate.getRequiredDeclarations());
         this.innerAccumulate = innerAccumulate;
         this.groupingDeclarations = groupingDeclarations;
         this.groupingFunction = groupingFunction;
+        this.isMvel = isMvel;
     }
 
     public Accumulate getInnerAccumulate() {
@@ -48,7 +51,7 @@ public class MVELGroupByAccumulate extends Accumulate {
 
     private Object getKey( Tuple tuple, FactHandle handle, ReteEvaluator reteEvaluator ) {
         try {
-            Tuple keyTuple = new EvalNodeLeftTuple((InternalFactHandle) handle, (LeftTuple) tuple, tuple
+            Tuple keyTuple = isMvel? tuple : new EvalNodeLeftTuple((InternalFactHandle) handle, (LeftTuple) tuple, tuple
                     .getTupleSink());
             FieldValue out = groupingFunction.evaluate(handle, keyTuple, groupingDeclarations,
                     getInnerDeclarationCache(), reteEvaluator, groupingFunction.createContext());
@@ -65,6 +68,7 @@ public class MVELGroupByAccumulate extends Accumulate {
         this.innerAccumulate = (Accumulate) in.readObject();
         this.groupingDeclarations = (Declaration[]) in.readObject();
         this.groupingFunction = (ReturnValueExpression) in.readObject();
+        this.isMvel = in.readBoolean();
     }
 
     @Override
@@ -73,6 +77,7 @@ public class MVELGroupByAccumulate extends Accumulate {
         out.writeObject(innerAccumulate);
         out.writeObject(groupingDeclarations);
         out.writeObject(groupingFunction);
+        out.writeBoolean(isMvel);
     }
 
     @Override
@@ -145,7 +150,7 @@ public class MVELGroupByAccumulate extends Accumulate {
 
     @Override
     public Accumulate clone() {
-        return new MVELGroupByAccumulate( innerAccumulate.clone(), groupingDeclarations, groupingFunction );
+        return new MVELGroupByAccumulate( innerAccumulate.clone(), groupingDeclarations, groupingFunction, isMvel );
     }
 
     @Override

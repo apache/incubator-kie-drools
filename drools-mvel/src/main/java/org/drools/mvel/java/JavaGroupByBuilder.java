@@ -175,7 +175,8 @@ public class JavaGroupByBuilder
                         new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class), groupByDescr.getFunctions().size(), keyType ),
                         keyType)),
                 requiredDeclarations,
-                null);
+                null,
+                false);
 
         final Map<String, Object> map = createVariableContext( className,
                 groupByDescr.getGroupingFunction(),
