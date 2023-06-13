@@ -15,19 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.io.InternalResource;
@@ -45,6 +32,14 @@ import org.kie.util.maven.support.PomModel;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 import static org.kie.util.maven.support.ReleaseIdImpl.fromPropertiesStream;
@@ -65,7 +60,9 @@ public class KieRepositoryImpl
 
     public static final KieRepository INSTANCE = new KieRepositoryImpl();
 
-    private final KieModuleRepo kieModuleRepo;
+    private final KieModuleRepo kieModuleRepo = new KieModuleRepo();
+
+    private final Set<ReleaseId> notKieModules = new HashSet<>();
 
     public static void setInternalKieScanner(InternalKieScanner scanner) {
         synchronized (KieScannerHolder.class) {
@@ -92,10 +89,6 @@ public class KieRepositoryImpl
                 }
             }
         }
-    }
-
-    public KieRepositoryImpl() {
-        kieModuleRepo = new KieModuleRepo();
     }
 
     public void setDefaultGAV(ReleaseId releaseId) {
@@ -125,12 +118,18 @@ public class KieRepositoryImpl
     }
 
     public KieModule getKieModule(ReleaseId releaseId, PomModel pomModel) {
-        KieModule kieModule = kieModuleRepo.load( KieScannerHolder.kieScanner, releaseId );
-        if (kieModule == null) {
-            log.debug("KieModule Lookup. ReleaseId {} was not in cache, checking classpath",
-                      releaseId.toExternalForm());
-            kieModule = checkClasspathForKieModule(releaseId);
+        if (notKieModules.contains(releaseId)) {
+            return null;
         }
+
+        KieModule kieModule = kieModuleRepo.load( KieScannerHolder.kieScanner, releaseId );
+        if (kieModule != null) {
+            return kieModule;
+        }
+
+        log.debug("KieModule Lookup. ReleaseId {} was not in cache, checking classpath",
+                  releaseId.toExternalForm());
+        kieModule = checkClasspathForKieModule(releaseId);
 
         if (kieModule == null) {
             log.debug("KieModule Lookup. ReleaseId {} was not in cache, checking maven repository",
@@ -138,6 +137,11 @@ public class KieRepositoryImpl
             kieModule = loadKieModuleFromMavenRepo(releaseId, pomModel);
         }
 
+        if (kieModule != null) {
+            kieModuleRepo.store(kieModule);
+        } else {
+            notKieModules.add(releaseId);
+        }
         return kieModule;
     }
 
@@ -256,7 +260,7 @@ public class KieRepositoryImpl
     public KieModule addKieModule(Resource resource, Resource... dependencies) {
         log.info("Adding KieModule from resource: " + resource);
         KieModule kModule = getKieModule(resource);
-        if (dependencies != null && dependencies.length > 0) {
+        if (dependencies != null) {
             for (Resource depRes : dependencies) {
                 InternalKieModule depKModule = (InternalKieModule) getKieModule(depRes);
                 ((InternalKieModule) kModule).addKieDependency(depKModule);
@@ -329,26 +333,25 @@ public class KieRepositoryImpl
 
         // kieModules evicts based on access-time, not on insertion-time
         public final Map<String, NavigableMap<ComparableVersion, KieModule>> kieModules
-            = new LinkedHashMap<String, NavigableMap<ComparableVersion, KieModule>>(16, 0.75f, true) {
+            = new LinkedHashMap<>(16, 0.75f, true) {
             @Override
             protected boolean removeEldestEntry( Map.Entry<String, NavigableMap<ComparableVersion, KieModule>> eldest) {
                 return (size() > MAX_SIZE_GA_CACHE);
             }
         };
 
-        public final LinkedHashMap<ReleaseId, KieModule> oldKieModules = new LinkedHashMap<ReleaseId, KieModule>() {
+        public final LinkedHashMap<ReleaseId, KieModule> oldKieModules = new LinkedHashMap<>() {
             @Override
             protected boolean removeEldestEntry( Map.Entry<ReleaseId, KieModule> eldest ) {
                 return size() > (MAX_SIZE_GA_CACHE*MAX_SIZE_GA_VERSIONS_CACHE);
-            };
-
+            }
         };
 
         // METHODS ----------------------------------------------------------------------------------------------------------------
 
         public synchronized KieModule remove(ReleaseId releaseId) {
             KieModule removedKieModule = null;
-            String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
+            String ga = toArtifactId(releaseId);
             ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
 
             NavigableMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
@@ -365,7 +368,7 @@ public class KieRepositoryImpl
 
         public synchronized void store(KieModule kieModule) {
             ReleaseId releaseId = kieModule.getReleaseId();
-            String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
+            String ga = toArtifactId(releaseId);
             ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
 
             NavigableMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
@@ -393,11 +396,11 @@ public class KieRepositoryImpl
          * @return a {@link NavigableMap} that is "backed" by a {@link LinkedHashMap} to enforce a LRU cache
          */
         private NavigableMap<ComparableVersion, KieModule> createNewArtifactMap() {
-            NavigableMap<ComparableVersion, KieModule> newArtifactMap = new TreeMap<ComparableVersion, KieModule>() {
+            return new TreeMap<>() {
 
                 private final Map<ComparableVersion, KieModule> artifactMap = this;
 
-                LinkedHashMap<ComparableVersion, Object> backingLRUMap = new LinkedHashMap<ComparableVersion, Object>(16, 0.75f, true) {
+                final LinkedHashMap<ComparableVersion, Object> backingLRUMap = new LinkedHashMap<>(16, 0.75f, true) {
                     @Override
                     protected boolean removeEldestEntry( Map.Entry<ComparableVersion, Object> eldest ) {
                         boolean remove = (size() > MAX_SIZE_GA_VERSIONS_CACHE);
@@ -415,7 +418,6 @@ public class KieRepositoryImpl
                 }
 
             };
-            return newArtifactMap;
         }
 
         synchronized KieModule loadOldAndRemove(ReleaseId releaseId) {
@@ -427,9 +429,7 @@ public class KieRepositoryImpl
         }
 
         synchronized KieModule load(InternalKieScanner kieScanner, ReleaseId releaseId, VersionRange versionRange) {
-            String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
-
-            NavigableMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
+            NavigableMap<ComparableVersion, KieModule> artifactMap = kieModules.get( toArtifactId(releaseId) );
             if ( artifactMap == null || artifactMap.isEmpty() ) {
                 return null;
             }
@@ -470,6 +470,10 @@ public class KieRepositoryImpl
             return comparison > 0 || (comparison == 0 && versionRange.lowerInclusive) ? entry.getValue() : null;
         }
 
+    }
+
+    private static String toArtifactId(ReleaseId releaseId) {
+        return releaseId.getGroupId() + ":" + releaseId.getArtifactId();
     }
 
     private static class VersionRange {
