@@ -16,11 +16,11 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.Collection;
-
 import org.drools.base.common.NetworkNode;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
+
+import java.util.Collection;
 
 public class RuleTerminalNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -39,10 +39,6 @@ public class RuleTerminalNodeVisitor extends AbstractNetworkNodeVisitor {
         for( NetworkNode snode : nodeStack ) {
             info.assign( snode, rule );
         }
-
-        final DefaultNodeInfo ni = info.getNodeInfo(node);
-        ni.setMemoryEnabled( false );
-
     }
 
 }

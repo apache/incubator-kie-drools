@@ -95,7 +95,9 @@ public abstract class ReliabilityTestBasics {
     public void setUp() {
         if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
             LOG.info("Starting InfinispanContainer");
-            container = new InfinispanContainer();
+            container = new InfinispanContainer()
+                    .withFileSystemBind("infinispan-remote-config", "/user-config")
+                    .withCommand("-c /user-config/infinispan-local.xml");
             container.start();
             LOG.info("InfinispanContainer started"); // takes about 10 seconds
             InfinispanStorageManager cacheManager = (InfinispanStorageManager) StorageManagerFactory.get().getStorageManager();

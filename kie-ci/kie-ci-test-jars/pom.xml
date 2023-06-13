@@ -18,6 +18,7 @@
   <modules>
     <module>kie-ci-test-jar</module>
     <module>kie-ci-test-jar-with-dep</module>
+    <module>kie-ci-test-bom</module>
   </modules>
 
 </project>

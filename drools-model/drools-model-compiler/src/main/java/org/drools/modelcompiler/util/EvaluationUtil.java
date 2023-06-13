@@ -29,9 +29,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
-import org.drools.core.base.CoercionUtil;
 import org.drools.base.time.TimeUtils;
-import org.drools.util.DateUtils;
+import org.drools.core.base.CoercionUtil;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetBitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -39,6 +38,7 @@ import org.drools.model.bitmask.EmptyBitMask;
 import org.drools.model.bitmask.EmptyButLastBitMask;
 import org.drools.model.bitmask.LongBitMask;
 import org.drools.model.bitmask.OpenBitSet;
+import org.drools.util.DateUtils;
 
 public class EvaluationUtil {
 

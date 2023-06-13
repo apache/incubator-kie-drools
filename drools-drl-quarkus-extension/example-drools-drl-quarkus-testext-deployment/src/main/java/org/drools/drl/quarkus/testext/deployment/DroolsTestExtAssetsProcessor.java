@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.drools.drl.quarkus.util.deployment.GlobalsBuildItem;
 import org.drools.drl.quarkus.util.deployment.KmoduleKieBaseModelsBuiltItem;
 import org.drools.drl.quarkus.util.deployment.PatternsTypesBuildItem;
 import org.jboss.jandex.ClassInfo;
@@ -73,5 +74,13 @@ public class DroolsTestExtAssetsProcessor {
             LOGGER.info("{}", kbaseModelsBI.get().getKieBaseModels());
         }
     }
-
+    
+    @Record(STATIC_INIT)
+    @BuildStep
+    public void manageGlobalsSingleton( GlobalsBuildItem globalsBI, GlobalsMetadataRecorder recorder, 
+            BuildProducer<AdditionalBeanBuildItem> additionalBeanProducer, BuildProducer<BeanContainerListenerBuildItem> containerListenerProducer ) {
+        LOGGER.info("{}", globalsBI.getGlobals());
+        additionalBeanProducer.produce(AdditionalBeanBuildItem.unremovableOf(GlobalsSingleton.class));
+        containerListenerProducer.produce(new BeanContainerListenerBuildItem(recorder.setContent(globalsBI.getGlobals())));
+    }
 }

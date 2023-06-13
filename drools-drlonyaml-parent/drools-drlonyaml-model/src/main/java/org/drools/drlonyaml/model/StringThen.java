@@ -17,6 +17,8 @@
 
 package org.drools.drlonyaml.model;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -34,6 +36,7 @@ public class StringThen extends AbstractThen {
     }
 
     public static StringThen from(String then) {
+        Objects.requireNonNull(then);
         StringThen result = new StringThen();
         result.then = then;
         return result;

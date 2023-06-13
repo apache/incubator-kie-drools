@@ -19,6 +19,7 @@ package org.drools.drlonyaml.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
@@ -43,6 +44,7 @@ public class DrlPackage {
     private List<Function> functions = new ArrayList<>();
     
     public static DrlPackage from(PackageDescr o) {
+        Objects.requireNonNull(o);
         DrlPackage result = new DrlPackage();
         result.name = o.getName();
         for (ImportDescr i : o.getImports()) {

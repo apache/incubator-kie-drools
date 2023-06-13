@@ -17,14 +17,16 @@
 package org.drools.core.common;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.base.base.ObjectType;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.MutableTypeConstraint;
+import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.base.base.ObjectType;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.IndexPrecedenceOption;
@@ -170,10 +172,10 @@ public class TripleBetaConstraints extends MultipleBetaConstraint {
         throw new UnsupportedOperationException();
     }
 
-    public BitMask getListenedPropertyMask(ObjectType modifiedType, List<String> settableProperties) {
-        return constraints[0].getListenedPropertyMask(modifiedType, settableProperties)
-                             .setAll(constraints[1].getListenedPropertyMask(modifiedType, settableProperties))
-                             .setAll(constraints[2].getListenedPropertyMask(modifiedType, settableProperties));
+    public BitMask getListenedPropertyMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties) {
+        return constraints[0].getListenedPropertyMask(Optional.of(pattern), modifiedType, settableProperties)
+                             .setAll(constraints[1].getListenedPropertyMask(Optional.of(pattern), modifiedType, settableProperties))
+                             .setAll(constraints[2].getListenedPropertyMask(Optional.of(pattern), modifiedType, settableProperties));
     }
 
     public void registerEvaluationContext(BuildContext buildContext) {

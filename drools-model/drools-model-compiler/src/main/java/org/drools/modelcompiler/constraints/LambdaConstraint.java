@@ -21,25 +21,24 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
+import java.util.Optional;
 
+import org.drools.base.base.ObjectType;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
 import org.drools.base.base.field.ObjectFieldImpl;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.reteoo.PropertySpecificUtil;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
 import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.base.ObjectType;
-import org.drools.core.reteoo.Tuple;
 import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.base.time.Interval;
 import org.drools.base.util.FieldIndex;
-import org.drools.core.util.bitmask.BitMask;
 import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.core.util.bitmask.BitMask;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
 import org.drools.model.BetaIndex2;
@@ -134,15 +133,18 @@ public class LambdaConstraint extends AbstractConstraint {
         }
     }
 
+    /*
+     * pattern is not used in this method because reactOnProperties are already filtered by ExpressionTyper.addReactOnPropertyForArgument
+     */
     @Override
-    public BitMask getListenedPropertyMask( ObjectType objectType, List<String> settableProperties ) {
+    public BitMask getListenedPropertyMask( Optional<Pattern> pattern, ObjectType objectType, List<String> settableProperties ) {
         BitMask mask = adaptBitMask( evaluator.getReactivityBitMask() );
         if (mask != null) {
             return mask;
         }
 
         if (evaluator.getReactiveProps().length == 0) {
-            return super.getListenedPropertyMask( objectType, settableProperties );
+            return super.getListenedPropertyMask( pattern, objectType, settableProperties );
         }
 
         mask = getEmptyPropertyReactiveMask(settableProperties.size());
@@ -177,7 +179,7 @@ public class LambdaConstraint extends AbstractConstraint {
     @Override
     public boolean isAllowed(FactHandle handle, ValueResolver valueResolver) {
         try {
-            return evaluator.evaluate((InternalFactHandle) handle, (ReteEvaluator) valueResolver);
+            return evaluator.evaluate(handle, valueResolver);
         } catch (RuntimeException e) {
             throw new ConstraintEvaluationException(predicateInformation, e);
         }
@@ -187,7 +189,7 @@ public class LambdaConstraint extends AbstractConstraint {
     public boolean isAllowedCachedLeft(ContextEntry context, FactHandle handle) {
         LambdaContextEntry lambdaContext = ((LambdaContextEntry) context);
         try {
-            return evaluator.evaluate((InternalFactHandle) handle, lambdaContext.getTuple(), lambdaContext.getReteEvaluator());
+            return evaluator.evaluate(handle, lambdaContext.getTuple(), lambdaContext.getReteEvaluator());
         } catch (RuntimeException e) {
             throw new ConstraintEvaluationException(predicateInformation, e);
         }
@@ -197,7 +199,7 @@ public class LambdaConstraint extends AbstractConstraint {
     public boolean isAllowedCachedRight(BaseTuple tuple, ContextEntry context) {
         LambdaContextEntry lambdaContext = ((LambdaContextEntry) context);
         try {
-            return evaluator.evaluate(lambdaContext.getHandle(), (Tuple) tuple, lambdaContext.getReteEvaluator());
+            return evaluator.evaluate(lambdaContext.getHandle(), tuple, lambdaContext.getReteEvaluator());
         } catch (RuntimeException e) {
             throw new ConstraintEvaluationException(predicateInformation, e);
         }
@@ -278,19 +280,19 @@ public class LambdaConstraint extends AbstractConstraint {
 
     public static class LambdaContextEntry implements ContextEntry {
 
-        private Tuple tuple;
-        private InternalFactHandle handle;
+        private BaseTuple tuple;
+        private FactHandle handle;
 
         private transient ValueResolver valueResolver;
 
         public void updateFromTuple(ValueResolver valueResolver, BaseTuple tuple) {
-            this.tuple = (Tuple) tuple;
+            this.tuple = tuple;
             this.valueResolver = valueResolver;
         }
 
         public void updateFromFactHandle(ValueResolver valueResolver, FactHandle handle) {
             this.valueResolver = valueResolver;
-            this.handle = (InternalFactHandle) handle;
+            this.handle = handle;
         }
 
         public void resetTuple() {
@@ -308,20 +310,20 @@ public class LambdaConstraint extends AbstractConstraint {
         }
 
         public void readExternal(ObjectInput in ) throws IOException, ClassNotFoundException {
-            tuple = (Tuple)in.readObject();
-            handle = (InternalFactHandle) in.readObject();
+            tuple = (BaseTuple) in.readObject();
+            handle = (FactHandle) in.readObject();
         }
 
-        public Tuple getTuple() {
+        public BaseTuple getTuple() {
             return tuple;
         }
 
-        public InternalFactHandle getHandle() {
+        public FactHandle getHandle() {
             return handle;
         }
 
-        public ReteEvaluator getReteEvaluator() {
-            return (ReteEvaluator) valueResolver;
+        public ValueResolver getReteEvaluator() {
+            return valueResolver;
         }
 
         public ContextEntry getNext() {

@@ -40,6 +40,8 @@ public class ExpressionTyperContext {
     private Optional<Expression> inlineCastExpression = Optional.empty();
     private List<Expression> nullSafeExpressions = new ArrayList<>();
 
+    private Set<String> variablesFromDifferentPattern = new HashSet<>();
+
     public void addUsedDeclarations(String name) {
         usedDeclarations.add(name);
     }
@@ -100,5 +102,13 @@ public class ExpressionTyperContext {
 
     public void setOriginalExpression(Expression originalExpression) {
         this.originalExpression = originalExpression;
+    }
+
+    public Set<String> getVariablesFromDifferentPattern() {
+        return variablesFromDifferentPattern;
+    }
+
+    public void addVariableFromDifferentPattern(String variable) {
+        variablesFromDifferentPattern.add(variable);
     }
 }

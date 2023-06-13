@@ -40,7 +40,6 @@ public class DefaultNodeInfo
     private NetworkNode node;
     private Set<RuleImpl>   rules;
 
-    private boolean memoryEnabled = false;
     private long tupleMemorySize = -1;
     private long factMemorySize = -1;
     private long createdFactHandles = -1;
@@ -103,14 +102,6 @@ public class DefaultNodeInfo
         return node;
     }
 
-    public boolean isMemoryEnabled() {
-        return memoryEnabled;
-    }
-
-    public void setMemoryEnabled(boolean memoryEnabled) {
-        this.memoryEnabled = memoryEnabled;
-    }
-    
     public Collection<? extends NetworkNode> getSinkList() {
         if ( node instanceof Rete ) {
             Rete rete = (Rete) node;

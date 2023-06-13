@@ -13,12 +13,12 @@
   <properties>
     <org.kie.version>${project.version}</org.kie.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.release>11</maven.compiler.release>
     <junit.version>4.13.1</junit.version>
     <assertj.version>3.14.0</assertj.version>
-    <surefire.plugin.version>2.18.1</surefire.plugin.version>
-    <failsafe.plugin.version>2.18.1</failsafe.plugin.version>
+    <compiler.plugin.version>3.11.0</compiler.plugin.version>
+    <surefire.plugin.version>3.1.0</surefire.plugin.version>
+    <failsafe.plugin.version>3.1.0</failsafe.plugin.version>
   </properties>
 
   <dependencies>
@@ -48,11 +48,6 @@
         <artifactId>kie-maven-plugin</artifactId>
         <version>@org.kie.version@</version>
         <extensions>true</extensions>
-        <configuration>
-          <properties>
-            <drools.dialect.java.compiler.lnglevel>1.8</drools.dialect.java.compiler.lnglevel>
-          </properties>
-        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -78,6 +73,10 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.plugin.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

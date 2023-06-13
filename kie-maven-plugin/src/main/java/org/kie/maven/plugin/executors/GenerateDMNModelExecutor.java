@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.kie.api.KieServices;
@@ -59,6 +60,7 @@ public class GenerateDMNModelExecutor {
     }
 
     public static void generateDMN(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException {
+        final MavenProject project = kieMavenPluginContext.getProject();
         final File projectDir = kieMavenPluginContext.getProjectDir();
         final Map<String, String> properties = kieMavenPluginContext.getProperties();
         final File targetDirectory = kieMavenPluginContext.getTargetDirectory();
@@ -67,7 +69,7 @@ public class GenerateDMNModelExecutor {
         final Log log = kieMavenPluginContext.getLog();
 
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
+        JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings(project);
 
         KieServices ks = KieServices.Factory.get();
 

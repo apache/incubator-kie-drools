@@ -19,6 +19,7 @@ package org.drools.drlonyaml.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.drl.ast.descr.FunctionDescr;
 
@@ -29,6 +30,7 @@ public class Function {
     private String body;
     
     public static Function from(FunctionDescr f) {
+        Objects.requireNonNull(f);
         Function result = new Function();
         result.name = f.getName();
         result.returnType = f.getReturnType();

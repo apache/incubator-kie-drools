@@ -16,11 +16,11 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.Collection;
-
 import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
+
+import java.util.Collection;
 
 public class BetaNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -36,8 +36,6 @@ public class BetaNodeVisitor extends AbstractNetworkNodeVisitor {
         BetaNode bn = (BetaNode) node;
         DefaultNodeInfo ni = info.getNodeInfo(node);
         final BetaMemory memory = (BetaMemory) info.getSession().getNodeMemory( bn );
-        
-        ni.setMemoryEnabled( true );
         
         if( bn.isObjectMemoryEnabled() ) {
             ni.setFactMemorySize( memory.getRightTupleMemory().size() );

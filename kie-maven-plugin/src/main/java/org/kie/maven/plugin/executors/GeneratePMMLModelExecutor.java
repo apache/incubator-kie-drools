@@ -67,7 +67,7 @@ public class GeneratePMMLModelExecutor {
         final Log log = kieMavenPluginContext.getLog();
 
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
+        JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings(project);
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);
 
         Thread.currentThread().setContextClassLoader(projectClassLoader);

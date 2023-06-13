@@ -12,7 +12,7 @@
   <fileSets>
     <fileSet>
       <directory>${project.build.directory}/website/docs/</directory>
-      <outputDirectory>docs-website/</outputDirectory>
+      <outputDirectory>/</outputDirectory>
     </fileSet>
   </fileSets>
 </assembly>

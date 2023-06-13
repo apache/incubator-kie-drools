@@ -17,9 +17,6 @@
 package org.drools.modelcompiler.constraints;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.base.DroolsQueryImpl;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
@@ -27,9 +24,9 @@ import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.MutableTypeConstraint;
 import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.core.reteoo.Tuple;
 import org.drools.base.util.FieldIndex;
 import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.core.base.DroolsQueryImpl;
 import org.drools.model.Index;
 import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
 import org.kie.api.KieBaseConfiguration;
@@ -130,15 +127,15 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
 
     @Override
     public boolean isAllowedCachedLeft( ContextEntry context, FactHandle handle) {
-        return evaluateUnification( (InternalFactHandle) handle, ((LambdaContextEntry) context).getTuple(), ((LambdaContextEntry) context).getReteEvaluator() );
+        return evaluateUnification(handle, ((LambdaContextEntry) context).getTuple(), ((LambdaContextEntry) context).getReteEvaluator() );
     }
 
     @Override
     public boolean isAllowedCachedRight(BaseTuple tuple, ContextEntry context) {
-        return evaluateUnification( ((LambdaContextEntry) context).getHandle(), (Tuple) tuple, ((LambdaContextEntry) context).getReteEvaluator() );
+        return evaluateUnification( ((LambdaContextEntry) context).getHandle(), tuple, ((LambdaContextEntry) context).getReteEvaluator() );
     }
 
-    private boolean evaluateUnification( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) {
+    private boolean evaluateUnification(FactHandle handle, BaseTuple tuple, ValueResolver reteEvaluator ) {
         if (!unification) {
             return evaluator.evaluate(handle, tuple, reteEvaluator);
         }

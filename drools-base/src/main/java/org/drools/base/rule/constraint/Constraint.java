@@ -20,7 +20,9 @@ import java.io.Externalizable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleComponent;
 import org.drools.base.rule.Declaration;
 import org.drools.base.base.ObjectType;
@@ -80,6 +82,18 @@ public interface Constraint
     boolean isTemporal();
 
     default BitMask getListenedPropertyMask(ObjectType objectType, List<String> settableProperties ) {
+        return getListenedPropertyMask(Optional.empty(), objectType, settableProperties);
+    }
+
+    /**
+     * Returns property reactivity BitMask of this constraint.
+     *
+     * @param pattern which this constraint belongs to. if pattern is empty, bind variables are considered to be declared in the same pattern. It should be fine for alpha constraints
+     * @param objectType
+     * @param settableProperties
+     * @return property reactivity BitMask
+     */
+    default BitMask getListenedPropertyMask(Optional<Pattern> pattern, ObjectType objectType, List<String> settableProperties ) {
         return AllSetButLastBitMask.get();
     }
 
