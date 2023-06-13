@@ -143,7 +143,7 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
         if (denumerator != 0) {
             return numerator / denumerator;
         } else {
-            throw new RuntimeException("Division by 0! Denumerator value is 0.");
+            throw new KiePMMLException("Division by 0! Denumerator value is 0.");
         }
     }
 
