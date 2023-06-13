@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
+import java.util.Optional;
 
 import org.drools.base.base.ObjectType;
 import org.drools.base.base.ValueResolver;
@@ -30,6 +31,7 @@ import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.reteoo.PropertySpecificUtil;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
 import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.rule.accessor.TupleValueExtractor;
@@ -131,15 +133,18 @@ public class LambdaConstraint extends AbstractConstraint {
         }
     }
 
+    /*
+     * pattern is not used in this method because reactOnProperties are already filtered by ExpressionTyper.addReactOnPropertyForArgument
+     */
     @Override
-    public BitMask getListenedPropertyMask( ObjectType objectType, List<String> settableProperties ) {
+    public BitMask getListenedPropertyMask( Optional<Pattern> pattern, ObjectType objectType, List<String> settableProperties ) {
         BitMask mask = adaptBitMask( evaluator.getReactivityBitMask() );
         if (mask != null) {
             return mask;
         }
 
         if (evaluator.getReactiveProps().length == 0) {
-            return super.getListenedPropertyMask( objectType, settableProperties );
+            return super.getListenedPropertyMask( pattern, objectType, settableProperties );
         }
 
         mask = getEmptyPropertyReactiveMask(settableProperties.size());
