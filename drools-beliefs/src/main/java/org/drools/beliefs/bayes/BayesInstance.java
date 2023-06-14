@@ -22,15 +22,15 @@ import org.drools.util.BitMaskUtil;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class BayesInstance<T> {
+    private static final SecureRandom randomGenerator = new SecureRandom();
+
     private Graph<BayesVariable>       graph;
     private JunctionTree               tree;
     private Map<String, BayesVariable> variables;
@@ -443,20 +443,15 @@ public class BayesInstance<T> {
             }
             if ( maximalCounts > 1 ) {
                 // have maximal conflict, so choose random one
-                try {
-                    Random rand = SecureRandom.getInstanceStrong();
-                    int picked = rand.nextInt( maximalCounts );
-                    int count = 0;
-                    for (int j = 0, length = varState.getDistribution().length;j < length; j++ ){
-                        if ( varState.getDistribution()[j] == highestValue ) {
-                            highestIndex = j;
-                            if ( ++count > picked) {
-                                break;
-                            }
+                int picked = randomGenerator.nextInt( maximalCounts );
+                int count = 0;
+                for (int j = 0, length = varState.getDistribution().length;j < length; j++ ){
+                    if ( varState.getDistribution()[j] == highestValue ) {
+                        highestIndex = j;
+                        if ( ++count > picked) {
+                            break;
                         }
                     }
-                } catch (NoSuchAlgorithmException e) {
-                    throw new RuntimeException(e);
                 }
             }
             args[i] = varState.getOutcomes()[highestIndex];
