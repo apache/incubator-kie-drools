@@ -15,12 +15,6 @@
 
 package org.drools.core.reteoo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
@@ -38,19 +32,28 @@ import org.drools.core.util.LinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import static org.drools.core.phreak.RuntimeSegmentUtilities.getQuerySegmentMemory;
 
-public class SegmentMemory extends LinkedList<SegmentMemory>
-        implements
-        LinkedListNode<SegmentMemory> {
+public class SegmentMemory extends LinkedList<SegmentMemory> implements LinkedListNode<SegmentMemory> {
 
     protected static final Logger log = LoggerFactory.getLogger(SegmentMemory.class);
     protected static final boolean IS_LOG_TRACE_ENABLED = log.isTraceEnabled();
 
     private SegmentPrototype   proto;
     private Memory[]       nodeMemories;
-    private final List<PathMemory>   pathMemories = new ArrayList<>(1);;
-    private final TupleSets<LeftTuple> stagedLeftTuples = new TupleSetsImpl<>();
+    private List<PathMemory>   pathMemories = new ArrayList<>(1);;
+    private TupleSets<LeftTuple> stagedLeftTuples = new TupleSetsImpl<>();
     private long linkedNodeMask;
     private long dirtyNodeMask;
     private long allLinkedMaskTest;
@@ -70,6 +73,40 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public SegmentMemory(LeftTupleNode rootNode) {
         this.proto = new SegmentPrototype(rootNode, null);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        this.proto = (SegmentPrototype) in.readObject();
+        this.nodeMemories = (Memory[]) in.readObject();
+        this.pathMemories = (List<PathMemory>) in.readObject();
+        this.stagedLeftTuples = (TupleSets<LeftTuple>) in.readObject();
+        this.linkedNodeMask = in.readLong();
+        this.dirtyNodeMask = in.readLong();
+        this.allLinkedMaskTest = in.readLong();
+        this.segmentPosMaskBit = in.readLong();
+        this.pos = in.readInt();
+        this.active = in.readBoolean();
+        this.previous = (SegmentMemory) in.readObject();
+        this.next = (SegmentMemory) in.readObject();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(proto);
+        out.writeObject(nodeMemories);
+        out.writeObject(pathMemories);
+        out.writeObject(stagedLeftTuples);
+        out.writeLong(linkedNodeMask);
+        out.writeLong(dirtyNodeMask);
+        out.writeLong(allLinkedMaskTest);
+        out.writeLong(segmentPosMaskBit);
+        out.writeInt(pos);
+        out.writeBoolean(active);
+        out.writeObject(previous);
+        out.writeObject(next);
     }
 
     public <T extends Memory> T createNodeMemory(MemoryFactory<T> memoryFactory, ReteEvaluator reteEvaluator) {
@@ -424,23 +461,25 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return "Segment root " + proto.getRootNode() + " tip " + proto.getTipNode();
     }
 
-    public static class SegmentPrototype {
+    public static class SegmentPrototype implements Externalizable {
         private LeftTupleNode rootNode;
         private LeftTupleNode tipNode;
-        long linkedNodeMask;
-        long allLinkedMaskTest;
-        long segmentPosMaskBit;
-        int pos;
+        private long linkedNodeMask;
+        private long allLinkedMaskTest;
+        private long segmentPosMaskBit;
+        private int pos;
 
-        boolean requiresEager;
+        private boolean requiresEager;
 
-        int nodeTypesInSegment = 0;
+        private int nodeTypesInSegment = 0;
 
-        MemoryPrototype[] memories;
+        private MemoryPrototype[] memories;
 
-        LeftTupleNode[] nodesInSegment;
+        private LeftTupleNode[] nodesInSegment;
 
-        PathEndNode[] pathEndNodes;
+        private PathEndNode[] pathEndNodes;
+
+        public SegmentPrototype() { }
 
         public SegmentPrototype(LeftTupleNode rootNode, LeftTupleNode tipNode) {
             this.rootNode = rootNode;
@@ -600,9 +639,29 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             sbuilder.append("]");
             return sbuilder.toString();
         }
+
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(rootNode.getId());
+            out.writeInt(tipNode.getId());
+            out.writeLong(linkedNodeMask);
+            out.writeLong(allLinkedMaskTest);
+            out.writeLong(segmentPosMaskBit);
+            out.writeInt(pos);
+            out.writeBoolean(requiresEager);
+            out.writeInt(nodeTypesInSegment);
+            out.writeObject(memories);
+            out.writeObject(nodesInSegment);
+            out.writeObject(pathEndNodes);
+        }
+
+        @Override
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            this.rootNode = null;
+        }
     }
 
-    public abstract static class MemoryPrototype {
+    public abstract static class MemoryPrototype implements Serializable {
         protected long nodePosMaskBit;
 
         public static MemoryPrototype get(Memory memory) {

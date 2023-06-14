@@ -16,23 +16,21 @@
 
 package org.drools.core.common;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.base.facttemplates.Fact;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.FactTemplateTypeConf;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.base.rule.EntryPointId;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.base.base.ObjectType;
 
-public class ObjectTypeConfigurationRegistry implements Serializable {
-    private static final long serialVersionUID = 510l;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ObjectTypeConfigurationRegistry {
 
     private final Map<Object, ObjectTypeConf> typeConfMap = new ConcurrentHashMap<>();
 

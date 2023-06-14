@@ -15,19 +15,19 @@
 
 package org.drools.core.reteoo;
 
-import java.io.Serializable;
-
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
 
 public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         implements
@@ -36,12 +36,12 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     protected static final Logger log = LoggerFactory.getLogger(PathMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
 
-    private          long              linkedSegmentMask;
-    private          long              allLinkedMaskTest;
-    private final    PathEndNode       pathEndNode;
-    private          RuleAgendaItem    agendaItem;
-    private          SegmentMemory[]   segmentMemories;
-    private          SegmentMemory     segmentMemory;
+    private long linkedSegmentMask;
+    private long allLinkedMaskTest;
+    private transient PathEndNode pathEndNode;
+    private RuleAgendaItem agendaItem;
+    private SegmentMemory[] segmentMemories;
+    private SegmentMemory segmentMemory;
 
     public  final    boolean           dataDriven;
 

@@ -18,7 +18,9 @@ package org.drools.core.common;
 
 import org.drools.core.reteoo.Tuple;
 
-public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
+import java.io.Serializable;
+
+public class TupleSetsImpl<T extends Tuple> implements TupleSets<T>, Serializable {
 
     private T insertFirst;
     private T deleteFirst;

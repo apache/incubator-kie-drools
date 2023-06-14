@@ -16,16 +16,19 @@
 
 package org.drools.base.common;
 
-import java.io.Serializable;
-
 import org.drools.base.reteoo.BaseTerminalNode;
 import org.kie.api.definition.rule.Rule;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * Interface used to expose generic information on Rete nodes outside of he package. It is used
  * for exposing information events.
  */
-public interface NetworkNode extends Serializable {
+public interface NetworkNode extends Externalizable {
 
     /**
      * Returns the unique id that represents the node in the Rete network
@@ -55,5 +58,15 @@ public interface NetworkNode extends Serializable {
     default boolean isRightInputIsRiaNode() {
         // not ideal, but this was here to allow NetworkNode to be in drools-base
         return false;
+    }
+
+    @Override
+    default void writeExternal(ObjectOutput out) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    default void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        throw new UnsupportedOperationException();
     }
 }

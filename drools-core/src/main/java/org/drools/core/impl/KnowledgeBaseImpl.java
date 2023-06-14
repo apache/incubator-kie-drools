@@ -21,13 +21,7 @@ import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.factmodel.ClassDefinition;
-import org.drools.base.rule.DialectRuntimeRegistry;
-import org.drools.base.rule.EntryPointId;
-import org.drools.base.rule.Function;
-import org.drools.base.rule.ImportDeclaration;
-import org.drools.base.rule.InvalidPatternException;
-import org.drools.base.rule.TypeDeclaration;
-import org.drools.base.rule.WindowDeclaration;
+import org.drools.base.rule.*;
 import org.drools.base.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.KieBaseConfigurationImpl;
 import org.drools.core.RuleBaseConfiguration;
@@ -39,20 +33,8 @@ import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.phreak.EagerPhreakBuilder.Add;
 import org.drools.core.phreak.PhreakBuilder;
-import org.drools.core.reteoo.AsyncReceiveNode;
-import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
-import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.LeftTupleNode;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.ObjectSinkPropagator;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.JavaDialectRuntimeData;
@@ -76,19 +58,8 @@ import org.kie.internal.conf.CompositeBaseConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -99,7 +70,7 @@ import static org.drools.core.phreak.PhreakBuilder.isEagerSegmentCreation;
 import static org.drools.util.BitMaskUtil.isSet;
 import static org.drools.util.ClassUtils.convertClassToResourcePath;
 
-public class KnowledgeBaseImpl implements InternalRuleBase, Serializable {
+public class KnowledgeBaseImpl implements InternalRuleBase {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBaseImpl.class);
 

@@ -15,16 +15,18 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.common.InternalAgendaGroup;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.Queue.QueueEntry;
 
-public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, QueueEntry {
+import java.io.Serializable;
+
+public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, QueueEntry, Serializable {
 
     private transient RuleExecutor executor;
     private RuleAgendaItem previous;
@@ -34,7 +36,7 @@ public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, QueueEntr
 
     private int salience;
 
-    private TerminalNode rtn;
+    private transient TerminalNode rtn;
 
     private int index;
     private boolean queued;

@@ -24,9 +24,6 @@ import org.drools.base.rule.accessor.WriteAccessor;
 import org.drools.wiring.api.ComponentsFactory;
 import org.drools.wiring.api.util.ByteArrayClassLoader;
 
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,11 +31,11 @@ import java.util.concurrent.ConcurrentMap;
 
 import static org.drools.util.ClassUtils.convertPrimitiveNameToType;
 
-public class ClassFieldAccessorCache implements Serializable {
+public class ClassFieldAccessorCache {
 
-    private Map<ClassLoader, CacheEntry> cacheByClassLoader;
+    private final Map<ClassLoader, CacheEntry> cacheByClassLoader;
 
-    private ClassLoader                  classLoader;
+    private final ClassLoader classLoader;
 
     public ClassFieldAccessorCache(ClassLoader classLoader) {
         this.cacheByClassLoader = new WeakHashMap<>();
@@ -165,8 +162,7 @@ public class ClassFieldAccessorCache implements Serializable {
                 throw new RuntimeException( "ClassFieldAccessorFactory cannot have a null parent ClassLoader" );
             }
 
-            this.byteArrayClassLoader = AccessController.doPrivileged( (PrivilegedAction<ByteArrayClassLoader>)
-                    () -> ComponentsFactory.createByteArrayClassLoader(parentClassLoader) );
+            this.byteArrayClassLoader = ComponentsFactory.createByteArrayClassLoader(parentClassLoader);
         }
 
         public ByteArrayClassLoader getByteArrayClassLoader() {
