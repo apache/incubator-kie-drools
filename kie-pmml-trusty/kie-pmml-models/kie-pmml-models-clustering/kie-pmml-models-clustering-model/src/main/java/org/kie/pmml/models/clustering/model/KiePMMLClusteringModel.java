@@ -27,6 +27,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.Named;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KieEnumException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.IsInterpreted;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -140,7 +141,11 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
             denumerator *= weight * nonMissingFactor;
         }
 
-        return numerator / denumerator;
+        if (denumerator != 0) {
+            return numerator / denumerator;
+        } else {
+            throw new KiePMMLException("Division by 0! Denumerator value is 0.");
+        }
     }
 
     private int findMinIndex(double[] values) {

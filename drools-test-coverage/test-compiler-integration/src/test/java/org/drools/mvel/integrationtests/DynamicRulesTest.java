@@ -63,6 +63,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -297,11 +298,7 @@ public class DynamicRulesTest {
                                            5 );
         workingMemory.insert( cheddar );
 
-        try {
-            workingMemory.fireAllRules();
-            fail( "Function should have been removed and NoClassDefFoundError thrown from the Consequence" );
-        } catch ( final Throwable e ) {
-        }
+        assertThatThrownBy(() -> workingMemory.fireAllRules()).isInstanceOf(Throwable.class).hasMessage("Function should have been removed and NoClassDefFoundError thrown from the Consequence");
 
         // Check a new function can be added to replace an old function
         Collection<KiePackage> kpkgs2 = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_DynamicFunction2.drl").getKiePackages();

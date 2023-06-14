@@ -16,7 +16,6 @@
 package org.drools.quarkus.quickstart.test;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -41,13 +40,13 @@ public class HomeAlertsBean {
         cameras.forEach(homeUnitData.getCctvs()::add);
         phones.forEach(homeUnitData.getSmartphones()::add);
 
-        RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData);
-        var queryResults = unitInstance.executeQuery("All Alerts");
-        List<Alert> results = queryResults.toList().stream()
-                .flatMap(m -> m.values().stream()
-                        .filter(Alert.class::isInstance)
-                        .map(Alert.class::cast))
-                .collect(Collectors.toList());
-        return results;
+        try (final RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData)) {
+            var queryResults = unitInstance.executeQuery("All Alerts");
+            return queryResults.toList().stream()
+                    .flatMap(m -> m.values().stream()
+                            .filter(Alert.class::isInstance)
+                            .map(Alert.class::cast))
+                    .collect(Collectors.toList());
+        }
     }
 }
