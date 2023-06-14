@@ -55,8 +55,8 @@ public class GroupByTest extends BaseModelTest {
             kieSessionConsumer.accept(ksession);
         } else {
             assertAll(() -> {
-                        //KieSession ksession = getKieSession( "dialect \"java\";\n" + ruleString);
-                        //kieSessionConsumer.accept(ksession);
+                        KieSession ksession = getKieSession( "dialect \"java\";\n" + ruleString);
+                        kieSessionConsumer.accept(ksession);
                     },
                     () -> {
                         KieSession ksession = getKieSession( "dialect \"mvel\";\n" + ruleString);
