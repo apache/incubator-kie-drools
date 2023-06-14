@@ -154,6 +154,7 @@
     "d3": "^7.0.0",
     "d3-ease": "^3.0.1",
     "d3-interpolate":"^3.0.1",
+    "fast-xml-parser": "^4.2.4",
     "minimatch": "^3.0.5"
   },
   "lint-staged": {
