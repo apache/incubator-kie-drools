@@ -901,7 +901,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
         private int index;
         private Object value;
-        private boolean isNull;
+        private boolean isNull = false;
         private int hashCode;
 
         public HashKey() { }
@@ -949,6 +949,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 }
                 this.value = extractedValue;
             } else {
+                this.isNull = true;
                 this.setHashCode( 0 );
             }
         }
