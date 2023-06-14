@@ -35,6 +35,7 @@ exports[`Custom Dashboard View tests Snapshot tests with data 1`] = `
     }
   }
   isEnvelopeConnectedToChannel={true}
+  targetOrigin="targetOrigin"
 >
   <iframe
     data-ouia-component-type="customDashboard-view"
@@ -87,6 +88,7 @@ exports[`Custom Dashboard View tests Snapshot tests with data 2`] = `
     }
   }
   isEnvelopeConnectedToChannel={true}
+  targetOrigin="targetOrigin"
 >
   <iframe
     data-ouia-component-type="customDashboard-view"
@@ -167,6 +169,7 @@ exports[`Custom Dashboard View tests Snapshot tests with error 1`] = `
     }
   }
   isEnvelopeConnectedToChannel={true}
+  targetOrigin="targetOrigin"
 >
   <iframe
     data-ouia-component-type="customDashboard-view"
@@ -247,6 +250,7 @@ exports[`Custom Dashboard View tests Snapshot tests with error 2`] = `
     }
   }
   isEnvelopeConnectedToChannel={true}
+  targetOrigin="targetOrigin"
 >
   <iframe
     data-ouia-component-type="customDashboard-view"

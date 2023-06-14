@@ -54,6 +54,7 @@ exports[`CustomDashboardViewEnvelopeView tests Snapshot 2`] = `
       }
     }
     isEnvelopeConnectedToChannel={true}
+    targetOrigin="targetOrigin"
   >
     <iframe
       data-ouia-component-type="customDashboard-view"

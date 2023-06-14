@@ -51,7 +51,7 @@ describe('CustomDashboardViewEnvelopeView tests', () => {
 
     act(() => {
       if (forwardRef.current) {
-        forwardRef.current.initialize('name');
+        forwardRef.current.initialize('name', 'targetOrigin');
       }
     });
 

@@ -17,17 +17,20 @@
 import { mount } from 'enzyme';
 import { ServerErrors } from '@kogito-apps/components-common';
 import React from 'react';
-import CustomDashboardView from '../CustomDashboardView';
+import CustomDashboardView, {
+  CustomDashboardViewProps
+} from '../CustomDashboardView';
 import { act } from 'react-dom/test-utils';
 import { Bullseye, Card } from '@patternfly/react-core';
 import { BrowserRouter } from 'react-router-dom';
 import { MockedCustomDashboardViewDriver } from '../../../../embedded/tests/utils/Mocks';
 import wait from 'waait';
 
-const props = {
+const props: CustomDashboardViewProps = {
   isEnvelopeConnectedToChannel: true,
   driver: MockedCustomDashboardViewDriver(),
-  customDashboardName: 'name'
+  customDashboardName: 'name',
+  targetOrigin: 'targetOrigin'
 };
 const MockedComponent = (): React.ReactElement => {
   return <></>;

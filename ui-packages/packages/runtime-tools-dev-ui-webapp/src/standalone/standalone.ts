@@ -71,7 +71,8 @@ const createEnvelopeServer = (
     RuntimeToolsDevUIEnvelopeApi
   >(
     {
-      postMessage: (message) => iframe.contentWindow?.postMessage(message, '*')
+      postMessage: (message) =>
+        iframe.contentWindow?.postMessage(message, origin ?? defaultOrigin)
     },
     origin ?? defaultOrigin,
     (self) => {

@@ -60,6 +60,6 @@ export class CustomDashboardViewEnvelopeApiImpl
       return;
     }
     this.ackCapturedInitRequest();
-    this.args.view().initialize(dashboardName);
+    this.args.view().initialize(dashboardName, association.origin);
   };
 }

@@ -55,7 +55,7 @@ export const EmbeddedTaskDetails = React.forwardRef<TaskDetailsApi, Props>(
               targetOrigin?: string,
               transfer?: any
             ) {
-              window.parent.postMessage(message, '*', transfer);
+              window.parent.postMessage(message, targetOrigin, transfer);
             }
           }
         });
