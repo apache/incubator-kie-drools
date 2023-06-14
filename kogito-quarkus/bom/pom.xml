@@ -84,16 +84,4 @@
     </dependencies>
   </dependencyManagement>
 
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <quarkus.http.test-port>0</quarkus.http.test-port>
-      </properties>
-    </profile>
-  </profiles>
-
 </project>

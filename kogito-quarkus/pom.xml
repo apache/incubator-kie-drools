@@ -32,6 +32,7 @@
         <configuration>
           <systemPropertyVariables combine.children="append">
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <quarkus.http.test-port>0</quarkus.http.test-port>
           </systemPropertyVariables>
         </configuration>
       </plugin>

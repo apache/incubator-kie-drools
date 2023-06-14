@@ -117,17 +117,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables combine.children="append">
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <container.image.kafka>${container.image.kafka}</container.image.kafka>
-            <kogito.version>${project.version}</kogito.version>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <profiles>
