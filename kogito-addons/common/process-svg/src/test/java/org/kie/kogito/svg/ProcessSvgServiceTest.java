@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.test.utils.CustomSVGDiffer;
+import org.xmlunit.builder.Input;
+import org.xmlunit.diff.Diff;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -62,10 +65,15 @@ public abstract class ProcessSvgServiceTest {
 
     @Test
     public void annotateExecutedPathTest() throws Exception {
-        assertThat(getTestedProcessSvgService().annotateExecutedPath(
+        final String content = getTestedProcessSvgService().annotateExecutedPath(
                 getTravelsSVGFile(),
                 Arrays.asList("_1A708F87-11C0-42A0-A464-0B7E259C426F"),
-                Collections.emptyList())).hasValue(readFileContent("travels-expected.svg"));
+                Collections.emptyList()).get();
+
+        Diff myDiff = new CustomSVGDiffer(content).withTest(Input.fromString(readFileContent("travels-expected.svg")));
+
+        assertThat(myDiff.hasDifferences()).isFalse();
+
         assertThat(getTestedProcessSvgService().annotateExecutedPath(
                 null,
                 Arrays.asList("_1A708F87-11C0-42A0-A464-0B7E259C426F"),

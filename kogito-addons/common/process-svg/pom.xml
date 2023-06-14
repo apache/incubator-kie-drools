@@ -34,12 +34,6 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
-    <!-- image processor -->
-    <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <artifactId>batik-anim</artifactId>
-    </dependency>
-
     <!-- test dependencies -->
     <dependency>
       <groupId>org.mockito</groupId>
@@ -49,6 +43,11 @@
     <dependency>
       <groupId>net.javacrumbs.json-unit</groupId>
       <artifactId>json-unit-assertj</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -35,7 +35,6 @@ class KogitoAddOnProcessSVGProcessor {
 
     @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
     public void nativeResources(BuildProducer<NativeImageResourceBuildItem> resource, BuildProducer<NativeImageResourcePatternsBuildItem> resourcePatterns) {
-        resource.produce(new NativeImageResourceBuildItem("org/apache/batik/util/resources/XMLResourceDescriptor.properties"));
         resourcePatterns.produce(NativeImageResourcePatternsBuildItem.builder().includeGlob(SVG_RELATIVE_PATH + "*.svg").build());
     }
 

@@ -15,27 +15,29 @@
  */
 package org.kie.kogito.svg;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
-import org.apache.batik.util.XMLResourceDescriptor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.svg.processor.SVGProcessor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -127,9 +129,10 @@ public class SvgTransformationTest {
             if (element == null) {
                 Assertions.fail("", "Active element " + activeNode + " not found in the document");
             }
-            String svgId = element.getAttribute("id");
+            String svgId = element.getAttribute("id") + "?shapeType=BORDER&renderType=STROKE";
 
-            Element border = svgDocument.getElementById(svgId + "?shapeType=BORDER&renderType=STROKE");
+            XPathExpression expr2 = xpath.compile("//*[@id='" + svgId + "']");
+            Element border = (Element) expr2.evaluate(svgDocument, XPathConstants.NODE);
 
             String marker = border.getAttribute("stroke");
             assertThat(marker).isNotNull()
@@ -149,8 +152,10 @@ public class SvgTransformationTest {
             if (element == null) {
                 Assertions.fail("", "Completed element " + completedNode + " not found in the document");
             }
-            String svgId = element.getAttribute("id");
-            Element background = svgDocument.getElementById(svgId + "?shapeType=BACKGROUND");
+            String svgId = element.getAttribute("id") + "?shapeType=BACKGROUND";
+
+            XPathExpression expr2 = xpath.compile("//*[@id='" + svgId + "']");
+            Element background = (Element) expr2.evaluate(svgDocument, XPathConstants.NODE);
 
             String marker = background.getAttribute("fill");
             assertThat(marker).isNotNull()
@@ -158,11 +163,10 @@ public class SvgTransformationTest {
         }
     }
 
-    private Document readSVG(String svgContent) throws IOException {
-        String parser = XMLResourceDescriptor.getXMLParserClassName();
-        SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
-        factory.setValidating(false);
-        Document svgDocument = factory.createDocument("http://jbpm.org", new StringReader(svgContent));
+    private Document readSVG(String svgContent) throws IOException, ParserConfigurationException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document svgDocument = builder.parse(new ByteArrayInputStream(svgContent.getBytes()));
 
         return svgDocument;
     }

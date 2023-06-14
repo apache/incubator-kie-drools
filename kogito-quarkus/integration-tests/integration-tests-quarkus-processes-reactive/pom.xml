@@ -86,6 +86,12 @@
       </exclusions>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
     <dependency>
       <groupId>org.kie.kogito</groupId>

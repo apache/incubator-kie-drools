@@ -26,7 +26,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.io.IOUtils;
 import org.kie.kogito.svg.dataindex.DataIndexClient;
 import org.kie.kogito.svg.dataindex.NodeInstance;
 import org.kie.kogito.svg.processor.SVGProcessor;
@@ -87,7 +86,7 @@ public abstract class AbstractProcessSvgService implements ProcessSvgService {
             if (is == null) {
                 return Optional.empty();
             }
-            return Optional.of(IOUtils.toString(is, StandardCharsets.UTF_8.name()));
+            return Optional.of(new String(is.readAllBytes(), StandardCharsets.UTF_8));
         } catch (Exception ex) {
             throw new ProcessSVGException("Exception trying to read file from classpath", ex);
         }

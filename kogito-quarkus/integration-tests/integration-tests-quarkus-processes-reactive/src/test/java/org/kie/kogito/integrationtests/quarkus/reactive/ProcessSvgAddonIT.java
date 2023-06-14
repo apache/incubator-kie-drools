@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.integrationtests.quarkus.reactive.utils.DataIndexWiremock;
+import org.kie.kogito.test.utils.CustomSVGMatcher;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
@@ -31,7 +32,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.equalTo;
 
 @QuarkusIntegrationTest
 @QuarkusTestResource(DataIndexWiremock.class)
@@ -65,7 +65,7 @@ public class ProcessSvgAddonIT {
                 .get("/svg/processes/{processId}", "approvals")
                 .then()
                 .statusCode(200)
-                .body(equalTo(readFileContent("processSVG/approvals-expected.svg")));
+                .body(CustomSVGMatcher.isSimilarTo(readFileContent("processSVG/approvals-expected.svg")));
 
         String pId = given()
                 .contentType(ContentType.JSON)
@@ -79,7 +79,7 @@ public class ProcessSvgAddonIT {
                 .get("/svg/processes/{processId}/instances/{processInstanceId}", "approvals", pId)
                 .then()
                 .statusCode(200)
-                .body(equalTo(readFileContent("processSVG/approvals-instance-expected.svg")));
+                .body(CustomSVGMatcher.isSimilarTo(readFileContent("processSVG/approvals-instance-expected.svg")));
 
         given()
                 .contentType(ContentType.JSON)
@@ -92,6 +92,6 @@ public class ProcessSvgAddonIT {
                 .get("/svg/processes/{processId}/instances/{processInstanceId}", "approvals", pId)
                 .then()
                 .statusCode(200)
-                .body(equalTo(readFileContent("processSVG/approvals-instance-expected.svg")));
+                .body(CustomSVGMatcher.isSimilarTo(readFileContent("processSVG/approvals-instance-expected.svg")));
     }
 }
