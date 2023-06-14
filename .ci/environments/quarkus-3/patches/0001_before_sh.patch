@@ -1,5 +1,5 @@
 diff --git a/build-parent/pom.xml b/build-parent/pom.xml
-index 3f2b02781d..575579926a 100644
+index c9a8d06633..94ed163003 100644
 --- a/build-parent/pom.xml
 +++ b/build-parent/pom.xml
 @@ -40,9 +40,9 @@
@@ -15,7 +15,7 @@ index 3f2b02781d..575579926a 100644
      <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
      <version.com.miglayout>3.7.4</version.com.miglayout>
      <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
-@@ -54,9 +54,9 @@
+@@ -53,9 +53,9 @@
      <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
      <version.guru.nidi>0.18.0</version.guru.nidi>
      <version.info.picocli>4.7.1</version.info.picocli>
@@ -28,7 +28,7 @@ index 3f2b02781d..575579926a 100644
      <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
      <version.junit>4.13.1</version.junit>
      <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
-@@ -69,41 +69,41 @@
+@@ -68,41 +68,41 @@
      <version.org.apache.httpcomponents.httpcore>4.4.15</version.org.apache.httpcomponents.httpcore>
      <version.org.apache.maven>3.8.6</version.org.apache.maven>
      <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
@@ -91,7 +91,7 @@ index 3f2b02781d..575579926a 100644
      <version.org.junit>5.9.2</version.org.junit>
      <version.org.mvel>2.5.0.Final</version.org.mvel>
      <version.org.powermock>2.0.7</version.org.powermock>
-@@ -132,7 +132,7 @@
+@@ -131,7 +131,7 @@
      <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
      <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
      <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
@@ -100,7 +100,7 @@ index 3f2b02781d..575579926a 100644
      <!-- Version of JMH -->
      <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
  
-@@ -151,10 +151,10 @@
+@@ -150,10 +150,10 @@
      <version.surefire.plugin>2.22.1</version.surefire.plugin>
      <!-- Add for kie-maven-plugin -->
      <version.plugin.plugin>3.6.4</version.plugin.plugin>
@@ -113,7 +113,7 @@ index 3f2b02781d..575579926a 100644
      <version.common.exec>1.3</version.common.exec>
      <!-- -->
      <!-- Jacoco plugin configurations -->
-@@ -182,14 +182,14 @@
+@@ -181,16 +181,16 @@
  
      <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
  
@@ -129,9 +129,12 @@ index 3f2b02781d..575579926a 100644
 -    <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
 +    <version.com.github.javaparser>3.25.1</version.com.github.javaparser>
  
+-    <version.com.google.guava>30.0-jre</version.com.google.guava>
++    <version.com.google.guava>31.1-jre</version.com.google.guava>
+ 
      <!-- JaCoCo coverage data file location -->
      <!--suppress UnresolvedMavenProperty -->
-@@ -265,7 +265,7 @@
+@@ -266,7 +266,7 @@
        </dependency>
        <dependency>
          <groupId>com.fasterxml.jackson.module</groupId>
@@ -140,7 +143,7 @@ index 3f2b02781d..575579926a 100644
          <version>${version.com.fasterxml.jackson.annotations}</version>
        </dependency>
        <dependency>
-@@ -274,8 +274,8 @@
+@@ -275,8 +275,8 @@
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
@@ -151,7 +154,7 @@ index 3f2b02781d..575579926a 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -362,9 +362,9 @@
+@@ -350,9 +350,9 @@
          <version>${version.com.sun.xml.bind}</version>
        </dependency>
        <dependency>
@@ -164,7 +167,7 @@ index 3f2b02781d..575579926a 100644
        </dependency>
        <dependency>
          <groupId>com.sun.xml.bind</groupId>
-@@ -414,8 +414,8 @@
+@@ -402,8 +402,8 @@
        </dependency>
  
        <dependency>
@@ -175,7 +178,7 @@ index 3f2b02781d..575579926a 100644
          <version>${version.jakarta.json}</version>
        </dependency>
        <dependency>
-@@ -450,8 +450,8 @@
+@@ -438,8 +438,8 @@
        </dependency>
  
        <dependency>
@@ -186,7 +189,7 @@ index 3f2b02781d..575579926a 100644
          <version>${version.jakarta.activation}</version>
        </dependency>
        <dependency>
-@@ -782,12 +782,12 @@
+@@ -774,12 +774,12 @@
        </dependency>
  
        <dependency>
@@ -201,7 +204,7 @@ index 3f2b02781d..575579926a 100644
          <artifactId>hibernate-jpamodelgen</artifactId>
          <version>${version.org.hibernate}</version>
          <exclusions>
-@@ -1106,7 +1106,7 @@
+@@ -1098,7 +1098,7 @@
        </dependency>
  
        <dependency>
@@ -210,7 +213,7 @@ index 3f2b02781d..575579926a 100644
          <artifactId>hibernate-core</artifactId>
          <version>${version.org.hibernate}</version>
          <exclusions>
-@@ -1128,31 +1128,16 @@
+@@ -1120,31 +1120,16 @@
            </exclusion>
          </exclusions>
        </dependency>
