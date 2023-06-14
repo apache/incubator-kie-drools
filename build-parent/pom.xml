@@ -190,7 +190,7 @@
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
 
-    <version.com.google.guava>30.0-jre</version.com.google.guava>
+    <version.com.google.guava>32.0.0-jre</version.com.google.guava>
 
     <!-- JaCoCo coverage data file location -->
     <!--suppress UnresolvedMavenProperty -->
