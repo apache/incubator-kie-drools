@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.reliability.core;
 
 import java.io.IOException;
@@ -20,7 +35,7 @@ public class ReliableSerializationSupport implements SerializationSupport {
 
     private Map<Long, WeakReference<ReteEvaluator>> reteEvaluatorMap = new HashMap<>(); // key is persisted session id
 
-    private Map<Long, Map<Long, WeakReference<WorkingMemoryReteExpireAction>>> expireActionMap = new HashMap<>(); // outer key is persisted session id. inner key is eventFactHandle id
+    private Map<Long, Map<String, Map<Long, WeakReference<WorkingMemoryReteExpireAction>>>> expireActionMap = new HashMap<>(); // keys are persistedSessionId, entryPointName, eventFactHandleId
 
     @Override
     public void registerReteEvaluator(ReteEvaluator reteEvaluator) {
@@ -62,30 +77,29 @@ public class ReliableSerializationSupport implements SerializationSupport {
     @Override
     public void writeWorkingMemoryReteExpireAction(ObjectOutput out, WorkingMemoryReteExpireAction workingMemoryReteExpireAction) throws IOException {
         out.writeLong(getSessionIdentifier(workingMemoryReteExpireAction.getFactHandle().getReteEvaluator()));
+        out.writeObject(workingMemoryReteExpireAction.getFactHandle().getEntryPointName());
         out.writeLong(workingMemoryReteExpireAction.getFactHandle().getId());
-        System.out.println("writeWorkingMemoryReteExpireAction : " + workingMemoryReteExpireAction.getFactHandle().getId());
-        System.out.println("  => " + workingMemoryReteExpireAction.getFactHandle().getObject());
     }
 
     @Override
     public void readWorkingMemoryReteExpireAction(ObjectInput in, WorkingMemoryReteExpireAction workingMemoryReteExpireAction) throws IOException, ClassNotFoundException {
         long persistedSessionId = in.readLong();
+        String entryPointName = (String) in.readObject();
         long handleId = in.readLong();
-        Map<Long, WeakReference<WorkingMemoryReteExpireAction>> expireActionMapPerSession = expireActionMap.computeIfAbsent(persistedSessionId, key -> new HashMap<>());
-        expireActionMapPerSession.put(handleId, new WeakReference<>(workingMemoryReteExpireAction));
-        System.out.println("expireActionMap : " + expireActionMap);
+        Map<String, Map<Long, WeakReference<WorkingMemoryReteExpireAction>>> expireActionMapPerSession = expireActionMap.computeIfAbsent(persistedSessionId, key -> new HashMap<>());
+        Map<Long, WeakReference<WorkingMemoryReteExpireAction>> expireActionMapPerEntryPoint = expireActionMapPerSession.computeIfAbsent(entryPointName, key -> new HashMap<>());
+        expireActionMapPerEntryPoint.put(handleId, new WeakReference<>(workingMemoryReteExpireAction));
     }
 
     @Override
     public void associateDefaultEventHandleForExpiration(long oldHandleId, DefaultEventHandle newDefaultEventHandle) {
-        System.out.println("associateDefaultEventHandleForExpiration");
-        System.out.println("  oldHandleId : " + oldHandleId);
-        System.out.println("  newDefaultEventHandle : " + newDefaultEventHandle);
         long persistedSessionId = getSessionIdentifier(newDefaultEventHandle.getReteEvaluator());
-        if (expireActionMap.containsKey(persistedSessionId)) {
-            Map<Long, WeakReference<WorkingMemoryReteExpireAction>> expireActionMapPerSession = expireActionMap.get(persistedSessionId);
-            if (expireActionMapPerSession.containsKey(oldHandleId)) {
-                WorkingMemoryReteExpireAction workingMemoryReteExpireAction = expireActionMapPerSession.get(oldHandleId).get();
+        String entryPointName = newDefaultEventHandle.getEntryPointName();
+        if (expireActionMap.containsKey(persistedSessionId)
+                && expireActionMap.get(persistedSessionId).containsKey(entryPointName)
+                && expireActionMap.get(persistedSessionId).get(entryPointName).containsKey(oldHandleId)) {
+            WorkingMemoryReteExpireAction workingMemoryReteExpireAction = expireActionMap.get(persistedSessionId).get(entryPointName).get(oldHandleId).get();
+            if (workingMemoryReteExpireAction != null) { // if GC'ed, null
                 workingMemoryReteExpireAction.setFactHandle(newDefaultEventHandle);
             }
         }
