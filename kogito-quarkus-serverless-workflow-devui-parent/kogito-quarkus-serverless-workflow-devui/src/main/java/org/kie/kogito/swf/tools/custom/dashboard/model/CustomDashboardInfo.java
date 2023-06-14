@@ -21,12 +21,12 @@ import java.time.LocalDateTime;
 public class CustomDashboardInfo {
     String name;
     String path;
-    LocalDateTime lastUpdated;
+    LocalDateTime lastModified;
 
-    public CustomDashboardInfo(String name, String path, LocalDateTime lastUpdated) {
+    public CustomDashboardInfo(String name, String path, LocalDateTime lastModified) {
         this.name = name;
         this.path = path;
-        this.lastUpdated = lastUpdated;
+        this.lastModified = lastModified;
     }
 
     public String getName() {
@@ -45,12 +45,12 @@ public class CustomDashboardInfo {
         this.path = path;
     }
 
-    public LocalDateTime getLastUpdated() {
-        return lastUpdated;
+    public LocalDateTime getLastModified() {
+        return lastModified;
     }
 
-    public void setLastUpdated(LocalDateTime lastUpdated) {
-        this.lastUpdated = lastUpdated;
+    public void setLastModified(LocalDateTime lastModified) {
+        this.lastModified = lastModified;
     }
 
     @Override
@@ -70,14 +70,14 @@ public class CustomDashboardInfo {
         if (path != null ? !path.equals(that.path) : that.path != null) {
             return false;
         }
-        return lastUpdated != null ? lastUpdated.equals(that.lastUpdated) : that.lastUpdated == null;
+        return lastModified != null ? lastModified.equals(that.lastModified) : that.lastModified == null;
     }
 
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (path != null ? path.hashCode() : 0);
-        result = 31 * result + (lastUpdated != null ? lastUpdated.hashCode() : 0);
+        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0);
         return result;
     }
 
@@ -86,7 +86,7 @@ public class CustomDashboardInfo {
         return "CustomDashboardInfo{" +
                 "name='" + name + '\'' +
                 ", path='" + path + '\'' +
-                ", lastUpdated=" + lastUpdated +
+                ", lastModified=" + lastModified +
                 '}';
     }
 

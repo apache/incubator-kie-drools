@@ -18,7 +18,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 import CustomDashboardList from '../CustomDashboardList';
 import { MockedCustomDashboardListDriver } from '../../../tests/mocks/MockedCustomDashboardsListDriver';
-import { ToggleGroupItem } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
 import TestCustomDashboardListDriver from '../__mocks__/TestCustomDashboardListDriver';
@@ -57,7 +56,8 @@ describe('customDashboard list tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('render CustomDashboard list - gallery', async () => {
+  /* Re-enable card view after thumbnails are available */
+  /*it('render CustomDashboard list - gallery', async () => {
     const props = {
       isEnvelopeConnectedToChannel: true,
       driver: driver
@@ -83,7 +83,7 @@ describe('customDashboard list tests', () => {
       wrapper = wrapper.update();
     });
     expect(wrapper.find('CustomDashboardList').exists()).toBeTruthy();
-  });
+  });*/
 });
 
 let applyFilterMock;
@@ -149,7 +149,8 @@ describe('customDashboard list action tests', () => {
     expect(getCustomDashboardsQueryMock).toHaveBeenCalled();
     expect(applyFilterMock).toHaveBeenCalled();
 
-    const views = wrapper.find('ToggleGroupItem');
+    /* Re-enable card view after thumbnails are available */
+    /*const views = wrapper.find('ToggleGroupItem');
     expect(views.length).toBe(2);
 
     await act(() => {
@@ -157,6 +158,6 @@ describe('customDashboard list action tests', () => {
     });
 
     expect(views.get(0).props['isSelected']).toEqual(true);
-    expect(views.get(1).props['isSelected']).toEqual(false);
+    expect(views.get(1).props['isSelected']).toEqual(false);*/
   });
 });

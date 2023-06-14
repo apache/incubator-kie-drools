@@ -18,20 +18,13 @@ import React, { useEffect, useState } from 'react';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { CustomDashboardListDriver } from '../../../api/CustomDashboardListDriver';
 import CustomDashboardListToolbar from '../CustomDashboardListToolbar/CustomDashboardListToolbar';
-import {
-  Divider,
-  Split,
-  SplitItem,
-  ToggleGroup,
-  ToggleGroupItem
-} from '@patternfly/react-core';
+import { Divider, Split, SplitItem } from '@patternfly/react-core';
 import {
   CustomDashboardInfo,
   CustomDashboardFilter
 } from '../../../api/CustomDashboardListEnvelopeApi';
 import CustomDashboardsTable from '../CustomDashboardsTable/CustomDashboardsTable';
 import CustomDashboardsGallery from '../CustomDashboardsGallery/CustomDashboardsGallery';
-import { BarsIcon, ThIcon } from '@patternfly/react-icons';
 import { ServerErrors } from '@kogito-apps/components-common';
 export interface CustomDashboardListProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -46,7 +39,7 @@ const CustomDashboardList: React.FC<CustomDashboardListProps & OUIAProps> = ({
 }) => {
   const [filterNames, setFilterNames] = useState<string[]>([]);
   const [dashboardData, setDashboardData] = useState<CustomDashboardInfo[]>([]);
-  const [isSelected, setIsSelected] = useState<{
+  const [isSelected] = useState<{
     tableView: boolean;
     cardsView: boolean;
   }>({
@@ -82,7 +75,8 @@ const CustomDashboardList: React.FC<CustomDashboardListProps & OUIAProps> = ({
     init();
   };
 
-  const handleItemClick = (isChosen, event): void => {
+  /* Re-enable card view after thumbnails are available */
+  /*const handleItemClick = (isChosen, event): void => {
     const toggleButtonId = event.currentTarget.id;
     if (toggleButtonId === 'tableView') {
       setIsSelected({
@@ -95,7 +89,8 @@ const CustomDashboardList: React.FC<CustomDashboardListProps & OUIAProps> = ({
         cardsView: true
       });
     }
-  };
+  };*/
+
   if (error) {
     return <ServerErrors error={error.message} variant={'large'} />;
   }
@@ -111,7 +106,9 @@ const CustomDashboardList: React.FC<CustomDashboardListProps & OUIAProps> = ({
           />
         </SplitItem>
         <SplitItem isFilled></SplitItem>
-        <SplitItem style={{ padding: '20px' }}>
+
+        {/* Re-enable card view after thumbnails are available */
+        /*<SplitItem style={{ padding: '20px' }}>
           <ToggleGroup aria-label="switch view toggle group">
             <ToggleGroupItem
               icon={<BarsIcon />}
@@ -129,6 +126,7 @@ const CustomDashboardList: React.FC<CustomDashboardListProps & OUIAProps> = ({
             />
           </ToggleGroup>
         </SplitItem>
+        */}
       </Split>
       <Divider />
       {isSelected.tableView ? (
