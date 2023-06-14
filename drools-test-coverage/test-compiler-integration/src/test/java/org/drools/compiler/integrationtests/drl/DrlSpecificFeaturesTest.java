@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -36,7 +35,8 @@ import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(Parameterized.class)
 public class DrlSpecificFeaturesTest {
@@ -199,9 +199,9 @@ public class DrlSpecificFeaturesTest {
 
     private void executeTypeSafeDeclarations(final String drl, final boolean mustSucceed) {
         if (!mustSucceed) {
-            Assertions.assertThatThrownBy(()-> KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl)).isInstanceOf(Throwable.class);
+            assertThatThrownBy(()-> KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl)).isInstanceOf(Throwable.class);
         } else {
-            Assertions.assertThatCode(() -> {
+            assertThatCode(() -> {
                 final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
                 final KieSession ksession = kbase.newKieSession();
                 try {

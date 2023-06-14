@@ -36,9 +36,7 @@ public class VerifierMapBackedClassLoaderTest {
 
         VerifierMapBackedClassLoader verifierMapBackedClassLoader = new VerifierMapBackedClassLoader(jarInputStreams);
 
-        assertThat(verifierMapBackedClassLoader.getStore()).containsKey("org.test.Person");
-        assertThat(verifierMapBackedClassLoader.getStore()).containsKey("org.test.Rambo");
-        assertThat(verifierMapBackedClassLoader.getStore()).containsKey("org.test.Pet");
+        assertThat(verifierMapBackedClassLoader.getStore()).containsKeys("org.test.Person", "org.test.Rambo", "org.test.Pet");
     }
 
     @Test
