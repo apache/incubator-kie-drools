@@ -16,19 +16,19 @@
 
 package org.drools.base.rule.accessor;
 
+import org.drools.base.base.AcceptsClassObjectType;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.base.extractors.BaseObjectClassFieldReader;
+import org.drools.base.facttemplates.Fact;
+import org.drools.util.ClassUtils;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-
-import org.drools.base.base.ValueResolver;
-import org.drools.base.base.AcceptsClassObjectType;
-import org.drools.base.base.ClassObjectType;
-import org.drools.base.base.ObjectType;
-import org.drools.base.base.extractors.BaseObjectClassFieldReader;
-import org.drools.base.facttemplates.Fact;
-import org.drools.util.ClassUtils;
 
 /**
  * This is a global variable extractor used to get a global variable value
@@ -150,10 +150,6 @@ public class GlobalExtractor extends BaseObjectClassFieldReader
     }
 
     public Object getValue(Object object) {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
-    }
-
-    public boolean isNullValue(Object object) {
         throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
     }
 }

@@ -16,17 +16,17 @@
 
 package org.drools.core.util.index;
 
+import org.drools.base.util.FieldIndex;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.FastIterator;
-import org.drools.base.util.FieldIndex;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.LinkedList;
 
 public class TupleIndexHashTable extends AbstractHashTable implements TupleMemory {
 
@@ -314,10 +314,16 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
     }
 
     public void removeAdd(Tuple tuple) {
+        HashEntry hashEntry;
+        try {
+            hashEntry = this.index.hashCodeOf( tuple, left );
+        } catch (UnsupportedOperationException e) {
+            return;
+        }
+
         TupleList memory = tuple.getMemory();
         memory.remove( tuple );
 
-        HashEntry hashEntry = this.index.hashCodeOf( tuple, left );
         if ( hashEntry.hashCode() == memory.hashCode() ) {
             // it's the same bucket, so re-use and return
             memory.add( tuple );
@@ -330,7 +336,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
             final int index = indexOf( memory.hashCode(),
                                        this.table.length );
             TupleList previous = null;
-            TupleList current = (TupleList) this.table[index];
+            TupleList current = this.table[index];
             while ( current != memory ) {
                 previous = current;
                 current = current.getNext();
@@ -348,9 +354,11 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
     }
 
     public void add(final Tuple tuple) {
-        final TupleList entry = getOrCreate( tuple );
-        entry.add( tuple );
-        this.factSize++;
+        TupleList entry = getOrCreate( tuple );
+        if (entry != null) {
+            entry.add(tuple);
+            this.factSize++;
+        }
     }
 
     public void remove(final Tuple tuple) {
@@ -361,7 +369,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
             final int index = indexOf( memory.hashCode(),
                                        this.table.length );
             TupleList previous = null;
-            TupleList current = (TupleList) this.table[index];
+            TupleList current = this.table[index];
             while ( current != memory ) {
                 previous = current;
                 current = current.getNext();
@@ -382,7 +390,12 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
      * a get and then a create if the value is null.
      */
     private TupleList getOrCreate(final Tuple tuple) {
-        HashEntry hashEntry = this.index.hashCodeOf( tuple, left );
+        HashEntry hashEntry;
+        try {
+            hashEntry = this.index.hashCodeOf(tuple, left);
+        } catch (UnsupportedOperationException e) {
+            return null;
+        }
 
         int index = indexOf( hashEntry.hashCode(), this.table.length );
         TupleList entry = this.table[index];
@@ -407,7 +420,12 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
     }
 
     private TupleList get(final Tuple tuple, boolean isLeftTuple) {
-        HashEntry hashEntry = this.index.hashCodeOf( tuple, isLeftTuple );
+        HashEntry hashEntry;
+        try {
+            hashEntry = this.index.hashCodeOf(tuple, isLeftTuple);
+        } catch (UnsupportedOperationException e) {
+            return null;
+        }
 
         int index = indexOf( hashEntry.hashCode(), this.table.length );
         TupleList entry = this.table[index];

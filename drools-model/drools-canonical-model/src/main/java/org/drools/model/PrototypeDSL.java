@@ -15,13 +15,6 @@
  */
 package org.drools.model;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
@@ -30,8 +23,16 @@ import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.PrototypeImpl;
 import org.drools.model.impl.PrototypeVariableImpl;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+
 import static java.util.UUID.randomUUID;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
+import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PrototypeExpression.prototypeArrayItem;
 import static org.drools.model.PrototypeExpression.prototypeField;
@@ -136,13 +137,11 @@ public class PrototypeDSL {
                 Index.ConstraintType constraintType = (Index.ConstraintType) operator;
                 Prototype.Field field = prototype.getField(fieldName);
                 Object value = ((PrototypeExpression.FixedValue) right).getValue();
-
                 leftExtractor = getFieldValueExtractor(prototype, fieldName);
-                int fieldIndex = field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
 
                 Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : value != null ? value.getClass() : null);
                 if (fieldClass != null) {
-                    alphaIndex = alphaIndexedBy(fieldClass, constraintType, fieldIndex, leftExtractor, value);
+                    alphaIndex = alphaIndexedBy(fieldClass, constraintType, getFieldIndex(prototype, fieldName, field), leftExtractor, value);
                 }
             } else {
                 leftExtractor = left.asFunction(prototype);
@@ -158,6 +157,10 @@ public class PrototypeDSL {
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
             return this;
+        }
+
+        private static int getFieldIndex(Prototype prototype, String fieldName, Prototype.Field field) {
+            return field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
         }
 
         @Override
@@ -176,9 +179,26 @@ public class PrototypeDSL {
 
             expr("expr:" + left + ":" + operator + ":" + right,
                     other, asPredicate2(left.asFunction(prototype), operator, right.asFunction(otherPrototype)),
+                    createBetaIndex(left, operator, right, prototype, otherPrototype),
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
             return this;
+        }
+
+        private BetaIndex createBetaIndex(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right, Prototype prototype, Prototype otherPrototype) {
+            if (left instanceof PrototypeExpression.PrototypeFieldValue && operator instanceof Index.ConstraintType && right instanceof PrototypeExpression.PrototypeFieldValue) {
+                String fieldName = ((PrototypeExpression.PrototypeFieldValue) left).getFieldName();
+                Index.ConstraintType constraintType = (Index.ConstraintType) operator;
+                Prototype.Field field = prototype.getField(fieldName);
+                Function1<PrototypeFact, Object> extractor = getFieldValueExtractor(prototype, fieldName);
+
+                String otherFieldName = ((PrototypeExpression.PrototypeFieldValue) right).getFieldName();
+                Function1<PrototypeFact, Object> otherExtractor = getFieldValueExtractor(otherPrototype, otherFieldName);
+
+                Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : Object.class);
+                return betaIndexedBy( fieldClass, constraintType, getFieldIndex(prototype, fieldName, field), extractor, otherExtractor );
+            }
+            return null;
         }
 
         @Override

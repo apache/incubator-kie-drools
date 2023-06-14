@@ -22,7 +22,7 @@ import java.util.function.Function;
 
 public interface Prototype extends NamedModelItem {
 
-    Object UNDEFINED_VALUE = new Object();
+    Object UNDEFINED_VALUE = UndefinedValue.INSTANCE;
 
     Collection<String> getFieldNames();
 
@@ -47,5 +47,27 @@ public interface Prototype extends NamedModelItem {
         boolean isTyped();
 
         Class<?> getType();
+    }
+
+    class UndefinedValue {
+        static final UndefinedValue INSTANCE = new UndefinedValue();
+
+        static final UnsupportedOperationException HASHCODE_EXCEPTION = new UnsupportedOperationException();
+
+        @Override
+        public int hashCode() {
+            // throw an Exception to avoid indexing of an undefined value
+            throw HASHCODE_EXCEPTION;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "$UndefinedValue$";
+        }
     }
 }
