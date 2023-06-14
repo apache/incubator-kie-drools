@@ -1,5 +1,343 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`WorkflowForm Test Workflow Form - loading 1`] = `
+<WorkflowForm
+  driver={
+    Object {
+      "getCustomWorkflowSchema": [MockFunction],
+      "resetBusinessKey": [MockFunction],
+      "startWorkflow": [MockFunction] {
+        "calls": Array [
+          Array [
+            "http://localhost:4000/hiring",
+            Object {},
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    }
+  }
+  workflowDefinition={
+    Object {
+      "endpoint": "http://localhost:4000/hiring",
+      "workflowName": "workflow1",
+    }
+  }
+>
+  <Bullseye>
+    <div
+      className="pf-l-bullseye"
+    >
+      <KogitoSpinner
+        ouiaId="workflow-form-loading"
+        spinnerText="Starting workflow..."
+      >
+        <EmptyState
+          data-ouia-component-id="workflow-form-loading"
+          data-ouia-component-type="kogito-spinner"
+          data-ouia-safe={true}
+        >
+          <div
+            className="pf-c-empty-state"
+            data-ouia-component-id="workflow-form-loading"
+            data-ouia-component-type="kogito-spinner"
+            data-ouia-safe={true}
+          >
+            <div
+              className="pf-c-empty-state__content"
+            >
+              <EmptyStateIcon
+                component={[Function]}
+                variant="container"
+              >
+                <div
+                  className="pf-c-empty-state__icon"
+                >
+                  <Spinner>
+                    <span
+                      aria-valuetext="Loading..."
+                      className="pf-c-spinner pf-m-xl"
+                      role="progressbar"
+                    >
+                      <span
+                        className="pf-c-spinner__clipper"
+                      />
+                      <span
+                        className="pf-c-spinner__lead-ball"
+                      />
+                      <span
+                        className="pf-c-spinner__tail-ball"
+                      />
+                    </span>
+                  </Spinner>
+                </div>
+              </EmptyStateIcon>
+              <Title
+                headingLevel="h3"
+                size="lg"
+              >
+                <h3
+                  className="pf-c-title pf-m-lg"
+                  data-ouia-component-id="OUIA-Generated-Title-2"
+                  data-ouia-component-type="PF4/Title"
+                  data-ouia-safe={true}
+                >
+                  Starting workflow...
+                </h3>
+              </Title>
+            </div>
+          </div>
+        </EmptyState>
+      </KogitoSpinner>
+    </div>
+  </Bullseye>
+</WorkflowForm>
+`;
+
+exports[`WorkflowForm Test Workflow Form - loading 2`] = `
+<WorkflowForm
+  driver={
+    Object {
+      "getCustomWorkflowSchema": [MockFunction],
+      "resetBusinessKey": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "startWorkflow": [MockFunction] {
+        "calls": Array [
+          Array [
+            "http://localhost:4000/hiring",
+            Object {},
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    }
+  }
+  workflowDefinition={
+    Object {
+      "endpoint": "http://localhost:4000/hiring",
+      "workflowName": "workflow1",
+    }
+  }
+>
+  <div
+    data-ouia-component-type="workflow-form"
+    data-ouia-safe={true}
+  >
+    <Stack
+      hasGutter={true}
+    >
+      <div
+        className="pf-l-stack pf-m-gutter"
+      >
+        <StackItem>
+          <div
+            className="pf-l-stack__item"
+          >
+            <Alert
+              isInline={true}
+              title="Couldn't find JSON schema to display the Start Form."
+              variant="info"
+            >
+              <MockedComponent />
+            </Alert>
+          </div>
+        </StackItem>
+        <StackItem>
+          <div
+            className="pf-l-stack__item"
+          >
+            <Form
+              isHorizontal={true}
+            >
+              <form
+                className="pf-c-form pf-m-horizontal"
+                noValidate={true}
+              >
+                <FormGroup
+                  fieldId="workflowData"
+                  helperTextInvalid={false}
+                  helperTextInvalidIcon={
+                    <ExclamationCircleIcon
+                      color="currentColor"
+                      noVerticalAlign={false}
+                      size="sm"
+                    />
+                  }
+                  isRequired={true}
+                  label="Start Workflow Data"
+                  labelIcon={
+                    <Popover
+                      bodyContent={
+                        <div>
+                          Fill the data to start the Workflow in JSON format.
+                        </div>
+                      }
+                      id="workflow-form-data-help"
+                    >
+                      <button
+                        aria-label="More info for data field"
+                        className="pf-c-form__group-label-help"
+                        onClick={[Function]}
+                        type="button"
+                      >
+                        <HelpIcon
+                          color="currentColor"
+                          noVerticalAlign={true}
+                          size="sm"
+                        />
+                      </button>
+                    </Popover>
+                  }
+                  validated="default"
+                >
+                  <div
+                    className="pf-c-form__group"
+                  >
+                    <div
+                      className="pf-c-form__group-label"
+                    >
+                      <label
+                        className="pf-c-form__label"
+                        htmlFor="workflowData"
+                      >
+                        <span
+                          className="pf-c-form__label-text"
+                        >
+                          Start Workflow Data
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className="pf-c-form__label-required"
+                        >
+                           
+                          *
+                        </span>
+                      </label>
+                       
+                      <Popover
+                        bodyContent={
+                          <div>
+                            Fill the data to start the Workflow in JSON format.
+                          </div>
+                        }
+                        id="workflow-form-data-help"
+                      >
+                        <MockedComponent />
+                      </Popover>
+                    </div>
+                    <div
+                      className="pf-c-form__group-control"
+                    >
+                      <CodeEditor
+                        code=""
+                        height="400px"
+                        isCopyEnabled={false}
+                        isDarkTheme={false}
+                        isLanguageLabelVisible={false}
+                        isLineNumbersVisible={true}
+                        isMinimapVisible={true}
+                        isReadOnly={false}
+                        language="json"
+                        onChange={[Function]}
+                      >
+                        <MockedComponent />
+                      </CodeEditor>
+                    </div>
+                  </div>
+                </FormGroup>
+                <ActionGroup>
+                  <div
+                    className="pf-c-form__group pf-m-action"
+                  >
+                    <div
+                      className="pf-c-form__group-control"
+                    >
+                      <div
+                        className="pf-c-form__actions"
+                      >
+                        <Button
+                          onClick={[Function]}
+                          variant="primary"
+                        >
+                          <ButtonBase
+                            innerRef={null}
+                            onClick={[Function]}
+                            variant="primary"
+                          >
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-primary"
+                              data-ouia-component-id="OUIA-Generated-Button-primary-5"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              onClick={[Function]}
+                              role={null}
+                              type="button"
+                            >
+                              Start
+                            </button>
+                          </ButtonBase>
+                        </Button>
+                        <Button
+                          onClick={[Function]}
+                          variant="secondary"
+                        >
+                          <ButtonBase
+                            innerRef={null}
+                            onClick={[Function]}
+                            variant="secondary"
+                          >
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-secondary"
+                              data-ouia-component-id="OUIA-Generated-Button-secondary-5"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              onClick={[Function]}
+                              role={null}
+                              type="button"
+                            >
+                              Reset
+                            </button>
+                          </ButtonBase>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </ActionGroup>
+              </form>
+            </Form>
+          </div>
+        </StackItem>
+      </div>
+    </Stack>
+  </div>
+</WorkflowForm>
+`;
+
 exports[`WorkflowForm Test Workflow Form - rendering 1`] = `
 <WorkflowForm
   driver={
@@ -416,7 +754,7 @@ exports[`WorkflowForm Test Workflow Form - validation error 1`] = `
                               aria-disabled={false}
                               aria-label={null}
                               className="pf-c-button pf-m-primary"
-                              data-ouia-component-id="OUIA-Generated-Button-primary-2"
+                              data-ouia-component-id="OUIA-Generated-Button-primary-3"
                               data-ouia-component-type="PF4/Button"
                               data-ouia-safe={true}
                               disabled={false}
@@ -441,7 +779,7 @@ exports[`WorkflowForm Test Workflow Form - validation error 1`] = `
                               aria-disabled={false}
                               aria-label={null}
                               className="pf-c-button pf-m-secondary"
-                              data-ouia-component-id="OUIA-Generated-Button-secondary-2"
+                              data-ouia-component-id="OUIA-Generated-Button-secondary-3"
                               data-ouia-component-type="PF4/Button"
                               data-ouia-safe={true}
                               disabled={false}

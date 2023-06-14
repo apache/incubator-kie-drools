@@ -87,4 +87,42 @@ describe('CustomWorkflowForm Test', () => {
     });
     expect(driver.startWorkflow).toHaveBeenCalled();
   });
+
+  it('Custom Workflow Form - loading', async () => {
+    jest.spyOn(window, 'setTimeout');
+    jest.useFakeTimers();
+
+    const driver = new MockedWorkflowFormDriver();
+    startWorkflowRestSpy = jest.spyOn(driver, 'startWorkflow');
+    startWorkflowRestSpy.mockReturnValue(
+      new Promise((resolve) => setTimeout(() => resolve('newKey'), 1000))
+    );
+    props.driver = driver;
+
+    let wrapper;
+    act(() => {
+      wrapper = getWorkflowFormWrapper();
+    });
+
+    const customWorkflowForm = wrapper.find('CustomWorkflowForm');
+
+    act(() => {
+      customWorkflowForm.find('FormRenderer').props()['onSubmit']();
+    });
+
+    expect(driver.startWorkflow).toHaveBeenCalled();
+
+    expect(wrapper.update()).toMatchSnapshot();
+
+    await act(async () => {
+      Promise.resolve().then(() => jest.advanceTimersByTime(2000));
+      new Promise((resolve) => {
+        setTimeout(resolve, 2000);
+      });
+    });
+
+    expect(wrapper.update()).toMatchSnapshot();
+
+    jest.useRealTimers();
+  });
 });

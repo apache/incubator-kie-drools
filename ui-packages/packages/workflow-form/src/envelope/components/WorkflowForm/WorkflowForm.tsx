@@ -17,21 +17,22 @@
 import React, { useCallback, useState } from 'react';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { WorkflowDefinition, WorkflowFormDriver } from '../../../api';
+import { ValidatedOptions } from '@patternfly/react-core/dist/js/helpers';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Alert } from '@patternfly/react-core/dist/js/components/Alert';
+import { Stack, StackItem } from '@patternfly/react-core/dist/js/layouts/Stack';
+import { Popover } from '@patternfly/react-core/dist/js/components/Popover';
 import {
   ActionGroup,
-  Alert,
-  Button,
   Form,
-  FormGroup,
-  Popover,
-  Stack,
-  StackItem,
-  ValidatedOptions
-} from '@patternfly/react-core';
-import HelpIcon from '@patternfly/react-icons/dist/esm/icons/help-icon';
+  FormGroup
+} from '@patternfly/react-core/dist/js/components/Form';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { HelpIcon } from '@patternfly/react-icons/dist/esm/icons/help-icon';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
-import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
 import { validateWorkflowData } from './validateWorkflowData';
+import { KogitoSpinner } from '@kogito-apps/components-common';
 
 export interface WorkflowFormProps {
   workflowDefinition: WorkflowDefinition;
@@ -46,6 +47,7 @@ const WorkflowForm: React.FC<WorkflowFormProps & OUIAProps> = ({
 }) => {
   const [data, setData] = useState<string>('');
   const [isValid, setIsValid] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const resetForm = useCallback(() => {
     driver.resetBusinessKey();
@@ -62,13 +64,26 @@ const WorkflowForm: React.FC<WorkflowFormProps & OUIAProps> = ({
       return;
     }
 
+    setIsLoading(true);
     await driver.startWorkflow(
       workflowDefinition.endpoint,
       data.trim() ? JSON.parse(data) : {}
     );
 
+    setIsLoading(false);
     resetForm();
   }, [driver, data]);
+
+  if (isLoading) {
+    return (
+      <Bullseye>
+        <KogitoSpinner
+          spinnerText="Starting workflow..."
+          ouiaId="workflow-form-loading"
+        />
+      </Bullseye>
+    );
+  }
 
   return (
     <div {...componentOuiaProps(ouiaId, 'workflow-form', ouiaSafe)}>

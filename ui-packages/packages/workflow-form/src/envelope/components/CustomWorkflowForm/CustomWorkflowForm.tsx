@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   ActionType,
   FormRendererApi,
   FormAction,
-  FormRenderer
+  FormRenderer,
+  KogitoSpinner
 } from '@kogito-apps/components-common';
 import { WorkflowFormDriver } from '../../../api/WorkflowFormDriver';
 import { WorkflowDefinition } from '../../../api';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 
 export interface CustomWorkflowFormProps {
   customFormSchema: Record<string, any>;
@@ -38,6 +40,7 @@ const CustomWorkflowForm: React.FC<CustomWorkflowFormProps & OUIAProps> = ({
   ouiaSafe
 }) => {
   const formRendererApi = React.useRef<FormRendererApi>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const formAction: FormAction[] = [
     {
@@ -53,13 +56,36 @@ const CustomWorkflowForm: React.FC<CustomWorkflowFormProps & OUIAProps> = ({
   ];
 
   const startWorkflow = (data: Record<string, any>): void => {
-    driver.startWorkflow(workflowDefinition.endpoint, data).then(() => {
-      formRendererApi?.current?.doReset();
-    });
+    setIsLoading(true);
+    driver
+      .startWorkflow(workflowDefinition.endpoint, data)
+      .then(() => {
+        formRendererApi?.current?.doReset();
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
+  if (isLoading) {
+    return (
+      <Bullseye>
+        <KogitoSpinner
+          spinnerText="Starting workflow..."
+          ouiaId="custom-workflow-form-loading"
+        />
+      </Bullseye>
+    );
+  }
+
   return (
-    <div {...componentOuiaProps(ouiaId, 'custom-workflow-form', ouiaSafe)}>
+    <div
+      {...componentOuiaProps(
+        ouiaId,
+        'custom-workflow-form',
+        ouiaSafe ? ouiaSafe : !isLoading
+      )}
+    >
       <FormRenderer
         formSchema={customFormSchema}
         readOnly={false}
