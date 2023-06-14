@@ -36,7 +36,7 @@
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
     <version.com.github.java-json-tools>2.2.14</version.com.github.java-json-tools>
     <version.com.fasterxml.jackson.datatype>2.14.2</version.com.fasterxml.jackson.datatype>
-    <version.com.github.erosb>1.14.1</version.com.github.erosb>
+    <version.com.github.erosb>1.14.2</version.com.github.erosb>
     <version.com.github.victools>4.18.0</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.33.2</version.com.github.tomakehurst.wiremock>
     <version.com.google.protobuf>3.22.0</version.com.google.protobuf>
