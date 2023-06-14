@@ -15,13 +15,16 @@
 
 package org.drools.reliability.core;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
-import org.drools.core.impl.SerializationSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
@@ -29,10 +32,6 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.EntryPoint;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.drools.reliability.core.ReliablePropagationList.PROPAGATION_LIST;
 
@@ -43,7 +42,6 @@ public class ReliableSessionInitializer {
             PersistedSessionOption.PersistenceStrategy.FULL, new FullReliableSessionInitializer());
 
     public static InternalWorkingMemory initReliableSession(SessionConfiguration sessionConfig, InternalWorkingMemory session) {
-        SerializationSupport.get().registerReteEvaluator(session);
         PersistedSessionOption persistedSessionOption = sessionConfig.getPersistedSessionOption();
         return initializersMap.get(persistedSessionOption.getPersistenceStrategy()).init(session, persistedSessionOption);
     }
@@ -59,6 +57,7 @@ public class ReliableSessionInitializer {
             if (!persistedSessionOption.isNewSession()) {
                 // re-propagate objects from the storage to the new session
                 populateSessionFromStorage(session);
+                ((ReliablePseudoClockScheduler)session.getTimerService()).rewireTimerJobs();
             }
 
             session.setWorkingMemoryActionListener(entry -> onWorkingMemoryAction(session, entry));

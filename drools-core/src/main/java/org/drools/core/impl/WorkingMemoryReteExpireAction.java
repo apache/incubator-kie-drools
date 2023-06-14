@@ -121,22 +121,12 @@ public class WorkingMemoryReteExpireAction
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        if (SerializationSupport.get().supportsWorkingMemoryReteExpireAction()) {
-            SerializationSupport.get().writeWorkingMemoryReteExpireAction(out, this);
-            return;
-        }
-        out.writeObject(factHandle);
-        out.writeObject(node);
+        out.writeObject(new DefaultEventHandle(factHandle.getId(), factHandle.getEntryPointId())); // only for STORES_ONLY strategy. Just keep id and entryPointId
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        if (SerializationSupport.get().supportsWorkingMemoryReteExpireAction()) {
-            SerializationSupport.get().readWorkingMemoryReteExpireAction(in, this);
-            return;
-        }
         this.factHandle = (DefaultEventHandle) in.readObject();
-        this.node = (ObjectTypeNode) in.readObject();
     }
 
     public static class PartitionAwareWorkingMemoryReteExpireAction extends PropagationEntry.AbstractPartitionedPropagationEntry {

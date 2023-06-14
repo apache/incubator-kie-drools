@@ -20,9 +20,9 @@ import java.io.UncheckedIOException;
 
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.impl.SerializationSupport;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.reliability.core.ReliabilityRuntimeException;
+import org.drools.reliability.core.ReliablePseudoClockScheduler;
 import org.drools.reliability.core.StorageManagerFactory;
 import org.drools.reliability.core.StoredObject;
 import org.drools.reliability.infinispan.InfinispanStorageManager;
@@ -122,7 +122,7 @@ public class ProtoStreamStoredObject implements StoredObject {
             FactHandleFactory fhFactory = ep.getHandleFactory();
             DefaultEventHandle eFh = fhFactory.createEventFactHandle(fhFactory.getNextId(), object, fhFactory.getNextRecency(), ep, timestamp, duration);
             ep.insert(eFh);
-            SerializationSupport.get().associateDefaultEventHandleForExpiration(handleId, eFh);
+            ((ReliablePseudoClockScheduler)ep.getReteEvaluator().getTimerService()).putHandleIdAssociation(handleId, eFh);
         } else {
             ep.insert(object);
         }

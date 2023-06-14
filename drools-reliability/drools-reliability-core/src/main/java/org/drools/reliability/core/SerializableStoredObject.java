@@ -19,7 +19,6 @@ import java.io.Serializable;
 
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.impl.SerializationSupport;
 import org.drools.core.rule.accessor.FactHandleFactory;
 
 public class SerializableStoredObject implements StoredObject, Serializable {
@@ -74,7 +73,7 @@ public class SerializableStoredObject implements StoredObject, Serializable {
             FactHandleFactory fhFactory = ep.getHandleFactory();
             DefaultEventHandle eFh = fhFactory.createEventFactHandle(fhFactory.getNextId(), object, fhFactory.getNextRecency(), ep, timestamp, duration);
             ep.insert(eFh);
-            SerializationSupport.get().associateDefaultEventHandleForExpiration(handleId, eFh);
+            ((ReliablePseudoClockScheduler)ep.getReteEvaluator().getTimerService()).putHandleIdAssociation(handleId, eFh);
         } else {
             ep.insert(object);
         }

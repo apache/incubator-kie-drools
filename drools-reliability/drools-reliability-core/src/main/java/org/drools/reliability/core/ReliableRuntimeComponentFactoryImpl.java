@@ -92,7 +92,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         if (!reteEvaluator.getSessionConfiguration().hasPersistedSessionOption()) {
             return super.createTimerService(reteEvaluator);
         }
-        return new ReliablePseudoClockScheduler(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, PersistedSessionOption.SafepointStrategy.ALWAYS, "timer"));
+        return new ReliablePseudoClockScheduler(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, PersistedSessionOption.SafepointStrategy.ALWAYS, "timer"), reteEvaluator);
     }
 
     private InternalWorkingMemory internalInitSession(InternalKnowledgeBase kbase, SessionConfiguration sessionConfig, InternalWorkingMemory session) {

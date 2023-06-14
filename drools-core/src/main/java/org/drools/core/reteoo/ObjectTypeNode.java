@@ -16,6 +16,15 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.base.InitialFact;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
@@ -29,7 +38,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.impl.SerializationSupport;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.time.Job;
@@ -37,15 +45,6 @@ import org.drools.core.time.JobContext;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
@@ -533,18 +532,14 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         @Override
         public void readExternal(ObjectInput in) throws IOException,
                                                         ClassNotFoundException {
-            if (SerializationSupport.get().supportsExpireJobContext()) {
-                SerializationSupport.get().readExpireJobContext(in, this);
-                return;
-            }
+            this.expireAction = (WorkingMemoryReteExpireAction) in.readObject();
+            this.handle = (JobHandle) in.readObject();
         }
 
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
-            if (SerializationSupport.get().supportsExpireJobContext()) {
-                SerializationSupport.get().writeExpireJobContext(out, this);
-                return;
-            }
+            out.writeObject(expireAction);
+            out.writeObject(handle);
         }
     }
 

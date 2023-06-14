@@ -17,7 +17,6 @@ package org.drools.reliability.core;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.impl.SerializationSupport;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
@@ -51,7 +50,6 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
 
     @Override
     public void dispose() {
-        SerializationSupport.get().unregisterReteEvaluator(this);
         StorageManagerFactory.get().getStorageManager().removeStoragesBySessionId(String.valueOf(getSessionIdentifier(this)));
         super.dispose();
     }
