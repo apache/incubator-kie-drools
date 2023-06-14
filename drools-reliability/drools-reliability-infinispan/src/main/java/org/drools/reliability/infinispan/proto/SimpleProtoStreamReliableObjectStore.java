@@ -35,7 +35,7 @@ public class SimpleProtoStreamReliableObjectStore extends SimpleSerializationRel
     }
 
     @Override
-    protected StoredObject createStoredObject(boolean propagated, Object object, long timestamp, long duration) {
-        return new ProtoStreamStoredObject(object, propagated, timestamp, duration);
+    protected StoredObject createStoredObject(boolean propagated, Object object, long timestamp, long duration, long handleId) {
+        return new ProtoStreamStoredObject(object, propagated, timestamp, duration, handleId);
     }
 }

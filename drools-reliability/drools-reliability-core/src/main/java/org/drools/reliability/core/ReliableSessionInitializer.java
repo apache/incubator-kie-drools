@@ -21,6 +21,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
+import org.drools.core.impl.SerializationSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
@@ -42,6 +43,7 @@ public class ReliableSessionInitializer {
             PersistedSessionOption.PersistenceStrategy.FULL, new FullReliableSessionInitializer());
 
     public static InternalWorkingMemory initReliableSession(SessionConfiguration sessionConfig, InternalWorkingMemory session) {
+        SerializationSupport.get().registerReteEvaluator(session);
         PersistedSessionOption persistedSessionOption = sessionConfig.getPersistedSessionOption();
         return initializersMap.get(persistedSessionOption.getPersistenceStrategy()).init(session, persistedSessionOption);
     }

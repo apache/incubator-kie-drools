@@ -29,6 +29,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.impl.SerializationSupport;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.time.Job;
@@ -41,6 +42,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -469,7 +471,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
 
     public static class ExpireJob
             implements
-            Job {
+            Job, Serializable {
 
         @Override
         public void execute(JobContext ctx) {
@@ -484,9 +486,12 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
             implements
             JobContext,
             Externalizable {
-        public final WorkingMemoryReteExpireAction expireAction;
-        public final ReteEvaluator         reteEvaluator;
+        public WorkingMemoryReteExpireAction expireAction;
+        public transient ReteEvaluator         reteEvaluator;
         public JobHandle                     handle;
+
+        public ExpireJobContext() {
+        }
 
         public ExpireJobContext(WorkingMemoryReteExpireAction expireAction,
                                 ReteEvaluator reteEvaluator) {
@@ -513,6 +518,10 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
             return reteEvaluator;
         }
 
+        public void setReteEvaluator(ReteEvaluator reteEvaluator) {
+            this.reteEvaluator = reteEvaluator;
+        }
+
         public JobHandle getHandle() {
             return handle;
         }
@@ -524,13 +533,18 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         @Override
         public void readExternal(ObjectInput in) throws IOException,
                                                         ClassNotFoundException {
-            //this.behavior = (O)
+            if (SerializationSupport.get().supportsExpireJobContext()) {
+                SerializationSupport.get().readExpireJobContext(in, this);
+                return;
+            }
         }
 
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
+            if (SerializationSupport.get().supportsExpireJobContext()) {
+                SerializationSupport.get().writeExpireJobContext(out, this);
+                return;
+            }
         }
     }
 

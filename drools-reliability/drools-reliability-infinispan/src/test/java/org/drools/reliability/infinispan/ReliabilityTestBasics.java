@@ -66,7 +66,7 @@ public abstract class ReliabilityTestBasics {
     }
 
     static Stream<Arguments> strategyProviderStoresOnly() {
-        return Stream.of(arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY));
+        return Stream.of(arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.ALWAYS));
     }
 
     static Stream<Arguments> strategyProviderStoresOnlyWithExplicitSafepoints() {

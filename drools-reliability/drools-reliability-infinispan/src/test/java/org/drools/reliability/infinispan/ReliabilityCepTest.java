@@ -78,4 +78,32 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         assertThat(session.fireAllRules()).isZero();
         assertThat(getResults()).isEmpty();
     }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnly")
+    void insertAdvanceFailoverExpireFire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+
+        createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        System.out.println("=== START");
+        SessionPseudoClock clock = session.getSessionClock();
+
+        session.insert( new StockTick( "DROO" ) );
+        System.out.println("=== ADVANCE");
+        clock.advanceTime( 6, TimeUnit.SECONDS );
+        session.insert( new StockTick( "ACME" ) );
+
+        System.out.println("=== FAILOVER");
+        failover();
+        System.out.println("=== RESTORE");
+        restoreSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock = session.getSessionClock();
+
+        System.out.println("=== ADVANCE");
+        clock.advanceTime(58, TimeUnit.SECONDS);
+        System.out.println("=== FIRE");
+        assertThat(session.fireAllRules()).as("DROO is expired, but a match is available.")
+                                          .isEqualTo(1);
+        assertThat(session.getFactHandles()).as("DROO should have expired because @Expires = 60s")
+                                            .hasSize(1);
+    }
 }

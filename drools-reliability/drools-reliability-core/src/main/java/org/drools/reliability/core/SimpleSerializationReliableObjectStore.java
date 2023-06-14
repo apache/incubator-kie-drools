@@ -84,7 +84,7 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
 
     private StoredObject factHandleToStoredObject(InternalFactHandle handle, boolean propagated, Object object) {
         return handle.isEvent() ?
-                createStoredObject(propagated, object, ((DefaultEventHandle) handle).getStartTimestamp(), ((DefaultEventHandle) handle).getDuration()) :
+                createStoredObject(propagated, object, ((DefaultEventHandle) handle).getStartTimestamp(), ((DefaultEventHandle) handle).getDuration(), handle.getId()) :
                 createStoredObject(propagated, object);
     }
 
@@ -92,8 +92,8 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
         return new SerializableStoredObject(object, propagated);
     }
 
-    protected StoredObject createStoredObject(boolean propagated, Object object, long timestamp, long duration) {
-        return new SerializableStoredObject(object, propagated, timestamp, duration);
+    protected StoredObject createStoredObject(boolean propagated, Object object, long timestamp, long duration, long handleId) {
+        return new SerializableStoredObject(object, propagated, timestamp, duration, handleId);
     }
 
     @Override

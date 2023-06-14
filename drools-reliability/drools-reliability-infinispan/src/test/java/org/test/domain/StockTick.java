@@ -20,10 +20,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.kie.api.definition.type.Duration;
+import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 
 @Role(Role.Type.EVENT)
 @Duration("duration")
+@Expires("60s")
 public class StockTick extends StockFact {
 
     private long timeField;
@@ -65,4 +67,10 @@ public class StockTick extends StockFact {
     public boolean getIsSetTimeField() {
         return 0 != timeField;
     }
+
+    @Override
+    public String toString() {
+        return "StockTick [getCompany()=" + getCompany() + ", getDuration()=" + getDuration() + ", timeField=" + timeField + ", dueDate=" + dueDate + "]";
+    }
+
 }

@@ -15,7 +15,10 @@
 
 package org.drools.core.impl;
 
+import java.io.Externalizable;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DefaultEventHandle;
@@ -31,12 +34,12 @@ import static org.drools.core.common.PhreakPropagationContextFactory.createPropa
 
 public class WorkingMemoryReteExpireAction
         extends PropagationEntry.AbstractPropagationEntry
-        implements WorkingMemoryAction {
+        implements WorkingMemoryAction, Externalizable {
 
     protected DefaultEventHandle factHandle;
     protected ObjectTypeNode node;
 
-    protected WorkingMemoryReteExpireAction() { }
+    public WorkingMemoryReteExpireAction() { }
 
     public WorkingMemoryReteExpireAction(final DefaultEventHandle factHandle) {
         this.factHandle = factHandle;
@@ -114,6 +117,26 @@ public class WorkingMemoryReteExpireAction
     @Override
     public String toString() {
         return "Expiration of " + factHandle.getObject();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        if (SerializationSupport.get().supportsWorkingMemoryReteExpireAction()) {
+            SerializationSupport.get().writeWorkingMemoryReteExpireAction(out, this);
+            return;
+        }
+        out.writeObject(factHandle);
+        out.writeObject(node);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        if (SerializationSupport.get().supportsWorkingMemoryReteExpireAction()) {
+            SerializationSupport.get().readWorkingMemoryReteExpireAction(in, this);
+            return;
+        }
+        this.factHandle = (DefaultEventHandle) in.readObject();
+        this.node = (ObjectTypeNode) in.readObject();
     }
 
     public static class PartitionAwareWorkingMemoryReteExpireAction extends PropagationEntry.AbstractPartitionedPropagationEntry {
