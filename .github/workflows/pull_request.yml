@@ -24,18 +24,19 @@ jobs:
     steps:
       - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/long-paths@main
+        uses: kiegroup/kie-ci/.ci/actions/long-paths@main
       - name: Java and Maven Setup
-        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/maven@main
+        uses: kiegroup/kie-ci/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Build Chain
-        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/build-chain@main
+        uses: kiegroup/kie-ci/.ci/actions/build-chain@main
         with:
+          definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/droolsjbpm-build-bootstrap/${BRANCH:main}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Surefire Report
-        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/surefire-report@main
+        uses: kiegroup/kie-ci/.ci/actions/surefire-report@main
         if: ${{ always() }}
