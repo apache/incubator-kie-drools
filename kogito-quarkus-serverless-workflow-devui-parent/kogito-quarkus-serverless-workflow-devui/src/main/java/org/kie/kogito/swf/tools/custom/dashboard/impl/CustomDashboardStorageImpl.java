@@ -138,7 +138,7 @@ public class CustomDashboardStorageImpl implements CustomDashboardStorage {
                 .forEach(file -> {
                     LocalDateTime lastModified = LocalDateTime.ofInstant(Instant.ofEpochMilli(file.lastModified()), TimeZone.getDefault().toZoneId());
                     customDashboardInfoMap.put(file.getName(),
-                            new CustomDashboardInfo(file.getName(), getRelativePath(file), lastModified));
+                            new CustomDashboardInfo(file.getName(), file.getPath(), lastModified));
                 });
     }
 
@@ -146,12 +146,8 @@ public class CustomDashboardStorageImpl implements CustomDashboardStorage {
         if (classLoaderCustomDashboardUrl != null) {
             LOGGER.info("custom-dashboard's files path is {}", classLoaderCustomDashboardUrl.toString());
             File rootFolder = FileUtils.toFile(classLoaderCustomDashboardUrl);
-            return FileUtils.listFiles(rootFolder, new String[] { "dash.yaml" }, false);
+            return FileUtils.listFiles(rootFolder, new String[] { "dash.yaml", "dash.yml" }, true);
         }
         return Collections.emptyList();
-    }
-
-    private String getRelativePath(File file) {
-        return classLoaderCustomDashboardUrl.getPath() + file.getName();
     }
 }
