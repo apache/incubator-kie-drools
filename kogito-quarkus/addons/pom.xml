@@ -30,6 +30,7 @@
     <module>camel</module>
     <module>fabric8-kubernetes-service-catalog</module>
     <module>jobs</module>
+    <module>python</module>
   </modules>
 
   <profiles>

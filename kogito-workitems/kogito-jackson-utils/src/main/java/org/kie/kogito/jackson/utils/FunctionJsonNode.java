@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.expr.jq;
+package org.kie.kogito.jackson.utils;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
-
-import org.kie.kogito.jackson.utils.JsonObjectUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonPointer;

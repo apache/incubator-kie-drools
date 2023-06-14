@@ -1,0 +1,28 @@
+{
+  "id" : "PythonTest",
+  "name" : "PythonTest",
+  "version" : "1_0",
+  "start" : "operation_0",
+  "functions" : [ {
+    "name" : "python",
+    "operation" : "script:python",
+    "type" : "custom"
+  } ],
+  "states" : [ {
+    "actions" : [ {
+      "functionRef" : {
+        "refName" : "python",
+        "arguments" : {
+          "x" : ".x",
+          "script" : "x*=2"
+        }
+      }
+    } ],
+    "name" : "operation_0",
+    "type" : "operation",
+    "end" : true,
+    "stateDataFilter" : {
+      "output" : "{result:$WORKFLOW.python.x}"
+    }
+  } ]
+}

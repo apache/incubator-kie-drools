@@ -1873,6 +1873,17 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-serverless-workflow-python-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-serverless-workflow-python-runtime</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-serverless-workflow-executor</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
@@ -1885,6 +1896,39 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-serverless-workflow-executor-rest</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+       <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-serverless-workflow-executor-python</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-serverless-workflow-executor-python</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-quarkus-serverless-workflow-python</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-quarkus-serverless-workflow-python</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+       <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-quarkus-serverless-workflow-python-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-quarkus-serverless-workflow-python-deployment</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

@@ -20,27 +20,36 @@ import java.util.Optional;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 import org.kie.kogito.serverless.workflow.parser.types.SysOutTypeHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.serverlessworkflow.api.actions.Action;
 import io.serverlessworkflow.api.events.EventRef;
 import io.serverlessworkflow.api.filters.ActionDataFilter;
+import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 import io.serverlessworkflow.api.functions.FunctionRef;
 import io.serverlessworkflow.api.functions.SubFlowRef;
 import io.serverlessworkflow.api.sleep.Sleep;
 
 import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.jsonObject;
+import static org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory.CUSTOM_TYPE_SEPARATOR;
 
 public class ActionBuilder {
 
     private Action action;
     private Optional<FunctionBuilder> functionDefinition = Optional.empty();
     private Optional<EventDefBuilder> eventDefinition = Optional.empty();
+
+    public enum ScriptType {
+        PYTHON,
+        JAVA
+    }
 
     final Optional<FunctionBuilder> getFunction() {
         return functionDefinition;
@@ -72,6 +81,14 @@ public class ActionBuilder {
         ActionBuilder actionBuilder = call(functionBuilder.getName(), args);
         actionBuilder.functionDefinition = Optional.of(functionBuilder);
         return actionBuilder;
+    }
+
+    public static ActionBuilder script(String source, ScriptType type) {
+        return script(source, type, jsonObject());
+    }
+
+    public static ActionBuilder script(String source, ScriptType type, ObjectNode args) {
+        return call(FunctionBuilder.def(type.toString(), Type.CUSTOM, SWFConstants.SCRIPT + CUSTOM_TYPE_SEPARATOR + type.toString()), args.put(SWFConstants.SCRIPT, source));
     }
 
     public static ActionBuilder call(FunctionBuilder functionBuilder, Object args) {

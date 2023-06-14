@@ -52,7 +52,7 @@ public class FunctionBuilder {
     }
 
     public static FunctionBuilder rest(String name, HttpMethod method, String uri) {
-        return new FunctionBuilder(new FunctionDefinition(name).withType(Type.CUSTOM).withOperation("rest:" + method + ":" + uri));
+        return new FunctionBuilder(new FunctionDefinition(name).withType(Type.CUSTOM).withOperation("rest:" + method + CUSTOM_TYPE_SEPARATOR + uri));
     }
 
     public static FunctionBuilder expr(String name, String expression) {

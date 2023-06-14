@@ -303,7 +303,7 @@ void runMavenDeploy(boolean localDeployment = false) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
-    mvnCmd.skipTests(true).run('clean deploy')
+    util.runWithPythonVirtualEnv(mvnCmd.skipTests(true).getFullRunCommand('clean deploy'), 'swf')
 }
 
 String getMavenRepoZipUrl() {

@@ -26,6 +26,8 @@ import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionRef;
 
+import static org.kie.kogito.serverless.workflow.parser.handlers.ActionNodeUtils.actionNode;
+
 public abstract class ActionTypeHandler implements FunctionTypeHandler {
 
     @Override
@@ -35,9 +37,7 @@ public abstract class ActionTypeHandler implements FunctionTypeHandler {
             FunctionDefinition functionDef,
             FunctionRef functionRef,
             VariableInfo varInfo) {
-        return fillAction(workflow, embeddedSubProcess
-                .actionNode(context.newId())
-                .name(functionDef.getName()), functionDef, functionRef, varInfo);
+        return fillAction(workflow, actionNode(embeddedSubProcess, context, functionDef), functionDef, functionRef, varInfo);
     }
 
     protected abstract <T extends RuleFlowNodeContainerFactory<T, ?>> ActionNodeFactory<T> fillAction(Workflow workflow, ActionNodeFactory<T> node, FunctionDefinition functionDef,

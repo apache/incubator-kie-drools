@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.jackson.utils.FunctionJsonNode;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.expr.Expression;
