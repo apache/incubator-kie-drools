@@ -55,11 +55,10 @@ class RuleUnitServiceImpl implements RuleUnitService {
         Map<String, Object> payload = inputContext.as(MapDataContext.class).toMap();
         RuleUnitData ruleUnitData = this.convertValue(payload, ruleUnitId);
         RuleUnit<RuleUnitData> ruleUnit = ruleUnits.create((Class<RuleUnitData>) ruleUnitData.getClass());
-        RuleUnitInstance<RuleUnitData> instance = ruleUnit.createInstance(ruleUnitData);
-        List<Map<String, Object>> results = instance.executeQuery(queryId.queryId()).toList();
-
-        return results.stream().map(MapDataContext::of);
-
+        try (RuleUnitInstance<RuleUnitData> instance = ruleUnit.createInstance(ruleUnitData)) {
+            List<Map<String, Object>> results = instance.executeQuery(queryId.queryId()).toList();
+            return results.stream().map(MapDataContext::of);
+        }
     }
 
     private RuleUnitData convertValue(Map<String, Object> payload, RuleUnitId ruleUnitId) {

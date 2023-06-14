@@ -72,13 +72,7 @@ public class WorkItemTest extends AbstractBaseTest {
                 new Person("John Doe"));
 
         KogitoProcessInstance processInstance = null;
-        try {
-            processInstance = kruntime.startProcess("org.drools.actions",
-                    parameters);
-            fail("should fail if WorkItemHandler for" + workName + "is not registered");
-        } catch (Throwable e) {
-
-        }
+        processInstance = kruntime.startProcess("org.drools.actions", parameters);
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ERROR);
     }
 
