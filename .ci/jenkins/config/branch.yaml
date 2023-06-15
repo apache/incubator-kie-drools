@@ -46,7 +46,6 @@ environments:
     - quarkus
     - lts
     - prod
-    enabled: false
   sonarcloud:
     auto_generation: false
     env_vars:
