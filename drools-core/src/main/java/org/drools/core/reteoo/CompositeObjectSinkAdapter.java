@@ -16,6 +16,20 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.base.base.ValueType;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.util.index.AlphaRangeIndex;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -27,20 +41,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import org.drools.base.base.ValueType;
-import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.base.common.NetworkNode;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.base.rule.IndexableConstraint;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.rule.accessor.FieldValue;
-import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.util.index.AlphaRangeIndex;
-import org.drools.base.util.index.ConstraintTypeOperator;
 
 import static org.drools.base.util.index.IndexUtil.isBigDecimalEqualityConstraint;
 
@@ -901,7 +901,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
         private int index;
         private Object value;
-        private boolean isNull;
+        private boolean isNull = false;
         private int hashCode;
 
         public HashKey() { }
@@ -939,12 +939,17 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                              final Object value,
                              final ReadAccessor extractor) {
             this.index = index;
-            isNull = extractor.isNullValue( null, value );
+            Object extractedValue = extractor.getValue( null, value );
 
-            if ( !isNull ) {
-                this.value = extractor.getValue( null, value );
-                this.setHashCode( this.value != null ? this.value.hashCode() : 0 );
+            if ( extractedValue != null ) {
+                try {
+                    this.setHashCode(extractedValue.hashCode());
+                } catch (UnsupportedOperationException e) {
+                    this.setHashCode( 0 );
+                }
+                this.value = extractedValue;
             } else {
+                this.isNull = true;
                 this.setHashCode( 0 );
             }
         }
