@@ -18,13 +18,9 @@ package org.drools.reliability.infinispan.proto;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.rule.accessor.FactHandleFactory;
+import org.drools.reliability.core.BaseStoredObject;
 import org.drools.reliability.core.ReliabilityRuntimeException;
-import org.drools.reliability.core.ReliablePseudoClockScheduler;
 import org.drools.reliability.core.StorageManagerFactory;
-import org.drools.reliability.core.StoredObject;
 import org.drools.reliability.infinispan.InfinispanStorageManager;
 import org.infinispan.protostream.ProtobufUtil;
 import org.infinispan.protostream.SerializationContext;
@@ -32,27 +28,25 @@ import org.infinispan.protostream.annotations.ProtoFactory;
 import org.infinispan.protostream.annotations.ProtoField;
 import org.infinispan.protostream.types.protobuf.AnySchema;
 
-public class ProtoStreamStoredObject implements StoredObject {
+/**
+ * This class is used to store objects in Infinispan using ProtoStream.
+ * This class inherits Serializable from BaseStoredObject, but it uses ProtoStream instead of Java serialization.
+ */
+public class ProtoStreamStoredObject extends BaseStoredObject {
 
-    private final Object object;
-    private final boolean propagated;
-    private final long timestamp;
-    private final long duration;
-    private final long handleId;
+    private final transient Object object;
 
     private final String typeUrl;
-    private final AnySchema.Any protoObject;
+    private final transient AnySchema.Any protoObject;
 
     public ProtoStreamStoredObject(Object object, boolean propagated) {
         this(object, propagated, -1, -1, -1);
     }
 
     public ProtoStreamStoredObject(Object object, boolean propagated, long timestamp, long duration, long handleId) {
+        super(propagated, timestamp, duration, handleId);
+
         this.object = object;
-        this.propagated = propagated;
-        this.timestamp = timestamp;
-        this.duration = duration;
-        this.handleId = handleId;
 
         this.typeUrl = object.getClass().getCanonicalName();
         SerializationContext serializationContext = ((InfinispanStorageManager) StorageManagerFactory.get().getStorageManager()).getSerializationContext();
@@ -67,10 +61,7 @@ public class ProtoStreamStoredObject implements StoredObject {
 
     @ProtoFactory
     public ProtoStreamStoredObject(AnySchema.Any protoObject, boolean propagated, long timestamp, long duration, long handleId) {
-        this.propagated = propagated;
-        this.timestamp = timestamp;
-        this.duration = duration;
-        this.handleId = handleId;
+        super(propagated, timestamp, duration, handleId);
 
         this.protoObject = protoObject;
         this.typeUrl = protoObject.getTypeUrl();
@@ -89,6 +80,7 @@ public class ProtoStreamStoredObject implements StoredObject {
         return protoObject;
     }
 
+    @Override
     @ProtoField(value = 2, required = true)
     public boolean isPropagated() {
         return propagated;
@@ -109,23 +101,9 @@ public class ProtoStreamStoredObject implements StoredObject {
         return handleId;
     }
 
-    public boolean isEvent() {
-        return timestamp >= 0;
-    }
-
+    @Override
     public Object getObject() {
         return object;
-    }
-
-    public void repropagate(InternalWorkingMemoryEntryPoint ep) {
-        if (isEvent()) {
-            FactHandleFactory fhFactory = ep.getHandleFactory();
-            DefaultEventHandle eFh = fhFactory.createEventFactHandle(fhFactory.getNextId(), object, fhFactory.getNextRecency(), ep, timestamp, duration);
-            ep.insert(eFh);
-            ((ReliablePseudoClockScheduler)ep.getReteEvaluator().getTimerService()).putHandleIdAssociation(handleId, eFh);
-        } else {
-            ep.insert(object);
-        }
     }
 
     @Override

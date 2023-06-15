@@ -25,9 +25,5 @@ public interface StoredObject {
 
     Object getObject();
 
-    long getTimestamp();
-
-    long getDuration();
-
     void repropagate(InternalWorkingMemoryEntryPoint ep);
 }
