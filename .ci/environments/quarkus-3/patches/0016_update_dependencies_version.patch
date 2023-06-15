@@ -1,8 +1,8 @@
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index 9bec54dd72..ddda79c32f 100644
+index 0bd087bac5..3cbd66b5c8 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
-@@ -40,7 +40,7 @@
+@@ -41,7 +41,7 @@
      <version.com.github.tomakehurst.wiremock>2.33.2</version.com.github.tomakehurst.wiremock>
      <version.com.google.protobuf>3.22.0</version.com.google.protobuf>
      <!-- currently required for integration test only -->
@@ -11,7 +11,7 @@ index 9bec54dd72..ddda79c32f 100644
      <version.com.sun.xml.bind.core>2.3.0.1</version.com.sun.xml.bind.core>
      <version.com.sun.xml.bind.impl>2.3.5</version.com.sun.xml.bind.impl>
      <version.com.sun.activation>2.0.0</version.com.sun.activation>
-@@ -55,8 +55,8 @@
+@@ -56,8 +56,8 @@
      <version.io.cloudevents>2.3.0</version.io.cloudevents>
      <version.io.fabric8.kubernetes-client>6.5.1</version.io.fabric8.kubernetes-client>
      <version.io.micrometer>1.10.5</version.io.micrometer>
@@ -40,8 +40,8 @@ index 9bec54dd72..ddda79c32f 100644
      <version.org.junit>5.${version.org.junit.minor}</version.org.junit>
      <version.org.junit.jupiter>5.9.2</version.org.junit.jupiter>
      <version.org.junit.vintage>5.9.2</version.org.junit.vintage>
-@@ -110,13 +110,13 @@
-     <version.org.mvel>2.4.15.Final</version.org.mvel>
+@@ -111,13 +111,13 @@
+     <version.org.mvel>2.5.0.Final</version.org.mvel>
      <version.org.reactivestreams>1.0.4</version.org.reactivestreams>
      <version.org.reflections>0.10.2</version.org.reflections>
 -    <version.org.slf4j>1.7.36</version.org.slf4j>

@@ -542,8 +542,8 @@ index 23cb00f5ef..59e7ddb568 100644
    </description>
  
    <properties>
--    <version.org.kie>8.40.0-SNAPSHOT</version.org.kie>
-+    <version.org.kie>9.40.0-SNAPSHOT</version.org.kie>
+-    <version.org.kie>8.41.0-SNAPSHOT</version.org.kie>
++    <version.org.kie>9.41.0-SNAPSHOT</version.org.kie>
    </properties>
  
    <dependencyManagement>
