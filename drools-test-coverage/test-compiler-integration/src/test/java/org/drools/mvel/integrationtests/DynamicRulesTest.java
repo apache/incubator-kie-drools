@@ -298,7 +298,7 @@ public class DynamicRulesTest {
                                            5 );
         workingMemory.insert( cheddar );
 
-        assertThatThrownBy(() -> workingMemory.fireAllRules()).isInstanceOf(Throwable.class).hasMessage("Function should have been removed and NoClassDefFoundError thrown from the Consequence");
+        assertThatThrownBy(() -> workingMemory.fireAllRules()).isInstanceOf(Throwable.class);
 
         // Check a new function can be added to replace an old function
         Collection<KiePackage> kpkgs2 = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_DynamicFunction2.drl").getKiePackages();
