@@ -2021,11 +2021,11 @@ index 541d798fb4..c8aff28b7b 100644
  import java.util.stream.Collectors;
  
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
-index f93f6ed055..0c671401fc 100644
+index b8341c62ae..9b677cf639 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
 +++ b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
-@@ -19,8 +19,8 @@ import java.util.Collection;
- import java.util.List;
+@@ -18,8 +18,8 @@ package org.drools.quarkus.quickstart.test;
+ import java.util.Collection;
  import java.util.stream.Collectors;
  
 -import javax.enterprise.context.ApplicationScoped;
