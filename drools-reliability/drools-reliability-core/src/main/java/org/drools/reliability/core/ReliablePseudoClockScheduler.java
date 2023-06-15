@@ -77,12 +77,13 @@ public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
         queue.stream()
              .filter(DefaultTimerJobInstance.class::isInstance)
              .map(DefaultTimerJobInstance.class::cast)
-             .forEach(job -> rewireJobContext(job, toBeRemoved));
+             .forEach(job -> rewireTimerJob(job, toBeRemoved));
 
         queue.removeAll(toBeRemoved);
+        eventHandleMap.clear();
     }
 
-    private void rewireJobContext(DefaultTimerJobInstance jobInstance, List<TimerJobInstance> toBeRemoved) {
+    private void rewireTimerJob(DefaultTimerJobInstance jobInstance, List<TimerJobInstance> toBeRemoved) {
         JobContext jobContext = jobInstance.getJobContext();
         if (jobContext instanceof ExpireJobContext) {
             ExpireJobContext expireJobContext = (ExpireJobContext) jobContext;

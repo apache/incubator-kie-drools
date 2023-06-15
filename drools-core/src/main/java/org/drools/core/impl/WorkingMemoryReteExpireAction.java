@@ -121,7 +121,7 @@ public class WorkingMemoryReteExpireAction
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(new DefaultEventHandle(factHandle.getId(), factHandle.getEntryPointId())); // only for STORES_ONLY strategy. Just keep id and entryPointId
+        out.writeObject(new DefaultEventHandle(factHandle.getId(), factHandle.getEntryPointId())); // only for STORES_ONLY strategy. Just keep id and entryPointId to be rewired
     }
 
     @Override
