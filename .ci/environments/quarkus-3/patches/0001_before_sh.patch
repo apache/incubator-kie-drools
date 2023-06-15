@@ -317,10 +317,10 @@ index 42d82935f9..157ad57d4b 100755
  import org.jbpm.process.instance.impl.ProcessInstanceImpl;
  import org.kie.api.command.ExecutableCommand;
 diff --git a/kogito-build/kogito-build-no-bom-parent/pom.xml b/kogito-build/kogito-build-no-bom-parent/pom.xml
-index 3ff556aee1..32889f3f21 100644
+index 53838b4b6f..3167c3d8a8 100644
 --- a/kogito-build/kogito-build-no-bom-parent/pom.xml
 +++ b/kogito-build/kogito-build-no-bom-parent/pom.xml
-@@ -618,7 +618,7 @@ limitations under the License.
+@@ -619,7 +619,7 @@ limitations under the License.
          </plugin>
          <plugin>
            <groupId>io.quarkus</groupId>
@@ -330,7 +330,7 @@ index 3ff556aee1..32889f3f21 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index 57fd4e0656..be30a370af 100644
+index 0061b0d774..3face2125c 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,9 +16,9 @@
@@ -363,7 +363,7 @@ index 57fd4e0656..be30a370af 100644
 +    <version.com.github.javaparser>3.25.1</version.com.github.javaparser>
      <version.com.github.java-json-tools>2.2.14</version.com.github.java-json-tools>
      <version.com.fasterxml.jackson.datatype>2.14.2</version.com.fasterxml.jackson.datatype>
-     <version.com.github.erosb>1.14.1</version.com.github.erosb>
+     <version.com.github.erosb>1.14.2</version.com.github.erosb>
 @@ -44,31 +44,31 @@
      <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
      <version.com.sun.xml.bind.core>2.3.0.1</version.com.sun.xml.bind.core>
@@ -405,7 +405,7 @@ index 57fd4e0656..be30a370af 100644
  
      <version.io.swagger.parser.v3>2.0.26</version.io.swagger.parser.v3>
  
-@@ -77,14 +77,14 @@
+@@ -76,14 +76,14 @@
  
      <version.org.graalvm.nativeimage>22.3.0</version.org.graalvm.nativeimage>
  
@@ -425,19 +425,20 @@ index 57fd4e0656..be30a370af 100644
      <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
      <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
      <version.org.mongo>4.6.1</version.org.mongo>
-@@ -102,19 +102,19 @@
+@@ -101,20 +101,20 @@
      <version.org.junit.vintage>5.9.2</version.org.junit.vintage>
      <version.org.junit.platform>1.9.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
      <version.org.junit.pioneer>1.5.0</version.org.junit.pioneer>
 -    <version.org.mockito>4.11.0</version.org.mockito>
 +    <version.org.mockito>5.2.0</version.org.mockito>
      <version.org.testcontainers>1.17.6</version.org.testcontainers>
+     <version.org.xmlunit-core>2.9.1</version.org.xmlunit-core>
 -    <version.io.rest-assured>4.5.1</version.io.rest-assured>
 +    <version.io.rest-assured>5.3.0</version.io.rest-assured>
  
      <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
  
-     <version.org.mvel>2.4.15.Final</version.org.mvel>
+     <version.org.mvel>2.5.0.Final</version.org.mvel>
 -    <version.org.reactivestreams>1.0.3</version.org.reactivestreams>
 +    <version.org.reactivestreams>1.0.4</version.org.reactivestreams>
      <version.org.reflections>0.10.2</version.org.reflections>
@@ -450,7 +451,7 @@ index 57fd4e0656..be30a370af 100644
      <version.maven.invoker>3.2.0</version.maven.invoker>
  
      <version.plexus>1.6</version.plexus>
-@@ -249,8 +249,8 @@
+@@ -250,8 +250,8 @@
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
@@ -461,7 +462,7 @@ index 57fd4e0656..be30a370af 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -260,7 +260,7 @@
+@@ -261,7 +261,7 @@
        </dependency>
        <dependency>
          <groupId>com.fasterxml.jackson.module</groupId>
@@ -470,7 +471,7 @@ index 57fd4e0656..be30a370af 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -533,9 +533,9 @@
+@@ -541,9 +541,9 @@
        </dependency>
  
        <dependency>
@@ -483,7 +484,7 @@ index 57fd4e0656..be30a370af 100644
        </dependency>
        <dependency>
          <groupId>com.sun.xml.bind</groupId>
-@@ -543,19 +543,19 @@
+@@ -551,19 +551,19 @@
          <version>${version.com.sun.xml.bind.core}</version>
        </dependency>
        <dependency>
@@ -511,7 +512,7 @@ index 57fd4e0656..be30a370af 100644
        </dependency>
        <dependency>
          <groupId>javax.inject</groupId>
-@@ -563,9 +563,9 @@
+@@ -571,9 +571,9 @@
          <version>${version.javax.inject}</version>
        </dependency>
        <dependency>
@@ -524,7 +525,7 @@ index 57fd4e0656..be30a370af 100644
        </dependency>
        <dependency>
          <groupId>org.eclipse.microprofile.openapi</groupId>
-@@ -611,7 +611,7 @@
+@@ -619,7 +619,7 @@
        </dependency>
        <dependency>
          <groupId>org.infinispan</groupId>
@@ -2424,7 +2425,7 @@ index cb57bd172c..0722824b67 100644
  import org.junit.jupiter.api.BeforeAll;
  import org.junit.jupiter.api.BeforeEach;
 diff --git a/quarkus/addons/process-svg/runtime/pom.xml b/quarkus/addons/process-svg/runtime/pom.xml
-index bce5c23278..75c510b8c4 100644
+index eccd95d1fe..975fd59a88 100644
 --- a/quarkus/addons/process-svg/runtime/pom.xml
 +++ b/quarkus/addons/process-svg/runtime/pom.xml
 @@ -18,8 +18,8 @@
@@ -2438,7 +2439,7 @@ index bce5c23278..75c510b8c4 100644
      </dependency>
  
      <dependency>
-@@ -68,7 +68,7 @@
+@@ -73,7 +73,7 @@
      <plugins>
        <plugin>
          <groupId>io.quarkus</groupId>
@@ -2509,6 +2510,21 @@ index 295de81ef7..e85b0f8c09 100644
  
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.kie.kogito.svg.AbstractProcessSvgService;
+diff --git a/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java b/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java
+index c3500b0c2a..4d385eddfc 100644
+--- a/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java
++++ b/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java
+@@ -15,8 +15,8 @@
+  */
+ package org.kie.kogito.quarkus.serverless.workflow.python;
+ 
+-import javax.annotation.PostConstruct;
+-import javax.enterprise.context.ApplicationScoped;
++import jakarta.annotation.PostConstruct;
++import jakarta.enterprise.context.ApplicationScoped;
+ 
+ import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+ import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 diff --git a/quarkus/addons/rest-exception-handler/pom.xml b/quarkus/addons/rest-exception-handler/pom.xml
 index d0ffa42730..abbc56828f 100644
 --- a/quarkus/addons/rest-exception-handler/pom.xml
@@ -4525,7 +4541,7 @@ index bf643296a0..ec8ad4e9c2 100644
  import org.kie.kogito.monitoring.elastic.common.ElasticRegistry;
  import org.kie.kogito.monitoring.elastic.common.KogitoElasticConfig;
 diff --git a/springboot/addons/process-svg/pom.xml b/springboot/addons/process-svg/pom.xml
-index 3f6c25309c..18986e6356 100644
+index 96f541caac..a1a275b651 100644
 --- a/springboot/addons/process-svg/pom.xml
 +++ b/springboot/addons/process-svg/pom.xml
 @@ -47,8 +47,8 @@
