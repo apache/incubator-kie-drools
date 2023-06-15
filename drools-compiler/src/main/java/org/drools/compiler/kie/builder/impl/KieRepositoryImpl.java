@@ -69,8 +69,6 @@ public class KieRepositoryImpl
 
     private final KieModuleRepo kieModuleRepo = new KieModuleRepo();
 
-    private final Set<ReleaseId> notKieModules = new HashSet<>();
-
     public static void setInternalKieScanner(InternalKieScanner scanner) {
         synchronized (KieScannerHolder.class) {
             KieScannerHolder.kieScanner = scanner;
@@ -125,7 +123,7 @@ public class KieRepositoryImpl
     }
 
     public KieModule getKieModule(ReleaseId releaseId, PomModel pomModel) {
-        if (notKieModules.contains(releaseId)) {
+        if (kieModuleRepo.isKnownNotKieModule(releaseId)) {
             return null;
         }
 
@@ -144,12 +142,7 @@ public class KieRepositoryImpl
             kieModule = loadKieModuleFromMavenRepo(releaseId, pomModel);
         }
 
-        if (kieModule != null) {
-            kieModuleRepo.store(kieModule);
-        } else {
-            notKieModules.add(releaseId);
-        }
-        return kieModule;
+        return kieModuleRepo.storeKieModule(releaseId, kieModule);
     }
 
     private KieModule checkClasspathForKieModule(ReleaseId releaseId) {
@@ -336,6 +329,9 @@ public class KieRepositoryImpl
         public static int MAX_SIZE_GA_VERSIONS_CACHE // made changeable for test purposes
             = Integer.parseInt(System.getProperty(CACHE_VERSIONS_MAX_PROPERTY, "10"));
 
+        private final Set<ReleaseId> notKieModules = new HashSet<>();
+
+
         // FIELDS -----------------------------------------------------------------------------------------------------------------
 
         // kieModules evicts based on access-time, not on insertion-time
@@ -373,8 +369,23 @@ public class KieRepositoryImpl
             return removedKieModule;
         }
 
+        private KieModule storeKieModule(ReleaseId releaseId, KieModule kieModule) {
+            if (kieModule != null) {
+                store(kieModule);
+            } else {
+                notKieModules.add(releaseId);
+            }
+            return kieModule;
+        }
+
+        private boolean isKnownNotKieModule(ReleaseId releaseId) {
+            return notKieModules.contains(releaseId);
+        }
+
         public synchronized void store(KieModule kieModule) {
             ReleaseId releaseId = kieModule.getReleaseId();
+            notKieModules.remove(releaseId);
+
             String ga = toArtifactId(releaseId);
             ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
 
