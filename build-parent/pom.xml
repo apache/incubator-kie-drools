@@ -37,9 +37,9 @@
     <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.11.0</version.commons-io>
-    <version.common-text>1.9</version.common-text>
+    <version.common-text>1.10.0</version.common-text>
     <version.com.fasterxml.jackson>2.13.4</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.13.4</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.databind>2.13.4.2</version.com.fasterxml.jackson.databind>
     <version.com.fasterxml.jackson.annotations>2.13.4</version.com.fasterxml.jackson.annotations>
     <version.org.jresearch.gwt.time>2.0.3</version.org.jresearch.gwt.time>
     <version.com.lowagie.itext>2.1.7</version.com.lowagie.itext>
@@ -47,7 +47,7 @@
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
     <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
     <version.com.google.gwt>2.9.0</version.com.google.gwt>
-    <version.com.google.protobuf>3.19.3</version.com.google.protobuf>
+    <version.com.google.protobuf>3.19.6</version.com.google.protobuf>
     <version.com.h2database>2.1.214</version.com.h2database>
     <version.com.networknt.json-schema-validator>1.0.43</version.com.networknt.json-schema-validator>
     <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
@@ -55,7 +55,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.6.3</version.info.picocli>
     <version.io.micrometer>1.9.4</version.io.micrometer>
-    <version.io.quarkus>2.13.1.Final</version.io.quarkus>
+    <version.io.quarkus>2.13.8.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>2.2.1</version.io.smallrye.openapi.core>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
@@ -81,7 +81,7 @@
     <version.org.hibernate>5.6.0.Final</version.org.hibernate>
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
-    <version.org.jboss.narayana.tomcat>5.13.1.Alpha1</version.org.jboss.narayana.tomcat>
+    <version.org.jboss.narayana.tomcat>5.13.1.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
     <version.jakarta.enterprise.cdi-api>2.0.2</version.jakarta.enterprise.cdi-api>
@@ -131,7 +131,7 @@
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
     <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-    <version.org.mockito>4.8.0</version.org.mockito>
+    <version.org.mockito>4.8.1</version.org.mockito>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
@@ -187,9 +187,9 @@
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <version.shade.plugin>3.3.0</version.shade.plugin>
 
-    <version.net.byte-buddy>1.12.9</version.net.byte-buddy>
+    <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
 
-    <version.org.postgresql>42.5.0</version.org.postgresql>
+    <version.org.postgresql>42.5.1</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.org.jboss.jandex>2.4.3.Final</version.org.jboss.jandex>
