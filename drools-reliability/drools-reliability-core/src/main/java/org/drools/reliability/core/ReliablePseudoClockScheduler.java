@@ -16,27 +16,41 @@
 
 package org.drools.reliability.core;
 
-import org.drools.core.common.Storage;
-import org.drools.core.time.impl.PseudoClockScheduler;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.drools.core.common.DefaultEventHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.Storage;
+import org.drools.core.impl.WorkingMemoryReteExpireAction;
+import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContext;
+import org.drools.core.time.JobContext;
+import org.drools.core.time.impl.DefaultTimerJobInstance;
+import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.core.time.impl.TimerJobInstance;
+
 public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
 
     private final transient Storage<String, Object> storage;
+    private transient ReteEvaluator reteEvaluator;
+    private transient Map<String, Map<Long, DefaultEventHandle>> eventHandleMap = new HashMap<>();
 
     public ReliablePseudoClockScheduler() {
         throw new UnsupportedOperationException("This constructor should not be used");
     }
 
     @SuppressWarnings("unchecked")
-    public ReliablePseudoClockScheduler(Storage<String, Object> storage) {
+    public ReliablePseudoClockScheduler(Storage<String, Object> storage, ReteEvaluator reteEvaluator) {
         this.storage = storage;
         this.timer = new AtomicLong( (Long) storage.getOrDefault("timer", 0L) );
         this.idCounter = new AtomicLong( (Long) storage.getOrDefault("idCounter", 0L) );
         this.queue = (PriorityQueue) storage.getOrDefault("queue", new PriorityQueue<>());
+        this.reteEvaluator = reteEvaluator;
     }
 
     @Override
@@ -50,5 +64,45 @@ public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
         storage.put("timer", timer.get());
         storage.put("idCounter", idCounter.get());
         storage.put("queue", queue);
+    }
+
+    public void putHandleIdAssociation(long oldHandleId, DefaultEventHandle eFh) {
+        String entryPointName = eFh.getEntryPointName();
+        Map<Long, DefaultEventHandle> eventHandleMapPerEntryPoint = eventHandleMap.computeIfAbsent(entryPointName, key -> new HashMap<>());
+        eventHandleMapPerEntryPoint.put(oldHandleId, eFh);
+    }
+
+    public void rewireTimerJobs() {
+        List<TimerJobInstance> toBeRemoved = new ArrayList<>();
+        queue.stream()
+             .filter(DefaultTimerJobInstance.class::isInstance)
+             .map(DefaultTimerJobInstance.class::cast)
+             .forEach(job -> rewireTimerJob(job, toBeRemoved));
+
+        queue.removeAll(toBeRemoved);
+        eventHandleMap.clear();
+    }
+
+    private void rewireTimerJob(DefaultTimerJobInstance jobInstance, List<TimerJobInstance> toBeRemoved) {
+        JobContext jobContext = jobInstance.getJobContext();
+        if (jobContext instanceof ExpireJobContext) {
+            ExpireJobContext expireJobContext = (ExpireJobContext) jobContext;
+            expireJobContext.setReteEvaluator(reteEvaluator);
+            WorkingMemoryReteExpireAction expireAction = expireJobContext.getExpireAction();
+            if (expireAction.getFactHandle().getObject() == null) {
+                // rewire new eventHandle
+                String entryPointName = expireAction.getFactHandle().getEntryPointName();
+                long oldHandleId = expireAction.getFactHandle().getId();
+                if (eventHandleMap.containsKey(entryPointName) && eventHandleMap.get(entryPointName).containsKey(oldHandleId)) {
+                    expireAction.setFactHandle(eventHandleMap.get(entryPointName).get(oldHandleId));
+                } else {
+                    throw new ReliabilityRuntimeException("new handle to rewire is not found : entryPointName = " + entryPointName + ", oldHandleId = " + oldHandleId);
+                }
+            } else {
+                // job created by re-propagation. Duplicate
+                toBeRemoved.add(jobInstance);
+            }
+        }
+        // TODO: deal with other JobContext
     }
 }

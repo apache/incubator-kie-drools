@@ -22,6 +22,7 @@ import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.reliability.core.ReliabilityRuntimeException;
+import org.drools.reliability.core.ReliablePseudoClockScheduler;
 import org.drools.reliability.core.StorageManagerFactory;
 import org.drools.reliability.core.StoredObject;
 import org.drools.reliability.infinispan.InfinispanStorageManager;
@@ -37,19 +38,21 @@ public class ProtoStreamStoredObject implements StoredObject {
     private final boolean propagated;
     private final long timestamp;
     private final long duration;
+    private final long handleId;
 
     private final String typeUrl;
     private final AnySchema.Any protoObject;
 
     public ProtoStreamStoredObject(Object object, boolean propagated) {
-        this(object, propagated, -1, -1);
+        this(object, propagated, -1, -1, -1);
     }
 
-    public ProtoStreamStoredObject(Object object, boolean propagated, long timestamp, long duration) {
+    public ProtoStreamStoredObject(Object object, boolean propagated, long timestamp, long duration, long handleId) {
         this.object = object;
         this.propagated = propagated;
         this.timestamp = timestamp;
         this.duration = duration;
+        this.handleId = handleId;
 
         this.typeUrl = object.getClass().getCanonicalName();
         SerializationContext serializationContext = ((InfinispanStorageManager) StorageManagerFactory.get().getStorageManager()).getSerializationContext();
@@ -63,10 +66,11 @@ public class ProtoStreamStoredObject implements StoredObject {
     }
 
     @ProtoFactory
-    public ProtoStreamStoredObject(AnySchema.Any protoObject, boolean propagated, long timestamp, long duration) {
+    public ProtoStreamStoredObject(AnySchema.Any protoObject, boolean propagated, long timestamp, long duration, long handleId) {
         this.propagated = propagated;
         this.timestamp = timestamp;
         this.duration = duration;
+        this.handleId = handleId;
 
         this.protoObject = protoObject;
         this.typeUrl = protoObject.getTypeUrl();
@@ -100,6 +104,11 @@ public class ProtoStreamStoredObject implements StoredObject {
         return duration;
     }
 
+    @ProtoField(value = 5, required = true)
+    public long getHandleId() {
+        return handleId;
+    }
+
     public boolean isEvent() {
         return timestamp >= 0;
     }
@@ -113,6 +122,7 @@ public class ProtoStreamStoredObject implements StoredObject {
             FactHandleFactory fhFactory = ep.getHandleFactory();
             DefaultEventHandle eFh = fhFactory.createEventFactHandle(fhFactory.getNextId(), object, fhFactory.getNextRecency(), ep, timestamp, duration);
             ep.insert(eFh);
+            ((ReliablePseudoClockScheduler)ep.getReteEvaluator().getTimerService()).putHandleIdAssociation(handleId, eFh);
         } else {
             ep.insert(object);
         }
@@ -125,6 +135,7 @@ public class ProtoStreamStoredObject implements StoredObject {
                 ", propagated=" + propagated +
                 ", timestamp=" + timestamp +
                 ", duration=" + duration +
+                ", handleId=" + handleId +
                 ", typeUrl='" + typeUrl + '\'' +
                 '}';
     }

@@ -23,6 +23,8 @@ import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
+import static org.drools.reliability.core.StorageManager.getSessionIdentifier;
+
 public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl implements ReliableKieSession {
 
     public ReliableStatefulKnowledgeSessionImpl() {
@@ -48,8 +50,8 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
 
     @Override
     public void dispose() {
+        StorageManagerFactory.get().getStorageManager().removeStoragesBySessionId(String.valueOf(getSessionIdentifier(this)));
         super.dispose();
-        StorageManagerFactory.get().getStorageManager().removeStoragesBySessionId(String.valueOf(this.id));
     }
 
     @Override

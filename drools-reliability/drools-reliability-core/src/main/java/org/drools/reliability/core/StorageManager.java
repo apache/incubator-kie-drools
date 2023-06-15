@@ -55,7 +55,7 @@ public interface StorageManager {
         return StorageManagerFactory.SESSION_STORAGE_PREFIX + getSessionIdentifier(reteEvaluator) + StorageManagerFactory.DELIMITER + storageName;
     }
 
-    private static long getSessionIdentifier(ReteEvaluator reteEvaluator) {
+    public static long getSessionIdentifier(ReteEvaluator reteEvaluator) {
         PersistedSessionOption persistedSessionOption = reteEvaluator.getSessionConfiguration().getPersistedSessionOption();
         if (persistedSessionOption != null) {
             return persistedSessionOption.isNewSession() ? reteEvaluator.getIdentifier() : persistedSessionOption.getSessionId();

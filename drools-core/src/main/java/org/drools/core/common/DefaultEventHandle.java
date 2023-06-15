@@ -52,6 +52,13 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
         this.duration = 0;
     }
 
+    public DefaultEventHandle(long id, EntryPointId entryPointId) {
+        super(id, null);
+        this.startTimestamp = 0;
+        this.duration = 0;
+        this.entryPointId = entryPointId;
+    }
+
     /**
      * Creates a new event fact handle.
      *

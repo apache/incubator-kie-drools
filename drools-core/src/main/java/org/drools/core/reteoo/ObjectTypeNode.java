@@ -16,6 +16,15 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.base.InitialFact;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
@@ -36,14 +45,6 @@ import org.drools.core.time.JobContext;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
@@ -469,7 +470,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
 
     public static class ExpireJob
             implements
-            Job {
+            Job, Serializable {
 
         @Override
         public void execute(JobContext ctx) {
@@ -484,9 +485,12 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
             implements
             JobContext,
             Externalizable {
-        public final WorkingMemoryReteExpireAction expireAction;
-        public final ReteEvaluator         reteEvaluator;
+        public WorkingMemoryReteExpireAction expireAction;
+        public transient ReteEvaluator         reteEvaluator;
         public JobHandle                     handle;
+
+        public ExpireJobContext() {
+        }
 
         public ExpireJobContext(WorkingMemoryReteExpireAction expireAction,
                                 ReteEvaluator reteEvaluator) {
@@ -513,6 +517,10 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
             return reteEvaluator;
         }
 
+        public void setReteEvaluator(ReteEvaluator reteEvaluator) {
+            this.reteEvaluator = reteEvaluator;
+        }
+
         public JobHandle getHandle() {
             return handle;
         }
@@ -524,13 +532,14 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         @Override
         public void readExternal(ObjectInput in) throws IOException,
                                                         ClassNotFoundException {
-            //this.behavior = (O)
+            this.expireAction = (WorkingMemoryReteExpireAction) in.readObject();
+            this.handle = (JobHandle) in.readObject();
         }
 
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
+            out.writeObject(expireAction);
+            out.writeObject(handle);
         }
     }
 

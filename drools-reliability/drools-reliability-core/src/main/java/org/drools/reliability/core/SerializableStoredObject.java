@@ -26,12 +26,13 @@ public class SerializableStoredObject implements StoredObject, Serializable {
     private final boolean propagated;
     private final long timestamp;
     private final long duration;
+    private final long handleId;
 
     public SerializableStoredObject(Object object, boolean propagated) {
-        this(object, propagated, -1, -1);
+        this(object, propagated, -1, -1, -1);
     }
 
-    public SerializableStoredObject(Object object, boolean propagated, long timestamp, long duration) {
+    public SerializableStoredObject(Object object, boolean propagated, long timestamp, long duration, long handleId) {
         if (object instanceof Serializable) {
             this.object = (Serializable) object;
         } else {
@@ -40,6 +41,7 @@ public class SerializableStoredObject implements StoredObject, Serializable {
         this.propagated = propagated;
         this.timestamp = timestamp;
         this.duration = duration;
+        this.handleId = handleId;
     }
 
     public boolean isEvent() {
@@ -62,11 +64,16 @@ public class SerializableStoredObject implements StoredObject, Serializable {
         return duration;
     }
 
+    public long getHandleId() {
+        return handleId;
+    }
+
     public void repropagate(InternalWorkingMemoryEntryPoint ep) {
         if (isEvent()) {
             FactHandleFactory fhFactory = ep.getHandleFactory();
             DefaultEventHandle eFh = fhFactory.createEventFactHandle(fhFactory.getNextId(), object, fhFactory.getNextRecency(), ep, timestamp, duration);
             ep.insert(eFh);
+            ((ReliablePseudoClockScheduler)ep.getReteEvaluator().getTimerService()).putHandleIdAssociation(handleId, eFh);
         } else {
             ep.insert(object);
         }
@@ -79,6 +86,7 @@ public class SerializableStoredObject implements StoredObject, Serializable {
                 ", propagated=" + propagated +
                 ", timestamp=" + timestamp +
                 ", duration=" + duration +
+                ", handleId=" + handleId +
                 '}';
     }
 }
