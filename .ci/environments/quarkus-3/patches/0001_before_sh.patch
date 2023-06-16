@@ -535,7 +535,7 @@ index 0061b0d774..3face2125c 100644
        </dependency>
        <dependency>
 diff --git a/kogito-build/kogito-kie-bom/pom.xml b/kogito-build/kogito-kie-bom/pom.xml
-index 23cb00f5ef..59e7ddb568 100644
+index 88e13a2aa1..e00a3abaec 100644
 --- a/kogito-build/kogito-kie-bom/pom.xml
 +++ b/kogito-build/kogito-kie-bom/pom.xml
 @@ -18,7 +18,7 @@
@@ -3902,10 +3902,10 @@ index c8cbb16e26..13b3381075 100644
  import org.assertj.core.api.Assertions;
  import org.junit.jupiter.api.Test;
 diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/pom.xml b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/pom.xml
-index 0db41ce855..69afd01c0f 100644
+index 2f0c60b687..4022c85adb 100644
 --- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/pom.xml
 +++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/pom.xml
-@@ -148,7 +148,7 @@
+@@ -143,7 +143,7 @@
        </plugin>
        <plugin>
          <groupId>io.quarkus</groupId>
