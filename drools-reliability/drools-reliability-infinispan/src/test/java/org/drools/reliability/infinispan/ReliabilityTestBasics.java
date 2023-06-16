@@ -58,7 +58,10 @@ public abstract class ReliabilityTestBasics {
 
     private InfinispanContainer container;
     protected long savedSessionId;
+    protected List<Long> savedSessionIds;
+    protected List<KieSession> sessions_m;
     protected KieSession session;
+
     protected PersistedSessionOption.SafepointStrategy safepointStrategy;
 
     static Stream<PersistedSessionOption.PersistenceStrategy> strategyProvider() {
@@ -121,7 +124,12 @@ public abstract class ReliabilityTestBasics {
 
     public void failover() {
         if (safepointStrategy == PersistedSessionOption.SafepointStrategy.EXPLICIT) {
-            ((ReliableKieSession) session).safepoint();
+            if (this.sessions_m!=null){
+                this.sessions_m.forEach(session -> {
+                    ((ReliableKieSession) session).safepoint();
+                });
+                this.sessions_m.clear();
+            }else {((ReliableKieSession) session).safepoint();}
         }
 
         if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
@@ -179,12 +187,26 @@ public abstract class ReliabilityTestBasics {
         return session;
     }
 
+    protected KieSession createSession_m(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
+        KieSession newSession = getKieSession_m(drl, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy) : null, options);
+        if (this.sessions_m==null){this.sessions_m=new ArrayList<>();}
+        this.sessions_m.add(newSession);
+
+        return newSession;
+    }
+
     protected KieSession restoreSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, Option... options) {
         return restoreSession(drl, persistenceStrategy, PersistedSessionOption.SafepointStrategy.ALWAYS, options);
     }
 
     protected KieSession restoreSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
         return getKieSession(drl, PersistedSessionOption.fromSession(savedSessionId).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
+    }
+
+    protected KieSession restoreSession(Long sessionId, String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
+        KieSession recoveredSession =  getKieSession_m(drl, PersistedSessionOption.fromSession(sessionId).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
+        this.sessions_m.add(recoveredSession);
+        return recoveredSession;
     }
 
     protected void disposeSession() {
@@ -201,6 +223,23 @@ public abstract class ReliabilityTestBasics {
         }
         Stream.of(optionsFilter.getKieSessionOption()).forEach(conf::setOption);
         session = kbase.newKieSession(conf, null);
+        if (persistedSessionOption == null || persistedSessionOption.isNewSession()) {
+            List<Object> results = new ArrayList<>();
+            session.setGlobal("results", results);
+        }
+        return session;
+    }
+
+    protected KieSession getKieSession_m(String drl, PersistedSessionOption persistedSessionOption, Option... options) {
+        OptionsFilter optionsFilter = new OptionsFilter(options);
+        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build(ExecutableModelProject.class, optionsFilter.getKieBaseOptions());
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        if (persistedSessionOption != null) {
+            conf.setOption(persistedSessionOption);
+            safepointStrategy = persistedSessionOption.getSafepointStrategy();
+        }
+        Stream.of(optionsFilter.getKieSessionOption()).forEach(conf::setOption);
+        KieSession session = kbase.newKieSession(conf, null);
         if (persistedSessionOption == null || persistedSessionOption.isNewSession()) {
             List<Object> results = new ArrayList<>();
             session.setGlobal("results", results);

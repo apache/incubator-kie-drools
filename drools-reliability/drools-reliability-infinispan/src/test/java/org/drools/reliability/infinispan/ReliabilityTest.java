@@ -20,9 +20,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.test.domain.Person;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -306,4 +309,36 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         assertThat(session.fireAllRules()).isEqualTo(1);
     }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FAILS in STORES_ONLY, EXPLICIT
+    void multipleKieSessions_BasicTest(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+        KieSession session1 = createSession_m(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session2 = createSession_m(BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        session1.insert("M");
+        session2.insert("N");
+
+        session1.insert(new Person("Mike-session1",27)); // insert matching person
+        session2.insert(new Person("Mary-session2",34)); // insert non matching person
+
+        assertThat(session1.fireAllRules()).isEqualTo(1);
+        assertThat(session2.fireAllRules()).isEqualTo(0);
+
+        failover();
+
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        // clear results
+        ((List<Object>) session1.getGlobal("results")).clear();
+        ((List<Object>) session2.getGlobal("results")).clear();
+
+        session1.insert(new Person("Michael-session1",42)); // insert matching person
+        session2.insert(new Person("Nancy-session2",25)); // insert matching person
+
+        assertThat(session1.fireAllRules()).isEqualTo(1);
+        assertThat(session2.fireAllRules()).isEqualTo(1);
+    }
+
 }
