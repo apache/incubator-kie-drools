@@ -1,0 +1,74 @@
+package org.drools.reliability.infinispan;
+
+import java.util.concurrent.TimeUnit;
+
+import org.drools.base.facttemplates.Event;
+
+import static org.drools.reliability.infinispan.util.PrototypeUtils.createControlEvent;
+import static org.drools.reliability.infinispan.util.PrototypeUtils.processResults;
+
+global java.util.List results;
+
+rule dummy0
+when
+then
+    System.out.println("dummy0");
+end
+
+rule dummy1
+when
+     Event(  )
+then
+    System.out.println("dummy1");
+end
+
+rule R_control
+when
+  e : Event( get("sensu.process.type") == "alert" )
+  not( Event( get("sensu.host") == e.get("sensu.host"), get("sensu.process.type") == e.get("sensu.process.type"), get("drools_rule_name") == "R" ) )
+then
+  System.out.println("R_control");
+  Event controlEvent = createControlEvent();
+  controlEvent.set("sensu.host", e.get("sensu.host"));
+  controlEvent.set("sensu.process.type", e.get("sensu.process.type"));
+  controlEvent.set("once_after_time_window", "10 minutes");
+  controlEvent.set("event", e);
+  controlEvent.set("drools_rule_name", "R");
+  insert(controlEvent);
+  delete(e);
+end
+
+rule R_start
+when
+  c1 : Event( get("drools_rule_name") == "R" )
+  not( Event( get("end_once_after") == "R" ) )
+then
+    System.out.println("R_start");
+  Event startControlEvent = createControlEvent().withExpiration(10, TimeUnit.MINUTES);
+  startControlEvent.set("start_once_after", "R");
+  insert(startControlEvent);
+  Event endControlEvent = createControlEvent();
+  endControlEvent.set("end_once_after", "R");
+  insert(endControlEvent);
+end
+
+rule R
+when
+  c1 : Event( get("end_once_after") == "R" )
+  not( Event( get("start_once_after") == "R" ) )
+  accumulate( Event( get("drools_rule_name") == "R" ); $controlResults : collectList() )
+then
+    System.out.println("R");
+  delete(c1);
+  processResults(results, $controlResults);
+  $controlResults.stream().forEach(drools::delete);
+end
+
+rule R_cleanup_duplicate
+when
+  e : Event( get("sensu.process.type") == "alert" )
+  c1 : Event( get("sensu.host") == e.get("sensu.host"), get("sensu.process.type") == e.get("sensu.process.type"), get("drools_rule_name") == "R" )
+then
+    System.out.println("R_cleanup_duplicate");
+  delete(e);
+end

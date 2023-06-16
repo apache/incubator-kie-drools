@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.facttemplate;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ import org.drools.base.facttemplates.Fact;
 import org.drools.base.facttemplates.FactTemplate;
 import org.drools.model.PrototypeFact;
 
-public class HashMapFactImpl implements Fact, PrototypeFact {
+public class HashMapFactImpl implements Fact, PrototypeFact, Serializable {
 
     protected final FactTemplate factTemplate;
 
