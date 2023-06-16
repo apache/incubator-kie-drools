@@ -39,6 +39,7 @@ public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
     private final transient Storage<String, Object> storage;
     private transient ReteEvaluator reteEvaluator;
     private transient Map<String, Map<Long, DefaultEventHandle>> eventHandleMap = new HashMap<>();
+    private AtomicLong persistedTimer;
 
     public ReliablePseudoClockScheduler() {
         throw new UnsupportedOperationException("This constructor should not be used");
@@ -47,10 +48,15 @@ public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
     @SuppressWarnings("unchecked")
     public ReliablePseudoClockScheduler(Storage<String, Object> storage, ReteEvaluator reteEvaluator) {
         this.storage = storage;
-        this.timer = new AtomicLong( (Long) storage.getOrDefault("timer", 0L) );
+        this.timer = new AtomicLong(0);
+        this.persistedTimer = new AtomicLong((Long) storage.getOrDefault("timer", 0L));
         this.idCounter = new AtomicLong( (Long) storage.getOrDefault("idCounter", 0L) );
         this.queue = (PriorityQueue) storage.getOrDefault("queue", new PriorityQueue<>());
         this.reteEvaluator = reteEvaluator;
+    }
+
+    public AtomicLong getPersistedTimer() {
+        return persistedTimer;
     }
 
     @Override

@@ -15,15 +15,27 @@
 
 package org.drools.reliability.core;
 
+import org.drools.base.facttemplates.Event;
+import org.drools.core.ClockType;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
+import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.kie.api.runtime.conf.PersistedSessionOption;
+import org.kie.api.time.SessionClock;
+import org.kie.api.time.SessionPseudoClock;
+
+import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class SimpleSerializationReliableObjectStore extends IdentityObjectStore implements SimpleReliableObjectStore {
 
@@ -54,6 +66,14 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
 
     @Override
     public List<StoredObject> reInit(InternalWorkingMemory session, InternalWorkingMemoryEntryPoint ep) {
+        if (session.getSessionConfiguration().getClockType() == ClockType.PSEUDO_CLOCK) {
+            return reInitWithPseudoClock(session, ep);
+        } else {
+            return reInitWithoutClock(session, ep);
+        }
+    }
+
+    private List<StoredObject> reInitWithoutClock(InternalWorkingMemory session, InternalWorkingMemoryEntryPoint ep) {
         reInitPropagated = true;
         List<StoredObject> propagated = new ArrayList<>();
         List<StoredObject> notPropagated = new ArrayList<>();
@@ -69,6 +89,49 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
         // fact handles with a match have been already propagated in the original session, so they shouldn't fire
         propagated.forEach(obj -> obj.repropagate(ep));
         session.fireAllRules(match -> false);
+        reInitPropagated = false;
+
+        // fact handles without any match have never been propagated in the original session, so they should fire
+        return notPropagated;
+    }
+
+    private List<StoredObject> reInitWithPseudoClock(InternalWorkingMemory session, InternalWorkingMemoryEntryPoint ep) {
+        reInitPropagated = true;
+        List<StoredObject> propagated = new ArrayList<>();
+        List<StoredObject> notPropagated = new ArrayList<>();
+
+        List<Long> idList = new ArrayList<>(storage.keySet());
+        Collections.sort(idList);
+
+        ReliablePseudoClockScheduler clock = (ReliablePseudoClockScheduler) session.getSessionClock();
+        for (Long id : idList) {
+            StoredObject storedObject = storage.get(id);
+            if (storedObject.isPropagated()) {
+                propagated.add(storedObject);
+                if (storedObject.isEvent()) {
+                    long currentTime = clock.getCurrentTime();
+                    long timestamp = storedObject.getTimestamp();
+                    if (currentTime < timestamp) {
+                        clock.advanceTime(timestamp - currentTime, TimeUnit.MILLISECONDS);
+                    }
+                    storedObject.repropagate(ep); // This may schedule an expiration
+                }
+            } else {
+                notPropagated.add(storedObject);
+            }
+        }
+        // fact handles with a match have been already propagated in the original session, so they shouldn't fire
+        session.fireAllRules(match -> false);
+
+        // Finally, meet with the persistedTime
+        long currentTime = clock.getCurrentTime();
+        long persistedTime = clock.getPersistedTimer().longValue();
+        if (currentTime < persistedTime) {
+            clock.advanceTime(persistedTime - currentTime, TimeUnit.MILLISECONDS); // This may trigger an expiration
+        }
+
+        storage.clear();
+
         reInitPropagated = false;
 
         // fact handles without any match have never been propagated in the original session, so they should fire

@@ -47,6 +47,16 @@ public abstract class BaseStoredObject implements StoredObject,
     }
 
     @Override
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    @Override
+    public long getDuration() {
+        return duration;
+    }
+
+    @Override
     public void repropagate(InternalWorkingMemoryEntryPoint ep) {
         if (isEvent()) {
             FactHandleFactory fhFactory = ep.getHandleFactory();
