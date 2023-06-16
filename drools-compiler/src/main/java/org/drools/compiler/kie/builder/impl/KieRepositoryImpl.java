@@ -38,14 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
@@ -329,14 +322,17 @@ public class KieRepositoryImpl
         public static int MAX_SIZE_GA_VERSIONS_CACHE // made changeable for test purposes
             = Integer.parseInt(System.getProperty(CACHE_VERSIONS_MAX_PROPERTY, "10"));
 
-        private final Set<ReleaseId> notKieModules = new HashSet<>();
-
+        private final Set<ReleaseId> notKieModules = Collections.newSetFromMap(new LinkedHashMap<>(){
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<ReleaseId, Boolean> eldest) {
+                return size() > 1_000;
+            }
+        });
 
         // FIELDS -----------------------------------------------------------------------------------------------------------------
 
         // kieModules evicts based on access-time, not on insertion-time
-        public final Map<String, NavigableMap<ComparableVersion, KieModule>> kieModules
-            = new LinkedHashMap<>(16, 0.75f, true) {
+        public final Map<String, NavigableMap<ComparableVersion, KieModule>> kieModules = new LinkedHashMap<>(16, 0.75f, true) {
             @Override
             protected boolean removeEldestEntry( Map.Entry<String, NavigableMap<ComparableVersion, KieModule>> eldest) {
                 return (size() > MAX_SIZE_GA_CACHE);
