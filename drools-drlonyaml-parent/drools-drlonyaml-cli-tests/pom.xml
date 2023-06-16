@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-drlonyaml-parent</artifactId>
-    <version>8.40.0.Final</version>
+    <version>8.40.1-SNAPSHOT</version>
   </parent>
   <artifactId>drools-drlonyaml-cli-tests</artifactId>
   <name>Drools :: DRL on YAML :: CLI tests</name>
