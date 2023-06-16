@@ -45,6 +45,12 @@
           <groupId>io.quarkus</groupId>
           <artifactId>quarkus-container-image-jib</artifactId>
         </exclusion>
+        <!-- embedded jobs service works hand in hand with the kogito-addons-quarkus-jobs-management,
+             only the http recipient is needed -->
+        <exclusion>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>job-sink-recipient</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
