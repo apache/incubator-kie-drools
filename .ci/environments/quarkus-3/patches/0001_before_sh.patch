@@ -3854,7 +3854,7 @@ index 92f881096..8a9ead2a9 100644
  import org.kie.kogito.swf.tools.custom.dashboard.model.CustomDashboardFilter;
  
 diff --git a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/custom/dashboard/impl/CustomDashboardStorageImpl.java b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/custom/dashboard/impl/CustomDashboardStorageImpl.java
-index ffa89a80a..5d7c7a71f 100644
+index b90c46fc1..16b70902a 100644
 --- a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/custom/dashboard/impl/CustomDashboardStorageImpl.java
 +++ b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/custom/dashboard/impl/CustomDashboardStorageImpl.java
 @@ -31,7 +31,7 @@ import java.util.Map;
