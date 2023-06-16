@@ -106,10 +106,13 @@ pipeline {
         stage('Build & Test') {
             steps {
                 script {
-                    getMavenCommand()
-                        .withProperty('maven.test.failure.ignore', true)
-                        .skipTests(params.SKIP_TESTS)
-                        .run('clean install')
+                    dir(getRepoName()) {
+                        String mvnCmd = getMavenCommand()
+                                            .withProperty('maven.test.failure.ignore', true)
+                                            .skipTests(params.SKIP_TESTS)
+                                            .getFullRunCommand('clean install')
+                        util.runWithPythonVirtualEnv(mvnCmd, 'swf')
+                    }
                 }
             }
             post {
@@ -124,7 +127,9 @@ pipeline {
         stage('Deploy locally') {
             steps {
                 script {
-                    runMavenDeploy(true)
+                    dir(getRepoName()) {
+                        runMavenDeploy(true)
+                    }
                 }
             }
         }
