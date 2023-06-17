@@ -330,7 +330,7 @@ index 53838b4b6f..3167c3d8a8 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index 0061b0d774..3face2125c 100644
+index 0061b0d774..5d87a85190 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,9 +16,9 @@
@@ -434,7 +434,7 @@ index 0061b0d774..3face2125c 100644
      <version.org.testcontainers>1.17.6</version.org.testcontainers>
      <version.org.xmlunit-core>2.9.1</version.org.xmlunit-core>
 -    <version.io.rest-assured>4.5.1</version.io.rest-assured>
-+    <version.io.rest-assured>5.3.0</version.io.rest-assured>
++    <version.io.rest-assured>5.3.1</version.io.rest-assured>
  
      <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
  
