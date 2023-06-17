@@ -4,11 +4,11 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.accessor.Accumulator;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Accumulator;
+import org.kie.api.runtime.rule.FactHandle;
 
 abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumulator {
 
@@ -23,7 +23,7 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
         this.finisher = Objects.requireNonNull(finisher);
     }
 
-    protected static <X> Function<Tuple, X> getValueExtractor(Declaration declaration, Tuple leftTuple) {
+    protected static <X> Function<BaseTuple, X> getValueExtractor(Declaration declaration, BaseTuple leftTuple) {
         return new ValueExtractor<>(declaration, leftTuple);
     }
 
@@ -38,15 +38,15 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
     }
 
     @Override
-    public final ResultContainer_ init(Object workingMemoryContext, Object context, Tuple leftTuple,
-            Declaration[] declarations, ReteEvaluator reteEvaluator) {
+    public final ResultContainer_ init(Object workingMemoryContext, Object context, BaseTuple leftTuple,
+            Declaration[] declarations, ValueResolver reteEvaluator) {
         return containerSupplier.get();
     }
 
     @Override
-    public final Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple,
-            InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations,
-            ReteEvaluator reteEvaluator) {
+    public final Object accumulate(Object workingMemoryContext, Object context, BaseTuple leftTuple,
+            FactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations,
+            ValueResolver reteEvaluator) {
         /*
          * Accumulator instances are created within the KieBase, not within the KieSession.
          * This means that multiple sessions from the same KieBase may be calling this method
@@ -70,10 +70,10 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
         return accumulate((ResultContainer_) context, leftTuple, handle, innerDeclarations);
     }
 
-    protected abstract Runnable accumulate(ResultContainer_ context, Tuple leftTuple, InternalFactHandle handle,
+    protected abstract Runnable accumulate(ResultContainer_ context, BaseTuple leftTuple, FactHandle handle,
             Declaration[] innerDeclarations);
 
-    protected abstract void initialize(Tuple leftTuple, Declaration[] innerDeclarations);
+    protected abstract void initialize(BaseTuple leftTuple, Declaration[] innerDeclarations);
 
     @Override
     public final boolean supportsReverse() {
@@ -81,16 +81,16 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
     }
 
     @Override
-    public final boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple,
-            InternalFactHandle handle, Object value, Declaration[] declarations, Declaration[] innerDeclarations,
-            ReteEvaluator reteEvaluator) {
+    public final boolean tryReverse(Object workingMemoryContext, Object context, BaseTuple leftTuple,
+            FactHandle handle, Object value, Declaration[] declarations, Declaration[] innerDeclarations,
+            ValueResolver reteEvaluator) {
         ((Runnable) value).run();
         return true;
     }
 
     @Override
-    public final Result_ getResult(Object workingMemoryContext, Object context, Tuple leftTuple,
-            Declaration[] declarations, ReteEvaluator reteEvaluator) {
+    public final Result_ getResult(Object workingMemoryContext, Object context, BaseTuple leftTuple,
+            Declaration[] declarations, ValueResolver reteEvaluator) {
         return finisher.apply((ResultContainer_) context);
     }
 }

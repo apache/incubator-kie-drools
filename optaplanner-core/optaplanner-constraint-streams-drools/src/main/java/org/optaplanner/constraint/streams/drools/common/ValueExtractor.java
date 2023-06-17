@@ -4,19 +4,19 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.Declaration;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
 
-final class ValueExtractor<X> implements Function<Tuple, X> {
+final class ValueExtractor<X> implements Function<BaseTuple, X> {
 
-    private static final UnaryOperator<Tuple> TUPLE_EXTRACTOR_OFFSET_1 = Tuple::getParent;
-    private static final UnaryOperator<Tuple> TUPLE_EXTRACTOR_OFFSET_2 = tuple -> tuple.getParent()
+    private static final UnaryOperator<BaseTuple> TUPLE_EXTRACTOR_OFFSET_1 = BaseTuple::getParent;
+    private static final UnaryOperator<BaseTuple> TUPLE_EXTRACTOR_OFFSET_2 = tuple -> tuple.getParent()
             .getParent();
-    private static final UnaryOperator<Tuple> TUPLE_EXTRACTOR_OFFSET_3 = tuple -> tuple.getParent()
+    private static final UnaryOperator<BaseTuple> TUPLE_EXTRACTOR_OFFSET_3 = tuple -> tuple.getParent()
             .getParent()
             .getParent();
 
-    static UnaryOperator<Tuple> getTupleExtractor(Declaration declaration, Tuple leftTuple) {
+    static UnaryOperator<BaseTuple> getTupleExtractor(Declaration declaration, BaseTuple leftTuple) {
         int offset = 0;
         while (leftTuple.getIndex() != declaration.getTupleIndex()) {
             leftTuple = leftTuple.getParent();
@@ -37,16 +37,16 @@ final class ValueExtractor<X> implements Function<Tuple, X> {
     }
 
     private final Declaration declaration;
-    private final UnaryOperator<Tuple> tupleExtractor;
+    private final UnaryOperator<BaseTuple> tupleExtractor;
 
-    public ValueExtractor(Declaration declaration, Tuple leftTuple) {
+    public ValueExtractor(Declaration declaration, BaseTuple leftTuple) {
         this.declaration = Objects.requireNonNull(declaration);
         this.tupleExtractor = getTupleExtractor(declaration, leftTuple);
     }
 
     @Override
-    public X apply(Tuple tuple) {
-        Tuple extractedTuple = tupleExtractor == null ? tuple : tupleExtractor.apply(tuple);
+    public X apply(BaseTuple tuple) {
+        BaseTuple extractedTuple = tupleExtractor == null ? tuple : tupleExtractor.apply(tuple);
         return (X) declaration.getValue(null, extractedTuple.getFactHandle().getObject());
     }
 }

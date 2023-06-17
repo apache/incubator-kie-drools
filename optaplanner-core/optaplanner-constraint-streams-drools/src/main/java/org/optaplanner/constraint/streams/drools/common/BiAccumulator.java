@@ -3,10 +3,10 @@ package org.optaplanner.constraint.streams.drools.common;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.Declaration;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
 import org.drools.model.Variable;
+import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
@@ -16,8 +16,8 @@ final class BiAccumulator<A, B, ResultContainer_, Result_> extends AbstractAccum
     private final String varB;
     private final TriFunction<ResultContainer_, A, B, Runnable> accumulator;
 
-    private Function<Tuple, A> valueExtractorA;
-    private Function<Tuple, B> valueExtractorB;
+    private Function<BaseTuple, A> valueExtractorA;
+    private Function<BaseTuple, B> valueExtractorB;
 
     public BiAccumulator(Variable<A> varA, Variable<B> varB,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
@@ -28,7 +28,7 @@ final class BiAccumulator<A, B, ResultContainer_, Result_> extends AbstractAccum
     }
 
     @Override
-    protected Runnable accumulate(ResultContainer_ context, Tuple leftTuple, InternalFactHandle handle,
+    protected Runnable accumulate(ResultContainer_ context, BaseTuple leftTuple, FactHandle handle,
             Declaration[] innerDeclarations) {
         A a = valueExtractorA.apply(leftTuple);
         B b = valueExtractorB.apply(leftTuple);
@@ -36,7 +36,7 @@ final class BiAccumulator<A, B, ResultContainer_, Result_> extends AbstractAccum
     }
 
     @Override
-    protected void initialize(Tuple leftTuple, Declaration[] innerDeclarations) {
+    protected void initialize(BaseTuple leftTuple, Declaration[] innerDeclarations) {
         for (Declaration declaration : innerDeclarations) {
             if (declaration.getBindingName().equals(varA)) {
                 valueExtractorA = getValueExtractor(declaration, leftTuple);

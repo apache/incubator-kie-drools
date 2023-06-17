@@ -3,10 +3,10 @@ package org.optaplanner.constraint.streams.drools.common;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.Declaration;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Declaration;
 import org.drools.model.Variable;
+import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
@@ -17,9 +17,9 @@ final class TriAccumulator<A, B, C, ResultContainer_, Result_> extends AbstractA
     private final String varC;
     private final QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator;
 
-    private Function<Tuple, A> valueExtractorA;
-    private Function<Tuple, B> valueExtractorB;
-    private Function<Tuple, C> valueExtractorC;
+    private Function<BaseTuple, A> valueExtractorA;
+    private Function<BaseTuple, B> valueExtractorB;
+    private Function<BaseTuple, C> valueExtractorC;
 
     public TriAccumulator(Variable<A> varA, Variable<B> varB, Variable<C> varC,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
@@ -31,7 +31,7 @@ final class TriAccumulator<A, B, C, ResultContainer_, Result_> extends AbstractA
     }
 
     @Override
-    protected Runnable accumulate(ResultContainer_ context, Tuple leftTuple, InternalFactHandle handle,
+    protected Runnable accumulate(ResultContainer_ context, BaseTuple leftTuple, FactHandle handle,
             Declaration[] innerDeclarations) {
         A a = valueExtractorA.apply(leftTuple);
         B b = valueExtractorB.apply(leftTuple);
@@ -40,7 +40,7 @@ final class TriAccumulator<A, B, C, ResultContainer_, Result_> extends AbstractA
     }
 
     @Override
-    protected void initialize(Tuple leftTuple, Declaration[] innerDeclarations) {
+    protected void initialize(BaseTuple leftTuple, Declaration[] innerDeclarations) {
         for (Declaration declaration : innerDeclarations) {
             if (declaration.getBindingName().equals(varA)) {
                 valueExtractorA = getValueExtractor(declaration, leftTuple);
