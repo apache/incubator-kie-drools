@@ -9,20 +9,27 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>jobs-service-inmemory</artifactId>
-    <name>Kogito Apps :: Jobs Service :: In-memory</name>
-    <description>Jobs Service (Timers and Async Jobs) with In-memory Persistence</description>
+    <artifactId>jobs-service-postgresql-common</artifactId>
+    <name>Kogito Apps :: Jobs Service :: PostgreSQL</name>
+    <description>Jobs Service (Timers and Async Jobs) PostgreSQL Common</description>
 
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>jobs-service-postgresql-common</artifactId>
+            <artifactId>jobs-service-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkiverse.embedded.postgresql</groupId>
-            <artifactId>quarkus-embedded-postgresql</artifactId>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-reactive-pg-client</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-flyway</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>jobs-service-common</artifactId>
@@ -75,24 +82,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-maven-plugin</artifactId>
-                <version>${version.io.quarkus}</version>
-                <configuration>
-                    <skipOriginalJarRename>true</skipOriginalJarRename>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>

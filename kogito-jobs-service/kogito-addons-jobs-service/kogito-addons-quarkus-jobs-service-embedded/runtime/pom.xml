@@ -28,9 +28,14 @@
       <groupId>io.quarkus.http</groupId>
       <artifactId>quarkus-http-core</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>io.quarkiverse.embedded.postgresql</groupId>
+      <artifactId>quarkus-embedded-postgresql</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jobs-service-inmemory</artifactId>
+      <artifactId>jobs-service-postgresql-common</artifactId>
       <exclusions>
         <!-- excluding resteasy-reactive since kogito runtimes uses the classic -->
         <exclusion>

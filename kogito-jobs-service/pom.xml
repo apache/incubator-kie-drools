@@ -18,6 +18,7 @@
     <module>jobs-service-internal-api</module>
     <module>jobs-recipients</module>
     <module>jobs-service-common</module>
+    <module>jobs-service-postgresql-common</module>
     <module>jobs-service-postgresql</module>
     <module>jobs-service-inmemory</module>
     <module>kogito-addons-jobs-service</module>
@@ -43,6 +44,11 @@
      <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>jobs-service-internal-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>jobs-service-postgresql-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
