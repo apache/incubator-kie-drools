@@ -23,8 +23,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.kie.kogito.integrationtests.springboot.utils.DataIndexWireMockSpringBootTestResource;
-import org.kie.kogito.test.utils.CustomSimilarXMLMatcher;
+import org.kie.kogito.test.utils.CustomSVGMatcher;
+
 import io.restassured.http.ContentType;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -63,7 +65,7 @@ public class ProcessSvgAddonTest extends BaseRestTest {
                 .get("/svg/processes/{processId}", "approvals")
                 .then()
                 .statusCode(200)
-                .body(CustomSimilarXMLMatcher.isSimilarTo(readFileContent("META-INF/processSVG/approvals.svg")));
+                .body(CustomSVGMatcher.isSimilarTo(readFileContent("META-INF/processSVG/approvals.svg")));
 
         String pId = given()
                 .contentType(ContentType.JSON)
@@ -77,7 +79,7 @@ public class ProcessSvgAddonTest extends BaseRestTest {
                 .get("/svg/processes/{processId}/instances/{processInstanceId}", "approvals", pId)
                 .then()
                 .statusCode(200)
-                .body(CustomSimilarXMLMatcher.isSimilarTo(readFileContent("META-INF/processSVG/approvals-expected.svg")));
+                .body(CustomSVGMatcher.isSimilarTo(readFileContent("META-INF/processSVG/approvals-expected.svg")));
 
         given()
                 .contentType(ContentType.JSON)
@@ -90,6 +92,6 @@ public class ProcessSvgAddonTest extends BaseRestTest {
                 .get("/svg/processes/{processId}/instances/{processInstanceId}", "approvals", pId)
                 .then()
                 .statusCode(200)
-                .body(CustomSimilarXMLMatcher.isSimilarTo(readFileContent("META-INF/processSVG/approvals-expected.svg")));
+                .body(CustomSVGMatcher.isSimilarTo(readFileContent("META-INF/processSVG/approvals-expected.svg")));
     }
 }
