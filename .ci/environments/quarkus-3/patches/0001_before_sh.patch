@@ -3660,10 +3660,10 @@ index 354b12025..f79d2aba6 100644
  
  import org.bson.Document;
  import org.eclipse.microprofile.config.inject.ConfigProperty;
-diff --git a/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java b/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java
+diff --git a/jobs-service/jobs-service-postgresql-common/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java b/jobs-service/jobs-service-postgresql-common/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java
 index a042969d4..9a3f7e94b 100644
---- a/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java
-+++ b/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java
+--- a/jobs-service/jobs-service-postgresql-common/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java
++++ b/jobs-service/jobs-service-postgresql-common/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepository.java
 @@ -24,8 +24,8 @@ import java.util.concurrent.CompletionStage;
  import java.util.stream.Collectors;
  import java.util.stream.Stream;
@@ -3675,10 +3675,10 @@ index a042969d4..9a3f7e94b 100644
  
  import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
  import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-diff --git a/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java b/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java
+diff --git a/jobs-service/jobs-service-postgresql-common/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java b/jobs-service/jobs-service-postgresql-common/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java
 index 105b644d2..2e25d4696 100644
---- a/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java
-+++ b/jobs-service/jobs-service-postgresql/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java
+--- a/jobs-service/jobs-service-postgresql-common/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java
++++ b/jobs-service/jobs-service-postgresql-common/src/main/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepository.java
 @@ -20,8 +20,8 @@ import java.util.function.Function;
  import java.util.stream.Collectors;
  import java.util.stream.Stream;
@@ -3690,10 +3690,10 @@ index 105b644d2..2e25d4696 100644
  
  import org.kie.kogito.jobs.service.model.JobServiceManagementInfo;
  import org.kie.kogito.jobs.service.repository.JobServiceManagementRepository;
-diff --git a/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java b/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
+diff --git a/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java b/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
 index d6ea60277..29de2e09f 100644
---- a/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
-+++ b/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
+--- a/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
++++ b/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
 @@ -16,8 +16,8 @@
  
  package org.kie.kogito.jobs.service.messaging;
@@ -3705,10 +3705,10 @@ index d6ea60277..29de2e09f 100644
  
  import static org.kie.kogito.jobs.service.messaging.BaseCallbackResource.CALLBACK_RESOURCE_PATH;
  
-diff --git a/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepositoryTest.java b/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepositoryTest.java
+diff --git a/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepositoryTest.java b/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepositoryTest.java
 index 2d7674c3c..95a237d44 100644
---- a/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepositoryTest.java
-+++ b/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepositoryTest.java
+--- a/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepositoryTest.java
++++ b/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepositoryTest.java
 @@ -18,7 +18,7 @@ package org.kie.kogito.jobs.service.repository.postgresql;
  
  import java.time.Duration;
@@ -3718,10 +3718,10 @@ index 2d7674c3c..95a237d44 100644
  
  import org.junit.jupiter.api.BeforeEach;
  import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
-diff --git a/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepositoryTest.java b/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepositoryTest.java
+diff --git a/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepositoryTest.java b/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepositoryTest.java
 index 085655d6d..5f461add9 100644
---- a/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepositoryTest.java
-+++ b/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepositoryTest.java
+--- a/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepositoryTest.java
++++ b/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobServiceManagementRepositoryTest.java
 @@ -18,7 +18,7 @@ package org.kie.kogito.jobs.service.repository.postgresql;
  import java.time.OffsetDateTime;
  import java.util.concurrent.atomic.AtomicReference;
