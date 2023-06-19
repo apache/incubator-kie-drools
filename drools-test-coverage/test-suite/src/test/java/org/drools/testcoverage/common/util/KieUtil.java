@@ -18,6 +18,7 @@ package org.drools.testcoverage.common.util;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +26,13 @@ import java.util.UUID;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.BaseNode;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.ObjectSinkNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.Sink;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -335,6 +341,32 @@ public final class KieUtil {
             }
         }
         return null;
+    }
+
+    // This method returns the first JoinNode found which meets the factClass
+    public static JoinNode getJoinNode(final KieBase kbase, final Class<?> factClass) {
+        Collection<EntryPointNode> entryPointNodes = ((KnowledgeBaseImpl) kbase).getRete().getEntryPointNodes().values();
+        for (EntryPointNode entryPointNode : entryPointNodes) {
+            JoinNode joinNode = findNode(entryPointNode, JoinNode.class);
+            if (joinNode.getObjectTypeNode().getObjectType().getClassType().equals(factClass)) {
+                return joinNode;
+            }
+        }
+        return null;
+    }
+
+    private static <T> T findNode(BaseNode node, Class<T> nodeClass) {
+        if (node.getClass().equals(nodeClass)) {
+            return (T)node;
+        } else {
+            Sink[] sinks = node.getSinks();
+            for (Sink sink : sinks) {
+                if (sink instanceof BaseNode) {
+                    return findNode((BaseNode)sink, nodeClass);
+                }
+            }
+            return null;
+        }
     }
 
     private KieUtil() {
