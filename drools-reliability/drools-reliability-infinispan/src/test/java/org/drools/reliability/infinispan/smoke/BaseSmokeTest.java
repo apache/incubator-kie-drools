@@ -43,7 +43,7 @@ public class BaseSmokeTest extends ReliabilityTestBasics {
     void insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-		insertString("M");
+		insert("M");
 		insertMatchingPerson("Matching Person One", 37);
 
         //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
@@ -55,7 +55,7 @@ public class BaseSmokeTest extends ReliabilityTestBasics {
 		insertNonMatchingPerson("Toshiya", 35);
         insertMatchingPerson("Matching Person Two", 40);
 
-		session.fireAllRules();
+		fireAllRules();
 
 		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
     }

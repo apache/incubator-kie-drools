@@ -15,14 +15,14 @@
 
 package org.drools.reliability.infinispan;
 
-import java.util.Optional;
-
 import org.drools.reliability.core.StorageManagerFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.test.domain.Person;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.core.StorageManagerFactory.SESSION_STORAGE_PREFIX;
@@ -54,7 +54,7 @@ class CachePersistenceTest extends ReliabilityTestBasics {
 
         restoreSession(EMPTY_RULE, strategy); // restored but no objects in the cache
 
-        Optional<Person> toshiya = getPersonByName(session, "Toshiya");
+        Optional<Person> toshiya = getPersonByName("Toshiya");
         assertThat(toshiya).isEmpty(); // So cannot recover the fact
     }
 
@@ -63,12 +63,13 @@ class CachePersistenceTest extends ReliabilityTestBasics {
     void ksessionDispose_shouldRemoveCache(PersistedSessionOption.PersistenceStrategy strategy){
 
         createSession(EMPTY_RULE, strategy); // sessionId = 0. This creates session_0_epDEFAULT and session_0_globals
+        long sessionId = getSessionIdentifier();
 
         insertNonMatchingPerson("Toshiya", 10);
 
         disposeSession(); // This should clean up session's cache
 
-        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames()).allMatch(name -> !name.startsWith(SESSION_STORAGE_PREFIX + savedSessionId));
+        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames()).allMatch(name -> !name.startsWith(SESSION_STORAGE_PREFIX + sessionId));
     }
 
     @ParameterizedTest
@@ -82,14 +83,14 @@ class CachePersistenceTest extends ReliabilityTestBasics {
 
         createSession(EMPTY_RULE, strategy); // new session. If sessionId = 0, it will potentially reuse the orphaned cache
 
-        Optional<Person> toshiya = getPersonByName(session, "Toshiya");
+        Optional<Person> toshiya = getPersonByName("Toshiya");
         assertThat(toshiya).isEmpty(); // new session doesn't trigger re-propagation
 
         failover();
 
         restoreSession(EMPTY_RULE, strategy); // restoreSession triggers re-propagation
 
-        toshiya = getPersonByName(session, "Toshiya");
+        toshiya = getPersonByName("Toshiya");
         assertThat(toshiya).isEmpty(); // should not reuse the orphaned cache
     }
 
@@ -97,12 +98,12 @@ class CachePersistenceTest extends ReliabilityTestBasics {
     @MethodSource("strategyProviderStoresOnly")
     void reliableSessionCounter_shouldNotHaveTheSameIdAsPreviousKsession(PersistedSessionOption.PersistenceStrategy strategy) {
         createSession(EMPTY_RULE, strategy); // new session. sessionId = 0
-        long firstSessionId = session.getIdentifier();
+        long firstSessionId = getSessionIdentifier();
 
         failover();
 
         createSession(EMPTY_RULE, strategy); // new session. sessionId = 1
-        long secondSessionId = session.getIdentifier();
+        long secondSessionId = getSessionIdentifier();
 
         assertThat(secondSessionId).isNotEqualTo(firstSessionId); // sessionId should not be the same
     }

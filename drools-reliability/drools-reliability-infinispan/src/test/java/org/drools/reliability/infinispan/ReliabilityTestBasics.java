@@ -37,12 +37,14 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.KieSessionOption;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.test.domain.Person;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -57,10 +59,10 @@ public abstract class ReliabilityTestBasics {
     private static final Logger LOG = LoggerFactory.getLogger(ReliabilityTestBasics.class);
 
     private InfinispanContainer container;
-    protected long savedSessionId;
-    protected List<Long> savedSessionIds;
-    protected List<KieSession> sessions_m;
-    protected KieSession session;
+
+    protected final List<KieSession> sessions = new ArrayList<>();
+
+    private long persistedSessionId = -1;
 
     protected PersistedSessionOption.SafepointStrategy safepointStrategy;
 
@@ -124,13 +126,9 @@ public abstract class ReliabilityTestBasics {
 
     public void failover() {
         if (safepointStrategy == PersistedSessionOption.SafepointStrategy.EXPLICIT) {
-            if (this.sessions_m!=null){
-                this.sessions_m.forEach(session -> {
-                    ((ReliableKieSession) session).safepoint();
-                });
-                this.sessions_m.clear();
-            }else {((ReliableKieSession) session).safepoint();}
+            this.sessions.stream().map(ReliableKieSession.class::cast).forEach(ReliableKieSession::safepoint);
         }
+        sessions.clear();
 
         if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
             // fail-over means restarting Drools instance. Assuming remote infinispan keeps alive
@@ -145,35 +143,75 @@ public abstract class ReliabilityTestBasics {
         ReliableRuntimeComponentFactoryImpl.refreshCounterUsingStorage();
     }
 
-    protected FactHandle insertString(String str) {
-        return session.insert(str);
+    protected FactHandle insert(Object obj) {
+        return insert(sessions.get(0), obj);
     }
 
-    protected FactHandle insertInteger(Integer number) {
-        return session.insert(number);
+    protected FactHandle insert(KieSession session, Object obj) {
+        return session.insert(obj);
+    }
+
+    protected void update(FactHandle fh, Object obj) {
+        update(sessions.get(0), fh, obj);
+    }
+
+    protected void update(KieSession session, FactHandle fh, Object obj) {
+        session.update(fh, obj);
+    }
+
+    protected void delete(FactHandle fh) {
+        delete(sessions.get(0), fh);
+    }
+
+    protected void delete(KieSession session, FactHandle fh) {
+        session.delete(fh);
     }
 
     protected FactHandle insertMatchingPerson(String name, Integer age) {
+        return insertMatchingPerson(sessions.get(0), name, age);
+    }
+
+    protected FactHandle insertMatchingPerson(KieSession session, String name, Integer age) {
         return session.insert(new Person(name, age));
     }
 
-    protected void updateWithMatchingPerson(FactHandle nonMatching, Object matching){
+    protected void updateWithMatchingPerson(FactHandle nonMatching, Object matching) {
+        updateWithMatchingPerson(sessions.get(0), nonMatching, matching);
+    }
+
+    protected void updateWithMatchingPerson(KieSession session, FactHandle nonMatching, Object matching) {
         session.update(nonMatching,matching);
     }
 
-    protected  void updateWithNonMatchingPerson(FactHandle matching, Object nonMatching){
+    protected void updateWithNonMatchingPerson(FactHandle matching, Object nonMatching) {
+        updateWithNonMatchingPerson(sessions.get(0), matching, nonMatching);
+    }
+
+    protected void updateWithNonMatchingPerson(KieSession session, FactHandle matching, Object nonMatching) {
         session.update(matching, nonMatching);
     }
 
     protected FactHandle insertNonMatchingPerson(String name, Integer age) {
+        return insertNonMatchingPerson(sessions.get(0), name, age);
+    }
+
+    protected FactHandle insertNonMatchingPerson(KieSession session, String name, Integer age) {
         return session.insert(new Person(name, age));
     }
 
     protected List<Object> getResults() {
+        return getResults(sessions.get(0));
+    }
+
+    protected List<Object> getResults(KieSession session) {
         return (List<Object>) session.getGlobal("results");
     }
 
     protected void clearResults() {
+        clearResults(sessions.get(0));
+    }
+
+    protected void clearResults(KieSession session) {
         ((List<Object>) session.getGlobal("results")).clear();
     }
 
@@ -182,17 +220,7 @@ public abstract class ReliabilityTestBasics {
     }
 
     protected KieSession createSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
-        getKieSession(drl, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy) : null, options);
-        savedSessionId = session.getIdentifier();
-        return session;
-    }
-
-    protected KieSession createSession_m(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
-        KieSession newSession = getKieSession_m(drl, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy) : null, options);
-        if (this.sessions_m==null){this.sessions_m=new ArrayList<>();}
-        this.sessions_m.add(newSession);
-
-        return newSession;
+        return getKieSession(drl, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy) : null, options);
     }
 
     protected KieSession restoreSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, Option... options) {
@@ -200,17 +228,55 @@ public abstract class ReliabilityTestBasics {
     }
 
     protected KieSession restoreSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
-        return getKieSession(drl, PersistedSessionOption.fromSession(savedSessionId).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
+        return restoreSession(persistedSessionId, drl, persistenceStrategy, safepointStrategy, options);
     }
 
     protected KieSession restoreSession(Long sessionId, String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
-        KieSession recoveredSession =  getKieSession_m(drl, PersistedSessionOption.fromSession(sessionId).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
-        this.sessions_m.add(recoveredSession);
-        return recoveredSession;
+        return getKieSession(drl, PersistedSessionOption.fromSession(sessionId).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
+    }
+
+    protected int fireAllRules() {
+        return fireAllRules(sessions.get(0));
+    }
+
+    protected int fireAllRules(KieSession session) {
+        return session.fireAllRules();
     }
 
     protected void disposeSession() {
+        disposeSession(sessions.get(0));
+    }
+
+    protected void disposeSession(KieSession session) {
         session.dispose();
+    }
+
+    protected SessionPseudoClock getSessionClock() {
+        return getSessionClock(sessions.get(0));
+    }
+
+    protected SessionPseudoClock getSessionClock(KieSession session) {
+        return session.getSessionClock();
+    }
+
+    protected Collection<FactHandle> getFactHandles() {
+        return getFactHandles(sessions.get(0));
+    }
+
+    protected Collection<FactHandle> getFactHandles(KieSession session) {
+        return session.getFactHandles();
+    }
+
+    protected void safepoint() {
+        safepoint(sessions.get(0));
+    }
+
+    protected void safepoint(KieSession session) {
+        ((ReliableKieSession) session).safepoint();
+    }
+
+    protected long getSessionIdentifier() {
+        return sessions.get(0).getIdentifier();
     }
 
     protected KieSession getKieSession(String drl, PersistedSessionOption persistedSessionOption, Option... options) {
@@ -222,29 +288,18 @@ public abstract class ReliabilityTestBasics {
             safepointStrategy = persistedSessionOption.getSafepointStrategy();
         }
         Stream.of(optionsFilter.getKieSessionOption()).forEach(conf::setOption);
-        session = kbase.newKieSession(conf, null);
+        KieSession session = kbase.newKieSession(conf, null);
+        sessions.add(session);
         if (persistedSessionOption == null || persistedSessionOption.isNewSession()) {
             List<Object> results = new ArrayList<>();
             session.setGlobal("results", results);
+            persistedSessionId = session.getIdentifier();
         }
         return session;
     }
 
-    protected KieSession getKieSession_m(String drl, PersistedSessionOption persistedSessionOption, Option... options) {
-        OptionsFilter optionsFilter = new OptionsFilter(options);
-        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build(ExecutableModelProject.class, optionsFilter.getKieBaseOptions());
-        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
-        if (persistedSessionOption != null) {
-            conf.setOption(persistedSessionOption);
-            safepointStrategy = persistedSessionOption.getSafepointStrategy();
-        }
-        Stream.of(optionsFilter.getKieSessionOption()).forEach(conf::setOption);
-        KieSession session = kbase.newKieSession(conf, null);
-        if (persistedSessionOption == null || persistedSessionOption.isNewSession()) {
-            List<Object> results = new ArrayList<>();
-            session.setGlobal("results", results);
-        }
-        return session;
+    protected Optional<Person> getPersonByName(String name) {
+        return getPersonByName(sessions.get(0), name);
     }
 
     protected Optional<Person> getPersonByName(KieSession kieSession, String name) {
