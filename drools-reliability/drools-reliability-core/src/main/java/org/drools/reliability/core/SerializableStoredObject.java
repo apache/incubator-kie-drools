@@ -17,71 +17,30 @@ package org.drools.reliability.core;
 
 import java.io.Serializable;
 
-import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.rule.accessor.FactHandleFactory;
+public class SerializableStoredObject extends BaseStoredObject {
 
-public class SerializableStoredObject implements StoredObject, Serializable {
     private final Serializable object;
-    private final boolean propagated;
-    private final long timestamp;
-    private final long duration;
-    private final long handleId;
 
     public SerializableStoredObject(Object object, boolean propagated) {
         this(object, propagated, -1, -1, -1);
     }
 
     public SerializableStoredObject(Object object, boolean propagated, long timestamp, long duration, long handleId) {
-        if (object instanceof Serializable) {
-            this.object = (Serializable) object;
-        } else {
+        super(propagated, timestamp, duration, handleId);
+        if (!(object instanceof Serializable)) {
             throw new IllegalArgumentException("Object must be serializable : " + object.getClass().getCanonicalName());
         }
-        this.propagated = propagated;
-        this.timestamp = timestamp;
-        this.duration = duration;
-        this.handleId = handleId;
+        this.object = (Serializable) object;
     }
 
-    public boolean isEvent() {
-        return timestamp >= 0;
-    }
-
-    public boolean isPropagated() {
-        return propagated;
-    }
-
-    public Object getObject() {
+    @Override
+    public Serializable getObject() {
         return object;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public long getHandleId() {
-        return handleId;
-    }
-
-    public void repropagate(InternalWorkingMemoryEntryPoint ep) {
-        if (isEvent()) {
-            FactHandleFactory fhFactory = ep.getHandleFactory();
-            DefaultEventHandle eFh = fhFactory.createEventFactHandle(fhFactory.getNextId(), object, fhFactory.getNextRecency(), ep, timestamp, duration);
-            ep.insert(eFh);
-            ((ReliablePseudoClockScheduler)ep.getReteEvaluator().getTimerService()).putHandleIdAssociation(handleId, eFh);
-        } else {
-            ep.insert(object);
-        }
     }
 
     @Override
     public String toString() {
-        return "StoredObject{" +
+        return "SerializableStoredObject{" +
                 "object=" + object +
                 ", propagated=" + propagated +
                 ", timestamp=" + timestamp +
