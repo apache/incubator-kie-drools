@@ -21,9 +21,6 @@ import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddO
 
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.JniRuntimeAccessBuildItem;
-
-import jep.SharedInterpreter;
 
 class PythonAddonCapabilityProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
@@ -36,10 +33,5 @@ class PythonAddonCapabilityProcessor extends OneOfCapabilityKogitoAddOnProcessor
     @BuildStep
     FeatureBuildItem feature() {
         return new FeatureBuildItem(FEATURE);
-    }
-
-    @BuildStep
-    JniRuntimeAccessBuildItem jniRegister() {
-        return new JniRuntimeAccessBuildItem(true, true, true, true, SharedInterpreter.class);
     }
 }

@@ -1,0 +1,248 @@
+[
+  {
+    "name": "[Z"
+  },
+  {
+    "name": "[B"
+  },
+  {
+    "name": "[C"
+  },
+  {
+    "name": "[S"
+  },
+  {
+    "name": "[I"
+  },
+  {
+    "name": "[J"
+  },
+  {
+    "name": "[F"
+  },
+  {
+    "name": "[D"
+  },
+  {
+    "name": "java.util.Map$Entry"
+  },
+  {
+    "name": "java.util.Map$Entry[]"
+  },
+  {"name":"java.lang.IllegalStateException","allPublicMethods":true},
+  {"name":"java.lang.NoSuchMethodError","allPublicMethods":true,"allPublicConstructors":true, "allPublicClasses": true},
+  {"name":"java.lang.IllegalStateException[]","allPublicMethods":true},
+  {"name":"java.lang.ClassNotFoundException","allPublicMethods":true},
+  {"name":"java.lang.ClassNotFoundException[]","allPublicMethods":true},
+  {"name":"java.lang.IndexOutOfBoundsException","allPublicMethods":true},
+  {"name":"java.lang.IndexOutOfBoundsException[]","allPublicMethods":true},
+  {"name":"java.io.IOException","allPublicMethods":true},
+  {"name":"java.io.IOException[]","allPublicMethods":true},
+  {"name":"java.lang.ClassCastException","allPublicMethods":true},
+  {"name":"java.lang.ClassCastException[]","allPublicMethods":true},
+  {"name":"java.lang.IllegalArgumentException","allPublicMethods":true},
+  {"name":"java.lang.IllegalArgumentException[]","allPublicMethods":true},
+  {"name":"java.lang.ArithmeticException","allPublicMethods":true},
+  {"name":"java.lang.ArithmeticException[]","allPublicMethods":true},
+  {"name":"java.lang.OutOfMemoryError","allPublicMethods":true},
+  {"name":"java.lang.OutOfMemoryError[]","allPublicMethods":true},
+  {"name":"java.lang.AssertionError","allPublicMethods":true},
+  {"name":"java.lang.AssertionError[]","allPublicMethods":true},
+  {"name":"java.nio.FloatBuffer","allPublicMethods":true},
+  {"name":"java.nio.FloatBuffer[]","allPublicMethods":true},
+  {"name":"java.lang.ClassLoader","allPublicMethods":true},
+  {"name":"java.lang.ClassLoader[]","allPublicMethods":true},
+  {"name":"java.nio.CharBuffer","allPublicMethods":true},
+  {"name":"java.nio.CharBuffer[]","allPublicMethods":true},
+  {"name":"java.lang.Float","allPublicMethods":true, "allPublicConstructors":true, "allPublicFields":true, "allPublicClasses": true },
+  {"name":"java.lang.Float[]","allPublicMethods":true},
+  {"name":"java.nio.IntBuffer","allPublicMethods":true},
+  {"name":"java.nio.IntBuffer[]","allPublicMethods":true},
+  {"name":"java.lang.Short","allPublicMethods":true, "allPublicConstructors":true, "allPublicFields":true, "allPublicClasses": true},
+  {"name":"java.lang.Short[]","allPublicMethods":true},
+  {"name":"jep.python.PyCallable","allPublicMethods":true},
+  {"name":"jep.python.PyCallable[]","allPublicMethods":true},
+  {"name":"java.nio.ByteOrder","allPublicMethods":true},
+  {"name":"java.nio.ByteOrder[]","allPublicMethods":true},
+  {"name":"jep.python.PyObject","allPublicMethods":true, "allPublicConstructors": true},
+  {"name":"jep.python.PyObject[]","allPublicMethods":true},
+  {"name":"java.util.Map","allPublicMethods":true},
+  {"name":"java.util.Map[]","allPublicMethods":true},
+  {"name":"java.lang.reflect.Field","allPublicMethods":true},
+  {"name":"java.lang.reflect.Field[]","allPublicMethods":true},
+  {"name":"java.lang.reflect.Method","allPublicMethods":true},
+  {"name":"java.lang.reflect.Method[]","allPublicMethods":true},
+  {"name":"java.nio.ByteBuffer","allPublicMethods":true},
+  {"name":"java.nio.ByteBuffer[]","allPublicMethods":true},
+  {"name":"java.util.HashMap","allPublicMethods":true},
+  {"name":"java.util.HashMap[]","allPublicMethods":true},
+  {"name":"java.lang.reflect.Constructor","allPublicMethods":true},
+  {"name":"java.lang.reflect.Constructor[]","allPublicMethods":true},
+  {"name":"java.lang.Long","allPublicMethods":true, "allPublicConstructors":true, "allPublicFields":true, "allPublicClasses": true },
+  {"name":"java.lang.Long[]","allPublicMethods":true},
+  {"name":"java.lang.Character","allPublicMethods":true, "allPublicConstructors":true, "allPublicFields":true, "allPublicClasses": true },
+  {"name":"java.lang.Character[]","allPublicMethods":true},
+  {"name":"java.lang.AutoCloseable","allPublicMethods":true},
+  {"name":"java.lang.AutoCloseable[]","allPublicMethods":true},
+  {"name":"java.lang.Comparable","allPublicMethods":true},
+  {"name":"java.lang.Comparable[]","allPublicMethods":true},
+  {"name":"jep.JepException","allPublicMethods":true,"allPublicConstructors":true,"allPublicClasses":true, "allDeclaredConstructors": true},
+  {"name":"jep.JepException[]","allPublicMethods":true},
+  {"name":"java.lang.RuntimeException","allPublicMethods":true,"allPublicConstructors":true,"allPublicClasses":true},
+  {"name":"java.lang.Boolean","allPublicMethods":true, "allPublicConstructors":true,"allPublicClasses":true, "allDeclaredConstructors": true},
+  {"name":"java.lang.Boolean[]","allPublicMethods":true},
+  {"name":"java.util.List","allPublicMethods":true},
+  {"name":"java.util.List[]","allPublicMethods":true},
+  {"name":"java.nio.Buffer","allPublicMethods":true},
+  {"name":"java.nio.Buffer[]","allPublicMethods":true},
+  {"name":"java.lang.Throwable","allPublicMethods":true},
+  {"name":"java.lang.Throwable[]","allPublicMethods":true},
+  {"name":"jep.Proxy","allPublicMethods":true},
+  {"name":"jep.Proxy[]","allPublicMethods":true},
+  {"name":"java.nio.ShortBuffer","allPublicMethods":true},
+  {"name":"java.nio.ShortBuffer[]","allPublicMethods":true},
+  {"name":"java.lang.Class","allPublicMethods":true},
+  {"name":"java.lang.Class[]","allPublicMethods":true},
+  {"name":"java.lang.Double","allPublicMethods":true, "allPublicConstructors":true, "allPublicFields":true, "allPublicClasses": true},
+  {"name":"java.lang.Double[]","allPublicMethods":true},
+  {"name":"java.lang.Object","allPublicMethods":true},
+  {"name":"java.lang.Object[]","allPublicMethods":true},
+  {"name":"java.util.ArrayList","allPublicMethods":true},
+  {"name":"java.util.ArrayList[]","allPublicMethods":true},
+  {"name":"java.lang.Number","allPublicMethods":true},
+  {"name":"java.lang.Number[]","allPublicMethods":true},
+  {"name":"java.nio.LongBuffer","allPublicMethods":true},
+  {"name":"java.nio.LongBuffer[]","allPublicMethods":true},
+  {"name":"java.util.Collection","allPublicMethods":true},
+  {"name":"java.util.Collection[]","allPublicMethods":true},
+  {"name":"java.lang.reflect.Modifier","allPublicMethods":true},
+  {"name":"java.lang.reflect.Modifier[]","allPublicMethods":true},
+  {"name":"java.nio.DoubleBuffer","allPublicMethods":true},
+  {"name":"java.nio.DoubleBuffer[]","allPublicMethods":true},
+  {"name":"java.lang.Integer","allPublicMethods":true, "allPublicConstructors":true, "allPublicFields":true, "allPublicClasses": true },
+  {"name":"java.lang.Integer[]","allPublicMethods":true},
+  {"name":"java.lang.reflect.Member","allPublicMethods":true},
+  {"name":"java.lang.reflect.Member[]","allPublicMethods":true},
+  {"name":"java.util.Iterator","allPublicMethods":true},
+  {"name":"java.util.Iterator[]","allPublicMethods":true},
+  {"name":"java.lang.Byte","allPublicMethods":true, "allPublicConstructors":true, "allPublicFields":true, "allPublicClasses": true},
+  {"name":"java.lang.Byte[]","allPublicMethods":true},
+  {"name":"java.lang.Iterable","allPublicMethods":true},
+  {"name":"java.lang.Iterable[]","allPublicMethods":true},
+  {"name":"java.util.Collections","allPublicMethods":true},
+  {"name":"java.util.Collections[]","allPublicMethods":true},
+  {"name":"java.lang.String","allPublicMethods":true, "allPublicConstructors":true},
+  {"name":"java.lang.String[]","allPublicMethods":true},
+  {"name":"jdk.internal.loader.BootLoader","allPublicMethods":true},
+  {"name":"jdk.internal.loader.BootLoader[]","allPublicMethods":true},
+  {
+    "name": "java.lang.reflect.Proxy",
+    "allPublicMethods":true
+  },
+  {
+    "name": "java.io.Serializable"
+  },
+  {
+     "name":"java.lang.StackTraceElement[]",
+     "allDeclaredConstructors": true,
+     "allPublicConstructors": true
+  },
+  {
+     "name":"java.lang.StackTraceElement",
+     "allDeclaredConstructors": true,
+     "allPublicConstructors": true
+  },
+  {
+    "name": "java.lang.Enum"
+  },
+  {
+    "name": "java.lang.Thread"
+  },
+  {
+    "name": "java.lang.ThreadLocal"
+  },
+  {
+    "name": "java.lang.UnsupportedOperationException"
+  },
+  {
+    "name": "java.lang.Void",
+    "fields": [
+      {
+        "name": "TYPE"
+      }
+    ]
+  },
+  {
+    "name": "java.lang.annotation.Annotation"
+  },
+  {
+    "name": "java.lang.annotation.Retention"
+  },
+  {
+    "name": "java.lang.reflect.Array"
+  },
+  {
+    "name": "java.math.BigDecimal"
+  },
+  {
+    "name": "java.math.BigInteger"
+  },
+  {
+    "name": "java.sql.Timestamp"
+  },
+  {
+    "name": "java.time.Instant"
+  },
+  {
+    "name": "java.util.BitSet"
+  },
+  {
+    "name": "java.util.Calendar"
+  },
+  {
+    "name": "java.util.Date"
+  },
+  {
+    "name": "java.util.GregorianCalendar"
+  },
+  {
+    "name": "java.util.Properties",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.RandomAccess"
+  },
+  {
+    "name": "java.util.Set"
+  },
+  {
+    "name": "java.util.Set[]"
+  },
+  {
+    "name": "java.util.TimeZone"
+  },
+  {
+    "name": "java.util.regex.Matcher"
+  },
+  {
+    "name": "java.util.regex.Pattern"
+  },
+  {
+    "name": "jep.DirectNDArray"
+  },
+  {
+    "name": "jep.Interpreter"
+  },
+  {
+    "name": "jep.MainInterpreter"
+  },
+  {
+    "name": "jep.NDArray",
+    "allPublicMethods": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "jep.ClassList",
+    "allPublicMethods": true
+  }
+]
