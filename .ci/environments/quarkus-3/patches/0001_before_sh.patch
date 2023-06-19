@@ -1,5 +1,5 @@
 diff --git a/build-parent/pom.xml b/build-parent/pom.xml
-index c9a8d06633..94ed163003 100644
+index 90a524d2dd..7b9f752bb5 100644
 --- a/build-parent/pom.xml
 +++ b/build-parent/pom.xml
 @@ -40,9 +40,9 @@
@@ -252,7 +252,7 @@ index c9a8d06633..94ed163003 100644
        </dependency>
  
 diff --git a/drools-base/pom.xml b/drools-base/pom.xml
-index ea261c97e1..1663b45fc3 100644
+index af3abec92a..6cad7f0a63 100644
 --- a/drools-base/pom.xml
 +++ b/drools-base/pom.xml
 @@ -63,9 +63,10 @@
@@ -1634,7 +1634,7 @@ index 19c566794f..984f218d5f 100644
  import org.drools.core.common.DisconnectedFactHandle;
  import org.kie.api.command.ExecutableCommand;
 diff --git a/drools-compiler/pom.xml b/drools-compiler/pom.xml
-index 0747f9c0b0..7de22d7b3f 100644
+index 61a52a44ab..14674d6ba1 100644
 --- a/drools-compiler/pom.xml
 +++ b/drools-compiler/pom.xml
 @@ -108,9 +108,10 @@
@@ -1666,7 +1666,7 @@ index 1fcab7e603..a61c6ac6ef 100644
  import com.sun.codemodel.CodeWriter;
  import com.sun.codemodel.JCodeModel;
 diff --git a/drools-core/pom.xml b/drools-core/pom.xml
-index 53f3e4e3e8..e11311c77c 100644
+index 3fefe5179f..af70b6609e 100644
 --- a/drools-core/pom.xml
 +++ b/drools-core/pom.xml
 @@ -76,9 +76,10 @@
@@ -2107,7 +2107,7 @@ index b683dcef38..5e7d100d4c 100644
  import static org.junit.jupiter.api.Assertions.assertEquals;
  
 diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml
-index 61d43070ed..58406ae103 100644
+index 2414d27564..80786c6758 100644
 --- a/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml
 +++ b/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml
 @@ -83,7 +83,7 @@
@@ -2146,7 +2146,7 @@ index 624a0ce29b..66ffca1f2f 100644
  import org.assertj.core.api.InstanceOfAssertFactories;
  import org.drools.drl.quarkus.testext.deployment.GlobalsSingleton;
 diff --git a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
-index 84853c8a22..29751dabb2 100644
+index d36ecc4913..4f1800f0f7 100644
 --- a/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
 +++ b/drools-drl-quarkus-extension/example-drools-drl-quarkus-testext/pom.xml
 @@ -37,7 +37,7 @@
@@ -2204,7 +2204,7 @@ index 3a767f8f52..4943dd1dff 100644
  import java.math.BigDecimal;
  import java.math.BigInteger;
 diff --git a/drools-mvel/pom.xml b/drools-mvel/pom.xml
-index 5c932d41d9..5515764cd4 100644
+index 9321e0da22..8dc170b04e 100644
 --- a/drools-mvel/pom.xml
 +++ b/drools-mvel/pom.xml
 @@ -70,9 +70,10 @@
@@ -2236,7 +2236,7 @@ index 866fd03b54..b4fa18bf5c 100644
  import java.math.BigDecimal;
  import java.math.BigInteger;
 diff --git a/drools-persistence/drools-persistence-api/pom.xml b/drools-persistence/drools-persistence-api/pom.xml
-index d8e0d7af5b..826d30926f 100644
+index 5423ff88a8..77e4ed4d21 100644
 --- a/drools-persistence/drools-persistence-api/pom.xml
 +++ b/drools-persistence/drools-persistence-api/pom.xml
 @@ -41,9 +41,10 @@
@@ -2395,7 +2395,7 @@ index 228078eec7..267c2fca72 100644
  import org.drools.commands.impl.AbstractInterceptor;
  import org.drools.persistence.api.OrderedTransactionSynchronization;
 diff --git a/drools-persistence/drools-persistence-jpa/pom.xml b/drools-persistence/drools-persistence-jpa/pom.xml
-index a694f0fabd..5b9f3d016f 100644
+index abd4fa603c..a237ce9c8d 100644
 --- a/drools-persistence/drools-persistence-jpa/pom.xml
 +++ b/drools-persistence/drools-persistence-jpa/pom.xml
 @@ -103,9 +103,10 @@
@@ -2802,7 +2802,7 @@ index 31038d2afa..775f3f19dc 100644
  import org.drools.core.impl.EnvironmentFactory;
  import org.kie.api.runtime.Environment;
 diff --git a/drools-reliability/drools-reliability-infinispan/pom.xml b/drools-reliability/drools-reliability-infinispan/pom.xml
-index 196f21d415..b0c6f35eeb 100644
+index 418df45103..424584d494 100644
 --- a/drools-reliability/drools-reliability-infinispan/pom.xml
 +++ b/drools-reliability/drools-reliability-infinispan/pom.xml
 @@ -41,7 +41,7 @@
@@ -2852,7 +2852,7 @@ index c4902c912e..7091274b36 100644
  import java.io.IOException;
  import java.io.StringWriter;
 diff --git a/drools-test-coverage/test-integration-nomvel/pom.xml b/drools-test-coverage/test-integration-nomvel/pom.xml
-index 7d9f51e8a0..e0ebca9868 100644
+index c1af59a778..9a56503217 100644
 --- a/drools-test-coverage/test-integration-nomvel/pom.xml
 +++ b/drools-test-coverage/test-integration-nomvel/pom.xml
 @@ -102,9 +102,10 @@
@@ -2869,7 +2869,7 @@ index 7d9f51e8a0..e0ebca9868 100644
          <dependency>
              <groupId>jakarta.xml.bind</groupId>
 diff --git a/drools-traits/pom.xml b/drools-traits/pom.xml
-index baa0ea53db..ceb8129c5f 100644
+index 9c83a8cfdd..274591dc3c 100644
 --- a/drools-traits/pom.xml
 +++ b/drools-traits/pom.xml
 @@ -138,8 +138,8 @@
@@ -2925,7 +2925,7 @@ index aaf01f00a2..9d634ec94c 100644
  import org.drools.core.base.MapGlobalResolver;
  import org.drools.core.impl.EnvironmentFactory;
 diff --git a/drools-wiring/drools-wiring-dynamic/pom.xml b/drools-wiring/drools-wiring-dynamic/pom.xml
-index 447e660a2d..f12a74fe87 100755
+index 143b08a190..1931fb7c1c 100755
 --- a/drools-wiring/drools-wiring-dynamic/pom.xml
 +++ b/drools-wiring/drools-wiring-dynamic/pom.xml
 @@ -34,9 +34,10 @@
@@ -3247,7 +3247,7 @@ index 1e4a002044..0f043b9da0 100644
  import org.jboss.jandex.ClassInfo;
  import org.jboss.jandex.DotName;
 diff --git a/kie-dmn/kie-dmn-legacy-tests/pom.xml b/kie-dmn/kie-dmn-legacy-tests/pom.xml
-index e525713c19..153d661555 100644
+index a5459359a1..4e4ed537fe 100644
 --- a/kie-dmn/kie-dmn-legacy-tests/pom.xml
 +++ b/kie-dmn/kie-dmn-legacy-tests/pom.xml
 @@ -100,9 +100,10 @@
@@ -3333,7 +3333,7 @@ index 14c47f65e8..4004e43729 100644
  import org.jboss.jandex.ClassInfo;
  import org.jboss.jandex.DotName;
 diff --git a/kie-dmn/kie-dmn-openapi/pom.xml b/kie-dmn/kie-dmn-openapi/pom.xml
-index fa47437585..7d4d4bf34d 100644
+index f70e4965a7..98825c1f9b 100644
 --- a/kie-dmn/kie-dmn-openapi/pom.xml
 +++ b/kie-dmn/kie-dmn-openapi/pom.xml
 @@ -62,9 +62,10 @@
@@ -3350,7 +3350,7 @@ index fa47437585..7d4d4bf34d 100644
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
 diff --git a/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml b/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
-index f5c60e5a89..bd0ac3d416 100644
+index 42bb5c2745..f5ce13562c 100644
 --- a/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
 +++ b/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
 @@ -62,9 +62,10 @@
@@ -3558,7 +3558,7 @@ index f6c8310e3a..9b27fa3be2 100644
 -import javax.xml.bind.annotation.XmlNs;
 +import jakarta.xml.bind.annotation.XmlNs;
 diff --git a/kie-internal/pom.xml b/kie-internal/pom.xml
-index 3d950d6699..7ec2497e45 100644
+index 7e1ccf9c04..d39ffb2531 100644
 --- a/kie-internal/pom.xml
 +++ b/kie-internal/pom.xml
 @@ -76,9 +76,10 @@

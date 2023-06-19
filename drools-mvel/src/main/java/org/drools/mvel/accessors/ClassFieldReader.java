@@ -16,19 +16,19 @@
 
 package org.drools.mvel.accessors;
 
+import org.drools.base.base.AccessorKey;
+import org.drools.base.base.AccessorKeySupplier;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.base.ValueType;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.core.base.FieldNameSupplier;
+import org.drools.util.ClassUtils;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-
-import org.drools.base.base.ValueResolver;
-import org.drools.base.base.AccessorKey;
-import org.drools.base.base.AccessorKeySupplier;
-import org.drools.core.base.FieldNameSupplier;
-import org.drools.base.base.ValueType;
-import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.util.ClassUtils;
 
 import static org.drools.util.StringUtils.lcFirstForBean;
 
@@ -212,10 +212,6 @@ public class ClassFieldReader implements Externalizable, ReadAccessor, FieldName
 
     public Object getValue(Object object) {
         return reader.getValue( object );
-    }
-
-    public boolean isNullValue(Object object) {
-        return reader.isNullValue( object );
     }
 
     public AccessorKey getAccessorKey() {

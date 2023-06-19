@@ -15,18 +15,9 @@
 
 package org.drools.core.util.index;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-
 import org.drools.base.base.ValueResolver;
-import org.drools.base.util.index.ConstraintTypeOperator;
-import org.drools.base.util.index.IndexUtil;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.base.base.ValueType;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.core.reteoo.BetaMemory;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
@@ -36,15 +27,24 @@ import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.base.rule.constraint.Constraint;
+import org.drools.base.util.FieldIndex;
+import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.base.util.index.IndexUtil;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.util.AbstractHashTable.DoubleCompositeIndex;
 import org.drools.core.util.AbstractHashTable.Index;
-import org.drools.base.util.FieldIndex;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.CompositeConfiguration;
 import org.kie.internal.conf.IndexPrecedenceOption;
 import org.kie.internal.utils.ChainedProperties;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -255,11 +255,6 @@ public class IndexUtilTest {
         @Override
         public Object getValue(Object object) {
             return null;
-        }
-
-        @Override
-        public boolean isNullValue(Object object) {
-            return false;
         }
 
         @Override
