@@ -57,6 +57,7 @@ public class DataIndexInMemoryContainer extends GenericContainer<DataIndexInMemo
         withEnv("KOGITO_DATAINDEX_GATEWAY_URL", "host.testcontainers.internal");
         withEnv("KOGITO_DATA_INDEX_VERTX_GRAPHQL_UI_PATH", "/q/graphql-ui");
         withEnv("KOGITO_DATA_INDEX_QUARKUS_PROFILE", "http-events-support");
+        withExposedPorts(PORT);
         waitingFor(Wait.forHttp("/q/health/ready").forStatusCode(200));
     }
 
@@ -71,8 +72,6 @@ public class DataIndexInMemoryContainer extends GenericContainer<DataIndexInMemo
 
         if (fixedExposedPort > 0) {
             addFixedExposedPort(fixedExposedPort, PORT);
-        } else {
-            addExposedPorts(PORT);
         }
     }
 
