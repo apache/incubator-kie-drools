@@ -49,12 +49,12 @@ class ReliabilityUpdateInDrlTest extends ReliabilityTestBasics {
 
         createSession(RULE_UPDATE, strategy);
 
-        insertString("M");
+        insert("M");
         insertMatchingPerson("Mike",22);
         insertNonMatchingPerson("Eleven", 17);
-        insertInteger(17); // person with age=17 will change to 18 (17+1)
+        insert(17); // person with age=17 will change to 18 (17+1)
 
-        assertThat(session.fireAllRules()).isEqualTo(2); // person with name that starts with M and has age>17 will be added to the results list
+        assertThat(fireAllRules()).isEqualTo(2); // person with name that starts with M and has age>17 will be added to the results list
         assertThat(getResults()).containsExactlyInAnyOrder(22);
 
         failover();
@@ -62,9 +62,9 @@ class ReliabilityUpdateInDrlTest extends ReliabilityTestBasics {
         restoreSession(RULE_UPDATE, strategy);
         clearResults();
 
-        insertString("E"); // NonMatchingPerson will match rule X
+        insert("E"); // NonMatchingPerson will match rule X
 
-        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder(18);
 
         failover();
@@ -72,7 +72,7 @@ class ReliabilityUpdateInDrlTest extends ReliabilityTestBasics {
         restoreSession(RULE_UPDATE, strategy);
         clearResults();
 
-        assertThat(session.fireAllRules()).isZero();
+        assertThat(fireAllRules()).isZero();
         assertThat(getResults()).isEmpty();
     }
 

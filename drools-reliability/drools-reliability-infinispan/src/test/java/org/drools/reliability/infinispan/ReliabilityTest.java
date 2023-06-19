@@ -15,7 +15,6 @@
 
 package org.drools.reliability.infinispan;
 
-import org.drools.reliability.core.ReliableKieSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,8 +23,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.test.domain.Person;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,13 +43,13 @@ class ReliabilityTest extends ReliabilityTestBasics {
     void createAndUseOfNonReliableSession_shouldWorkNormally() {
         createSession(BASIC_RULE, null);
 
-        insertString("M");
+        insert("M");
         insertMatchingPerson("Matching Person One", 37);
 
         insertNonMatchingPerson("Toshiya", 35);
         insertMatchingPerson("Matching Person Two", 40);
 
-        session.fireAllRules();
+        fireAllRules();
 
         assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
     }
@@ -62,7 +59,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
     void insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-		insertString("M");
+        insert("M");
 		insertMatchingPerson("Matching Person One", 37);
 
         //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
@@ -74,7 +71,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
 		insertNonMatchingPerson("Toshiya", 35);
         insertMatchingPerson("Matching Person Two", 40);
 
-		session.fireAllRules();
+		fireAllRules();
 
 		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
     }
@@ -86,18 +83,18 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-		insertString("M");
+        insert("M");
 		insertMatchingPerson("Matching Person One", 37);
 
         if (safepointStrategy == PersistedSessionOption.SafepointStrategy.EXPLICIT) {
-            ((ReliableKieSession) session).safepoint();
+            safepoint();
         }
         restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
 		insertNonMatchingPerson("Toshiya", 41);
 		insertMatchingPerson("Matching Person Two", 40);
 
-        session.fireAllRules();
+        fireAllRules();
 
 		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
     }
@@ -109,10 +106,10 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-		insertString("M");
+        insert("M");
 		insertMatchingPerson("Matching Person One", 37);
 
-		session.fireAllRules();
+		fireAllRules();
 
         insertMatchingPerson("Matching Person Two", 40);
 
@@ -124,7 +121,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
         insertNonMatchingPerson("Toshiya", 35);
         insertMatchingPerson("Matching Person Three", 41);
 
-        session.fireAllRules();
+        fireAllRules();
 
         assertThat(getResults()).containsExactlyInAnyOrder("Matching Person Two", "Matching Person Three");
     }
@@ -134,10 +131,10 @@ class ReliabilityTest extends ReliabilityTestBasics {
     void insertFireFailoverInsertFire_shouldNotRepeatFiredMatch(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-		insertString("M");
+        insert("M");
 		insertMatchingPerson("Matching Person One", 37);
 
-		session.fireAllRules();
+		fireAllRules();
 
         failover();
 
@@ -146,7 +143,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
         insertNonMatchingPerson("Toshiya", 35);
 		insertMatchingPerson("Matching Person Two", 40);
 
-		session.fireAllRules();
+		fireAllRules();
 
 		assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
     }
@@ -157,31 +154,31 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-        insertString("M");
+        insert("M");
         Person p1 = new Person("Mario", 49);
-        FactHandle fh1 = session.insert(p1);
+        FactHandle fh1 = insert(p1);
         Person p2 = new Person("Toshiya", 45);
-        FactHandle fh2 = session.insert(p2);
+        FactHandle fh2 = insert(p2);
 
-        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder("Mario");
 
         p1.setName("SuperMario");
-        session.update(fh1, p1);
+        update(fh1, p1);
         p2.setName("MegaToshiya");
-        session.update(fh2, p2);
+        update(fh2, p2);
 
         failover();
         restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder("Mario", "MegaToshiya");
 
         failover();
         restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
         clearResults();
 
-        assertThat(session.fireAllRules()).isZero();
+        assertThat(fireAllRules()).isZero();
         assertThat(getResults()).isEmpty();
     }
 
@@ -191,14 +188,14 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-        FactHandle fhString = insertString("M");
+        FactHandle fhString = insert("M");
         insertMatchingPerson("Matching Person One",37);
         insertNonMatchingPerson("Toshiya",35);
 
-        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder("Matching Person One");
 
-        session.delete(fhString);
+        delete(fhString);
 
         failover();
         restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
@@ -206,15 +203,15 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         insertMatchingPerson("Matching Person Two",40);
 
-        assertThat(session.fireAllRules()).isZero();
+        assertThat(fireAllRules()).isZero();
         assertThat(getResults()).isEmpty();
 
-        insertString("T");
+        insert("T");
 
         failover();
         restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder("Toshiya");
     }
 
@@ -224,19 +221,19 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-        insertString("M");
+        insert("M");
         insertMatchingPerson("Mark", 37);
         FactHandle fhNicole = insertNonMatchingPerson("Nicole", 32);
 
-        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules()).isEqualTo(1);
 
         updateWithMatchingPerson(fhNicole,new Person("Mary", 32));
 
         failover();
 
-        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session = restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules()).isEqualTo(1);
 
         failover();
 
@@ -248,7 +245,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
     void insertFailover_propListShouldNotBeEmpty(PersistedSessionOption.PersistenceStrategy strategy){
         createSession(BASIC_RULE, strategy);
 
-        insertString("M");
+        insert("M");
         insertMatchingPerson("Maria", 30);
 
         failover();
@@ -256,7 +253,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
         restoreSession(BASIC_RULE, strategy);
 
 
-        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules()).isEqualTo(1);
     }
 
     @ParameterizedTest
@@ -264,16 +261,16 @@ class ReliabilityTest extends ReliabilityTestBasics {
     void insertFireFailover_shouldNotRepeatFiredMatch(PersistedSessionOption.PersistenceStrategy strategy){
         createSession(BASIC_RULE, strategy);
 
-        insertString("M");
+        insert("M");
         insertMatchingPerson("Maria", 30);
 
-        session.fireAllRules();
+        fireAllRules();
 
         failover();
 
         restoreSession(BASIC_RULE, strategy);
 
-        assertThat(session.fireAllRules()).isZero();
+        assertThat(fireAllRules()).isZero();
     }
 
     @ParameterizedTest
@@ -281,7 +278,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
     void insertUpdateFailover_shouldNotFiredMatch(PersistedSessionOption.PersistenceStrategy strategy){
         createSession(BASIC_RULE, strategy);
 
-        insertString("M");
+        insert("M");
         FactHandle fhMaria = insertMatchingPerson("Maria", 30);
 
         updateWithNonMatchingPerson(fhMaria, new Person("Nicole", 32));
@@ -290,15 +287,15 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         restoreSession(BASIC_RULE, strategy);
 
-        assertThat(session.fireAllRules()).isZero();
+        assertThat(fireAllRules()).isZero();
     }
 
     @ParameterizedTest
     @MethodSource("strategyProviderFull")
-    void insertNonMatching_Failover_UpdateWithMatching_ShouldFiredMatch(PersistedSessionOption.PersistenceStrategy strategy){
+    void insertNonMatching_Failover_UpdateWithMatching_ShouldFiredMatch(PersistedSessionOption.PersistenceStrategy strategy) {
         createSession(BASIC_RULE, strategy);
 
-        insertString("N");
+        insert("N");
         FactHandle fhMaria = insertMatchingPerson("Maria", 30);
 
         failover();
@@ -307,23 +304,23 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         updateWithMatchingPerson(fhMaria, new Person("Nicole",32));
 
-        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules()).isEqualTo(1);
     }
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FAILS in STORES_ONLY, EXPLICIT
     void multipleKieSessions_BasicTest(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
-        KieSession session1 = createSession_m(BASIC_RULE, persistenceStrategy, safepointStrategy);
-        KieSession session2 = createSession_m(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
 
-        session1.insert("M");
-        session2.insert("N");
+        insert(session1, "M");
+        insert(session2, "N");
 
-        session1.insert(new Person("Mike-session1",27)); // insert matching person
-        session2.insert(new Person("Mary-session2",34)); // insert non matching person
+        insert(session1, new Person("Mike-session1",27)); // insert matching person
+        insert(session2, new Person("Mary-session2",34)); // insert non matching person
 
-        assertThat(session1.fireAllRules()).isEqualTo(1);
-        assertThat(session2.fireAllRules()).isEqualTo(0);
+        assertThat(fireAllRules(session1)).isEqualTo(1);
+        assertThat(fireAllRules(session2)).isEqualTo(0);
 
         failover();
 
@@ -331,14 +328,14 @@ class ReliabilityTest extends ReliabilityTestBasics {
         session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
 
         // clear results
-        ((List<Object>) session1.getGlobal("results")).clear();
-        ((List<Object>) session2.getGlobal("results")).clear();
+        clearResults(session1);
+        clearResults(session2);
 
-        session1.insert(new Person("Michael-session1",42)); // insert matching person
-        session2.insert(new Person("Nancy-session2",25)); // insert matching person
+        insert(session1, new Person("Michael-session1",42)); // insert matching person
+        insert(session2, new Person("Nancy-session2",25)); // insert matching person
 
-        assertThat(session1.fireAllRules()).isEqualTo(1);
-        assertThat(session2.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules(session1)).isEqualTo(1);
+        assertThat(fireAllRules(session2)).isEqualTo(1);
     }
 
 }

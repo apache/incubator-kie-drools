@@ -49,33 +49,33 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
 
         createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
 
-        SessionPseudoClock clock = session.getSessionClock();
+        SessionPseudoClock clock = getSessionClock();
 
-        session.insert( new StockTick( "DROO" ) );
+        insert( new StockTick( "DROO" ) );
         clock.advanceTime( 6, TimeUnit.SECONDS );
-        session.insert( new StockTick( "ACME" ) );
+        insert( new StockTick( "ACME" ) );
 
         //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
         //-- ksession and kbase are lost. CacheManager is recreated. Client knows only "id"
         failover();
         restoreSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
-        clock = session.getSessionClock();
+        clock = getSessionClock();
 
-        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder("fired");
         clearResults();
 
         clock.advanceTime( 1, TimeUnit.SECONDS );
-        session.insert( new StockTick( "ACME" ) );
+        insert( new StockTick( "ACME" ) );
 
-        assertThat(session.fireAllRules()).isEqualTo(1);
+        assertThat(fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder("fired");
         clearResults();
 
         clock.advanceTime( 3, TimeUnit.SECONDS );
-        session.insert( new StockTick( "ACME" ) );
+        insert( new StockTick( "ACME" ) );
 
-        assertThat(session.fireAllRules()).isZero();
+        assertThat(fireAllRules()).isZero();
         assertThat(getResults()).isEmpty();
     }
 
@@ -84,20 +84,20 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
     void insertAdvanceFailoverExpireFire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
         createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
-        SessionPseudoClock clock = session.getSessionClock();
+        SessionPseudoClock clock = getSessionClock();
 
-        session.insert( new StockTick( "DROO" ) );
+        insert( new StockTick( "DROO" ) );
         clock.advanceTime( 6, TimeUnit.SECONDS );
-        session.insert( new StockTick( "ACME" ) );
+        insert( new StockTick( "ACME" ) );
 
         failover();
         restoreSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
-        clock = session.getSessionClock();
+        clock = getSessionClock();
 
         clock.advanceTime(58, TimeUnit.SECONDS);
-        assertThat(session.fireAllRules()).as("DROO is expired, but a match is available.")
+        assertThat(fireAllRules()).as("DROO is expired, but a match is available.")
                                           .isEqualTo(1);
-        assertThat(session.getFactHandles()).as("DROO should have expired because @Expires = 60s")
+        assertThat(getFactHandles()).as("DROO should have expired because @Expires = 60s")
                                             .hasSize(1);
     }
 }
