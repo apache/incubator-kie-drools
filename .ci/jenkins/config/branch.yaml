@@ -39,6 +39,7 @@ environments:
     - native
     - prod
   sonarcloud:
+    enabled: false
     auto_generation: false
     env_vars:
       ENABLE_SONARCLOUD: true
