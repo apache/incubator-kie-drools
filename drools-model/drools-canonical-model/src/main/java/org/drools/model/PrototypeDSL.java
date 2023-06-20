@@ -132,8 +132,8 @@ public class PrototypeDSL {
             Prototype prototype = getPrototype();
             Function1<PrototypeFact, Object> leftExtractor;
             AlphaIndex alphaIndex = null;
-            if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.FixedValue && operator instanceof Index.ConstraintType) {
-                String fieldName = ((PrototypeExpression.PrototypeFieldValue) left).getFieldName();
+            if (left instanceof PrototypeExpression.IndexableExpression && right instanceof PrototypeExpression.FixedValue && operator instanceof Index.ConstraintType) {
+                String fieldName = ((PrototypeExpression.IndexableExpression) left).getFieldName();
                 Index.ConstraintType constraintType = (Index.ConstraintType) operator;
                 Prototype.Field field = prototype.getField(fieldName);
                 Object value = ((PrototypeExpression.FixedValue) right).getValue();
@@ -186,13 +186,13 @@ public class PrototypeDSL {
         }
 
         private BetaIndex createBetaIndex(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right, Prototype prototype, Prototype otherPrototype) {
-            if (left instanceof PrototypeExpression.PrototypeFieldValue && operator instanceof Index.ConstraintType && right instanceof PrototypeExpression.PrototypeFieldValue) {
-                String fieldName = ((PrototypeExpression.PrototypeFieldValue) left).getFieldName();
+            if (left instanceof PrototypeExpression.IndexableExpression && operator instanceof Index.ConstraintType && right instanceof PrototypeExpression.IndexableExpression) {
+                String fieldName = ((PrototypeExpression.IndexableExpression) left).getFieldName();
                 Index.ConstraintType constraintType = (Index.ConstraintType) operator;
                 Prototype.Field field = prototype.getField(fieldName);
                 Function1<PrototypeFact, Object> extractor = getFieldValueExtractor(prototype, fieldName);
 
-                String otherFieldName = ((PrototypeExpression.PrototypeFieldValue) right).getFieldName();
+                String otherFieldName = ((PrototypeExpression.IndexableExpression) right).getFieldName();
                 Function1<PrototypeFact, Object> otherExtractor = getFieldValueExtractor(otherPrototype, otherFieldName);
 
                 Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : Object.class);

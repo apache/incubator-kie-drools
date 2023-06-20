@@ -32,6 +32,17 @@ public interface PrototypeExpression {
         Object evaluate(Map<PrototypeVariable, PrototypeFact> factsMap);
     }
 
+    /**
+     * Represent an expression which can be indexed (alpha/beta) by a given key
+     */
+    interface IndexableExpression {
+
+        /**
+         * the key to be used for indexing the expression
+         */
+        String getFieldName();
+    }
+
     Function1<PrototypeFact, Object> asFunction(Prototype prototype);
 
     Collection<String> getImpactedFields();
@@ -137,7 +148,7 @@ public interface PrototypeExpression {
         }
     }
 
-    class PrototypeFieldValue implements PrototypeExpression {
+    class PrototypeFieldValue implements PrototypeExpression, IndexableExpression {
 
         private final String fieldName;
 
@@ -150,6 +161,7 @@ public interface PrototypeExpression {
             return prototype.getFieldValueExtractor(fieldName)::apply;
         }
 
+        @Override
         public String getFieldName() {
             return fieldName;
         }
