@@ -71,6 +71,7 @@ import org.drools.util.StringUtils;
 import org.drools.wiring.api.ComponentsFactory;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.rule.MatchCancelledCause;
+import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.AgendaGroup;
 import org.slf4j.Logger;
@@ -209,7 +210,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         this.workingMemory = workingMemory;
         this.agendaGroupsManager.setReteEvaluator( workingMemory );
 
-        if ( !workingMemory.getRuleSessionConfiguration().isThreadSafe() ) {
+        if (workingMemory.getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY) == ThreadSafeOption.NO) {
             executionStateMachine = new UnsafeExecutionStateMachine();
         }
 
@@ -218,7 +219,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     protected PropagationList createPropagationList() {
-        if (!workingMemory.getRuleSessionConfiguration().isThreadSafe()) {
+        if (workingMemory.getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY) == ThreadSafeOption.NO) {
             return new ThreadUnsafePropagationList( workingMemory );
         }
 

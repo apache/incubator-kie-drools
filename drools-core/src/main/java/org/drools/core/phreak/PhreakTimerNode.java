@@ -46,6 +46,7 @@ import org.drools.core.util.index.TupleList;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
+import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -376,7 +377,7 @@ public class PhreakTimerNode {
 
         @Override
         public boolean requiresImmediateFlushing() {
-            return timerJobCtx.getReteEvaluator().getRuleSessionConfiguration().getTimedRuleExecutionFilter() != null;
+            return timerJobCtx.getReteEvaluator().getRuleSessionConfiguration().getOption(TimedRuleExecutionOption.KEY) != null;
         }
 
         @Override
@@ -404,7 +405,7 @@ public class PhreakTimerNode {
 
             timerJobCtx.getTimerNodeMemory().setNodeDirtyWithoutNotify();
 
-            TimedRuleExecutionFilter filter = reteEvaluator.getRuleSessionConfiguration().getTimedRuleExecutionFilter();
+            TimedRuleExecutionFilter filter = (TimedRuleExecutionFilter) reteEvaluator.getRuleSessionConfiguration().getOption(TimedRuleExecutionOption.KEY);
             needEvaluation &= filter != null;
 
             for (final PathMemory pmem : timerJobCtx.getPathMemories()) {

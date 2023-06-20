@@ -30,6 +30,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.util.ArrayQueue;
 import org.drools.core.util.Queue;
 import org.drools.core.util.QueueFactory;
+import org.kie.api.runtime.conf.DirectFiringOption;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -89,7 +90,7 @@ public class AgendaGroupQueueImpl
     public void setReteEvaluator(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
         // workingMemory can be null during deserialization
-        if (reteEvaluator != null && reteEvaluator.getRuleSessionConfiguration().isDirectFiring()) {
+        if ( reteEvaluator.getRuleSessionConfiguration().getOption(DirectFiringOption.KEY) == DirectFiringOption.YES) {
             this.priorityQueue = new ArrayQueue<>();
         } else {
             this.priorityQueue = QueueFactory.createQueue(RuleAgendaConflictResolver.INSTANCE);

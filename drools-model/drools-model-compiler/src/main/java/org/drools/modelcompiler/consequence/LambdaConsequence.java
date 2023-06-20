@@ -30,6 +30,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.model.Variable;
+import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class LambdaConsequence implements Consequence<KnowledgeHelper> {
@@ -124,7 +125,7 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
 
         Object[] facts;
         FactHandleLookup fhLookup = null;
-        if (reteEvaluator.getRuleSessionConfiguration().isThreadSafe()) {
+        if (reteEvaluator.getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY) == ThreadSafeOption.YES) {
             if ( consequence.isUsingDrools() ) {
                 facts = new Object[consequence.getVariables().length + 1];
                 fhLookup = FactHandleLookup.create( factSuppliers.length );
@@ -216,7 +217,7 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
         this.globalSuppliers = globalSuppliers.isEmpty() ? null : globalSuppliers.toArray( new GlobalSupplier[globalSuppliers.size()] );
         this.factSuppliers = factSuppliers.toArray( new TupleFactSupplier[factSuppliers.size()] );
 
-        if (!reteEvaluator.getRuleSessionConfiguration().isThreadSafe()) {
+        if (reteEvaluator.getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY) == ThreadSafeOption.NO) {
             this.facts = facts;
             this.fhLookup = fhLookup;
         }

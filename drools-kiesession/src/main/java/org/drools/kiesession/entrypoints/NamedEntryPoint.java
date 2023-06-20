@@ -48,6 +48,7 @@ import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.conf.KieBaseMutabilityOption;
+import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +108,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         this.entryPointNode = entryPointNode;
         this.reteEvaluator = reteEvaluator;
         this.ruleBase = this.reteEvaluator.getKnowledgeBase();
-        this.lock = reteEvaluator.getRuleSessionConfiguration().isThreadSafe() ? new ReentrantLock() : null;
+        this.lock = reteEvaluator.getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY) == ThreadSafeOption.YES ? new ReentrantLock() : null;
         this.handleFactory = this.reteEvaluator.getFactHandleFactory();
 
         RuleBaseConfiguration conf = this.ruleBase.getRuleBaseConfiguration();

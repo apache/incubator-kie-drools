@@ -37,6 +37,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
+import org.kie.api.runtime.conf.AccumulateNullPropagationOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
@@ -633,7 +634,7 @@ public class PhreakAccumulateNode {
 
         Object result = accumulate.getResult(memory.workingMemoryContext, accctx, leftTuple, reteEvaluator);
         propagateResult( accNode, sink, leftTuple, context, reteEvaluator, memory, trgLeftTuples, stagedLeftTuples,
-                         null, result, (AccumulateContextEntry) accctx, propagationContext, reteEvaluator.getRuleSessionConfiguration().isAccumulateNullPropagation());
+                         null, result, (AccumulateContextEntry) accctx, propagationContext, reteEvaluator.getRuleSessionConfiguration().getOption(AccumulateNullPropagationOption.KEY) == AccumulateNullPropagationOption.YES);
     }
 
     protected final void propagateResult(AccumulateNode accNode, LeftTupleSink sink, LeftTuple leftTuple, PropagationContext context,

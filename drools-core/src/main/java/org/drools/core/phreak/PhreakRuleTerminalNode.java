@@ -32,6 +32,7 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.MatchCancelledCause;
+import org.kie.api.runtime.conf.DirectFiringOption;
 
 /**
 * Created with IntelliJ IDEA.
@@ -93,7 +94,7 @@ public class PhreakRuleTerminalNode {
                                          ActivationsManager activationsManager, RuleAgendaItem ruleAgendaItem,
                                          LeftTuple leftTuple) {
         ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
-        if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
+        if ( reteEvaluator.getRuleSessionConfiguration().getOption(DirectFiringOption.KEY) == DirectFiringOption.YES) {
             executor.addLeftTuple(leftTuple);
             return;
         }
@@ -172,7 +173,7 @@ public class PhreakRuleTerminalNode {
         RuleTerminalNodeLeftTuple rtnLeftTuple = (RuleTerminalNodeLeftTuple) leftTuple;
         ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
 
-        if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
+        if ( reteEvaluator.getRuleSessionConfiguration().getOption(DirectFiringOption.KEY) == DirectFiringOption.YES) {
             if (!rtnLeftTuple.isQueued() ) {
                 executor.addLeftTuple( leftTuple );
                 reteEvaluator.getRuleEventSupport().onUpdateMatch( rtnLeftTuple );

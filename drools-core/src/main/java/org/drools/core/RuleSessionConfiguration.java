@@ -99,49 +99,58 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
         setQueryListenerOption( QueryListenerOption.determineQueryListenerClassOption( getPropertyValue( QueryListenerOption.PROPERTY_NAME, QueryListenerOption.STANDARD.getAsString() ) ) );
     }
 
-    public void setDirectFiring(boolean directFiring) {
+    private void setDirectFiring(boolean directFiring) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.directFiring = directFiring;
     }
 
-    public boolean isDirectFiring() {
+    private boolean isDirectFiring() {
         return this.directFiring;
     }
 
-    public void setThreadSafe(boolean threadSafe) {
+    private void setThreadSafe(boolean threadSafe) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.threadSafe = threadSafe;
     }
 
-    public boolean isThreadSafe() {
+    private boolean isThreadSafe() {
         return this.threadSafe;
     }
 
-    public void setAccumulateNullPropagation(boolean accumulateNullPropagation) {
+    private void setAccumulateNullPropagation(boolean accumulateNullPropagation) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.accumulateNullPropagation = accumulateNullPropagation;
     }
 
-    public boolean isAccumulateNullPropagation() {
+    private boolean isAccumulateNullPropagation() {
         return this.accumulateNullPropagation;
     }
 
-    public void setForceEagerActivationFilter(ForceEagerActivationFilter forceEagerActivationFilter) {
+    private QueryListenerOption getQueryListenerOption() {
+        return this.queryListener;
+    }
+
+    private void setQueryListenerOption( QueryListenerOption queryListener ) {
+        checkCanChange();
+        this.queryListener = queryListener;
+    }
+
+    private void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.timedRuleExecutionFilter = timedRuleExecutionFilter;
+    }
+
+    private TimedRuleExecutionFilter getTimedRuleExecutionFilter() {
+        return this.timedRuleExecutionFilter;
+    }
+
+    private void setForceEagerActivationFilter(ForceEagerActivationFilter forceEagerActivationFilter) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.forceEagerActivationFilter = forceEagerActivationFilter;
     }
 
     public ForceEagerActivationFilter getForceEagerActivationFilter() {
         return this.forceEagerActivationFilter;
-    }
-
-    public void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.timedRuleExecutionFilter = timedRuleExecutionFilter;
-    }
-
-    public TimedRuleExecutionFilter getTimedRuleExecutionFilter() {
-        return this.timedRuleExecutionFilter;
     }
 
     public BeliefSystemType getBeliefSystemType() {
@@ -151,15 +160,6 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
     public void setBeliefSystemType(BeliefSystemType beliefSystemType) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.beliefSystemType = beliefSystemType;
-    }
-
-    public QueryListenerOption getQueryListenerOption() {
-        return this.queryListener;
-    }
-
-    public void setQueryListenerOption( QueryListenerOption queryListener ) {
-        checkCanChange();
-        this.queryListener = queryListener;
     }
 
 

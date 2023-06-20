@@ -57,6 +57,7 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.AccumulateNullPropagationOption;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
@@ -3674,7 +3675,7 @@ public class AccumulateTest {
 
         kieSession.delete( fh );
         // changed by DROOLS-6064
-        if ((kieSession.getSessionConfiguration().as(RuleSessionConfiguration.KEY)).isAccumulateNullPropagation()) {
+        if (kieSession.getSessionConfiguration().as(RuleSessionConfiguration.KEY).getOption(AccumulateNullPropagationOption.KEY) == AccumulateNullPropagationOption.YES) {
             assertThat(kieSession.fireAllRules()).isEqualTo(1);
             assertThat(list.size()).isEqualTo(1);
             assertThat(list.get(0)).isNull();

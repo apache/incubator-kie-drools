@@ -39,6 +39,7 @@ import org.drools.core.util.QueueFactory;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.MatchCancelledCause;
+import org.kie.api.runtime.conf.DirectFiringOption;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +89,7 @@ public class RuleExecutor {
 
         reEvaluateNetwork( activationsManager );
 
-        if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
+        if ( reteEvaluator.getRuleSessionConfiguration().getOption(DirectFiringOption.KEY) == DirectFiringOption.YES) {
             RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
             RuleImpl rule = rtn.getRule();
             int directFirings = tupleList.size();
