@@ -1,0 +1,301 @@
+diff --git a/.ci/buildchain-config.yaml b/.ci/buildchain-config.yaml
+index 497197ebff..b74341a3a4 100644
+--- a/.ci/buildchain-config.yaml
++++ b/.ci/buildchain-config.yaml
+@@ -36,34 +36,34 @@ build:
+       upstream: |
+         mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.DROOLS_BUILD_MVN_OPTS_UPSTREAM }}
+   
+-  - project: kiegroup/kogito-runtimes
+-    build-command:
+-      current: |
+-        export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.KOGITO_RUNTIMES_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
+-        mvn clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS }}
+-      upstream: |
+-        mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM }}
++  # - project: kiegroup/kogito-runtimes
++  #   build-command:
++  #     current: |
++  #       export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.KOGITO_RUNTIMES_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
++  #       mvn clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS }}
++  #     upstream: |
++  #       mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM }}
+ 
+-  - project: kiegroup/kogito-apps
+-    build-command: 
+-      current: |
+-        export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.KOGITO_APPS_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
+-        mvn clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_APPS_BUILD_MVN_OPTS }}
+-      upstream: |
+-        mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_APPS_BUILD_MVN_OPTS_UPSTREAM }}
+-    archive-artifacts:
+-      path: |
+-        **/*.log
+-        **/cypress/screenshots/**
+-        **/cypress/videos/**
++  # - project: kiegroup/kogito-apps
++  #   build-command: 
++  #     current: |
++  #       export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.KOGITO_APPS_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
++  #       mvn clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_APPS_BUILD_MVN_OPTS }}
++  #     upstream: |
++  #       mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_APPS_BUILD_MVN_OPTS_UPSTREAM }}
++  #   archive-artifacts:
++  #     path: |
++  #       **/*.log
++  #       **/cypress/screenshots/**
++  #       **/cypress/videos/**
+ 
+-  - project: kiegroup/kogito-examples
+-    build-command:
+-      # First install the main pom
+-      # Then build the required submodule pom
+-      current: |
+-        export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.KOGITO_EXAMPLES_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
+-        mvn -pl :kogito-examples clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_EXAMPLES_BUILD_MVN_OPTS }}
+-        mvn -f ${{ env.KOGITO_EXAMPLES_SUBFOLDER_POM }}pom.xml clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_EXAMPLES_BUILD_MVN_OPTS }}
+-      upstream: |
+-        mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_EXAMPLES_BUILD_MVN_OPTS_UPSTREAM }}
++  # - project: kiegroup/kogito-examples
++  #   build-command:
++  #     # First install the main pom
++  #     # Then build the required submodule pom
++  #     current: |
++  #       export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.KOGITO_EXAMPLES_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
++  #       mvn -pl :kogito-examples clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_EXAMPLES_BUILD_MVN_OPTS }}
++  #       mvn -f ${{ env.KOGITO_EXAMPLES_SUBFOLDER_POM }}pom.xml clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_EXAMPLES_BUILD_MVN_OPTS }}
++  #     upstream: |
++  #       mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_EXAMPLES_BUILD_MVN_OPTS_UPSTREAM }}
+diff --git a/.ci/buildchain-project-dependencies.yaml b/.ci/buildchain-project-dependencies.yaml
+index 31d0afcc93..e838342fb7 100644
+--- a/.ci/buildchain-project-dependencies.yaml
++++ b/.ci/buildchain-project-dependencies.yaml
+@@ -11,51 +11,51 @@ dependencies:
+           - source: (\d*)\.(.*)\.(.*)
+             targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"
+ 
+-  - project: kiegroup/kogito-runtimes
+-    dependencies:
+-      - project: kiegroup/drools
+-    mapping:
+-      dependencies:
+-        default:
+-          - source: (\d*)\.(.*)\.(.*)
+-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"
+-      dependant:
+-        default:
+-          - source: (\d*)\.(.*)\.(.*)
+-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)"
+-      exclude:
+-        - kiegroup/kogito-examples
+-        - kiegroup/kogito-apps
++  # - project: kiegroup/kogito-runtimes
++  #   dependencies:
++  #     - project: kiegroup/drools
++  #   mapping:
++  #     dependencies:
++  #       default:
++  #         - source: (\d*)\.(.*)\.(.*)
++  #           targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"
++  #     dependant:
++  #       default:
++  #         - source: (\d*)\.(.*)\.(.*)
++  #           targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)"
++  #     exclude:
++  #       - kiegroup/kogito-examples
++  #       - kiegroup/kogito-apps
+   
+-  - project: kiegroup/kogito-apps
+-    dependencies:
+-      - project: kiegroup/kogito-runtimes
+-    mapping:
+-      dependencies:
+-        default:
+-          - source: (\d*)\.(.*)\.(.*)
+-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"
+-      dependant:
+-        default:
+-          - source: (\d*)\.(.*)\.(.*)
+-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)"
+-      exclude:
+-        - kiegroup/kogito-examples
+-        - kiegroup/kogito-runtimes
++  # - project: kiegroup/kogito-apps
++  #   dependencies:
++  #     - project: kiegroup/kogito-runtimes
++  #   mapping:
++  #     dependencies:
++  #       default:
++  #         - source: (\d*)\.(.*)\.(.*)
++  #           targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"
++  #     dependant:
++  #       default:
++  #         - source: (\d*)\.(.*)\.(.*)
++  #           targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)"
++  #     exclude:
++  #       - kiegroup/kogito-examples
++  #       - kiegroup/kogito-runtimes
+ 
+-  - project: kiegroup/kogito-examples
+-    dependencies:
+-      - project: kiegroup/kogito-runtimes
+-      - project: kiegroup/kogito-apps
+-    mapping:
+-      dependencies:
+-        default:
+-          - source: (\d*)\.(.*)\.(.*)
+-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"
+-      dependant:
+-        default:
+-          - source: (\d*)\.(.*)\.(.*)
+-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)"
+-      exclude:
+-        - kiegroup/kogito-apps
+-        - kiegroup/kogito-runtimes
++  # - project: kiegroup/kogito-examples
++  #   dependencies:
++  #     - project: kiegroup/kogito-runtimes
++  #     - project: kiegroup/kogito-apps
++  #   mapping:
++  #     dependencies:
++  #       default:
++  #         - source: (\d*)\.(.*)\.(.*)
++  #           targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"
++  #     dependant:
++  #       default:
++  #         - source: (\d*)\.(.*)\.(.*)
++  #           targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)"
++  #     exclude:
++  #       - kiegroup/kogito-apps
++  #       - kiegroup/kogito-runtimes
+diff --git a/.ci/jenkins/dsl/jobs.groovy b/.ci/jenkins/dsl/jobs.groovy
+index 2af4898be3..ef34898f86 100644
+--- a/.ci/jenkins/dsl/jobs.groovy
++++ b/.ci/jenkins/dsl/jobs.groovy
+@@ -59,7 +59,7 @@ void createProjectSetupBranchJob() {
+ 
+ void setupProjectNightlyJob() {
+     def jobParams = JobParamsUtils.getBasicJobParams(this, '0-nightly', JobType.NIGHTLY, "${jenkins_path_project}/Jenkinsfile.nightly", 'Drools Nightly')
+-    jobParams.triggers = [cron : '@midnight']
++    jobParams.triggers = [cron : 'H 3 * * *']
+     jobParams.env.putAll([
+         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+ 
+@@ -119,7 +119,7 @@ void setupProjectPostReleaseJob() {
+ ///////////////////////////////////////////////////////////////////////////////////////////
+ 
+ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
+-    String defaultBuildMvnOptsCurrent = jobFolder.getDefaultEnvVarValue('BUILD_MVN_OPTS_CURRENT') ?: ''
++    // String defaultBuildMvnOptsCurrent = jobFolder.getDefaultEnvVarValue('BUILD_MVN_OPTS_CURRENT') ?: ''
+     def jobConfig = [
+         parallel: true,
+         buildchain: true,
+@@ -132,35 +132,35 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
+                     // As we have only Community edition
+                     ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
+                     // Setup full build if not prod profile
+-                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod') || EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3') ? '' : '-Dfull'}",
++                    // BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod') || EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3') ? '' : '-Dfull'}",
+                 ]
+-            ], [
+-                id: 'kogito-runtimes',
+-                repository: 'kogito-runtimes'
+-            ], [
+-                id: 'kogito-apps',
+-                repository: 'kogito-apps',
+-                env : [
+-                    NODE_OPTIONS: '--max_old_space_size=4096',
+-                ]
+-            ], [
+-                id: 'kogito-quarkus-examples',
+-                repository: 'kogito-examples',
+-                env : [
+-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
+-                ],
+-            ], [
+-                id: 'kogito-springboot-examples',
+-                repository: 'kogito-examples',
+-                env : [
+-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
+-                ],
+-            ], [
+-                id: 'serverless-workflow-examples',
+-                repository: 'kogito-examples',
+-                env : [
+-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
+-                ],
++            // ], [
++            //     id: 'kogito-runtimes',
++            //     repository: 'kogito-runtimes'
++            // ], [
++            //     id: 'kogito-apps',
++            //     repository: 'kogito-apps',
++            //     env : [
++            //         NODE_OPTIONS: '--max_old_space_size=4096',
++            //     ]
++            // ], [
++            //     id: 'kogito-quarkus-examples',
++            //     repository: 'kogito-examples',
++            //     env : [
++            //         KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
++            //     ],
++            // ], [
++            //     id: 'kogito-springboot-examples',
++            //     repository: 'kogito-examples',
++            //     env : [
++            //         KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
++            //     ],
++            // ], [
++            //     id: 'serverless-workflow-examples',
++            //     repository: 'kogito-examples',
++            //     env : [
++            //         KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
++            //     ],
+             ]
+         ]
+     ]
+@@ -186,17 +186,23 @@ Closure addFullProfileJobParamsGetter = { script ->
+     return jobParams
+ }
+ 
++Closure setup3AMCronTriggerJobParamsGetter = { script ->
++    def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
++    jobParams.triggers = [ cron: 'H 3 * * *' ]
++    return jobParams
++}
++
+ KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, addFullProfileJobParamsGetter)
+ 
+ // Environment nightlies
+-setupSpecificBuildChainNightlyJob('native', addFullProfileJobParamsGetter)
+-setupSpecificBuildChainNightlyJob('sonarcloud', addFullProfileJobParamsGetter)
++setupSpecificBuildChainNightlyJob('native', setup3AMCronTriggerJobParamsGetter)
++setupSpecificBuildChainNightlyJob('sonarcloud', setup3AMCronTriggerJobParamsGetter)
+ 
+ // Jobs with integration branch
+-setupQuarkusIntegrationJob('quarkus-main', addFullProfileJobParamsGetter)
+-setupQuarkusIntegrationJob('quarkus-branch', addFullProfileJobParamsGetter)
+-setupQuarkusIntegrationJob('quarkus-lts')
+-setupQuarkusIntegrationJob('native-lts')
++setupQuarkusIntegrationJob('quarkus-main', setup3AMCronTriggerJobParamsGetter)
++setupQuarkusIntegrationJob('quarkus-branch', setup3AMCronTriggerJobParamsGetter)
++// setupQuarkusIntegrationJob('quarkus-lts')
++// setupQuarkusIntegrationJob('native-lts')
+ // Quarkus 3 nightly is exported to Kogito pipelines for easier integration
+ 
+ // Release jobs
+@@ -211,10 +217,10 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
+ ])
+ 
+ // Quarkus 3
+-if (EnvUtils.isEnvironmentEnabled(this, 'quarkus-3')) {
+-    // setupPrQuarkus3RewriteJob() # TODO to enable if you want the PR quarkus-3 rewrite job
+-    setupStandaloneQuarkus3RewriteJob()
+-}
++// if (EnvUtils.isEnvironmentEnabled(this, 'quarkus-3')) {
++//     // setupPrQuarkus3RewriteJob() # TODO to enable if you want the PR quarkus-3 rewrite job
++//     setupStandaloneQuarkus3RewriteJob()
++// }
+ 
+ /////////////////////////////////////////////////////////////////
+ // Methods
