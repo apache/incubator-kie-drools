@@ -1,6 +1,0 @@
-# SPI implementations
-org.kie.efesto.runtimemanager.core.mocks.MockKieRuntimeServiceA
-org.kie.efesto.runtimemanager.core.mocks.MockKieRuntimeServiceB
-org.kie.efesto.runtimemanager.core.mocks.MockKieRuntimeServiceC
-org.kie.efesto.runtimemanager.core.mocks.TestKieRuntimeService
-org.kie.efesto.runtimemanager.core.mocks.TestBKieRuntimeService

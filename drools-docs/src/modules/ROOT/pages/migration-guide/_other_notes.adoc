@@ -1,6 +1,0 @@
-[id='other_notes_{context}']
-
-[id='spreadsheet_file_extensions_{context}']
-== Spreadsheet decision tables file extensions
-
-Starting with Drools v8, Drools spreadsheet decision tables file extension must end in either `.drl.xls`, `.drl.xlsx`, or `.drl.csv` as mentioned in the Release Notes.

@@ -4,26 +4,15 @@ ecosystem:
   - name: drools
     regexs:
     - drools.*
-  - name: kie-benchmarks
-    ignore_release: true
-    ignore_productization: true
-    regexs:
-    - kie-benchmarks.*
 git:
   branches:
-  - name: main
+  - name: 9.x
     main_branch: true
     seed:
       branch: main
-  - name: 8.38.x-prod
-    seed:
-      branch: seed-drools-8.38.x
-  - name: 8.39.x
-    seed:
-      branch: seed-drools-8.39.x
-  - name: 8.40.x
-    seed:
-      branch: seed-drools-8.40.x
+      config_file:
+        git:
+          branch: 9.x-dsl-config
 seed:
   config_file:
     git:
@@ -31,7 +20,7 @@ seed:
       author:
         name: kiegroup
         credentials_id: kie-ci4
-      branch: main
+      branch: 9.x-dsl-config
     path: .ci/jenkins/config/branch.yaml
   jenkinsfile: dsl/seed/jenkinsfiles/Jenkinsfile.seed.branch
 jenkins:

@@ -1,1 +1,0 @@
-(org.kie.pmml.api.iinterfaces.SerializableFunction<Double, Double>) input -> KiePMMLRegressionTable.evaluateNumericWithExponent(input, %s, %s.0)

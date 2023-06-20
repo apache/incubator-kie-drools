@@ -1,7 +1,0 @@
-package org.drools.compiler.integrationtests.phases;
-
-rule hello when
-    s: String()
-then
-    System.out.println(s);
-end

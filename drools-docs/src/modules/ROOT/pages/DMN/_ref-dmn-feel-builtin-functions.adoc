@@ -1,7 +1,0 @@
-[id="ref-dmn-feel-builtin-functions_{context}"]
-= Built-in functions in FEEL
-
-[role="_abstract"]
-To promote interoperability with other platforms and systems, Friendly Enough Expression Language (FEEL) includes a library of built-in functions. The built-in FEEL functions are implemented in the Drools Decision Model and Notation (DMN) engine so that you can use the functions in your DMN decision services.
-
-For detailed information about FEEL and built-in FEEL functions in DMN, you can reference the https://kiegroup.github.io/dmn-feel-handbook/#dmn-feel-handbook[Drools DMN engine, DMN FEEL handbook].

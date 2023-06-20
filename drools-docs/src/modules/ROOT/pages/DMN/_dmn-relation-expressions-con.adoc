@@ -1,9 +1,0 @@
-[id='dmn-relation-expressions-con_{context}']
-= Boxed relation expressions
-
-A boxed relation expression in DMN is a traditional data table with information about given entities, listed as rows. You use boxed relation tables to define decision data for relevant entities in a decision at a particular node. Boxed relation expressions are similar to context expressions in that they set variable names and values, but relation expressions contain no result value and list all variable values based on a single defined variable in each column.
-
-For example, the following boxed relation expression provides information about employees in an employee rostering decision:
-
-.Boxed relation expression with employee information
-image::dmn/dmn-relation-expression-example.png[]

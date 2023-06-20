@@ -1,7 +1,0 @@
-== 8.40.0.Final release notes
-
-=== `kie-maven-plugin` update with maven compiler release
-
-In order to make the `kie-maven-plugin` compatible with Maven-based project using a more recent version of the JDK, the plugin will now also look at the `maven.compiler.release` property to infer the language level to use during the build, with precedence over the `java.version` property (old behaviour).
-
-When the `kie-maven-plugin` is used in a Maven-based project, we recommend NOT to set the `drools.dialect.java.compiler.lnglevel` in your KJAR project, so that the version of the JDK to be used is the one fully governed by the whole Maven build (including Java source files).

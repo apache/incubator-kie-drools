@@ -6,7 +6,29 @@ environments:
       ADDITIONAL_TIMEOUT: 720
     ids:
     - native
+  quarkus-main:
+    enabled: false
+    env_vars:
+      QUARKUS_BRANCH: main
+    ids:
+    - quarkus
+  quarkus-branch:
+    env_vars:
+      QUARKUS_BRANCH: '3.0'
+    ids:
+    - quarkus
+  quarkus-lts:
+    enabled: false
+    pull_request_default_check: false
+    env_vars:
+      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
+      QUARKUS_BRANCH: '2.13'
+    ids:
+    - quarkus
+    - lts
+    - prod
   native-lts:
+    enabled: false
     env_vars:
       NATIVE: true
       BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
@@ -16,35 +38,6 @@ environments:
     ids:
     - native
     - prod
-  quarkus-main:
-    enabled: false
-    env_vars:
-      QUARKUS_BRANCH: main
-    ids:
-    - quarkus
-  quarkus-3:
-    pull_request_default_check: false
-    env_vars:
-      BUILD_MAVEN_TOOL: kie-maven-3.9.1
-      BUILD_JDK_TOOL: kie-jdk17
-      BUILD_MVN_OPTS: -Denforcer.skip
-    ids:
-    - quarkus
-    - quarkus3
-  quarkus-branch:
-    env_vars:
-      QUARKUS_BRANCH: '2.16'
-    ids:
-    - quarkus
-  quarkus-lts:
-    pull_request_default_check: false
-    env_vars:
-      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
-      QUARKUS_BRANCH: '2.13'
-    ids:
-    - quarkus
-    - lts
-    - prod
   sonarcloud:
     auto_generation: false
     env_vars:
@@ -52,13 +45,12 @@ environments:
     ids:
     - sonarcloud
     - coverage
-productized_branch: true
+productized_branch: false
 disable:
   triggers: false
 repositories:
 - name: drools
-- name: drools-website
-- name: kie-benchmarks
+  branch: 9.x
 productized_repositories:
 - name: drools
 git:
@@ -81,6 +73,7 @@ git:
 buildchain_config:
   git:
     repository: drools
+    branch: main
     file_path: .ci/buildchain-config.yaml
 maven:
   settings_file_id: kogito_release_settings
@@ -108,5 +101,5 @@ cloud:
 jenkins:
   email_creds_id: KOGITO_CI_EMAIL_TO
   default_tools:
-    jdk: kie-jdk11
+    jdk: kie-jdk17
     maven: kie-maven-3.8.7

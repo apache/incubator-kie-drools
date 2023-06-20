@@ -1,3 +1,0 @@
-{
-    KiePMMLTruePredicate %1$s = new KiePMMLTruePredicate("%1$s", Collections.emptyList());
-}

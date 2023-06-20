@@ -1,9 +1,0 @@
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.drools.rewrite.PrintStackTraceToLogError
-displayName: 'Use SLF4J instead of e.printStackTrace' # ref DROOLS-6997
-recipeList:
-  - org.openrewrite.java.logging.PrintStackTraceToLogError:
-      addLogger: true
-      loggerName: LOG
-      loggingFramework: SLF4J

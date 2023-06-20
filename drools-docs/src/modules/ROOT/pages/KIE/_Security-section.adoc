@@ -1,5 +1,0 @@
-[[_kiesecuritysection]]
-= Security
-
-include::Security/SecurityManager-section.adoc[leveloffset=+1]
-

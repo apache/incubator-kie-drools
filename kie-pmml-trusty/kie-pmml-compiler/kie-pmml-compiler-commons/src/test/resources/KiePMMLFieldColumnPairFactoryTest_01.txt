@@ -1,3 +1,0 @@
-{
-    KiePMMLFieldColumnPair %s = new KiePMMLFieldColumnPair("%s", Collections.emptyList(), "%s");
-}
