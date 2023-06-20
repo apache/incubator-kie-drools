@@ -102,3 +102,32 @@ index 95775d9a7c..587345f7d8 100644
  
  import io.restassured.RestAssured;
  import io.restassured.http.ContentType;
+diff --git a/springboot/integration-tests/src/it/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-infinispan/pom.xml b/springboot/integration-tests/src/it/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-infinispan/pom.xml
+index c102fb4ad1..a88279c998 100644
+--- a/springboot/integration-tests/src/it/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-infinispan/pom.xml
++++ b/springboot/integration-tests/src/it/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-infinispan/pom.xml
+@@ -39,7 +39,7 @@
+     </dependency>
+     <dependency>
+       <groupId>org.infinispan</groupId>
+-      <artifactId>infinispan-spring-boot-starter-remote</artifactId>
++      <artifactId>infinispan-spring-boot3-starter-remote</artifactId>
+     </dependency>
+     <dependency>
+       <groupId>org.kie.kogito</groupId>
+diff --git a/springboot/starters/kogito-processes-spring-boot-starter/pom.xml b/springboot/starters/kogito-processes-spring-boot-starter/pom.xml
+index 50d94366c4..fc38799953 100644
+--- a/springboot/starters/kogito-processes-spring-boot-starter/pom.xml
++++ b/springboot/starters/kogito-processes-spring-boot-starter/pom.xml
+@@ -22,6 +22,10 @@
+       <groupId>org.kie.kogito</groupId>
+       <artifactId>kogito-rest-workitem</artifactId>
+     </dependency>
++    <dependency>
++      <groupId>org.reactivestreams</groupId>
++      <artifactId>reactive-streams</artifactId>
++    </dependency>
+   </dependencies>
+
+ </project>
+\ No newline at end of file
