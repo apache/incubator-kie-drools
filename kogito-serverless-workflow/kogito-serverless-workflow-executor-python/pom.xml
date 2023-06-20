@@ -15,8 +15,8 @@
 
   <dependencies>
     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-serverless-workflow-executor-core</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-executor-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -33,14 +33,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-serverless-workflow-fluent</artifactId>
-       <scope>test</scope>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-fluent</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-   </dependencies>
+  </dependencies>
 </project>

@@ -22,5 +22,5 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-grpc-parser</artifactId>
     </dependency>
-   </dependencies>
+  </dependencies>
 </project>

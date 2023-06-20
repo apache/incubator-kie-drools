@@ -78,7 +78,7 @@
 
     <version.org.infinispan>14.0.6.Final</version.org.infinispan>
     <version.org.infinispan.protostream>4.5.1.Final</version.org.infinispan.protostream>
-    
+
     <version.org.rocksdb>7.10.2</version.org.rocksdb>
     <!-- consider migrating to 3.x JDK 9: https://jakarta.ee/specifications/restful-ws/ -->
     <version.jakarta.ws.rs>2.1.6</version.jakarta.ws.rs>
@@ -206,7 +206,7 @@
         <artifactId>javaparser-symbol-solver-core</artifactId>
         <version>${version.com.github.javaparser}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
@@ -637,7 +637,7 @@
         <artifactId>protostream</artifactId>
         <version>${version.org.infinispan.protostream}</version>
       </dependency>
-      
+
       <!--rockdb-->
       <dependency>
         <groupId>org.rocksdb</groupId>

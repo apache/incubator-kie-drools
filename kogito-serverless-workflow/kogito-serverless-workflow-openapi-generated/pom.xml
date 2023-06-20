@@ -18,6 +18,6 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-openapi-common</artifactId>
     </dependency>
- </dependencies>
+  </dependencies>
 
 </project>

@@ -14,16 +14,16 @@
   <description>Kogito Serverless Workflow gRPC parser</description>
 
   <dependencies>
-    
+
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-builder</artifactId>
     </dependency>
- 
-   <dependency>
+
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-grpc-runtime</artifactId>
     </dependency>
- </dependencies>
+  </dependencies>
 
 </project>

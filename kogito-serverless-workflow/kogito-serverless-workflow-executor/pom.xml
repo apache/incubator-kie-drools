@@ -15,21 +15,21 @@
   <packaging>pom</packaging>
 
   <dependencies>
-     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-serverless-workflow-executor-core</artifactId>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-executor-core</artifactId>
     </dependency>
     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-serverless-workflow-executor-rest</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-executor-rest</artifactId>
     </dependency>
     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-serverless-workflow-executor-service</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-executor-service</artifactId>
     </dependency>
     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-serverless-workflow-fluent</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-fluent</artifactId>
     </dependency>
-   </dependencies>
+  </dependencies>
 </project>

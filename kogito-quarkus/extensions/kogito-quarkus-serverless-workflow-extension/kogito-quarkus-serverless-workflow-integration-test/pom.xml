@@ -100,7 +100,7 @@
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>io.swagger.parser.v3</groupId>
       <artifactId>swagger-parser</artifactId>
       <scope>test</scope>

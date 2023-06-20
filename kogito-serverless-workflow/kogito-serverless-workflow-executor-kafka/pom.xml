@@ -15,8 +15,8 @@
 
   <dependencies>
     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-serverless-workflow-executor-core</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-executor-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
@@ -46,5 +46,5 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-   </dependencies>
+  </dependencies>
 </project>

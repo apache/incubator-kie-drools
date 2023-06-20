@@ -15,8 +15,8 @@
 
   <dependencies>
     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-serverless-workflow-builder</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-builder</artifactId>
     </dependency>
-   </dependencies>
+  </dependencies>
 </project>

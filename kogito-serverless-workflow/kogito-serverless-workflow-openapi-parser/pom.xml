@@ -55,7 +55,7 @@
       <version>${project.version}</version>
       <type>test-jar</type>
     </dependency>
-      <dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-jsonpath-expression</artifactId>
       <scope>test</scope>
@@ -65,7 +65,7 @@
       <artifactId>kogito-jq-expression</artifactId>
       <scope>test</scope>
     </dependency>
-    
- </dependencies>
+
+  </dependencies>
 
 </project>

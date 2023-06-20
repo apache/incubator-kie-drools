@@ -22,15 +22,15 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-openapi-generated</artifactId>
-    </dependency> 
+    </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-grpc-parser</artifactId>
-    </dependency> 
-      <dependency>
+    </dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-rest-parser</artifactId>
-    </dependency> 
+    </dependency>
     <!-- Deployment -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -69,18 +69,18 @@
     <dependency>
       <groupId>io.quarkiverse.openapi.generator</groupId>
       <artifactId>quarkus-openapi-generator-deployment</artifactId>
-     </dependency>
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi-deployment</artifactId>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>io.quarkiverse.asyncapi</groupId>
       <artifactId>quarkus-asyncapi-deployment</artifactId>
     </dependency>
-     <dependency>
-       <groupId>io.quarkus</groupId>
-       <artifactId>quarkus-grpc-deployment</artifactId>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-grpc-deployment</artifactId>
     </dependency>
   </dependencies>
 

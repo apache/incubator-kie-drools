@@ -30,7 +30,7 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-codegen-api</artifactId>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-utils</artifactId>
     </dependency>
