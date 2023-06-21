@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>kogito-serverless-workflow-grpc-runtime</artifactId>
-  <name>Kogito :: Serverless Workflow :: gRPC:: Runtime</name>
+  <name>Kogito :: Serverless Workflow :: gRPC :: Runtime</name>
   <description>Kogito Serverless Workflow gRPC runtimes</description>
 
   <dependencies>

@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>kogito-addons-marshallers-avro</artifactId>
-  <name>Kogito :: Add-Ons :: Marshallers:: Avro</name>
+  <name>Kogito :: Add-Ons :: Marshallers :: Avro</name>
   <description>Kogito Marshallers Unmarshaller for Avro</description>
 
   <dependencies>

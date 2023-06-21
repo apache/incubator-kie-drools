@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>kogito-serverless-workflow-openapi-generated</artifactId>
-  <name>Kogito :: Serverless Workflow :: OpenAPI:: Generated</name>
+  <name>Kogito :: Serverless Workflow :: OpenAPI :: Generated</name>
   <description>Kogito Serverless Workflow OpenAPI generated</description>
 
   <dependencies>

@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>kogito-jq-expression</artifactId>
-  <name>Kogito :: Serverless Workflow :: Expression:: JQ</name>
+  <name>Kogito :: Serverless Workflow :: Expression :: JQ</name>
 
   <description>Kogito jq expression implementation</description>
   <dependencies>

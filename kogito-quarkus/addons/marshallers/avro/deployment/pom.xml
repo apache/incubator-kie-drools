@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>kogito-addons-quarkus-marshallers-avro-deployment</artifactId>
-  <name>Kogito :: Add-Ons :: Quarkus:: Marshallers:: Avro:: Deployment</name>
+  <name>Kogito :: Add-Ons :: Quarkus :: Marshallers :: Avro :: Deployment</name>
   <description>Kogito Quarkus Marshallers Unmarshaller for Avro deployment</description>
 
   <dependencies>

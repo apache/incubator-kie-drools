@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>kogito-serverless-workflow-grpc-parser</artifactId>
-  <name>Kogito :: Serverless Workflow :: gRPC:: Parser</name>
+  <name>Kogito :: Serverless Workflow :: gRPC :: Parser</name>
   <description>Kogito Serverless Workflow gRPC parser</description>
 
   <dependencies>

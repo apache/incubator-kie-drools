@@ -10,8 +10,8 @@
   </parent>
 
   <artifactId>kogito-serverless-workflow-rest-parser</artifactId>
-  <name>Kogito :: Serverless Workflow :: Rest:: Parser</name>
-  <description>Kogito Serverless Workflow Rest parser</description>
+  <name>Kogito :: Serverless Workflow :: REST :: Parser</name>
+  <description>Kogito Serverless Workflow REST parser</description>
 
   <dependencies>
     <dependency>

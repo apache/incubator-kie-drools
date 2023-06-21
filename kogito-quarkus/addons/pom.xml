@@ -26,11 +26,9 @@
     <module>knative</module>
     <module>kubernetes</module>
     <module>events</module>
-    <module>marshallers</module>
     <module>camel</module>
     <module>fabric8-kubernetes-service-catalog</module>
     <module>jobs</module>
-    <module>python</module>
   </modules>
 
   <profiles>
@@ -48,6 +46,8 @@
         <module>task-notification</module>
         <module>tracing-decision</module>
         <module>task-management</module>
+        <module>marshallers</module>
+        <module>python</module>
       </modules>
     </profile>
   </profiles>

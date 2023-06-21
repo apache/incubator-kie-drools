@@ -10,8 +10,8 @@
   </parent>
 
   <artifactId>kogito-serverless-workflow-rest-runtime</artifactId>
-  <name>Kogito :: Serverless Workflow :: rest:: Runtime</name>
-  <description>Kogito Serverless Workflow Rest runtimes</description>
+  <name>Kogito :: Serverless Workflow :: REST :: Runtime</name>
+  <description>Kogito Serverless Workflow REST runtimes</description>
 
   <dependencies>
     <dependency>

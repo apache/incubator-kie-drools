@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>kogito-jsonpath-expression</artifactId>
-  <name>Kogito :: Serverless Workflow :: Expression:: Jsonpath</name>
+  <name>Kogito :: Serverless Workflow :: Expression :: Jsonpath</name>
 
   <description>Kogito jsonpath expression implementation</description>
   <dependencies>

@@ -23,19 +23,32 @@
     <module>kogito-serverless-workflow-grpc-runtime</module>
     <module>kogito-serverless-workflow-rest-parser</module>
     <module>kogito-serverless-workflow-rest-runtime</module>
-    <module>kogito-serverless-workflow-python-runtime</module>
     <module>kogito-serverless-workflow-runtime</module>
-    <module>kogito-serverless-workflow-executor</module>
+    <module>kogito-serverless-workflow-fluent</module>
     <module>kogito-serverless-workflow-executor-core</module>
     <module>kogito-serverless-workflow-executor-service</module>
-    <module>kogito-serverless-workflow-executor-python</module>
     <module>kogito-serverless-workflow-executor-rest</module>
     <module>kogito-serverless-workflow-executor-grpc</module>
     <module>kogito-serverless-workflow-executor-kafka</module>
-    <module>kogito-serverless-workflow-executor-tests</module>
-    <module>kogito-serverless-workflow-fluent</module>
     <module>kogito-serverless-workflow-utils</module>
     <module>kogito-jsonpath-expression</module>
     <module>kogito-jq-expression</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kogito-serverless-workflow-python-runtime</module>
+        <module>kogito-serverless-workflow-executor</module>
+        <module>kogito-serverless-workflow-executor-python</module>
+        <module>kogito-serverless-workflow-executor-tests</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

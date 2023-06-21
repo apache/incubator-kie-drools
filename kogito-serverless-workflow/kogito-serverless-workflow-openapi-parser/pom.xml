@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>kogito-serverless-workflow-openapi-parser</artifactId>
-  <name>Kogito :: Serverless Workflow :: OpenAPI:: Parser</name>
+  <name>Kogito :: Serverless Workflow :: OpenAPI :: Parser</name>
   <description>Kogito Serverless Workflow OpenAPI parser</description>
 
   <dependencies>

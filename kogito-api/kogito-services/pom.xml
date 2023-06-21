@@ -24,10 +24,6 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-api</artifactId>
     </dependency>
-     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-events-core</artifactId>
