@@ -16,7 +16,7 @@
 
 package org.drools.reliability.core;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +43,8 @@ public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
         this.timer = new AtomicLong(0);
         this.persistedTimer = new AtomicLong((Long) storage.getOrDefault("timer", 0L));
         this.idCounter = new AtomicLong( (Long) storage.getOrDefault("idCounter", 0L) );
-        this.queue = (PriorityQueue<TimerJobInstance>) storage.getOrDefault("queue", new PriorityQueue<>());
+        List<TimerJobInstance> internalQueue = (List<TimerJobInstance>) storage.getOrDefault("internalQueue", new ArrayList<>());
+        this.queue = new PriorityQueue<>(internalQueue);
     }
 
     public AtomicLong getPersistedTimer() {
@@ -60,18 +61,15 @@ public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
     private void updateStorage() {
         storage.put("timer", timer.get());
         storage.put("idCounter", idCounter.get());
-        storage.put("queue", createFilteredQueueForPersistence(queue)); 
+        storage.put("internalQueue", createFilteredInternalQueueForPersistence(queue));
     }
 
     /**
      * ExpireJob is recreated by repropagate, so doesn't need to persist
      */
-    public PriorityQueue<TimerJobInstance> createFilteredQueueForPersistence(PriorityQueue<TimerJobInstance> queue) {
-        Object[] array = queue.toArray();
-        List<TimerJobInstance> list = Arrays.stream(array)
-                                            .map(TimerJobInstance.class::cast)
-                                            .filter(job -> !(job.getJob() instanceof ExpireJob))
-                                            .collect(Collectors.toList());
-        return new PriorityQueue<>(list);
+    public List<TimerJobInstance> createFilteredInternalQueueForPersistence(PriorityQueue<TimerJobInstance> queue) {
+        return queue.stream()
+                    .filter(job -> !(job.getJob() instanceof ExpireJob))
+                    .collect(Collectors.toList());
     }
 }
