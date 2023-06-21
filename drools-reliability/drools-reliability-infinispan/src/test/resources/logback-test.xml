@@ -8,7 +8,7 @@
   </appender>
 
   <logger name="org.kie" level="warn"/>
-  <logger name="org.drools" level="info"/>
+  <logger name="org.drools" level="warn"/>
 <!--  <logger name="org.drools.model.codegen.execmodel" level="debug"/>-->
   <logger name="org.drools.reliability" level="info"/>
 <!--  <logger name="org.infinispan.protostream" level="debug"/>-->
