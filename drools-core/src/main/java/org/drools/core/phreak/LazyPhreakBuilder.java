@@ -827,24 +827,23 @@ class LazyPhreakBuilder implements PhreakBuilder {
                         AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
                         visitChild( (LeftTuple) accctx.getResultLeftTuple(), insert, wm, rule);
                     }
-                } else if (NodeTypeEnums.ExistsNode == node.getType() &&
-                        !((BetaNode)node).isRightInputIsRiaNode()) { // do not process exists with subnetworks
+                } else if (NodeTypeEnums.ExistsNode == node.getType() && !node.isRightInputIsRiaNode()) { // do not process exists with subnetworks
                     // If there is a subnetwork, then there is no populated RTM, but the LTM is populated,
-                    // so this would be procsssed in the "else".
+                    // so this would be processed in the "else".
 
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                    RightTuple   rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it);
-                    for (; rt != null; rt = (RightTuple) it.next(rt)) {
+                    for (RightTuple rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it); rt != null; rt = (RightTuple) it.next(rt)) {
                         for (LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext()) {
-                            visitChild(wm, insert, rule, it, lt);
+                            visitLeftTuple(wm, insert, rule, lt);
                         }
                     }
                 } else {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    Tuple        lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
-                    visitChild(wm, insert, rule, it, lt);
+                    for (LeftTuple lt = (LeftTuple)BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it); lt != null; lt = (LeftTuple) it.next(lt)) {
+                        visitLeftTuple(wm, insert, rule, lt);
+                    }
                 }
                 return;
             } else if (NodeTypeEnums.FromNode == node.getType()) {
@@ -893,14 +892,12 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void visitChild(InternalWorkingMemory wm, boolean insert, Rule rule, FastIterator it, Tuple lt) {
-        for (; lt != null; lt = (LeftTuple) it.next(lt)) {
-            LeftTuple childLt = lt.getFirstChild();
-            while (childLt != null) {
-                LeftTuple nextLt = childLt.getHandleNext();
-                visitChild(childLt, insert, wm, rule);
-                childLt = nextLt;
-            }
+    private static void visitLeftTuple(InternalWorkingMemory wm, boolean insert, Rule rule, LeftTuple lt) {
+        LeftTuple childLt = lt.getFirstChild();
+        while (childLt != null) {
+            LeftTuple nextLt = childLt.getHandleNext();
+            visitChild(childLt, insert, wm, rule);
+            childLt = nextLt;
         }
     }
 
