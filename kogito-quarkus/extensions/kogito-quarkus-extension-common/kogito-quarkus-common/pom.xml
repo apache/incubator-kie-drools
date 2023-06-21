@@ -20,15 +20,7 @@
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-api-incubation-application</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-api-incubation-common-objectmapper</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-rest-workitem</artifactId>
+            <artifactId>kogito-rest-workitem</artifactId>
         </dependency>
 
         <!-- required because of native image substitution  -->
@@ -59,18 +51,7 @@
 
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-jackson</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jackson</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-arc</artifactId>
         </dependency>
 
         <dependency>

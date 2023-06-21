@@ -29,6 +29,10 @@
         <artifactId>kogito-api-incubation-predictions-services</artifactId>
       </dependency>
       <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus-incubation-common</artifactId>
+      </dependency>
+      <dependency>
         <groupId>io.cloudevents</groupId>
         <artifactId>cloudevents-json-jackson</artifactId>
       </dependency>

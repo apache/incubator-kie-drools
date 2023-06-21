@@ -16,8 +16,6 @@
 
 package org.kie.kogito.quarkus.common.deployment;
 
-import org.kie.kogito.incubation.common.objectmapper.quarkus.QuarkusInternalObjectMapper;
-
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
@@ -25,7 +23,7 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 public class KogitoInternalObjectMapperProvider {
     @BuildStep
     public ReflectiveClassBuildItem objectMapperImpl() {
-        return ReflectiveClassBuildItem.builder(QuarkusInternalObjectMapper.class).build();
+        return ReflectiveClassBuildItem.builder("org.kie.kogito.incubation.common.objectmapper.quarkus.QuarkusInternalObjectMapper").build();
     }
 
     @BuildStep

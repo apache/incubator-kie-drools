@@ -185,6 +185,18 @@
 
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus-incubation-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus-incubation-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>jobs-service-api</artifactId>
         <version>${project.version}</version>
       </dependency>

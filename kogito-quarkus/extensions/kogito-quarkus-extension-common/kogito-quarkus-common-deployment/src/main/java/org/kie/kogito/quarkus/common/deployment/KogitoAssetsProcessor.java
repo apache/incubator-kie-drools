@@ -43,10 +43,6 @@ import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
-import org.kie.kogito.incubation.common.EmptyDataContext;
-import org.kie.kogito.incubation.common.EmptyMetaDataContext;
-import org.kie.kogito.incubation.common.ExtendedDataContext;
-import org.kie.kogito.incubation.common.MapDataContext;
 import org.kie.kogito.quarkus.KogitoRecorder;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
@@ -302,13 +298,13 @@ public class KogitoAssetsProcessor {
 
     private void registerKogitoIncubationAPI(BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, EmptyDataContext.class.getCanonicalName()));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.incubation.common.EmptyDataContext"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, EmptyMetaDataContext.class.getCanonicalName()));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.incubation.common.EmptyMetaDataContext"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, ExtendedDataContext.class.getCanonicalName()));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.incubation.common.ExtendedDataContext"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, MapDataContext.class.getCanonicalName()));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.incubation.common.MapDataContext"));
     }
 
     private void registerDataEventsForReflection(Optional<IndexView> optionalIndex, KogitoBuildContext context, BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
