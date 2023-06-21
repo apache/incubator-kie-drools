@@ -5165,4 +5165,62 @@ public class IncrementalCompilationTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(fired).containsExactly("R6");
     }
+
+    @Test
+    public void testReaddAllRulesWithIdenticalRules() {
+        // DROOLS-7462
+
+        final String drl1 =
+                "import " + Message.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $m: Message()\n" +
+                "    exists String(toString == $m.message)\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $m: Message()\n" +
+                "    exists String(toString == $m.message)\n" +
+                "then\n" +
+                "end\n";
+
+        final String drl2 =
+                "import " + Message.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R3 when\n" +
+                "    $m: Message()\n" +
+                "    exists String(toString == $m.message)\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R4 when\n" +
+                "    $m: Message()\n" +
+                "    exists String(toString == $m.message)\n" +
+                "then\n" +
+                "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        KieSession ksession = kc.newKieSession();
+
+        ksession.insert(new Message("test1"));
+        ksession.insert("test1");
+        ksession.insert(new Message("test2"));
+        ksession.insert("test2");
+
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(4);
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl2);
+
+        kc.updateToVersion(releaseId2);
+        fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(4);
+    }
 }
