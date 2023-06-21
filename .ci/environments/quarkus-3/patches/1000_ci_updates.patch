@@ -1,5 +1,5 @@
 diff --git a/.ci/buildchain-config.yaml b/.ci/buildchain-config.yaml
-index 497197ebff..b74341a3a4 100644
+index 497197ebff..cbb18b4fd3 100644
 --- a/.ci/buildchain-config.yaml
 +++ b/.ci/buildchain-config.yaml
 @@ -36,34 +36,34 @@ build:
@@ -34,7 +34,7 @@ index 497197ebff..b74341a3a4 100644
 -        **/cypress/screenshots/**
 -        **/cypress/videos/**
 +  # - project: kiegroup/kogito-apps
-+  #   build-command: 
++  #   build-command:
 +  #     current: |
 +  #       export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.KOGITO_APPS_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
 +  #       mvn clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_APPS_BUILD_MVN_OPTS }}
@@ -169,7 +169,7 @@ index 31d0afcc93..e838342fb7 100644
 +  #       - kiegroup/kogito-apps
 +  #       - kiegroup/kogito-runtimes
 diff --git a/.ci/jenkins/dsl/jobs.groovy b/.ci/jenkins/dsl/jobs.groovy
-index 2af4898be3..ef34898f86 100644
+index 2af4898be3..97d33af4e8 100644
 --- a/.ci/jenkins/dsl/jobs.groovy
 +++ b/.ci/jenkins/dsl/jobs.groovy
 @@ -59,7 +59,7 @@ void createProjectSetupBranchJob() {
@@ -258,13 +258,14 @@ index 2af4898be3..ef34898f86 100644
      return jobParams
  }
  
+-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, addFullProfileJobParamsGetter)
 +Closure setup3AMCronTriggerJobParamsGetter = { script ->
 +    def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
 +    jobParams.triggers = [ cron: 'H 3 * * *' ]
 +    return jobParams
 +}
 +
- KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, addFullProfileJobParamsGetter)
++KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
  
  // Environment nightlies
 -setupSpecificBuildChainNightlyJob('native', addFullProfileJobParamsGetter)
