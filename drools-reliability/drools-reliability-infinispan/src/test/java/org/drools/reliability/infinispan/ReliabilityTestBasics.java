@@ -15,8 +15,17 @@
 
 package org.drools.reliability.infinispan;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
+import org.drools.base.facttemplates.Event;
 import org.drools.core.ClassObjectFilter;
+import org.drools.model.Model;
 import org.drools.model.codegen.ExecutableModelProject;
+import org.drools.modelcompiler.KieBaseBuilder;
 import org.drools.reliability.core.ReliableKieSession;
 import org.drools.reliability.core.ReliableRuntimeComponentFactoryImpl;
 import org.drools.reliability.core.StorageManagerFactory;
@@ -43,13 +52,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.test.domain.Person;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+
 import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MARSHALLER;
+import static org.drools.reliability.infinispan.util.PrototypeUtils.createEvent;
 import static org.drools.util.Config.getConfig;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -223,6 +235,10 @@ public abstract class ReliabilityTestBasics {
         return getKieSession(drl, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy) : null, options);
     }
 
+    protected KieSession createSession(Model ruleModel, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
+        return getKieSession(ruleModel, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy) : null, options);
+    }
+
     protected KieSession restoreSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, Option... options) {
         return restoreSession(drl, persistenceStrategy, PersistedSessionOption.SafepointStrategy.ALWAYS, options);
     }
@@ -241,6 +257,10 @@ public abstract class ReliabilityTestBasics {
 
     protected int fireAllRules(KieSession session) {
         return session.fireAllRules();
+    }
+
+    protected KieSession restoreSession(Model ruleModel, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
+        return getKieSession(ruleModel, PersistedSessionOption.fromSession(persistedSessionId).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
     }
 
     protected void disposeSession() {
@@ -282,6 +302,16 @@ public abstract class ReliabilityTestBasics {
     protected KieSession getKieSession(String drl, PersistedSessionOption persistedSessionOption, Option... options) {
         OptionsFilter optionsFilter = new OptionsFilter(options);
         KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build(ExecutableModelProject.class, optionsFilter.getKieBaseOptions());
+        return getKieSessionFromKieBase(kbase, persistedSessionOption, optionsFilter);
+    }
+
+    protected KieSession getKieSession(Model ruleModel, PersistedSessionOption persistedSessionOption, Option... options) {
+        OptionsFilter optionsFilter = new OptionsFilter(options);
+        KieBase kbase = KieBaseBuilder.createKieBaseFromModel(ruleModel, optionsFilter.getKieBaseOptions());
+        return getKieSessionFromKieBase(kbase, persistedSessionOption, optionsFilter);
+    }
+
+    private KieSession getKieSessionFromKieBase(KieBase kbase, PersistedSessionOption persistedSessionOption, OptionsFilter optionsFilter) {
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         if (persistedSessionOption != null) {
             conf.setOption(persistedSessionOption);
@@ -323,5 +353,29 @@ public abstract class ReliabilityTestBasics {
         KieSessionOption[] getKieSessionOption() {
             return options == null ? new KieSessionOption[0] : Stream.of(options).filter(KieSessionOption.class::isInstance).toArray(KieSessionOption[]::new);
         }
+    }
+
+    protected void advanceTime(long amount, TimeUnit unit) {
+        ((SessionPseudoClock) sessions.get(0).getSessionClock()).advanceTime(amount, unit);
+    }
+
+    protected void advanceTimeAndFire(long amount, TimeUnit unit) {
+        ((SessionPseudoClock) sessions.get(0).getSessionClock()).advanceTime(amount, unit);
+        sessions.get(0).fireAllRules();
+    }
+
+    protected void insertMatchingSensuEvent(String host, String type) {
+        insertSensuEvent(host, type);
+    }
+
+    protected void insertNonMatchingSensuEvent(String host, String type) {
+        insertSensuEvent(host, type);
+    }
+
+    private void insertSensuEvent(String host, String type) {
+        Event sensu = createEvent();
+        sensu.set("sensu.host", host);
+        sensu.set("sensu.process.type", type);
+        sessions.get(0).insert(sensu);
     }
 }

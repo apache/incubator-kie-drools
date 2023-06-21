@@ -47,12 +47,21 @@ public abstract class BaseStoredObject implements StoredObject,
     }
 
     @Override
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    @Override
+    public long getDuration() {
+        return duration;
+    }
+
+    @Override
     public void repropagate(InternalWorkingMemoryEntryPoint ep) {
         if (isEvent()) {
             FactHandleFactory fhFactory = ep.getHandleFactory();
             DefaultEventHandle eFh = fhFactory.createEventFactHandle(fhFactory.getNextId(), getObject(), fhFactory.getNextRecency(), ep, timestamp, duration);
             ep.insert(eFh);
-            ((ReliablePseudoClockScheduler) ep.getReteEvaluator().getTimerService()).putHandleIdAssociation(handleId, eFh);
         } else {
             ep.insert(getObject());
         }

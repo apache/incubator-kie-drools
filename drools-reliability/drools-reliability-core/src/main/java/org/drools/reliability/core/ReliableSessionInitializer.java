@@ -57,7 +57,6 @@ public class ReliableSessionInitializer {
             if (!persistedSessionOption.isNewSession()) {
                 // re-propagate objects from the storage to the new session
                 populateSessionFromStorage(session);
-                ((ReliablePseudoClockScheduler)session.getTimerService()).rewireTimerJobs();
             }
 
             session.setWorkingMemoryActionListener(entry -> onWorkingMemoryAction(session, entry));

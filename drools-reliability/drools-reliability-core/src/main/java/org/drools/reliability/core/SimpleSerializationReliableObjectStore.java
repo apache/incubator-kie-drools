@@ -15,15 +15,17 @@
 
 package org.drools.reliability.core;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.drools.core.ClockType;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SimpleSerializationReliableObjectStore extends IdentityObjectStore implements SimpleReliableObjectStore {
 
@@ -66,13 +68,41 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
         }
         storage.clear();
 
-        // fact handles with a match have been already propagated in the original session, so they shouldn't fire
-        propagated.forEach(obj -> obj.repropagate(ep));
-        session.fireAllRules(match -> false);
+        if (session.getSessionConfiguration().getClockType() == ClockType.PSEUDO_CLOCK) {
+            repropagateWithPseudoClock(session, ep, propagated);
+        } else {
+            // fact handles with a match have been already propagated in the original session, so they shouldn't fire
+            propagated.forEach(obj -> obj.repropagate(ep));
+            session.fireAllRules(match -> false);
+        }
+
         reInitPropagated = false;
 
         // fact handles without any match have never been propagated in the original session, so they should fire
         return notPropagated;
+    }
+
+    private void repropagateWithPseudoClock(InternalWorkingMemory session, InternalWorkingMemoryEntryPoint ep, List<StoredObject> propagated) {
+        ReliablePseudoClockScheduler clock = (ReliablePseudoClockScheduler) session.getSessionClock();
+        for (StoredObject storedObject : propagated) {
+            if (storedObject.isEvent()) {
+                long currentTime = clock.getCurrentTime();
+                long timestamp = storedObject.getTimestamp();
+                if (currentTime < timestamp) {
+                    clock.advanceTime(timestamp - currentTime, TimeUnit.MILLISECONDS);
+                }
+            }
+            storedObject.repropagate(ep); // This may schedule an expiration
+        }
+        // fact handles with a match have been already propagated in the original session, so they shouldn't fire
+        session.fireAllRules(match -> false);
+
+        // Finally, meet with the persistedTime
+        long currentTime = clock.getCurrentTime();
+        long persistedTime = clock.getPersistedTimer().longValue();
+        if (currentTime < persistedTime) {
+            clock.advanceTime(persistedTime - currentTime, TimeUnit.MILLISECONDS); // This may trigger an expiration
+        }
     }
 
     @Override

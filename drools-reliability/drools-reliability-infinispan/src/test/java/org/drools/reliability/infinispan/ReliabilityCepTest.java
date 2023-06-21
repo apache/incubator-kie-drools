@@ -80,7 +80,7 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly")
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
     void insertAdvanceFailoverExpireFire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
         createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
@@ -99,5 +99,30 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
                                           .isEqualTo(1);
         assertThat(getFactHandles()).as("DROO should have expired because @Expires = 60s")
                                             .hasSize(1);
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
+    void insertAdvanceFireFailoverExpire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+
+        createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        SessionPseudoClock clock = getSessionClock();
+
+        insert(new StockTick("DROO"));
+        clock.advanceTime(6, TimeUnit.SECONDS);
+        insert(new StockTick("ACME"));
+
+        assertThat(fireAllRules()).as("DROO is expired, but a match is available.")
+                                  .isEqualTo(1);
+
+        failover();
+        restoreSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock = getSessionClock();
+
+        clock.advanceTime(58, TimeUnit.SECONDS);
+        fireAllRules();
+
+        assertThat(getFactHandles()).as("DROO should have expired because @Expires = 60s")
+                                    .hasSize(1);
     }
 }
