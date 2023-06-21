@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.base.facttemplates.Event;
-import org.drools.core.reteoo.ReteDumper;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
@@ -38,8 +37,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.PersistedSessionOption;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.accFunction;
@@ -63,7 +60,6 @@ import static org.drools.reliability.infinispan.util.PrototypeUtils.processResul
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReliabilityCepOnceAfterTest.class);
     public static final String RULE_TYPE_TAG = "RULE_TYPE";
     public static final String SYNTHETIC_RULE_TAG = "SYNTHETIC_RULE";
     public static final String KEYWORD = "once_after";
@@ -168,7 +164,7 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly")
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
     void insertFailoverAdvanceFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
         createSession(ruleModel(), persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
@@ -202,7 +198,7 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly")
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
     void insertAdvanceFailoverFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
         createSession(ruleModel(), persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
@@ -228,6 +224,9 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
 
         advanceTime(7, TimeUnit.MINUTES);
 
+        // advanceTime, then server crash before fireAllRules
+        // Generally this doesn't happen in drools-ansible because AutomaticPseudoClock does advanceTime + fireAllRules atomically, but simulating a crash in the middle.
+
         failover();
         restoreSession(ruleModel(), persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
 
@@ -235,5 +234,46 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
 
         assertThat(getResults()).as("10 minutes window is over. The result should be collected")
                 .hasSize(2);
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
+    void insertAdvanceInsertFailoverFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+
+        createSession(ruleModel(), persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+
+        insertMatchingSensuEvent("host1", "alert");
+
+        advanceTimeAndFire(1, TimeUnit.MINUTES);
+
+        insertNonMatchingSensuEvent("host1", "info");
+
+        advanceTimeAndFire(1, TimeUnit.MINUTES);
+
+        insertMatchingSensuEvent("host2", "alert");
+
+        advanceTimeAndFire(1, TimeUnit.MINUTES);
+
+        assertThat(getResults()).as("once_after is 10 minutes window. The main rule should not be fired yet")
+                .isEmpty();
+
+        advanceTime(8, TimeUnit.MINUTES);
+
+        // advanceTime, insert events, then server crashes before fireAllRules
+        // This doesn't happen in drools-ansible because AutomaticPseudoClock does advanceTime + fireAllRules atomically, but testing to confirm the restore logic.
+
+        // These events are not fired before a crash, so will be listed in "notPropagated", so wouldn't bother "nextFireTime" calculation of "start_once_after" expiration
+        insertMatchingSensuEvent("host3", "alert");
+        insertMatchingSensuEvent("host4", "alert");
+        insertMatchingSensuEvent("host5", "alert");
+        insertMatchingSensuEvent("host6", "alert");
+
+        failover();
+        restoreSession(ruleModel(), persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+
+        fireAllRules();
+
+        assertThat(getResults()).as("2 is the normally expected result size, but in this edge case, 6 events are collected")
+                .hasSize(6);
     }
 }

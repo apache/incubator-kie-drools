@@ -80,7 +80,7 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnly")
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
     void insertAdvanceFailoverExpireFire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
         createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
