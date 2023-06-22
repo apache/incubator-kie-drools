@@ -20,7 +20,6 @@
     <module>common</module>
     <module>rest-exception-handler</module>
     <module>persistence</module>
-    <module>process-svg</module>
     <module>process-management</module>
     <module>source-files</module>
     <module>knative</module>
@@ -43,6 +42,7 @@
         <module>explainability</module>
         <module>mail</module>
         <module>monitoring</module>
+        <module>process-svg</module>
         <module>task-notification</module>
         <module>tracing-decision</module>
         <module>task-management</module>
