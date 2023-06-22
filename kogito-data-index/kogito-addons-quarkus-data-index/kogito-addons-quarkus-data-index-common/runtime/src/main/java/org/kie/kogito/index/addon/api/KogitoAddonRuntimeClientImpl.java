@@ -53,10 +53,10 @@ public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
     private Processes processes;
 
     @Inject
-    public KogitoAddonRuntimeClientImpl(ProcessSvgService processSvgService,
+    public KogitoAddonRuntimeClientImpl(Instance<ProcessSvgService> processSvgService,
             SourceFilesProvider sourceFilesProvider,
             Instance<Processes> processesInstance) {
-        this.processSvgService = processSvgService;
+        this.processSvgService = processSvgService.isResolvable() ? processSvgService.get() : null;
         this.sourceFilesProvider = sourceFilesProvider;
         this.processes = processesInstance.isResolvable() ? processesInstance.get() : null;
     }
@@ -90,7 +90,11 @@ public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
 
     @Override
     public CompletableFuture<String> getProcessInstanceDiagram(String serviceURL, ProcessInstance processInstance) {
-        return CompletableFuture.supplyAsync(() -> processSvgService.getProcessInstanceSvg(processInstance.getProcessId(), processInstance.getId(), null).orElse(null), managedExecutor);
+        if (processSvgService == null) {
+            return CompletableFuture.completedFuture(null);
+        } else {
+            return CompletableFuture.supplyAsync(() -> processSvgService.getProcessInstanceSvg(processInstance.getProcessId(), processInstance.getId(), null).orElse(null), managedExecutor);
+        }
     }
 
     @Override
