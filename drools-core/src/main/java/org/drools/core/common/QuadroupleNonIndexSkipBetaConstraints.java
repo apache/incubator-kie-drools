@@ -20,12 +20,14 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
+import java.util.Optional;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
@@ -156,11 +158,11 @@ public class QuadroupleNonIndexSkipBetaConstraints
         return this.constraints.isAllowedCachedRight(context, tuple);
     }
 
-    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
-        return constraint0.getListenedPropertyMask(modifiedClass, settableProperties)
-                .setAll(constraint1.getListenedPropertyMask(modifiedClass, settableProperties))
-                .setAll(constraint2.getListenedPropertyMask(modifiedClass, settableProperties))
-                .setAll(constraint3.getListenedPropertyMask(modifiedClass, settableProperties));
+    public BitMask getListenedPropertyMask(Pattern pattern, Class modifiedClass, List<String> settableProperties) {
+        return constraint0.getListenedPropertyMask(Optional.of(pattern), modifiedClass, settableProperties)
+                .setAll(constraint1.getListenedPropertyMask(Optional.of(pattern), modifiedClass, settableProperties))
+                .setAll(constraint2.getListenedPropertyMask(Optional.of(pattern), modifiedClass, settableProperties))
+                .setAll(constraint3.getListenedPropertyMask(Optional.of(pattern), modifiedClass, settableProperties));
     }
 
     public boolean isLeftUpdateOptimizationAllowed() {
