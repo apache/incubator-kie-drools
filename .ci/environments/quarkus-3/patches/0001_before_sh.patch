@@ -1584,7 +1584,7 @@ index bf5c0438ea..4e4cb5d4e3 100644
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.Test;
 diff --git a/quarkus/addons/marshallers/avro/runtime/pom.xml b/quarkus/addons/marshallers/avro/runtime/pom.xml
-index 608b072048..26b16c3d65 100644
+index 8e71b03c4e..b9cadff3ae 100644
 --- a/quarkus/addons/marshallers/avro/runtime/pom.xml
 +++ b/quarkus/addons/marshallers/avro/runtime/pom.xml
 @@ -27,7 +27,7 @@
@@ -3034,10 +3034,10 @@ index 9a0df50ab9..af28d1a5a1 100644
  import org.kie.kogito.incubation.application.AppRoot;
  import org.kie.kogito.incubation.common.DataContext;
 diff --git a/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/pom.xml b/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/pom.xml
-index f3d9cb7a38..34729dc886 100644
+index 50d0cb7aae..6c32e85a60 100644
 --- a/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/pom.xml
 +++ b/quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions/pom.xml
-@@ -66,7 +66,7 @@
+@@ -70,7 +70,7 @@
              </plugin>
              <plugin>
                  <groupId>io.quarkus</groupId>
@@ -3080,7 +3080,7 @@ index 3c7cf9db4b..39d6329064 100644
  import org.kie.kogito.incubation.common.DataContext;
  import org.kie.kogito.incubation.common.ExtendedDataContext;
 diff --git a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common-deployment/src/main/java/org/kie/kogito/quarkus/common/deployment/KogitoAssetsProcessor.java b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common-deployment/src/main/java/org/kie/kogito/quarkus/common/deployment/KogitoAssetsProcessor.java
-index 579ca04ddb..fcdc3f09ad 100644
+index 5cf6bb523d..35d95e87c9 100644
 --- a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common-deployment/src/main/java/org/kie/kogito/quarkus/common/deployment/KogitoAssetsProcessor.java
 +++ b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common-deployment/src/main/java/org/kie/kogito/quarkus/common/deployment/KogitoAssetsProcessor.java
 @@ -28,8 +28,8 @@ import java.util.function.Function;
@@ -3095,10 +3095,10 @@ index 579ca04ddb..fcdc3f09ad 100644
  import org.drools.codegen.common.DroolsModelBuildContext;
  import org.drools.codegen.common.GeneratedFile;
 diff --git a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml
-index 439018b04f..8ccba5cd78 100644
+index 3612fdd487..d1406ec93a 100644
 --- a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml
 +++ b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/pom.xml
-@@ -95,7 +95,7 @@
+@@ -75,7 +75,7 @@
          <plugins>
              <plugin>
                  <groupId>io.quarkus</groupId>
@@ -3107,36 +3107,6 @@ index 439018b04f..8ccba5cd78 100644
                  <version>${version.io.quarkus}</version>
              </plugin>
              <plugin>
-diff --git a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/incubation/application/quarkus/QuarkusAppRoot.java b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/incubation/application/quarkus/QuarkusAppRoot.java
-index 6620bc463a..265fb4f880 100644
---- a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/incubation/application/quarkus/QuarkusAppRoot.java
-+++ b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/incubation/application/quarkus/QuarkusAppRoot.java
-@@ -16,9 +16,9 @@
- 
- package org.kie.kogito.incubation.application.quarkus;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.enterprise.inject.Instance;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.inject.Instance;
-+import jakarta.inject.Inject;
- 
- import org.kie.kogito.incubation.application.AppRoot;
- import org.kie.kogito.incubation.common.ComponentRoot;
-diff --git a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/incubation/common/objectmapper/quarkus/QuarkusInternalObjectMapper.java b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/incubation/common/objectmapper/quarkus/QuarkusInternalObjectMapper.java
-index 97c1287afc..cc7a8e11ff 100644
---- a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/incubation/common/objectmapper/quarkus/QuarkusInternalObjectMapper.java
-+++ b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/incubation/common/objectmapper/quarkus/QuarkusInternalObjectMapper.java
-@@ -18,7 +18,7 @@ package org.kie.kogito.incubation.common.objectmapper.quarkus;
- 
- import java.util.Map;
- 
--import javax.enterprise.inject.spi.CDI;
-+import jakarta.enterprise.inject.spi.CDI;
- 
- import org.kie.kogito.incubation.common.DataContext;
- import org.kie.kogito.incubation.common.ExtendedDataContext;
 diff --git a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/config/ConfigBean.java b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/config/ConfigBean.java
 index e0af805b1f..2147548e66 100644
 --- a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/config/ConfigBean.java
@@ -3252,6 +3222,36 @@ index f41f347b1a..6e6c5d59c8 100644
          <version>${version.io.quarkus}</version>
          <executions>
            <execution>
+diff --git a/quarkus/extensions/kogito-quarkus-incubation-common/src/main/java/org/kie/kogito/incubation/application/quarkus/QuarkusAppRoot.java b/quarkus/extensions/kogito-quarkus-incubation-common/src/main/java/org/kie/kogito/incubation/application/quarkus/QuarkusAppRoot.java
+index 6620bc463a..265fb4f880 100644
+--- a/quarkus/extensions/kogito-quarkus-incubation-common/src/main/java/org/kie/kogito/incubation/application/quarkus/QuarkusAppRoot.java
++++ b/quarkus/extensions/kogito-quarkus-incubation-common/src/main/java/org/kie/kogito/incubation/application/quarkus/QuarkusAppRoot.java
+@@ -16,9 +16,9 @@
+ 
+ package org.kie.kogito.incubation.application.quarkus;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Instance;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Instance;
++import jakarta.inject.Inject;
+ 
+ import org.kie.kogito.incubation.application.AppRoot;
+ import org.kie.kogito.incubation.common.ComponentRoot;
+diff --git a/quarkus/extensions/kogito-quarkus-incubation-common/src/main/java/org/kie/kogito/incubation/common/objectmapper/quarkus/QuarkusInternalObjectMapper.java b/quarkus/extensions/kogito-quarkus-incubation-common/src/main/java/org/kie/kogito/incubation/common/objectmapper/quarkus/QuarkusInternalObjectMapper.java
+index 97c1287afc..cc7a8e11ff 100644
+--- a/quarkus/extensions/kogito-quarkus-incubation-common/src/main/java/org/kie/kogito/incubation/common/objectmapper/quarkus/QuarkusInternalObjectMapper.java
++++ b/quarkus/extensions/kogito-quarkus-incubation-common/src/main/java/org/kie/kogito/incubation/common/objectmapper/quarkus/QuarkusInternalObjectMapper.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.incubation.common.objectmapper.quarkus;
+ 
+ import java.util.Map;
+ 
+-import javax.enterprise.inject.spi.CDI;
++import jakarta.enterprise.inject.spi.CDI;
+ 
+ import org.kie.kogito.incubation.common.DataContext;
+ import org.kie.kogito.incubation.common.ExtendedDataContext;
 diff --git a/quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions-integration-test/src/main/java/org/kie/kogito/quarkus/pmml/CustomEndpoint.java b/quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions-integration-test/src/main/java/org/kie/kogito/quarkus/pmml/CustomEndpoint.java
 index b4d754eb99..d1a28b41e2 100644
 --- a/quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions-integration-test/src/main/java/org/kie/kogito/quarkus/pmml/CustomEndpoint.java
@@ -3276,10 +3276,10 @@ index b4d754eb99..d1a28b41e2 100644
  import org.kie.kogito.incubation.application.AppRoot;
  import org.kie.kogito.incubation.common.DataContext;
 diff --git a/quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions/pom.xml b/quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions/pom.xml
-index 63409a8999..7c16750413 100644
+index 7dc55c08c8..0b22d355ad 100644
 --- a/quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions/pom.xml
 +++ b/quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions/pom.xml
-@@ -38,7 +38,7 @@
+@@ -42,7 +42,7 @@
          <plugins>
              <plugin>
                  <groupId>io.quarkus</groupId>
@@ -3389,10 +3389,10 @@ index e98e388939..0903d20f57 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.incubation.application.AppRoot;
 diff --git a/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes/pom.xml b/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes/pom.xml
-index 9027a12a2a..305be55bb5 100644
+index 7f4d1a6fa0..5c7e77f9cd 100644
 --- a/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes/pom.xml
 +++ b/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes/pom.xml
-@@ -36,7 +36,7 @@
+@@ -40,7 +40,7 @@
      <plugins>
        <plugin>
          <groupId>io.quarkus</groupId>
@@ -3539,10 +3539,10 @@ index f748c5d240..eae5b1a543 100644
  import org.drools.ruleunits.api.DataSource;
  import org.junit.jupiter.api.Test;
 diff --git a/quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules/pom.xml b/quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules/pom.xml
-index fa1b6a36b1..333ab9809a 100644
+index 790727329c..e1d80e9abb 100644
 --- a/quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules/pom.xml
 +++ b/quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules/pom.xml
-@@ -41,7 +41,7 @@
+@@ -45,7 +45,7 @@
          <plugins>
              <plugin>
                  <groupId>io.quarkus</groupId>
