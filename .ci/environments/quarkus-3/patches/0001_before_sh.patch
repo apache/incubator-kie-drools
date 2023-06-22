@@ -1,5 +1,5 @@
 diff --git a/build-parent/pom.xml b/build-parent/pom.xml
-index 90a524d2dd..7b9f752bb5 100644
+index deb889e4e6..7b9f752bb5 100644
 --- a/build-parent/pom.xml
 +++ b/build-parent/pom.xml
 @@ -40,9 +40,9 @@
@@ -129,7 +129,7 @@ index 90a524d2dd..7b9f752bb5 100644
 -    <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
 +    <version.com.github.javaparser>3.25.1</version.com.github.javaparser>
  
--    <version.com.google.guava>30.0-jre</version.com.google.guava>
+-    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
 +    <version.com.google.guava>31.1-jre</version.com.google.guava>
  
      <!-- JaCoCo coverage data file location -->
