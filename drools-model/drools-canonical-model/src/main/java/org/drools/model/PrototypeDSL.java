@@ -130,21 +130,18 @@ public class PrototypeDSL {
             }
 
             Prototype prototype = getPrototype();
-            Function1<PrototypeFact, Object> leftExtractor;
+            Function1<PrototypeFact, Object> leftExtractor = left.asFunction(prototype);
             AlphaIndex alphaIndex = null;
-            if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.FixedValue && operator instanceof Index.ConstraintType) {
-                String fieldName = ((PrototypeExpression.PrototypeFieldValue) left).getFieldName();
+            if (left.getIndexingKey().isPresent() && right instanceof PrototypeExpression.FixedValue && operator instanceof Index.ConstraintType) {
+                String fieldName = left.getIndexingKey().get();
                 Index.ConstraintType constraintType = (Index.ConstraintType) operator;
                 Prototype.Field field = prototype.getField(fieldName);
                 Object value = ((PrototypeExpression.FixedValue) right).getValue();
-                leftExtractor = getFieldValueExtractor(prototype, fieldName);
 
                 Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : value != null ? value.getClass() : null);
                 if (fieldClass != null) {
                     alphaIndex = alphaIndexedBy(fieldClass, constraintType, getFieldIndex(prototype, fieldName, field), leftExtractor, value);
                 }
-            } else {
-                leftExtractor = left.asFunction(prototype);
             }
 
             Set<String> reactOnFields = new HashSet<>();
@@ -186,14 +183,12 @@ public class PrototypeDSL {
         }
 
         private BetaIndex createBetaIndex(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right, Prototype prototype, Prototype otherPrototype) {
-            if (left instanceof PrototypeExpression.PrototypeFieldValue && operator instanceof Index.ConstraintType && right instanceof PrototypeExpression.PrototypeFieldValue) {
-                String fieldName = ((PrototypeExpression.PrototypeFieldValue) left).getFieldName();
+            if (left.getIndexingKey().isPresent() && operator instanceof Index.ConstraintType && right.getIndexingKey().isPresent()) {
+                String fieldName = left.getIndexingKey().get();
                 Index.ConstraintType constraintType = (Index.ConstraintType) operator;
                 Prototype.Field field = prototype.getField(fieldName);
-                Function1<PrototypeFact, Object> extractor = getFieldValueExtractor(prototype, fieldName);
-
-                String otherFieldName = ((PrototypeExpression.PrototypeFieldValue) right).getFieldName();
-                Function1<PrototypeFact, Object> otherExtractor = getFieldValueExtractor(otherPrototype, otherFieldName);
+                Function1<PrototypeFact, Object> extractor = left.asFunction(prototype);
+                Function1<PrototypeFact, Object> otherExtractor = right.asFunction(otherPrototype);
 
                 Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : Object.class);
                 return betaIndexedBy( fieldClass, constraintType, getFieldIndex(prototype, fieldName, field), extractor, otherExtractor );
@@ -271,10 +266,6 @@ public class PrototypeDSL {
 
         private static boolean evaluateConstraint(Object leftValue, ConstraintOperator operator, Object rightValue) {
             return leftValue != Prototype.UNDEFINED_VALUE && rightValue != Prototype.UNDEFINED_VALUE && operator.asPredicate().test(leftValue, rightValue);
-        }
-
-        private Function1<PrototypeFact, Object> getFieldValueExtractor(Prototype prototype, String fieldName) {
-            return prototype.getFieldValueExtractor(fieldName)::apply;
         }
     }
 
