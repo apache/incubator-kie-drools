@@ -48,8 +48,6 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
 
     private boolean                        directFiring;
 
-    private boolean                        threadSafe;
-
     private boolean                        accumulateNullPropagation;
 
     private ForceEagerActivationFilter     forceEagerActivationFilter;
@@ -57,6 +55,8 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
     private BeliefSystemType               beliefSystemType;
 
     private QueryListenerOption            queryListener;
+    
+    private ThreadSafeOption threadSafeOption;
     
     private TimedRuleExecutionOption timedRuleExecutionOption;
 
@@ -86,7 +86,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
     private void init() {
         setDirectFiring(Boolean.parseBoolean(getPropertyValue(DirectFiringOption.PROPERTY_NAME, "false")));
 
-        setThreadSafe(Boolean.parseBoolean(getPropertyValue(ThreadSafeOption.PROPERTY_NAME, "true")));
+        setThreadSafeOption(ThreadSafeOption.resolve(getPropertyValue(ThreadSafeOption.PROPERTY_NAME, "true")));
 
         setAccumulateNullPropagation(Boolean.parseBoolean(getPropertyValue(AccumulateNullPropagationOption.PROPERTY_NAME, "false")));
 
@@ -106,15 +106,6 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
 
     private boolean isDirectFiring() {
         return this.directFiring;
-    }
-
-    private void setThreadSafe(boolean threadSafe) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.threadSafe = threadSafe;
-    }
-
-    private boolean isThreadSafe() {
-        return this.threadSafe;
     }
 
     private void setAccumulateNullPropagation(boolean accumulateNullPropagation) {
@@ -170,7 +161,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
                 break;
             }
             case ThreadSafeOption.PROPERTY_NAME: {
-                setThreadSafe(((ThreadSafeOption) option).isThreadSafe());
+                setThreadSafeOption(((ThreadSafeOption) option));
                 break;
             }
             case AccumulateNullPropagationOption.PROPERTY_NAME: {
@@ -198,14 +189,20 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
         }
     }
 
-    @SuppressWarnings("unchecked")
+    private void setThreadSafeOption(ThreadSafeOption threadSafeOption) {
+    	checkCanChange();
+		this.threadSafeOption = threadSafeOption;
+		
+	}
+
+	@SuppressWarnings("unchecked")
     public final <T extends SingleValueKieSessionOption> T getOption(OptionKey<T> option) {
         switch (option.name()) {
             case DirectFiringOption.PROPERTY_NAME: {
                 return (T) (isDirectFiring() ? DirectFiringOption.YES : DirectFiringOption.NO);
             }
             case ThreadSafeOption.PROPERTY_NAME: {
-                return (T) (isThreadSafe() ? ThreadSafeOption.YES : ThreadSafeOption.NO);
+                return (T) threadSafeOption;
             }
             case AccumulateNullPropagationOption.PROPERTY_NAME: {
                 return (T) (isAccumulateNullPropagation() ? AccumulateNullPropagationOption.YES : AccumulateNullPropagationOption.NO);
@@ -241,7 +238,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
                 break;
             }
             case ThreadSafeOption.PROPERTY_NAME: {
-                setThreadSafe(StringUtils.isEmpty(value) || Boolean.parseBoolean(value));
+                setThreadSafeOption(ThreadSafeOption.resolve(value));
                 break;
             }
             case AccumulateNullPropagationOption.PROPERTY_NAME: {
@@ -278,7 +275,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
             case DirectFiringOption.PROPERTY_NAME: {
                 return Boolean.toString(isDirectFiring());
             } case ThreadSafeOption.PROPERTY_NAME: {
-                return Boolean.toString(isThreadSafe());
+                return Boolean.toString(threadSafeOption.isThreadSafe());
             } case AccumulateNullPropagationOption.PROPERTY_NAME: {
                 return Boolean.toString(isAccumulateNullPropagation());
             } case QueryListenerOption.PROPERTY_NAME: {

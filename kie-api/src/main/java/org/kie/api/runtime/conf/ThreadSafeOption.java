@@ -61,5 +61,9 @@ public enum ThreadSafeOption implements SingleValueRuleRuntimeOption {
     public boolean isThreadSafe() {
         return threadSafe;
     }
+    
+    public static ThreadSafeOption resolve(String value) {
+        return Boolean.valueOf( value ) ? YES : NO;
+    }
 
 }

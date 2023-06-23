@@ -122,6 +122,6 @@ public interface InternalWorkingMemory
     void cancelActivation(InternalMatch internalMatch, boolean declarativeAgenda);
 
     default boolean isThreadSafe() {
-        return getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY) == ThreadSafeOption.YES;
+        return getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe();
     }
 }

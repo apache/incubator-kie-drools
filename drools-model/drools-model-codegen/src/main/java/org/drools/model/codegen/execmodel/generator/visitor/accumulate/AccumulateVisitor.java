@@ -260,14 +260,25 @@ public class AccumulateVisitor {
         String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
         Optional<DeclarationSpec> decl = context.getDeclarationById(rootNodeName);
 
-        Class<?> clazz = decl.map(DeclarationSpec::getDeclarationClass)
-                .orElseGet( () -> {
-                    try {
-                        return context.getTypeResolver().resolveType(rootNodeName);
-                    } catch (ClassNotFoundException e) {
-                        throw new RuntimeException( e );
-                    }
-                } );
+        Class<?> clazz = null;
+        if (decl.isPresent()) {
+        	clazz = decl.get().getDeclarationClass();
+        } else {
+            try {
+            	clazz= context.getTypeResolver().resolveType(rootNodeName);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException( e );
+            }
+            
+        }
+//        		decl.map(DeclarationSpec::getDeclarationClass)
+//                .orElseGet( () -> {
+//                    try {
+//                        return context.getTypeResolver().resolveType(rootNodeName);
+//                    } catch (ClassNotFoundException e) {
+//                        throw new RuntimeException( e );
+//                    }
+//                } );
 
         final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
         final ExpressionTyper expressionTyper = new ExpressionTyper(context, clazz, bindingId, false, expressionTyperContext);

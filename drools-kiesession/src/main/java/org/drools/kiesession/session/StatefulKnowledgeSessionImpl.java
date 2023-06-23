@@ -1509,7 +1509,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      */
     @Override
     public void startOperation(InternalOperationType operationType) {
-        if (getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY) == ThreadSafeOption.YES && this.opCounter.getAndIncrement() == 0 ) {
+        if (getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe() && this.opCounter.getAndIncrement() == 0 ) {
             // means the engine was idle, reset the timestamp
             this.lastIdleTimestamp.set(-1);
         }
@@ -1531,7 +1531,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      */
     @Override
     public void endOperation(InternalOperationType operationType) {
-        if (getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY) == ThreadSafeOption.YES && this.opCounter.decrementAndGet() == 0 ) {
+        if (getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe() && this.opCounter.decrementAndGet() == 0 ) {
             // means the engine is idle, so, set the timestamp
             if (this.timerService != null) {
                 this.lastIdleTimestamp.set(this.timerService.getCurrentTime());

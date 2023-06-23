@@ -108,7 +108,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         this.entryPointNode = entryPointNode;
         this.reteEvaluator = reteEvaluator;
         this.ruleBase = this.reteEvaluator.getKnowledgeBase();
-        this.lock = reteEvaluator.getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY) == ThreadSafeOption.YES ? new ReentrantLock() : null;
+        this.lock = reteEvaluator.getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe() ? new ReentrantLock() : null;
         this.handleFactory = this.reteEvaluator.getFactHandleFactory();
 
         RuleBaseConfiguration conf = this.ruleBase.getRuleBaseConfiguration();
