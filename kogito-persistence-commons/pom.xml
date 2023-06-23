@@ -18,6 +18,7 @@
     <module>persistence-commons-api</module>
     <module>persistence-commons-protobuf</module>
     <module>persistence-commons-postgresql</module>
+    <module>kogito-ddl</module>
   </modules>
 
   <profiles>
@@ -34,7 +35,6 @@
         <module>persistence-commons-redis</module>
         <module>persistence-commons-oracle</module>
         <module>persistence-commons-reporting-parent</module>
-        <module>kogito-ddl</module>
       </modules>
     </profile>
   </profiles>
