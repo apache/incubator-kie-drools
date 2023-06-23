@@ -19,12 +19,15 @@ package org.drools.modelcompiler.facttemplate;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.drools.base.facttemplates.Fact;
 import org.drools.base.facttemplates.FactTemplate;
 import org.drools.model.PrototypeFact;
 
 public class HashMapFactImpl implements Fact, PrototypeFact, Serializable {
+
+    protected final UUID uuid;
 
     protected final FactTemplate factTemplate;
 
@@ -35,6 +38,7 @@ public class HashMapFactImpl implements Fact, PrototypeFact, Serializable {
     }
 
     public HashMapFactImpl( FactTemplate factTemplate, Map<String, Object> valuesMap ) {
+        this.uuid = UUID.randomUUID();
         this.factTemplate = factTemplate;
         this.valuesMap = valuesMap;
     }
@@ -68,4 +72,30 @@ public class HashMapFactImpl implements Fact, PrototypeFact, Serializable {
     public String toString() {
         return "Fact " + factTemplate.getName() + " with values = " + valuesMap;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        HashMapFactImpl other = (HashMapFactImpl) obj;
+        if (uuid == null) {
+            if (other.uuid != null)
+                return false;
+        } else if (!uuid.equals(other.uuid))
+            return false;
+        return true;
+    }
+
 }

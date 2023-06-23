@@ -21,13 +21,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.core.ClockType;
 import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.common.IdentityObjectStore;
+import org.drools.core.common.EqualityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
 
-public class SimpleSerializationReliableObjectStore extends IdentityObjectStore implements SimpleReliableObjectStore {
+public class SimpleSerializationReliableObjectStore extends EqualityObjectStore implements SimpleReliableObjectStore {
 
     protected final transient Storage<Long, StoredObject> storage;
 
