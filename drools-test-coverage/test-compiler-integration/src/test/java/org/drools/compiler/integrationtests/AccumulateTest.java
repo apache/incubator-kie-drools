@@ -3675,7 +3675,7 @@ public class AccumulateTest {
 
         kieSession.delete( fh );
         // changed by DROOLS-6064
-        if (kieSession.getSessionConfiguration().as(RuleSessionConfiguration.KEY).getOption(AccumulateNullPropagationOption.KEY) == AccumulateNullPropagationOption.YES) {
+        if (kieSession.getSessionConfiguration().as(RuleSessionConfiguration.KEY).getOption(AccumulateNullPropagationOption.KEY).isAccumulateNullPropagation()) {
             assertThat(kieSession.fireAllRules()).isEqualTo(1);
             assertThat(list.size()).isEqualTo(1);
             assertThat(list.get(0)).isNull();

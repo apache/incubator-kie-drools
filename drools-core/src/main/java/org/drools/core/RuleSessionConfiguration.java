@@ -46,15 +46,15 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
 
     private static final long              serialVersionUID = 510l;
 
-    private boolean                        directFiring;
-
-    private boolean                        accumulateNullPropagation;
-
     private ForceEagerActivationFilter     forceEagerActivationFilter;
 
     private BeliefSystemType               beliefSystemType;
 
-    private QueryListenerOption            queryListener;
+    private AccumulateNullPropagationOption accumulateNullPropagation;
+    
+    private DirectFiringOption directFiringOption;
+    
+    private QueryListenerOption queryListener;
     
     private ThreadSafeOption threadSafeOption;
     
@@ -84,11 +84,11 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
     }
 
     private void init() {
-        setDirectFiring(Boolean.parseBoolean(getPropertyValue(DirectFiringOption.PROPERTY_NAME, "false")));
+    	setDirectFiringOption(DirectFiringOption.resolve(getPropertyValue(DirectFiringOption.PROPERTY_NAME, "false")));
 
         setThreadSafeOption(ThreadSafeOption.resolve(getPropertyValue(ThreadSafeOption.PROPERTY_NAME, "true")));
 
-        setAccumulateNullPropagation(Boolean.parseBoolean(getPropertyValue(AccumulateNullPropagationOption.PROPERTY_NAME, "false")));
+        setAccumulateNullPropagation(AccumulateNullPropagationOption.resolve(getPropertyValue(AccumulateNullPropagationOption.PROPERTY_NAME, "false")));
 
         setForceEagerActivationFilter(ForceEagerActivationOption.resolve( getPropertyValue( ForceEagerActivationOption.PROPERTY_NAME, "false" ) ).getFilter());
 
@@ -99,26 +99,18 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
         setQueryListenerOption( QueryListenerOption.determineQueryListenerClassOption( getPropertyValue( QueryListenerOption.PROPERTY_NAME, QueryListenerOption.STANDARD.getAsString() ) ) );
     }
 
-    private void setDirectFiring(boolean directFiring) {
+    private void setDirectFiringOption(DirectFiringOption directFiringOption) {
         checkCanChange(); // throws an exception if a change isn't possible;
-        this.directFiring = directFiring;
+        this.directFiringOption = directFiringOption;
     }
 
     private boolean isDirectFiring() {
-        return this.directFiring;
+        return directFiringOption.isDirectFiring();
     }
 
-    private void setAccumulateNullPropagation(boolean accumulateNullPropagation) {
+    private void setAccumulateNullPropagation(AccumulateNullPropagationOption accumulateNullPropagation) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.accumulateNullPropagation = accumulateNullPropagation;
-    }
-
-    private boolean isAccumulateNullPropagation() {
-        return this.accumulateNullPropagation;
-    }
-
-    private QueryListenerOption getQueryListenerOption() {
-        return this.queryListener;
     }
 
     private void setQueryListenerOption( QueryListenerOption queryListener ) {
@@ -157,7 +149,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
     public final <T extends KieSessionOption> void setOption(T option) {
         switch (option.propertyName()) {
             case DirectFiringOption.PROPERTY_NAME: {
-                setDirectFiring(((DirectFiringOption) option).isDirectFiring());
+                setDirectFiringOption(((DirectFiringOption) option));
                 break;
             }
             case ThreadSafeOption.PROPERTY_NAME: {
@@ -165,7 +157,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
                 break;
             }
             case AccumulateNullPropagationOption.PROPERTY_NAME: {
-                setAccumulateNullPropagation(((AccumulateNullPropagationOption) option).isAccumulateNullPropagation());
+                setAccumulateNullPropagation(((AccumulateNullPropagationOption) option));
                 break;
             }
             case ForceEagerActivationOption.PROPERTY_NAME: {
@@ -198,20 +190,20 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
 	@SuppressWarnings("unchecked")
     public final <T extends SingleValueKieSessionOption> T getOption(OptionKey<T> option) {
         switch (option.name()) {
+	        case AccumulateNullPropagationOption.PROPERTY_NAME: {
+	            return (T) accumulateNullPropagation;
+	        }
             case DirectFiringOption.PROPERTY_NAME: {
-                return (T) (isDirectFiring() ? DirectFiringOption.YES : DirectFiringOption.NO);
+                return (T) directFiringOption;
             }
             case ThreadSafeOption.PROPERTY_NAME: {
                 return (T) threadSafeOption;
-            }
-            case AccumulateNullPropagationOption.PROPERTY_NAME: {
-                return (T) (isAccumulateNullPropagation() ? AccumulateNullPropagationOption.YES : AccumulateNullPropagationOption.NO);
             }
             case TimedRuleExecutionOption.PROPERTY_NAME: {
                 return (T) getTimedRuleExecutionOption();
             }
             case QueryListenerOption.PROPERTY_NAME: {
-                return (T) getQueryListenerOption();
+                return (T) this.queryListener;
             }
             case BeliefSystemTypeOption.PROPERTY_NAME: {
                 return (T) BeliefSystemTypeOption.get( this.getBeliefSystemType().getId() );
@@ -234,7 +226,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
     public boolean setInternalProperty(String name, String value) {
         switch(name) {
             case DirectFiringOption.PROPERTY_NAME: {
-                setDirectFiring(!StringUtils.isEmpty(value) && Boolean.parseBoolean(value));
+            	setDirectFiringOption(DirectFiringOption.resolve(value));
                 break;
             }
             case ThreadSafeOption.PROPERTY_NAME: {
@@ -242,7 +234,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
                 break;
             }
             case AccumulateNullPropagationOption.PROPERTY_NAME: {
-                setAccumulateNullPropagation(!StringUtils.isEmpty(value) && Boolean.parseBoolean(value));
+                setAccumulateNullPropagation(AccumulateNullPropagationOption.resolve(value));
                 break;
             }
             case ForceEagerActivationOption.PROPERTY_NAME: {
@@ -273,13 +265,13 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
     public String getInternalProperty(String name) {
         switch(name) {
             case DirectFiringOption.PROPERTY_NAME: {
-                return Boolean.toString(isDirectFiring());
+                return Boolean.toString(directFiringOption.isDirectFiring());
             } case ThreadSafeOption.PROPERTY_NAME: {
                 return Boolean.toString(threadSafeOption.isThreadSafe());
             } case AccumulateNullPropagationOption.PROPERTY_NAME: {
-                return Boolean.toString(isAccumulateNullPropagation());
+                return Boolean.toString(accumulateNullPropagation.isAccumulateNullPropagation());
             } case QueryListenerOption.PROPERTY_NAME: {
-                return getQueryListenerOption().getAsString();
+                return this.queryListener.getAsString();
             } case BeliefSystemTypeOption.PROPERTY_NAME: {
                 return getBeliefSystemType().getId();
             }

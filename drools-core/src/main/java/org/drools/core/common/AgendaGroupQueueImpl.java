@@ -90,7 +90,7 @@ public class AgendaGroupQueueImpl
     public void setReteEvaluator(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
         // workingMemory can be null during deserialization
-        if ( reteEvaluator.getRuleSessionConfiguration().getOption(DirectFiringOption.KEY) == DirectFiringOption.YES) {
+        if ( reteEvaluator.getRuleSessionConfiguration().getOption(DirectFiringOption.KEY).isDirectFiring()) {
             this.priorityQueue = new ArrayQueue<>();
         } else {
             this.priorityQueue = QueueFactory.createQueue(RuleAgendaConflictResolver.INSTANCE);

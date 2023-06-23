@@ -61,4 +61,10 @@ public enum AccumulateNullPropagationOption implements SingleValueRuleRuntimeOpt
         return accumulateNullPropagation;
     }
 
+
+    
+    public static AccumulateNullPropagationOption resolve(String value) {
+        return Boolean.valueOf( value ) ? YES : NO;
+    }
+    
 }

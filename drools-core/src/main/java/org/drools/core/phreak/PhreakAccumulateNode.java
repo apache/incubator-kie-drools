@@ -634,7 +634,7 @@ public class PhreakAccumulateNode {
 
         Object result = accumulate.getResult(memory.workingMemoryContext, accctx, leftTuple, reteEvaluator);
         propagateResult( accNode, sink, leftTuple, context, reteEvaluator, memory, trgLeftTuples, stagedLeftTuples,
-                         null, result, (AccumulateContextEntry) accctx, propagationContext, reteEvaluator.getRuleSessionConfiguration().getOption(AccumulateNullPropagationOption.KEY) == AccumulateNullPropagationOption.YES);
+                         null, result, (AccumulateContextEntry) accctx, propagationContext, reteEvaluator.getRuleSessionConfiguration().getOption(AccumulateNullPropagationOption.KEY).isAccumulateNullPropagation());
     }
 
     protected final void propagateResult(AccumulateNode accNode, LeftTupleSink sink, LeftTuple leftTuple, PropagationContext context,

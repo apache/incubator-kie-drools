@@ -62,4 +62,8 @@ public enum DirectFiringOption implements SingleValueRuleRuntimeOption {
         return directFiring;
     }
 
+    public static DirectFiringOption resolve(String value) {
+        return Boolean.valueOf( value ) ? YES : NO;
+    }
+
 }
