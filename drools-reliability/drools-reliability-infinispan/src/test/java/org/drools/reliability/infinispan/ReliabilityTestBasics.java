@@ -15,12 +15,6 @@
 
 package org.drools.reliability.infinispan;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
-
 import org.drools.base.facttemplates.Event;
 import org.drools.core.ClassObjectFilter;
 import org.drools.model.Model;
@@ -52,14 +46,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.test.domain.Person;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-
 
 import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MARSHALLER;
 import static org.drools.reliability.infinispan.util.PrototypeUtils.createEvent;
@@ -262,7 +255,8 @@ public abstract class ReliabilityTestBasics {
     }
 
     protected KieSession restoreSession(Model ruleModel, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
-        return getKieSession(ruleModel, PersistedSessionOption.fromSession(persistedSessionId).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
+        Long sessionIdToRestoreFrom = (Long)this.persistedSessionIds.values().toArray()[0];
+        return getKieSession(ruleModel, PersistedSessionOption.fromSession(sessionIdToRestoreFrom).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
     }
 
     protected void disposeSession() {
