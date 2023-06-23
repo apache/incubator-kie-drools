@@ -34,7 +34,6 @@ import org.kie.api.runtime.conf.MultiValueKieSessionOption;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.conf.SingleValueKieSessionOption;
 import org.kie.api.runtime.conf.ThreadSafeOption;
-import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.internal.conf.CompositeConfiguration;
 import org.kie.internal.conf.InternalPropertiesConfiguration;
@@ -54,11 +53,12 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
     private boolean                        accumulateNullPropagation;
 
     private ForceEagerActivationFilter     forceEagerActivationFilter;
-    private TimedRuleExecutionFilter       timedRuleExecutionFilter;
 
     private BeliefSystemType               beliefSystemType;
 
     private QueryListenerOption            queryListener;
+    
+    private TimedRuleExecutionOption timedRuleExecutionOption;
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
@@ -92,7 +92,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
 
         setForceEagerActivationFilter(ForceEagerActivationOption.resolve( getPropertyValue( ForceEagerActivationOption.PROPERTY_NAME, "false" ) ).getFilter());
 
-        setTimedRuleExecutionFilter(TimedRuleExecutionOption.resolve( getPropertyValue( TimedRuleExecutionOption.PROPERTY_NAME, "false" ) ).getFilter());
+        setTimedRuleExecutionFilter(TimedRuleExecutionOption.resolve( getPropertyValue( TimedRuleExecutionOption.PROPERTY_NAME, "false" ) ));
 
         setBeliefSystemType( BeliefSystemType.resolveBeliefSystemType( getPropertyValue( BeliefSystemTypeOption.PROPERTY_NAME, BeliefSystemType.SIMPLE.getId() ) ) );
 
@@ -135,13 +135,13 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
         this.queryListener = queryListener;
     }
 
-    private void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter) {
+    private void setTimedRuleExecutionFilter(TimedRuleExecutionOption timedRuleExecutionOption) {
         checkCanChange(); // throws an exception if a change isn't possible;
-        this.timedRuleExecutionFilter = timedRuleExecutionFilter;
+        this.timedRuleExecutionOption = timedRuleExecutionOption;
     }
-
-    private TimedRuleExecutionFilter getTimedRuleExecutionFilter() {
-        return this.timedRuleExecutionFilter;
+    
+    private TimedRuleExecutionOption getTimedRuleExecutionOption() {
+        return this.timedRuleExecutionOption;
     }
 
     private void setForceEagerActivationFilter(ForceEagerActivationFilter forceEagerActivationFilter) {
@@ -182,7 +182,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
                 break;
             }
             case TimedRuleExecutionOption.PROPERTY_NAME: {
-                setTimedRuleExecutionFilter(((TimedRuleExecutionOption) option).getFilter());
+                setTimedRuleExecutionFilter(((TimedRuleExecutionOption) option));
                 break;
             }
             case QueryListenerOption.PROPERTY_NAME: {
@@ -209,6 +209,9 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
             }
             case AccumulateNullPropagationOption.PROPERTY_NAME: {
                 return (T) (isAccumulateNullPropagation() ? AccumulateNullPropagationOption.YES : AccumulateNullPropagationOption.NO);
+            }
+            case TimedRuleExecutionOption.PROPERTY_NAME: {
+                return (T) getTimedRuleExecutionOption();
             }
             case QueryListenerOption.PROPERTY_NAME: {
                 return (T) getQueryListenerOption();
@@ -250,7 +253,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
                 break;
             }
             case TimedRuleExecutionOption.PROPERTY_NAME: {
-                setTimedRuleExecutionFilter(TimedRuleExecutionOption.resolve(StringUtils.isEmpty(value) ? "false" : value).getFilter());
+                setTimedRuleExecutionFilter(TimedRuleExecutionOption.resolve(StringUtils.isEmpty(value) ? "false" : value));
                 break;
             }
             case QueryListenerOption.PROPERTY_NAME: {
