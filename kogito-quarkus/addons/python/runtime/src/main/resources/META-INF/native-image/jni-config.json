@@ -74,7 +74,7 @@
   {"name":"java.lang.reflect.Method[]","allPublicMethods":true},
   {"name":"java.nio.ByteBuffer","allPublicMethods":true},
   {"name":"java.nio.ByteBuffer[]","allPublicMethods":true},
-  {"name":"java.util.HashMap","allPublicMethods":true},
+  {"name":"java.util.HashMap","allPublicMethods":true, "allPublicConstructors": true},
   {"name":"java.util.HashMap[]","allPublicMethods":true},
   {"name":"java.lang.reflect.Constructor","allPublicMethods":true},
   {"name":"java.lang.reflect.Constructor[]","allPublicMethods":true},
@@ -107,7 +107,7 @@
   {"name":"java.lang.Double[]","allPublicMethods":true},
   {"name":"java.lang.Object","allPublicMethods":true},
   {"name":"java.lang.Object[]","allPublicMethods":true},
-  {"name":"java.util.ArrayList","allPublicMethods":true},
+  {"name":"java.util.ArrayList","allPublicMethods":true, "allPublicConstructors": true},
   {"name":"java.util.ArrayList[]","allPublicMethods":true},
   {"name":"java.lang.Number","allPublicMethods":true},
   {"name":"java.lang.Number[]","allPublicMethods":true},
@@ -207,7 +207,8 @@
   },
   {
     "name": "java.util.Properties",
-    "allPublicMethods": true
+    "allPublicMethods": true,
+    "allPublicConstructors": true
   },
   {
     "name": "java.util.RandomAccess"
