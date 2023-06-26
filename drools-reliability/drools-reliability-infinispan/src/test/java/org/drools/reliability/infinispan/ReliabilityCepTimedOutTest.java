@@ -50,6 +50,8 @@ import static org.drools.model.PatternDSL.pattern;
 import static org.drools.model.PatternDSL.rule;
 import static org.drools.model.PrototypeDSL.protoPattern;
 import static org.drools.model.PrototypeDSL.variable;
+import static org.drools.model.PrototypeExpression.prototypeField;
+import static org.drools.model.PrototypeExpression.thisPrototype;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedEvent;
 import static org.drools.reliability.infinispan.util.PrototypeUtils.DEFAULT_PROTOTYPE_NAME;
 import static org.drools.reliability.infinispan.util.PrototypeUtils.SYNTHETIC_PROTOTYPE_NAME;
@@ -70,6 +72,7 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
         PrototypeVariable controlVar1 = variable(controlPrototype, "c1");
         PrototypeVariable controlVar2 = variable(controlPrototype, "c2");
         PrototypeVariable controlVar3 = variable(controlPrototype, "c3");
+        PrototypeVariable eventVar = variable(getPrototype(DEFAULT_PROTOTYPE_NAME), "e");
         Variable<Long> resultCount = declarationOf( Long.class, "count" );
         Global<List> global = globalOf(List.class, "defaultpkg", "results");
 
@@ -199,9 +202,10 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                       .build(
                               protoPattern(controlVar1).expr( "rulename", Index.ConstraintType.EQUAL, endTag ),
                               protoPattern(controlVar2).expr(p -> ((String)p.get("rulename")).startsWith(rulePrefix)),
-                              on(controlVar1, controlVar2).execute((drools, c1, c2) -> {
-                                  drools.delete(c2.get("event"));
-                                  drools.delete(c2);
+                              protoPattern(eventVar).expr( thisPrototype(), Index.ConstraintType.EQUAL, controlVar2, prototypeField("event") ),
+                              on(controlVar2, eventVar).execute((drools, c, e) -> {
+                                  drools.delete(e);
+                                  drools.delete(c);
                               })
                       )
         );
@@ -215,8 +219,9 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                                       .expr( "rulename", Index.ConstraintType.EQUAL, endTag )
                                       .expr( after(0, timeAmount.getTimeUnit(), timeAmount.getAmount(), timeAmount.getTimeUnit()), controlVar1 ) ),
                               protoPattern(controlVar3).expr(p -> ((String)p.get("rulename")).startsWith(rulePrefix)),
-                              on(controlVar1, controlVar3).execute((drools, c1, c3) -> {
-                                  drools.delete(c3.get("event"));
+                              protoPattern(eventVar).expr( thisPrototype(), Index.ConstraintType.EQUAL, controlVar3, prototypeField("event") ),
+                              on(controlVar1, controlVar3, eventVar).execute((drools, c1, c3, e) -> {
+                                  drools.delete(e);
                                   drools.delete(c3);
                                   drools.delete(c1);
                               })
@@ -261,6 +266,9 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
 
         assertThat(getResults()).as("after 5 minutes window. the main rule is fired")
                                 .hasSize(1);
+
+        assertThat(getFactHandles()).as("All events should be cleaned up")
+                                    .isEmpty();
     }
 
     @ParameterizedTest
@@ -287,5 +295,8 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
 
         assertThat(getResults()).as("after 5 minutes window. the main rule is fired")
                                 .hasSize(1);
+
+        assertThat(getFactHandles()).as("All events should be cleaned up")
+                                    .isEmpty();
     }
 }
