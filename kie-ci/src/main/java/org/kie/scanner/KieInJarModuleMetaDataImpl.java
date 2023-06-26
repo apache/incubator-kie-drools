@@ -136,7 +136,8 @@ public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {
 
         private byte[] loadClassData(String name) throws IOException {
             for (URL url : urls) {
-                URL tryUrl = new URL(url.toString() + "!/" + name);
+                String prefix = "file".equals(url.getProtocol()) ? "jar:" : "";
+                URL tryUrl = new URL(prefix + url.toString() + "!/" + name);
                 try (InputStream stream = tryUrl.openStream()) {
                     if (stream == null) {
                         continue;
