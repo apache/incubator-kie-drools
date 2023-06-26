@@ -4,21 +4,21 @@ environments:
       NATIVE: true
       BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
       ADDITIONAL_TIMEOUT: 720
-      BUILD_MVN_OPTS: '-Dproductized  -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral '
+      BUILD_MVN_OPTS: '-Dproductized  -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral -Dproductized  -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral '
     ids:
     - native
     enabled: true
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '2.16'
-      BUILD_MVN_OPTS: '-Dproductized  -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral '
+      BUILD_MVN_OPTS: '-Dproductized  -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral -Dproductized  -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral '
     ids:
     - quarkus
     enabled: true
   default:
     enabled: true
     env_vars:
-      BUILD_MVN_OPTS: '-Dproductized  -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral '
+      BUILD_MVN_OPTS: '-Dproductized  -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral -Dproductized  -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral '
 productized_branch: true
 disable:
   triggers: true
