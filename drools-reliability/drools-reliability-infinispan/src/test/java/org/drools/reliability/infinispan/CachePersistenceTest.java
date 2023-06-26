@@ -19,6 +19,7 @@ import org.drools.reliability.core.StorageManagerFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.test.domain.Person;
 
@@ -74,24 +75,43 @@ class CachePersistenceTest extends ReliabilityTestBasics {
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnly")
-    void missingDispose_shouldNotReuseOrphanedCache(PersistedSessionOption.PersistenceStrategy strategy) {
-        createSession(EMPTY_RULE, strategy); // sessionId = 0
-        insertNonMatchingPerson("Toshiya", 10);
+    void missingDispose_shouldNotReuseOrphanedCache(PersistedSessionOption.PersistenceStrategy strategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+        KieSession firstSession = createSession(EMPTY_RULE, strategy, safepointStrategy);
+        assertThat(persistedSessionIds.get(firstSession.getIdentifier()))
+                .as("firstSession's persisted session id = 0")
+                .isEqualTo(0);
 
-        // disposeSession() is missing
+        insertNonMatchingPerson(firstSession,"Toshiya", 10);
+
+        Optional<Person> toshiyaInFirstSession = getPersonByName(firstSession, "Toshiya");
+        assertThat(toshiyaInFirstSession).isNotEmpty();
+
+        // disposeSession() for the first session is missing. Simulating that the first session is completely lost from client side.
         failover();
 
-        createSession(EMPTY_RULE, strategy); // new session. If sessionId = 0, it will potentially reuse the orphaned cache
+        // create a new session.
+        KieSession secondSession = createSession(EMPTY_RULE, strategy, safepointStrategy);
+        assertThat(persistedSessionIds.get(secondSession.getIdentifier()))
+                .as("second session's persisted session id = 1. Don't reuse the orphaned cache")
+                .isEqualTo(1);
 
-        Optional<Person> toshiya = getPersonByName("Toshiya");
-        assertThat(toshiya).isEmpty(); // new session doesn't trigger re-propagation
+        Optional<Person> toshiyaInSecondSession = getPersonByName(secondSession, "Toshiya");
+        assertThat(toshiyaInSecondSession)
+                .as("new session doesn't have the fact")
+                .isEmpty();
 
         failover();
 
-        restoreSession(EMPTY_RULE, strategy); // restoreSession triggers re-propagation
+        // restore secondSession
+        KieSession thirdSession = restoreSession(secondSession.getIdentifier(), EMPTY_RULE, strategy, safepointStrategy);
+        assertThat(persistedSessionIds.get(thirdSession.getIdentifier()))
+                .as("third session's persisted session id = 1. Don't reuse the orphaned cache")
+                .isEqualTo(1);
 
-        toshiya = getPersonByName("Toshiya");
-        assertThat(toshiya).isEmpty(); // should not reuse the orphaned cache
+        Optional<Person> toshiyaInThirdSession = getPersonByName(thirdSession, "Toshiya");
+        assertThat(toshiyaInThirdSession)
+                .as("thirdSession takes over the secondSession's cache. It doesn't have the fact")
+                .isEmpty();
     }
 
     @ParameterizedTest
