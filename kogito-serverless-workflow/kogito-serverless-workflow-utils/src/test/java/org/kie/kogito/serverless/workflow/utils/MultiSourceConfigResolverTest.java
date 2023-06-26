@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,18 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 
-public interface ConfigResolver {
+import org.junit.jupiter.api.Test;
 
-    <T> Optional<T> getConfigProperty(String name, Class<T> clazz);
+import static org.assertj.core.api.Assertions.assertThat;
 
-    Iterable<String> getPropertyNames();
-
-    <T> Collection<T> getIndexedConfigProperty(String name, Class<T> clazz);
-
-    default Map<String, Object> asMap() {
-        Map<String, Object> map = new HashMap<>();
-        for (String name : getPropertyNames()) {
-            map.put(name, getConfigProperty(name, Object.class).orElseThrow());
-        }
-        return map;
+class MultiSourceConfigResolverTest {
+    @Test
+    void testMultiList() {
+        ConfigResolver combined = MultiSourceConfigResolver.of(Arrays.asList(new MapConfigResolver(Map.of("list", "pepa,pepe")), new MapConfigResolver(Map.of("list", "pepa,pepi,pepo,pepu"))));
+        assertThat(combined.getIndexedConfigProperty("list", String.class)).isEqualTo(Set.of("pepa", "pepe", "pepi", "pepo", "pepu"));
     }
 }

@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.secret;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.eclipse.microprofile.config.Config;
@@ -46,5 +48,15 @@ public class QuarkusConfigResolver implements ConfigResolver {
     @Override
     public Iterable<String> getPropertyNames() {
         return config.getPropertyNames();
+    }
+
+    @Override
+    public <T> Collection<T> getIndexedConfigProperty(String key, Class<T> clazz) {
+        try {
+            return config.getOptionalValues(key, clazz).orElse(Collections.emptyList());
+        } catch (SecurityException ex) {
+            // see https://smallrye.io/docs/smallrye-config/config/secret-keys.html
+            return SecretKeys.doUnlocked(() -> config.getOptionalValues(key, clazz)).orElse(Collections.emptyList());
+        }
     }
 }

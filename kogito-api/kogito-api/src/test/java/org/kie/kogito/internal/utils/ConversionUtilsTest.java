@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.internal.utils;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.internal.utils.ConversionUtils.concatPaths;
 import static org.kie.kogito.internal.utils.ConversionUtils.convert;
+import static org.kie.kogito.internal.utils.ConversionUtils.convertToCollection;
 import static org.kie.kogito.internal.utils.ConversionUtils.toCamelCase;
 
 class ConversionUtilsTest {
@@ -127,6 +129,10 @@ class ConversionUtilsTest {
         assertThat(concatPaths("http:localhost:8080/pepe", "pepa/pepi")).isEqualTo(expected);
         assertThat(concatPaths("http:localhost:8080/pepe/", "pepa/pepi")).isEqualTo(expected);
         assertThat(concatPaths("http:localhost:8080/pepe", "/pepa/pepi")).isEqualTo(expected);
+    }
 
+    @Test
+    public void testConvertToCollection() {
+        assertThat(convertToCollection("1,2,3", Integer.class)).isEqualTo(Arrays.asList(1, 2, 3));
     }
 }

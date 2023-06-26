@@ -15,8 +15,11 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+
+import org.kie.kogito.internal.utils.ConversionUtils;
 
 public class SystemPropertiesConfigResolver implements ConfigResolver {
 
@@ -41,4 +44,8 @@ public class SystemPropertiesConfigResolver implements ConfigResolver {
         return System.getProperties();
     }
 
+    @Override
+    public <T> Collection<T> getIndexedConfigProperty(String name, Class<T> clazz) {
+        return ConversionUtils.convertToCollection(System.getProperty(name), clazz);
+    }
 }

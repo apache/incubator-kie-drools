@@ -28,6 +28,7 @@ import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionRef;
 
 import static org.kie.kogito.serverless.workflow.SWFConstants.PYTHON;
+import static org.kie.kogito.serverless.workflow.SWFConstants.PYTHON_SCRIPT;
 import static org.kie.kogito.serverless.workflow.SWFConstants.SCRIPT;
 import static org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory.trimCustomOperation;
 import static org.kie.kogito.serverless.workflow.parser.handlers.ActionNodeUtils.actionNode;
@@ -49,7 +50,7 @@ public class ScriptTypeHandler extends WorkItemBuilder implements FunctionTypeHa
         if (PYTHON.equalsIgnoreCase(lang)) {
             return addFunctionArgs(workflow,
                     buildWorkItem(embeddedSubProcess, context, varInfo.getInputVar(), varInfo.getOutputVar()).name(functionDef.getName()),
-                    functionRef).workName(PYTHON);
+                    functionRef).workName(PYTHON_SCRIPT);
         } else {
             return actionNode(embeddedSubProcess, context, functionDef).action(JavaDialect.ID,
                     functionRef.getArguments().get(SCRIPT).asText());

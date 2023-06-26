@@ -1,0 +1,23 @@
+{
+  "id" : "Factorial",
+  "start" : "operation_1",
+  "functions" : [ {
+    "name" : "factorial",
+    "operation" : "service:python:math::factorial",
+    "type" : "custom"
+  } ],
+  "states" : [ {
+    "actions" : [ {
+      "functionRef" : {
+          "refName": "factorial",
+          "arguments" : ".x"
+       },
+      "actionDataFilter" : {
+        "toStateData" : ".result"
+      }
+    } ],
+    "name" : "operation_1",
+    "type" : "operation",
+    "end" : true
+  } ]
+}

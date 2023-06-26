@@ -15,53 +15,47 @@
  */
 package org.kie.kogito.serverless.workflow.python;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Collection;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
+import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
 
 import jep.Interpreter;
 import jep.SharedInterpreter;
 
-import static org.kie.kogito.serverless.workflow.SWFConstants.PYTHON;
-import static org.kie.kogito.serverless.workflow.SWFConstants.SCRIPT;
+public class PythonWorkItemHandlerUtils {
 
-public class PythonWorkItemHandler extends WorkflowWorkItemHandler {
-    private static ThreadLocal<Interpreter> interpreter = new ThreadLocal<>();
+    private PythonWorkItemHandlerUtils() {
+    }
 
-    private static Interpreter interpreter() {
+    public static final String SEARCH_PATH_PROPERTY = "org.sonataflow.python.searchpath";
+    private static final String PYTHON_SYS_PATH = "sys.path.append('%s')\n";
+
+    private static final ThreadLocal<Interpreter> interpreter = new ThreadLocal<>();
+
+    protected static Interpreter interpreter() {
         Interpreter py = interpreter.get();
         if (py == null) {
             py = new SharedInterpreter();
             interpreter.set(py);
+            Collection<String> searchPath = ConfigResolverHolder.getConfigResolver().getIndexedConfigProperty(SEARCH_PATH_PROPERTY, String.class);
+            if (!searchPath.isEmpty()) {
+                StringBuilder sb = new StringBuilder("import sys\n");
+                searchPath.forEach(path -> sb.append(String.format(PYTHON_SYS_PATH, path)));
+                py.exec(sb.toString());
+            }
         }
         return py;
     }
 
-    @Override
-    public String getName() {
-        return PYTHON;
-    }
-
-    @Override
-    protected Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters) {
-        Interpreter py = interpreter();
-        String source = (String) parameters.remove(SCRIPT);
-        parameters.forEach(py::set);
-        py.exec(source);
-        return Collections.emptyMap();
-    }
-
-    public static Object getValue(String key) {
-        return interpreter().getValue(key);
-    }
-
-    public void close() {
+    protected static void closeInterpreter() {
         Interpreter py = interpreter.get();
         if (py != null) {
             interpreter.remove();
             py.close();
         }
+    }
+
+    protected static Object getValue(String key) {
+        return interpreter().getValue(key);
     }
 }

@@ -18,9 +18,12 @@ package org.kie.kogito.serverless.workflow.utils;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.kie.kogito.internal.utils.ConversionUtils;
 
 public class MultiSourceConfigResolver implements ConfigResolver {
 
@@ -71,5 +74,18 @@ public class MultiSourceConfigResolver implements ConfigResolver {
     @Override
     public Iterable<String> getPropertyNames() {
         return asMap().keySet();
+    }
+
+    @Override
+    public <T> Collection<T> getIndexedConfigProperty(String name, Class<T> clazz) {
+        Map<String, Object> collect = map.get();
+        if (collect != null) {
+            return ConversionUtils.convertToCollection(collect.get(name), clazz);
+        }
+        Collection<T> result = new LinkedHashSet<>();
+        for (ConfigResolver resolver : configResolvers) {
+            result.addAll(resolver.getIndexedConfigProperty(name, clazz));
+        }
+        return result;
     }
 }

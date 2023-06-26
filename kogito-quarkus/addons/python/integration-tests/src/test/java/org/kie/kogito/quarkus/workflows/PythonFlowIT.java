@@ -27,8 +27,14 @@ import static org.hamcrest.CoreMatchers.is;
 class PythonFlowIT {
 
     @Test
-    void testPython() {
-        given().contentType(ContentType.JSON).accept(ContentType.JSON).body("{\"x\" : 4}").post("/PythonTest")
+    void testPythonScript() {
+        given().contentType(ContentType.JSON).accept(ContentType.JSON).body("{\"x\" : 4}").post("/Duplicate")
                 .then().statusCode(201).body("workflowdata.result", is(8));
+    }
+
+    @Test
+    void testPythonService() {
+        given().contentType(ContentType.JSON).accept(ContentType.JSON).body("{\"x\" : 5}").post("/Factorial")
+                .then().statusCode(201).body("workflowdata.result", is(120));
     }
 }

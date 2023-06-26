@@ -17,8 +17,12 @@ package org.kie.kogito.internal.utils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +36,34 @@ public class ConversionUtils {
 
     public static <T> T convert(Object value, Class<T> clazz) {
         return convert(value, clazz, Object::toString);
+    }
+
+    /**
+     * Converts a string into a list of objects using `,` as a separator
+     * 
+     * @param <T>
+     * @param value object to be converted into list
+     * @param clazz the item target class
+     * @return a collection
+     */
+    public static <T> Collection<T> convertToCollection(Object value, Class<T> clazz) {
+        return convertToCollection(value, clazz, ",");
+    }
+
+    /**
+     * Converts a string into a list of objects
+     * 
+     * @param <T>
+     * @param value object to be converted into list
+     * @param clazz the item target class
+     * @param separator the separator of values
+     * @return a collection
+     */
+    public static <T> Collection<T> convertToCollection(Object value, Class<T> clazz, String separator) {
+        if (value == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(value.toString().split(separator)).map(v -> ConversionUtils.convert(v, clazz)).collect(Collectors.toList());
     }
 
     /**

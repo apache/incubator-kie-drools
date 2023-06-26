@@ -29,19 +29,22 @@ import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionRef;
 
+import static org.kie.kogito.serverless.workflow.SWFConstants.JAVA;
+import static org.kie.kogito.serverless.workflow.SWFConstants.PYTHON;
+import static org.kie.kogito.serverless.workflow.SWFConstants.PYTHON_SVC;
+import static org.kie.kogito.serverless.workflow.SWFConstants.SERVICE_IMPL_KEY;
+import static org.kie.kogito.serverless.workflow.SWFConstants.SERVICE_TASK_TYPE;
+import static org.kie.kogito.serverless.workflow.SWFConstants.WORKITEM_INTERFACE;
+import static org.kie.kogito.serverless.workflow.SWFConstants.WORKITEM_INTERFACE_IMPL;
+import static org.kie.kogito.serverless.workflow.SWFConstants.WORKITEM_OPERATION;
+import static org.kie.kogito.serverless.workflow.SWFConstants.WORKITEM_OPERATION_IMPL;
 import static org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory.trimCustomOperation;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.resolveFunctionMetadata;
 
 public class ServiceTypeHandler extends WorkItemTypeHandler {
 
     public static final String SERVICE_TYPE = "service";
-    public static final String SERVICE_TASK_TYPE = "Service Task";
-    public static final String WORKITEM_INTERFACE = "Interface";
-    public static final String WORKITEM_OPERATION = "Operation";
     public static final String INTFC_SEPARATOR = "::";
-    public static final String SERVICE_IMPL_KEY = "implementation";
-    public static final String WORKITEM_INTERFACE_IMPL = "interfaceImplementationRef";
-    public static final String WORKITEM_OPERATION_IMPL = "operationImplementationRef";
     private static final String WORKITEM_PARAM_TYPE = "ParameterType";
 
     private static final String LANG_SEPARATOR = ":";
@@ -79,15 +82,23 @@ public class ServiceTypeHandler extends WorkItemTypeHandler {
         }
         if (lang == null) {
             lang = resolveFunctionMetadata(
-                    functionDef, SERVICE_IMPL_KEY, context.getContext(), String.class, "Java");
+                    functionDef, SERVICE_IMPL_KEY, context.getContext(), String.class, JAVA);
+        }
+        switch (lang) {
+            case PYTHON:
+                node.workName(PYTHON_SVC);
+                break;
+            case JAVA:
+            default:
+                node.workName(SERVICE_TASK_TYPE);
+                break;
         }
         return node.workParameter(WORKITEM_INTERFACE, intfc)
                 .workParameter(WORKITEM_OPERATION, method)
                 .workParameter(WORKITEM_INTERFACE_IMPL, intfc)
                 .workParameter(WORKITEM_OPERATION_IMPL, method)
                 .workParameter(SERVICE_IMPL_KEY, lang)
-                .metaData(TaskDescriptor.KEY_WORKITEM_TYPE, SERVICE_TASK_TYPE)
-                .workName(SERVICE_TASK_TYPE);
+                .metaData(TaskDescriptor.KEY_WORKITEM_TYPE, SERVICE_TASK_TYPE);
     }
 
     @Override

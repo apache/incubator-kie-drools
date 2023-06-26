@@ -27,7 +27,7 @@ public class PythonContextResolver implements KogitoProcessContextResolverExtens
 
     @Override
     public Map<String, Function<KogitoProcessContext, Object>> getKogitoProcessContextResolver() {
-        return Map.of(SWFConstants.PYTHON, k -> new FunctionJsonNode(PythonWorkItemHandler::getValue));
+        return Map.of(SWFConstants.PYTHON, k -> new FunctionJsonNode(PythonWorkItemHandlerUtils::getValue));
     }
 
 }

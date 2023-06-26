@@ -1,7 +1,5 @@
 {
-  "id" : "PythonTest",
-  "name" : "PythonTest",
-  "version" : "1_0",
+  "id" : "Duplicate",
   "start" : "operation_0",
   "functions" : [ {
     "name" : "python",

@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
 import org.kie.kogito.serverless.workflow.functions.FunctionDefinitionEx;
 import org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler;
@@ -59,13 +60,21 @@ public class FunctionBuilder {
         return new FunctionBuilder(new FunctionDefinition(name).withType(Type.EXPRESSION).withOperation(expression));
     }
 
-    public static <T, V> FunctionBuilder java(String name, Function<T, V> function) {
-        return new FunctionBuilder(new FunctionDefinitionEx<T, V>(name).withFunction(function).withType(Type.CUSTOM).withOperation("java"));
+    public static <T, V> FunctionBuilder java(String funcName, Function<T, V> function) {
+        return new FunctionBuilder(new FunctionDefinitionEx<T, V>(funcName).withFunction(function).withType(Type.CUSTOM).withOperation("java"));
     }
 
-    public static FunctionBuilder java(String name, String className, String methodName) {
+    public static FunctionBuilder java(String funcName, String className, String methodName) {
+        return service(funcName, SWFConstants.JAVA, className, methodName);
+    }
+
+    public static FunctionBuilder python(String funcName, String moduleName, String methodName) {
+        return service(funcName, SWFConstants.PYTHON, moduleName, methodName);
+    }
+
+    private static FunctionBuilder service(String name, String langName, String moduleName, String methodName) {
         return new FunctionBuilder(new FunctionDefinition(name).withType(Type.CUSTOM)
-                .withOperation(ServiceTypeHandler.SERVICE_TYPE + CUSTOM_TYPE_SEPARATOR + className + ServiceTypeHandler.INTFC_SEPARATOR + methodName));
+                .withOperation(ServiceTypeHandler.SERVICE_TYPE + CUSTOM_TYPE_SEPARATOR + langName + CUSTOM_TYPE_SEPARATOR + moduleName + ServiceTypeHandler.INTFC_SEPARATOR + methodName));
     }
 
     public static FunctionBuilder log(String name, WorkflowLogLevel level) {
