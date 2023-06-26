@@ -187,15 +187,15 @@ Closure addFullProfileJobParamsGetter = { script ->
     return jobParams
 }
 
-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, addFullProfileJobParamsGetter)
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
 
 // Environment nightlies
-setupSpecificBuildChainNightlyJob('native', addFullProfileJobParamsGetter)
-setupSpecificBuildChainNightlyJob('sonarcloud', addFullProfileJobParamsGetter)
+setupSpecificBuildChainNightlyJob('native')
+setupSpecificBuildChainNightlyJob('sonarcloud')
 
 // Jobs with integration branch
-setupQuarkusIntegrationJob('quarkus-main', addFullProfileJobParamsGetter)
-setupQuarkusIntegrationJob('quarkus-branch', addFullProfileJobParamsGetter)
+setupQuarkusIntegrationJob('quarkus-main')
+setupQuarkusIntegrationJob('quarkus-branch')
 setupQuarkusIntegrationJob('quarkus-lts')
 setupQuarkusIntegrationJob('native-lts')
 // Quarkus 3 nightly is exported to Kogito pipelines for easier integration
