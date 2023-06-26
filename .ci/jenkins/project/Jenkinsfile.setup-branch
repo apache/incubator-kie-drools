@@ -64,6 +64,9 @@ pipeline {
 
         // Launch the nightly to deploy all artifacts from the branch
         stage('Launch the nightly') {
+            when {
+                return params.DEPLOY_ARTIFACTS
+            }
             steps {
                 script {
                     def buildParams = getDefaultBuildParams()
