@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import org.drools.core.common.Storage;
+import org.drools.core.phreak.PhreakTimerNode.TimerNodeJob;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJob;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.time.impl.TimerJobInstance;
@@ -65,11 +66,11 @@ public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
     }
 
     /**
-     * ExpireJob is recreated by repropagate, so doesn't need to persist
+     * ExpireJob and TimerNodeJob are recreated by repropagate, so we don't need to persist
      */
     public List<TimerJobInstance> createFilteredInternalQueueForPersistence(PriorityQueue<TimerJobInstance> queue) {
         return queue.stream()
-                    .filter(job -> !(job.getJob() instanceof ExpireJob))
+                    .filter(job -> !(job.getJob() instanceof ExpireJob || job.getJob() instanceof TimerNodeJob))
                     .collect(Collectors.toList());
     }
 }

@@ -60,15 +60,11 @@ import static org.drools.reliability.infinispan.util.PrototypeUtils.processResul
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
 
-    public static final String RULE_TYPE_TAG = "RULE_TYPE";
-    public static final String SYNTHETIC_RULE_TAG = "SYNTHETIC_RULE";
     public static final String KEYWORD = "once_after";
     public static final String RULE_NAME = "R";
 
     /**
-     * These rules are created in the same way as in OnceAfterDefinition in drools-ansible-rulebook-integration
-     *
-     * @return
+     * These rules are created in the same way as OnceAfterDefinition in drools-ansible-rulebook-integration
      */
     private Model ruleModel() {
         Prototype controlPrototype = getPrototype(SYNTHETIC_PROTOTYPE_NAME);
@@ -81,7 +77,8 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
         List<Rule> rules = new ArrayList<>();
 
         // main rule (accumulate events within 10 minutes)
-        rules.add(rule(RULE_NAME).metadata(RULE_TYPE_TAG, KEYWORD)
+        rules.add(
+                  rule(RULE_NAME).metadata(RULE_TYPE_TAG, KEYWORD)
                           .build(
                                   protoPattern(controlVar1).expr("end_once_after", Index.ConstraintType.EQUAL, RULE_NAME),
                                   not(protoPattern(controlVar2).expr("start_once_after", Index.ConstraintType.EQUAL, RULE_NAME)),
@@ -90,21 +87,22 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
                                   on(controlVar1, resultsVar, global).execute((drools, controlFact, resultFactList, globalResults) -> {
                                       drools.delete(controlFact);
                                       processResults(globalResults, resultFactList);
-                                      ((List) resultFactList).forEach(drools::delete);
+                                      resultFactList.forEach(drools::delete);
                                   })
                           )
         );
 
         // control rule (wrapping original event)
         PrototypeVariable originalEventVariable = variable(getPrototype(DEFAULT_PROTOTYPE_NAME), "m");
-        rules.add(rule(RULE_NAME + "_control").metadata(SYNTHETIC_RULE_TAG, true)
+        rules.add(
+                  rule(RULE_NAME + "_control").metadata(SYNTHETIC_RULE_TAG, true)
                           .build(
                                   guardedPattern(originalEventVariable),
                                   not(duplicateControlPattern(originalEventVariable)),
                                   on(originalEventVariable).execute((drools, event) -> {
                                       Event controlEvent = createMapBasedEvent(controlPrototype);
-                                      controlEvent.set("sensu.host", event.get("sensu.host"));
-                                      controlEvent.set("sensu.process.type", event.get("sensu.process.type"));
+                                      controlEvent.set("sensu.host", event.get("sensu.host")); // groupByAttributes
+                                      controlEvent.set("sensu.process.type", event.get("sensu.process.type")); // groupByAttributes
                                       controlEvent.set("drools_rule_name", RULE_NAME);
                                       controlEvent.set("event", event);
                                       controlEvent.set("once_after_time_window", "10 minutes");
@@ -117,7 +115,8 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
 
         // start rule (insert start and end control events. start event expires in 10 minutes, so the main rule will fire)
         TimeAmount timeAmount = TimeAmount.parseTimeAmount("10 minutes");
-        rules.add(rule(RULE_NAME + "_start").metadata(SYNTHETIC_RULE_TAG, true)
+        rules.add(
+                  rule(RULE_NAME + "_start").metadata(SYNTHETIC_RULE_TAG, true)
                           .build(
                                   protoPattern(controlVar1).expr("drools_rule_name", Index.ConstraintType.EQUAL, RULE_NAME),
                                   not(protoPattern(controlVar2).expr("end_once_after", Index.ConstraintType.EQUAL, RULE_NAME)),
@@ -136,7 +135,8 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
 
         // cleanup duplicate events rule
         PrototypeDSL.PrototypePatternDef duplicateControlPattern = duplicateControlPattern(originalEventVariable);
-        rules.add(rule(RULE_NAME + "_cleanup_duplicate").metadata(SYNTHETIC_RULE_TAG, true)
+        rules.add(
+                  rule(RULE_NAME + "_cleanup_duplicate").metadata(SYNTHETIC_RULE_TAG, true)
                           .build(
                                   guardedPattern(originalEventVariable),
                                   duplicateControlPattern,
@@ -158,8 +158,8 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
     // We group-by sensu.host and sensu.process.type
     private static PrototypeDSL.PrototypePatternDef duplicateControlPattern(PrototypeVariable originalEventVariable) {
         return protoPattern(variable(getPrototype(SYNTHETIC_PROTOTYPE_NAME)))
-                .expr(prototypeField("sensu.host"), Index.ConstraintType.EQUAL, originalEventVariable, prototypeField("sensu.host"))
-                .expr(prototypeField("sensu.process.type"), Index.ConstraintType.EQUAL, originalEventVariable, prototypeField("sensu.process.type"))
+                .expr(prototypeField("sensu.host"), Index.ConstraintType.EQUAL, originalEventVariable, prototypeField("sensu.host")) // groupByAttributes
+                .expr(prototypeField("sensu.process.type"), Index.ConstraintType.EQUAL, originalEventVariable, prototypeField("sensu.process.type")) // groupByAttributes
                 .expr(prototypeField("drools_rule_name"), Index.ConstraintType.EQUAL, fixedValue(RULE_NAME));
     }
 
@@ -222,13 +222,13 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
         assertThat(getResults()).as("once_after is 10 minutes window. The main rule should not be fired yet")
                 .isEmpty();
 
-        advanceTime(7, TimeUnit.MINUTES);
+        advanceTime(7, TimeUnit.MINUTES); // controlEvent expire job should be triggered, but the action is still in propagationList. Will be lost by server crash
 
         // advanceTime, then server crash before fireAllRules
         // Generally this doesn't happen in drools-ansible because AutomaticPseudoClock does advanceTime + fireAllRules atomically, but simulating a crash in the middle.
 
         failover();
-        restoreSession(ruleModel(), persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        restoreSession(ruleModel(), persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO); // expire job is recreated and triggered
 
         fireAllRules();
 
