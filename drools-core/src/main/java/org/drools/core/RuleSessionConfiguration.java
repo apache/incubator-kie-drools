@@ -54,7 +54,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
     
     private DirectFiringOption directFiringOption;
     
-    private QueryListenerOption queryListener;
+    private QueryListenerOption queryListenerOption;
     
     private ThreadSafeOption threadSafeOption;
     
@@ -62,12 +62,12 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
-        out.writeObject( queryListener );
+        out.writeObject( queryListenerOption );
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-        queryListener = (QueryListenerOption) in.readObject();
+        queryListenerOption = (QueryListenerOption) in.readObject();
     }
 
     public final boolean hasForceEagerActivationFilter() {
@@ -84,19 +84,19 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
     }
 
     private void init() {
-    	setDirectFiringOption(DirectFiringOption.resolve(getPropertyValue(DirectFiringOption.PROPERTY_NAME, "false")));
-
-        setThreadSafeOption(ThreadSafeOption.resolve(getPropertyValue(ThreadSafeOption.PROPERTY_NAME, "true")));
-
         setAccumulateNullPropagation(AccumulateNullPropagationOption.resolve(getPropertyValue(AccumulateNullPropagationOption.PROPERTY_NAME, "false")));
+
+        setBeliefSystemType(BeliefSystemType.resolveBeliefSystemType( getPropertyValue( BeliefSystemTypeOption.PROPERTY_NAME, BeliefSystemType.SIMPLE.getId() ) ) );
+
+    	setDirectFiringOption(DirectFiringOption.resolve(getPropertyValue(DirectFiringOption.PROPERTY_NAME, "false")));
 
         setForceEagerActivationFilter(ForceEagerActivationOption.resolve( getPropertyValue( ForceEagerActivationOption.PROPERTY_NAME, "false" ) ).getFilter());
 
+        setQueryListenerOption(QueryListenerOption.determineQueryListenerClassOption( getPropertyValue( QueryListenerOption.PROPERTY_NAME, QueryListenerOption.STANDARD.getAsString() ) ) );
+
+        setThreadSafeOption(ThreadSafeOption.resolve(getPropertyValue(ThreadSafeOption.PROPERTY_NAME, "true")));
+
         setTimedRuleExecutionFilter(TimedRuleExecutionOption.resolve( getPropertyValue( TimedRuleExecutionOption.PROPERTY_NAME, "false" ) ));
-
-        setBeliefSystemType( BeliefSystemType.resolveBeliefSystemType( getPropertyValue( BeliefSystemTypeOption.PROPERTY_NAME, BeliefSystemType.SIMPLE.getId() ) ) );
-
-        setQueryListenerOption( QueryListenerOption.determineQueryListenerClassOption( getPropertyValue( QueryListenerOption.PROPERTY_NAME, QueryListenerOption.STANDARD.getAsString() ) ) );
     }
 
     private void setDirectFiringOption(DirectFiringOption directFiringOption) {
@@ -115,7 +115,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
 
     private void setQueryListenerOption( QueryListenerOption queryListener ) {
         checkCanChange();
-        this.queryListener = queryListener;
+        this.queryListenerOption = queryListener;
     }
 
     private void setTimedRuleExecutionFilter(TimedRuleExecutionOption timedRuleExecutionOption) {
@@ -123,10 +123,6 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
         this.timedRuleExecutionOption = timedRuleExecutionOption;
     }
     
-    private TimedRuleExecutionOption getTimedRuleExecutionOption() {
-        return this.timedRuleExecutionOption;
-    }
-
     private void setForceEagerActivationFilter(ForceEagerActivationFilter forceEagerActivationFilter) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.forceEagerActivationFilter = forceEagerActivationFilter;
@@ -148,32 +144,32 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
 
     public final <T extends KieSessionOption> void setOption(T option) {
         switch (option.propertyName()) {
+	        case AccumulateNullPropagationOption.PROPERTY_NAME: {
+	            setAccumulateNullPropagation(((AccumulateNullPropagationOption) option));
+	            break;
+	        }
+            case BeliefSystemTypeOption.PROPERTY_NAME: {
+                setBeliefSystemType(((BeliefSystemType.resolveBeliefSystemType(((BeliefSystemTypeOption) option).getBeliefSystemType()))));
+                break;
+            }
             case DirectFiringOption.PROPERTY_NAME: {
                 setDirectFiringOption(((DirectFiringOption) option));
-                break;
-            }
-            case ThreadSafeOption.PROPERTY_NAME: {
-                setThreadSafeOption(((ThreadSafeOption) option));
-                break;
-            }
-            case AccumulateNullPropagationOption.PROPERTY_NAME: {
-                setAccumulateNullPropagation(((AccumulateNullPropagationOption) option));
                 break;
             }
             case ForceEagerActivationOption.PROPERTY_NAME: {
                 setForceEagerActivationFilter(((ForceEagerActivationOption) option).getFilter());
                 break;
             }
-            case TimedRuleExecutionOption.PROPERTY_NAME: {
-                setTimedRuleExecutionFilter(((TimedRuleExecutionOption) option));
-                break;
-            }
             case QueryListenerOption.PROPERTY_NAME: {
                 setQueryListenerOption((QueryListenerOption) option);
                 break;
             }
-            case BeliefSystemTypeOption.PROPERTY_NAME: {
-                setBeliefSystemType(((BeliefSystemType.resolveBeliefSystemType(((BeliefSystemTypeOption) option).getBeliefSystemType()))));
+            case ThreadSafeOption.PROPERTY_NAME: {
+                setThreadSafeOption(((ThreadSafeOption) option));
+                break;
+            }
+            case TimedRuleExecutionOption.PROPERTY_NAME: {
+                setTimedRuleExecutionFilter(((TimedRuleExecutionOption) option));
                 break;
             }
             default:
@@ -193,20 +189,20 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
 	        case AccumulateNullPropagationOption.PROPERTY_NAME: {
 	            return (T) accumulateNullPropagation;
 	        }
+            case BeliefSystemTypeOption.PROPERTY_NAME: {
+                return (T) BeliefSystemTypeOption.get( this.getBeliefSystemType().getId() );
+            }
             case DirectFiringOption.PROPERTY_NAME: {
                 return (T) directFiringOption;
+            }
+            case QueryListenerOption.PROPERTY_NAME: {
+                return (T) queryListenerOption;
             }
             case ThreadSafeOption.PROPERTY_NAME: {
                 return (T) threadSafeOption;
             }
             case TimedRuleExecutionOption.PROPERTY_NAME: {
-                return (T) getTimedRuleExecutionOption();
-            }
-            case QueryListenerOption.PROPERTY_NAME: {
-                return (T) this.queryListener;
-            }
-            case BeliefSystemTypeOption.PROPERTY_NAME: {
-                return (T) BeliefSystemTypeOption.get( this.getBeliefSystemType().getId() );
+                return (T) timedRuleExecutionOption;
             }
             default:
                 return compConfig.getOption(option);
@@ -271,7 +267,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
             } case AccumulateNullPropagationOption.PROPERTY_NAME: {
                 return Boolean.toString(accumulateNullPropagation.isAccumulateNullPropagation());
             } case QueryListenerOption.PROPERTY_NAME: {
-                return this.queryListener.getAsString();
+                return this.queryListenerOption.getAsString();
             } case BeliefSystemTypeOption.PROPERTY_NAME: {
                 return getBeliefSystemType().getId();
             }
