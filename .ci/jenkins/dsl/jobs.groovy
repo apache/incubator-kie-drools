@@ -133,7 +133,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // As we have only Community edition
                     ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
                     // Setup full build if not prod profile
-                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod') || EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3') ? '' : '-Dfull'}",
+                    BUILD_MVN_OPTS_CURRENT: defaultBuildMvnOptsCurrent,
                 ]
             ], [
                 id: 'kogito-runtimes',
