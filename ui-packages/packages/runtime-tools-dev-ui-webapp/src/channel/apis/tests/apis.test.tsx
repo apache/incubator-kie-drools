@@ -893,15 +893,15 @@ describe('custom forms section', () => {
 });
 
 describe('process definitions section', () => {
-  it('swager parser success', async () => {
+  it('swagger parser success', async () => {
     SwaggerParser.parse['mockImplementation'](() =>
       Promise.resolve({
         paths: {
-          '/hiring/schema': {
+          '/hiring-process/schema': {
             get: {},
             post: {}
           },
-          '/hiring': {
+          '/hiring-process': {
             get: {},
             post: {}
           }
@@ -913,7 +913,10 @@ describe('process definitions section', () => {
       '/docs/openapi.json'
     );
     expect(result).toStrictEqual([
-      { processName: 'hiring', endpoint: 'http://localhost:8080/hiring' }
+      {
+        processName: 'hiring-process',
+        endpoint: 'http://localhost:8080/hiring-process'
+      }
     ]);
   });
   it('start process instance success', async () => {
