@@ -61,10 +61,10 @@ maven:
     staging_profile_url: https://repository.jboss.org/nexus/content/groups/kogito-public/
     staging_profile_id: 1976dd1c18392a
     build_promotion_profile_id: ea49ccd6f174
-  artifacts_repository: ''
+  artifacts_repository: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/osl-prod-nightly/'
   artifacts_upload_repository:
-    url: https://repository.jboss.org/nexus/content/repositories/snapshots/
-    creds_id: kogito-snapshots-upload
+    url: https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/osl-prod-nightly/
+    creds_id: unpacks-zip-on-qa-nexus
   pr_checks:
     repository:
       url: https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/kogito-runtimes-pr-full-testing/
