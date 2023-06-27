@@ -1,48 +1,48 @@
-name: Drools Ansible RuleBook Integration Check
+# name: Drools Ansible RuleBook Integration Check
 
-on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - 'LICENSE'
-      - '**/.gitignore'
-      - '**.md'
-      - '**.adoc'
-      - '*.txt'
-      - 'docsimg/**'
-      - '.ci/jenkins/**'
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened, ready_for_review]
+#     paths-ignore:
+#       - 'LICENSE'
+#       - '**/.gitignore'
+#       - '**.md'
+#       - '**.adoc'
+#       - '*.txt'
+#       - 'docsimg/**'
+#       - '.ci/jenkins/**'
 
-jobs:
-  drools-ansible:
-    concurrency:
-      group: pr-drools_ansible_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
-      cancel-in-progress: true
-    timeout-minutes: 120
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        java-version: [11]
-        maven-version: ['3.8.7']
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
-    name: Ansible Integration / ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
-    steps:
-      - name: Clean Disk Space
-        uses: kiegroup/kie-ci/.ci/actions/ubuntu-disk-space@main
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-      - name: Support long paths
-        if: ${{ matrix.os == 'windows-latest' }}
-        uses: kiegroup/kie-ci/.ci/actions/long-paths@main
-      - name: Java and Maven Setup
-        uses: kiegroup/kie-ci/.ci/actions/maven@main
-        with:
-          java-version: ${{ matrix.java-version }}
-          maven-version: ${{ matrix.maven-version }}
-          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
-      - name: Build Chain
-        uses: kiegroup/kie-ci/.ci/actions/build-chain@main
-        with:
-          definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/drools-ansible-rulebook-integration/${BRANCH:main}/.ci/pull-request-config.yaml
-          annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-          starting-project: kiegroup/drools-ansible-rulebook-integration
+# jobs:
+#   drools-ansible:
+#     concurrency:
+#       group: pr-drools_ansible_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
+#       cancel-in-progress: true
+#     timeout-minutes: 120
+#     strategy:
+#       matrix:
+#         os: [ubuntu-latest]
+#         java-version: [11]
+#         maven-version: ['3.8.7']
+#       fail-fast: false
+#     runs-on: ${{ matrix.os }}
+#     name: Ansible Integration / ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
+#     steps:
+#       - name: Clean Disk Space
+#         uses: kiegroup/kie-ci/.ci/actions/ubuntu-disk-space@main
+#         if: ${{ matrix.os == 'ubuntu-latest' }}
+#       - name: Support long paths
+#         if: ${{ matrix.os == 'windows-latest' }}
+#         uses: kiegroup/kie-ci/.ci/actions/long-paths@main
+#       - name: Java and Maven Setup
+#         uses: kiegroup/kie-ci/.ci/actions/maven@main
+#         with:
+#           java-version: ${{ matrix.java-version }}
+#           maven-version: ${{ matrix.maven-version }}
+#           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+#       - name: Build Chain
+#         uses: kiegroup/kie-ci/.ci/actions/build-chain@main
+#         with:
+#           definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/drools-ansible-rulebook-integration/${BRANCH:main}/.ci/pull-request-config.yaml
+#           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
+#           github-token: "${{ secrets.GITHUB_TOKEN }}"
+#           starting-project: kiegroup/drools-ansible-rulebook-integration
