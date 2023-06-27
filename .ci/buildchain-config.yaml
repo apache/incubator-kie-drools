@@ -1,7 +1,7 @@
 version: '2.1'
 dependencies: ./buildchain-project-dependencies.yaml
 pre: |
-  export BUILD_MVN_OPTS="${{ env.BUILD_MVN_OPTS }} -nsu -ntp -fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=3"
+  export BUILD_MVN_OPTS="${{ env.BUILD_MVN_OPTS }} -Dproductized -nsu -ntp -fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=3"
   echo "BUILD_MVN_OPTS=${{ env.BUILD_MVN_OPTS }}"
   export BUILD_MVN_OPTS_CURRENT="${{ env.BUILD_MVN_OPTS_CURRENT }} dependency:tree"
   echo "BUILD_MVN_OPTS_CURRENT=${{ env.BUILD_MVN_OPTS_CURRENT }}"
