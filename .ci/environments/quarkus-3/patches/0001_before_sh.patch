@@ -2511,16 +2511,18 @@ index 295de81ef7..e85b0f8c09 100644
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.kie.kogito.svg.AbstractProcessSvgService;
 diff --git a/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java b/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java
-index c3500b0c2a..4d385eddfc 100644
+index 9316ad12b6..fc98d52f66 100644
 --- a/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java
 +++ b/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java
-@@ -15,8 +15,8 @@
+@@ -15,9 +15,9 @@
   */
  package org.kie.kogito.quarkus.serverless.workflow.python;
  
 -import javax.annotation.PostConstruct;
+-import javax.annotation.PreDestroy;
 -import javax.enterprise.context.ApplicationScoped;
 +import jakarta.annotation.PostConstruct;
++import jakarta.annotation.PreDestroy;
 +import jakarta.enterprise.context.ApplicationScoped;
  
  import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
