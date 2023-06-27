@@ -1,7 +1,7 @@
 import React from 'react';
 import { configure, mount, shallow } from 'enzyme';
 import DomainExplorerManageColumns from '../DomainExplorerManageColumns';
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import reactApollo from 'react-apollo';
 import { act } from 'react-dom/test-utils';
 
@@ -13,6 +13,21 @@ jest.mock('react-apollo', () => {
   return { useApolloClient: jest.fn(() => ApolloClient) };
 });
 global.Math.random = () => 0.7336705311965102;
+
+const lib = jest.requireActual('tabbable');
+
+const tabbable = {
+  ...lib,
+  tabbable: (node, options) =>
+    lib.tabbable(node, { ...options, displayCheck: 'none' }),
+  focusable: (node, options) =>
+    lib.focusable(node, { ...options, displayCheck: 'none' }),
+  isFocusable: (node, options) =>
+    lib.isFocusable(node, { ...options, displayCheck: 'none' }),
+  isTabbable: (node, options) =>
+    lib.isTabbable(node, { ...options, displayCheck: 'none' })
+};
+
 describe('Domain Explorer Manage columns component', () => {
   afterEach(() => {
     jest.clearAllMocks();

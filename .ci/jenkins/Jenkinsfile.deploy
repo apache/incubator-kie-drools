@@ -204,7 +204,10 @@ void sendNotification() {
 }
 
 void saveReports() {
-    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+    // Remove `node_modules` to avoid heap space issues with junit command thereafter
+    // Related to https://github.com/jenkinsci/junit-plugin/issues/478 and https://github.com/jenkinsci/junit-plugin/issues/467
+    sh 'find . -type d -name node_modules -exec rm -rf {} \\; || true'
+    junit(testResults: '**/junit.xml, **/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml, **/target/invoker-reports/**/*.xml', allowEmptyResults: true)
     archiveArtifacts artifacts: '**/*.log,**/cypress/screenshots/**,**/cypress/videos/**', allowEmptyArchive: true
 }
 

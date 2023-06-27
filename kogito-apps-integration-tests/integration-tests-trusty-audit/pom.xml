@@ -88,9 +88,9 @@
                         the 'kogito-apps-ui-packages' module in case that this dependency will be removed.
                     !-->
                     <execution>
-                        <id>yarn e2e test</id>
+                        <id>pnpm e2e test</id>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>pnpm</goal>
                         </goals>
                         <phase>integration-test</phase>
                         <configuration>

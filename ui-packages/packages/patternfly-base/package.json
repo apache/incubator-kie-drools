@@ -20,5 +20,15 @@
     "@patternfly/react-styles": "4.18.8",
     "@patternfly/react-table": "4.29.0",
     "@patternfly/react-tokens": "4.33.1"
+  },
+  "devDependencies": {
+    "css-loader": "^5.2.6",
+    "file-loader": "^6.2.0",
+    "raw-loader": "^4.0.2",
+    "sass-loader": "^12.3.0",
+    "style-loader": "^2.0.0",
+    "svg-url-loader": "^7.1.1",
+    "ts-loader": "^9.4.2",
+    "url-loader": "^4.1.1"
   }
 }

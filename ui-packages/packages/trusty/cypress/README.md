@@ -13,13 +13,13 @@ This is a basis test suite which should verify that UI of Trusty AI is running a
 To install dependencies
 
 ```
-yarn install
+pnpm install
 ```
 
 To run Cypress test suite with mocked data
 
 ```
-yarn run test:it
+pnpm run test:it
 ```
 
 ### Run integration tests with real data

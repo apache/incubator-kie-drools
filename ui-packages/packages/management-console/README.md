@@ -6,7 +6,7 @@ This will start the frontend and backend using a mock server. The GraphiQL UI fo
 if you would like to explore the data.  
 
 ```bash
-yarn run dev
+pnpm run dev
 ```
 
 ## Local Development using [Data Index](https://github.com/kiegroup/kogito-runtimes/wiki/Data-Index-Service) server
@@ -15,13 +15,13 @@ Instead of starting a mock backend, you can connect to a running Data Index serv
 http://localhost:8180.
 
 ```bash
-yarn run dev-remote-dataindex
+pnpm run dev-remote-dataindex
 ```
 
 ## Executing tests
 
 ```bash
-yarn run test
+pnpm run test
 ```
 
 ## GraphQL Codegen
@@ -30,7 +30,7 @@ To generate new GraphQL hook queries using [graphql-code-generator](https://grap
 please edit [queries.tsx](./src/graphql/queries.tsx) adding you new query. Then start the Data Index service and run:
 
 ```bash
-yarn run codegen
+pnpm run codegen
 ```
 
 That will update the [types.tsx](./src/graphql/types.tsx) file, including the new GraphQL query hooks.
@@ -55,11 +55,11 @@ Username should be admin and password admin.
 Two new scripts have been added
 Run to work with dev server and authorization enabled:
 ```bash
-yarn run dev-auth
+pnpm run dev-auth
 ```
 
 To work with remote Kogito Data Index service and authorization enabled:
 ```bash
-yarn run dev-remote-dataindex-auth
+pnpm run dev-remote-dataindex-auth
 ```
 

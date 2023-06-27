@@ -1,5 +1,5 @@
 const path = require('path');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const webpack = require('webpack');
 
@@ -44,47 +44,13 @@ module.exports = function (env) {
       rules: [
         {
           test: /\.css$/,
-          include: [
-            path.resolve(__dirname, 'src'),
-            path.resolve('../../node_modules/patternfly'),
-            path.resolve('../../node_modules/@patternfly/patternfly'),
-            path.resolve('../../node_modules/@patternfly/react-styles/css'),
-            path.resolve(
-              '../../node_modules/@patternfly/react-core/dist/styles/base.css'
-            ),
-            path.resolve(
-              '../../node_modules/@patternfly/react-core/dist/esm/@patternfly/patternfly'
-            ),
-            path.resolve(
-              '../../node_modules/@patternfly/react-core/node_modules/@patternfly/react-styles/css'
-            ),
-            path.resolve(
-              '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'
-            ),
-            path.resolve(
-              '../../node_modules/@kogito-apps/common/dist/components/styles.css'
-            ),
-            path.resolve(
-              '../../node_modules/react-calendar/dist/Calendar.css'
-            ),
-            path.resolve(
-              '../../node_modules/react-clock/dist/Clock.css'
-            ),
-            path.resolve(
-              '../../node_modules/react-datetime-picker/dist/DateTimePicker.css'
-            )
-          ],
           use: ['style-loader', 'css-loader']
         }
       ]
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js', '.jsx'],
-      modules: [
-        path.resolve('../../node_modules'),
-        path.resolve('./node_modules'),
-        path.resolve('./src')
-      ]
+      modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     }
   })
 }

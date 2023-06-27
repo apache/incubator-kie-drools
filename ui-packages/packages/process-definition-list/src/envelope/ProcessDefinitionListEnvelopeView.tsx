@@ -36,14 +36,10 @@ export const ProcessDefinitionListEnvelopeView = React.forwardRef<
   ProcessDefinitionListEnvelopeViewApi,
   Props
 >((props, forwardedRef) => {
-  const [
-    isEnvelopeConnectedToChannel,
-    setEnvelopeConnectedToChannel
-  ] = useState<boolean>(false);
-  const [
-    isTriggerCloudEventEnabled,
-    setIsTriggerCloudEventEnabled
-  ] = useState<boolean>(false);
+  const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] =
+    useState<boolean>(false);
+  const [isTriggerCloudEventEnabled, setIsTriggerCloudEventEnabled] =
+    useState<boolean>(false);
   const [singularProcessLabel, setSingularProcessLabel] = useState<string>('');
 
   useImperativeHandle(

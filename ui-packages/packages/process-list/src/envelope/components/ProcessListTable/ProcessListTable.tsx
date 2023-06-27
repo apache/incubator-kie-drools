@@ -511,10 +511,10 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
                 />
                 {pair.parent.map((cell, cellIndex) => (
                   <Td
-                    key={`${pair.id}-parent-${columns[++cellIndex]}`}
-                    dataLabel={columns[cellIndex]}
+                    key={`${pair.id}-parent-${columns[cellIndex + 1]}`}
+                    dataLabel={columns[cellIndex + 1]}
                     {...componentOuiaProps(
-                      columns[cellIndex].toLowerCase(),
+                      columns[cellIndex + 1].toLowerCase(),
                       'process-list-cell',
                       true
                     )}

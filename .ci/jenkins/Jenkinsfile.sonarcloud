@@ -64,7 +64,9 @@ pipeline {
     post {
         always {
             script {
-                junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                sh 'find . -type d -name node_modules -exec rm -rf {} \\; || true'
+                junit(testResults: '**/junit.xml, **/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml, **/target/invoker-reports/**/*.xml', allowEmptyResults: true)
+                archiveArtifacts(artifacts: '**/*.log,**/cypress/screenshots/**,**/cypress/videos/**', allowEmptyArchive: true)
                 util.archiveConsoleLog()
             }
         }
@@ -81,7 +83,7 @@ pipeline {
     }
 }
 
-MavenCommand getMavenCommand(){
+MavenCommand getMavenCommand() {
     return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId('kogito_release_settings')
 }

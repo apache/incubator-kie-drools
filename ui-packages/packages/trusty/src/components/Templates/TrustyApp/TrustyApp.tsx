@@ -19,9 +19,9 @@ import {
   PageSidebar
 } from '@patternfly/react-core';
 import AuditOverview from '../AuditOverview/AuditOverview';
-import kogitoLogo from '../../../../static/images/kogitoLogo.svg';
+import kogitoLogo from '../../../static/images/kogitoLogo.svg';
 import AuditDetail from '../AuditDetail/AuditDetail';
-import imgAvatar from '../../../../static/images/user.svg';
+import imgAvatar from '../../../static/images/user.svg';
 import Breadcrumbs from '../../Organisms/Breadcrumbs/Breadcrumbs';
 import NotFound from '../NotFound/NotFound';
 import ApplicationError from '../ApplicationError/ApplicationError';
@@ -31,7 +31,7 @@ import { datePickerSetup } from '../../Molecules/DatePicker/DatePicker';
 // see: https://github.com/patternfly/patternfly/issues/4021
 // when updating PF to a version that will include it, it will be
 // important to remove this duplication
-import '../../../../static/fonts/RedHatMono/RedHatMono.css';
+import '../../../static/fonts/RedHatMono/RedHatMono.css';
 import './TrustyApp.scss';
 
 datePickerSetup();
@@ -64,7 +64,7 @@ type ContainerConfigurationProps = {
   useHrefLinks?: boolean;
 };
 
-const TrustyApp: React.FC<TrustyAppProps> = props => {
+const TrustyApp: React.FC<TrustyAppProps> = (props) => {
   const baseUrl =
     window.TRUSTY_ENDPOINT || process.env.KOGITO_TRUSTY_API_HTTP_URL;
 

@@ -1302,18 +1302,15 @@ exports[`Jobs management table component tests Snapshot test with default props 
                           "cell": [Function],
                           "row": Object {
                             "$$typeof": Symbol(react.forward_ref),
-                            "displayName": "Tr",
                             "render": [Function],
                           },
                           "wrapper": Object {
                             "$$typeof": Symbol(react.forward_ref),
-                            "displayName": "Thead",
                             "render": [Function],
                           },
                         },
                         "table": Object {
                           "$$typeof": Symbol(react.forward_ref),
-                          "displayName": "TableComposable",
                           "render": [Function],
                         },
                       }
@@ -1336,12 +1333,10 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                 "cell": [Function],
                                 "row": Object {
                                   "$$typeof": Symbol(react.forward_ref),
-                                  "displayName": "Tr",
                                   "render": [Function],
                                 },
                                 "wrapper": Object {
                                   "$$typeof": Symbol(react.forward_ref),
-                                  "displayName": "Thead",
                                   "render": [Function],
                                 },
                               }
@@ -5161,18 +5156,15 @@ exports[`Jobs management table component tests Snapshot test with default props 
                           "cell": [Function],
                           "row": Object {
                             "$$typeof": Symbol(react.forward_ref),
-                            "displayName": "Tr",
                             "render": [Function],
                           },
                           "wrapper": Object {
                             "$$typeof": Symbol(react.forward_ref),
-                            "displayName": "Thead",
                             "render": [Function],
                           },
                         },
                         "table": Object {
                           "$$typeof": Symbol(react.forward_ref),
-                          "displayName": "TableComposable",
                           "render": [Function],
                         },
                       }

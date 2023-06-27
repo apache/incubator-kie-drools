@@ -1460,18 +1460,18 @@ exports[`ProcessListTable test initial render with data 1`] = `
                     </Td>
                     <Td
                       colSpan={6}
-                      dataLabel="__Select"
+                      dataLabel="__Toggle"
                       key="538f9feb-5a14-4096-b791-2055b38da7c6-child-__Select"
                     >
                       <TdBase
                         colSpan={6}
-                        dataLabel="__Select"
+                        dataLabel="__Toggle"
                         innerRef={null}
                       >
                         <td
                           className=""
                           colSpan={6}
-                          data-label="__Select"
+                          data-label="__Toggle"
                         >
                           <ExpandableRowContent>
                             <div
@@ -2152,18 +2152,18 @@ exports[`ProcessListTable test initial render with data 1`] = `
                     </Td>
                     <Td
                       colSpan={6}
-                      dataLabel="__Select"
+                      dataLabel="__Toggle"
                       key="538f9feb-5a14-4096-b791-2055b38da7c6-child-__Select"
                     >
                       <TdBase
                         colSpan={6}
-                        dataLabel="__Select"
+                        dataLabel="__Toggle"
                         innerRef={null}
                       >
                         <td
                           className=""
                           colSpan={6}
-                          data-label="__Select"
+                          data-label="__Toggle"
                         >
                           <ExpandableRowContent>
                             <div

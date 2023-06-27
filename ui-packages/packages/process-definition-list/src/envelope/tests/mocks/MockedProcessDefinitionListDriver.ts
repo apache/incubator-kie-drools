@@ -44,6 +44,5 @@ export class MockedProcessDefinitionListDriver
   openProcessForm(processDefinition: ProcessDefinition): Promise<void> {
     return Promise.resolve();
   }
-  openTriggerCloudEvent(): void {
-  }
+  openTriggerCloudEvent(): void {}
 }

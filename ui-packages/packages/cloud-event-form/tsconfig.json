@@ -5,13 +5,8 @@
     "declaration": true,
     "outDir": "dist"
   },
-  "files": [
-    "./src/index.ts"
-  ],
-  "include": [
-    "src/",
-    "../../config/declare.d.ts"
-  ],
+  "files": ["./src/index.ts"],
+  "include": ["src/", "./config/declare.d.ts"],
   "exclude": [
     "src/**/*.test.ts",
     "src/**/*.test.tsx",

@@ -1,22 +1,21 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        "declarationDir": "./dist",
-        "declaration": true
-    },
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "src/**/*.jsx",
-        "src/**/*.js",
-        "../../config/declare.d.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "src/**/*.test.ts",
-        "src/**/*.test.tsx",
-        "src/**/__mocks__",
-        "src/**/tests"
-    ],
-    "preserveSymlinks": true
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "declarationDir": "./dist",
+    "declaration": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.jsx",
+    "src/**/*.js",
+    "./config/declare.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/__mocks__",
+    "src/**/tests"
+  ]
 }

@@ -1,17 +1,19 @@
 {
+  "exclude": ["node_modules"],
   "compilerOptions": {
-    "baseUrl": "./",
+    "lib": ["es6", "dom", "es2018.promise", "es2019", "esnext"],
     "target": "es5",
-    "module": "esnext",
+    "baseUrl": "./",
     "sourceMap": true,
-    "jsx": "react",
-    "outDir": "./dist",
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "removeComments": true,
+    "strictNullChecks": false,
+    "experimentalDecorators": true,
+    "downlevelIteration": true,
+    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "lib": ["es6", "dom", "es2018.promise", "es2019"],
-    "noUnusedLocals": true
-  },
-  "exclude": ["node_modules"]
+    "jsx": "react-jsx"
+  }
 }

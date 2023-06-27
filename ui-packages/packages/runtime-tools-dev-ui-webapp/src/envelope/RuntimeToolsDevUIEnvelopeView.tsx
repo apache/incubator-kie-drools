@@ -16,6 +16,7 @@
 
 import React, { useImperativeHandle } from 'react';
 import '@patternfly/patternfly/patternfly.css';
+import '@patternfly/react-core/dist/styles/base.css';
 import { RuntimeToolsDevUIEnvelopeViewApi } from './RuntimeToolsDevUIEnvelopeViewApi';
 import RuntimeTools from '../components/DevUI/RuntimeTools/RuntimeTools';
 import { User } from '@kogito-apps/consoles-common';

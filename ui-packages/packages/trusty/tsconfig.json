@@ -6,18 +6,13 @@
     "skipLibCheck": true,
     "allowJs": true
   },
-  "files": [
-    "./src/index.ts"
-  ],
+  "files": ["./src/index.ts"],
   "include": [
-    "../../config/declare.d.ts",
+    "./config/declare.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.jsx",
     "src/**/*.js"
   ],
-  "exclude": [
-    "node_modules",
-    "../../node_modules"
-  ]
+  "exclude": ["node_modules", "../../node_modules"]
 }

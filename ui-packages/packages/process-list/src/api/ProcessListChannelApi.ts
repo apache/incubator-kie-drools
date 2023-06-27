@@ -45,5 +45,5 @@ export interface ProcessListChannelApi {
   processList__getChildProcessesQuery(
     rootProcessInstanceId: string
   ): Promise<ProcessInstance[]>;
-  processList__openTriggerCloudEvent(processInstance?: ProcessInstance): void
+  processList__openTriggerCloudEvent(processInstance?: ProcessInstance): void;
 }

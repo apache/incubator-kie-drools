@@ -11,13 +11,16 @@
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-apps.git"
   },
-
   "scripts": {
     "copy:dashbuilder": "copyfiles -u 6 \"../../node_modules/@kie-tools/dashbuilder-client/dist/**/*\" ./dist/ && copyfiles -u 1 src/* ./dist/",
-    "build": "rimraf dist && yarn run copy:dashbuilder",
-    "build:prod": "yarn run build"
+    "build": "rimraf dist && pnpm run copy:dashbuilder",
+    "build:prod": "pnpm run build"
   },
- 
+  "devDependencies": {
+    "rimraf": "^3.0.2",
+    "copyfiles": "^2.4.1",
+    "typescript": "^4.4.2"
+  },
   "babel": {
     "presets": [
       [

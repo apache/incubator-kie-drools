@@ -17,28 +17,47 @@
   "scripts": {
     "precommit": "lint-staged",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css,svg,png}\" dist/",
-    "build": "rimraf dist && tsc -m commonjs -p tsconfig.json && yarn run copy:css",
-    "build:prod": "yarn run clean && yarn run lint && yarn run build",
-    "test:report": "yarn test --ci --reporters=jest-junit",
+    "build": "rimraf dist && tsc -m commonjs -p tsconfig.json && pnpm run copy:css",
+    "build:prod": "pnpm run clean && pnpm run lint && pnpm run build",
+    "test:report": "pnpm run test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "update-snapshot": "jest --updateSnapshot",
-    "test:coverage": "rimraf coverage && yarn test --coverage",
+    "test:coverage": "rimraf coverage && pnpm run test --coverage",
     "lint": "eslint './src/**/*.ts{,x}' --fix",
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@kogito-apps/components-common": "^1.0.0",
-    "@kogito-apps/management-console-shared": "^1.0.0",
-    "@kogito-apps/patternfly-base": "^1.0.0"
+    "@kogito-apps/components-common": "workspace:*",
+    "@kogito-apps/management-console-shared": "workspace:*",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kogito-apps/ouia-tools": "^1.0.0"
+    "@babel/core": "^7.14.0",
+    "@kogito-apps/ouia-tools": "workspace:*",
+    "@patternfly/patternfly": "^4.108.2",
+    "@testing-library/jest-dom": "^5.12.0",
+    "@types/enzyme": "^3.10.8",
+    "@types/jest": "^26.0.23",
+    "@types/react": "^17.0.5",
+    "@types/react-dom": "^17.0.5",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.8.0",
+    "babel-jest": "^25.1.0",
+    "copyfiles": "^2.4.1",
+    "enzyme": "^3.11.0",
+    "enzyme-to-json": "^3.6.1",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^26.6.3",
+    "jest-junit": "^10.0.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.4.2"
   },
   "jest": {
     "setupFiles": [
-      "../../config/Jest-config/test-shim.js",
-      "../../config/Jest-config/test-setup.js",
+      "./config/Jest-config/test-shim.js",
+      "./config/Jest-config/test-setup.js",
       "core-js"
     ],
     "moduleFileExtensions": [
@@ -55,15 +74,22 @@
       "./src/envelope/contexts/",
       "./src/envelope/index.ts"
     ],
-    "coverageReporters": [["lcov", { "projectRoot": "../../" }]],
+    "coverageReporters": [
+      [
+        "lcov",
+        {
+          "projectRoot": "../../"
+        }
+      ]
+    ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
     "transformIgnorePatterns": [],
     "transform": {
-      "^.+\\.jsx?$": "../../config/Jest-config/babel-jest-wrapper.js",
+      "^.+\\.jsx?$": "./config/Jest-config/babel-jest-wrapper.js",
       "^.+\\.(ts|tsx)$": "ts-jest",
-      "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
+      "\\.(jpg|jpeg|png|svg)$": "./config/Jest-config/fileMocks.js"
     },
     "testMatch": [
       "**/tests/*.(ts|tsx|js)"
@@ -74,8 +100,8 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "yarn run format",
-      "yarn run lint"
+      "pnpm run format",
+      "pnpm run lint"
     ]
   }
 }

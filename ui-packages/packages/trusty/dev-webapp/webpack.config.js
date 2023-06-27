@@ -7,8 +7,11 @@ module.exports = {
   plugins: [
     new CopyPlugin({
       patterns: [
-        { from: path.resolve(__dirname, '../static/images'), to: './images' },
-        { from: path.resolve(__dirname, '../static/fonts'), to: './fonts' }
+        {
+          from: path.resolve(__dirname, '../src/static/images'),
+          to: './images'
+        },
+        { from: path.resolve(__dirname, '../src/static/fonts'), to: './fonts' }
       ]
     }),
     new webpack.EnvironmentPlugin({

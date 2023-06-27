@@ -6,7 +6,7 @@ exports[`SkeletonCards renders a list of cards 1`] = `
   hasGutter={true}
 >
   <GalleryItem
-    key="0"
+    key="2"
   >
     <div
       className="skeleton-cards__card"
@@ -17,23 +17,23 @@ exports[`SkeletonCards renders a list of cards 1`] = `
             "height": 25,
             "marginBottom": "20px",
             "width": "90%",
+          }
+        }
+        key="0"
+      />
+      <SkeletonStripe
+        customStyle={
+          Object {
+            "height": 20,
+            "width": "60%",
           }
         }
         key="1"
       />
-      <SkeletonStripe
-        customStyle={
-          Object {
-            "height": 20,
-            "width": "60%",
-          }
-        }
-        key="2"
-      />
     </div>
   </GalleryItem>
   <GalleryItem
-    key="3"
+    key="5"
   >
     <div
       className="skeleton-cards__card"
@@ -44,23 +44,23 @@ exports[`SkeletonCards renders a list of cards 1`] = `
             "height": 25,
             "marginBottom": "20px",
             "width": "90%",
+          }
+        }
+        key="3"
+      />
+      <SkeletonStripe
+        customStyle={
+          Object {
+            "height": 20,
+            "width": "60%",
           }
         }
         key="4"
       />
-      <SkeletonStripe
-        customStyle={
-          Object {
-            "height": 20,
-            "width": "60%",
-          }
-        }
-        key="5"
-      />
     </div>
   </GalleryItem>
   <GalleryItem
-    key="6"
+    key="8"
   >
     <div
       className="skeleton-cards__card"
@@ -73,7 +73,7 @@ exports[`SkeletonCards renders a list of cards 1`] = `
             "width": "90%",
           }
         }
-        key="7"
+        key="6"
       />
       <SkeletonStripe
         customStyle={
@@ -82,7 +82,7 @@ exports[`SkeletonCards renders a list of cards 1`] = `
             "width": "60%",
           }
         }
-        key="8"
+        key="7"
       />
     </div>
   </GalleryItem>

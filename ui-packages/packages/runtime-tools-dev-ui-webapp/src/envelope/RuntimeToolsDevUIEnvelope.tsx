@@ -47,7 +47,7 @@ export class RuntimeToolsDevUIEnvelope {
     }
   ) {}
 
-  public start(container: HTMLElement) {
+  public start(container: HTMLElement): any {
     return this.envelope.start(
       () => this.renderView(container),
       this.context,

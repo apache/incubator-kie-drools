@@ -57,7 +57,9 @@ export const ProcessListEnvelopeView = React.forwardRef<
         initialState={processInitialState.initialState}
         singularProcessLabel={processInitialState.singularProcessLabel}
         pluralProcessLabel={processInitialState.pluralProcessLabel}
-        isTriggerCloudEventEnabled={processInitialState.isTriggerCloudEventEnabled}
+        isTriggerCloudEventEnabled={
+          processInitialState.isTriggerCloudEventEnabled
+        }
         isWorkflow={processInitialState.isWorkflow}
       />
     </React.Fragment>

@@ -2162,7 +2162,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
         className="pf-l-gallery pf-m-gutter outcome-cards"
       >
         <GalleryItem
-          key="31"
+          key="32"
         >
           <div>
             <OutcomeCard
@@ -3189,7 +3189,7 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
         className="pf-l-gallery pf-m-gutter outcome-cards"
       >
         <GalleryItem
-          key="6"
+          key="7"
         >
           <div>
             <OutcomeCard
@@ -3714,7 +3714,7 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
                                         className="formatted-list"
                                       >
                                         <FormattedValue
-                                          key="14"
+                                          key="13"
                                           value="ILLICITCORP"
                                         >
                                           <span
@@ -3724,13 +3724,13 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
                                           </span>
                                         </FormattedValue>
                                         <span
-                                          key="15"
+                                          key="14"
                                         >
                                           ,
                                           <br />
                                         </span>
                                         <FormattedValue
-                                          key="17"
+                                          key="16"
                                           value="SLIMSHADY"
                                         >
                                           <span
@@ -3740,13 +3740,13 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
                                           </span>
                                         </FormattedValue>
                                         <span
-                                          key="18"
+                                          key="17"
                                         >
                                           ,
                                           <br />
                                         </span>
                                         <FormattedValue
-                                          key="20"
+                                          key="19"
                                           value="TAINTEDTHINGS"
                                         >
                                           <span

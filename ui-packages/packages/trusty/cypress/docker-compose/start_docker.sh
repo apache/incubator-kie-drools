@@ -35,7 +35,7 @@ then
     echo 'Application starts from the docker-compose folder - probably manual start of this script'
 elif [[ "${PWD}" == */packages/trusty ]]
 then 
-    echo 'Application starts from the trusty folder - probably run some yarn script'
+    echo 'Application starts from the trusty folder - probably run some pnpm script'
     echo 'Move to the docker-compose folder'
     cd cypress/docker-compose
 else

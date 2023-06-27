@@ -37,7 +37,7 @@ export function init(args: {
   config: EnvelopeDivConfig;
   container: HTMLDivElement;
   bus: EnvelopeBus;
-}) {
+}): Promise<any> {
   /**
    * Creates a new generic Envelope, typed with the right interfaces.
    */

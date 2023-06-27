@@ -18,12 +18,36 @@ import React from 'react';
 import { mount } from 'enzyme';
 import cloneDeep from 'lodash/cloneDeep';
 import { AutoForm } from 'uniforms-patternfly/dist/es6';
-import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 import FormRenderer from '../FormRenderer';
 import { FormAction } from '../../utils';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
 import FormFooter from '../../FormFooter/FormFooter';
+
+export type UserTaskInstance = {
+  id: string;
+  description?: string;
+  name?: string;
+  priority?: string;
+  processInstanceId: string;
+  processId: string;
+  rootProcessInstanceId?: string;
+  rootProcessId?: string;
+  state: string;
+  actualOwner?: string;
+  adminGroups?: string[];
+  adminUsers?: string[];
+  completed?: Date;
+  started: Date;
+  excludedUsers?: string[];
+  potentialGroups?: string[];
+  potentialUsers?: string[];
+  inputs?: string;
+  outputs?: string;
+  referenceName?: string;
+  lastUpdate: Date;
+  endpoint?: string;
+};
 
 const userTaskInstance: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',

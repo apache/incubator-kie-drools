@@ -6,8 +6,8 @@ const BG_IMAGES_DIRNAME = 'bgimages';
 const CopyPlugin = require('copy-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const swEditor = require('@kie-tools/serverless-workflow-diagram-editor-assets');
-const ReplaceInFileWebpackPlugin = require('replace-in-file-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -25,7 +25,17 @@ module.exports = {
   },
   plugins: [
     new MonacoWebpackPlugin({
-      languages: ['typescript', 'html', 'json', 'yaml'],
+      languages: ['typescript', 'json'],
+      customLanguages: [
+        {
+          label: 'yaml',
+          entry: ['monaco-yaml', 'vs/basic-languages/yaml/yaml.contribution'],
+          worker: {
+            id: 'monaco-yaml/yamlWorker',
+            entry: '../../monaco-yaml/yaml.worker.js'
+          }
+        }
+      ],
       globalAPI: true
     }),
     new webpack.EnvironmentPlugin({
@@ -69,31 +79,14 @@ module.exports = {
         }
       }
     }),
-    // Remove this replacement after upgrading envelope and patternfly with kie-tools
-    new ReplaceInFileWebpackPlugin([
-      {
-        dir: 'dist',
-        test: [/\.js/],
-        rules: [
-          {
-            search:
-              '[class*=pf-c-],[class*=pf-c-]::before,[class*=pf-c-]::after{padding:0;margin:0;background-color:rgba(0,0,0,0)}',
-            replace: ''
-          },
-          {
-            search:
-              '[class*=pf-c-],\n[class*=pf-c-]::before,\n[class*=pf-c-]::after {\n  padding: 0;\n  margin: 0;\n  background-color: transparent;\n}',
-            replace: ''
-          }
-        ]
-      }
-    ])
+    new NodePolyfillPlugin()
   ],
   module: {
     rules: [
       {
         test: /\.(tsx|ts)?$/,
-        include: [path.resolve(__dirname, 'src')],
+        include: [path.resolve('./src')],
+        exclude: path.resolve(__dirname, 'node_modules'),
         use: [
           {
             loader: 'ts-loader',
@@ -106,75 +99,13 @@ module.exports = {
       },
       {
         test: /\.(svg|ttf|eot|woff|woff2)$/,
-        include: [
-          path.resolve('../../node_modules/patternfly/dist/fonts'),
-          path.resolve(
-            '../../node_modules/@patternfly/react-core/dist/styles/assets/fonts'
-          ),
-          path.resolve(
-            '../../node_modules/@patternfly/react-core/dist/styles/assets/pficon'
-          ),
-          path.resolve(
-            '../../node_modules/@patternfly/patternfly/assets/fonts'
-          ),
-          path.resolve(
-            '../../node_modules/@patternfly/patternfly/assets/pficon'
-          ),
-          path.resolve('./src/static/'),
-          path.resolve(
-            '../../node_modules/@kogito-apps/consoles-common/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/components-common/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/jobs-management/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-details/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/management-console-shared/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-list/dist/static'
-          ),
-          path.resolve('../../node_modules/@kogito-apps/task-form/dist/static'),
-          path.resolve(
-            '../../node_modules/@kogito-apps/form-details/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/form-displayer/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-form/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-definition-list/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-monitoring/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/workflow-form/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon/codicon.ttf'
-          )
-        ],
         use: {
           loader: 'file-loader',
           options: {
             // Limit at 50k. larger files emited into separate files
             limit: 5000,
             outputPath: 'fonts',
-            name: '[name].[ext]'
+            name: '[path][name].[ext]'
           }
         }
       },
@@ -202,66 +133,6 @@ module.exports = {
       },
       {
         test: /\.(jpg|jpeg|png|gif)$/i,
-        include: [
-          path.resolve(__dirname, 'src'),
-          path.resolve('../../node_modules/patternfly'),
-          path.resolve(
-            '../../node_modules/@patternfly/patternfly/assets/images'
-          ),
-          path.resolve(
-            '../../node_modules/@patternfly/react-styles/css/assets/images'
-          ),
-          path.resolve(
-            '../../node_modules/@patternfly/react-core/dist/styles/assets/images'
-          ),
-          path.resolve(
-            '../../node_modules/@patternfly/react-core/node_modules/@patternfly/react-styles/css/assets/images'
-          ),
-          path.resolve(
-            '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/consoles-common/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/components-common/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/jobs-management/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-details/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/management-console-shared/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-list/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/form-details/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/form-displayer/dist/static'
-          ),
-          path.resolve('../../node_modules/@kogito-apps/task-form/dist/static'),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-form/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-monitoring/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-definition-list/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/workflow-form/dist/static'
-          )
-        ],
-
         use: [
           {
             loader: 'url-loader',
@@ -272,6 +143,12 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false
+        }
       }
     ]
   },
@@ -279,18 +156,23 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   resolve: {
+    fallback: {
+      https: require.resolve('https-browserify'),
+      path: require.resolve('path-browserify'),
+      http: require.resolve('stream-http'),
+      os: require.resolve('os-browserify/browser'),
+      fs: false,
+      child_process: false,
+      net: false,
+      buffer: require.resolve('buffer/')
+    },
     extensions: ['.ts', '.tsx', '.js'],
-    modules: [
-      path.resolve('../../node_modules'),
-      path.resolve('./node_modules'),
-      path.resolve('./src')
-    ],
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     plugins: [
       new TsconfigPathsPlugin({
         configFile: path.resolve(__dirname, './tsconfig.json')
       })
     ],
-    symlinks: false,
     cacheWithContext: false
   }
 };

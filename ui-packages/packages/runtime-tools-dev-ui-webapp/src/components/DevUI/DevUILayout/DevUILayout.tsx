@@ -67,7 +67,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
   isStunnerEnabled,
   children
 }) => {
-  const renderPage = routeProps => {
+  const renderPage = (routeProps) => {
     return (
       <PageLayout
         pageNavOpen={true}

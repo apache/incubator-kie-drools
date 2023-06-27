@@ -114,7 +114,7 @@ export const createDevUI = (
   >,
   listener: (message: MessageEvent) => void,
   iframe: HTMLIFrameElement
-) => {
+): any => {
   return {
     envelopeApi: envelopeServer.envelopeApi,
     close: () => {

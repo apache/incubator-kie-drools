@@ -127,7 +127,7 @@ const props = {
   setIsAllChecked: jest.fn(),
   selectableInstances: 0,
   onSort: jest.fn(),
-  sortBy: { lastUpdate: GraphQL.OrderBy.Desc }
+  sortBy: { lastUpdate: GraphQL.OrderBy.Desc } as any
 };
 
 describe('ProcessListPage tests', () => {

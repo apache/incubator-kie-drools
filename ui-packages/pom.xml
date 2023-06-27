@@ -29,8 +29,8 @@
       <activeByDefault>true</activeByDefault>
     </activation>
     <properties>
-     <yarn.build.script>run build:prod</yarn.build.script>
-     <yarn.test.script>run test</yarn.test.script>
+     <pnpm.build.script>run build:prod</pnpm.build.script>
+     <pnpm.test.script>run test</pnpm.test.script>
     </properties>
    </profile>
    <profile>
@@ -41,8 +41,8 @@
      </property>
     </activation>
     <properties>
-     <yarn.build.script>run build:prod:swf</yarn.build.script>
-     <yarn.test.script>run test:swf</yarn.test.script>
+     <pnpm.build.script>run build:prod:swf</pnpm.build.script>
+     <pnpm.test.script>run test:swf</pnpm.test.script>
      <skip.ui.it>true</skip.ui.it>
     </properties>
    </profile>
@@ -134,7 +134,7 @@
       </plugin>
       <!-- frontend related plugins-->
       <!--
-        Installs node and yarn in the webapp's node and node_modules folders.
+        Installs node and pnpm in the webapp's node and node_modules folders.
         Run 'mvn package':
           * the first time you have checked out the source.
           * whenever the dependencies have been changed in package.json (delete the webapp's node_modules folder first!)
@@ -159,14 +159,14 @@
             </configuration>
           </execution>
           <execution>
-            <id>install-node-and-yarn</id>
+            <id>install-node-and-pnpm</id>
             <goals>
-              <goal>install-node-and-yarn</goal>
+              <goal>install-node-and-pnpm</goal>
             </goals>
             <configuration>
               <skip>${skip.ui.deps}</skip>
               <nodeVersion>${version.node}</nodeVersion>
-              <yarnVersion>${version.yarn}</yarnVersion>
+              <pnpmVersion>${version.pnpm}</pnpmVersion>
             </configuration>
           </execution>
           <execution>
@@ -177,7 +177,7 @@
             <configuration>
               <skip>${skip.ui.deps}</skip>
               <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
-              <arguments>install lock-treatment-tool --global-style --no-package-lock --no-save</arguments>
+              <arguments>install @kie/lock-treatment-tool@0.2.4 -w</arguments>
             </configuration>
           </execution>
           <execution>
@@ -192,44 +192,44 @@
             </configuration>
           </execution>
           <execution>
-            <id>yarn install</id>
+            <id>pnpm install</id>
             <goals>
-              <goal>yarn</goal>
+              <goal>pnpm</goal>
             </goals>
             <configuration>
               <skip>${skip.ui.deps}</skip>
-              <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
-              <arguments>install --fetch-retry-mintimeout=100000 --fetch-retries=10</arguments>
+              <npmRegistryURL>${env.PNPM_REGISTRY_URL}</npmRegistryURL>
+              <arguments>install --fetch-retry-mintimeout=50000 --fetch-retries=10</arguments>
             </configuration>
           </execution>
           <execution>
-            <id>yarn build</id>
+            <id>pnpm build</id>
             <goals>
-              <goal>yarn</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
               <skip>${skip.ui.build}</skip>
-              <arguments>${yarn.build.script}</arguments>
+              <arguments>${pnpm.build.script}</arguments>
               <environmentVariables>
                 <KOGITO_APP_VERSION>${project.version}</KOGITO_APP_VERSION>
               </environmentVariables>
             </configuration>
           </execution>
           <execution>
-            <id>yarn test</id>
+            <id>pnpm test</id>
             <goals>
-              <goal>yarn</goal>
+              <goal>pnpm</goal>
             </goals>
             <phase>test</phase>
             <configuration>
               <skip>${skip.ui.test}</skip>
-              <arguments>${yarn.test.script}</arguments>
+              <arguments>${pnpm.test.script}</arguments>
             </configuration>
           </execution>
           <execution>
-            <id>yarn-integration-test</id>
+            <id>pnpm-integration-test</id>
             <goals>
-              <goal>yarn</goal>
+              <goal>pnpm</goal>
             </goals>
             <phase>integration-test</phase>
             <configuration>

@@ -27,9 +27,9 @@
 
         <version.rename.plugin>1.0.1</version.rename.plugin>
         <version.frontend.plugin>1.12.1</version.frontend.plugin>
-        <version.node>v16.2.0</version.node>
+        <version.node>v18.16.0</version.node>
         <version.npm>6.10.3</version.npm>
-        <version.yarn>v1.22.10</version.yarn>
+        <version.pnpm>v7.26.3</version.pnpm>
 
         <!-- internal containers used for testing (built by maven using quarkus-container-image-jib) -->
         <container.image.explainability-service-messaging>org.kie.kogito/explainability-service-messaging:${project.version}</container.image.explainability-service-messaging>

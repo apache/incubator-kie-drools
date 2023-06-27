@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { InputGroup, TextInput } from '@patternfly/react-core';
 import flatpickr from 'flatpickr';
 import { Instance as flatpickrInstance } from 'flatpickr/dist/types/instance';
-import leftArrow from '../../../../static/images/leftArrow.svg';
-import rightArrow from '../../../../static/images/rightArrow.svg';
+import leftArrow from '../../../static/images/leftArrow.svg';
+import rightArrow from '../../../static/images/rightArrow.svg';
 import './DatePicker.scss';
 
 type DatePickerProps = {

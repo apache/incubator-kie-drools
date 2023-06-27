@@ -657,18 +657,15 @@ exports[`customDashboard list tests render customDashboard list - table 1`] = `
                                   "cell": [Function],
                                   "row": Object {
                                     "$$typeof": Symbol(react.forward_ref),
-                                    "displayName": "Tr",
                                     "render": [Function],
                                   },
                                   "wrapper": Object {
                                     "$$typeof": Symbol(react.forward_ref),
-                                    "displayName": "Thead",
                                     "render": [Function],
                                   },
                                 },
                                 "table": Object {
                                   "$$typeof": Symbol(react.forward_ref),
-                                  "displayName": "TableComposable",
                                   "render": [Function],
                                 },
                               }
@@ -691,12 +688,10 @@ exports[`customDashboard list tests render customDashboard list - table 1`] = `
                                         "cell": [Function],
                                         "row": Object {
                                           "$$typeof": Symbol(react.forward_ref),
-                                          "displayName": "Tr",
                                           "render": [Function],
                                         },
                                         "wrapper": Object {
                                           "$$typeof": Symbol(react.forward_ref),
-                                          "displayName": "Thead",
                                           "render": [Function],
                                         },
                                       }

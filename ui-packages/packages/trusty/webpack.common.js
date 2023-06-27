@@ -92,8 +92,7 @@ module.exports = {
       new TsconfigPathsPlugin({
         configFile: path.resolve(__dirname, './tsconfig.json')
       })
-    ],
-    symlinks: false,
+    ], 
     cacheWithContext: false
   },
   externals: {

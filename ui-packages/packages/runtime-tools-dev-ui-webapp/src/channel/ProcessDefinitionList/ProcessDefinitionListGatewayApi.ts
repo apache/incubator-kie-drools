@@ -43,9 +43,11 @@ export interface UnSubscribeHandler {
 }
 
 export class ProcessDefinitionListGatewayApiImpl
-  implements ProcessDefinitionListGatewayApi {
+  implements ProcessDefinitionListGatewayApi
+{
   private readonly onOpenProcessListeners: OnOpenProcessFormListener[] = [];
-  private readonly onOpenTriggerCloudEventListeners: OnOpenTriggerCloudEventListener[] = [];
+  private readonly onOpenTriggerCloudEventListeners: OnOpenTriggerCloudEventListener[] =
+    [];
 
   private readonly devUIUrl: string;
   private readonly openApiPath: string;
@@ -66,7 +68,7 @@ export class ProcessDefinitionListGatewayApiImpl
   }
 
   openProcessForm(processDefinition: ProcessDefinition): Promise<void> {
-    this.onOpenProcessListeners.forEach(listener =>
+    this.onOpenProcessListeners.forEach((listener) =>
       listener.onOpen(processDefinition)
     );
     return Promise.resolve();
@@ -111,7 +113,7 @@ export class ProcessDefinitionListGatewayApiImpl
   }
 
   openTriggerCloudEvent(): void {
-    this.onOpenTriggerCloudEventListeners.forEach(listener =>
+    this.onOpenTriggerCloudEventListeners.forEach((listener) =>
       listener.onOpen()
     );
   }

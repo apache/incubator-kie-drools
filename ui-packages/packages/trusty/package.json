@@ -5,63 +5,127 @@
   "types": "dist/index.d.ts",
   "author": "",
   "license": "Apache-2.0",
-  "files": ["dist/"],
+  "files": [
+    "dist/"
+  ],
   "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-apps.git"
   },
   "dependencies": {
-    "@kogito-apps/patternfly-base": "^1.0.0",
     "@kogito-tooling/kie-editors-standalone": "^0.10.0",
+    "@patternfly/react-charts": "^6.14.29",
+    "@patternfly/react-core": "4.157.3",
+    "@patternfly/react-icons": "4.11.17",
+    "@patternfly/react-table": "4.29.0",
     "@testing-library/react": "^10.4.7",
     "@testing-library/react-hooks": "^3.3.0",
     "@types/react-custom-scrollbars": "^4.0.7",
+    "axios": "^0.21.1",
     "date-fns": "^2.14.0",
     "flatpickr": "^4.6.3",
+    "lodash": "^4.17.15",
+    "query-string": "4.3.4",
+    "react": "^17.0.2",
     "react-custom-scrollbars": "^4.2.1",
+    "react-dom": "^17.0.2",
+    "react-router": "^5.0.1",
+    "react-router-dom": "^5.2.1",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.2",
     "use-react-router-breadcrumbs": "^1.0.4"
   },
   "scripts": {
     "start": "webpack-dev-server --hot --color --progress --stats verbose --config ./dev-webapp/webpack.dev.js",
+    "copy:static": "copyfiles -u 1 \"src/**/*.{sass,scss,css,svg,png}\" dist/",
     "build": "webpack --config webpack.prod.js",
-    "build:prod": "yarn lint && rimraf dist && rimraf dist-standalone && yarn build && yarn build:standalone",
+    "build:prod": "pnpm lint && rimraf dist && rimraf dist-standalone && pnpm copy:static && pnpm build && pnpm build:standalone",
     "build:standalone": "webpack --config ./dev-webapp/webpack.prod.js && locktt",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
-    "test:coverage": "rimraf coverage && yarn test --coverage",
+    "test:coverage": "rimraf coverage && pnpm run test --coverage",
+    "update-snapshot": "jest --updateSnapshot",
     "test:watch": "jest --watch",
+    "clean": "rimraf dist",
     "lint": "eslint './src/**/*.ts{,x}'",
     "mock-server": "json-server api-mock/db.js --routes api-mock/routes.json --port 1336 --delay 1000 --id executionId --middlewares api-mock/filterSingular.js  api-mock/counterfactualPoll.js",
-    "start:it": "concurrently 'yarn serve -p 9000 -c ../cypress/serve.json ./dist-standalone/' 'yarn run mock-server'",
-    "cypress:open:it": "yarn run cypress open --project cypress --config-file cypress.it.json",
-    "cypress:run:it": "yarn run cypress run --project cypress --config-file cypress.it.json",
-    "cypress:open:e2e": "yarn run cypress open --project cypress --config-file cypress.e2e.json",
-    "cypress:run:e2e": "yarn run cypress run --project cypress --config-file cypress.e2e.json",
-    "test:it": "start-server-and-test 'yarn start:it' http://0.0.0.0:9000 'yarn cypress:run:it' && echo",
-    "test:e2e:trusty": "yarn cypress:run:e2e && echo"
+    "start:it": "concurrently 'pnpm serve -p 9000 -c ../cypress/serve.json ./dist-standalone/' 'pnpm run mock-server'",
+    "cypress:open:it": "pnpm cypress open --project cypress --config-file cypress.it.json",
+    "cypress:run:it": "pnpm cypress run --project cypress --config-file cypress.it.json",
+    "cypress:open:e2e": "pnpm cypress open --project cypress --config-file cypress.e2e.json",
+    "cypress:run:e2e": "pnpm cypress run --project cypress --config-file cypress.e2e.json",
+    "test:e2e:trusty": "pnpm run cypress:run:e2e && echo"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.1",
+    "@babel/preset-react": "^7.13.13",
+    "@kogito-apps/cypress-ouia": "workspace:*",
+    "@kogito-apps/ouia-tools": "workspace:*",
+    "@testing-library/jest-dom": "^5.12.0",
+    "@types/enzyme": "^3.10.8",
+    "@types/jest": "^26.0.23",
+    "@types/react": "^17.0.5",
+    "@types/react-dom": "^17.0.5",
+    "@types/react-router": "^5.1.14",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/react-scrollbar": "^0.5.1",
+    "@types/webpack": "^4.39.1",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.8.0",
+    "babel-jest": "^25.1.0",
+    "concurrently": "^5.1.0",
+    "copy-webpack-plugin": "^6.0.3",
+    "copyfiles": "^2.4.1",
+    "css-loader": "^5.2.6",
+    "css-minimizer-webpack-plugin": "^5.0.0",
+    "cypress": "^9.6.1",
+    "enzyme": "^3.11.0",
+    "enzyme-to-json": "^3.6.1",
     "faker": "^4.1.0",
+    "file-loader": "^6.2.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^26.6.3",
+    "jest-junit": "^10.0.0",
     "json-server": "^0.16.1",
-    "@kogito-apps/cypress-ouia": "^1.0.0",
-    "@kogito-apps/ouia-tools": "^1.0.0",
-    "serve": "^12.0.1"
+    "mini-css-extract-plugin": "^2.5.3",
+    "react-test-renderer": "^16.10.2",
+    "rimraf": "^3.0.2",
+    "sass-loader": "^12.3.0",
+    "serve": "^12.0.1",
+    "start-server-and-test": "^1.12.0",
+    "style-loader": "^2.0.0",
+    "svg-url-loader": "^7.1.1",
+    "ts-jest": "^26.5.6",
+    "ts-loader": "^9.4.2",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
+    "typescript": "^4.6.2",
+    "url-loader": "^4.1.1",
+    "uuid": "^3.3.3",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.8.0",
+    "webpack-merge": "^5.8.0"
   },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",
-    "globalSetup": "../../config/Jest-config/global-setup.js",
+    "globalSetup": "./config/Jest-config/global-setup.js",
     "setupFiles": [
-      "../../config/Jest-config/test-shim.js",
-      "../../config/Jest-config/test-setup.js"
+      "./config/Jest-config/test-shim.js",
+      "./config/Jest-config/test-setup.js"
     ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
       "js"
     ],
-    "coverageReporters": [["lcov", { "projectRoot": "../../" }]],
+    "coverageReporters": [
+      [
+        "lcov",
+        {
+          "projectRoot": "../../"
+        }
+      ]
+    ],
     "globals": {
       "ts-jest": {
         "isolatedModules": true
@@ -72,7 +136,7 @@
     ],
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest",
-      "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
+      "\\.(jpg|jpeg|png|svg)$": "./config/Jest-config/fileMocks.js"
     },
     "testMatch": [
       "**/tests/*.(ts|tsx|js)"
@@ -83,8 +147,8 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "yarn run format",
-      "yarn run lint"
+      "pnpm run format",
+      "pnpm run lint"
     ]
   }
 }

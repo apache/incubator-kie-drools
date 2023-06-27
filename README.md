@@ -20,29 +20,28 @@ git clone git@github.com:kiegroup/kogito-apps.git
 
 See detailed instructions [here](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) for your OS.
 
-- Install [Yarn](https://classic.yarnpkg.com/)
+- Install [pnpm](https://pnpm.io/)
 ```bash
 cd kogito-apps/ui-packages
-npm install -D yarn
+npm install -g pnpm
 ```
 
-- Install projects dependencies using Yarn
+- Install projects dependencies using pnpm
 ```bash
 cd kogito-apps/ui-packages
-yarn install
+pnpm install
 ```
 
-- Build with Yarn:
+- Build with pnpm:
 ```bash
 cd kogito-apps/ui-packages
-yarn run init
+pnpm run init
 
 #prod
-yarn run build:prod
+pnpm run build:prod
 
 # dev
-yarn run build # skips integration tests and production packing
-yarn run build:fast # skips lint and unit tests
+pnpm run build # skips integration tests and production packing
 ```
 
 > Final artifacts will be on `packages/*/dist` directories.
@@ -54,11 +53,11 @@ For detailed instructions on how to develop and run the Management Console, plea
 
 ## `ui-packages` dependencies
 
-`ui-packages` are managed with [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) and [Lerna](https://github.com/lerna/lerna). Dependencies shared between packages are listed in the top-level [`package.json`](./ui-packages/package.json).
+`ui-packages` are managed with [pnpm Workspaces](https://pnpm.io/workspaces). Dependencies shared between packages are listed in the top-level [`package.json`](./ui-packages/package.json).
 
 A `locktt` npm script relying on [lock-treatment-tool](https://github.com/Ginxo/lock-treatment-tool) is available to allow the usage of a private npm registry during building.
 
-`locktt` replaces the host from [`ui-packages/yarn.lock`](./ui-packages/yarn.lock) resolved field with the custom registry. It is set to run just before the execution of `yarn install`. See [`ui-packages/pom.xml`](./ui-packages/pom.xml) for further details.
+`locktt` replaces the host from [`ui-packages/pnpm-lock`](./ui-packages/pnpm-lock) resolved field with the custom registry. It is set to run just before the execution of `pnpm install`. See [`ui-packages/pom.xml`](./ui-packages/pom.xml) for further details.
 
 ## Skipping frontend build
 
