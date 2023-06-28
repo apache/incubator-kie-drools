@@ -353,7 +353,7 @@ export const getProcessDefinitionList = (
       .then((response) => {
         const processDefinitionObjs = [];
         const paths = response.paths;
-        const regexPattern = /^\/[^\n]+\/schema/;
+        const regexPattern = /^\/[^\n/]+\/schema/;
         Object.getOwnPropertyNames(paths)
           .filter((path) => regexPattern.test(path.toString()))
           .forEach((url) => {

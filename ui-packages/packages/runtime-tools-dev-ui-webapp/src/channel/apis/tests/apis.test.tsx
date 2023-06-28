@@ -897,6 +897,10 @@ describe('process definitions section', () => {
     SwaggerParser.parse['mockImplementation'](() =>
       Promise.resolve({
         paths: {
+          '/hiring-process/some-task/schema': {
+            get: {},
+            post: {}
+          },
           '/hiring-process/schema': {
             get: {},
             post: {}
