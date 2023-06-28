@@ -3762,15 +3762,15 @@ index 361aa9932..a9069cf8d 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.event.EventPublisher;
 diff --git a/kogito-apps-build-parent/pom.xml b/kogito-apps-build-parent/pom.xml
-index 9365f3bba..40cee9ed4 100644
+index a3e8888fb..bb7dc287a 100644
 --- a/kogito-apps-build-parent/pom.xml
 +++ b/kogito-apps-build-parent/pom.xml
 @@ -45,7 +45,7 @@
          <container.image.integration-tests-trusty-service-quarkus>org.kie.kogito/integration-tests-trusty-service-quarkus:${project.version}</container.image.integration-tests-trusty-service-quarkus>
  
          <!-- OptaPlanner version -->
--        <version.org.optaplanner>8.38.0.Final</version.org.optaplanner>
-+        <version.org.optaplanner>9.38.0.Final</version.org.optaplanner>
+-        <version.org.optaplanner>8.40.0.Final</version.org.optaplanner>
++        <version.org.optaplanner>9.40.0.Final</version.org.optaplanner>
  
          <version.com.vladmihalcea.hibernate-types-55>2.12.1</version.com.vladmihalcea.hibernate-types-55>
          <version.org.apache.opennlp>1.9.2</version.org.apache.opennlp>
