@@ -162,4 +162,98 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
                 .hasSize(1);
     }
 
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
+    void multipleKieSessions_insertAdvanceInsertFailoverFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+        KieSession session1 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        KieSession session2 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+
+        SessionPseudoClock clock1 = getSessionClock(session1);
+        SessionPseudoClock clock2 = getSessionClock(session2);
+
+        insert(session1, new StockTick("DROO"));
+        clock1.advanceTime(6, TimeUnit.SECONDS);
+        insert(session1, new StockTick("ACME"));
+
+        insert(session2, new StockTick("DROO"));
+        clock2.advanceTime(4, TimeUnit.SECONDS);
+        insert(session2, new StockTick("ACME"));
+
+        //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
+        //-- ksession and kbase are lost. CacheManager is recreated. Client knows only "id"
+        failover();
+        session1=restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock1 = getSessionClock(session1);
+        session2=restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock2 = getSessionClock(session2);
+
+        assertThat(fireAllRules(session1)).isEqualTo(1);
+        assertThat(getResults(session1)).containsExactlyInAnyOrder("fired");
+        clearResults(session1);
+
+        assertThat(fireAllRules(session2)).isEqualTo(0);
+        assertThat(getResults(session2)).isEmpty();
+        clearResults(session2);
+
+        clock1.advanceTime(3, TimeUnit.SECONDS);
+        insert(session1, new StockTick("ACME"));
+
+        clock2.advanceTime(2, TimeUnit.SECONDS);
+        insert(session2, new StockTick("ACME"));
+
+        failover();
+        session1=restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock1 = getSessionClock(session1);
+        session2=restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock2 = getSessionClock(session2);
+
+        assertThat(fireAllRules(session1)).isEqualTo(0);
+        assertThat(getResults(session1)).isEmpty();
+        clearResults(session1);
+
+        assertThat(fireAllRules(session2)).isEqualTo(1);
+        assertThat(getResults(session2)).containsExactlyInAnyOrder("fired");
+        clearResults(session2);
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
+    void multipleKieSessions_insertAdvanceFireFailoverExpire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+
+        KieSession session1 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        SessionPseudoClock clock1 = getSessionClock(session1);
+        KieSession session2 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        SessionPseudoClock clock2 = getSessionClock(session2);
+
+        insert(session1, new StockTick("DROO"));
+        insert(session2, new StockTick("DROO"));
+        clock1.advanceTime(6, TimeUnit.SECONDS);
+        clock2.advanceTime(4, TimeUnit.SECONDS);
+        insert(session1, new StockTick("ACME"));
+        insert(session2, new StockTick("ACME"));
+
+        assertThat(fireAllRules(session1)).isEqualTo(1);
+        assertThat(fireAllRules(session2)).isEqualTo(0);
+
+        failover();
+        session1 = restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock1 = getSessionClock(session1);
+        session2 = restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock2 = getSessionClock(session2);
+
+        clock1.advanceTime(58, TimeUnit.SECONDS);
+        fireAllRules(session1);
+        assertThat(getFactHandles(session1)).as("DROO (1) should have expired because @Expires = 60s")
+                .hasSize(1);
+
+        clock2.advanceTime(1, TimeUnit.SECONDS);
+        insert(session2, new StockTick("ACME"));
+        assertThat(fireAllRules(session2)).isEqualTo(1);
+
+        clock2.advanceTime(56, TimeUnit.SECONDS);
+        fireAllRules(session2);
+        assertThat(getFactHandles(session2)).as("DROO (2) should have expired because @Expires = 60s")
+                .hasSize(2);
+    }
 }
