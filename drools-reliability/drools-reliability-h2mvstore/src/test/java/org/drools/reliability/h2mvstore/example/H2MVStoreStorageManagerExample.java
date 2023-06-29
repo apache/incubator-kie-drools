@@ -13,10 +13,14 @@
  * limitations under the License.
  */
 
-package org.drools.reliability.infinispan.example;
+package org.drools.reliability.h2mvstore.example;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.model.codegen.ExecutableModelProject;
-import org.drools.reliability.infinispan.InfinispanStorageManagerFactory;
+import org.drools.reliability.h2mvstore.H2MVStoreStorageManager;
+import org.drools.reliability.h2mvstore.Person;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
@@ -24,25 +28,11 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.internal.utils.KieHelper;
-import org.test.domain.Person;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
-/**
- * Example class to demonstrate how to use RemoteCacheManager.
- * <p>
- * Test with an Infinispan server running on localhost:11222
- * <p>
- * After running this example, you can run RemoteCacheManagerExampleAfterFailOver to see the results.
- * <p>
- * So the steps are:
- * docker run -p 11222:11222 -e USER="admin" -e PASS="secret" quay.io/infinispan/server:14.0
- * Run RemoteCacheManagerExample
- * Run RemoteCacheManagerExampleAfterFailOver
- */
-public class RemoteCacheManagerExample {
+
+public class H2MVStoreStorageManagerExample {
+
 
     public static final String BASIC_RULE =
             "import " + Person.class.getCanonicalName() + ";" +
@@ -55,6 +45,9 @@ public class RemoteCacheManagerExample {
                     "end";
 
     public static void main(String[] args) {
+        H2MVStoreStorageManager.cleanUpDatabase();
+        System.out.println("### Deleted database file : " + H2MVStoreStorageManager.STORE_FILE_NAME);
+
         KieSession session = getKieSession(PersistedSessionOption.newSession().withPersistenceStrategy(PersistedSessionOption.PersistenceStrategy.STORES_ONLY));
 
         long savedSessionId = session.getIdentifier();
@@ -68,14 +61,6 @@ public class RemoteCacheManagerExample {
     }
 
     public static KieSession getKieSession(PersistedSessionOption option) {
-        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MODE, "REMOTE");
-        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_HOST, "localhost");
-        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_PORT, "11222");
-        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_USER, "admin");
-        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_REMOTE_PASS, "secret");
-
-        System.setProperty(InfinispanStorageManagerFactory.INFINISPAN_STORAGE_ALLOWED_PACKAGES, "org.test.domain");
-
         KieBase kbase = new KieHelper().addContent(BASIC_RULE, ResourceType.DRL).build(ExecutableModelProject.class);
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         conf.setOption(option);
