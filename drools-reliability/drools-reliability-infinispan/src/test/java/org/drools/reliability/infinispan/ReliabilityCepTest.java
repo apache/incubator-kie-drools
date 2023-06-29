@@ -36,13 +36,13 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
 
     private static final String CEP_RULE =
             "import " + StockTick.class.getCanonicalName() + ";" +
-            "global java.util.List results;" +
-            "rule R when\n" +
-            "    $a : StockTick( company == \"DROO\" )\n" +
-            "    $b : StockTick( company == \"ACME\", this after[5s,8s] $a )\n" +
-            "then\n" +
-            "    results.add(\"fired\");\n" +
-            "end\n";
+                    "global java.util.List results;" +
+                    "rule R when\n" +
+                    "    $a : StockTick( company == \"DROO\" )\n" +
+                    "    $b : StockTick( company == \"ACME\", this after[5s,8s] $a )\n" +
+                    "then\n" +
+                    "    results.add(\"fired\");\n" +
+                    "end\n";
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
@@ -52,9 +52,9 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
 
         SessionPseudoClock clock = getSessionClock();
 
-        insert( new StockTick( "DROO" ) );
-        clock.advanceTime( 6, TimeUnit.SECONDS );
-        insert( new StockTick( "ACME" ) );
+        insert(new StockTick("DROO"));
+        clock.advanceTime(6, TimeUnit.SECONDS);
+        insert(new StockTick("ACME"));
 
         //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
         //-- ksession and kbase are lost. CacheManager is recreated. Client knows only "id"
@@ -66,15 +66,15 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         assertThat(getResults()).containsExactlyInAnyOrder("fired");
         clearResults();
 
-        clock.advanceTime( 1, TimeUnit.SECONDS );
-        insert( new StockTick( "ACME" ) );
+        clock.advanceTime(1, TimeUnit.SECONDS);
+        insert(new StockTick("ACME"));
 
         assertThat(fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder("fired");
         clearResults();
 
-        clock.advanceTime( 3, TimeUnit.SECONDS );
-        insert( new StockTick( "ACME" ) );
+        clock.advanceTime(3, TimeUnit.SECONDS);
+        insert(new StockTick("ACME"));
 
         assertThat(fireAllRules()).isZero();
         assertThat(getResults()).isEmpty();
@@ -122,9 +122,9 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         SessionPseudoClock clock = getSessionClock();
 
-        insert( new StockTick( "DROO" ) );
-        clock.advanceTime( 6, TimeUnit.SECONDS );
-        insert( new StockTick( "ACME" ) );
+        insert(new StockTick("DROO"));
+        clock.advanceTime(6, TimeUnit.SECONDS);
+        insert(new StockTick("ACME"));
 
         failover();
         restoreSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
@@ -132,9 +132,9 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
 
         clock.advanceTime(58, TimeUnit.SECONDS);
         assertThat(fireAllRules()).as("DROO is expired, but a match is available.")
-                                          .isEqualTo(1);
+                .isEqualTo(1);
         assertThat(getFactHandles()).as("DROO should have expired because @Expires = 60s")
-                                            .hasSize(1);
+                .hasSize(1);
     }
 
     @ParameterizedTest
@@ -149,7 +149,7 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         insert(new StockTick("ACME"));
 
         assertThat(fireAllRules()).as("DROO is expired, but a match is available.")
-                                  .isEqualTo(1);
+                .isEqualTo(1);
 
         failover();
         restoreSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
@@ -159,6 +159,7 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         fireAllRules();
 
         assertThat(getFactHandles()).as("DROO should have expired because @Expires = 60s")
-                                    .hasSize(1);
+                .hasSize(1);
     }
+
 }
