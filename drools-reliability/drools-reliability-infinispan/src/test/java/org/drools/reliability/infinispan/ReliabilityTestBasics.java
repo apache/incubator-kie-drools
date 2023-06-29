@@ -17,9 +17,11 @@ package org.drools.reliability.infinispan;
 
 import org.drools.base.facttemplates.Event;
 import org.drools.core.ClassObjectFilter;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.model.Model;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.modelcompiler.KieBaseBuilder;
+import org.drools.reliability.core.ReliableGlobalResolver;
 import org.drools.reliability.core.ReliableKieSession;
 import org.drools.reliability.core.ReliableRuntimeComponentFactoryImpl;
 import org.drools.reliability.core.StorageManagerFactory;
@@ -220,6 +222,7 @@ public abstract class ReliabilityTestBasics {
 
     protected void clearResults(KieSession session) {
         ((List<Object>) session.getGlobal("results")).clear();
+        ((ReliableGlobalResolver)((StatefulKnowledgeSessionImpl) session).getGlobalResolver()).updateStorage();
     }
 
     protected KieSession createSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, Option... options) {
