@@ -22,11 +22,12 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.EvalHelper;
 
-public class StringNode
-        extends BaseNode {
+public class StringNode extends BaseNode {
+    private final String value;
 
     public StringNode(ParserRuleContext ctx) {
         super( ctx );
+        this.value = EvalHelper.unescapeString(getText());
     }
 
     @Override
@@ -35,7 +36,7 @@ public class StringNode
     }
 
     public String getValue() {
-        return EvalHelper.unescapeString(getText());
+        return value;
     }
 
     @Override

@@ -62,6 +62,8 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 @ExtendWith(BeforeAllMethodExtension.class)
 public abstract class ReliabilityTestBasics {
 
+    public static final String RULE_TYPE_TAG = "RULE_TYPE";
+    public static final String SYNTHETIC_RULE_TAG = "SYNTHETIC_RULE";
     private static final Logger LOG = LoggerFactory.getLogger(ReliabilityTestBasics.class);
 
     private InfinispanContainer container;
@@ -372,6 +374,24 @@ public abstract class ReliabilityTestBasics {
         Event sensu = createEvent();
         sensu.set("sensu.host", host);
         sensu.set("sensu.process.type", type);
+        sessions.get(0).insert(sensu);
+    }
+
+    protected void insertMatchingSensuProcessStatusEvent(String status) {
+        Event sensu = createEvent();
+        sensu.set("sensu.process.status", status);
+        sessions.get(0).insert(sensu);
+    }
+
+    protected void insertMatchingPingTimeoutEvent(boolean timeout) {
+        Event ping = createEvent();
+        ping.set("ping.timeout", timeout);
+        sessions.get(0).insert(ping);
+    }
+
+    protected void insertMatchingSensuStoragePercentEvent(int percent) {
+        Event sensu = createEvent();
+        sensu.set("sensu.storage.percent", percent);
         sessions.get(0).insert(sensu);
     }
 }
