@@ -386,4 +386,11 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         }
     }
 
+    @Test
+    public void loadClassInJarKieModuleMetaData() {
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.kie.ci.test", "kie-ci-test-jar", "1.2.3.Final");
+        KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newInJarKieModuleMetaData(releaseId, DependencyFilter.COMPILE_FILTER);
+        Class<?> sessionClockClass = kieModuleMetaData.getClass("org.kie.ci.test", "Main");
+        assertThat(sessionClockClass).isNotNull();
+    }
 }
