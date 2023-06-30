@@ -29,7 +29,6 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.runtime.Channel;
-import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 
 public interface InternalWorkingMemory
@@ -121,7 +120,4 @@ public interface InternalWorkingMemory
 
     void cancelActivation(InternalMatch internalMatch, boolean declarativeAgenda);
 
-    default boolean isThreadSafe() {
-        return getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe();
-    }
 }

@@ -735,4 +735,8 @@ public class StatefulKnowledgeSessionForRHS
     public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeIds) {
         return delegate.startProcessFromNodeIds(processId, params, nodeIds);
     }
+    
+    public boolean isThreadSafe() {
+    	return delegate.isThreadSafe();
+    }
 }

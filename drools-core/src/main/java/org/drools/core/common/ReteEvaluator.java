@@ -94,9 +94,7 @@ public interface ReteEvaluator extends ValueResolver {
 
     long getNextPropagationIdCounter();
 
-    default boolean isThreadSafe() {
-        return true;
-    }
+    boolean isThreadSafe();
 
     default FactHandleClassStore getStoreForClass(Class<?> clazz) {
         return getDefaultEntryPoint().getObjectStore().getStoreForClass(clazz);
@@ -137,6 +135,8 @@ public interface ReteEvaluator extends ValueResolver {
     int fireAllRules(int max);
     int fireAllRules(AgendaFilter agendaFilter);
     int fireAllRules(AgendaFilter agendaFilter, int max);
+    
+
 
     default void setWorkingMemoryActionListener(Consumer<PropagationEntry> listener) {
         throw new UnsupportedOperationException();

@@ -148,6 +148,7 @@ import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
+import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
@@ -391,6 +392,7 @@ public class KiePackagesBuilder {
         // This is changed, because we must use the Declarations provided by the RTN, otherwise tuple indexes are not set.
         Declaration[] requiredDeclarations = getRequiredDeclarationsIfPossible( ctx, consequence, name );
         boolean enabledTupleOptimization = requiredDeclarations != null && requiredDeclarations.length > 0;
+        
 
         if ( name.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ) {
             if ("java".equals(consequence.getLanguage())) {

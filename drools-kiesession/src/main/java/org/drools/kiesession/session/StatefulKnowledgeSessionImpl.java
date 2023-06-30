@@ -244,6 +244,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private Consumer<PropagationEntry> workingMemoryActionListener;
 
+	private boolean isThreadSafe;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -349,6 +351,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if (initInitFactHandle) {
             this.initialFactHandle = initInitialFact(null);
         }
+        
+        isThreadSafe = getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe();
     }
 
     public StatefulKnowledgeSessionImpl setStateless( boolean stateless ) {
@@ -517,6 +521,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void destroy() {
         dispose();
+    }
+    
+    public boolean isThreadSafe() {
+    	return isThreadSafe;
     }
 
     public void update(FactHandle factHandle) {
@@ -1755,4 +1763,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public ProcessInstance startProcessFromNodeIds(String processId, CorrelationKey key, Map<String, Object> params, String... nodeIds) {
         return getProcessRuntime().startProcessFromNodeIds(processId, key, params, nodeIds);
     }
+    
+    
 }

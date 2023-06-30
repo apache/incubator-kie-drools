@@ -300,6 +300,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
         this.timerService.shutdown();
     }
+    
+    @Override
+    public boolean isThreadSafe() {
+    	return true;
+    }
 
     @Override
     public QueryResults getQueryResults(String queryName, Object... arguments) {
