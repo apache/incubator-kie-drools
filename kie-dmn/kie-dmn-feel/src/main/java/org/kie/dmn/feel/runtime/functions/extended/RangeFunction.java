@@ -32,7 +32,6 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
-import org.kie.dmn.model.api.GwtIncompatible;
 
 import java.time.*;
 import java.time.chrono.ChronoPeriod;
@@ -42,7 +41,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-@GwtIncompatible
 public class RangeFunction extends BaseFEELFunction {
 
     public static final RangeFunction INSTANCE = new RangeFunction();

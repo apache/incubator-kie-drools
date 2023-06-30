@@ -20,9 +20,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.kie.dmn.model.api.Definitions;
-import org.kie.dmn.model.api.GwtIncompatible;
 
-@GwtIncompatible
 public interface DMNMarshaller {
 
     Definitions unmarshal(final Reader isr);

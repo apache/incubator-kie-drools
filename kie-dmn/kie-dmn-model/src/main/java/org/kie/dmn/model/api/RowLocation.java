@@ -18,7 +18,6 @@ package org.kie.dmn.model.api;
 
 import javax.xml.stream.Location;
 
-@GwtIncompatible
 public class RowLocation implements Location {
 
     private int lineNumber;

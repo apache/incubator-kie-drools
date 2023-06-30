@@ -47,11 +47,9 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.EvalHelper;
-import org.kie.dmn.model.api.GwtIncompatible;
 
 import static java.util.stream.Collectors.toMap;
 
-@GwtIncompatible
 public class JavaBackedType implements CompositeType {
 
     private static Map<Class<?>, JavaBackedType> cache = new ConcurrentHashMap<>();

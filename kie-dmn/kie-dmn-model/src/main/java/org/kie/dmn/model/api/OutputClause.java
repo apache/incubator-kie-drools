@@ -32,10 +32,8 @@ public interface OutputClause extends DMNElement {
 
     void setName(String value);
 
-    @GwtIncompatible
     QName getTypeRef();
 
-    @GwtIncompatible
     void setTypeRef(QName value);
 
 }

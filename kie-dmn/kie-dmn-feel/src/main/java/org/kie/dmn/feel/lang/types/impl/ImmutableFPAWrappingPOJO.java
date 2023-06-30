@@ -28,12 +28,10 @@ import java.util.Map.Entry;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.util.EvalHelper.PropertyValueResult;
-import org.kie.dmn.model.api.GwtIncompatible;
 
 /**
  * Internal class for an immutable DTO, implementing FEELPropertyAccessible interface, and wrapping a generic POJO.
  */
-@GwtIncompatible
 public class ImmutableFPAWrappingPOJO implements FEELPropertyAccessible {
 
     private final Object wrapping;
