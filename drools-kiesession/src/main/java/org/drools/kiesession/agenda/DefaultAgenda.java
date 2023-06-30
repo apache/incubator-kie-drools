@@ -210,7 +210,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         this.workingMemory = workingMemory;
         this.agendaGroupsManager.setReteEvaluator( workingMemory );
 
-        if (!workingMemory.getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe()) {
+        if (!workingMemory.isThreadSafe()) {
             executionStateMachine = new UnsafeExecutionStateMachine();
         }
 
@@ -219,7 +219,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     protected PropagationList createPropagationList() {
-        if (!workingMemory.getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe()) {
+        if (!workingMemory.isThreadSafe()) {
             return new ThreadUnsafePropagationList( workingMemory );
         }
 

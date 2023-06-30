@@ -324,6 +324,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.propagationIdCounter = new AtomicLong(propagationContext);
         this.config = config;
         this.ruleSessionConfig = config.as(RuleSessionConfiguration.KEY);
+
+        isThreadSafe = ruleSessionConfig.getOption(ThreadSafeOption.KEY).isThreadSafe();
+
         this.environment = environment;
 
         this.propagationIdCounter = new AtomicLong( propagationContext);
@@ -352,7 +355,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.initialFactHandle = initInitialFact(null);
         }
         
-        isThreadSafe = getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe();
     }
 
     public StatefulKnowledgeSessionImpl setStateless( boolean stateless ) {
@@ -1517,7 +1519,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      */
     @Override
     public void startOperation(InternalOperationType operationType) {
-        if (getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe() && this.opCounter.getAndIncrement() == 0 ) {
+        if (isThreadSafe() && this.opCounter.getAndIncrement() == 0 ) {
             // means the engine was idle, reset the timestamp
             this.lastIdleTimestamp.set(-1);
         }
@@ -1539,7 +1541,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      */
     @Override
     public void endOperation(InternalOperationType operationType) {
-        if (getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe() && this.opCounter.decrementAndGet() == 0 ) {
+        if (isThreadSafe() && this.opCounter.decrementAndGet() == 0 ) {
             // means the engine is idle, so, set the timestamp
             if (this.timerService != null) {
                 this.lastIdleTimestamp.set(this.timerService.getCurrentTime());

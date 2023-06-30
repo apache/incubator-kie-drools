@@ -125,7 +125,7 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
 
         Object[] facts;
         FactHandleLookup fhLookup = null;
-        if (reteEvaluator.getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe()) {
+        if (reteEvaluator.isThreadSafe()) {
             if ( consequence.isUsingDrools() ) {
                 facts = new Object[consequence.getVariables().length + 1];
                 fhLookup = FactHandleLookup.create( factSuppliers.length );
@@ -217,7 +217,7 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
         this.globalSuppliers = globalSuppliers.isEmpty() ? null : globalSuppliers.toArray( new GlobalSupplier[globalSuppliers.size()] );
         this.factSuppliers = factSuppliers.toArray( new TupleFactSupplier[factSuppliers.size()] );
 
-        if (!reteEvaluator.getRuleSessionConfiguration().getOption(ThreadSafeOption.KEY).isThreadSafe()) {
+        if (!reteEvaluator.isThreadSafe()) {
             this.facts = facts;
             this.fhLookup = fhLookup;
         }
