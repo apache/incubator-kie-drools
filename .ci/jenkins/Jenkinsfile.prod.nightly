@@ -2,7 +2,7 @@
 
 pipeline {
     agent {
-        label 'rhel8 && !built-in'
+        label 'rhel8 && docker && !built-in'
     }
     tools {
         maven 'kie-maven-3.8.7'
