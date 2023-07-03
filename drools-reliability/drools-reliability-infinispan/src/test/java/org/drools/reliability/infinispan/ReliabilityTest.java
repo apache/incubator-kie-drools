@@ -308,7 +308,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FAILS in STORES_ONLY, EXPLICIT
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
     void multipleKieSessions_BasicTest(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
         KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
         KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
@@ -337,5 +337,188 @@ class ReliabilityTest extends ReliabilityTestBasics {
         assertThat(fireAllRules(session1)).isEqualTo(1);
         assertThat(fireAllRules(session2)).isEqualTo(1);
     }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void multipleKieSessions_insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        insert(session1,"M");
+        insertMatchingPerson(session1, "Mike", 37);
+        insert(session2,"N");
+        insertNonMatchingPerson(session2,"Helen",33);
+
+        failover();
+
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        insertNonMatchingPerson(session1,"Toshiya", 35);
+        insertMatchingPerson(session2,"Nicole", 40);
+
+        assertThat(fireAllRules(session1)).isEqualTo(1);
+        assertThat(fireAllRules(session2)).isEqualTo(1);
+
+        assertThat(getResults(session1)).containsExactlyInAnyOrder("Mike");
+        assertThat(getResults(session2)).containsExactlyInAnyOrder("Nicole");
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // With Remote, FULL fails with "ReliablePropagationList; no valid constructor" even without failover
+    void multipleKieSessions_noFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        insert(session1,"M");
+        insertMatchingPerson(session1,"Matching Person One", 37);
+        insert(session2, new Person("Mary",32));
+
+        if (safepointStrategy == PersistedSessionOption.SafepointStrategy.EXPLICIT) {
+            safepoint();
+        }
+
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        insertNonMatchingPerson(session1,"Toshiya", 41);
+        insertMatchingPerson(session1,"Matching Person Two", 40);
+        insert(session2, "H");
+        insert(session2,new Person("Helen",43));
+
+        fireAllRules(session1);
+        assertThat(getResults(session1)).containsExactlyInAnyOrder("Matching Person One", "Matching Person Two");
+
+        assertThat(fireAllRules(session2)).isEqualTo(1);
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void multipleKieSessions_insertFireInsertFailoverInsertFire_shouldMatchFactInsertedBeforeFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        insert(session1,"M");
+        insertMatchingPerson(session1,"Matching Person One", 37);
+        insert(session2, "N");
+        insertMatchingPerson(session2, "Nicole",34);
+
+        fireAllRules(session1);
+        fireAllRules(session2);
+
+        insertMatchingPerson(session1,"Matching Person Two", 40);
+        insertMatchingPerson(session2, "Nancy",23);
+
+        failover();
+
+        session1 = restoreSession(session1.getIdentifier(),BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        clearResults(session1);
+        clearResults(session2);
+
+        insertNonMatchingPerson(session1,"Nora", 35);
+        insertMatchingPerson(session1,"Matching Person Three", 41);
+        insertNonMatchingPerson(session2,"Mike", 35);
+        insertMatchingPerson(session2,"Noah", 41);
+
+        fireAllRules(session1);
+        fireAllRules(session2);
+
+        assertThat(getResults(session1)).containsExactlyInAnyOrder("Matching Person Two", "Matching Person Three");
+        assertThat(getResults(session2)).containsExactlyInAnyOrder("Nancy", "Noah");
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void multipleKieSessions_updateBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        insert(session1,"M");
+        Person p1 = new Person("Mario", 49);
+        FactHandle fh1 = insert(session1,p1);
+        Person p2 = new Person("Toshiya", 45);
+        FactHandle fh2 = insert(session1, p2);
+        insert(session2,new Person("Toshiya", 45));
+
+        assertThat(fireAllRules(session1)).isEqualTo(1);
+        assertThat(getResults(session1)).containsExactlyInAnyOrder("Mario");
+        assertThat(fireAllRules(session2)).isEqualTo(0);
+
+        insert(session2, "T");
+        p1.setName("SuperMario");
+        update(session1, fh1, p1);
+        p2.setName("MegaToshiya");
+        update(session1, fh2, p2);
+
+        failover();
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        assertThat(fireAllRules(session1)).isEqualTo(1);
+        assertThat(getResults(session1)).containsExactlyInAnyOrder("Mario", "MegaToshiya");
+        assertThat(fireAllRules(session2)).isEqualTo(1);
+        assertThat(getResults(session2)).containsExactlyInAnyOrder("Toshiya");
+
+        failover();
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        clearResults(session1);
+        clearResults(session2);
+
+        assertThat(fireAllRules(session1)).isZero();
+        assertThat(getResults(session1)).isEmpty();
+
+        assertThat(fireAllRules(session2)).isZero();
+        assertThat(getResults(session2)).isEmpty();
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void multipleKieSessions_deleteBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        FactHandle fhStringM = insert(session1,"M");
+        insertMatchingPerson(session1,"Matching Person One",37);
+        insertNonMatchingPerson(session1,"Toshiya",37);
+        insert(session2,"N");
+        FactHandle fhN = insertMatchingPerson(session2,"Nicole",35);
+
+        assertThat(fireAllRules(session1)).isEqualTo(1);
+        assertThat(getResults(session1)).containsExactlyInAnyOrder("Matching Person One");
+
+        delete(session1,fhStringM);
+        delete(session2, fhN);
+
+        failover();
+
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        clearResults(session1);
+        clearResults(session2);
+
+        insertMatchingPerson(session1,"Matching Person Two",40);
+        insertMatchingPerson(session2,"Nancy", 25);
+
+        assertThat(fireAllRules(session1)).isZero();
+        assertThat(getResults(session1)).isEmpty();
+        assertThat(fireAllRules(session2)).isEqualTo(1);
+        assertThat(getResults(session2)).containsExactlyInAnyOrder("Nancy");
+
+        insert(session1,"T");
+
+        failover();
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        assertThat(fireAllRules(session1)).isEqualTo(1);
+        assertThat(getResults(session1)).containsExactlyInAnyOrder("Toshiya");
+    }
+
 
 }

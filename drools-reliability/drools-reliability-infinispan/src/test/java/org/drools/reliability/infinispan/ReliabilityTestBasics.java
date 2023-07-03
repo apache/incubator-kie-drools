@@ -15,13 +15,6 @@
 
 package org.drools.reliability.infinispan;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
-
 import org.drools.base.facttemplates.Event;
 import org.drools.core.ClassObjectFilter;
 import org.drools.model.Model;
@@ -53,6 +46,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.test.domain.Person;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
 import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MARSHALLER;
 import static org.drools.reliability.infinispan.util.PrototypeUtils.createEvent;
 import static org.drools.util.Config.getConfig;
@@ -68,8 +69,7 @@ public abstract class ReliabilityTestBasics {
     private InfinispanContainer container;
 
     protected final List<KieSession> sessions = new ArrayList<>();
-
-    private long persistedSessionId = -1;
+    protected final HashMap<Long,Long> persistedSessionIds = new HashMap<>();
 
     protected PersistedSessionOption.SafepointStrategy safepointStrategy;
 
@@ -239,11 +239,13 @@ public abstract class ReliabilityTestBasics {
     }
 
     protected KieSession restoreSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
-        return restoreSession(persistedSessionId, drl, persistenceStrategy, safepointStrategy, options);
+        Long sessionIdToRestoreFrom = (Long)this.persistedSessionIds.values().toArray()[0];
+        return restoreSession(sessionIdToRestoreFrom, drl, persistenceStrategy, safepointStrategy, options);
     }
 
     protected KieSession restoreSession(Long sessionId, String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
-        return getKieSession(drl, PersistedSessionOption.fromSession(sessionId).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
+        Long sessionIdToRestoreFrom = this.persistedSessionIds.get(sessionId);
+        return getKieSession(drl, PersistedSessionOption.fromSession(sessionIdToRestoreFrom).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
     }
 
     protected int fireAllRules() {
@@ -255,7 +257,8 @@ public abstract class ReliabilityTestBasics {
     }
 
     protected KieSession restoreSession(Model ruleModel, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
-        return getKieSession(ruleModel, PersistedSessionOption.fromSession(persistedSessionId).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
+        Long sessionIdToRestoreFrom = (Long)this.persistedSessionIds.values().toArray()[0];
+        return getKieSession(ruleModel, PersistedSessionOption.fromSession(sessionIdToRestoreFrom).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
     }
 
     protected void disposeSession() {
@@ -314,12 +317,12 @@ public abstract class ReliabilityTestBasics {
         }
         Stream.of(optionsFilter.getKieSessionOption()).forEach(conf::setOption);
         KieSession session = kbase.newKieSession(conf, null);
-        sessions.add(session);
         if (persistedSessionOption == null || persistedSessionOption.isNewSession()) {
             List<Object> results = new ArrayList<>();
             session.setGlobal("results", results);
-            persistedSessionId = session.getIdentifier();
         }
+        sessions.add(session);
+        persistedSessionIds.put(session.getIdentifier(),persistedSessionOption == null || persistedSessionOption.isNewSession() ? session.getIdentifier() : persistedSessionOption.getSessionId());
         return session;
     }
 
