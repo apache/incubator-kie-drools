@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.time.SessionPseudoClock;
@@ -77,6 +78,41 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
 
         assertThat(fireAllRules()).isZero();
         assertThat(getResults()).isEmpty();
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void insertAdvanceInsertFailoverFireTwice_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+
+        KieSession session1 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+
+        SessionPseudoClock clock = getSessionClock(session1);
+
+        insert(session1, new StockTick("DROO"));
+        clock.advanceTime(6, TimeUnit.SECONDS);
+        insert(session1, new StockTick("ACME"));
+
+        //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
+        //-- ksession and kbase are lost. CacheManager is recreated. Client knows only "id"
+        failover();
+        session1 = restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock = getSessionClock(session1);
+
+        assertThat(fireAllRules(session1)).isEqualTo(1);
+        assertThat(getResults(session1)).containsExactlyInAnyOrder("fired");
+        clearResults(session1);
+
+        clock.advanceTime(3, TimeUnit.SECONDS);
+        insert(session1, new StockTick("ACME"));
+
+        //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
+        //-- ksession and kbase are lost. CacheManager is recreated. Client knows only "id"
+        failover();
+        session1 = restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock = getSessionClock(session1);
+
+        assertThat(fireAllRules(session1)).isZero();
+        assertThat(getResults(session1)).isEmpty();
     }
 
     @ParameterizedTest
