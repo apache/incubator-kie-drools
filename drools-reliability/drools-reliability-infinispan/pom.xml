@@ -9,7 +9,6 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.drools</groupId>
   <artifactId>drools-reliability-infinispan</artifactId>
 
   <name>Drools :: Reliability :: Infinispan</name>
