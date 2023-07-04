@@ -3775,10 +3775,10 @@ index a3e8888fb..bb7dc287a 100644
          <version.com.vladmihalcea.hibernate-types-55>2.12.1</version.com.vladmihalcea.hibernate-types-55>
          <version.org.apache.opennlp>1.9.2</version.org.apache.opennlp>
 diff --git a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/pom.xml b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/pom.xml
-index ca363ab28..0453d27c1 100644
+index fedaf09a6..0244af88b 100644
 --- a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/pom.xml
 +++ b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/pom.xml
-@@ -98,7 +98,7 @@
+@@ -103,7 +103,7 @@
      <plugins>
        <plugin>
          <groupId>io.quarkus</groupId>
@@ -3854,11 +3854,11 @@ index 92f881096..8a9ead2a9 100644
  import org.kie.kogito.swf.tools.custom.dashboard.model.CustomDashboardFilter;
  
 diff --git a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/custom/dashboard/impl/CustomDashboardStorageImpl.java b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/custom/dashboard/impl/CustomDashboardStorageImpl.java
-index b90c46fc1..16b70902a 100644
+index 6062b8c35..53782201f 100644
 --- a/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/custom/dashboard/impl/CustomDashboardStorageImpl.java
 +++ b/kogito-quarkus-serverless-workflow-devui-parent/kogito-quarkus-serverless-workflow-devui/src/main/java/org/kie/kogito/swf/tools/custom/dashboard/impl/CustomDashboardStorageImpl.java
-@@ -31,7 +31,7 @@ import java.util.Map;
- import java.util.TimeZone;
+@@ -41,7 +41,7 @@ import java.util.TimeZone;
+ import java.util.function.Consumer;
  import java.util.stream.Collectors;
  
 -import javax.enterprise.context.ApplicationScoped;
