@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.kie.api.builder.ReleaseId;
 
@@ -1005,6 +1006,14 @@ public class StringUtils {
 
     public static List<String> splitStatements(CharSequence string) {
         return codeAwareSplitOnChar(string, true, ';', '\n');
+    }
+
+    public static List<String> splitStatementsAcrossBlocks(CharSequence string) {
+        List<String> statements = codeAwareSplitOnChar(string, true, ';', '\n', '{', '}');
+        return statements.stream()
+                .filter(stmt -> !(stmt.isEmpty()))
+                .filter(stmt -> !(stmt.startsWith("//")))
+                .collect(Collectors.toList());
     }
 
     public static List<String> splitArgumentsList(CharSequence string) {
