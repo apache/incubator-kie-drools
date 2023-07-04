@@ -219,6 +219,42 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
 
     @ParameterizedTest
     @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
+    void multipleKieSessions_insertAdvanceFailoverExpireFire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+
+        KieSession session1 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        KieSession session2 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+
+        SessionPseudoClock clock1 = getSessionClock(session1);
+        SessionPseudoClock clock2 = getSessionClock(session2);
+
+        insert(session1, new StockTick("DROO"));
+        clock1.advanceTime(6, TimeUnit.SECONDS);
+        insert(session1, new StockTick("ACME"));
+
+        insert(session2, new StockTick("DROO"));
+        clock2.advanceTime(7, TimeUnit.SECONDS);
+        insert(session2, new StockTick("ACME"));
+
+        failover();
+        session1 = restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock1 = getSessionClock(session1);
+        session2 = restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        clock2 = getSessionClock(session2);
+
+        clock1.advanceTime(58, TimeUnit.SECONDS);
+        assertThat(fireAllRules(session1)).as("DROO is expired, but a match is available.")
+                .isEqualTo(1);
+        assertThat(getFactHandles(session1)).as("DROO should have expired because @Expires = 60s")
+                .hasSize(1);
+
+        clock1.advanceTime(1, TimeUnit.SECONDS);
+        assertThat(fireAllRules(session2)).as("DROO is not expired, a match is available.")
+                .isEqualTo(1);
+        assertThat(getFactHandles(session2)).hasSize(2);
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
     void multipleKieSessions_insertAdvanceFireFailoverExpire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
 
         KieSession session1 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
@@ -227,10 +263,11 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         SessionPseudoClock clock2 = getSessionClock(session2);
 
         insert(session1, new StockTick("DROO"));
-        insert(session2, new StockTick("DROO"));
         clock1.advanceTime(6, TimeUnit.SECONDS);
-        clock2.advanceTime(4, TimeUnit.SECONDS);
         insert(session1, new StockTick("ACME"));
+
+        insert(session2, new StockTick("DROO"));
+        clock2.advanceTime(4, TimeUnit.SECONDS);
         insert(session2, new StockTick("ACME"));
 
         assertThat(fireAllRules(session1)).isEqualTo(1);
