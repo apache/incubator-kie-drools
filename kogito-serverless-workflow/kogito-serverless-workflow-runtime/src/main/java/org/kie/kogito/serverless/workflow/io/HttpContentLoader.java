@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -38,6 +39,7 @@ import io.serverlessworkflow.api.auth.AuthDefinition;
 import io.serverlessworkflow.api.auth.BasicAuthDefinition;
 import io.serverlessworkflow.api.auth.BearerAuthDefinition;
 import io.serverlessworkflow.api.auth.OauthDefinition;
+import io.serverlessworkflow.api.workflow.Auth;
 
 class HttpContentLoader extends FallbackContentLoader {
 
@@ -58,9 +60,9 @@ class HttpContentLoader extends FallbackContentLoader {
             HttpURLConnection conn = (HttpURLConnection) u.toURL().openConnection();
             // some http servers required specific accept header (*/* is specified for those we do not care about accept) 
             conn.setRequestProperty("Accept", "application/json,application/yaml,application/yml,application/text,text/*,*/*");
-            workflow.map(Workflow::getAuth)
+            workflow.map(Workflow::getAuth).map(Auth::getAuthDefs).stream().flatMap(Collection::stream)
                     .filter(auth -> Objects.equals(auth.getName(), authRef))
-                    .ifPresent(auth -> addAuth(conn, auth));
+                    .forEach(auth -> addAuth(conn, auth));
             int code = conn.getResponseCode();
             if (code == HttpURLConnection.HTTP_OK) {
                 try (InputStream is = conn.getInputStream()) {
