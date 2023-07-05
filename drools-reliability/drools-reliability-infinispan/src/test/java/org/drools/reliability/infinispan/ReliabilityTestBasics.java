@@ -340,6 +340,18 @@ public abstract class ReliabilityTestBasics {
                 .filter(p -> p.getName().equals(name) ).findFirst();
     }
 
+    protected Optional<FactHandle> getFactHandleForPerson(Person person){
+        return getFactHandleForPerson(sessions.get(0), person);
+    }
+
+    protected Optional<FactHandle> getFactHandleForPerson(KieSession kieSession, Person person){
+        return kieSession.getFactHandles()
+                .stream()
+                .filter(p -> p.getObject() instanceof Person)
+                .filter(p -> ( (Person) p.getObject()).getName().equals(person.getName()) )
+                .filter(p -> ( (Person) p.getObject()).getAge()==person.getAge() ).findFirst();
+    }
+
     private static class OptionsFilter {
         private final Option[] options;
 

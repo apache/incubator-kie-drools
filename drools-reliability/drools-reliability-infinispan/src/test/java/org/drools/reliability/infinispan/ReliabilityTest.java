@@ -24,6 +24,8 @@ import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.test.domain.Person;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(BeforeAllMethodExtension.class)
@@ -213,6 +215,45 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         assertThat(fireAllRules()).isEqualTo(1);
         assertThat(getResults()).containsExactlyInAnyOrder("Toshiya");
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
+    void deleteAfterFailover_shouldNotMatch(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy){
+        createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        insert("M");
+        Person pMike = new Person("Mike", 23);
+        insert(pMike);
+
+        failover();
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        clearResults();
+
+        Optional<FactHandle> getFactHandleForPerson = getFactHandleForPerson(pMike);
+        if (!getFactHandleForPerson.isEmpty()){
+            delete(getFactHandleForPerson.get());
+        }
+
+        assertThat(fireAllRules()).isEqualTo(0);
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
+    void deleteBeforeFailover_shouldNotMatch(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy){
+        createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+
+        insert("M");
+        Person pMike = new Person("Mike", 23);
+        FactHandle fhMike = insert(pMike);
+
+        delete(fhMike);
+
+        failover();
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        clearResults();
+
+        assertThat(fireAllRules()).isEqualTo(0);
     }
 
     @ParameterizedTest
