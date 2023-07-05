@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-drl-quarkus-examples</artifactId>
-    <version>8.41.0.Final</version>
+    <version>8.41.1-SNAPSHOT</version>
   </parent>
 
   <name>Drools :: Quarkus Extension :: Examples :: Reactive</name>
