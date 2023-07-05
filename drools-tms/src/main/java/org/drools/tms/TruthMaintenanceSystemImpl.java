@@ -68,17 +68,14 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
     }
 
     private static class EqualityKeyPlaceholder {
-        private static final EqualityKeyPlaceholder INSTANCE = new EqualityKeyPlaceholder();
+        private final Object object;
 
-        private Object object;
-
-        public EqualityKeyPlaceholder withObject(Object object) {
+        private EqualityKeyPlaceholder(final Object object) {
             this.object = object;
-            return this;
         }
 
         private static Object transformEqualityKey(Object o) {
-            return o instanceof EqualityKey ? o : EqualityKeyPlaceholder.INSTANCE.withObject(o);
+            return o instanceof EqualityKey ? o : new EqualityKeyPlaceholder(o);
         }
 
         @Override
