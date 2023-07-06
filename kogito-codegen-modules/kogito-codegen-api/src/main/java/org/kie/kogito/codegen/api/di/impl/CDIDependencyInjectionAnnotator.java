@@ -176,4 +176,10 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
         node.addAnnotation("javax.enterprise.inject.Produces");
         return node;
     }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withTagAnnotation(T node, NodeList<MemberValuePair> attributes) {
+        node.addAnnotation(new NormalAnnotationExpr(new Name("org.eclipse.microprofile.openapi.annotations.tags.Tag"), attributes));
+        return node;
+    }
 }

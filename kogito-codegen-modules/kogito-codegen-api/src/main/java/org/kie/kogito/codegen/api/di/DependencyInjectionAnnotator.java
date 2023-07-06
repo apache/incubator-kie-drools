@@ -21,6 +21,7 @@ import java.util.List;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -259,4 +260,8 @@ public interface DependencyInjectionAnnotator {
      * @param node node to be annotated
      */
     <T extends NodeWithAnnotations<?>> T withFactoryMethod(T node);
+
+    default <T extends NodeWithAnnotations<?>> T withTagAnnotation(T node, NodeList<MemberValuePair> attributes) {
+        return node;
+    }
 }

@@ -258,7 +258,7 @@ public class ProcessResourceGenerator {
         template.findAll(StringLiteralExpr.class).forEach(this::interpolateStrings);
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, typeInterpolations));
 
-        TagResourceGenerator.addTags(clazz, process);
+        TagResourceGenerator.addTags(clazz, process, context);
 
         template.findAll(MethodDeclaration.class).forEach(this::interpolateMethods);
 

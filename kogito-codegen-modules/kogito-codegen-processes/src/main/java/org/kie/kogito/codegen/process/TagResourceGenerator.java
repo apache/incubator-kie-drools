@@ -20,14 +20,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jbpm.ruleflow.core.Metadata;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.MemberValuePair;
-import com.github.javaparser.ast.expr.Name;
-import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
 /**
@@ -44,30 +43,32 @@ final class TagResourceGenerator {
      * @param compilationUnit the compilation unit to add the {@code org.eclipse.microprofile.openapi.annotations.tags.Tag} annotations to
      * @param process the {@link KogitoWorkflowProcess} to get the tags from
      */
-    static void addTags(CompilationUnit compilationUnit, KogitoWorkflowProcess process) {
-        Map<String, Object> metadata = process.getMetaData();
-        @SuppressWarnings("unchecked")
-        Collection<String> tags = (Collection<String>) metadata.getOrDefault(Metadata.TAGS, Set.of());
-        String description = (String) metadata.get(Metadata.DESCRIPTION);
-        compilationUnit.findAll(ClassOrInterfaceDeclaration.class)
-                .forEach(cls -> addTags(process, tags, description, cls));
-    }
-
-    private static void addTags(KogitoWorkflowProcess process, Collection<String> tags, String description, ClassOrInterfaceDeclaration cls) {
-        tags.forEach(tag -> addTag(cls, tag));
-        if (description != null) {
-            addDescription(process, description, cls);
+    static void addTags(CompilationUnit compilationUnit, KogitoWorkflowProcess process, KogitoBuildContext context) {
+        if (context.hasDI()) {
+            Map<String, Object> metadata = process.getMetaData();
+            @SuppressWarnings("unchecked")
+            Collection<String> tags = (Collection<String>) metadata.getOrDefault(Metadata.TAGS, Set.of());
+            String description = (String) metadata.get(Metadata.DESCRIPTION);
+            compilationUnit.findAll(ClassOrInterfaceDeclaration.class)
+                    .forEach(cls -> addTags(process, tags, description, cls, context));
         }
     }
 
-    private static void addDescription(KogitoWorkflowProcess process, String description, ClassOrInterfaceDeclaration cls) {
-        NodeList<MemberValuePair> attributes = attributes(process.getId());
-        attributes.add(new MemberValuePair("description", new StringLiteralExpr(description)));
-        cls.addAnnotation(new NormalAnnotationExpr(new Name("Tag"), attributes));
+    private static void addTags(KogitoWorkflowProcess process, Collection<String> tags, String description, ClassOrInterfaceDeclaration cls, KogitoBuildContext context) {
+        tags.forEach(tag -> addTag(cls, tag, context));
+        addDescription(process, description, cls, context);
     }
 
-    private static void addTag(ClassOrInterfaceDeclaration cls, String tag) {
-        cls.addAnnotation(new NormalAnnotationExpr(new Name("Tag"), attributes(tag)));
+    private static void addDescription(KogitoWorkflowProcess process, String description, ClassOrInterfaceDeclaration cls, KogitoBuildContext context) {
+        NodeList<MemberValuePair> attributes = attributes(process.getId());
+        if (description != null) {
+            attributes.add(new MemberValuePair("description", new StringLiteralExpr(description)));
+        }
+        context.getDependencyInjectionAnnotator().withTagAnnotation(cls, attributes);
+    }
+
+    private static void addTag(ClassOrInterfaceDeclaration cls, String tag, KogitoBuildContext context) {
+        context.getDependencyInjectionAnnotator().withTagAnnotation(cls, attributes(tag));
     }
 
     private static NodeList<MemberValuePair> attributes(String tag) {
