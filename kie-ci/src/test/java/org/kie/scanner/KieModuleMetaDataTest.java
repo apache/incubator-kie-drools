@@ -375,4 +375,11 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         }
     }
 
+    @Test
+    public void loadClassInJarKieModuleMetaData() {
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.drools", "knowledge-api", "5.5.0.Final");
+        KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newInJarKieModuleMetaData(releaseId, DependencyFilter.COMPILE_FILTER);
+        Class<?> sessionClockClass = kieModuleMetaData.getClass("org.drools.time", "SessionClock");
+        assertThat(sessionClockClass).isNotNull();
+    }
 }
