@@ -67,7 +67,7 @@ class ExpressionRestIT {
                 .post("/invalidOutputExpression")
                 .then()
                 .statusCode(is(400))
-                .body("message", containsString("required key [message] not found"))
+                .body("message", containsString("message"))
                 .body("id", notNullValue());
     }
 }

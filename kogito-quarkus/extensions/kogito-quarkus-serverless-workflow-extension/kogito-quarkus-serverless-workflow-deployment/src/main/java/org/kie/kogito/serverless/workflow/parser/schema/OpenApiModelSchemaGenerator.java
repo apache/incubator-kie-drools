@@ -115,7 +115,7 @@ public final class OpenApiModelSchemaGenerator {
 
     private static Schema getSchema(JsonSchemaValidator validator) {
         try {
-            return ObjectMapperFactory.get().readValue(validator.load().toString(), JsonSchemaImpl.class);
+            return ObjectMapperFactory.get().convertValue(validator.schemaData(), JsonSchemaImpl.class);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

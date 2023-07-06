@@ -17,20 +17,20 @@ package org.kie.kogito.serverless.workflow.actions;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.everit.json.schema.Schema;
-import org.everit.json.schema.ValidationException;
-import org.everit.json.schema.loader.SchemaClient;
-import org.everit.json.schema.loader.SchemaLoader;
 import org.jbpm.workflow.core.WorkflowModelValidator;
-import org.json.JSONObject;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion.VersionFlag;
+import com.networknt.schema.ValidationMessage;
 
 import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readAllBytes;
 import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.runtimeLoader;
@@ -43,8 +43,7 @@ public class JsonSchemaValidator implements WorkflowModelValidator {
 
     protected final String schemaRef;
     protected final boolean failOnValidationErrors;
-
-    private final AtomicReference<Schema> schemaObject = new AtomicReference<>();
+    private final AtomicReference<JsonNode> schemaObject = new AtomicReference<>();
 
     public JsonSchemaValidator(String schema, boolean failOnValidationErrors) {
         this.schemaRef = schema;
@@ -54,32 +53,28 @@ public class JsonSchemaValidator implements WorkflowModelValidator {
     @Override
     public void validate(Map<String, Object> model) {
         try {
-            load().validate(ObjectMapperFactory.get().convertValue(model.getOrDefault(SWFConstants.DEFAULT_WORKFLOW_VAR, NullNode.instance), JSONObject.class));
-        } catch (ValidationException ex) {
-            handleException(ex, ex.getCausingExceptions().isEmpty() ? ex : ex.getCausingExceptions());
+            Set<ValidationMessage> report =
+                    JsonSchemaFactory.getInstance(VersionFlag.V4).getSchema(schemaData()).validate((JsonNode) model.getOrDefault(SWFConstants.DEFAULT_WORKFLOW_VAR, NullNode.instance));
+            if (!report.isEmpty()) {
+                StringBuilder sb = new StringBuilder("There are JsonSchema validation errors:");
+                report.forEach(m -> sb.append(System.lineSeparator()).append(m.getMessage()));
+                final String validationMessage = sb.toString();
+                logger.warn(validationMessage);
+                if (failOnValidationErrors) {
+                    throw new IllegalArgumentException(validationMessage);
+                }
+            }
         } catch (IOException ex) {
-            handleException(ex, ex);
+            throw new IllegalStateException("Unexpected error validating schema", ex);
         }
     }
 
-    public Schema load() throws IOException {
-        Schema result = schemaObject.get();
+    public JsonNode schemaData() throws IOException {
+        JsonNode result = schemaObject.get();
         if (result == null) {
-            result = SchemaLoader.builder()
-                    .schemaJson(ObjectMapperFactory.get().readValue(readAllBytes(runtimeLoader(schemaRef)), JSONObject.class))
-                    .resolutionScope(schemaRef)
-                    .schemaClient(SchemaClient.classPathAwareClient())
-                    .build().load().build();
+            result = ObjectMapperFactory.get().readTree(readAllBytes(runtimeLoader(schemaRef)));
             schemaObject.set(result);
         }
         return result;
-    }
-
-    private void handleException(Throwable ex, Object toAppend) {
-        String validationError = String.format("Error validating schema: %s", toAppend);
-        logger.warn(validationError, ex);
-        if (failOnValidationErrors) {
-            throw new IllegalArgumentException(validationError);
-        }
     }
 }
