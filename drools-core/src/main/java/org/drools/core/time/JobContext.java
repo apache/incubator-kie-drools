@@ -35,4 +35,8 @@ public interface JobContext extends Serializable {
     default Optional<InternalKnowledgeRuntime> getInternalKnowledgeRuntime() {
         return getWorkingMemory() != null ? Optional.ofNullable(getWorkingMemory().getKnowledgeRuntime()) : Optional.empty();
     }
+
+    default boolean isNew() {
+        return false;
+    }
 }
