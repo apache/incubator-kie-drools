@@ -15,17 +15,14 @@
 
 package org.drools.reliability.core;
 
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+public interface StoredEvent extends StoredObject {
 
-public interface StoredObject {
-
+    @Override
     default boolean isEvent() {
-        return false;
+        return true;
     }
 
-    boolean isPropagated();
+    long getTimestamp();
 
-    Object getObject();
-
-    void repropagate(InternalWorkingMemoryEntryPoint ep);
+    long getDuration();
 }

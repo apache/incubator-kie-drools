@@ -17,12 +17,12 @@ package org.drools.reliability.core;
 
 import java.io.Serializable;
 
-public class SerializableStoredObject extends BaseStoredObject {
+public class SerializableStoredEvent extends BaseStoredEvent {
 
     private final Serializable object;
 
-    public SerializableStoredObject(Object object, boolean propagated) {
-        super(propagated);
+    public SerializableStoredEvent(Object object, boolean propagated, long timestamp, long duration) {
+        super(propagated, timestamp, duration);
         if (!(object instanceof Serializable)) {
             throw new IllegalArgumentException("Object must be serializable : " + object.getClass().getCanonicalName());
         }
@@ -36,9 +36,11 @@ public class SerializableStoredObject extends BaseStoredObject {
 
     @Override
     public String toString() {
-        return "SerializableStoredObject{" +
+        return "SerializableStoredEvent{" +
                 "object=" + object +
                 ", propagated=" + propagated +
+                ", timestamp=" + timestamp +
+                ", duration=" + duration +
                 '}';
     }
 }

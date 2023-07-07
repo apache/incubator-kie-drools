@@ -17,6 +17,7 @@ package org.drools.reliability.infinispan.proto;
 
 import org.drools.core.common.Storage;
 import org.drools.reliability.core.SimpleSerializationReliableObjectStore;
+import org.drools.reliability.core.StoredEvent;
 import org.drools.reliability.core.StoredObject;
 
 public class SimpleProtoStreamReliableObjectStore extends SimpleSerializationReliableObjectStore {
@@ -35,7 +36,7 @@ public class SimpleProtoStreamReliableObjectStore extends SimpleSerializationRel
     }
 
     @Override
-    protected StoredObject createStoredObject(boolean propagated, Object object, long timestamp, long duration, long handleId) {
-        return new ProtoStreamStoredObject(object, propagated, timestamp, duration, handleId);
+    protected StoredEvent createStoredEvent(boolean propagated, Object object, long timestamp, long duration) {
+        return new ProtoStreamStoredEvent(object, propagated, timestamp, duration);
     }
 }

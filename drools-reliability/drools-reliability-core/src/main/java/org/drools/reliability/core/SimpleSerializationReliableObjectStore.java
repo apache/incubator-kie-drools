@@ -86,8 +86,9 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
         ReliablePseudoClockScheduler clock = (ReliablePseudoClockScheduler) session.getSessionClock();
         for (StoredObject storedObject : propagated) {
             if (storedObject.isEvent()) {
+                StoredEvent storedEvent = (StoredEvent) storedObject;
                 long currentTime = clock.getCurrentTime();
-                long timestamp = storedObject.getTimestamp();
+                long timestamp = storedEvent.getTimestamp();
                 if (currentTime < timestamp) {
                     clock.advanceTime(timestamp - currentTime, TimeUnit.MILLISECONDS);
                 }
@@ -114,7 +115,7 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
 
     private StoredObject factHandleToStoredObject(InternalFactHandle handle, boolean propagated, Object object) {
         return handle.isEvent() ?
-                createStoredObject(propagated, object, ((DefaultEventHandle) handle).getStartTimestamp(), ((DefaultEventHandle) handle).getDuration(), handle.getId()) :
+                createStoredEvent(propagated, object, ((DefaultEventHandle) handle).getStartTimestamp(), ((DefaultEventHandle) handle).getDuration()) :
                 createStoredObject(propagated, object);
     }
 
@@ -122,8 +123,8 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
         return new SerializableStoredObject(object, propagated);
     }
 
-    protected StoredObject createStoredObject(boolean propagated, Object object, long timestamp, long duration, long handleId) {
-        return new SerializableStoredObject(object, propagated, timestamp, duration, handleId);
+    protected StoredEvent createStoredEvent(boolean propagated, Object object, long timestamp, long duration) {
+        return new SerializableStoredEvent(object, propagated, timestamp, duration);
     }
 
     @Override
