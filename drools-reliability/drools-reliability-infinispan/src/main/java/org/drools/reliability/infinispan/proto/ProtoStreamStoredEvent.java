@@ -15,31 +15,31 @@
 
 package org.drools.reliability.infinispan.proto;
 
-import org.drools.reliability.core.BaseStoredObject;
+import org.drools.reliability.core.BaseStoredEvent;
 import org.infinispan.protostream.annotations.ProtoFactory;
 import org.infinispan.protostream.annotations.ProtoField;
 import org.infinispan.protostream.types.protobuf.AnySchema;
 
 /**
  * This class is used to store objects in Infinispan using ProtoStream.
- * This class inherits Serializable from BaseStoredObject, but it uses ProtoStream instead of Java serialization.
+ * This class inherits Serializable from BaseStoredEvent, but it uses ProtoStream instead of Java serialization.
  */
-public class ProtoStreamStoredObject extends BaseStoredObject {
+public class ProtoStreamStoredEvent extends BaseStoredEvent {
 
     private final transient Object object;
 
     private final transient AnySchema.Any protoObject;
 
-    public ProtoStreamStoredObject(Object object, boolean propagated) {
-        super(propagated);
+    public ProtoStreamStoredEvent(Object object, boolean propagated, long timestamp, long duration) {
+        super(propagated, timestamp, duration);
 
         this.object = object;
         this.protoObject = ProtoStreamUtils.toAnySchema(object);
     }
 
     @ProtoFactory
-    public ProtoStreamStoredObject(AnySchema.Any protoObject, boolean propagated) {
-        super(propagated);
+    public ProtoStreamStoredEvent(AnySchema.Any protoObject, boolean propagated, long timestamp, long duration) {
+        super(propagated, timestamp, duration);
 
         this.protoObject = protoObject;
         this.object = ProtoStreamUtils.fromAnySchema(protoObject);
@@ -57,15 +57,29 @@ public class ProtoStreamStoredObject extends BaseStoredObject {
     }
 
     @Override
+    @ProtoField(value = 3, required = true)
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    @Override
+    @ProtoField(value = 4, required = true)
+    public long getDuration() {
+        return duration;
+    }
+
+    @Override
     public Object getObject() {
         return object;
     }
 
     @Override
     public String toString() {
-        return "ProtoStreamStoredObject{" +
+        return "ProtoStreamStoredEvent{" +
                 "object=" + object +
                 ", propagated=" + propagated +
+                ", timestamp=" + timestamp +
+                ", duration=" + duration +
                 '}';
     }
 }

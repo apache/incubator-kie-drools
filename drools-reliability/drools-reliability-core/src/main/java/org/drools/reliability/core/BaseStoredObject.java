@@ -17,28 +17,15 @@ package org.drools.reliability.core;
 
 import java.io.Serializable;
 
-import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.rule.accessor.FactHandleFactory;
 
 public abstract class BaseStoredObject implements StoredObject,
                                                   Serializable {
 
     protected final boolean propagated;
-    protected final long timestamp;
-    protected final long duration;
-    protected final long handleId;
 
-    protected BaseStoredObject(boolean propagated, long timestamp, long duration, long handleId) {
+    protected BaseStoredObject(boolean propagated) {
         this.propagated = propagated;
-        this.timestamp = timestamp;
-        this.duration = duration;
-        this.handleId = handleId;
-    }
-
-    @Override
-    public boolean isEvent() {
-        return timestamp >= 0;
     }
 
     @Override
@@ -47,23 +34,7 @@ public abstract class BaseStoredObject implements StoredObject,
     }
 
     @Override
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    @Override
-    public long getDuration() {
-        return duration;
-    }
-
-    @Override
     public void repropagate(InternalWorkingMemoryEntryPoint ep) {
-        if (isEvent()) {
-            FactHandleFactory fhFactory = ep.getHandleFactory();
-            DefaultEventHandle eFh = fhFactory.createEventFactHandle(fhFactory.getNextId(), getObject(), fhFactory.getNextRecency(), ep, timestamp, duration);
-            ep.insert(eFh);
-        } else {
-            ep.insert(getObject());
-        }
+        ep.insert(getObject());
     }
 }
