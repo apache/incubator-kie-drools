@@ -330,7 +330,7 @@ index 914a5ed1a5..840df84c51 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index 5afd0f9b95..1a911f0e4c 100644
+index f26f795990..3e9751b154 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,9 +16,9 @@
@@ -345,7 +345,7 @@ index 5afd0f9b95..1a911f0e4c 100644
      <version.org.apache.kafka>3.4.0</version.org.apache.kafka>
  
      <!-- dependencies versions -->
-@@ -27,13 +27,13 @@
+@@ -28,13 +28,13 @@
      <version.com.jayway.jsonpath>2.8.0</version.com.jayway.jsonpath>
      <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
      <version.net.thisptr.jackson-jq>1.0.0-preview.20220705</version.net.thisptr.jackson-jq>
@@ -361,10 +361,10 @@ index 5afd0f9b95..1a911f0e4c 100644
      <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
 -    <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
 +    <version.com.github.javaparser>3.25.1</version.com.github.javaparser>
-     <version.com.github.java-json-tools>2.2.14</version.com.github.java-json-tools>
      <version.com.fasterxml.jackson.datatype>2.14.2</version.com.fasterxml.jackson.datatype>
-     <version.com.github.erosb>1.14.2</version.com.github.erosb>
-@@ -44,31 +44,31 @@
+     <version.com.github.victools>4.18.0</version.com.github.victools>
+     <version.com.github.tomakehurst.wiremock>2.33.2</version.com.github.tomakehurst.wiremock>
+@@ -43,31 +43,31 @@
      <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
      <version.com.sun.xml.bind.core>2.3.0.1</version.com.sun.xml.bind.core>
      <version.com.sun.xml.bind.impl>2.3.5</version.com.sun.xml.bind.impl>
@@ -406,7 +406,7 @@ index 5afd0f9b95..1a911f0e4c 100644
  
      <version.io.swagger.parser.v3>2.0.26</version.io.swagger.parser.v3>
  
-@@ -76,14 +76,14 @@
+@@ -75,14 +75,14 @@
  
      <version.org.graalvm.nativeimage>22.3.0</version.org.graalvm.nativeimage>
  
@@ -426,7 +426,7 @@ index 5afd0f9b95..1a911f0e4c 100644
      <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
      <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
      <version.org.mongo>4.6.1</version.org.mongo>
-@@ -101,20 +101,20 @@
+@@ -100,20 +100,20 @@
      <version.org.junit.vintage>5.9.2</version.org.junit.vintage>
      <version.org.junit.platform>1.9.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
      <version.org.junit.pioneer>1.5.0</version.org.junit.pioneer>
@@ -452,7 +452,7 @@ index 5afd0f9b95..1a911f0e4c 100644
      <version.maven.invoker>3.2.0</version.maven.invoker>
  
      <version.plexus>1.6</version.plexus>
-@@ -250,8 +250,8 @@
+@@ -249,8 +249,8 @@
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
@@ -463,7 +463,7 @@ index 5afd0f9b95..1a911f0e4c 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -261,7 +261,7 @@
+@@ -260,7 +260,7 @@
        </dependency>
        <dependency>
          <groupId>com.fasterxml.jackson.module</groupId>
@@ -472,7 +472,7 @@ index 5afd0f9b95..1a911f0e4c 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -541,9 +541,9 @@
+@@ -540,9 +540,9 @@
        </dependency>
  
        <dependency>
@@ -485,7 +485,7 @@ index 5afd0f9b95..1a911f0e4c 100644
        </dependency>
        <dependency>
          <groupId>com.sun.xml.bind</groupId>
-@@ -551,19 +551,19 @@
+@@ -550,19 +550,19 @@
          <version>${version.com.sun.xml.bind.core}</version>
        </dependency>
        <dependency>
@@ -513,7 +513,7 @@ index 5afd0f9b95..1a911f0e4c 100644
        </dependency>
        <dependency>
          <groupId>javax.inject</groupId>
-@@ -571,9 +571,9 @@
+@@ -570,9 +570,9 @@
          <version>${version.javax.inject}</version>
        </dependency>
        <dependency>
@@ -526,7 +526,7 @@ index 5afd0f9b95..1a911f0e4c 100644
        </dependency>
        <dependency>
          <groupId>org.eclipse.microprofile.openapi</groupId>
-@@ -619,7 +619,7 @@
+@@ -618,7 +618,7 @@
        </dependency>
        <dependency>
          <groupId>org.infinispan</groupId>
