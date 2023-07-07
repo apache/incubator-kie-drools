@@ -15,16 +15,19 @@
  */
 
 import { ApolloClient } from 'apollo-client';
-import { SortBy } from '@kogito-apps/jobs-management';
-import { Job, JobStatus } from '@kogito-apps/management-console-shared';
-import { GraphQL } from '@kogito-apps/consoles-common';
+import {
+  Job,
+  JobStatus,
+  JobsSortBy
+} from '@kogito-apps/management-console-shared';
+import { getJobsWithFilters } from '@kogito-apps/runtime-gateway-api';
 
 export interface JobsManagementQueries {
   getJobs(
     start: number,
     end: number,
     filters: JobStatus[],
-    sortBy: SortBy | any
+    sortBy: JobsSortBy | any
   ): Promise<Job[]>;
 }
 
@@ -39,22 +42,8 @@ export class GraphQLJobsManagementQueries implements JobsManagementQueries {
     offset: number,
     limit: number,
     filters: JobStatus[],
-    orderBy: SortBy
+    orderBy: JobsSortBy
   ): Promise<Job[]> {
-    try {
-      const response = await this.client.query({
-        query: GraphQL.GetJobsWithFiltersDocument,
-        variables: {
-          values: filters,
-          offset: offset,
-          limit: limit,
-          orderBy
-        },
-        fetchPolicy: 'network-only'
-      });
-      return Promise.resolve(response.data.Jobs);
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return getJobsWithFilters(offset, limit, filters, orderBy, this.client);
   }
 }

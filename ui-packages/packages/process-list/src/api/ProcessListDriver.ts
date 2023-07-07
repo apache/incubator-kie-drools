@@ -17,15 +17,19 @@
 import {
   BulkProcessInstanceActionResponse,
   OperationType,
-  ProcessInstance
+  ProcessInstance,
+  ProcessInstanceFilter,
+  ProcessListSortBy
 } from '@kogito-apps/management-console-shared';
-import { ProcessInstanceFilter, SortBy } from './ProcessListEnvelopeApi';
 
 export interface ProcessListDriver {
-  initialLoad(filter: ProcessInstanceFilter, sortBy: SortBy): Promise<void>;
+  initialLoad(
+    filter: ProcessInstanceFilter,
+    sortBy: ProcessListSortBy
+  ): Promise<void>;
   openProcess(process: ProcessInstance): Promise<void>;
   applyFilter(filter: ProcessInstanceFilter): Promise<void>;
-  applySorting(sortBy: SortBy): Promise<void>;
+  applySorting(sortBy: ProcessListSortBy): Promise<void>;
   handleProcessSkip(processInstance: ProcessInstance): Promise<void>;
   handleProcessRetry(processInstance: ProcessInstance): Promise<void>;
   handleProcessAbort(processInstance: ProcessInstance): Promise<void>;

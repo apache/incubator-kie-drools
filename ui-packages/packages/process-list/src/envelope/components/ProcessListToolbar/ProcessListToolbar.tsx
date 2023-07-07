@@ -49,9 +49,10 @@ import {
   ProcessInstance,
   ProcessInstanceState,
   ProcessInfoModal,
-  setTitle
+  setTitle,
+  ProcessInstanceFilter
 } from '@kogito-apps/management-console-shared';
-import { ProcessInstanceFilter, ProcessListDriver } from '../../../api';
+import { ProcessListDriver } from '../../../api';
 import '../styles.css';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { formatForBulkListProcessInstance } from '../utils/ProcessListUtils';

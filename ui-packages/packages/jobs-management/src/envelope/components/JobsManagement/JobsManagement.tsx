@@ -35,9 +35,11 @@ import {
   OperationType,
   formatForBulkListJob,
   Job,
-  JobStatus
+  JobStatus,
+  JobsSortBy,
+  OrderBy
 } from '@kogito-apps/management-console-shared';
-import { JobsManagementDriver, OrderBy, SortBy } from '../../../api';
+import { JobsManagementDriver } from '../../../api';
 import JobsManagementTable from '../JobsManagementTable/JobsManagementTable';
 import JobsManagementToolbar from '../JobsManagementToolbar/JobsManagementToolbar';
 import '../styles.css';
@@ -57,7 +59,7 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
   const defaultStatus: JobStatus[] = [JobStatus.Scheduled];
   const defaultChip: JobStatus[] = [JobStatus.Scheduled];
   const defaultSortBy: ISortBy = { index: 6, direction: 'asc' };
-  const defaultOrderBy: SortBy = {
+  const defaultOrderBy: JobsSortBy = {
     lastUpdate: OrderBy.ASC
   };
   const [chips, setChips] = useState(defaultChip);
@@ -72,7 +74,7 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
   const [modalTitle, setModalTitle] = useState<JSX.Element>(null);
   const [modalContent, setModalContent] = useState<string>('');
   const [sortBy, setSortBy] = useState<ISortBy>(defaultSortBy);
-  const [orderBy, setOrderBy] = useState<SortBy>(defaultOrderBy);
+  const [orderBy, setOrderBy] = useState<JobsSortBy>(defaultOrderBy);
   const [limit, setLimit] = useState<number>(defaultPageSize);
   const [offset, setOffset] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(defaultPageSize);

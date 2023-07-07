@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-import {
-  ProcessListChannelApi,
-  ProcessInstanceFilter,
-  ProcessListDriver,
-  SortBy
-} from '../api';
+import { ProcessListChannelApi, ProcessListDriver } from '../api';
 import {
   BulkProcessInstanceActionResponse,
   OperationType,
-  ProcessInstance
+  ProcessInstance,
+  ProcessInstanceFilter,
+  ProcessListSortBy
 } from '@kogito-apps/management-console-shared';
 
 export class ProcessListChannelApiImpl implements ProcessListChannelApi {
@@ -31,7 +28,7 @@ export class ProcessListChannelApiImpl implements ProcessListChannelApi {
 
   processList__initialLoad(
     filter: ProcessInstanceFilter,
-    sortBy: SortBy
+    sortBy: ProcessListSortBy
   ): Promise<void> {
     return this.driver.initialLoad(filter, sortBy);
   }
@@ -44,7 +41,7 @@ export class ProcessListChannelApiImpl implements ProcessListChannelApi {
     return this.driver.applyFilter(filter);
   }
 
-  processList__applySorting(sortBy: SortBy): Promise<void> {
+  processList__applySorting(sortBy: ProcessListSortBy): Promise<void> {
     return this.driver.applySorting(sortBy);
   }
 

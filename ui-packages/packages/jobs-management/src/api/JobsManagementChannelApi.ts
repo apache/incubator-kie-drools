@@ -18,11 +18,11 @@ import {
   Job,
   JobStatus,
   BulkCancel,
-  JobCancel
+  JobCancel,
+  JobsSortBy
 } from '@kogito-apps/management-console-shared';
-import { SortBy } from './JobsManagementEnvelopeApi';
 export interface JobsManagementChannelApi {
-  jobList__initialLoad(filter: JobStatus[], orderBy: SortBy): Promise<void>;
+  jobList__initialLoad(filter: JobStatus[], orderBy: JobsSortBy): Promise<void>;
   jobList__applyFilter(filter: JobStatus[]): Promise<void>;
   jobList__bulkCancel(jobsToBeActioned: Job[]): Promise<BulkCancel>;
   jobList_cancelJob(job: Pick<Job, 'id' | 'endpoint'>): Promise<JobCancel>;
@@ -32,6 +32,6 @@ export interface JobsManagementChannelApi {
     repeatLimit: number | string,
     scheduleDate: Date
   ): Promise<{ modalTitle: string; modalContent: string }>;
-  jobList_sortBy(orderBy: SortBy): Promise<void>;
+  jobList_sortBy(orderBy: JobsSortBy): Promise<void>;
   jobList__query(offset: number, limit: number): Promise<Job[]>;
 }

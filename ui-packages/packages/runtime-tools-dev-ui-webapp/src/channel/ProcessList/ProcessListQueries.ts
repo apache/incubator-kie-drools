@@ -15,19 +15,20 @@
  */
 
 import { ApolloClient } from 'apollo-client';
-import { SortBy, ProcessInstanceFilter } from '@kogito-apps/process-list';
 import {
   BulkProcessInstanceActionResponse,
   OperationType,
-  ProcessInstance
+  ProcessInstance,
+  ProcessListSortBy,
+  ProcessInstanceFilter
 } from '@kogito-apps/management-console-shared';
-import { GraphQL } from '@kogito-apps/consoles-common';
-import { buildProcessListWhereArgument } from '../../utils/QueryUtils';
 import {
   handleProcessAbort,
   handleProcessMultipleAction,
   handleProcessSkip,
-  handleProcessRetry
+  handleProcessRetry,
+  getProcessInstances,
+  getChildProcessInstances
 } from '@kogito-apps/runtime-gateway-api';
 
 export interface ProcessListQueries {
@@ -35,7 +36,7 @@ export interface ProcessListQueries {
     start: number,
     end: number,
     filters: ProcessInstanceFilter,
-    sortBy: SortBy
+    sortBy: ProcessListSortBy
   ): Promise<ProcessInstance[]>;
   getChildProcessInstances(
     rootProcessInstanceId: string
@@ -61,46 +62,15 @@ export class GraphQLProcessListQueries implements ProcessListQueries {
     offset: number,
     limit: number,
     filters: ProcessInstanceFilter,
-    sortBy: SortBy
+    sortBy: ProcessListSortBy
   ): Promise<ProcessInstance[]> {
-    return new Promise<ProcessInstance[]>((resolve, reject) => {
-      this.client
-        .query({
-          query: GraphQL.GetProcessInstancesDocument,
-          variables: {
-            where: buildProcessListWhereArgument(filters),
-            offset: offset,
-            limit: limit,
-            orderBy: sortBy
-          },
-          fetchPolicy: 'network-only',
-          errorPolicy: 'all'
-        })
-        .then((value) => {
-          resolve(value.data.ProcessInstances);
-        })
-        .catch((reason) => {
-          reject({ errorMessage: JSON.stringify(reason) });
-        });
-    });
+    return getProcessInstances(offset, limit, filters, sortBy, this.client);
   }
 
   getChildProcessInstances(
     rootProcessInstanceId: string
   ): Promise<ProcessInstance[]> {
-    return new Promise<ProcessInstance[]>((resolve, reject) => {
-      this.client
-        .query({
-          query: GraphQL.GetChildInstancesDocument,
-          variables: {
-            rootProcessInstanceId
-          }
-        })
-        .then((value) => {
-          resolve(value.data.ProcessInstances);
-        })
-        .catch((reason) => reject(reason));
-    });
+    return getChildProcessInstances(rootProcessInstanceId, this.client);
   }
 
   async handleProcessSkip(processInstance: ProcessInstance): Promise<void> {

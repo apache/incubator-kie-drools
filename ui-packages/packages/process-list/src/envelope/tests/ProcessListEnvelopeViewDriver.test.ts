@@ -20,15 +20,13 @@ import {
 } from '@kogito-tooling/envelope-bus/dist/api';
 import { MockedMessageBusClientApi, processInstance } from './mocks/Mocks';
 import ProcessListEnvelopeViewDriver from '../ProcessListEnvelopeViewDriver';
-import {
-  OrderBy,
-  ProcessInstanceFilter,
-  ProcessListChannelApi,
-  SortBy
-} from '../../api';
+import { ProcessListChannelApi } from '../../api';
 import {
   OperationType,
-  ProcessInstanceState
+  ProcessInstanceState,
+  OrderBy,
+  ProcessInstanceFilter,
+  ProcessListSortBy
 } from '@kogito-apps/management-console-shared';
 
 let channelApi: MessageBusClientApi<ProcessListChannelApi>;
@@ -74,7 +72,7 @@ describe('ProcessListEnvelopeViewDriver tests', () => {
     });
 
     it('applySorting', () => {
-      const sortBy: SortBy = {
+      const sortBy: ProcessListSortBy = {
         lastUpdate: OrderBy.DESC
       };
       driver.applySorting(sortBy);

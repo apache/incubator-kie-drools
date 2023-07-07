@@ -19,9 +19,10 @@ import {
   Job,
   JobStatus,
   BulkCancel,
-  JobCancel
+  JobCancel,
+  JobsSortBy
 } from '@kogito-apps/management-console-shared';
-import { SortBy, JobsManagementChannelApi, JobsManagementDriver } from '../api';
+import { JobsManagementChannelApi, JobsManagementDriver } from '../api';
 
 export default class JobsManagementEnvelopeViewDriver
   implements JobsManagementDriver
@@ -30,7 +31,7 @@ export default class JobsManagementEnvelopeViewDriver
     private readonly channelApi: MessageBusClientApi<JobsManagementChannelApi>
   ) {}
 
-  initialLoad(filter: JobStatus[], orderBy: SortBy): Promise<void> {
+  initialLoad(filter: JobStatus[], orderBy: JobsSortBy): Promise<void> {
     return this.channelApi.requests.jobList__initialLoad(filter, orderBy);
   }
 
@@ -60,7 +61,7 @@ export default class JobsManagementEnvelopeViewDriver
     );
   }
 
-  sortBy(orderBy: SortBy): Promise<void> {
+  sortBy(orderBy: JobsSortBy): Promise<void> {
     return this.channelApi.requests.jobList_sortBy(orderBy);
   }
 

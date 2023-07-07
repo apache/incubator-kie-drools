@@ -15,14 +15,12 @@
  */
 
 import {
-  OrderBy,
-  ProcessInstanceFilter,
-  SortBy
-} from '@kogito-apps/process-list';
-import {
   OperationType,
   ProcessInstance,
-  ProcessInstanceState
+  ProcessInstanceState,
+  OrderBy,
+  ProcessInstanceFilter,
+  ProcessListSortBy
 } from '@kogito-apps/management-console-shared';
 import {
   ProcessListGatewayApi,
@@ -101,7 +99,7 @@ const processListFilters: ProcessInstanceFilter = {
   status: [ProcessInstanceState.Active],
   businessKey: []
 };
-const sortBy: SortBy = { lastUpdate: OrderBy.DESC };
+const sortBy: ProcessListSortBy = { lastUpdate: OrderBy.DESC };
 const rootProcessInstanceId: string = 'a1e139d5-4e77-48c9-84ae-34578e904e5a';
 describe('ProcessListChannelApiImpl tests', () => {
   beforeEach(() => {

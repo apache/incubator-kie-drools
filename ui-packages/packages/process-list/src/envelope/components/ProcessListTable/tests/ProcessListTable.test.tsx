@@ -16,7 +16,6 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { ProcessInstances } from './mocks/Mocks';
-import { OrderBy } from '../../.././../api';
 import { mount } from 'enzyme';
 import ProcessListTable, { ProcessListTableProps } from '../ProcessListTable';
 import { Button, Checkbox } from '@patternfly/react-core';
@@ -24,6 +23,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
 import TestProcessListDriver from '../../ProcessList/tests/mocks/TestProcessListDriver';
+import { OrderBy } from '@kogito-apps/management-console-shared';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../../ProcessListChildTable/ProcessListChildTable');

@@ -24,7 +24,11 @@ import { ProcessListGatewayApiImpl } from '../../../../channel/ProcessList/Proce
 
 const MockQueries = jest.fn<ProcessListQueries, []>(() => ({
   getProcessInstances: jest.fn(),
-  getChildProcessInstances: jest.fn()
+  getChildProcessInstances: jest.fn(),
+  handleProcessSkip: jest.fn(),
+  handleProcessAbort: jest.fn(),
+  handleProcessRetry: jest.fn(),
+  handleProcessMultipleAction: jest.fn()
 }));
 
 jest

@@ -17,7 +17,6 @@
 import _ from 'lodash';
 import { User } from '@kogito-apps/consoles-common';
 import { SortBy, QueryFilter } from '@kogito-apps/task-inbox';
-import { ProcessInstanceFilter } from '@kogito-apps/process-list';
 
 const createSearchTextArray = (taskNames: string[]) => {
   const formattedTextArray = [];
@@ -92,29 +91,4 @@ export const getOrderByObject = (sortBy: SortBy) => {
   return {
     lastUpdate: 'DESC'
   };
-};
-
-const formatSearchWords = (searchWords: string[]) => {
-  const tempSearchWordsArray = [];
-  searchWords.forEach((word) => {
-    tempSearchWordsArray.push({ businessKey: { like: word } });
-  });
-  return tempSearchWordsArray;
-};
-
-export const buildProcessListWhereArgument = (
-  filters: ProcessInstanceFilter
-) => {
-  if (filters.businessKey.length === 0) {
-    return {
-      parentProcessInstanceId: { isNull: true },
-      state: { in: filters.status }
-    };
-  } else {
-    return {
-      parentProcessInstanceId: { isNull: true },
-      state: { in: filters.status },
-      or: formatSearchWords(filters.businessKey)
-    };
-  }
 };

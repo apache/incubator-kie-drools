@@ -19,15 +19,14 @@ import {
   MockedProcessListEnvelopeViewApi
 } from './mocks/Mocks';
 import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
-import {
-  OrderBy,
-  ProcessListChannelApi,
-  ProcessListEnvelopeApi
-} from '../../api';
+import { ProcessListChannelApi, ProcessListEnvelopeApi } from '../../api';
 import { ProcessListEnvelopeApiImpl } from '../ProcessListEnvelopeApiImpl';
 import { ProcessListEnvelopeViewApi } from '../ProcessListEnvelopeView';
 import { ProcessListEnvelopeContext } from '../ProcessListEnvelopeContext';
-import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
+import {
+  OrderBy,
+  ProcessInstanceState
+} from '@kogito-apps/management-console-shared';
 
 describe('ProcessListEnvelopeApiImpl tests', () => {
   it('initialize', () => {

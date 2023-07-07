@@ -21,19 +21,6 @@ export interface Association {
   envelopeServerId: string;
 }
 
-export enum OrderBy {
-  ASC = 'ASC',
-  DESC = 'DESC'
-}
-export interface SortBy {
-  status?: OrderBy;
-  expirationTime?: OrderBy;
-  priority?: OrderBy;
-  retries?: OrderBy;
-  lastUpdate?: OrderBy;
-  executionCounter?: OrderBy;
-}
-
 export interface QueryPage {
   offset: number;
   limit: number;

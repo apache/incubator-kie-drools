@@ -5,6 +5,19 @@ module.exports = typeDefs = gql`
   schema {
     query: Query
     subscription: Subscription
+    mutation: Mutation
+  }
+
+  type Mutation {
+    ProcessInstanceSkip(id: String): String
+    ProcessInstanceAbort(id: String): String
+    ProcessInstanceRetry(id: String): String
+    ProcessInstanceUpdateVariables(id: String, variables: String): String
+    NodeInstanceTrigger(id: String, nodeId: String): String
+    NodeInstanceCancel(id: String, nodeInstanceId: String): String
+    NodeInstanceRetrigger(id: String, nodeInstanceId: String): String
+    JobCancel(id: String): String
+    JobReschedule(id: String, data: String): String
   }
 
   type Query {
@@ -28,11 +41,7 @@ module.exports = typeDefs = gql`
       orderBy: VisaApplicationsOrderBy
       pagination: Pagination
     ): [VisaApplications]
-    Jobs(
-      where: JobArgument
-      orderBy: JobOrderBy
-      pagination: Pagination
-      ): [Job]
+    Jobs(where: JobArgument, orderBy: JobOrderBy, pagination: Pagination): [Job]
   }
 
   type ProcessInstance {
@@ -48,6 +57,7 @@ module.exports = typeDefs = gql`
     serviceUrl: String
     endpoint: String!
     nodes: [NodeInstance!]!
+    nodeDefinitions: [Node!]
     milestones: [Milestones!]
     variables: String
     start: DateTime!
@@ -57,6 +67,7 @@ module.exports = typeDefs = gql`
     error: ProcessInstanceError
     addons: [String!]
     lastUpdate: DateTime!
+    diagram: String
     source: String
   }
 
@@ -117,6 +128,14 @@ module.exports = typeDefs = gql`
     nodeId: String!
   }
 
+  type Node {
+    id: String!
+    nodeDefinitionId: String!
+    name: String!
+    type: String!
+    uniqueId: String!
+  }
+
   type Milestones {
     id: String!
     name: String!
@@ -127,7 +146,7 @@ module.exports = typeDefs = gql`
     AVAILABLE
     COMPLETED
   }
-  
+
   input ProcessInstanceOrderBy {
     processId: OrderBy
     processName: OrderBy
@@ -581,9 +600,9 @@ module.exports = typeDefs = gql`
     lastUpdate: DateArgument
     endpoint: StringArgument
     nodeInstanceId: StringArgument
-}
+  }
 
-input JobOrderBy {
+  input JobOrderBy {
     processId: OrderBy
     rootProcessId: OrderBy
     status: OrderBy
@@ -592,38 +611,38 @@ input JobOrderBy {
     retries: OrderBy
     lastUpdate: OrderBy
     executionCounter: OrderBy
-}
+  }
 
-input JobStatusArgument {
-  equal: JobStatus
-  in: [JobStatus]
-}
+  input JobStatusArgument {
+    equal: JobStatus
+    in: [JobStatus]
+  }
 
-type Job {
-  id: String!
-  processId: String
-  processInstanceId: String
-  rootProcessInstanceId: String
-  rootProcessId: String
-  status: JobStatus!
-  expirationTime: DateTime
-  priority: Int
-  callbackEndpoint: String
-  repeatInterval: Int
-  repeatLimit: Int
-  scheduledId: String
-  retries: Int
-  lastUpdate: DateTime
-  executionCounter: Int
-  endpoint: String
-  nodeInstanceId: String
-}
+  type Job {
+    id: String!
+    processId: String
+    processInstanceId: String
+    rootProcessInstanceId: String
+    rootProcessId: String
+    status: JobStatus!
+    expirationTime: DateTime
+    priority: Int
+    callbackEndpoint: String
+    repeatInterval: Int
+    repeatLimit: Int
+    scheduledId: String
+    retries: Int
+    lastUpdate: DateTime
+    executionCounter: Int
+    endpoint: String
+    nodeInstanceId: String
+  }
 
-enum JobStatus {
-  ERROR
-  EXECUTED
-  SCHEDULED
-  RETRY
-  CANCELED
-}
+  enum JobStatus {
+    ERROR
+    EXECUTED
+    SCHEDULED
+    RETRY
+    CANCELED
+  }
 `;

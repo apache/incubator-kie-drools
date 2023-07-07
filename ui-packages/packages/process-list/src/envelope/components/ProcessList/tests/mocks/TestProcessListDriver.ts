@@ -17,13 +17,11 @@
 import {
   BulkProcessInstanceActionResponse,
   OperationType,
-  ProcessInstance
-} from '@kogito-apps/management-console-shared';
-import {
+  ProcessInstance,
   ProcessInstanceFilter,
-  ProcessListDriver,
-  SortBy
-} from '../../../../../api';
+  ProcessListSortBy
+} from '@kogito-apps/management-console-shared';
+import { ProcessListDriver } from '../../../../../api';
 
 export default class TestProcessListDriver implements ProcessListDriver {
   private readonly processInstances: ProcessInstance[];
@@ -57,11 +55,17 @@ export default class TestProcessListDriver implements ProcessListDriver {
     return Promise.resolve();
   }
   /* eslint-disable  @typescript-eslint/no-unused-vars */
-  private doSetState(processListFilter: ProcessInstanceFilter, sortBy: SortBy) {
+  private doSetState(
+    processListFilter: ProcessInstanceFilter,
+    sortBy: ProcessListSortBy
+  ) {
     // do nothing
   }
 
-  initialLoad(filter: ProcessInstanceFilter, sortBy: SortBy): Promise<void> {
+  initialLoad(
+    filter: ProcessInstanceFilter,
+    sortBy: ProcessListSortBy
+  ): Promise<void> {
     this.doSetState(filter, sortBy);
     return Promise.resolve();
   }
@@ -74,7 +78,7 @@ export default class TestProcessListDriver implements ProcessListDriver {
     return Promise.resolve();
   }
 
-  applySorting(sortBy: SortBy): Promise<void> {
+  applySorting(sortBy: ProcessListSortBy): Promise<void> {
     // do nothing
     return Promise.resolve(undefined);
   }

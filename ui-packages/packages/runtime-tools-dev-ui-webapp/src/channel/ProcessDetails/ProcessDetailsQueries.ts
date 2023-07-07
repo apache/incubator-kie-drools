@@ -15,7 +15,6 @@
  */
 
 import { ApolloClient } from 'apollo-client';
-// import { GraphQL } from '@kogito-apps/consoles-common';
 import {
   ProcessInstance,
   Job,

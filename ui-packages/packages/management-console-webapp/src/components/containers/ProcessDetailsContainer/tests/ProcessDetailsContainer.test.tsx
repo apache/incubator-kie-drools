@@ -22,9 +22,34 @@ import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/Proce
 import { ProcessDetailsGatewayApiImpl } from '../../../../channel/ProcessDetails/ProcessDetailsGatewayApi';
 import { ProcessDetailsQueries } from '../../../../channel/ProcessDetails/ProcessDetailsQueries';
 
+const getJobsMock = jest.fn();
+const getProcessDetailsMock = jest.fn();
+const handleProcessSkipMock = jest.fn();
+const handleProcessAbortMock = jest.fn();
+const handleProcessRetryMock = jest.fn();
+const getSVGMock = jest.fn();
+const jobCancelMock = jest.fn();
+const rescheduleJobMock = jest.fn();
+const getTriggerableNodesMock = jest.fn();
+const handleNodeTriggerMock = jest.fn();
+const handleProcessVariableUpdateMock = jest.fn();
+const handleNodeInstanceCancelMock = jest.fn();
+const handleNodeInstanceRetriggerMock = jest.fn();
+
 const MockQueries = jest.fn<ProcessDetailsQueries, []>(() => ({
-  getProcessDetails: jest.fn(),
-  getJobs: jest.fn()
+  getProcessDetails: getProcessDetailsMock,
+  getJobs: getJobsMock,
+  handleProcessSkip: handleProcessSkipMock,
+  handleProcessAbort: handleProcessAbortMock,
+  handleProcessRetry: handleProcessRetryMock,
+  getSVG: getSVGMock,
+  jobCancel: jobCancelMock,
+  rescheduleJob: rescheduleJobMock,
+  getTriggerableNodes: getTriggerableNodesMock,
+  handleNodeTrigger: handleNodeTriggerMock,
+  handleProcessVariableUpdate: handleProcessVariableUpdateMock,
+  handleNodeInstanceCancel: handleNodeInstanceCancelMock,
+  handleNodeInstanceRetrigger: handleNodeInstanceRetriggerMock
 }));
 
 jest

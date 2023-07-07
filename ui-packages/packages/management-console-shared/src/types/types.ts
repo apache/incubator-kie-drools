@@ -146,15 +146,26 @@ export enum OrderBy {
   ASC = 'ASC',
   DESC = 'DESC'
 }
-export interface SortBy {
+
+export interface ProcessListSortBy {
   processName?: OrderBy;
   state?: OrderBy;
   start?: OrderBy;
   lastUpdate?: OrderBy;
 }
+
+export interface JobsSortBy {
+  status?: OrderBy;
+  expirationTime?: OrderBy;
+  priority?: OrderBy;
+  retries?: OrderBy;
+  lastUpdate?: OrderBy;
+  executionCounter?: OrderBy;
+}
+
 export interface ProcessListState {
   filters: ProcessInstanceFilter;
-  sortBy: SortBy;
+  sortBy: ProcessListSortBy;
 }
 
 export interface SvgSuccessResponse {

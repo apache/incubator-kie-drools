@@ -21,12 +21,12 @@ import {
   ProcessListApi,
   ProcessListChannelApi,
   ProcessListEnvelopeApi,
-  ProcessListDriver,
-  ProcessListState
+  ProcessListDriver
 } from '../api';
 import { ProcessListChannelApiImpl } from './ProcessListChannelApiImpl';
 import { ContainerType } from '@kogito-tooling/envelope/dist/api';
 import { init } from '../envelope';
+import { ProcessListState } from '@kogito-apps/management-console-shared';
 
 export interface Props {
   targetOrigin: string;

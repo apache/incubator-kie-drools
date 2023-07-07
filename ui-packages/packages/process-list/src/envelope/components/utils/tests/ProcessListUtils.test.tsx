@@ -15,7 +15,8 @@
  */
 import {
   ProcessInstanceState,
-  ProcessInstance
+  ProcessInstance,
+  OrderBy
 } from '@kogito-apps/management-console-shared';
 import {
   alterOrderByObj,
@@ -25,7 +26,6 @@ import {
   ProcessInstanceIconCreator
 } from '../ProcessListUtils';
 import { ProcessInstances } from '../../ProcessListTable/tests/mocks/Mocks';
-import { OrderBy } from '../../../../api';
 describe('uitility function testing', () => {
   it('state icon creator tests', () => {
     const activeTestResult = ProcessInstanceIconCreator(

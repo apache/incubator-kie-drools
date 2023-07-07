@@ -24,19 +24,6 @@ import {
   TriggerableNode,
   NodeInstance
 } from '@kogito-apps/management-console-shared';
-import {
-  getSvg,
-  handleJobReschedule,
-  handleProcessAbort,
-  handleProcessRetry,
-  handleProcessSkip,
-  jobCancel,
-  getTriggerableNodes,
-  handleNodeTrigger,
-  handleNodeInstanceCancel,
-  handleProcessVariableUpdate,
-  handleNodeInstanceRetrigger
-} from '../../apis';
 
 export interface OnOpenProcessInstanceDetailsListener {
   onOpen(id: string): void;
@@ -106,16 +93,16 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
   getProcessDiagram = async (
     data: ProcessInstance
   ): Promise<SvgSuccessResponse | SvgErrorResponse> => {
-    const res = await getSvg(data);
-    return Promise.resolve(res);
+    const result = await this.queries.getSVG(data);
+    return Promise.resolve(result);
   };
 
   handleProcessAbort = (processInstance: ProcessInstance): Promise<void> => {
-    return handleProcessAbort(processInstance);
+    return this.queries.handleProcessAbort(processInstance);
   };
 
-  cancelJob = (job: Pick<Job, 'id' | 'endpoint'>): Promise<JobCancel> => {
-    return jobCancel(job);
+  cancelJob = (job): Promise<JobCancel> => {
+    return this.queries.jobCancel(job);
   };
 
   rescheduleJob = (
@@ -124,27 +111,35 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
     repeatLimit: number | string,
     scheduleDate: Date
   ): Promise<{ modalTitle: string; modalContent: string }> => {
-    return handleJobReschedule(job, repeatInterval, repeatLimit, scheduleDate);
+    return this.queries.rescheduleJob(
+      job,
+      repeatInterval,
+      repeatLimit,
+      scheduleDate
+    );
   };
 
   getTriggerableNodes(
     processInstance: ProcessInstance
   ): Promise<TriggerableNode[]> {
-    return getTriggerableNodes(processInstance);
+    return this.queries.getTriggerableNodes(processInstance);
   }
 
   handleNodeTrigger(
     processInstance: ProcessInstance,
     node: TriggerableNode
   ): Promise<void> {
-    return handleNodeTrigger(processInstance, node);
+    return this.queries.handleNodeTrigger(processInstance, node);
   }
 
   handleProcessVariableUpdate = (
     processInstance: ProcessInstance,
     updatedJson: Record<string, unknown>
   ) => {
-    return handleProcessVariableUpdate(processInstance, updatedJson);
+    return this.queries.handleProcessVariableUpdate(
+      processInstance,
+      updatedJson
+    );
   };
 
   processDetailsQuery(id: string): Promise<ProcessInstance> {
@@ -197,24 +192,24 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
   }
 
   handleProcessRetry(processInstance: ProcessInstance): Promise<void> {
-    return handleProcessRetry(processInstance);
+    return this.queries.handleProcessRetry(processInstance);
   }
 
   handleNodeInstanceCancel(
     processInstance: ProcessInstance,
     node: NodeInstance
   ): Promise<void> {
-    return handleNodeInstanceCancel(processInstance, node);
+    return this.queries.handleNodeInstanceCancel(processInstance, node);
   }
 
   handleProcessSkip(processInstance: ProcessInstance): Promise<void> {
-    return handleProcessSkip(processInstance);
+    return this.queries.handleProcessSkip(processInstance);
   }
 
   handleNodeInstanceRetrigger(
     processInstance: ProcessInstance,
     node: NodeInstance
   ): Promise<void> {
-    return handleNodeInstanceRetrigger(processInstance, node);
+    return this.queries.handleNodeInstanceRetrigger(processInstance, node);
   }
 }

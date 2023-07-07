@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-import { JobsManagementChannelApi, JobsManagementDriver, SortBy } from '../api';
+import { JobsManagementChannelApi, JobsManagementDriver } from '../api';
 import {
   Job,
   JobStatus,
   BulkCancel,
-  JobCancel
+  JobCancel,
+  JobsSortBy
 } from '@kogito-apps/management-console-shared';
 
 export class JobsManagementChannelApiImpl implements JobsManagementChannelApi {
   constructor(private readonly driver: JobsManagementDriver) {}
 
-  jobList__initialLoad(filter: JobStatus[], orderBy: SortBy): Promise<void> {
+  jobList__initialLoad(
+    filter: JobStatus[],
+    orderBy: JobsSortBy
+  ): Promise<void> {
     return this.driver.initialLoad(filter, orderBy);
   }
 
@@ -55,7 +59,7 @@ export class JobsManagementChannelApiImpl implements JobsManagementChannelApi {
     );
   }
 
-  jobList_sortBy(orderBy: SortBy): Promise<void> {
+  jobList_sortBy(orderBy: JobsSortBy): Promise<void> {
     return this.driver.sortBy(orderBy);
   }
 

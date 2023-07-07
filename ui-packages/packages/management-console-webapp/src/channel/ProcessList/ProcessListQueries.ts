@@ -15,21 +15,41 @@
  */
 
 import { ApolloClient } from 'apollo-client';
-import { SortBy, ProcessInstanceFilter } from '@kogito-apps/process-list';
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
-import { GraphQL } from '@kogito-apps/consoles-common';
-import { buildProcessListWhereArgument } from '../../utils/QueryUtils';
+import {
+  BulkProcessInstanceActionResponse,
+  OperationType,
+  ProcessInstance,
+  ProcessListSortBy,
+  ProcessInstanceFilter
+} from '@kogito-apps/management-console-shared';
+import {
+  handleProcessAbort,
+  handleProcessMultipleAction,
+  handleProcessSkip,
+  handleProcessRetry,
+  getProcessInstances,
+  getChildProcessInstances
+} from '@kogito-apps/runtime-gateway-api';
 
 export interface ProcessListQueries {
   getProcessInstances(
     start: number,
     end: number,
     filters: ProcessInstanceFilter,
-    sortBy: SortBy
+    sortBy: ProcessListSortBy
   ): Promise<ProcessInstance[]>;
   getChildProcessInstances(
     rootProcessInstanceId: string
   ): Promise<ProcessInstance[]>;
+
+  handleProcessSkip(processInstance: ProcessInstance): Promise<void>;
+  handleProcessAbort(processInstance: ProcessInstance): Promise<void>;
+  handleProcessRetry(processInstance: ProcessInstance): Promise<void>;
+
+  handleProcessMultipleAction(
+    processInstances: ProcessInstance[],
+    operationType: OperationType
+  ): Promise<BulkProcessInstanceActionResponse>;
 }
 
 export class GraphQLProcessListQueries implements ProcessListQueries {
@@ -43,42 +63,37 @@ export class GraphQLProcessListQueries implements ProcessListQueries {
     offset: number,
     limit: number,
     filters: ProcessInstanceFilter,
-    sortBy: SortBy
+    sortBy: ProcessListSortBy
   ): Promise<ProcessInstance[]> {
-    return new Promise<ProcessInstance[]>((resolve, reject) => {
-      this.client
-        .query({
-          query: GraphQL.GetProcessInstancesDocument,
-          variables: {
-            where: buildProcessListWhereArgument(filters),
-            offset: offset,
-            limit: limit,
-            orderBy: sortBy
-          },
-          fetchPolicy: 'network-only'
-        })
-        .then((value) => {
-          resolve(value.data.ProcessInstances);
-        })
-        .catch((reason) => reject(reason));
-    });
+    return getProcessInstances(offset, limit, filters, sortBy, this.client);
   }
 
   getChildProcessInstances(
     rootProcessInstanceId: string
   ): Promise<ProcessInstance[]> {
-    return new Promise<ProcessInstance[]>((resolve, reject) => {
+    return getChildProcessInstances(rootProcessInstanceId, this.client);
+  }
+
+  async handleProcessSkip(processInstance: ProcessInstance): Promise<void> {
+    return handleProcessSkip(processInstance, this.client);
+  }
+
+  async handleProcessAbort(processInstance: ProcessInstance): Promise<void> {
+    return handleProcessAbort(processInstance, this.client);
+  }
+
+  async handleProcessRetry(processInstance: ProcessInstance): Promise<void> {
+    return handleProcessRetry(processInstance, this.client);
+  }
+
+  async handleProcessMultipleAction(
+    processInstances: ProcessInstance[],
+    operationType: OperationType
+  ) {
+    return handleProcessMultipleAction(
+      processInstances,
+      operationType,
       this.client
-        .query({
-          query: GraphQL.GetChildInstancesDocument,
-          variables: {
-            rootProcessInstanceId
-          }
-        })
-        .then((value) => {
-          resolve(value.data.ProcessInstances);
-        })
-        .catch((reason) => reject(reason));
-    });
+    );
   }
 }

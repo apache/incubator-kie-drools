@@ -33,12 +33,13 @@ import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   setTitle,
   constructObject,
-  Job
+  Job,
+  JobsSortBy
 } from '@kogito-apps/management-console-shared';
 import Moment from 'react-moment';
 import _ from 'lodash';
 import { JobsIconCreator } from '../../../utils/utils';
-import { JobsManagementDriver, SortBy } from '../../../api';
+import { JobsManagementDriver } from '../../../api';
 import { HistoryIcon } from '@patternfly/react-icons';
 import '../styles.css';
 
@@ -71,7 +72,7 @@ interface JobsManagementTableProps {
   setSelectedJobInstances: (selectedJobInstances: Job[]) => void;
   setSelectedJob: (job: Job) => void;
   setSortBy: (sortObj: ISortBy) => void;
-  setOrderBy: (orderBy: SortBy) => void;
+  setOrderBy: (orderBy: JobsSortBy) => void;
   sortBy: ISortBy;
 }
 
@@ -348,7 +349,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
     setSortBy({ index, direction });
     let sortingColumn: string = event.target.innerText;
     sortingColumn = _.camelCase(sortingColumn);
-    const obj: SortBy = {};
+    const obj: JobsSortBy = {};
     constructObject(obj, sortingColumn, direction.toUpperCase());
     setOrderBy(obj);
     await driver.sortBy(obj);

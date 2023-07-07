@@ -38,6 +38,7 @@
     "@kogito-apps/management-console-shared": "workspace:*",
     "@kogito-apps/process-details": "workspace:*",
     "@kogito-apps/process-list": "workspace:*",
+    "@kogito-apps/runtime-gateway-api": "workspace:*",
     "@patternfly/patternfly": "^4.108.2",
     "@patternfly/react-core": "4.157.3",
     "apollo-cache-inmemory": "1.6.6",

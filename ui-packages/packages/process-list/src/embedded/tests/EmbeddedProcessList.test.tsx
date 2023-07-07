@@ -18,8 +18,10 @@ import React from 'react';
 import { EmbeddedProcessList } from '../EmbeddedProcessList';
 import { MockedProcessListDriver } from './utils/Mocks';
 import { mount } from 'enzyme';
-import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
-import { OrderBy } from '../../api';
+import {
+  ProcessInstanceState,
+  OrderBy
+} from '@kogito-apps/management-console-shared';
 
 describe('EmbeddedProcessList tests', () => {
   it('Snapshot', () => {

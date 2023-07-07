@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { SortBy } from '@kogito-apps/jobs-management';
 import {
   Job,
   JobStatus,
   BulkCancel,
-  JobCancel
+  JobCancel,
+  JobsSortBy
 } from '@kogito-apps/management-console-shared';
 import { JobsManagementQueries } from './JobsManagementQueries';
 import {
@@ -30,7 +30,7 @@ import {
 
 export interface JobsManagementGatewayApi {
   jobsManagementState: any;
-  initialLoad: (filter: JobStatus[], orderBy: SortBy) => Promise<void>;
+  initialLoad: (filter: JobStatus[], orderBy: JobsSortBy) => Promise<void>;
   applyFilter: (filter: JobStatus[]) => Promise<void>;
   bulkCancel: (jobsToBeActioned: Job[]) => Promise<BulkCancel>;
   cancelJob: (job: Pick<Job, 'id' | 'endpoint'>) => Promise<JobCancel>;
@@ -40,12 +40,12 @@ export interface JobsManagementGatewayApi {
     repeatLimit: number | string,
     scheduleDate: Date
   ) => Promise<{ modalTitle: string; modalContent: string }>;
-  sortBy: (orderBy: SortBy) => Promise<void>;
+  sortBy: (orderBy: JobsSortBy) => Promise<void>;
   query(offset: number, limit: number): Promise<Job[]>;
 }
 export interface JobsManagementState {
   filters: JobStatus[];
-  orderBy: SortBy | any;
+  orderBy: JobsSortBy | any;
 }
 export class JobsManagementGatewayApiImpl implements JobsManagementGatewayApi {
   private readonly queries: JobsManagementQueries;
@@ -60,7 +60,7 @@ export class JobsManagementGatewayApiImpl implements JobsManagementGatewayApi {
     return this._JobsManagementState;
   }
 
-  initialLoad = (filter: JobStatus[], orderBy: SortBy): Promise<any> => {
+  initialLoad = (filter: JobStatus[], orderBy: JobsSortBy): Promise<any> => {
     this._JobsManagementState.filters = filter;
     this._JobsManagementState.orderBy = orderBy;
     return Promise.resolve();
@@ -97,7 +97,7 @@ export class JobsManagementGatewayApiImpl implements JobsManagementGatewayApi {
     return performMultipleCancel(jobsToBeActioned);
   };
 
-  sortBy = (orderBy: SortBy): Promise<void> => {
+  sortBy = (orderBy: JobsSortBy): Promise<void> => {
     this._JobsManagementState.orderBy = orderBy;
     return Promise.resolve();
   };

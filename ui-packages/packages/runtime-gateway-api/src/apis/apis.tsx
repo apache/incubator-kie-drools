@@ -21,9 +21,63 @@ import {
   NodeInstance,
   OperationType,
   ProcessInstance,
-  TriggerableNode
+  TriggerableNode,
+  ProcessInstanceFilter,
+  ProcessListSortBy,
+  JobStatus,
+  Job,
+  JobsSortBy
 } from '@kogito-apps/management-console-shared';
 import { ApolloClient } from 'apollo-client';
+import { buildProcessListWhereArgument } from './QueryUtils';
+
+export const getProcessInstances = async (
+  offset: number,
+  limit: number,
+  filters: ProcessInstanceFilter,
+  sortBy: ProcessListSortBy,
+  client: ApolloClient<any>
+): Promise<ProcessInstance[]> => {
+  return new Promise<ProcessInstance[]>((resolve, reject) => {
+    client
+      .query({
+        query: GraphQL.GetProcessInstancesDocument,
+        variables: {
+          where: buildProcessListWhereArgument(filters),
+          offset: offset,
+          limit: limit,
+          orderBy: sortBy
+        },
+        fetchPolicy: 'network-only',
+        errorPolicy: 'all'
+      })
+      .then((value) => {
+        resolve(value.data.ProcessInstances);
+      })
+      .catch((reason) => {
+        reject({ errorMessage: JSON.stringify(reason) });
+      });
+  });
+};
+
+export const getChildProcessInstances = async (
+  rootProcessInstanceId: string,
+  client: ApolloClient<any>
+): Promise<ProcessInstance[]> => {
+  return new Promise<ProcessInstance[]>((resolve, reject) => {
+    client
+      .query({
+        query: GraphQL.GetChildInstancesDocument,
+        variables: {
+          rootProcessInstanceId
+        }
+      })
+      .then((value) => {
+        resolve(value.data.ProcessInstances);
+      })
+      .catch((reason) => reject(reason));
+  });
+};
 
 //Rest Api to Cancel multiple Jobs
 export const performMultipleCancel = async (
@@ -406,4 +460,28 @@ export const getTriggerableNodes = async (
     .catch((reason) => {
       return reason;
     });
+};
+
+export const getJobsWithFilters = async (
+  offset: number,
+  limit: number,
+  filters: JobStatus[],
+  orderBy: JobsSortBy,
+  client: ApolloClient<any>
+): Promise<Job[]> => {
+  try {
+    const response = await client.query({
+      query: GraphQL.GetJobsWithFiltersDocument,
+      variables: {
+        values: filters,
+        offset: offset,
+        limit: limit,
+        orderBy
+      },
+      fetchPolicy: 'network-only'
+    });
+    return Promise.resolve(response.data.Jobs);
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
