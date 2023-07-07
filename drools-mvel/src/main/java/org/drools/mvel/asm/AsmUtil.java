@@ -28,7 +28,6 @@ import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.mvel.java.JavaAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaInterfacePointsDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
@@ -43,6 +42,7 @@ import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.mvel.builder.MVELAnalysisResult;
 import org.drools.mvel.builder.MVELDialect;
+import org.drools.mvel.java.JavaAnalysisResult;
 import org.kie.api.definition.type.FactField;
 import org.mvel2.CompileException;
 import org.mvel2.asm.MethodVisitor;
@@ -58,7 +58,8 @@ import static org.drools.util.ClassUtils.setter2property;
 import static org.drools.util.StringUtils.extractFirstIdentifier;
 import static org.drools.util.StringUtils.findEndOfMethodArgsIndex;
 import static org.drools.util.StringUtils.splitArgumentsList;
-import static org.drools.util.StringUtils.splitStatements;
+import static org.drools.util.StringUtils.splitStatementsAcrossBlocks;
+
 
 public final class AsmUtil {
     private static final Pattern LINE_BREAK_FINDER = Pattern.compile( "\\r\\n|\\r|\\n" );
@@ -375,7 +376,7 @@ public final class AsmUtil {
     private static BitMask getModificationMask( StringBuilder consequence, String obj, BitMask modificationMask, TypeDeclaration typeDeclaration, List<String> settableProperties, ConsequenceMetaData.Statement statement, boolean isUpdate ) {
         boolean parsedExprOnce = false;
         // a late optimization to include this for-loop within this if
-        for (String expr : splitStatements( consequence )) {
+        for (String expr : splitStatementsAcrossBlocks( consequence )) {
             String updateExpr = expr.replaceFirst("^\\Q" + obj + "\\E\\s*\\.", "");
             if (!updateExpr.equals(expr)) {
                 parsedExprOnce = true;

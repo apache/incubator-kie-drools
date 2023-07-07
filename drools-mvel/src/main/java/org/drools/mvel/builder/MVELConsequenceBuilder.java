@@ -40,7 +40,7 @@ import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 import static org.drools.util.StringUtils.findEndOfBlockIndex;
 import static org.drools.util.StringUtils.findEndOfMethodArgsIndex;
 import static org.drools.util.StringUtils.splitModifyBlock;
-import static org.drools.util.StringUtils.splitStatements;
+import static org.drools.util.StringUtils.splitStatementsAcrossBlocks;
 
 import java.beans.Introspector;
 import java.util.*;
@@ -268,7 +268,7 @@ public class MVELConsequenceBuilder
             BitMask modificationMask = getEmptyPropertyReactiveMask(settableProperties.size());
             boolean directAccess = false;
 
-            for (String expr : splitStatements(text)) {
+            for (String expr : splitStatementsAcrossBlocks(text)) {
                 if (expr.startsWith( identifier + "." )) {
                     int fieldEnd = identifier.length()+1;
                     while (Character.isJavaIdentifierPart( expr.charAt( fieldEnd ) )) fieldEnd++;
