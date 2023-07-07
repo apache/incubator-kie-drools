@@ -122,10 +122,17 @@
     <!-- see: https://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#parallel-test-execution-and-single-thread-execution -->
     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
     <version.black.ninia>4.1.1</version.black.ninia>
+    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <!-- Guava should not be used directly by Kogito, here we are managing it to override dependency added by GRPC to fix this CVE: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-2976 -->
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${version.com.google.guava}</version>
+      </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
