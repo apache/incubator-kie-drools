@@ -330,7 +330,7 @@ index 914a5ed1a5..840df84c51 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index f26f795990..3e9751b154 100644
+index c2eed56bdc..4d9304ade3 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,9 +16,9 @@
@@ -452,7 +452,16 @@ index f26f795990..3e9751b154 100644
      <version.maven.invoker>3.2.0</version.maven.invoker>
  
      <version.plexus>1.6</version.plexus>
-@@ -249,8 +249,8 @@
+@@ -122,7 +122,7 @@
+     <!-- see: https://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#parallel-test-execution-and-single-thread-execution -->
+     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
+     <version.black.ninia>4.1.1</version.black.ninia>
+-    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
++    <version.com.google.guava>31.1-jre</version.com.google.guava>
+   </properties>
+ 
+   <dependencyManagement>
+@@ -256,8 +256,8 @@
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
@@ -463,7 +472,7 @@ index f26f795990..3e9751b154 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -260,7 +260,7 @@
+@@ -267,7 +267,7 @@
        </dependency>
        <dependency>
          <groupId>com.fasterxml.jackson.module</groupId>
@@ -472,7 +481,7 @@ index f26f795990..3e9751b154 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -540,9 +540,9 @@
+@@ -547,9 +547,9 @@
        </dependency>
  
        <dependency>
@@ -485,7 +494,7 @@ index f26f795990..3e9751b154 100644
        </dependency>
        <dependency>
          <groupId>com.sun.xml.bind</groupId>
-@@ -550,19 +550,19 @@
+@@ -557,19 +557,19 @@
          <version>${version.com.sun.xml.bind.core}</version>
        </dependency>
        <dependency>
@@ -513,7 +522,7 @@ index f26f795990..3e9751b154 100644
        </dependency>
        <dependency>
          <groupId>javax.inject</groupId>
-@@ -570,9 +570,9 @@
+@@ -577,9 +577,9 @@
          <version>${version.javax.inject}</version>
        </dependency>
        <dependency>
@@ -526,7 +535,7 @@ index f26f795990..3e9751b154 100644
        </dependency>
        <dependency>
          <groupId>org.eclipse.microprofile.openapi</groupId>
-@@ -618,7 +618,7 @@
+@@ -625,7 +625,7 @@
        </dependency>
        <dependency>
          <groupId>org.infinispan</groupId>
