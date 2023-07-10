@@ -19,7 +19,6 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +64,6 @@ import org.drools.mvelcompiler.ModifyCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
-import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toSet;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.isGetter;
@@ -153,7 +151,7 @@ public class Consequence {
         switch (context.getRuleDialect()) {
             case JAVA:
                 rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS);
-                executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
+                executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
                 break;
             case MVEL:
                 executeCall = createExecuteCallMvel(consequenceString, ruleVariablesBlock, usedDeclarationInRHS, onCall);
@@ -209,8 +207,7 @@ public class Consequence {
         return executeCall(ruleVariablesBlock,
                                   compile.statementResults(),
                                   usedDeclarationInRHS,
-                                  onCall,
-                                  compile.getUsedBindings());
+                                  onCall);
     }
     private BlockStmt rewriteConsequence(String consequence) {
         try {
@@ -268,16 +265,7 @@ public class Consequence {
         return m.find();
     }
 
-    private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall, Set<String> modifyProperties) {
-
-        for (String modifiedProperty : modifyProperties) {
-            NodeList<Expression> arguments = nodeList(new NameExpr(modifiedProperty));
-            MethodCallExpr update = new MethodCallExpr(new NameExpr("drools"), "update",
-                                                       arguments);
-            ruleConsequence.getStatements().add(new ExpressionStmt(update));
-        }
-
-
+    private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
         boolean requireDrools = rewriteRHS(ruleVariablesBlock, ruleConsequence);
         MethodCallExpr executeCall = new MethodCallExpr(onCall != null ? onCall : new NameExpr("D"), EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
