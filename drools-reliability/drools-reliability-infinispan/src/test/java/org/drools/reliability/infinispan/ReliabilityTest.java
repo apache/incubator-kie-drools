@@ -230,7 +230,7 @@ class ReliabilityTest extends ReliabilityTestBasics {
         restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
         clearResults();
 
-        Optional<FactHandle> getFactHandleForPerson = getFactHandleForPerson(pMike);
+        Optional<FactHandle> getFactHandleForPerson = getFactHandle(pMike);
         if (!getFactHandleForPerson.isEmpty()){
             delete(getFactHandleForPerson.get());
         }
