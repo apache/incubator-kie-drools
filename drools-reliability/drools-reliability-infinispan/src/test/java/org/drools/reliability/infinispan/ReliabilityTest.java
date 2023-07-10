@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityTest extends ReliabilityTestBasics {
 
-    private static final String BASIC_RULE =
+    public static final String BASIC_RULE =
             "import " + Person.class.getCanonicalName() + ";" +
             "global java.util.List results;" +
             "rule X when\n" +
@@ -238,73 +238,6 @@ class ReliabilityTest extends ReliabilityTestBasics {
         failover();
 
         assertThat(session.fireAllRules()).isZero();
-    }
-
-    @ParameterizedTest
-    @MethodSource("strategyProviderFull")
-    void insertFailover_propListShouldNotBeEmpty(PersistedSessionOption.PersistenceStrategy strategy){
-        createSession(BASIC_RULE, strategy);
-
-        insert("M");
-        insertMatchingPerson("Maria", 30);
-
-        failover();
-
-        restoreSession(BASIC_RULE, strategy);
-
-
-        assertThat(fireAllRules()).isEqualTo(1);
-    }
-
-    @ParameterizedTest
-    @MethodSource("strategyProviderFull")
-    void insertFireFailover_shouldNotRepeatFiredMatch(PersistedSessionOption.PersistenceStrategy strategy){
-        createSession(BASIC_RULE, strategy);
-
-        insert("M");
-        insertMatchingPerson("Maria", 30);
-
-        fireAllRules();
-
-        failover();
-
-        restoreSession(BASIC_RULE, strategy);
-
-        assertThat(fireAllRules()).isZero();
-    }
-
-    @ParameterizedTest
-    @MethodSource("strategyProviderFull")
-    void insertUpdateFailover_shouldNotFiredMatch(PersistedSessionOption.PersistenceStrategy strategy){
-        createSession(BASIC_RULE, strategy);
-
-        insert("M");
-        FactHandle fhMaria = insertMatchingPerson("Maria", 30);
-
-        updateWithNonMatchingPerson(fhMaria, new Person("Nicole", 32));
-
-        failover();
-
-        restoreSession(BASIC_RULE, strategy);
-
-        assertThat(fireAllRules()).isZero();
-    }
-
-    @ParameterizedTest
-    @MethodSource("strategyProviderFull")
-    void insertNonMatching_Failover_UpdateWithMatching_ShouldFiredMatch(PersistedSessionOption.PersistenceStrategy strategy) {
-        createSession(BASIC_RULE, strategy);
-
-        insert("N");
-        FactHandle fhMaria = insertMatchingPerson("Maria", 30);
-
-        failover();
-
-        restoreSession(BASIC_RULE, strategy);
-
-        updateWithMatchingPerson(fhMaria, new Person("Nicole",32));
-
-        assertThat(fireAllRules()).isEqualTo(1);
     }
 
     @ParameterizedTest
@@ -519,6 +452,4 @@ class ReliabilityTest extends ReliabilityTestBasics {
         assertThat(fireAllRules(session1)).isEqualTo(1);
         assertThat(getResults(session1)).containsExactlyInAnyOrder("Toshiya");
     }
-
-
 }

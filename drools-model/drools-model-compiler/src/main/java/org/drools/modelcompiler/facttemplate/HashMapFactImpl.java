@@ -43,6 +43,16 @@ public class HashMapFactImpl implements Fact, PrototypeFact, Serializable {
         this.valuesMap = valuesMap;
     }
 
+    public HashMapFactImpl( UUID uuid, FactTemplate factTemplate, Map<String, Object> valuesMap ) {
+        this.uuid = uuid;
+        this.factTemplate = factTemplate;
+        this.valuesMap = valuesMap;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
     @Override
     public FactTemplate getFactTemplate() {
         return factTemplate;

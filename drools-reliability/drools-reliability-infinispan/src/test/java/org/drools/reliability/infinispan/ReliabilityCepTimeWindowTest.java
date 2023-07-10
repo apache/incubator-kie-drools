@@ -26,7 +26,6 @@ import org.drools.model.PrototypeVariable;
 import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
 import org.drools.reliability.infinispan.util.TimeAmount;
-import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -44,7 +43,6 @@ import static org.drools.model.PrototypeDSL.variable;
 import static org.drools.reliability.infinispan.util.PrototypeUtils.DEFAULT_PROTOTYPE_NAME;
 import static org.drools.reliability.infinispan.util.PrototypeUtils.getPrototype;
 
-@DisabledIf("isProtoStream")
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityCepTimeWindowTest extends ReliabilityTestBasics {
 

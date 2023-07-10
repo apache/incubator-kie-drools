@@ -18,18 +18,17 @@ package org.drools.reliability.infinispan.proto;
 import org.infinispan.protostream.annotations.ProtoAdapter;
 import org.infinispan.protostream.annotations.ProtoFactory;
 import org.infinispan.protostream.annotations.ProtoField;
-import org.test.domain.Person;
 
-@ProtoAdapter(String.class)
-public class StringAdaptor {
+@ProtoAdapter(Boolean.class)
+public class BooleanAdaptor {
 
     @ProtoFactory
-    String create(String value) {
-        return new String(value);
+    Boolean create(Boolean value) {
+        return Boolean.valueOf(value);
     }
 
     @ProtoField(1)
-    String getValue(String value) {
+    Boolean getValue(Boolean value) {
         return value;
     }
 }

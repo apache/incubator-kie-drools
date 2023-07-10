@@ -56,7 +56,6 @@ import static org.drools.reliability.infinispan.util.PrototypeUtils.SYNTHETIC_PR
 import static org.drools.reliability.infinispan.util.PrototypeUtils.getPrototype;
 import static org.drools.reliability.infinispan.util.PrototypeUtils.processResults;
 
-@DisabledIf("isProtoStream")
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
 
