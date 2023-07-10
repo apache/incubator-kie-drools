@@ -15,10 +15,6 @@
 
 package org.drools.reliability.core;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
@@ -32,6 +28,10 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.EntryPoint;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.drools.reliability.core.ReliablePropagationList.PROPAGATION_LIST;
 
@@ -68,8 +68,10 @@ public class ReliableSessionInitializer {
         private void onWorkingMemoryAction(InternalWorkingMemory session, PropagationEntry entry) {
             if (entry instanceof PropagationEntry.Insert) {
                 InternalFactHandle fh = ((PropagationEntry.Insert) entry).getHandle();
-                WorkingMemoryEntryPoint ep = fh.getEntryPoint(session);
-                ((SimpleReliableObjectStore) ep.getObjectStore()).putIntoPersistedStorage(fh, true);
+                if (fh.isValid()) {
+                    WorkingMemoryEntryPoint ep = fh.getEntryPoint(session);
+                    ((SimpleReliableObjectStore) ep.getObjectStore()).putIntoPersistedStorage(fh, true);
+                }
             }
         }
 
