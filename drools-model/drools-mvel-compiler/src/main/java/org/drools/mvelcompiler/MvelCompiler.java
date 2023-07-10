@@ -18,17 +18,20 @@ package org.drools.mvelcompiler;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.Statement;
 import org.drools.mvel.parser.MvelParser;
 import org.drools.mvel.parser.ast.expr.ModifyStatement;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toList;
 
 public class MvelCompiler {
@@ -72,8 +75,15 @@ public class MvelCompiler {
                 .setUsedBindings(allUsedBindings);
     }
 
-    private Stream<String> transformStatementWithPreprocessing(Statement s) {
+    private Stream<String> transformStatementWithPreprocessing(ModifyStatement s) {
+        Optional<Node> parentNode = s.getParentNode();
         PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
+        parentNode.ifPresent(p -> {
+            BlockStmt parentBlock = (BlockStmt) p;
+            for (String modifiedFact : invoke.getUsedBindings()) {
+                parentBlock.addStatement(new MethodCallExpr(new NameExpr("drools"), "update", nodeList(new NameExpr(modifiedFact))));
+            }
+        });
         s.remove();
         return invoke.getUsedBindings().stream();
     }
