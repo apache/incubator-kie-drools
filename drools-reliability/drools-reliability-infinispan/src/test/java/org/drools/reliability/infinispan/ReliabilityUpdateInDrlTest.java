@@ -124,9 +124,8 @@ class ReliabilityUpdateInDrlTest extends ReliabilityTestBasics {
         clearResults();
 
         Optional<FactHandle> getFactHandleForPerson = getFactHandle(pEleven);
-        if (!getFactHandleForPerson.isEmpty()){
-            delete(getFactHandleForPerson.get());
-        }
+        assertThat(getFactHandleForPerson.isEmpty()).isFalse();
+        delete(getFactHandleForPerson.get());
 
         failover();
 
@@ -238,9 +237,8 @@ class ReliabilityUpdateInDrlTest extends ReliabilityTestBasics {
         clearResults(session2);
 
         Optional<FactHandle> getFactHandleForPerson = getFactHandle(session2, pEleven);
-        if (!getFactHandleForPerson.isEmpty()){
-            delete(session2, getFactHandleForPerson.get());
-        }
+        assertThat(getFactHandleForPerson.isEmpty()).isFalse();
+        delete(session2, getFactHandleForPerson.get());
 
         failover();
 
