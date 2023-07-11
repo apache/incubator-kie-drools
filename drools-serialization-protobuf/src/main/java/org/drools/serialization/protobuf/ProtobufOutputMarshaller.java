@@ -111,14 +111,8 @@ public class ProtobufOutputMarshaller {
     }
 
     public static void writeSession( ProtobufMarshallerWriteContext context) throws IOException {
-
         ProtobufMessages.KnowledgeSession _session = serializeSession( context );
-        
-//        System.out.println("=============================================================================");
-//        System.out.println(_session);
-
-        PersisterHelper.writeToStreamWithHeader( context,
-                                                 _session );
+        PersisterHelper.writeToStreamWithHeader( context, _session );
     }
 
     private static ProtobufMessages.KnowledgeSession serializeSession( MarshallerWriteContext context) throws IOException {
@@ -548,10 +542,10 @@ public class ProtobufOutputMarshaller {
 
         // Write out FactHandles
         for ( InternalFactHandle handle : orderFacts( objectStore ) ) {
-            ProtobufMessages.FactHandle _handle = writeFactHandle( context,
-                                                                   objectMarshallingStrategyStore,
-                                                                   handle );
-            _epb.addHandle( _handle );
+            if (!handle.isExpired()) {
+                ProtobufMessages.FactHandle _handle = writeFactHandle( context, objectMarshallingStrategyStore, handle );
+                _epb.addHandle( _handle );
+            }
         }
     }
 

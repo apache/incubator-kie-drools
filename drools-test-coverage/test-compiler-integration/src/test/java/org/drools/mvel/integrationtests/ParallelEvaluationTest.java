@@ -16,31 +16,17 @@
 
 package org.drools.mvel.integrationtests;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.drools.core.ClockType;
 import org.drools.base.base.ClassObjectType;
+import org.drools.base.rule.EntryPointId;
+import org.drools.core.ClockType;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.base.rule.EntryPointId;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.util.debug.DebugList;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -57,6 +43,20 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.MultithreadEvaluationOption;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -491,24 +491,34 @@ public class ParallelEvaluationTest {
         }
 
         KieSessionConfiguration sessionConfig = RuleBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
         KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
         final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", streamConfig, sb.toString());
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+        sessionClock.setStartupTime(0);
+
         assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
-        List<Integer> list = new DebugList<Integer>();
+        List<Integer> list = new DebugList<>();
         ksession.setGlobal( "list", list );
 
-        for (int i = 0; i < 10; i++) {
-            ksession.insert( new MyEvent( i, i*2L ) );
+        int eventNr = 10;
+        for (int i = 0; i < eventNr; i++) {
+            ksession.insert( new MyEvent( i, i ) );
+            sessionClock.advanceTime(1, TimeUnit.MILLISECONDS);
         }
+        sessionClock.advanceTime(1, TimeUnit.MILLISECONDS);
 
         ksession.fireAllRules();
 
-        assertThat(list.size()).isEqualTo(10);
+        assertThat(list.size()).isEqualTo(eventNr);
+
+        // check that all events have been expired
+        assertThat(ksession.getFactHandles()).isEmpty();
     }
 
      public static class MyEvent {

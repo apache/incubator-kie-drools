@@ -16,12 +16,9 @@
 
 package org.drools.core.common;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.drools.base.common.RuleBasePartitionId;
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.time.JobHandle;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.util.LinkedList;
@@ -41,8 +38,6 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
     private int               otnCount;
 
     private DefaultEventHandle linkedFactHandle;
-
-    private AtomicInteger     notExpiredPartitions;
 
     private final transient LinkedList<DefaultJobHandle> jobs = new LinkedList<>();
 
@@ -77,10 +72,6 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
         super( id, object, recency, wmEntryPoint );
         this.startTimestamp = timestamp;
         this.duration = duration;
-
-        if ( wmEntryPoint.getKnowledgeBase() != null && wmEntryPoint.getKnowledgeBase().getRuleBaseConfiguration().isMultithreadEvaluation() ) {
-            notExpiredPartitions = new AtomicInteger( RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER );
-        }
     }
 
     protected DefaultEventHandle(long id,
@@ -172,14 +163,6 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
             return linkedFactHandle.isExpired();
         }  else {
             return expired;
-        }
-    }
-
-    public boolean expirePartition() {
-        if ( linkedFactHandle != null ) {
-            return linkedFactHandle.expirePartition();
-        }  else {
-            return notExpiredPartitions == null || notExpiredPartitions.decrementAndGet() == 0;
         }
     }
 
