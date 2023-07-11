@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.process.ProcessContainerGenerator;
@@ -54,6 +55,7 @@ import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
@@ -118,5 +120,16 @@ public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
                 ProcessInstanceEventBody.class.getName(),
                 VariableInstanceDataEvent.class.getName(),
                 VariableInstanceEventBody.class.getName());
+    }
+
+    @BuildStep
+    IndexDependencyBuildItem addJsonSchemaValidatorToIndex() {
+        return new IndexDependencyBuildItem("com.networknt", "json-schema-validator");
+    }
+
+    @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
+    public void registerJsonValidatorSubclassesForReflection(CombinedIndexBuildItem combinedIndexBuildItem, BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
+        combinedIndexBuildItem.getComputingIndex().getAllKnownImplementors(DotName.createSimple("com.networknt.schema.JsonValidator"))
+                .forEach(c -> reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, c.name().toString())));
     }
 }
