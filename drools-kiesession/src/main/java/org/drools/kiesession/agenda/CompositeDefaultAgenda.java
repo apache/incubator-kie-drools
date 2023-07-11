@@ -16,6 +16,34 @@
 
 package org.drools.kiesession.agenda;
 
+import org.drools.base.common.NetworkNode;
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.core.common.ActivationsFilter;
+import org.drools.core.common.AgendaGroupsManager;
+import org.drools.core.common.InternalActivationGroup;
+import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.RuleFlowGroup;
+import org.drools.core.event.AgendaEventSupport;
+import org.drools.core.impl.InternalRuleBase;
+import org.drools.core.phreak.ExecutableEntry;
+import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.PropagationList;
+import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.rule.consequence.InternalMatch;
+import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.core.util.CompositeIterator;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.internal.concurrent.ExecutorProviderFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -27,40 +55,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
-import org.drools.core.common.ActivationsFilter;
-import org.drools.core.common.AgendaGroupsManager;
-import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.base.common.NetworkNode;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.base.common.RuleBasePartitionId;
-import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.phreak.ExecutableEntry;
-import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.phreak.PropagationList;
-import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.common.InternalActivationGroup;
-import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.common.RuleFlowGroup;
-import org.drools.core.util.CompositeIterator;
-import org.kie.api.runtime.rule.AgendaFilter;
-import org.kie.internal.concurrent.ExecutorProviderFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
-    protected static final transient Logger log = LoggerFactory.getLogger( CompositeDefaultAgenda.class );
+    protected static final Logger log = LoggerFactory.getLogger( CompositeDefaultAgenda.class );
 
     private static final ExecutorService EXECUTOR = ExecutorProviderFactory.getExecutorProvider().getExecutor();
 

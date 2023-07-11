@@ -16,22 +16,21 @@
 package org.drools.core.phreak;
 
 import org.drools.base.base.SalienceInteger;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.consequence.Consequence;
+import org.drools.base.rule.consequence.ConsequenceException;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalActivationGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.conflict.MatchConflictResolver;
 import org.drools.core.conflict.RuleAgendaConflictResolver;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
-import org.drools.base.rule.consequence.Consequence;
-import org.drools.base.rule.consequence.ConsequenceException;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.util.Queue;
@@ -362,26 +361,7 @@ public class RuleExecutor {
         }
         internalMatch.setQueued(false);
 
-        try {
-            fireActivationEvent(reteEvaluator, activationsManager, internalMatch, internalMatch.getConsequence());
-        } finally {
-            // if the tuple contains expired events
-            for (Tuple tuple = internalMatch.getTuple().skipEmptyHandles(); tuple != null; tuple = tuple.getParent() ) {
-                if ( tuple.getFactHandle().isEvent() ) {
-                    // can be null for eval, not and exists that have no right input
-                    DefaultEventHandle handle = (DefaultEventHandle) tuple.getFactHandle();
-                    // decrease the activation count for the event
-                    handle.decreaseActivationsCount();
-                    // handles "expire" only in stream mode.
-                    if ( handle.expirePartition() && handle.isExpired() &&
-                         handle.getFirstRightTuple() == null && handle.getActivationsCount() <= 0 ) {
-                        // and if no more activations, retract the handle
-                        handle.getEntryPoint( reteEvaluator ).delete( handle );
-                    }
-                }
-            }
-        }
-
+        fireActivationEvent(reteEvaluator, activationsManager, internalMatch, internalMatch.getConsequence());
         activationsManager.getAgendaEventSupport().fireAfterActivationFired(internalMatch, reteEvaluator, beforeMatchFiredEvent);
     }
 

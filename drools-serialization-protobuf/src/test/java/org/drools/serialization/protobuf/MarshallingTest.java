@@ -1999,11 +1999,11 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession.insert( new A() );
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         ksession.insert( new B() );
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         ksession.fireAllRules();
         assertThat(ksession.getObjects().size()).isEqualTo(2);
@@ -2141,21 +2141,21 @@ public class MarshallingTest extends CommonTestMethodBase {
         EntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         EntryPoint bep = ksession.getEntryPoint( "b-ep" );
         bep.insert( new B() );
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         EntryPoint cep = ksession.getEntryPoint( "c-ep" );
         cep.insert( new C() );
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         ksession.fireAllRules();
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         assertThat(list.size()).isEqualTo(3);
 
@@ -2168,14 +2168,14 @@ public class MarshallingTest extends CommonTestMethodBase {
         cep = ksession.getEntryPoint( "c-ep" );
         assertThat(cep.getFactHandles().size()).isEqualTo(1);
 
-        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.getSessionClock();
+        PseudoClockScheduler timeService = ksession.getSessionClock();
         timeService.advanceTime( 11, TimeUnit.SECONDS );
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         ksession.fireAllRules();
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         aep = ksession.getEntryPoint( "a-ep" );
         assertThat(aep.getFactHandles().size()).isEqualTo(0);
@@ -2226,16 +2226,16 @@ public class MarshallingTest extends CommonTestMethodBase {
         EntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.getSessionClock();
         timeService.advanceTime( 3, TimeUnit.SECONDS );
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         ksession.fireAllRules();
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         assertThat(list.size()).isEqualTo(0);
     }
@@ -2278,37 +2278,37 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         EntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         list.clear();
         ksession.fireAllRules();
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
         assertThat(((List) list.get(0)).size()).isEqualTo(2);
 
         PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.getSessionClock();
         timeService.advanceTime( 15, TimeUnit.SECONDS );
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         list.clear();
         ksession.fireAllRules();
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
         assertThat(((List) list.get(0)).size()).isEqualTo(4);
 
         timeService = (PseudoClockScheduler) ksession.getSessionClock();
         timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         list.clear();
         ksession.fireAllRules();
@@ -2353,28 +2353,28 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         EntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         list.clear();
         ksession.fireAllRules();
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
         assertThat(((List) list.get(0)).size()).isEqualTo(2);
 
         aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         list.clear();
         ksession.fireAllRules();
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
         assertThat(((List) list.get(0)).size()).isEqualTo(3);
     }
 
@@ -2388,7 +2388,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         final Person bob = new Person( "bob" );
         ksession.insert( bob );
 
-        ksession = marsallStatefulKnowledgeSession( ksession );
+        ksession = marshallStatefulKnowledgeSession( ksession );
 
         assertThat(ksession.getFactCount()).isEqualTo(1);
         assertThat(ksession.getObjects().iterator().next()).isEqualTo(bob);
@@ -2408,15 +2408,13 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertThat(facts.size()).isEqualTo(2);
     }
 
-    private KieSession marsallStatefulKnowledgeSession(KieSession ksession) throws IOException,
-                                                                                                       ClassNotFoundException {
+    private KieSession marshallStatefulKnowledgeSession(KieSession ksession) throws IOException, ClassNotFoundException {
         Globals globals = ksession.getGlobals();
 
         KieBase kbase = ksession.getKieBase();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        MarshallerFactory.newMarshaller( kbase ).marshall( out,
-                                                           ksession );
+        MarshallerFactory.newMarshaller( kbase ).marshall( out, ksession );
 
         KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );

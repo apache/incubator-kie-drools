@@ -16,39 +16,29 @@
 
 package org.drools.serialization.protobuf;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
-
 import com.google.protobuf.ExtensionRegistry;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.accessor.GlobalResolver;
+import org.drools.base.time.Trigger;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupQueueImpl;
+import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
-import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectStore;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.TupleKey;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
@@ -58,12 +48,9 @@ import org.drools.core.process.WorkItem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.base.rule.accessor.GlobalResolver;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
-import org.drools.base.time.Trigger;
+import org.drools.core.rule.accessor.FactHandleFactory;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.time.impl.CompositeMaxDurationTrigger;
 import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
@@ -89,6 +76,20 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.Match;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An input marshaller that uses protobuf. 
@@ -376,31 +377,6 @@ public class ProtobufInputMarshaller {
         }
     }
 
-    private static void readInitialFactHandle( ProtobufMarshallerReaderContext context,
-                                               RuleData _session,
-                                               List<PropagationContext> pctxs) {
-        long ifhId = context.getWorkingMemory().getInitialFactHandle().getId();
-        context.getHandles().put( ifhId,
-                             context.getWorkingMemory().getInitialFactHandle() );
-
-        // special case we have to handle for the initial fact
-        boolean initialFactPropagated = true;
-        for ( ProtobufMessages.ActionQueue.Action _action : _session.getActionQueue().getActionList() ) {
-            if ( _action.getType() == ProtobufMessages.ActionQueue.ActionType.ASSERT ) {
-                if ( _action.getAssert().getHandleId() == ifhId ) {
-                    initialFactPropagated = false;
-                    break;
-                }
-            }
-        }
-        if ( initialFactPropagated ) {
-            assertHandleIntoOTN( context,
-                                 context.getWorkingMemory(),
-                                 context.getWorkingMemory().getInitialFactHandle(),
-                                 pctxs );
-        }
-    }
-
     public static void readAgenda( ProtobufMarshallerReaderContext context,
                                    RuleData _ruleData,
                                    InternalAgenda agenda) {
@@ -469,28 +445,24 @@ public class ProtobufInputMarshaller {
         
         // load the handles
         for ( ProtobufMessages.FactHandle _handle : _ep.getHandleList() ) {
-            InternalFactHandle handle = readFactHandle( context,
-                                                        entryPoint,
-                                                        _handle );
+            InternalFactHandle handle = readFactHandle( context, entryPoint, _handle );
 
-            context.getHandles().put( handle.getId(),
-                                 handle );
+            context.getHandles().put( handle.getId(), handle );
 
             if ( !_handle.getIsJustified() ) {
                 // BeliefSystem handles the Object type 
                 if ( handle.getObject() != null ) {
-                    objectStore.addHandle( handle,
-                                           handle.getObject() );
+                    objectStore.addHandle( handle, handle.getObject() );
                 }
 
                 // add handle to object type node
-                assertHandleIntoOTN( context,
-                                     wm,
-                                     handle,
-                                     pctxs );
+                assertHandleIntoOTN( context, wm, handle, pctxs );
+            }
+
+            if (handle.isExpired()) {
+                wm.addPropagation(new WorkingMemoryReteExpireAction((DefaultEventHandle) handle));
             }
         }
-
     }
 
     private static void assertHandleIntoOTN( ProtobufMarshallerReaderContext context,
