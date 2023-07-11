@@ -221,6 +221,7 @@ public class Consequence {
                                   usedDeclarationInRHS,
                                   onCall);
     }
+
     private BlockStmt rewriteConsequence(String consequence) {
         try {
             String ruleConsequenceAsBlock = preprocessConsequence(consequence.trim());
@@ -445,7 +446,7 @@ public class Consequence {
 
     private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar, Class<?> updatedClass ) {
         Set<String> modifiedProps = new HashSet<>();
-        for (MethodCallExpr methodCall : methodCallExprs.subList(0, methodCallExprs.indexOf(updateExpr))) {
+        for (MethodCallExpr methodCall : methodCallExprs) {
             if (!isDirectExpression(methodCall)) {
                 continue; // don't evaluate a method which is a part of other expression
             }
