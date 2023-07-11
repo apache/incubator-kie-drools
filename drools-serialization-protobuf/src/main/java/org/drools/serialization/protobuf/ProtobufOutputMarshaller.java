@@ -542,10 +542,8 @@ public class ProtobufOutputMarshaller {
 
         // Write out FactHandles
         for ( InternalFactHandle handle : orderFacts( objectStore ) ) {
-            if (!handle.isExpired()) {
-                ProtobufMessages.FactHandle _handle = writeFactHandle( context, objectMarshallingStrategyStore, handle );
-                _epb.addHandle( _handle );
-            }
+            ProtobufMessages.FactHandle _handle = writeFactHandle( context, objectMarshallingStrategyStore, handle );
+            _epb.addHandle( _handle );
         }
     }
 

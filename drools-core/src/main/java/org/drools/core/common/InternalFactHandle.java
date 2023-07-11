@@ -16,19 +16,19 @@
 
 package org.drools.core.common;
 
-import java.io.Serializable;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
 import org.drools.base.common.RuleBasePartitionId;
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.base.factmodel.traits.TraitTypeEnum;
+import org.drools.base.rule.EntryPointId;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.base.rule.EntryPointId;
 import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
+
+import java.io.Serializable;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public interface InternalFactHandle
     extends
@@ -109,8 +109,6 @@ public interface InternalFactHandle
 
     void clearRightTuples();
 
-    void addFirstRightTuple( RightTuple rightTuple );
-
     void addLastRightTuple( RightTuple rightTuple );
 
     void removeRightTuple( RightTuple rightTuple );
@@ -126,10 +124,7 @@ public interface InternalFactHandle
     void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer );
     void forEachLeftTuple(Consumer<AbstractLeftTuple> leftTupleConsumer);
 
-    RightTuple findFirstRightTuple(Predicate<RightTuple> rightTuplePredicate );
     LeftTuple findFirstLeftTuple(Predicate<AbstractLeftTuple> lefttTuplePredicate );
-
-    void setFirstLeftTuple( LeftTuple firstLeftTuple );
 
     LinkedTuples detachLinkedTuples();
     LinkedTuples detachLinkedTuplesForPartition(int i);
@@ -162,19 +157,14 @@ public interface InternalFactHandle
         void clearRightTuples();
 
         void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer);
-        RightTuple findFirstRightTuple(Predicate<RightTuple> rightTuplePredicate );
 
         void forEachLeftTuple(Consumer<AbstractLeftTuple> leftTupleConsumer);
         AbstractLeftTuple findFirstLeftTuple(Predicate<AbstractLeftTuple> leftTuplePredicate );
 
         LeftTuple getFirstLeftTuple( int partition);
-        void setFirstLeftTuple( LeftTuple firstLeftTuple, int partition );
 
         default LeftTuple getFirstLeftTuple(RuleBasePartitionId partitionId) {
             return getFirstLeftTuple( partitionId.getParallelEvaluationSlot() );
-        }
-        default void setFirstLeftTuple( LeftTuple firstLeftTuple, RuleBasePartitionId partitionId ) {
-            setFirstLeftTuple( firstLeftTuple, partitionId.getParallelEvaluationSlot() );
         }
 
         RightTuple getFirstRightTuple(int partition);
@@ -355,11 +345,6 @@ public interface InternalFactHandle
         }
 
         @Override
-        public void addFirstRightTuple( RightTuple rightTuple ) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public void addLastRightTuple( RightTuple rightTuple ) {
             throw new UnsupportedOperationException();
         }
@@ -410,17 +395,7 @@ public interface InternalFactHandle
         }
 
         @Override
-        public RightTuple findFirstRightTuple( Predicate<RightTuple> rightTuplePredicate ) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public LeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void setFirstLeftTuple( LeftTuple firstLeftTuple ) {
             throw new UnsupportedOperationException();
         }
 

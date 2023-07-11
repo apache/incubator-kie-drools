@@ -15,20 +15,20 @@
 
 package org.drools.core.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
-import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DefaultEventHandle;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.common.PropagationContext;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 
@@ -93,7 +93,7 @@ public class WorkingMemoryReteExpireAction
 
     private static void expireFactHandle( ReteEvaluator reteEvaluator, DefaultEventHandle factHandle) {
         factHandle.decreaseOtnCount();
-        if (factHandle.getOtnCount() == 0) {
+        if (factHandle.getOtnCount() <= 0) {
             factHandle.setExpired( true );
             if (factHandle.getActivationsCount() == 0) {
                 String epId = factHandle.getEntryPointName();

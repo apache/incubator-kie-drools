@@ -15,12 +15,17 @@
 
 package org.drools.core.common;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import org.drools.base.factmodel.traits.TraitTypeEnum;
+import org.drools.base.rule.EntryPointId;
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.base.ArrayElements;
+import org.drools.core.base.DroolsQueryImpl;
+import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.Tuple;
+import org.kie.api.runtime.rule.FactHandle;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -28,17 +33,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
-
-import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.base.ArrayElements;
-import org.drools.core.base.DroolsQueryImpl;
-import org.drools.base.factmodel.traits.TraitTypeEnum;
-import org.drools.core.reteoo.AbstractLeftTuple;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.Tuple;
-import org.drools.base.rule.EntryPointId;
-import org.kie.api.runtime.rule.FactHandle;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 @XmlRootElement(name="disconnected-fact-handle")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -178,11 +178,6 @@ public class DisconnectedFactHandle
     public void forEachLeftTuple( Consumer<AbstractLeftTuple> leftTupleConsumer) { }
 
     @Override
-    public RightTuple findFirstRightTuple( Predicate<RightTuple> rightTuplePredicate ) {
-        return null;
-    }
-
-    @Override
     public AbstractLeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
         return null;
     }
@@ -258,10 +253,6 @@ public class DisconnectedFactHandle
     }
 
     public void setEqualityKey(EqualityKey key) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
-    }
-
-    public void setFirstLeftTuple(LeftTuple leftTuple) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
@@ -362,10 +353,6 @@ public class DisconnectedFactHandle
     }
 
     public void clearRightTuples() {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
-    }
-
-    public void addFirstRightTuple(RightTuple rightTuple) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
