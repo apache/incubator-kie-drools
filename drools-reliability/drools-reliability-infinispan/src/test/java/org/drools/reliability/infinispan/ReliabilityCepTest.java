@@ -161,10 +161,10 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
-    void multipleKieSessions_insertAdvanceInsertFailoverFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
-        KieSession session1 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
-        KieSession session2 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepointsAndKieBaseCache")
+    void multipleKieSessions_insertAdvanceInsertFailoverFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache) {
+        KieSession session1 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        KieSession session2 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
 
         SessionPseudoClock clock1 = getSessionClock(session1);
         SessionPseudoClock clock2 = getSessionClock(session2);
@@ -180,9 +180,9 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
         //-- ksession and kbase are lost. CacheManager is recreated. Client knows only "id"
         failover();
-        session1=restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        session1=restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         clock1 = getSessionClock(session1);
-        session2=restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        session2=restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         clock2 = getSessionClock(session2);
 
         assertThat(fireAllRules(session1)).isEqualTo(1);
@@ -200,9 +200,9 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         insert(session2, new StockTick("ACME"));
 
         failover();
-        session1=restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        session1=restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         clock1 = getSessionClock(session1);
-        session2=restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        session2=restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         clock2 = getSessionClock(session2);
 
         assertThat(fireAllRules(session1)).isEqualTo(0);
@@ -216,11 +216,11 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
-    void multipleKieSessions_insertAdvanceFailoverExpireFire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepointsAndKieBaseCache")
+    void multipleKieSessions_insertAdvanceFailoverExpireFire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache) {
 
-        KieSession session1 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
-        KieSession session2 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        KieSession session1 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        KieSession session2 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
 
         SessionPseudoClock clock1 = getSessionClock(session1);
         SessionPseudoClock clock2 = getSessionClock(session2);
@@ -234,9 +234,9 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         insert(session2, new StockTick("ACME"));
 
         failover();
-        session1 = restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        session1 = restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         clock1 = getSessionClock(session1);
-        session2 = restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        session2 = restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         clock2 = getSessionClock(session2);
 
         clock1.advanceTime(58, TimeUnit.SECONDS);
@@ -252,12 +252,12 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
-    void multipleKieSessions_insertAdvanceFireFailoverExpire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepointsAndKieBaseCache")
+    void multipleKieSessions_insertAdvanceFireFailoverExpire_shouldExpireAfterFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache) {
 
-        KieSession session1 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        KieSession session1 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         SessionPseudoClock clock1 = getSessionClock(session1);
-        KieSession session2 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        KieSession session2 = createSession(CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         SessionPseudoClock clock2 = getSessionClock(session2);
 
         insert(session1, new StockTick("DROO"));
@@ -272,9 +272,9 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         assertThat(fireAllRules(session2)).isEqualTo(0);
 
         failover();
-        session1 = restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        session1 = restoreSession(session1.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         clock1 = getSessionClock(session1);
-        session2 = restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+        session2 = restoreSession(session2.getIdentifier(), CEP_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
         clock2 = getSessionClock(session2);
 
         clock1.advanceTime(58, TimeUnit.SECONDS);

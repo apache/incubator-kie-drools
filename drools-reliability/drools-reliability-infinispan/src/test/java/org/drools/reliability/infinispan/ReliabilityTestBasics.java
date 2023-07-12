@@ -68,6 +68,8 @@ public abstract class ReliabilityTestBasics {
     public static final String SYNTHETIC_RULE_TAG = "SYNTHETIC_RULE";
     private static final Logger LOG = LoggerFactory.getLogger(ReliabilityTestBasics.class);
 
+    private final HashMap<String, KieBase> kieBaseCache = new HashMap<>();
+
     private InfinispanContainer container;
 
     protected final List<KieSession> sessions = new ArrayList<>();
@@ -87,6 +89,15 @@ public abstract class ReliabilityTestBasics {
         return Stream.of(
                 arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.ALWAYS),
                 arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.EXPLICIT)
+        );
+    }
+
+    static Stream<Arguments> strategyProviderStoresOnlyWithExplicitSafepointsAndKieBaseCache() {
+        return Stream.of(
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.ALWAYS, true),
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.ALWAYS, false),
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.EXPLICIT, true),
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.EXPLICIT, false)
         );
     }
 
@@ -138,6 +149,7 @@ public abstract class ReliabilityTestBasics {
             this.sessions.stream().map(ReliableKieSession.class::cast).forEach(ReliableKieSession::safepoint);
         }
         sessions.clear();
+        kieBaseCache.clear();
 
         if (((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).isRemote()) {
             // fail-over means restarting Drools instance. Assuming remote infinispan keeps alive
@@ -233,6 +245,10 @@ public abstract class ReliabilityTestBasics {
         return getKieSession(drl, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy) : null, options);
     }
 
+    protected KieSession createSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache, Option... options) {
+        return getKieSession(drl, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy) : null, useKieBaseCache, options);
+    }
+
     protected KieSession createSession(Model ruleModel, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
         return getKieSession(ruleModel, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy) : null, options);
     }
@@ -249,6 +265,11 @@ public abstract class ReliabilityTestBasics {
     protected KieSession restoreSession(Long sessionId, String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
         Long sessionIdToRestoreFrom = this.persistedSessionIds.get(sessionId);
         return getKieSession(drl, PersistedSessionOption.fromSession(sessionIdToRestoreFrom).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), options);
+    }
+
+    protected KieSession restoreSession(Long sessionId, String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache, Option... options) {
+        Long sessionIdToRestoreFrom = this.persistedSessionIds.get(sessionId);
+        return getKieSession(drl, PersistedSessionOption.fromSession(sessionIdToRestoreFrom).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), useKieBaseCache, options);
     }
 
     protected int fireAllRules() {
@@ -301,9 +322,22 @@ public abstract class ReliabilityTestBasics {
     }
 
     protected KieSession getKieSession(String drl, PersistedSessionOption persistedSessionOption, Option... options) {
+        return getKieSession(drl, persistedSessionOption, true, options);
+    }
+
+    protected KieSession getKieSession(String drl, PersistedSessionOption persistedSessionOption, boolean useKieBaseCache, Option... options) {
         OptionsFilter optionsFilter = new OptionsFilter(options);
-        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build(ExecutableModelProject.class, optionsFilter.getKieBaseOptions());
+        KieBase kbase;
+        if (useKieBaseCache) {
+            kbase = kieBaseCache.computeIfAbsent(drl, k -> createKieBase(drl, optionsFilter));
+        } else {
+            kbase = createKieBase(drl, optionsFilter);
+        }
         return getKieSessionFromKieBase(kbase, persistedSessionOption, optionsFilter);
+    }
+
+    private static KieBase createKieBase(String drl, OptionsFilter optionsFilter) {
+        return new KieHelper().addContent(drl, ResourceType.DRL).build(ExecutableModelProject.class, optionsFilter.getKieBaseOptions());
     }
 
     protected KieSession getKieSession(Model ruleModel, PersistedSessionOption persistedSessionOption, Option... options) {
