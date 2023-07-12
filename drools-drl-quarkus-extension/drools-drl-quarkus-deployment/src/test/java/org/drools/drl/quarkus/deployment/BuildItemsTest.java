@@ -17,6 +17,7 @@ package org.drools.drl.quarkus.deployment;
 
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -78,8 +79,9 @@ public class BuildItemsTest {
             });
     
     @Test
-    public void testBean() {
-        // find assertions in addBuildChainCustomizer
+    public void testQuarkusUTByAddBuildChainCustomizer() {
+        assertThatNoException().isThrownBy(() -> LOG.info("looking for a successfully executed QuarkusUnitTest"
+                + "with custom .addBuildChainCustomizer() containing assertions"));
     }
     
     /*
