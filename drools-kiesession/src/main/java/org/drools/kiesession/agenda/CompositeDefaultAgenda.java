@@ -187,6 +187,10 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
         return result;
     }
 
+    private int parallelFireWithStream( AgendaFilter agendaFilter, int fireLimit ) {
+        return Stream.of(agendas).parallel().mapToInt(a -> a.internalFireAllRules( agendaFilter, fireLimit, false )).sum();
+    }
+
     @Override
     public RuleAgendaItem createRuleAgendaItem( int salience, PathMemory rs, TerminalNode rtn ) {
         return getPartitionedAgendaForNode(rtn).createRuleAgendaItem( salience, rs, rtn );

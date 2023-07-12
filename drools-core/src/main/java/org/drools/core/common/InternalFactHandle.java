@@ -174,14 +174,6 @@ public interface InternalFactHandle
         }
     }
 
-    default InternalFactHandle getParentHandle() {
-        return null;
-    }
-
-    default void setParentHandle( InternalFactHandle parentHandle ) {
-        throw new UnsupportedOperationException();
-    }
-
     static InternalFactHandle dummyFactHandleOf(Object object) {
         return new DummyFactHandle( object );
     }

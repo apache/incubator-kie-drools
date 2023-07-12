@@ -16,12 +16,6 @@
 
 package org.drools.core.common;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.drools.core.conflict.RuleAgendaConflictResolver;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.marshalling.MarshallerReaderContext;
@@ -30,6 +24,12 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.util.ArrayQueue;
 import org.drools.core.util.Queue;
 import org.drools.core.util.QueueFactory;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -239,6 +239,9 @@ public class AgendaGroupQueueImpl
     }
 
     public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
         return object instanceof AgendaGroupQueueImpl &&
                ((AgendaGroupQueueImpl) object).name.equals( this.name );
     }
