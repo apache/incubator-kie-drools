@@ -12,54 +12,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.reliability.infinispan.proto;
 
-import org.drools.reliability.core.BaseStoredObject;
+import java.util.Map;
+
 import org.infinispan.protostream.annotations.ProtoFactory;
 import org.infinispan.protostream.annotations.ProtoField;
 import org.infinispan.protostream.types.protobuf.AnySchema;
 
-/**
- * This class is used to store objects in Infinispan using ProtoStream.
- * This class inherits Serializable from BaseStoredObject, but it uses ProtoStream instead of Java serialization.
- */
-public class ProtoStreamStoredObject extends BaseStoredObject {
+public class EntryImpl implements Map.Entry<String, Object> {
 
-    private final transient Object object;
+    private String key;
 
-    public ProtoStreamStoredObject(Object object, boolean propagated) {
-        super(propagated);
-        this.object = object;
+    private Object value;
+
+    public EntryImpl(String key, Object value) {
+        this.key = key;
+        this.value = value;
     }
 
     @ProtoFactory
-    public ProtoStreamStoredObject(AnySchema.Any protoObject, boolean propagated) {
-        super(propagated);
-        this.object = ProtoStreamUtils.fromAnySchema(protoObject);
+    public EntryImpl(String key, AnySchema.Any protoValue) {
+        this.key = key;
+        this.value = ProtoStreamUtils.fromAnySchema(protoValue);
     }
 
     @ProtoField(number = 1, required = true)
-    public AnySchema.Any getProtoObject() {
-        return ProtoStreamUtils.toAnySchema(object);
+    @Override
+    public String getKey() {
+        return key;
     }
 
-    @Override
     @ProtoField(number = 2, required = true)
-    public boolean isPropagated() {
-        return propagated;
+    public AnySchema.Any getProtoValue() {
+        return ProtoStreamUtils.toAnySchema(value);
     }
 
     @Override
-    public Object getObject() {
-        return object;
+    public Object getValue() {
+        return value;
+    }
+
+    @Override
+    public Object setValue(Object value) {
+        Object oldValue = this.value;
+        this.value = value;
+        return oldValue;
     }
 
     @Override
     public String toString() {
-        return "ProtoStreamStoredObject{" +
-                "object=" + object +
-                ", propagated=" + propagated +
+        return "EntryImpl{" +
+                "key='" + key + '\'' +
+                ", value=" + value +
                 '}';
     }
 }

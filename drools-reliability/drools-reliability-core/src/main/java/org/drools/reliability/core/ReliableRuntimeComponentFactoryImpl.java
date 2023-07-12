@@ -84,7 +84,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         if (!reteEvaluator.getSessionConfiguration().hasPersistedSessionOption()) {
             return super.createGlobalResolver(reteEvaluator, environment);
         }
-        return new ReliableGlobalResolver(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, PersistedSessionOption.SafepointStrategy.ALWAYS, "globals"));
+        return ReliableGlobalResolverFactory.get().createReliableGlobalResolver(StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(reteEvaluator, PersistedSessionOption.SafepointStrategy.ALWAYS, "globals"));
     }
 
     @Override

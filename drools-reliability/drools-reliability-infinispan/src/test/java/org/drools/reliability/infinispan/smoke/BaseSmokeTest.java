@@ -17,6 +17,7 @@ package org.drools.reliability.infinispan.smoke;
 
 import org.drools.reliability.infinispan.BeforeAllMethodExtension;
 import org.drools.reliability.infinispan.ReliabilityTestBasics;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -25,6 +26,7 @@ import org.test.domain.Person;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled("Base class for other smoke tests")
 @ExtendWith(BeforeAllMethodExtension.class)
 public class BaseSmokeTest extends ReliabilityTestBasics {
 

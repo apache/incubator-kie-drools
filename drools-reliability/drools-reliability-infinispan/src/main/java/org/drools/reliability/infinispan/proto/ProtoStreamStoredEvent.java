@@ -28,42 +28,36 @@ public class ProtoStreamStoredEvent extends BaseStoredEvent {
 
     private final transient Object object;
 
-    private final transient AnySchema.Any protoObject;
-
     public ProtoStreamStoredEvent(Object object, boolean propagated, long timestamp, long duration) {
         super(propagated, timestamp, duration);
-
         this.object = object;
-        this.protoObject = ProtoStreamUtils.toAnySchema(object);
     }
 
     @ProtoFactory
     public ProtoStreamStoredEvent(AnySchema.Any protoObject, boolean propagated, long timestamp, long duration) {
         super(propagated, timestamp, duration);
-
-        this.protoObject = protoObject;
         this.object = ProtoStreamUtils.fromAnySchema(protoObject);
     }
 
-    @ProtoField(value = 1, required = true)
+    @ProtoField(number = 1, required = true)
     public AnySchema.Any getProtoObject() {
-        return protoObject;
+        return ProtoStreamUtils.toAnySchema(object);
     }
 
     @Override
-    @ProtoField(value = 2, required = true)
+    @ProtoField(number = 2, required = true)
     public boolean isPropagated() {
         return propagated;
     }
 
     @Override
-    @ProtoField(value = 3, required = true)
+    @ProtoField(number = 3, required = true)
     public long getTimestamp() {
         return timestamp;
     }
 
     @Override
-    @ProtoField(value = 4, required = true)
+    @ProtoField(number = 4, required = true)
     public long getDuration() {
         return duration;
     }
