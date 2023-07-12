@@ -391,7 +391,7 @@ public class Consequence {
                 if (context.isPropertyReactive(updatedClass)) {
 
                     if ( !initializedBitmaskFields.contains( updatedVar ) ) {
-                        Set<String> modifiedProps = findModifiedProperties(methodCallExprs, updateExpr, updatedVar, updatedClass );
+                        Set<String> modifiedProps = findModifiedProperties(methodCallExprs, updatedVar, updatedClass );
                         modifiedProps.addAll(findModifiedPropertiesFromAssignment(assignExprs, updatedVar));
                         MethodCallExpr bitMaskCreation = createBitMaskInitialization( updatedClass, modifiedProps );
                         AssignExpr bitMaskAssign = createBitMaskField(updatedVar, bitMaskCreation);
@@ -444,7 +444,7 @@ public class Consequence {
         return new AssignExpr(bitMaskVar, bitMaskCreation, AssignExpr.Operator.ASSIGN);
     }
 
-    private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar, Class<?> updatedClass ) {
+    private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, String updatedVar, Class<?> updatedClass ) {
         Set<String> modifiedProps = new HashSet<>();
         for (MethodCallExpr methodCall : methodCallExprs) {
             if (!isDirectExpression(methodCall)) {
