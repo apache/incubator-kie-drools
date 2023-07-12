@@ -1800,7 +1800,7 @@ index c5f6384f43..fea26fb7bc 100644
  import org.kie.api.runtime.rule.Match;
  
 diff --git a/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java b/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
-index 2243f36ba5..77f50145d3 100644
+index c4ff80aec3..2eb36e9e4c 100644
 --- a/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
 @@ -30,10 +30,10 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
@@ -1819,13 +1819,13 @@ index 2243f36ba5..77f50145d3 100644
  import java.util.function.Consumer;
  import java.util.function.Predicate;
 diff --git a/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java b/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
-index 2c0283fed0..7ef7839b08 100644
+index 4d77523f42..da5bef425f 100644
 --- a/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
-@@ -21,13 +21,13 @@ import java.io.ObjectInput;
- import java.io.ObjectOutput;
- import java.util.function.Consumer;
- import java.util.function.Predicate;
+@@ -26,13 +26,13 @@ import org.drools.core.reteoo.RightTuple;
+ import org.drools.core.reteoo.Tuple;
+ import org.kie.api.runtime.rule.FactHandle;
+ 
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
 -import javax.xml.bind.annotation.XmlAttribute;
@@ -1840,9 +1840,9 @@ index 2c0283fed0..7ef7839b08 100644
 +import jakarta.xml.bind.annotation.XmlRootElement;
 +import jakarta.xml.bind.annotation.XmlSchemaType;
 +import jakarta.xml.bind.annotation.XmlSeeAlso;
- 
- import org.drools.core.WorkingMemoryEntryPoint;
- import org.drools.core.base.ArrayElements;
+ import java.io.Externalizable;
+ import java.io.IOException;
+ import java.io.ObjectInput;
 diff --git a/drools-core/src/main/java/org/drools/core/common/ObjectFactory.java b/drools-core/src/main/java/org/drools/core/common/ObjectFactory.java
 index 236d78023e..cb378ad082 100644
 --- a/drools-core/src/main/java/org/drools/core/common/ObjectFactory.java
@@ -1857,12 +1857,12 @@ index 236d78023e..cb378ad082 100644
  @XmlRegistry
  public class ObjectFactory {
 diff --git a/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java b/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
-index 7c21d50b09..df8bb44a6d 100644
+index 6a96edb408..cc399e13d5 100644
 --- a/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
-@@ -20,9 +20,9 @@ import java.util.Arrays;
- import java.util.function.Consumer;
- import java.util.function.Predicate;
+@@ -24,9 +24,9 @@ import org.drools.core.reteoo.LeftTuple;
+ import org.drools.core.reteoo.RightTuple;
+ import org.drools.core.reteoo.Tuple;
  
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
@@ -1870,9 +1870,9 @@ index 7c21d50b09..df8bb44a6d 100644
 +import jakarta.xml.bind.annotation.XmlAccessType;
 +import jakarta.xml.bind.annotation.XmlAccessorType;
 +import jakarta.xml.bind.annotation.XmlAttribute;
- import org.drools.core.WorkingMemoryEntryPoint;
- import org.drools.base.factmodel.traits.TraitTypeEnum;
- import org.drools.core.reteoo.AbstractLeftTuple;
+ import java.util.Arrays;
+ import java.util.function.Consumer;
+ import java.util.function.Predicate;
 diff --git a/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java b/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java
 index 5cd6e541a5..b38cf3801b 100644
 --- a/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java
