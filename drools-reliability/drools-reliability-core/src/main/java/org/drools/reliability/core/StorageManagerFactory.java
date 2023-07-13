@@ -39,6 +39,7 @@ public interface StorageManagerFactory extends KieService {
                 throwExceptionForMissingRuntime();
                 return null;
             }
+            factory.getStorageManager().initStorageManager();
             return factory;
         }
     }

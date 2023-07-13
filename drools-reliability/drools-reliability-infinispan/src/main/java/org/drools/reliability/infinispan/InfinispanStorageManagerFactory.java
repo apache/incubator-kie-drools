@@ -22,6 +22,8 @@ import static org.drools.util.Config.getConfig;
 
 public class InfinispanStorageManagerFactory implements StorageManagerFactory {
 
+    static int servicePriorityValue = 0; // package access for test purposes
+
     public static final String INFINISPAN_STORAGE_PREFIX = RELIABILITY_STORAGE_PREFIX + ".infinispan";
     public static final String INFINISPAN_STORAGE_ALLOWED_PACKAGES = INFINISPAN_STORAGE_PREFIX + ".allowedpackages";
     public static final String INFINISPAN_STORAGE_DIRECTORY = INFINISPAN_STORAGE_PREFIX + ".dir";
@@ -43,11 +45,16 @@ public class InfinispanStorageManagerFactory implements StorageManagerFactory {
             storageManager = EmbeddedStorageManager.INSTANCE;
         }
 
-        storageManager.initStorageManager();
+        // initStorageManager() is called by StorageManagerFactory.Holder.createInstance()
     }
 
     @Override
     public StorageManager getStorageManager() {
         return storageManager;
+    }
+
+    @Override
+    public int servicePriority() {
+        return servicePriorityValue;
     }
 }

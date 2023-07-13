@@ -13,20 +13,15 @@
  * limitations under the License.
  */
 
-package org.drools.reliability.core;
+package org.drools.reliability.h2mvstore;
 
-import org.drools.core.common.Storage;
+public class H2MVStoreServicePrioritySupport {
 
-public class SimpleSerializationReliableObjectStoreFactory implements SimpleReliableObjectStoreFactory {
-
-    static int servicePriorityValue = 0; // package access for test purposes
-
-    public SimpleReliableObjectStore createSimpleReliableObjectStore(Storage<Long, StoredObject> storage) {
-        return new SimpleSerializationReliableObjectStore(storage);
+    private H2MVStoreServicePrioritySupport() {
+        // utils class
     }
 
-    @Override
-    public int servicePriority() {
-        return servicePriorityValue;
+    public static void setH2MVStoreStorageManagerFactoryPriority(int priority) {
+        H2MVStoreStorageManagerFactory.servicePriorityValue = priority;
     }
 }
