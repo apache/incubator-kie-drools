@@ -16,35 +16,26 @@
 
 package org.drools.core.impl;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Future;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.drools.core.KieBaseConfigurationImpl;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.base.base.ClassObjectType;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.common.PartitionsManager;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.rule.DialectRuntimeRegistry;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.Function;
+import org.drools.base.rule.ImportDeclaration;
+import org.drools.base.rule.InvalidPatternException;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.rule.WindowDeclaration;
+import org.drools.base.ruleunit.RuleUnitDescriptionRegistry;
+import org.drools.core.KieBaseConfigurationImpl;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.phreak.EagerPhreakBuilder.Add;
@@ -65,16 +56,8 @@ import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
-import org.drools.base.rule.DialectRuntimeRegistry;
-import org.drools.base.rule.EntryPointId;
-import org.drools.base.rule.Function;
-import org.drools.base.rule.ImportDeclaration;
-import org.drools.base.rule.InvalidPatternException;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.base.rule.TypeDeclaration;
-import org.drools.base.rule.WindowDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.base.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
@@ -94,13 +77,31 @@ import org.kie.internal.conf.CompositeBaseConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import static org.drools.core.phreak.PhreakBuilder.isEagerSegmentCreation;
 import static org.drools.util.BitMaskUtil.isSet;
 import static org.drools.util.ClassUtils.convertClassToResourcePath;
 
 public class KnowledgeBaseImpl implements InternalRuleBase {
 
-    protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBaseImpl.class);
+    protected static final Logger logger = LoggerFactory.getLogger(KnowledgeBaseImpl.class);
 
     private Set<EntryPointNode> addedEntryNodeCache;
     private Set<EntryPointNode> removedEntryNodeCache;
@@ -148,6 +149,8 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
     private boolean mutable = true;
 
     private boolean hasMultipleAgendaGroups = false;
+
+    private final PartitionsManager partitionsManager = new PartitionsManager();
 
     public KnowledgeBaseImpl() { }
 
@@ -447,8 +450,21 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
             ruleUnitDescriptionRegistry.add(newPkg.getRuleUnitDescriptionLoader());
         }
 
-        if (ruleBaseConfig.isMultithreadEvaluation() && !hasMultiplePartitions()) {
+        if (ruleBaseConfig.isMultithreadEvaluation()) {
+            setupParallelEvaluation();
+        }
+    }
+
+    private void setupParallelEvaluation() {
+        if (!hasParallelEvaluation()) {
             disableMultithreadEvaluation("The rete network cannot be partitioned: disabling multithread evaluation");
+        }
+        partitionsManager.init();
+        for (EntryPointNode epn : rete.getEntryPointNodes().values()) {
+            epn.setupParallelEvaluation(this);
+            for ( ObjectTypeNode otn : epn.getObjectTypeNodes().values() ) {
+                otn.setupParallelEvaluation(this);
+            }
         }
     }
 
@@ -490,18 +506,6 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         }
     }
 
-    private boolean hasMultiplePartitions() {
-        for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
-            for ( ObjectTypeNode otn : entryPointNode.getObjectTypeNodes().values() ) {
-                ObjectSinkPropagator sink = otn.getObjectSinkPropagator();
-                if (sink instanceof CompositePartitionAwareObjectSinkAdapter && ( (CompositePartitionAwareObjectSinkAdapter) sink ).getUsedPartitionsCount() > 1) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public boolean hasMultipleAgendaGroups() {
         return hasMultipleAgendaGroups;
     }
@@ -510,7 +514,6 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         ruleBaseConfig.enforceSingleThreadEvaluation();
         logger.warn( warningMessage );
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
-            entryPointNode.setPartitionsEnabled( false );
             for (ObjectTypeNode otn : entryPointNode.getObjectTypeNodes().values()) {
                 ObjectSinkPropagator sink = otn.getObjectSinkPropagator();
                 if (sink instanceof CompositePartitionAwareObjectSinkAdapter) {
@@ -840,7 +843,6 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         // always add the default entry point
         EntryPointNode epn = nodeFactory.buildEntryPointNode(this.reteooBuilder.getNodeIdsGenerator().getNextId(),
                                                              RuleBasePartitionId.MAIN_PARTITION,
-                                                             ruleBaseConfig.isMultithreadEvaluation(),
                                                              this.rete,
                                                              EntryPointId.DEFAULT);
         epn.attach();
@@ -1176,8 +1178,19 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         this.reloadPackageCompilationData.offer( registry );
     }
 
+    @Override
     public RuleBasePartitionId createNewPartitionId() {
-        return RuleBasePartitionId.createPartition();
+        return partitionsManager.createNewPartitionId();
+    }
+
+    @Override
+    public boolean hasParallelEvaluation() {
+        return getRuleBaseConfiguration().isMultithreadEvaluation() && partitionsManager.hasParallelEvaluation();
+    }
+
+    @Override
+    public int getParallelEvaluationSlotsCount() {
+        return partitionsManager.getParallelEvaluationSlotsCount();
     }
 
     public FactType getFactType(String packageName, String typeName) {

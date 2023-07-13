@@ -137,7 +137,7 @@ public interface InternalFactHandle
 
     interface LinkedTuples extends Serializable {
         LinkedTuples clone();
-        LinkedTuples newInstance();
+        LinkedTuples cloneEmpty();
 
         boolean hasTuples();
 

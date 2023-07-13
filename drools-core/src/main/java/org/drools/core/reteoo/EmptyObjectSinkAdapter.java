@@ -16,14 +16,14 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.common.ReteEvaluator;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.PropagationContext;
 
 public class EmptyObjectSinkAdapter implements ObjectSinkPropagator {
 
@@ -58,12 +58,6 @@ public class EmptyObjectSinkAdapter implements ObjectSinkPropagator {
 
     }
 
-    public void propagateRetractObject(final InternalFactHandle handle,
-                                       final PropagationContext context,
-                                       final ReteEvaluator reteEvaluator,
-                                       final boolean useHash) {
-    }
-    
     public void propagateModifyObject(InternalFactHandle factHandle,
                                       ModifyPreviousTuples modifyPreviousTuples,
                                       PropagationContext context,

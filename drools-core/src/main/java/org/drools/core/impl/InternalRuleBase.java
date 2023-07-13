@@ -16,23 +16,18 @@
 
 package org.drools.core.impl;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Future;
-
 import org.drools.base.RuleBase;
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.InvalidPatternException;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.KieBaseConfigurationImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.common.RuleBasePartitionId;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -41,10 +36,7 @@ import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
-import org.drools.base.rule.InvalidPatternException;
-import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.base.ruleunit.RuleUnitDescriptionRegistry;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
@@ -54,6 +46,14 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSessionConfiguration;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Future;
 
 public interface InternalRuleBase extends RuleBase {
 
@@ -81,6 +81,8 @@ public interface InternalRuleBase extends RuleBase {
     String getId();
 
     RuleBasePartitionId createNewPartitionId();
+    boolean hasParallelEvaluation();
+    int getParallelEvaluationSlotsCount();
 
     RuleBaseConfiguration getRuleBaseConfiguration();
 

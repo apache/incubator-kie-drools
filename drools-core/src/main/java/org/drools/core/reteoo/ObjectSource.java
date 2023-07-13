@@ -16,22 +16,22 @@
 
 package org.drools.core.reteoo;
 
-import java.util.List;
-
+import org.drools.base.base.ObjectType;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.Pattern;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.base.common.RuleBasePartitionId;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.Pattern;
-import org.drools.base.base.ObjectType;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
+
+import java.util.List;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.getAccessibleProperties;
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
@@ -72,15 +72,8 @@ public abstract class ObjectSource extends BaseNode {
     /**
      * Single parameter constructor that specifies the unique id of the node.
      */
-    protected ObjectSource(final int id,
-                 final RuleBasePartitionId partitionId,
-                 final boolean partitionsEnabled) {
-        this( id,
-              partitionId,
-              partitionsEnabled,
-              null,
-              3,
-              3);
+    protected ObjectSource(int id, RuleBasePartitionId partitionId) {
+        this( id, partitionId, null, 3, 3);
     }
 
     /**
@@ -88,11 +81,10 @@ public abstract class ObjectSource extends BaseNode {
      */
     ObjectSource(final int id,
                  final RuleBasePartitionId partitionId,
-                 final boolean partitionsEnabled,
                  final ObjectSource objectSource,
                  final int alphaNodeHashingThreshold,
                  final int alphaNodeRangeIndexThreshold) {
-        super(id, partitionId, partitionsEnabled);
+        super(id, partitionId);
         this.source = objectSource;
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
         this.alphaNodeRangeIndexThreshold = alphaNodeRangeIndexThreshold;

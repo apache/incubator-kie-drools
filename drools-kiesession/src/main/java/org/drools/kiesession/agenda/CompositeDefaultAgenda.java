@@ -17,7 +17,6 @@
 package org.drools.kiesession.agenda;
 
 import org.drools.base.common.NetworkNode;
-import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupsManager;
 import org.drools.core.common.InternalActivationGroup;
@@ -66,19 +65,16 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     private static final AtomicBoolean FIRING_UNTIL_HALT_USING_EXECUTOR = new AtomicBoolean( false );
 
-    private final DefaultAgenda[] agendas = new DefaultAgenda[RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER];
-
     private final DefaultAgenda.ExecutionStateMachine executionStateMachine = new DefaultAgenda.ConcurrentExecutionStateMachine();
+
+    private DefaultAgenda[] agendas;
 
     private PropagationList propagationList;
 
     public CompositeDefaultAgenda() { }
 
-    public CompositeDefaultAgenda(InternalRuleBase kBase) {
-        this( kBase, true );
-    }
-
     public CompositeDefaultAgenda(InternalRuleBase kBase, boolean initMain) {
+        this.agendas = new DefaultAgenda[kBase.getParallelEvaluationSlotsCount()];
         for ( int i = 0; i < agendas.length; i++ ) {
             agendas[i] = new PartitionedDefaultAgenda(kBase, initMain, executionStateMachine, i);
         }
@@ -86,16 +82,12 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     @Override
     public void writeExternal( ObjectOutput out ) throws IOException {
-        for ( DefaultAgenda agenda : agendas ) {
-            out.writeObject( agenda );
-        }
+        out.writeObject( agendas );
     }
 
     @Override
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        for ( int i = 0; i < agendas.length; i++ ) {
-            agendas[i] = (DefaultAgenda) in.readObject();
-        }
+        agendas = (DefaultAgenda[]) in.readObject();
     }
 
     @Override

@@ -16,19 +16,19 @@
 
 package org.drools.mvel.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import org.drools.base.base.ObjectType;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.base.common.RuleBasePartitionId;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.base.ObjectType;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class MockObjectSource extends ObjectSource {
     private static final long serialVersionUID = 510l;
@@ -43,7 +43,7 @@ public class MockObjectSource extends ObjectSource {
     }
 
     public MockObjectSource( final int id) {
-        super( id, RuleBasePartitionId.MAIN_PARTITION, false);
+        super( id, RuleBasePartitionId.MAIN_PARTITION );
         this.facts = new ArrayList();
     }
 

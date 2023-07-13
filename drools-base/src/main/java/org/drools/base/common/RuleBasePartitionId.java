@@ -16,27 +16,19 @@
 
 package org.drools.base.common;
 
-import org.kie.api.concurrent.KieExecutors;
-
-import java.io.Serializable;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * A class to identify RuleBase partitions
  */
-public final class RuleBasePartitionId implements Serializable {
+public final class RuleBasePartitionId {
 
-    private static final long serialVersionUID = 510l;
+    public static final RuleBasePartitionId MAIN_PARTITION = new RuleBasePartitionId(null, 0);
 
-    public static final int PARALLEL_PARTITIONS_NUMBER = KieExecutors.Pool.SIZE;
-
-    public static final RuleBasePartitionId MAIN_PARTITION = new RuleBasePartitionId( 0 );
-
-    private static final AtomicInteger PARTITION_COUNTER = new AtomicInteger( 1 );
+    private final PartitionsManager partitionsManager;
 
     private final int id;
 
-    private RuleBasePartitionId( int id ) {
+    public RuleBasePartitionId(PartitionsManager partitionsManager, int id ) {
+        this.partitionsManager = partitionsManager;
         this.id = id;
     }
 
@@ -45,7 +37,7 @@ public final class RuleBasePartitionId implements Serializable {
     }
 
     public int getParallelEvaluationSlot() {
-        return id % PARALLEL_PARTITIONS_NUMBER;
+        return id % partitionsManager.getParallelEvaluationSlotsCount();
     }
 
     @Override
@@ -58,11 +50,8 @@ public final class RuleBasePartitionId implements Serializable {
         return this == obj || (obj instanceof RuleBasePartitionId && id == ((RuleBasePartitionId)obj).id);
     }
 
+    @Override
     public String toString() {
         return "Partition(" + (id == 0 ? "MAIN" : id) + ")";
-    }
-
-    public static RuleBasePartitionId createPartition() {
-        return new RuleBasePartitionId( PARTITION_COUNTER.getAndIncrement() );
     }
 }

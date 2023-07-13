@@ -16,6 +16,18 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -24,28 +36,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.base.common.RuleBasePartitionId;
-import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
-import org.drools.base.rule.IndexableConstraint;
-import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.core.common.PropagationContext;
-
 public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropagator {
 
-    private final ObjectSinkPropagator[] partitionedPropagators = new ObjectSinkPropagator[RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER];
+    private final ObjectSinkPropagator[] partitionedPropagators;
 
     private boolean hashed = true;
     private CompositeObjectSinkAdapter.FieldIndex fieldIndex;
 
     private Map<CompositeObjectSinkAdapter.HashKey, AlphaNode> hashedSinkMap;
 
-    public CompositePartitionAwareObjectSinkAdapter() {
+    public CompositePartitionAwareObjectSinkAdapter(int parallelEvaluationSlotsCount) {
+        this.partitionedPropagators = new ObjectSinkPropagator[parallelEvaluationSlotsCount];
         Arrays.fill(partitionedPropagators, EmptyObjectSinkAdapter.getInstance());
     }
 

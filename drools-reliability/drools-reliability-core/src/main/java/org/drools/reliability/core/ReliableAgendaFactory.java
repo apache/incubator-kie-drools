@@ -36,8 +36,4 @@ public class ReliableAgendaFactory implements AgendaFactory, Serializable {
     public InternalAgenda createAgenda(InternalRuleBase kBase, boolean initMain) {
         return new ReliableAgenda( kBase, initMain );
     }
-
-    public InternalAgenda createAgenda(InternalRuleBase kBase) {
-        return new ReliableAgenda( kBase );
-    }
 }

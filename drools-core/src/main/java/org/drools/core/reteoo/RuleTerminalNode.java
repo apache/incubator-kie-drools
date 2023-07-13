@@ -16,21 +16,21 @@
 
 package org.drools.core.reteoo;
 
-import java.util.Map;
-import java.util.Objects;
-
 import org.drools.base.base.SalienceInteger;
-import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.GroupElement;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.GroupElement;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.rule.consequence.InternalMatch;
+
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -64,7 +64,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                             final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation(),
                source,
                context,
                rule, subrule, subruleIndex);

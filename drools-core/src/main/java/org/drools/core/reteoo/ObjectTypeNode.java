@@ -16,15 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.base.InitialFact;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
@@ -38,6 +29,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.time.Job;
@@ -45,6 +37,15 @@ import org.drools.core.time.JobContext;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
@@ -101,22 +102,25 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
                           final BuildContext context) {
         super(id,
               RuleBasePartitionId.MAIN_PARTITION,
-              context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation(),
               source,
               context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeHashingThreshold(),
               context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeRangeIndexThreshold());
         this.objectType = objectType;
-        idGenerator = new IdGenerator(id);
-
+        this.idGenerator = new IdGenerator(id);
         this.dirty = true;
-
-        hashcode = calculateHashCode();
-
-        if (objectType != ClassObjectType.InitialFact_ObjectType && context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation()) {
-            this.sink = new CompositePartitionAwareObjectSinkAdapter();
-        }
-
+        this.hashcode = calculateHashCode();
         initMemoryId( context );
+    }
+
+    public void setupParallelEvaluation(InternalRuleBase kbase) {
+        if (objectType == ClassObjectType.InitialFact_ObjectType) {
+            return;
+        }
+        CompositePartitionAwareObjectSinkAdapter partitionedSink = new CompositePartitionAwareObjectSinkAdapter(kbase.getParallelEvaluationSlotsCount());
+        for ( ObjectSink objectSink : this.sink.getSinks()) {
+            partitionedSink.addObjectSink(objectSink, alphaNodeHashingThreshold, alphaNodeRangeIndexThreshold);
+        }
+        this.sink = partitionedSink;
     }
 
     private static class IdGenerator {

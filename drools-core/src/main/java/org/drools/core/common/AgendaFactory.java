@@ -23,6 +23,7 @@ public interface AgendaFactory {
 
     InternalAgenda createAgenda(InternalRuleBase kBase, boolean initMain);
 
-    InternalAgenda createAgenda(InternalRuleBase kBase);
-
+    default InternalAgenda createAgenda(InternalRuleBase kBase) {
+        return createAgenda(kBase, true);
+    }
 }

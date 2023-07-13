@@ -29,6 +29,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.bitmask.BitMask;
@@ -74,6 +75,8 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
 
     private ObjectTypeConfigurationRegistry typeConfReg;
 
+    private boolean parallelEvaluation = false;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -86,19 +89,16 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
                           final BuildContext context) {
         this( id,
               context.getPartitionId(),
-              context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation(),
               objectSource,
               context.getCurrentEntryPoint() ); // irrelevant for this node, since it overrides sink management
     }
 
     public EntryPointNode(final int id,
                           final RuleBasePartitionId partitionId,
-                          final boolean partitionsEnabled,
                           final ObjectSource objectSource,
                           final EntryPointId entryPoint) {
         super( id,
                partitionId,
-               partitionsEnabled,
                objectSource,
                999,
                999); // irrelevant for this node, since it overrides sink management
@@ -113,6 +113,10 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
     // Instance methods
     // ------------------------------------------------------------
 
+    public void setupParallelEvaluation(InternalRuleBase kbase) {
+        parallelEvaluation = true;
+    }
+
     public ObjectTypeConfigurationRegistry getTypeConfReg() {
         return typeConfReg;
     }
@@ -126,9 +130,6 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
      */
     public EntryPointId getEntryPoint() {
         return entryPoint;
-    }
-    void setEntryPoint(EntryPointId entryPoint) {
-        this.entryPoint = entryPoint;
     }
 
     public ObjectTypeNode getQueryNode() {
@@ -189,9 +190,9 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
             log.trace("Insert {}", handle.toString());
         }
 
-        if ( partitionsEnabled || !reteEvaluator.isThreadSafe() ) {
+        if ( parallelEvaluation || !reteEvaluator.isThreadSafe() ) {
             // In case of multithreaded evaluation the CompositePartitionAwareObjectSinkAdapter
-            // used by the OTNs will take care of enqueueing this inseretion on the propagation queues
+            // used by the OTNs will take care of enqueueing this insertion on the propagation queues
             // of the different agendas
             PropagationEntry.Insert.execute( handle, context, reteEvaluator, objectTypeConf );
         } else {

@@ -44,7 +44,7 @@ public class BaseNodeTest {
         }
 
         public MockBaseNode(final int id) {
-            super( id, RuleBasePartitionId.MAIN_PARTITION, false );
+            super( id, RuleBasePartitionId.MAIN_PARTITION );
         }
 
         public void ruleAttached() {

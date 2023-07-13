@@ -16,7 +16,6 @@
 
 package org.drools.core.common;
 
-import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -353,9 +352,9 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return wmEntryPoint;
     }
 
-    protected void setLinkedTuples( InternalRuleBase kbase) {
-        linkedTuples = kbase != null && kbase.getRuleBaseConfiguration().isMultithreadEvaluation() ?
-                       new CompositeLinkedTuples() :
+    protected void setLinkedTuples(InternalRuleBase kbase) {
+        linkedTuples = kbase != null && kbase.hasParallelEvaluation() ?
+                       new CompositeLinkedTuples(kbase.getParallelEvaluationSlotsCount()) :
                        new SingleLinkedTuples();
     }
 
@@ -467,7 +466,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         }
 
         @Override
-        public LinkedTuples newInstance() {
+        public LinkedTuples cloneEmpty() {
             return new SingleLinkedTuples();
         }
 
@@ -717,7 +716,11 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     public static class CompositeLinkedTuples implements LinkedTuples {
 
-        private final LinkedTuples[] partitionedTuples = new LinkedTuples[RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER];
+        private final LinkedTuples[] partitionedTuples;
+
+        public CompositeLinkedTuples(int parallelEvaluationSlotsCount) {
+            this.partitionedTuples = new LinkedTuples[parallelEvaluationSlotsCount];
+        }
 
         private LinkedTuples getPartitionedTuple(int partition) {
             LinkedTuples tuples = partitionedTuples[partition];
@@ -733,8 +736,8 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         }
 
         @Override
-        public LinkedTuples newInstance() {
-            return new CompositeLinkedTuples();
+        public LinkedTuples cloneEmpty() {
+            return new CompositeLinkedTuples(partitionedTuples.length);
         }
 
         @Override
@@ -749,7 +752,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
         @Override
         public LinkedTuples clone() {
-            CompositeLinkedTuples clone = new CompositeLinkedTuples();
+            CompositeLinkedTuples clone = new CompositeLinkedTuples(partitionedTuples.length);
             for (int i = 0; i < partitionedTuples.length; i++) {
                 clone.partitionedTuples[i] = partitionedTuples[i] == null ? null : partitionedTuples[i].clone();
             }
@@ -875,7 +878,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         }
 
         @Override
-        public LinkedTuples newInstance() {
+        public LinkedTuples cloneEmpty() {
             throw new UnsupportedOperationException();
         }
 

@@ -268,7 +268,7 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
         clone.setEqualityKey( getEqualityKey() );
-        clone.linkedTuples = this.linkedTuples.newInstance();
+        clone.linkedTuples = this.linkedTuples.cloneEmpty();
         clone.setObjectHashCode(getObjectHashCode());
         clone.wmEntryPoint = this.wmEntryPoint;
         return clone;

@@ -16,17 +16,9 @@
 
 package org.drools.kiesession.agenda;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import org.drools.base.definitions.rule.impl.QueryImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.consequence.ConsequenceException;
 import org.drools.core.common.ActivationGroupImpl;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationsFilter;
@@ -44,8 +36,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleFlowGroup;
 import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
-import org.drools.base.definitions.rule.impl.QueryImpl;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.ExecutableEntry;
@@ -62,7 +52,6 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
-import org.drools.base.rule.consequence.ConsequenceException;
 import org.drools.core.rule.consequence.ConsequenceExceptionHandler;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
@@ -75,6 +64,17 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.AgendaGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Rule-firing Agenda.
@@ -133,7 +133,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     // ------------------------------------------------------------
     public DefaultAgenda() { }
 
-    public DefaultAgenda(InternalRuleBase kBase) {
+    protected DefaultAgenda(InternalRuleBase kBase) {
         this( kBase, true );
     }
 
