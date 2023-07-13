@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-dmn</artifactId>
-    <version>7.75.0-SNAPSHOT</version>
+    <version>7.74.1.Final</version>
   </parent>
 
   <artifactId>kie-dmn-feel-gwt-functions</artifactId>
