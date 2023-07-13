@@ -16,10 +16,6 @@
 
 package org.drools.modelcompiler.consequence;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.drools.base.base.ValueResolver;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.BaseTuple;
@@ -32,6 +28,10 @@ import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.model.Variable;
 import org.kie.api.runtime.rule.FactHandle;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class LambdaConsequence implements Consequence<KnowledgeHelper> {
 
     // Enable the optimization to extract from the activation tuple the arguments to be passed to this
@@ -39,18 +39,20 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
     private static final boolean ENABLE_LINEARIZED_ARGUMENTS_RETRIEVAL_OPTIMIZATION = true;
 
     private final org.drools.model.Consequence consequence;
-    private final boolean        enabledTupleOptimization;
-    private Declaration[]        requiredDeclarations;
+    private final int factsNr;
+    private final boolean enabledTupleOptimization;
+    private Declaration[] requiredDeclarations;
 
     private TupleFactSupplier[] factSuppliers;
-    private GlobalSupplier[]    globalSuppliers;
-    private Object[]            facts;
+    private GlobalSupplier[] globalSuppliers;
+    private Object[] facts;
 
-    private FactHandleLookup    fhLookup;
+    private FactHandleLookup fhLookup;
 
     public LambdaConsequence( org.drools.model.Consequence consequence, boolean enabledTupleOptimization) {
         this.consequence = consequence;
         this.enabledTupleOptimization = ENABLE_LINEARIZED_ARGUMENTS_RETRIEVAL_OPTIMIZATION & enabledTupleOptimization;
+        this.factsNr = consequence.getVariables().length + ( consequence.isUsingDrools() ? 1 : 0 );
     }
 
     @Override
@@ -125,12 +127,10 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
         Object[] facts;
         FactHandleLookup fhLookup = null;
         if (reteEvaluator.getRuleSessionConfiguration().isThreadSafe()) {
+            facts = new Object[factsNr];
             if ( consequence.isUsingDrools() ) {
-                facts = new Object[consequence.getVariables().length + 1];
                 fhLookup = FactHandleLookup.create( factSuppliers.length );
                 facts[0] = new DroolsImpl( knowledgeHelper, reteEvaluator, fhLookup );
-            } else {
-                facts = new Object[consequence.getVariables().length];
             }
         } else {
             facts = this.facts;
