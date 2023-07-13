@@ -117,13 +117,16 @@ public class BuildItemsTest {
     private static void assertAllKnownOTNs(Set<String> allKnown) {
         LOG.info("allKnown: {}", allKnown);
         
-        assertThat(allKnown).contains(ASubclassOfMeasurement.class.getCanonicalName(),
+        assertThat(allKnown)
+            .as("these classes or subclasses are derived from OTNs in the rules.")
+            .contains(ASubclassOfMeasurement.class.getCanonicalName(),
                 Measurement.class.getCanonicalName(),
                 MyImplementation.class.getCanonicalName(),
-                MyInterface.class.getCanonicalName())
-                .as("these classes or subclasses are derived from OTNs in the rules.");
+                MyInterface.class.getCanonicalName()
+            );
         
-        assertThat(allKnown).doesNotContain(MyUnusedClass.class.getCanonicalName())
-                .as("this class is unused in the rules despite star-import");
+        assertThat(allKnown)
+            .as("this class is unused in the rules despite star-import")
+            .doesNotContain(MyUnusedClass.class.getCanonicalName());
     }
 }
