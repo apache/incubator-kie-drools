@@ -282,10 +282,10 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
-    void multipleKieSessions_BasicTest(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
-        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
-        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepointsAndKieBaseCache")
+    void multipleKieSessions_BasicTest(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache) {
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         insert(session1, "M");
         insert(session2, "N");
@@ -298,8 +298,8 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         failover();
 
-        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
-        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         // clear results
         clearResults(session1);
@@ -313,10 +313,10 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
-    void multipleKieSessions_insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
-        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
-        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepointsAndKieBaseCache") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void multipleKieSessions_insertFailoverInsertFire_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache) {
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         insert(session1,"M");
         insertMatchingPerson(session1, "Mike", 37);
@@ -325,8 +325,8 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         failover();
 
-        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
-        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         insertNonMatchingPerson(session1,"Toshiya", 35);
         insertMatchingPerson(session2,"Nicole", 40);
@@ -339,11 +339,11 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // With Remote, FULL fails with "ReliablePropagationList; no valid constructor" even without failover
-    void multipleKieSessions_noFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepointsAndKieBaseCache") // With Remote, FULL fails with "ReliablePropagationList; no valid constructor" even without failover
+    void multipleKieSessions_noFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache) {
 
-        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
-        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         insert(session1,"M");
         insertMatchingPerson(session1,"Matching Person One", 37);
@@ -353,8 +353,8 @@ class ReliabilityTest extends ReliabilityTestBasics {
             safepoint();
         }
 
-        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
-        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         insertNonMatchingPerson(session1,"Toshiya", 41);
         insertMatchingPerson(session1,"Matching Person Two", 40);
@@ -368,11 +368,11 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
-    void multipleKieSessions_insertFireInsertFailoverInsertFire_shouldMatchFactInsertedBeforeFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepointsAndKieBaseCache") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void multipleKieSessions_insertFireInsertFailoverInsertFire_shouldMatchFactInsertedBeforeFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache) {
 
-        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
-        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         insert(session1,"M");
         insertMatchingPerson(session1,"Matching Person One", 37);
@@ -387,8 +387,8 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         failover();
 
-        session1 = restoreSession(session1.getIdentifier(),BASIC_RULE, persistenceStrategy, safepointStrategy);
-        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session1 = restoreSession(session1.getIdentifier(),BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         clearResults(session1);
         clearResults(session2);
@@ -406,10 +406,10 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
-    void multipleKieSessions_updateBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
-        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
-        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepointsAndKieBaseCache") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void multipleKieSessions_updateBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache) {
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         insert(session1,"M");
         Person p1 = new Person("Mario", 49);
@@ -429,8 +429,8 @@ class ReliabilityTest extends ReliabilityTestBasics {
         update(session1, fh2, p2);
 
         failover();
-        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
-        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         assertThat(fireAllRules(session1)).isEqualTo(1);
         assertThat(getResults(session1)).containsExactlyInAnyOrder("Mario", "MegaToshiya");
@@ -438,8 +438,8 @@ class ReliabilityTest extends ReliabilityTestBasics {
         assertThat(getResults(session2)).containsExactlyInAnyOrder("Toshiya");
 
         failover();
-        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
-        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
         clearResults(session1);
         clearResults(session2);
 
@@ -451,11 +451,11 @@ class ReliabilityTest extends ReliabilityTestBasics {
     }
 
     @ParameterizedTest
-    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // FULL fails with "ReliablePropagationList; no valid constructor"
-    void multipleKieSessions_deleteBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepointsAndKieBaseCache") // FULL fails with "ReliablePropagationList; no valid constructor"
+    void multipleKieSessions_deleteBeforeFailover_shouldRecoverFromFailover(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache) {
 
-        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
-        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy);
+        KieSession session1 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        KieSession session2 = createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         FactHandle fhStringM = insert(session1,"M");
         insertMatchingPerson(session1,"Matching Person One",37);
@@ -471,8 +471,8 @@ class ReliabilityTest extends ReliabilityTestBasics {
 
         failover();
 
-        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
-        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
         clearResults(session1);
         clearResults(session2);
 
@@ -487,8 +487,8 @@ class ReliabilityTest extends ReliabilityTestBasics {
         insert(session1,"T");
 
         failover();
-        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
-        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy);
+        session1 = restoreSession(session1.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
+        session2 = restoreSession(session2.getIdentifier(), BASIC_RULE, persistenceStrategy, safepointStrategy, useKieBaseCache);
 
         assertThat(fireAllRules(session1)).isEqualTo(1);
         assertThat(getResults(session1)).containsExactlyInAnyOrder("Toshiya");
