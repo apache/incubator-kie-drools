@@ -82,7 +82,6 @@ public class PropertyReactivityMatrixTest extends BaseModelTest {
         public void setValue2(int value2) {
             this.value2 = value2;
         }
-
     }
 
     private String setValueStatement(String property, int value) {
@@ -163,6 +162,52 @@ public class PropertyReactivityMatrixTest extends BaseModelTest {
                                                      "    }");
     }
 
+    @Test
+    public void assignmentAfterModify_shouldTriggerReactivity() {
+        // DROOLS-7497
+        statementInsideBlock_shouldTriggerReactivity("      modify($fact) {\n" +
+                                                     "      " + setValueStatement("value2", 2) + "\n" +
+                                                     "      }\n" +
+                                                     "    $fact." + setValueStatement("value1", 2) + "\n");
+    }
+
+    @Test
+    public void assignmentBeforeAndAfterModify_shouldTriggerReactivity() {
+        // DROOLS-7497
+        statementInsideBlock_shouldTriggerReactivity("      $fact." + setValueStatement("value2", 2) + "\n" +
+                                                     "      modify($fact) {\n" +
+                                                     "      }\n" +
+                                                     "    $fact." + setValueStatement("value1", 2) + "\n");
+    }
+
+    @Test
+    public void assignmentAfterIfBlockModify_shouldTriggerReactivity() {
+        // DROOLS-7497
+        statementInsideBlock_shouldTriggerReactivity("      if (true) {\n" +
+                                                     "      modify($fact) {\n" +
+                                                     "        " + setValueStatement("value2", 2) + "\n" +
+                                                     "      }\n" +
+                                                     "    }\n" +
+                                                     "    $fact." + setValueStatement("value1", 2) + "\n");
+    }
+
+    @Test
+    public void assignmentBeforeAndAfterUpdate_shouldTriggerReactivity() {
+        // DROOLS-7497
+        statementInsideBlock_shouldTriggerReactivity("      $fact." + setValueStatement("value2", 2) + "\n" +
+                                                     "      update($fact);\n" +
+                                                     "    $fact." + setValueStatement("value1", 2) + "\n");
+    }
+
+    @Test
+    public void assignmentAfterIfBlockUpdate_shouldTriggerReactivity() {
+        // DROOLS-7497
+        statementInsideBlock_shouldTriggerReactivity("      if (true) {\n" +
+                                                     "      update($fact);\n" +
+                                                     "    }\n" +
+                                                     "    $fact." + setValueStatement("value1", 2) + "\n");
+    }
+
     private void statementInsideBlock_shouldTriggerReactivity(String rhs) {
         final String str =
                 "import " + Fact.class.getCanonicalName() + ";\n" +
@@ -191,5 +236,101 @@ public class PropertyReactivityMatrixTest extends BaseModelTest {
 
         assertThat(results).as("Should trigger property reactivity on value1")
                            .containsExactly("R2 fired");
+    }
+
+    @Test
+    public void modifyInsideIfFalseAndTrueBlock_shouldTriggerReactivity() {
+        // DROOLS-7493
+        statementInsideBlock_shouldTriggerReactivityWithLoop("    if (false) {\n" +
+                                                             "      $fact." + setValueStatement("value1", 2) + "\n" + // this line is not executed, but analyzed as a property reactivity
+                                                             "    }\n" +
+                                                             "    if (true) {\n" +
+                                                             "      modify($fact) {\n" +
+                                                             "      }\n" +
+                                                             "    }\n");
+    }
+
+    @Test
+    public void updateInsideIfFalseAndTrueBlock_shouldTriggerReactivity() {
+        statementInsideBlock_shouldTriggerReactivityWithLoop("    if (false) {\n" +
+                                                             "      $fact." + setValueStatement("value1", 2) + "\n" + // this line is not executed, but analyzed as a property reactivity
+                                                             "    }\n" +
+                                                             "    if (true) {\n" +
+                                                             "      update($fact);\n" +
+                                                             "    }\n");
+    }
+
+    private void statementInsideBlock_shouldTriggerReactivityWithLoop(String rhs) {
+        final String str =
+                "import " + Fact.class.getCanonicalName() + ";\n" +
+                           "dialect \"" + dialect.name().toLowerCase() + "\"\n" +
+                           "global java.util.List results;\n" +
+                           "rule R1\n" +
+                           "  when\n" +
+                           "    $fact : Fact( value1 == 1 )\n" +
+                           "  then\n" +
+                           rhs +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Fact fact = new Fact(1);
+        ksession.insert(fact);
+        int fired = ksession.fireAllRules(10);
+
+        assertThat(fired).as("Should trigger property reactivity on value1 and result in a loop")
+                         .isEqualTo(10);
+    }
+
+    @Test
+    public void modifyInsideIfFalseBlock_shouldNotTriggerReactivity() {
+        // DROOLS-7493
+        statementInsideIfFalseBlock_shouldNotTriggerReactivityNorSelfLoop("    if (false) {\n" +
+                                                                          "      modify($fact) {\n" +
+                                                                          "        " + setValueStatement("value1", 2) + "\n" +
+                                                                          "      }\n" +
+                                                                          "    }\n");
+    }
+
+    @Test
+    public void updateInsideIfFalseBlock_shouldNotTriggerReactivity() {
+        statementInsideIfFalseBlock_shouldNotTriggerReactivityNorSelfLoop("    if (false) {\n" +
+                                                                          "      $fact." + setValueStatement("value1", 2) + "\n" +
+                                                                          "      update($fact);\n" +
+                                                                          "    }\n");
+    }
+
+    private void statementInsideIfFalseBlock_shouldNotTriggerReactivityNorSelfLoop(String rhs) {
+        final String str =
+                "import " + Fact.class.getCanonicalName() + ";\n" +
+                           "dialect \"" + dialect.name().toLowerCase() + "\"\n" +
+                           "global java.util.List results;\n" +
+                           "rule R1\n" +
+                           "  when\n" +
+                           "    $fact : Fact( value1 == 1 )\n" +
+                           "  then\n" +
+                           rhs +
+                           "end\n" +
+                           "rule R2\n" +
+                           "  when\n" +
+                           "    $fact : Fact( value1 == 2 )\n" +
+                           "  then\n" +
+                           "    results.add(\"R2 fired\");\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Fact fact = new Fact(1);
+        ksession.insert(fact);
+        int fired = ksession.fireAllRules(10);
+        assertThat(fired).as("Don't cause a loop")
+                         .isEqualTo(1);
+
+        assertThat(results).as("Shouldn't trigger R2, because modify is not executed")
+                           .isEmpty();
     }
 }

@@ -107,16 +107,21 @@ public class PreprocessPhase {
         final Expression scope = modifyStatement.getModifyObject();
         modifyStatement
                 .findAll(AssignExpr.class)
-                .replaceAll(assignExpr -> assignToFieldAccess(result, scope, assignExpr));
+                .replaceAll(assignExpr -> assignToFieldAccess(scope, assignExpr));
 
         // Do not use findAll as we should only process top level expressions
         modifyStatement
                 .getExpressions()
-                .replaceAll(e -> addScopeToMethodCallExpr(result, scope, e));
+                .replaceAll(e -> addScopeToMethodCallExpr(scope, e));
 
         NodeList<Statement> statements = wrapToExpressionStmt(modifyStatement.getExpressions());
         // delete modify statement and replace its own block of statements
         modifyStatement.replace(new BlockStmt(statements));
+
+        // even if no property is modified inside modify block, need to call update because its properties may be modified in RHS
+        if (scope.isNameExpr() || scope instanceof DrlNameExpr) {
+            result.addUsedBinding(printNode(scope));
+        }
 
         return result;
     }
@@ -131,7 +136,7 @@ public class PreprocessPhase {
                 .collect(Collectors.toList()));
     }
 
-    private Statement addScopeToMethodCallExpr(PreprocessPhaseResult result, Expression scope, Statement e) {
+    private Statement addScopeToMethodCallExpr(Expression scope, Statement e) {
         if (e != null && e.isExpressionStmt()) {
             Expression expression = e.asExpressionStmt().getExpression();
             if (expression.isMethodCallExpr()) {
@@ -144,16 +149,10 @@ public class PreprocessPhase {
                     MethodCallExpr rootMcExpr = rootExpr.asMethodCallExpr();
                     Expression enclosed = new EnclosedExpr(scope);
                     rootMcExpr.setScope(enclosed);
-
-                    if (scope.isNameExpr() || scope instanceof DrlNameExpr) { // some classes such "AtomicInteger" have a setter called "set"
-                        result.addUsedBinding(printNode(scope));
-                    }
-
                     return new ExpressionStmt(mcExpr);
                 } else if (rootExpr instanceof DrlNameExpr) {
                     throwExceptionIfSameDrlName(rootExpr, scope);
                     // Unknown name. Assume a property of the fact
-                    result.addUsedBinding(printNode(scope));
                     replaceRootExprWithFieldAccess(scope, (DrlNameExpr) rootExpr);
                 }
             }
@@ -194,8 +193,7 @@ public class PreprocessPhase {
         return scope;
     }
 
-    private AssignExpr assignToFieldAccess(PreprocessPhaseResult result, Expression scope, AssignExpr assignExpr) {
-        result.addUsedBinding(printNode(scope));
+    private AssignExpr assignToFieldAccess(Expression scope, AssignExpr assignExpr) {
         Expression target = assignExpr.getTarget();
 
         if (target instanceof DrlNameExpr) { // e.g. age = 10

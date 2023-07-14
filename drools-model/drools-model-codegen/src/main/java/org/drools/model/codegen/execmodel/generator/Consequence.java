@@ -19,7 +19,6 @@ package org.drools.model.codegen.execmodel.generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +64,6 @@ import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.util.StringUtils;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
-import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toSet;
 import static org.drools.model.codegen.execmodel.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 import static org.drools.model.codegen.execmodel.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
@@ -165,7 +163,7 @@ public class Consequence {
         switch (context.getRuleDialect()) {
             case JAVA:
                 rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS);
-                executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
+                executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
                 break;
             case MVEL:
                 executeCall = createExecuteCallMvel(consequenceString, ruleVariablesBlock, usedDeclarationInRHS, onCall);
@@ -221,9 +219,9 @@ public class Consequence {
         return executeCall(ruleVariablesBlock,
                                   compile.statementResults(),
                                   usedDeclarationInRHS,
-                                  onCall,
-                                  compile.getUsedBindings());
+                                  onCall);
     }
+
     private BlockStmt rewriteConsequence(String consequence) {
         try {
             String ruleConsequenceAsBlock = preprocessConsequence(consequence.trim());
@@ -279,15 +277,7 @@ public class Consequence {
         return p.matcher(bodyWithDollarReplaced).find();
     }
 
-    private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall, Set<String> modifyProperties) {
-
-        for (String modifiedProperty : modifyProperties) {
-            NodeList<Expression> arguments = nodeList(new NameExpr(modifiedProperty));
-            MethodCallExpr update = new MethodCallExpr(new NameExpr("drools"), "update", arguments);
-            ruleConsequence.getStatements().add(new ExpressionStmt(update));
-        }
-
-
+    private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
         boolean requireDrools = rewriteRHS(ruleVariablesBlock, ruleConsequence);
         MethodCallExpr executeCall = new MethodCallExpr(onCall != null ? onCall : new NameExpr("D"), EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
@@ -401,7 +391,7 @@ public class Consequence {
                 if (context.isPropertyReactive(updatedClass)) {
 
                     if ( !initializedBitmaskFields.contains( updatedVar ) ) {
-                        Set<String> modifiedProps = findModifiedProperties(methodCallExprs, updateExpr, updatedVar, updatedClass );
+                        Set<String> modifiedProps = findModifiedProperties(methodCallExprs, updatedVar, updatedClass );
                         modifiedProps.addAll(findModifiedPropertiesFromAssignment(assignExprs, updatedVar));
                         MethodCallExpr bitMaskCreation = createBitMaskInitialization( updatedClass, modifiedProps );
                         AssignExpr bitMaskAssign = createBitMaskField(updatedVar, bitMaskCreation);
@@ -454,9 +444,9 @@ public class Consequence {
         return new AssignExpr(bitMaskVar, bitMaskCreation, AssignExpr.Operator.ASSIGN);
     }
 
-    private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar, Class<?> updatedClass ) {
+    private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, String updatedVar, Class<?> updatedClass ) {
         Set<String> modifiedProps = new HashSet<>();
-        for (MethodCallExpr methodCall : methodCallExprs.subList(0, methodCallExprs.indexOf(updateExpr))) {
+        for (MethodCallExpr methodCall : methodCallExprs) {
             if (!isDirectExpression(methodCall)) {
                 continue; // don't evaluate a method which is a part of other expression
             }

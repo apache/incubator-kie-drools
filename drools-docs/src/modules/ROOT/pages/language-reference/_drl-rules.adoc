@@ -2595,8 +2595,20 @@ update ( <object> )  // Causes `KieSession` to search for a fact handle of the o
 [source]
 ----
 $application.setAmount( 100 );
-update( LoanApplication );
+update( $application );
 ----
+
+[NOTE]
+====
+When `modify` or `update` is called in a rule, its actual evaluation happens after executing the whole RHS code. It means all modifications in the RHS will affect in the evaluation. For example,
+[source]
+----
+$application.setAmount( 100 );
+update( $application );
+$application.setApproved( true );
+----
+The modifications of both `amount` and `approved` are considered in the evaluation of the update.
+====
 
 NOTE: If you provide property-change listeners, you do not need to call this method when an object changes. For more information about property-change listeners, see
 xref:rule-engine/index.adoc#property-change-listeners-con_rule-engine[Property-change settings and listeners for fact types].
