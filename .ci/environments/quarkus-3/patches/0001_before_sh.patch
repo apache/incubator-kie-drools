@@ -330,7 +330,7 @@ index 914a5ed1a5..840df84c51 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index 877071a6fb..4d9304ade3 100644
+index 138f149cf0..4d9304ade3 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,9 +16,9 @@
@@ -352,7 +352,7 @@ index 877071a6fb..4d9304ade3 100644
 -    <version.io.quarkiverse.jackson-jq>1.1.0</version.io.quarkiverse.jackson-jq>
 -    <version.io.quarkiverse.openapi.generator>1.2.1</version.io.quarkiverse.openapi.generator>
 -    <version.io.quarkiverse.asyncapi>0.0.3</version.io.quarkiverse.asyncapi>
--    <version.io.quarkiverse.reactivemessaging.http>1.0.8</version.io.quarkiverse.reactivemessaging.http>
+-    <version.io.quarkiverse.reactivemessaging.http>1.1.5</version.io.quarkiverse.reactivemessaging.http>
 +    <version.io.quarkiverse.jackson-jq>2.0.1</version.io.quarkiverse.jackson-jq>
 +    <version.io.quarkiverse.openapi.generator>2.2.2</version.io.quarkiverse.openapi.generator>
 +    <version.io.quarkiverse.asyncapi>0.1.0</version.io.quarkiverse.asyncapi>
