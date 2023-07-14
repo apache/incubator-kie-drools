@@ -233,4 +233,10 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
         return new RuleConfigImpl();
     }
 
+    @Override
+    public <T extends RuleUnitData> int invalidateRuleUnits(Class<T> ruleUnitDataClass) {
+        String ruleUnitName = getRuleUnitName(ruleUnitDataClass);
+        RuleUnit remove = ruleUnitMap.remove(ruleUnitName);
+        return remove == null ? 0 : 1;
+    }
 }
