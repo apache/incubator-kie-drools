@@ -16,8 +16,8 @@
 
 package org.drools.util;
 
-import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.LinkedTransferQueue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -26,41 +26,41 @@ public interface ObjectPool<T> extends AutoCloseable {
     T borrow();
     void offer(T t);
 
-    static <T> ObjectPool<T> newSynchronizedPool(Supplier<T> factory) {
-        return new SynchronizedObjectPool<>(factory);
+    static <T> ObjectPool<T> newLockFreePool(Supplier<T> factory) {
+        return new LockFreeObjectPool<>(factory);
     }
 
-    static <T> ObjectPool<T> newSynchronizedPool(Supplier<T> factory, Consumer<T> destroyer) {
-        return new SynchronizedObjectPool<>(factory, destroyer);
+    static <T> ObjectPool<T> newLockFreePool(Supplier<T> factory, Consumer<T> destroyer) {
+        return new LockFreeObjectPool<>(factory, destroyer);
     }
 
-    class SynchronizedObjectPool<T> implements ObjectPool<T> {
+    class LockFreeObjectPool<T> implements ObjectPool<T> {
         private final Supplier<T> factory;
         private final Consumer<T> destroyer;
 
-        private final Queue<T> pool = new ArrayDeque<>();
+        private final Queue<T> pool = new LinkedTransferQueue<>();
 
-        public SynchronizedObjectPool(Supplier<T> factory) {
+        public LockFreeObjectPool(Supplier<T> factory) {
             this(factory, null);
         }
 
-        public SynchronizedObjectPool(Supplier<T> factory, Consumer<T> destroyer) {
+        public LockFreeObjectPool(Supplier<T> factory, Consumer<T> destroyer) {
             this.factory = factory;
             this.destroyer = destroyer;
         }
 
         @Override
-        public synchronized T borrow() {
+        public T borrow() {
             return pool.isEmpty() ? factory.get() : pool.poll();
         }
 
         @Override
-        public synchronized void offer(T t) {
+        public void offer(T t) {
             pool.offer(t);
         }
 
         @Override
-        public synchronized void close() throws Exception {
+        public void close() throws Exception {
             if (destroyer != null) {
                 pool.forEach(destroyer);
             }

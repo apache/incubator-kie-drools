@@ -56,7 +56,7 @@ public class PartitionsManager {
     }
 
     private static class FireUntilHaltExecutorsPoolHolder {
-        private static final ObjectPool<ExecutorService> POOL = ObjectPool.newSynchronizedPool( () -> ExecutorProviderFactory.getExecutorProvider().newFixedThreadPool(MAX_PARALLEL_THRESHOLD));
+        private static final ObjectPool<ExecutorService> POOL = ObjectPool.newLockFreePool( () -> ExecutorProviderFactory.getExecutorProvider().newFixedThreadPool(MAX_PARALLEL_THRESHOLD));
     }
 
     public static ExecutorService borrowFireUntilHaltExecutors() {
