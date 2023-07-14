@@ -49,6 +49,7 @@
           </pomIncludes>
           <projectsDirectory>src/it</projectsDirectory>
           <debug>true</debug>
+          <streamLogsOnFailures>true</streamLogsOnFailures>
           <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
           <logDirectory>${project.build.directory}/it</logDirectory>
           <filterProperties>
