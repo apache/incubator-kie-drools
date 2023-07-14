@@ -27,7 +27,16 @@ public interface RuleUnitProvider extends KieService {
      * Provides the {@link RuleUnit} generated for the given {@link RuleUnitData}.
      * @return The generated {@link RuleUnit} or null if there's no {@link RuleUnit} generated for the given {@link RuleUnitData}.
      */
-    <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData);
+    default <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData) {
+        return getRuleUnit(ruleUnitData, false);
+    }
+
+    /**
+     * Provides the {@link RuleUnit} generated for the given {@link RuleUnitData}.
+     * @param rebuild if true, the {@link RuleUnit} is regenerated instead of using the cached one.
+     * @return The generated {@link RuleUnit} or null if there's no {@link RuleUnit} generated for the given {@link RuleUnitData}.
+     */
+    <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData, boolean rebuild);
 
     /**
      * Creates a new {@link RuleUnitInstance} from the {@link RuleUnit} generated for the given {@link RuleUnitData}.
@@ -38,7 +47,21 @@ public interface RuleUnitProvider extends KieService {
      * throwing a runtime exception if there isn't any {@link RuleUnit} generated for the given {@link RuleUnitData}.
      */
     default <T extends RuleUnitData> RuleUnitInstance<T> createRuleUnitInstance(T ruleUnitData) {
-        RuleUnit<T> ruleUnit = getRuleUnit(ruleUnitData);
+        return createRuleUnitInstance(ruleUnitData, false);
+    }
+
+    /**
+     * Creates a new {@link RuleUnitInstance} from the {@link RuleUnit} generated for the given {@link RuleUnitData}.
+     * This is equivalent to
+     * <pre>
+     * RuleUnitProvider.get().getRuleUnit(ruleUnitData, rebuild).createInstance(ruleUnitData);
+     * </pre>
+     * throwing a runtime exception if there isn't any {@link RuleUnit} generated for the given {@link RuleUnitData}.
+     *
+     * @param rebuild if true, the {@link RuleUnit} is regenerated before creating the {@link RuleUnitInstance}.
+     */
+    default <T extends RuleUnitData> RuleUnitInstance<T> createRuleUnitInstance(T ruleUnitData, boolean rebuild) {
+        RuleUnit<T> ruleUnit = getRuleUnit(ruleUnitData, rebuild);
         if (ruleUnit == null) {
             throw new RuntimeException("Cannot find any rule unit for RuleUnitData of class:" + ruleUnitData.getClass().getCanonicalName());
         }
@@ -54,7 +77,21 @@ public interface RuleUnitProvider extends KieService {
      * throwing a runtime exception if there isn't any {@link RuleUnit} generated for the given {@link RuleUnitData}.
      */
     default <T extends RuleUnitData> RuleUnitInstance<T> createRuleUnitInstance(T ruleUnitData, RuleConfig ruleConfig) {
-        RuleUnit<T> ruleUnit = getRuleUnit(ruleUnitData);
+        return createRuleUnitInstance(ruleUnitData, ruleConfig, false);
+    }
+
+    /**
+     * Creates a new {@link RuleUnitInstance} from the {@link RuleUnit} generated for the given {@link RuleUnitData} with {@link RuleConfig}.
+     * This is equivalent to
+     * <pre>
+     * RuleUnitProvider.get().getRuleUnit(ruleUnitData).createInstance(ruleUnitData, ruleConfig);
+     * </pre>
+     * throwing a runtime exception if there isn't any {@link RuleUnit} generated for the given {@link RuleUnitData}.
+     *
+     * @param rebuild if true, the {@link RuleUnit} is regenerated before creating the {@link RuleUnitInstance}.
+     */
+    default <T extends RuleUnitData> RuleUnitInstance<T> createRuleUnitInstance(T ruleUnitData, RuleConfig ruleConfig, boolean rebuild) {
+        RuleUnit<T> ruleUnit = getRuleUnit(ruleUnitData, rebuild);
         if (ruleUnit == null) {
             throw new RuntimeException("Cannot find any rule unit for RuleUnitData of class:" + ruleUnitData.getClass().getCanonicalName());
         }

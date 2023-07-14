@@ -68,12 +68,16 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
     }
 
     @Override
-    public <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData) {
+    public <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData, boolean rebuild) {
         String ruleUnitName = getRuleUnitName(ruleUnitData);
-        RuleUnit<T> ruleUnit = ruleUnitMap.get(ruleUnitName);
-        if (ruleUnit != null) {
-            return ruleUnit;
+
+        if (!rebuild) {
+            RuleUnit<T> ruleUnit = ruleUnitMap.get(ruleUnitName);
+            if (ruleUnit != null) {
+                return ruleUnit;
+            }
         }
+
         ruleUnitMap.putAll(generateRuleUnit(ruleUnitData));
         return ruleUnitMap.get(ruleUnitName);
     }
