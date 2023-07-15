@@ -83,7 +83,6 @@ public class WindowNode extends ObjectSource
                       final BuildContext context) {
         super(id,
               context.getPartitionId(),
-              context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation(),
               objectSource,
               context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeHashingThreshold(),
               context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeRangeIndexThreshold());

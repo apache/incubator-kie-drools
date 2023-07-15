@@ -16,12 +16,6 @@
 
 package org.drools.core.common;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.BaseTerminalNode;
@@ -36,6 +30,12 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.kie.api.definition.rule.Rule;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * The base class for all Rete nodes.
  */
@@ -48,7 +48,6 @@ public abstract class BaseNode
     protected int                        memoryId = -1;
 
     protected RuleBasePartitionId partitionId;
-    protected boolean                    partitionsEnabled;
     protected Set<Rule>                  associations;
 
     private Map<Integer, TerminalNode> associatedTerminals;
@@ -68,12 +67,10 @@ public abstract class BaseNode
      *      The unique id
      */
     public BaseNode(final int id,
-                    final RuleBasePartitionId partitionId,
-                    final boolean partitionsEnabled) {
+                    final RuleBasePartitionId partitionId) {
         super();
         this.id = id;
         this.partitionId = partitionId;
-        this.partitionsEnabled = partitionsEnabled;
         this.associations = new HashSet<>();
         this.associatedTerminals = new HashMap<>();
     }
@@ -169,10 +166,6 @@ public abstract class BaseNode
      */
     public void setPartitionId(BuildContext context, RuleBasePartitionId partitionId) {
         this.partitionId = partitionId;
-    }
-
-    public void setPartitionsEnabled( boolean partitionsEnabled ) {
-        this.partitionsEnabled = partitionsEnabled;
     }
 
     /**

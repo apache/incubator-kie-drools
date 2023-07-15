@@ -16,31 +16,18 @@
 
 package org.drools.kiesession.rulebase;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.InvalidPatternException;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.KieBaseConfigurationImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.common.RuleBasePartitionId;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalRuleBase;
@@ -57,10 +44,7 @@ import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
-import org.drools.base.rule.InvalidPatternException;
-import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.base.ruleunit.RuleUnitDescriptionRegistry;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
@@ -75,6 +59,22 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
@@ -759,6 +759,16 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     @Override
     public RuleBasePartitionId createNewPartitionId() {
         return delegate.createNewPartitionId();
+    }
+
+    @Override
+    public boolean hasParallelEvaluation() {
+        return delegate.hasParallelEvaluation();
+    }
+
+    @Override
+    public int getParallelEvaluationSlotsCount() {
+        return delegate.getParallelEvaluationSlotsCount();
     }
 
     @Override

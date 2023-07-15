@@ -16,27 +16,27 @@
 
 package org.drools.core.reteoo;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.base.base.ObjectType;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
-import org.drools.base.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * When joining a subnetwork into the main network again, RightInputAdapterNode adapts the
@@ -90,9 +90,7 @@ public class RightInputAdapterNode extends ObjectSource
                                  final LeftTupleSource source,
                                  final LeftTupleSource startTupleSource,
                                  final BuildContext context) {
-        super( id,
-               context.getPartitionId(),
-               context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation() );
+        super( id, context.getPartitionId() );
         this.tupleSource = source;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.startTupleSource = startTupleSource;

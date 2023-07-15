@@ -16,20 +16,20 @@
 
 package org.drools.core.reteoo;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.base.base.ClassObjectType;
-import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.common.BaseNode;
+import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.Pattern;
+import org.drools.core.common.BaseNode;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.Pattern;
-import org.drools.base.base.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
+
+import java.util.Collection;
+import java.util.List;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.base.reteoo.PropertySpecificUtil.calculatePositiveMask;
@@ -80,9 +80,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
      * @param id
      */
     protected LeftTupleSource(int id, BuildContext context) {
-        super(id,
-              context != null ? context.getPartitionId() : RuleBasePartitionId.MAIN_PARTITION,
-              context != null && context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation());
+        super(id, context != null ? context.getPartitionId() : RuleBasePartitionId.MAIN_PARTITION);
         this.sink = EmptyLeftTupleSinkAdapter.getInstance();
         initMemoryId( context );
     }

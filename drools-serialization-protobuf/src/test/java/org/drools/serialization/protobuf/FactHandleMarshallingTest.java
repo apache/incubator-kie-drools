@@ -14,21 +14,14 @@
 
 package org.drools.serialization.protobuf;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.Date;
-
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DefaultEventHandle;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.QueryElementFactHandle;
-import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.marshalling.MarshallerReaderContext;
@@ -37,7 +30,6 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.builder.NodeFactory;
-import org.drools.base.rule.EntryPointId;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
@@ -54,6 +46,14 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.RuleRuntime;
 import org.kie.internal.marshalling.MarshallerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -73,7 +73,7 @@ public class FactHandleMarshallingTest {
         NodeFactory nFacotry = CoreComponentFactory.get().getNodeFactoryService();
 
         RuleBasePartitionId partionId = RuleBasePartitionId.MAIN_PARTITION;
-        EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, false, rete , EntryPointId.DEFAULT);
+        EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, rete , EntryPointId.DEFAULT);
         WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( EntryPointId.DEFAULT, entryPointNode, wm);
 
         DefaultEventHandle factHandle = new DefaultEventHandle(1, new Person(), 0, (new Date()).getTime(), 0, wmEntryPoint);

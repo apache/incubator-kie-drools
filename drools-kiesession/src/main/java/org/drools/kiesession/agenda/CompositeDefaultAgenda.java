@@ -17,7 +17,7 @@
 package org.drools.kiesession.agenda;
 
 import org.drools.base.common.NetworkNode;
-import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.common.PartitionsManager;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupsManager;
 import org.drools.core.common.InternalActivationGroup;
@@ -40,7 +40,6 @@ import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.util.CompositeIterator;
 import org.kie.api.runtime.rule.AgendaFilter;
-import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,50 +51,37 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import static java.util.concurrent.CompletableFuture.runAsync;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     protected static final Logger log = LoggerFactory.getLogger( CompositeDefaultAgenda.class );
 
-    private static final ExecutorService EXECUTOR = ExecutorProviderFactory.getExecutorProvider().getExecutor();
-
-    private static final AtomicBoolean FIRING_UNTIL_HALT_USING_EXECUTOR = new AtomicBoolean( false );
-
-    private final DefaultAgenda[] agendas = new DefaultAgenda[RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER];
-
     private final DefaultAgenda.ExecutionStateMachine executionStateMachine = new DefaultAgenda.ConcurrentExecutionStateMachine();
+
+    private DefaultAgenda[] agendas;
 
     private PropagationList propagationList;
 
     public CompositeDefaultAgenda() { }
 
-    public CompositeDefaultAgenda(InternalRuleBase kBase) {
-        this( kBase, true );
-    }
-
     public CompositeDefaultAgenda(InternalRuleBase kBase, boolean initMain) {
-        for ( int i = 0; i < agendas.length; i++ ) {
+        this.agendas = new DefaultAgenda[kBase.getParallelEvaluationSlotsCount()];
+        for ( int i = 0; i < this.agendas.length; i++ ) {
             agendas[i] = new PartitionedDefaultAgenda(kBase, initMain, executionStateMachine, i);
         }
     }
 
     @Override
     public void writeExternal( ObjectOutput out ) throws IOException {
-        for ( DefaultAgenda agenda : agendas ) {
-            out.writeObject( agenda );
-        }
+        out.writeObject( agendas );
     }
 
     @Override
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        for ( int i = 0; i < agendas.length; i++ ) {
-            agendas[i] = (DefaultAgenda) in.readObject();
-        }
+        agendas = (DefaultAgenda[]) in.readObject();
     }
 
     @Override
@@ -174,17 +160,9 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     private int parallelFire( AgendaFilter agendaFilter, int fireLimit ) {
-        CompletableFuture<Integer>[] results = new CompletableFuture[agendas.length-1];
-        for (int i = 0; i < results.length; i++) {
-            final int j = i;
-            results[j] = supplyAsync( () -> agendas[j].internalFireAllRules( agendaFilter, fireLimit, false ), EXECUTOR );
-        }
-
-        int result = agendas[agendas.length-1].internalFireAllRules( agendaFilter, fireLimit, false );
-        for (int i = 0; i < results.length; i++) {
-            result += results[i].join();
-        }
-        return result;
+        return PartitionsManager.getFireAllExecutors().submit(() ->
+                Stream.of(agendas).parallel().mapToInt(a -> a.internalFireAllRules( agendaFilter, fireLimit, false )).sum()
+        ).join();
     }
 
     @Override
@@ -204,39 +182,27 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     @Override
     public void fireUntilHalt( AgendaFilter agendaFilter ) {
-        ExecutorService fireUntilHaltExecutor = EXECUTOR;
-
-        if ( FIRING_UNTIL_HALT_USING_EXECUTOR.getAndSet( true )) {
-            fireUntilHaltExecutor = ExecutorProviderFactory.getExecutorProvider().newFixedThreadPool();
-        }
-
         if ( log.isTraceEnabled() ) {
             log.trace("Starting Fire Until Halt");
         }
+
+        ExecutorService fireUntilHaltExecutor = PartitionsManager.borrowFireUntilHaltExecutors();
         if (executionStateMachine.toFireUntilHalt()) {
             try {
                 while ( isFiring() ) {
-                    CompletableFuture<Void>[] futures = new CompletableFuture[agendas.length - 1];
+                    CompletableFuture<Void>[] futures = new CompletableFuture[agendas.length];
                     for ( int i = 0; i < futures.length; i++ ) {
                         final int j = i;
                         futures[j] = runAsync( () -> agendas[j].internalFireUntilHalt( agendaFilter, false ), fireUntilHaltExecutor );
                     }
-
-                    agendas[agendas.length - 1].internalFireUntilHalt( agendaFilter, false );
-
-                    for ( int i = 0; i < futures.length; i++ ) {
-                        futures[i].join();
-                    }
+                    CompletableFuture.allOf(futures).join();
                 }
             } finally {
                 executionStateMachine.immediateHalt( propagationList );
-                if ( fireUntilHaltExecutor == EXECUTOR ) {
-                    FIRING_UNTIL_HALT_USING_EXECUTOR.set( false );
-                } else {
-                    fireUntilHaltExecutor.shutdown();
-                }
+                PartitionsManager.offerFireUntilHaltExecutors(fireUntilHaltExecutor);
             }
         }
+
         if ( log.isTraceEnabled() ) {
             log.trace("Ending Fire Until Halt");
         }

@@ -16,21 +16,21 @@
 
 package org.drools.core.reteoo;
 
-import java.util.List;
-
 import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.base.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
+
+import java.util.List;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
@@ -73,11 +73,10 @@ public class AlphaNode extends ObjectSource
                      final ObjectSource objectSource,
                      final BuildContext context) {
         super(id,
-                context.getPartitionId(),
-                context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation(),
-                objectSource,
-                context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeHashingThreshold(),
-                context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeRangeIndexThreshold());
+              context.getPartitionId(),
+              objectSource,
+              context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeHashingThreshold(),
+              context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeRangeIndexThreshold());
 
         this.constraint = constraint.cloneIfInUse();
         this.constraint.registerEvaluationContext(context);

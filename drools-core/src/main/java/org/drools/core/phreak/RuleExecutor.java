@@ -44,15 +44,15 @@ import org.slf4j.LoggerFactory;
 
 public class RuleExecutor {
 
-    protected static final transient Logger   log               = LoggerFactory.getLogger(RuleExecutor.class);
+    protected static final Logger log = LoggerFactory.getLogger(RuleExecutor.class);
 
-    private final PathMemory                  pmem;
-    private final RuleAgendaItem              ruleAgendaItem;
-    private final TupleList                   tupleList;
+    private final PathMemory pmem;
+    private final RuleAgendaItem ruleAgendaItem;
+    private final TupleList tupleList;
     private Queue<InternalMatch> queue;
-    private volatile boolean                  dirty;
-    private final boolean                     declarativeAgendaEnabled;
-    private boolean                           fireExitedEarly;
+    private volatile boolean dirty;
+    private final boolean declarativeAgendaEnabled;
+    private boolean fireExitedEarly;
 
     public RuleExecutor(final PathMemory pmem,
             RuleAgendaItem ruleAgendaItem,

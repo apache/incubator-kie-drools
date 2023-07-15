@@ -137,7 +137,7 @@ public interface InternalFactHandle
 
     interface LinkedTuples extends Serializable {
         LinkedTuples clone();
-        LinkedTuples newInstance();
+        LinkedTuples cloneEmpty();
 
         boolean hasTuples();
 
@@ -172,14 +172,6 @@ public interface InternalFactHandle
         default RightTuple getFirstRightTuple(RuleBasePartitionId partitionId) {
             return getFirstRightTuple( partitionId.getParallelEvaluationSlot() );
         }
-    }
-
-    default InternalFactHandle getParentHandle() {
-        return null;
-    }
-
-    default void setParentHandle( InternalFactHandle parentHandle ) {
-        throw new UnsupportedOperationException();
     }
 
     static InternalFactHandle dummyFactHandleOf(Object object) {
