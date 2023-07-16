@@ -1800,10 +1800,10 @@ index c5f6384f43..fea26fb7bc 100644
  import org.kie.api.runtime.rule.Match;
  
 diff --git a/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java b/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
-index c4ff80aec3..2eb36e9e4c 100644
+index 0559383b05..b35424e9f4 100644
 --- a/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
-@@ -30,10 +30,10 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
+@@ -29,10 +29,10 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
  import org.drools.util.StringUtils;
  import org.kie.api.runtime.rule.FactHandle;
  
