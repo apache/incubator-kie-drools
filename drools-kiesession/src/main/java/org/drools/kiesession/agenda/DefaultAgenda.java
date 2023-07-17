@@ -893,6 +893,10 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         return ruleEvaluator.getKnowledgeHelper();
     }
 
+    public void resetKnowledgeHelper() {
+        ruleEvaluator.resetKnowledgeHelper();
+    }
+
     @Override
     public void addPropagation(PropagationEntry propagationEntry) {
         propagationList.addEntry( propagationEntry );

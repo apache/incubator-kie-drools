@@ -16,11 +16,8 @@
 
 package org.drools.core.common;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.function.Consumer;
-
 import org.drools.base.base.ValueResolver;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -31,7 +28,6 @@ import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.base.rule.EntryPointId;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.time.TimerService;
@@ -42,6 +38,10 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionClock;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Consumer;
 
 public interface ReteEvaluator extends ValueResolver {
 
@@ -122,6 +122,9 @@ public interface ReteEvaluator extends ValueResolver {
 
     default void startOperation(InternalOperationType operationType) { }
     default void endOperation(InternalOperationType operationType) { }
+
+    boolean isTMSEnabled();
+    void enableTMS();
 
     default KnowledgeHelper createKnowledgeHelper() {
         return RuntimeComponentFactory.get().createKnowledgeHelper(this);

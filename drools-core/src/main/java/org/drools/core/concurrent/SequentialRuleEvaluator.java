@@ -26,7 +26,7 @@ public class SequentialRuleEvaluator extends AbstractRuleEvaluator implements Ru
 
     private final boolean sequential;
 
-    private final KnowledgeHelper knowledgeHelper;
+    private KnowledgeHelper knowledgeHelper;
 
     public SequentialRuleEvaluator( ActivationsManager activationsManager ) {
         super(activationsManager);
@@ -43,7 +43,13 @@ public class SequentialRuleEvaluator extends AbstractRuleEvaluator implements Ru
         return item != null ? internalEvaluateAndFire( filter, fireCount, fireLimit, item ) : 0;
     }
 
+    @Override
     public KnowledgeHelper getKnowledgeHelper() {
         return knowledgeHelper;
+    }
+
+    @Override
+    public void resetKnowledgeHelper() {
+        knowledgeHelper = newKnowledgeHelper();
     }
 }

@@ -260,10 +260,7 @@ public class ProtobufInputMarshaller {
 
             context.getFilter().fireRNEAs( context.getWorkingMemory() );
 
-            readTruthMaintenanceSystem( context,
-                                        wmep,
-                                        _ep,
-                                        pctxs );
+            readTruthMaintenanceSystem( session, context, wmep, _ep, pctxs );
 
             context.getWorkingMemory().getFactHandleFactory().stopRecycleIds();
         }
@@ -543,7 +540,8 @@ public class ProtobufInputMarshaller {
         return handle;
     }
 
-    public static void readTruthMaintenanceSystem( ProtobufMarshallerReaderContext context,
+    public static void readTruthMaintenanceSystem( StatefulKnowledgeSessionImpl session,
+                                                   ProtobufMarshallerReaderContext context,
                                                    EntryPoint wmep,
                                                    ProtobufMessages.EntryPoint _ep,
                                                    List<PropagationContext> pctxs) throws IOException,
@@ -552,8 +550,8 @@ public class ProtobufInputMarshaller {
         
         boolean wasOTCSerialized = _ep.getOtcCount() > 0; // if 0, then the OTC was not serialized (older versions of drools)
         Set<String> tmsEnabled = new HashSet<>();
-        for( ObjectTypeConfiguration _otc : _ep.getOtcList() ) {
-        	if( _otc.getTmsEnabled() ) {
+        for ( ObjectTypeConfiguration _otc : _ep.getOtcList() ) {
+        	if ( _otc.getTmsEnabled() ) {
             	tmsEnabled.add( _otc.getType() );
         	}
         }
@@ -561,7 +559,7 @@ public class ProtobufInputMarshaller {
         ProtobufMessages.TruthMaintenanceSystem _tms = _ep.getTms();
 
         for ( ProtobufMessages.EqualityKey _key : _tms.getKeyList() ) {
-            InternalFactHandle handle = (InternalFactHandle) context.getHandles().get( _key.getHandleId() );
+            InternalFactHandle handle = context.getHandles().get( _key.getHandleId() );
 
             // ObjectTypeConf state is not marshalled, so it needs to be re-determined
             ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( handle.getEntryPointId(),
@@ -595,6 +593,9 @@ public class ProtobufInputMarshaller {
             readBeliefSet( context, tms, _key );
         }
 
+        if ( tms.getEqualityKeysSize() != 0 ) {
+            session.enableTMS();
+        }
     }
 
     private static void readBeliefSet( MarshallerReaderContext context,

@@ -14,12 +14,6 @@
 
 package org.drools.serialization.protobuf;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
@@ -45,6 +39,12 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -702,20 +702,16 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kbase.addPackages( pkgs );
         KieSession session = createKnowledgeSession(kbase);
         try {
-            Sensor sensor1 = new Sensor( 100,
-                                         0 );
+            Sensor sensor1 = new Sensor( 100, 0 );
             FactHandle sensor1Handle = session.insert( sensor1 );
-            Sensor sensor2 = new Sensor( 200,
-                                         0 );
+            Sensor sensor2 = new Sensor( 200, 0 );
             FactHandle sensor2Handle = session.insert( sensor2 );
-            Sensor sensor3 = new Sensor( 200,
-                                         0 );
+            Sensor sensor3 = new Sensor( 200, 0 );
             FactHandle sensor3Handle = session.insert( sensor3 );
 
             session.fireAllRules();
 
-            session = getSerialisedStatefulKnowledgeSession( session,
-                                                             true );
+            session = getSerialisedStatefulKnowledgeSession( session, true );
 
             List temperatureList = new ArrayList( session.getObjects( new ClassObjectFilter( Integer.class ) ) );
             assertThat(temperatureList.contains(Integer.valueOf(100))).isTrue();
@@ -726,8 +722,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             sensor1Handle =  getFactHandle( sensor1Handle, session );
             session.update( sensor1Handle, sensor1 );
 
-            session = getSerialisedStatefulKnowledgeSession( session,
-                                                             true );
+            session = getSerialisedStatefulKnowledgeSession( session, true );
             session.fireAllRules();
 
             temperatureList = new ArrayList( session.getObjects( new ClassObjectFilter( Integer.class ) ) );
@@ -744,20 +739,18 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                                             StatefulKnowledgeSessionImpl session) {
         Map<Long, FactHandle> handles = new HashMap<>();
         for ( FactHandle fh : session.getFactHandles() ) {
-            handles.put( ((InternalFactHandle) fh).getId(),
-                    fh );
+            handles.put( fh.getId(), fh );
         }
-        return (InternalFactHandle) handles.get( ((InternalFactHandle) factHandle).getId() );
+        return (InternalFactHandle) handles.get( factHandle.getId() );
     }
 
     public InternalFactHandle getFactHandle(FactHandle factHandle,
                                             KieSession ksession) {
         Map<Long, FactHandle> handles = new HashMap<>();
         for ( FactHandle fh : ksession.getFactHandles() ) {
-            handles.put( ((InternalFactHandle) fh).getId(),
-                    fh );
+            handles.put( fh.getId(), fh );
         }
-        return (InternalFactHandle) handles.get( ((InternalFactHandle) factHandle).getId() );
+        return (InternalFactHandle) handles.get( factHandle.getId() );
     }
 }
 

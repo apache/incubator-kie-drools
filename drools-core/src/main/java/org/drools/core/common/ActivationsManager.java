@@ -75,6 +75,7 @@ public interface ActivationsManager {
     void evaluateQueriesForRule(RuleAgendaItem item);
 
     KnowledgeHelper getKnowledgeHelper();
+    void resetKnowledgeHelper();
 
     void executeTask(ExecutableEntry executableEntry);
 

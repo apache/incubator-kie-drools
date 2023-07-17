@@ -495,6 +495,11 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
+    public void resetKnowledgeHelper() {
+        throw new UnsupportedOperationException( "This method has to be called on the single partitioned agendas" );
+    }
+
+    @Override
     public boolean isParallelAgenda() {
         return true;
     }
