@@ -47,6 +47,7 @@
         <module>tracing-decision</module>
         <module>task-management</module>
         <module>marshallers</module>
+        <module>process-definitions</module>
         <module>python</module>
       </modules>
     </profile>

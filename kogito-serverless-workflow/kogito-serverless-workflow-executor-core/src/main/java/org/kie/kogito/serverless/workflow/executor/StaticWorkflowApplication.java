@@ -155,7 +155,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
      * @return
      */
     public JsonNodeModel execute(Workflow workflow, Map<String, Object> data) {
-        return execute(process(workflow), data);
+        return execute(findOrCreate(workflow), data);
     }
 
     /**
@@ -168,7 +168,11 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
      * @return
      */
     public JsonNodeModel execute(Workflow workflow, JsonNode data) {
-        return execute(process(workflow), data);
+        return execute(findOrCreate(workflow), data);
+    }
+
+    private Process<JsonNodeModel> findOrCreate(Workflow workflow) {
+        return findProcessById(workflow.getId()).orElseGet(() -> process(workflow));
     }
 
     /**
@@ -214,7 +218,9 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
      * @return Executable process definition
      */
     public Process<JsonNodeModel> process(Workflow workflow) {
-        return processes.map.computeIfAbsent(workflow.getId(), k -> createProcess(workflow));
+        Process<JsonNodeModel> process = createProcess(workflow);
+        processes.map.put(workflow.getId(), process);
+        return process;
     }
 
     public void registerHandler(KogitoWorkItemHandler handler) {
@@ -223,6 +229,10 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
 
     public void registerCloseable(AutoCloseable closeable) {
         closeables.add(closeable);
+    }
+
+    public Optional<Process<JsonNodeModel>> findProcessById(String id) {
+        return Optional.ofNullable((Process<JsonNodeModel>) processes.processById(id));
     }
 
     private Optional<ProcessInstance<JsonNodeModel>> findProcessInstance(String id) {
@@ -261,7 +271,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
         workflowProcess.getNodesRecursively().forEach(node -> {
             if (node instanceof SubProcessNode) {
                 SubProcessNode subProcess = (SubProcessNode) node;
-                subProcess.setSubProcessFactory(new StaticSubprocessFactory(processes.map.get(subProcess.getProcessId())));
+                subProcess.setSubProcessFactory(new StaticSubprocessFactory((Process<JsonNodeModel>) processes.processById(subProcess.getProcessId())));
             }
         });
         EventFactoryUtils.ready();
