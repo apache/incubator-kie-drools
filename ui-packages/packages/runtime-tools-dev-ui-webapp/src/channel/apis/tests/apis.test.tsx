@@ -1037,6 +1037,56 @@ describe('custom dashboard section', () => {
 });
 
 describe('swf custom form tests', () => {
+  it('get custom custom workflow schema from post schema- success ', async () => {
+    const schemaPost = {
+      schema: {
+        title: 'Expression',
+        description: 'Schema for expression test',
+        required: ['numbers'],
+        type: 'object',
+        properties: {
+          numbers: {
+            description: 'The array of numbers to be operated with',
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                x: {
+                  type: 'number'
+                },
+                y: {
+                  type: 'number'
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    SwaggerParser.parse['mockImplementation'](() =>
+      Promise.resolve({
+        paths: {
+          ['/expression']: {
+            post: {
+              requestBody: {
+                content: {
+                  ['application/json']: schemaPost
+                }
+              }
+            }
+          }
+        }
+      })
+    );
+    const result = await getCustomWorkflowSchema(
+      'http://localhost:8080',
+      '/q/openapi.json',
+      'expression'
+    );
+    expect(result.type).toEqual('object');
+    expect(result.properties.numbers.type).toEqual('array');
+  });
   it('get custom custom workflow schema - success - no workflowdata', async () => {
     SwaggerParser.parse['mockImplementation'](() =>
       Promise.resolve({
@@ -1049,7 +1099,8 @@ describe('swf custom form tests', () => {
     );
     const result = await getCustomWorkflowSchema(
       'http://localhost:8080',
-      '/q/openapi.json'
+      '/q/openapi.json',
+      'expression'
     );
     expect(result).toEqual(null);
   });
