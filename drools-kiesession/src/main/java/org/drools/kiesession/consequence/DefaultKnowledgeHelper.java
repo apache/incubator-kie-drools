@@ -70,6 +70,8 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     protected ReteEvaluator reteEvaluator;
     private StatefulKnowledgeSessionForRHS wrappedEvaluator;
 
+    private KnowledgeHelper tmsKnowledgeHelper;
+
     public DefaultKnowledgeHelper() { }
 
     public DefaultKnowledgeHelper(ReteEvaluator reteEvaluator) {
@@ -161,10 +163,13 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
         if (!TruthMaintenanceSystemFactory.present()) {
             TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
         }
+        if (tmsKnowledgeHelper != null) {
+            return tmsKnowledgeHelper;
+        }
         reteEvaluator.enableTMS();
-        KnowledgeHelper knowledgeHelper = reteEvaluator.createKnowledgeHelper();
-        knowledgeHelper.setActivation(internalMatch);
-        return knowledgeHelper;
+        tmsKnowledgeHelper = reteEvaluator.createKnowledgeHelper();
+        tmsKnowledgeHelper.setActivation(internalMatch);
+        return tmsKnowledgeHelper;
     }
 
     public void cancelMatch(Match act) {
