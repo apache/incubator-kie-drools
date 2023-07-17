@@ -16,33 +16,25 @@
 
 package org.drools.kiesession.consequence;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-
+import org.drools.base.beliefsystem.Mode;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.factmodel.traits.CoreWrapper;
+import org.drools.base.factmodel.traits.Thing;
+import org.drools.base.factmodel.traits.TraitableBean;
+import org.drools.base.rule.Declaration;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
-import org.drools.base.beliefsystem.Mode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
-import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.factmodel.traits.CoreWrapper;
-import org.drools.base.factmodel.traits.Thing;
-import org.drools.base.factmodel.traits.TraitableBean;
+import org.drools.core.process.AbstractProcessContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.base.rule.Declaration;
-import org.drools.core.process.AbstractProcessContext;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
@@ -56,6 +48,14 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.base.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
@@ -104,11 +104,11 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     }
 
     public void blockMatch(Match act) {
-        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
+        executeOnTMS().blockMatch(act);
     }
 
     public void unblockAllMatches(Match act) {
-        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
+        executeOnTMS().unblockAllMatches(act);
     }
 
     public FactHandle insertAsync( final Object object ) {
@@ -120,7 +120,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     }
 
     public FactHandle insert(final Object object, final boolean dynamic) {
-        return (InternalFactHandle) ((InternalWorkingMemoryEntryPoint) this.reteEvaluator.getDefaultEntryPoint())
+        return ((InternalWorkingMemoryEntryPoint) this.reteEvaluator.getDefaultEntryPoint())
                 .insert(object, dynamic, this.internalMatch.getRule(), this.internalMatch.getTuple().getTupleSink());
     }
 
@@ -141,23 +141,30 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     @Override
     public FactHandle insertLogical(Object object, Object value) {
-        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
-        return null;
+        return executeOnTMS().insertLogical(object, value);
     }
 
     @Override
     public FactHandle insertLogical(EntryPoint ep, Object object) {
-        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
-        return null;
+        return executeOnTMS().insertLogical(ep, object);
     }
 
-    public InternalFactHandle bolster( final Object object ) {
+    public FactHandle bolster( final Object object ) {
         return bolster( object, null );
     }
 
-    public InternalFactHandle bolster( final Object object, final Object value ) {
-        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
-        return null;
+    public FactHandle bolster( final Object object, final Object value ) {
+        return executeOnTMS().bolster(object, value);
+    }
+
+    private KnowledgeHelper executeOnTMS() {
+        if (!TruthMaintenanceSystemFactory.present()) {
+            TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
+        }
+        reteEvaluator.enableTMS();
+        KnowledgeHelper knowledgeHelper = reteEvaluator.createKnowledgeHelper();
+        knowledgeHelper.setActivation(internalMatch);
+        return knowledgeHelper;
     }
 
     public void cancelMatch(Match act) {

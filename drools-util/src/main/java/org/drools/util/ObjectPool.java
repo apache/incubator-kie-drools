@@ -51,7 +51,8 @@ public interface ObjectPool<T> extends AutoCloseable {
 
         @Override
         public T borrow() {
-            return pool.isEmpty() ? factory.get() : pool.poll();
+            T t = pool.poll();
+            return t != null ? t : factory.get();
         }
 
         @Override
