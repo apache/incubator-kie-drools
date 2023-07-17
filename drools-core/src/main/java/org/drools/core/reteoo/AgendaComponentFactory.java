@@ -46,7 +46,7 @@ public interface AgendaComponentFactory extends KieService {
         return AgendaComponentFactory.Holder.INSTANCE;
     }
 
-    public class AgendaComponentFactoryImpl implements AgendaComponentFactory {
+    class AgendaComponentFactoryImpl implements AgendaComponentFactory {
 
         public AgendaComponentFactoryImpl() {
         }

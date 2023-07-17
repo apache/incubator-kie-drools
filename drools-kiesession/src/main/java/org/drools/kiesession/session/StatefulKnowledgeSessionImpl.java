@@ -1209,6 +1209,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     @Override
     public void enableTMS() {
         tmsEnabled = true;
+        agenda.resetKnowledgeHelper();
     }
 
     @Override

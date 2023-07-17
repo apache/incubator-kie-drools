@@ -16,12 +16,12 @@
 
 package org.drools.core.common;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import org.drools.core.phreak.PropagationEntry;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public interface InternalAgenda extends Agenda, ActivationsManager {
 

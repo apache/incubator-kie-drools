@@ -255,7 +255,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
     public LeftTuple createPeer(LeftTuple original) {
-        RuleTerminalNodeLeftTuple peer = (RuleTerminalNodeLeftTuple) AgendaComponentFactory.get().createTerminalTuple();
+        AbstractLeftTuple peer = (AbstractLeftTuple) AgendaComponentFactory.get().createTerminalTuple();
         peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer( peer );
         return peer;

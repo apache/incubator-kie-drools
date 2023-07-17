@@ -27,4 +27,6 @@ public interface RuleEvaluator {
                          InternalAgendaGroup group );
 
     KnowledgeHelper getKnowledgeHelper();
+
+    void resetKnowledgeHelper();
 }
