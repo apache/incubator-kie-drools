@@ -44,9 +44,16 @@ public interface ReliableGlobalResolverFactory extends KieService {
 
     static class ReliableGlobalResolverFactoryImpl implements ReliableGlobalResolverFactory {
 
+        static int servicePriorityValue = 0; // package access for test purposes
+
         @Override
         public ReliableGlobalResolver createReliableGlobalResolver(Storage<String, Object> storage) {
             return new ReliableGlobalResolver(storage);
+        }
+
+        @Override
+        public int servicePriority() {
+            return servicePriorityValue;
         }
     }
 }

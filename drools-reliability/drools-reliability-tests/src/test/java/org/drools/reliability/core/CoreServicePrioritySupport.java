@@ -15,18 +15,17 @@
 
 package org.drools.reliability.core;
 
-import org.drools.core.common.Storage;
+public class CoreServicePrioritySupport {
 
-public class SimpleSerializationReliableObjectStoreFactory implements SimpleReliableObjectStoreFactory {
-
-    static int servicePriorityValue = 0; // package access for test purposes
-
-    public SimpleReliableObjectStore createSimpleReliableObjectStore(Storage<Long, StoredObject> storage) {
-        return new SimpleSerializationReliableObjectStore(storage);
+    private CoreServicePrioritySupport() {
+        // utils class
     }
 
-    @Override
-    public int servicePriority() {
-        return servicePriorityValue;
+    public static void setSimpleSerializationReliableObjectStoreFactoryPriority(int priority) {
+        SimpleSerializationReliableObjectStoreFactory.servicePriorityValue = priority;
+    }
+
+    public static void setReliableGlobalResolverFactoryImplPriority(int priority) {
+        ReliableGlobalResolverFactory.ReliableGlobalResolverFactoryImpl.servicePriorityValue = priority;
     }
 }

@@ -13,20 +13,22 @@
  * limitations under the License.
  */
 
-package org.drools.reliability.core;
+package org.drools.reliability.test.proto;
 
-import org.drools.core.common.Storage;
+import org.infinispan.protostream.annotations.ProtoAdapter;
+import org.infinispan.protostream.annotations.ProtoFactory;
+import org.infinispan.protostream.annotations.ProtoField;
 
-public class SimpleSerializationReliableObjectStoreFactory implements SimpleReliableObjectStoreFactory {
+@ProtoAdapter(String.class)
+public class StringAdaptor {
 
-    static int servicePriorityValue = 0; // package access for test purposes
-
-    public SimpleReliableObjectStore createSimpleReliableObjectStore(Storage<Long, StoredObject> storage) {
-        return new SimpleSerializationReliableObjectStore(storage);
+    @ProtoFactory
+    String create(String value) {
+        return new String(value);
     }
 
-    @Override
-    public int servicePriority() {
-        return servicePriorityValue;
+    @ProtoField(1)
+    String getValue(String value) {
+        return value;
     }
 }
