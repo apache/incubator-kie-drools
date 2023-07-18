@@ -2360,6 +2360,38 @@ index 83e7d81c55..8daa52c6e1 100644
  import org.kie.kogito.persistence.rocksdb.RocksDBProcessInstancesFactory;
  import org.kie.kogito.process.ProcessInstancesFactory;
  import org.rocksdb.Options;
+diff --git a/quarkus/addons/process-definitions/runtime/src/main/java/org/kie/kogito/process/definitions/ProcessDefinitionsResource.java b/quarkus/addons/process-definitions/runtime/src/main/java/org/kie/kogito/process/definitions/ProcessDefinitionsResource.java
+index c27ce320ff..2c194db0ad 100644
+--- a/quarkus/addons/process-definitions/runtime/src/main/java/org/kie/kogito/process/definitions/ProcessDefinitionsResource.java
++++ b/quarkus/addons/process-definitions/runtime/src/main/java/org/kie/kogito/process/definitions/ProcessDefinitionsResource.java
+@@ -15,18 +15,18 @@
+  */
+ package org.kie.kogito.process.definitions;
+ 
++import jakarta.annotation.PostConstruct;
++import jakarta.annotation.PreDestroy;
+ import java.io.IOException;
+ import java.io.StringReader;
+ 
+-import javax.annotation.PostConstruct;
+-import javax.annotation.PreDestroy;
+-import javax.ws.rs.Consumes;
+-import javax.ws.rs.POST;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.PathParam;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.MediaType;
+-import javax.ws.rs.core.Response;
++import jakarta.ws.rs.Consumes;
++import jakarta.ws.rs.POST;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.PathParam;
++import jakarta.ws.rs.Produces;
++import jakarta.ws.rs.core.MediaType;
++import jakarta.ws.rs.core.Response;
+ 
+ import org.kie.kogito.serverless.workflow.executor.StaticWorkflowApplication;
+ import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 diff --git a/quarkus/addons/process-management/runtime/pom.xml b/quarkus/addons/process-management/runtime/pom.xml
 index ce0eedf6cd..eea0ab21f5 100644
 --- a/quarkus/addons/process-management/runtime/pom.xml
