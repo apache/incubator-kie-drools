@@ -901,7 +901,6 @@ class MiscDRLParserTest {
         assertThat(third.getLine()).isEqualTo(21);
     }
 
-    @Disabled("Priority : High | Failed to parse comments in RHS")
     @Test
     public void parse_LineNumberIncludingCommentsInRHS() throws Exception {
         PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -910,7 +909,7 @@ class MiscDRLParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         final String rhs = (String) ((RuleDescr) pkg.getRules().get( 0 )).getConsequence();
-        String expected = "\\s*//woot$\\s*first$\\s*$\\s*//$\\s*$\\s*/\\* lala$\\s*$\\s*\\*/$\\s*second$\\s*";
+        String expected = "\\s*//woot$\\s*first;$\\s*$\\s*//$\\s*$\\s*/\\* lala$\\s*$\\s*\\*/$\\s*second;$\\s*";
         assertThat(Pattern.compile(expected,
                                    Pattern.DOTALL | Pattern.MULTILINE).matcher(rhs).matches()).isTrue();
     }
