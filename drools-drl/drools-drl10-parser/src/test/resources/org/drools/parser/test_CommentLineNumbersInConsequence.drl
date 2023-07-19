@@ -21,12 +21,12 @@ rule simple_rule
       Baz()
   then
       //woot
-      first
+      first;
 
       //
 
       /* lala
 
       */
-      second
+      second;
 end
