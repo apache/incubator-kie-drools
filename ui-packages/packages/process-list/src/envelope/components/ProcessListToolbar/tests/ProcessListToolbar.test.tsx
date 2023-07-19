@@ -21,13 +21,17 @@ import { act } from 'react-dom/test-utils';
 import {
   Dropdown,
   DropdownItem,
-  KebabToggle,
+  KebabToggle
+} from '@patternfly/react-core/dist/js/components/Dropdown';
+import {
   Select,
-  SelectOption,
-  TextInput,
+  SelectOption
+} from '@patternfly/react-core/dist/js/components/Select';
+import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
+import {
   Toolbar,
   ToolbarFilter
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Toolbar';
 import { ProcessInstances } from '../../ProcessListTable/tests/mocks/Mocks';
 import { shallow } from 'enzyme';
 import wait from 'waait';

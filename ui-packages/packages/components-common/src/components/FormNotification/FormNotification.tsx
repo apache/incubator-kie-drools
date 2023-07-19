@@ -19,7 +19,7 @@ import {
   Alert,
   AlertActionCloseButton,
   AlertActionLink
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Alert';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 
 export interface Notification {

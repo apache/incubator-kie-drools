@@ -15,7 +15,8 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardBody, PageSection } from '@patternfly/react-core';
+import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
+import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
 import {
   OUIAProps,
   ouiaPageTypeAndObjectId,

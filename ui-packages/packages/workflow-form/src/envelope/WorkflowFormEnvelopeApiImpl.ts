@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import { WorkflowFormEnvelopeViewApi } from './WorkflowFormEnvelopeView';
 import {
   Association,
@@ -27,6 +27,7 @@ import { WorkflowFormEnvelopeContext } from './WorkflowFormEnvelopeContext';
  * Implementation of the WorkflowFormEnvelopeApi
  */
 export class WorkflowFormEnvelopeApiImpl implements WorkflowFormEnvelopeApi {
+  private view: () => WorkflowFormEnvelopeViewApi;
   private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
@@ -49,7 +50,7 @@ export class WorkflowFormEnvelopeApiImpl implements WorkflowFormEnvelopeApi {
     association: Association,
     workflowDefinition: any
   ): Promise<void> => {
-    this.args.envelopeBusController.associate(
+    this.args.envelopeClient.associate(
       association.origin,
       association.envelopeServerId
     );
@@ -57,7 +58,8 @@ export class WorkflowFormEnvelopeApiImpl implements WorkflowFormEnvelopeApi {
     if (this.hasCapturedInitRequestYet()) {
       return;
     }
+    this.view = await this.args.viewDelegate();
     this.ackCapturedInitRequest();
-    this.args.view().initialize(workflowDefinition);
+    this.view().initialize(workflowDefinition);
   };
 }

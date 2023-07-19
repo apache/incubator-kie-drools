@@ -71,6 +71,7 @@ exports[`form details tests render form details - config 1`] = `
                 <Tabs
                   activeKey={1}
                   component="div"
+                  hasBorderBottom={true}
                   isBox={false}
                   isFilled={true}
                   isSecondary={false}
@@ -78,6 +79,7 @@ exports[`form details tests render form details - config 1`] = `
                   leftScrollAriaLabel="Scroll left"
                   mountOnEnter={false}
                   onSelect={[Function]}
+                  onToggle={[Function]}
                   ouiaSafe={true}
                   rightScrollAriaLabel="Scroll right"
                   unmountOnExit={false}
@@ -90,41 +92,10 @@ exports[`form details tests render form details - config 1`] = `
                     data-ouia-safe={true}
                     onSelect={[Function]}
                   >
-                    <button
-                      aria-hidden={true}
-                      aria-label="Scroll left"
-                      className="pf-c-tabs__scroll-button"
-                      disabled={true}
-                      onClick={[Function]}
-                    >
-                      <AngleLeftIcon
-                        color="currentColor"
-                        noVerticalAlign={false}
-                        size="sm"
-                      >
-                        <svg
-                          aria-hidden={true}
-                          aria-labelledby={null}
-                          fill="currentColor"
-                          height="1em"
-                          role="img"
-                          style={
-                            Object {
-                              "verticalAlign": "-0.125em",
-                            }
-                          }
-                          viewBox="0 0 256 512"
-                          width="1em"
-                        >
-                          <path
-                            d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
-                          />
-                        </svg>
-                      </AngleLeftIcon>
-                    </button>
                     <ul
                       className="pf-c-tabs__list"
                       onScroll={[Function]}
+                      role="tablist"
                     >
                       <Tab
                         aria-labelledby="source-tab"
@@ -150,22 +121,29 @@ exports[`form details tests render form details - config 1`] = `
                         >
                           <li
                             className="pf-c-tabs__item"
+                            role="presentation"
                           >
                             <TabButton
                               aria-controls="pf-tab-section-0-source-tab"
                               aria-labelledby="source-tab"
+                              aria-selected={false}
                               className="pf-c-tabs__link"
                               id="pf-tab-0-source-tab"
                               onClick={[Function]}
+                              parentInnerRef={null}
+                              role="tab"
                             >
                               <button
                                 aria-controls="pf-tab-section-0-source-tab"
                                 aria-labelledby="source-tab"
+                                aria-selected={false}
                                 className="pf-c-tabs__link"
                                 data-ouia-component-type="PF4/TabButton"
                                 data-ouia-safe={true}
                                 id="pf-tab-0-source-tab"
                                 onClick={[Function]}
+                                role="tab"
+                                type="button"
                               >
                                 <TabTitleText>
                                   <span
@@ -203,22 +181,29 @@ exports[`form details tests render form details - config 1`] = `
                         >
                           <li
                             className="pf-c-tabs__item pf-m-current"
+                            role="presentation"
                           >
                             <TabButton
                               aria-controls="pf-tab-section-1-config-tab"
                               aria-labelledby="config-tab"
+                              aria-selected={true}
                               className="pf-c-tabs__link"
                               id="pf-tab-1-config-tab"
                               onClick={[Function]}
+                              parentInnerRef={null}
+                              role="tab"
                             >
                               <button
                                 aria-controls="pf-tab-section-1-config-tab"
                                 aria-labelledby="config-tab"
+                                aria-selected={true}
                                 className="pf-c-tabs__link"
                                 data-ouia-component-type="PF4/TabButton"
                                 data-ouia-safe={true}
                                 id="pf-tab-1-config-tab"
                                 onClick={[Function]}
+                                role="tab"
+                                type="button"
                               >
                                 <TabTitleText>
                                   <span
@@ -233,38 +218,6 @@ exports[`form details tests render form details - config 1`] = `
                         </TabBase>
                       </Tab>
                     </ul>
-                    <button
-                      aria-hidden={true}
-                      aria-label="Scroll right"
-                      className="pf-c-tabs__scroll-button"
-                      disabled={true}
-                      onClick={[Function]}
-                    >
-                      <AngleRightIcon
-                        color="currentColor"
-                        noVerticalAlign={false}
-                        size="sm"
-                      >
-                        <svg
-                          aria-hidden={true}
-                          aria-labelledby={null}
-                          fill="currentColor"
-                          height="1em"
-                          role="img"
-                          style={
-                            Object {
-                              "verticalAlign": "-0.125em",
-                            }
-                          }
-                          viewBox="0 0 256 512"
-                          width="1em"
-                        >
-                          <path
-                            d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                          />
-                        </svg>
-                      </AngleRightIcon>
-                    </button>
                   </div>
                   <ForwardRef
                     activeKey={1}
@@ -520,83 +473,91 @@ exports[`form details tests render form details - config 1`] = `
                 isResizable={true}
                 onResize={[Function]}
               >
-                <div
-                  className="pf-c-drawer__panel pf-m-resizable"
-                  hidden={false}
-                  onTransitionEnd={[Function]}
-                  style={
-                    Object {
-                      "--pf-c-drawer__panel--md--FlexBasis": "800px",
-                    }
-                  }
+                <GenerateId
+                  prefix="pf-drawer-panel-"
                 >
                   <div
-                    aria-describedby="Press space to begin resizing, and use the arrow keys to grow or shrink the panel. Press enter or escape to finish resizing."
-                    aria-label="Resize"
-                    aria-orientation="vertical"
-                    className="pf-c-drawer__splitter pf-m-vertical"
-                    onKeyDown={[Function]}
-                    onMouseDown={[Function]}
-                    onTouchStart={[Function]}
-                    role="separator"
-                    tabIndex={0}
+                    className="pf-c-drawer__panel pf-m-resizable"
+                    hidden={false}
+                    id="pf-drawer-panel-1"
+                    onTransitionEnd={[Function]}
+                    style={
+                      Object {
+                        "--pf-c-drawer__panel--md--FlexBasis": "800px",
+                      }
+                    }
                   >
                     <div
-                      aria-hidden={true}
-                      className="pf-c-drawer__splitter-handle"
-                    />
-                  </div>
-                  <div
-                    className="pf-c-drawer__panel-main"
-                  >
-                    <DrawerHead
-                      style={
-                        Object {
-                          "height": "100%",
-                        }
-                      }
+                      aria-controls="pf-drawer-panel-1"
+                      aria-label="Resize"
+                      aria-orientation="vertical"
+                      aria-valuemax={100}
+                      aria-valuemin={0}
+                      aria-valuenow={0}
+                      className="pf-c-drawer__splitter pf-m-vertical"
+                      onKeyDown={[Function]}
+                      onMouseDown={[Function]}
+                      onTouchStart={[Function]}
+                      role="separator"
+                      tabIndex={0}
                     >
-                      <DrawerPanelBody
-                        hasNoPadding={false}
+                      <div
+                        aria-hidden={true}
+                        className="pf-c-drawer__splitter-handle"
+                      />
+                    </div>
+                    <div
+                      className="pf-c-drawer__panel-main"
+                    >
+                      <DrawerHead
+                        style={
+                          Object {
+                            "height": "100%",
+                          }
+                        }
                       >
-                        <div
-                          className="pf-c-drawer__body"
+                        <DrawerPanelBody
+                          hasNoPadding={false}
                         >
                           <div
-                            className="pf-c-drawer__head"
-                            style={
-                              Object {
-                                "height": "100%",
-                              }
-                            }
+                            className="pf-c-drawer__body"
                           >
-                            <span>
-                              <MockedFormDisplayerContainer
-                                formContent={
-                                  Object {
-                                    "configuration": Object {
-                                      "resources": Object {
-                                        "scripts": Object {},
-                                        "styles": Object {},
-                                      },
-                                      "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true},\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true}}}",
-                                    },
-                                    "formInfo": Object {
-                                      "lastModified": 2020-07-11T18:30:00.000Z,
-                                      "name": "form1",
-                                      "type": "HTML",
-                                    },
-                                    "source": "html source code",
-                                  }
+                            <div
+                              className="pf-c-drawer__head"
+                              style={
+                                Object {
+                                  "height": "100%",
                                 }
-                              />
-                            </span>
+                              }
+                            >
+                              <span>
+                                <MockedFormDisplayerContainer
+                                  formContent={
+                                    Object {
+                                      "configuration": Object {
+                                        "resources": Object {
+                                          "scripts": Object {},
+                                          "styles": Object {},
+                                        },
+                                        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true},\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true}}}",
+                                      },
+                                      "formInfo": Object {
+                                        "lastModified": 2020-07-11T18:30:00.000Z,
+                                        "name": "form1",
+                                        "type": "HTML",
+                                      },
+                                      "source": "html source code",
+                                    }
+                                  }
+                                />
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      </DrawerPanelBody>
-                    </DrawerHead>
+                        </DrawerPanelBody>
+                      </DrawerHead>
+                    </div>
                   </div>
-                </div>
+                </GenerateId>
               </DrawerPanelContent>
             </div>
           </DrawerMain>
@@ -678,6 +639,7 @@ exports[`form details tests render form details - source 1`] = `
                 <Tabs
                   activeKey={0}
                   component="div"
+                  hasBorderBottom={true}
                   isBox={false}
                   isFilled={true}
                   isSecondary={false}
@@ -685,6 +647,7 @@ exports[`form details tests render form details - source 1`] = `
                   leftScrollAriaLabel="Scroll left"
                   mountOnEnter={false}
                   onSelect={[Function]}
+                  onToggle={[Function]}
                   ouiaSafe={true}
                   rightScrollAriaLabel="Scroll right"
                   unmountOnExit={false}
@@ -697,41 +660,10 @@ exports[`form details tests render form details - source 1`] = `
                     data-ouia-safe={true}
                     onSelect={[Function]}
                   >
-                    <button
-                      aria-hidden={true}
-                      aria-label="Scroll left"
-                      className="pf-c-tabs__scroll-button"
-                      disabled={true}
-                      onClick={[Function]}
-                    >
-                      <AngleLeftIcon
-                        color="currentColor"
-                        noVerticalAlign={false}
-                        size="sm"
-                      >
-                        <svg
-                          aria-hidden={true}
-                          aria-labelledby={null}
-                          fill="currentColor"
-                          height="1em"
-                          role="img"
-                          style={
-                            Object {
-                              "verticalAlign": "-0.125em",
-                            }
-                          }
-                          viewBox="0 0 256 512"
-                          width="1em"
-                        >
-                          <path
-                            d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
-                          />
-                        </svg>
-                      </AngleLeftIcon>
-                    </button>
                     <ul
                       className="pf-c-tabs__list"
                       onScroll={[Function]}
+                      role="tablist"
                     >
                       <Tab
                         aria-labelledby="source-tab"
@@ -757,22 +689,29 @@ exports[`form details tests render form details - source 1`] = `
                         >
                           <li
                             className="pf-c-tabs__item pf-m-current"
+                            role="presentation"
                           >
                             <TabButton
                               aria-controls="pf-tab-section-0-source-tab"
                               aria-labelledby="source-tab"
+                              aria-selected={true}
                               className="pf-c-tabs__link"
                               id="pf-tab-0-source-tab"
                               onClick={[Function]}
+                              parentInnerRef={null}
+                              role="tab"
                             >
                               <button
                                 aria-controls="pf-tab-section-0-source-tab"
                                 aria-labelledby="source-tab"
+                                aria-selected={true}
                                 className="pf-c-tabs__link"
                                 data-ouia-component-type="PF4/TabButton"
                                 data-ouia-safe={true}
                                 id="pf-tab-0-source-tab"
                                 onClick={[Function]}
+                                role="tab"
+                                type="button"
                               >
                                 <TabTitleText>
                                   <span
@@ -810,22 +749,29 @@ exports[`form details tests render form details - source 1`] = `
                         >
                           <li
                             className="pf-c-tabs__item"
+                            role="presentation"
                           >
                             <TabButton
                               aria-controls="pf-tab-section-1-config-tab"
                               aria-labelledby="config-tab"
+                              aria-selected={false}
                               className="pf-c-tabs__link"
                               id="pf-tab-1-config-tab"
                               onClick={[Function]}
+                              parentInnerRef={null}
+                              role="tab"
                             >
                               <button
                                 aria-controls="pf-tab-section-1-config-tab"
                                 aria-labelledby="config-tab"
+                                aria-selected={false}
                                 className="pf-c-tabs__link"
                                 data-ouia-component-type="PF4/TabButton"
                                 data-ouia-safe={true}
                                 id="pf-tab-1-config-tab"
                                 onClick={[Function]}
+                                role="tab"
+                                type="button"
                               >
                                 <TabTitleText>
                                   <span
@@ -840,38 +786,6 @@ exports[`form details tests render form details - source 1`] = `
                         </TabBase>
                       </Tab>
                     </ul>
-                    <button
-                      aria-hidden={true}
-                      aria-label="Scroll right"
-                      className="pf-c-tabs__scroll-button"
-                      disabled={true}
-                      onClick={[Function]}
-                    >
-                      <AngleRightIcon
-                        color="currentColor"
-                        noVerticalAlign={false}
-                        size="sm"
-                      >
-                        <svg
-                          aria-hidden={true}
-                          aria-labelledby={null}
-                          fill="currentColor"
-                          height="1em"
-                          role="img"
-                          style={
-                            Object {
-                              "verticalAlign": "-0.125em",
-                            }
-                          }
-                          viewBox="0 0 256 512"
-                          width="1em"
-                        >
-                          <path
-                            d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                          />
-                        </svg>
-                      </AngleRightIcon>
-                    </button>
                   </div>
                   <ForwardRef
                     activeKey={0}
@@ -1121,83 +1035,91 @@ exports[`form details tests render form details - source 1`] = `
                 isResizable={true}
                 onResize={[Function]}
               >
-                <div
-                  className="pf-c-drawer__panel pf-m-resizable"
-                  hidden={false}
-                  onTransitionEnd={[Function]}
-                  style={
-                    Object {
-                      "--pf-c-drawer__panel--md--FlexBasis": "800px",
-                    }
-                  }
+                <GenerateId
+                  prefix="pf-drawer-panel-"
                 >
                   <div
-                    aria-describedby="Press space to begin resizing, and use the arrow keys to grow or shrink the panel. Press enter or escape to finish resizing."
-                    aria-label="Resize"
-                    aria-orientation="vertical"
-                    className="pf-c-drawer__splitter pf-m-vertical"
-                    onKeyDown={[Function]}
-                    onMouseDown={[Function]}
-                    onTouchStart={[Function]}
-                    role="separator"
-                    tabIndex={0}
+                    className="pf-c-drawer__panel pf-m-resizable"
+                    hidden={false}
+                    id="pf-drawer-panel-0"
+                    onTransitionEnd={[Function]}
+                    style={
+                      Object {
+                        "--pf-c-drawer__panel--md--FlexBasis": "800px",
+                      }
+                    }
                   >
                     <div
-                      aria-hidden={true}
-                      className="pf-c-drawer__splitter-handle"
-                    />
-                  </div>
-                  <div
-                    className="pf-c-drawer__panel-main"
-                  >
-                    <DrawerHead
-                      style={
-                        Object {
-                          "height": "100%",
-                        }
-                      }
+                      aria-controls="pf-drawer-panel-0"
+                      aria-label="Resize"
+                      aria-orientation="vertical"
+                      aria-valuemax={100}
+                      aria-valuemin={0}
+                      aria-valuenow={0}
+                      className="pf-c-drawer__splitter pf-m-vertical"
+                      onKeyDown={[Function]}
+                      onMouseDown={[Function]}
+                      onTouchStart={[Function]}
+                      role="separator"
+                      tabIndex={0}
                     >
-                      <DrawerPanelBody
-                        hasNoPadding={false}
+                      <div
+                        aria-hidden={true}
+                        className="pf-c-drawer__splitter-handle"
+                      />
+                    </div>
+                    <div
+                      className="pf-c-drawer__panel-main"
+                    >
+                      <DrawerHead
+                        style={
+                          Object {
+                            "height": "100%",
+                          }
+                        }
                       >
-                        <div
-                          className="pf-c-drawer__body"
+                        <DrawerPanelBody
+                          hasNoPadding={false}
                         >
                           <div
-                            className="pf-c-drawer__head"
-                            style={
-                              Object {
-                                "height": "100%",
-                              }
-                            }
+                            className="pf-c-drawer__body"
                           >
-                            <span>
-                              <MockedFormDisplayerContainer
-                                formContent={
-                                  Object {
-                                    "configuration": Object {
-                                      "resources": Object {
-                                        "scripts": Object {},
-                                        "styles": Object {},
-                                      },
-                                      "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true},\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true}}}",
-                                    },
-                                    "formInfo": Object {
-                                      "lastModified": 2020-07-11T18:30:00.000Z,
-                                      "name": "form1",
-                                      "type": "HTML",
-                                    },
-                                    "source": "html source code",
-                                  }
+                            <div
+                              className="pf-c-drawer__head"
+                              style={
+                                Object {
+                                  "height": "100%",
                                 }
-                              />
-                            </span>
+                              }
+                            >
+                              <span>
+                                <MockedFormDisplayerContainer
+                                  formContent={
+                                    Object {
+                                      "configuration": Object {
+                                        "resources": Object {
+                                          "scripts": Object {},
+                                          "styles": Object {},
+                                        },
+                                        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true},\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true}}}",
+                                      },
+                                      "formInfo": Object {
+                                        "lastModified": 2020-07-11T18:30:00.000Z,
+                                        "name": "form1",
+                                        "type": "HTML",
+                                      },
+                                      "source": "html source code",
+                                    }
+                                  }
+                                />
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      </DrawerPanelBody>
-                    </DrawerHead>
+                        </DrawerPanelBody>
+                      </DrawerHead>
+                    </div>
                   </div>
-                </div>
+                </GenerateId>
               </DrawerPanelContent>
             </div>
           </DrawerMain>

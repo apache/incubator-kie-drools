@@ -22,7 +22,22 @@ exports[`EmbeddedFormDisplayer tests Snapshot 1`] = `
   }
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      Object {
+        "notifyOnOpenForm": [Function],
+      }
+    }
+    config={
+      Object {
+        "containerType": "iframe",
+        "envelopePath": "/resources/form-displayer.html",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <iframe
       src="/resources/form-displayer.html"
       style={
@@ -40,6 +55,6 @@ exports[`EmbeddedFormDisplayer tests Snapshot 1`] = `
       }
       title="X"
     />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;

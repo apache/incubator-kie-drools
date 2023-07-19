@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   DevUIAppContext,
   useDevUIAppContext
@@ -30,15 +30,16 @@ const ProcessDefinitionListContextProvider: React.FC<
   ProcessDefinitionListContextProviderProps
 > = ({ children }) => {
   const runtimeToolsApi: DevUIAppContext = useDevUIAppContext();
+
+  const gatewayApiImpl = useMemo(() => {
+    return new ProcessDefinitionListGatewayApiImpl(
+      runtimeToolsApi.getDevUIUrl(),
+      runtimeToolsApi.getOpenApiPath()
+    );
+  }, []);
+
   return (
-    <ProcessDefinitionListContext.Provider
-      value={
-        new ProcessDefinitionListGatewayApiImpl(
-          runtimeToolsApi.getDevUIUrl(),
-          runtimeToolsApi.getOpenApiPath()
-        )
-      }
-    >
+    <ProcessDefinitionListContext.Provider value={gatewayApiImpl}>
       {children}
     </ProcessDefinitionListContext.Provider>
   );

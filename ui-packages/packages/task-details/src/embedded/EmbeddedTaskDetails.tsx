@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import {
   TaskDetailsApi,
   TaskDetailsChannelApi,
   TaskDetailsEnvelopeApi
 } from '../api';
-import { ContainerType } from '@kogito-tooling/envelope/dist/api';
-import { EnvelopeServer } from '@kogito-tooling/envelope-bus/dist/channel';
-import { EmbeddedEnvelopeFactory } from '@kogito-tooling/envelope/dist/embedded';
-import { EnvelopeBusMessage } from '@kogito-tooling/envelope-bus/dist/api';
+import { ContainerType } from '@kie-tools-core/envelope/dist/api';
+import { EnvelopeServer } from '@kie-tools-core/envelope-bus/dist/channel';
+import {
+  EmbeddedEnvelopeProps,
+  RefForwardingEmbeddedEnvelope
+} from '@kie-tools-core/envelope/dist/embedded';
+import { EnvelopeBusMessage } from '@kie-tools-core/envelope-bus/dist/api';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { init } from '../envelope';
 
@@ -32,8 +35,17 @@ export type Props = {
   userTask: UserTaskInstance;
 };
 
-export const EmbeddedTaskDetails = React.forwardRef<TaskDetailsApi, Props>(
-  (props, forwardedRef) => {
+export const EmbeddedTaskDetails = React.forwardRef(
+  (props: Props, forwardedRef: React.Ref<TaskDetailsApi>) => {
+    const refDelegate = useCallback(
+      (
+        envelopeServer: EnvelopeServer<
+          TaskDetailsChannelApi,
+          TaskDetailsEnvelopeApi
+        >
+      ): TaskDetailsApi => ({}),
+      []
+    );
     const pollInit = useCallback(
       (
         // eslint-disable-next-line
@@ -72,28 +84,24 @@ export const EmbeddedTaskDetails = React.forwardRef<TaskDetailsApi, Props>(
       [props.userTask]
     );
 
-    const refDelegate = useCallback(
-      (
-        envelopeServer: EnvelopeServer<
-          TaskDetailsChannelApi,
-          TaskDetailsEnvelopeApi
-        >
-      ): TaskDetailsApi => {
-        return {};
-      },
-      []
+    return (
+      <EmbeddedTaskDetailsEnvelope
+        ref={forwardedRef}
+        apiImpl={props}
+        origin={props.targetOrigin}
+        refDelegate={refDelegate}
+        pollInit={pollInit}
+        config={{ containerType: ContainerType.DIV }}
+      />
     );
-
-    const EmbeddedEnvelope = useMemo(() => {
-      return EmbeddedEnvelopeFactory({
-        api: props,
-        origin: props.targetOrigin,
-        refDelegate,
-        pollInit,
-        config: { containerType: ContainerType.DIV }
-      });
-    }, []);
-
-    return <EmbeddedEnvelope ref={forwardedRef} />;
   }
 );
+
+const EmbeddedTaskDetailsEnvelope = React.forwardRef<
+  TaskDetailsApi,
+  EmbeddedEnvelopeProps<
+    TaskDetailsChannelApi,
+    TaskDetailsEnvelopeApi,
+    TaskDetailsApi
+  >
+>(RefForwardingEmbeddedEnvelope);

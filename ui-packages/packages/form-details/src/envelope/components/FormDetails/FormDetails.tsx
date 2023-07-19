@@ -18,17 +18,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { FormDetailsDriver } from '../../../api/FormDetailsDriver';
 import { FormInfo } from '@kogito-apps/forms-list';
+import { Card } from '@patternfly/react-core/dist/js/components/Card';
 import {
-  Card,
   Drawer,
   DrawerContent,
   DrawerContentBody,
   DrawerHead,
-  DrawerPanelContent,
+  DrawerPanelContent
+} from '@patternfly/react-core/dist/js/components/Drawer';
+import {
   Tab,
   Tabs,
   TabTitleText
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Tabs';
 import FormEditor from '../FormEditor/FormEditor';
 import { ServerErrors, KogitoSpinner } from '@kogito-apps/components-common';
 import isEmpty from 'lodash/isEmpty';

@@ -16,19 +16,23 @@
 
 import React, { ReactText, useCallback, useEffect, useState } from 'react';
 import {
-  Card,
-  PageSection,
-  Tab,
-  Tabs,
-  TabTitleText,
-  Select,
-  SelectOption,
-  SelectVariant,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Toolbar';
+import {
+  Select,
+  SelectOption,
+  SelectVariant
+} from '@patternfly/react-core/dist/js/components/Select';
+import {
+  Tab,
+  Tabs,
+  TabTitleText
+} from '@patternfly/react-core/dist/js/components/Tabs';
+import { Card } from '@patternfly/react-core/dist/js/components/Card';
+import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
 import {
   OUIAProps,
   ouiaPageTypeAndObjectId,

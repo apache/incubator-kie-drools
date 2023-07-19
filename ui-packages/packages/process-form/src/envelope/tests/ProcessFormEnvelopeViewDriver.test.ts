@@ -17,7 +17,7 @@
 import {
   MessageBusClientApi,
   RequestPropertyNames
-} from '@kogito-tooling/envelope-bus/dist/api';
+} from '@kie-tools-core/envelope-bus/dist/api';
 import { ProcessFormChannelApi } from '../../api';
 import { ProcessFormEnvelopeViewDriver } from '../ProcessFormEnvelopeViewDriver';
 import { MockedMessageBusClientApi } from './mocks/Mocks';

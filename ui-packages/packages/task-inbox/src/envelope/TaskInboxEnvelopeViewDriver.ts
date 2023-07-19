@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import {
   QueryFilter,
@@ -49,6 +49,6 @@ export default class TaskInboxEnvelopeViewDriver implements TaskInboxDriver {
   }
 
   openTask(task: UserTaskInstance): void {
-    return this.channelApi.notifications.taskInbox__openTask(task);
+    return this.channelApi.notifications.taskInbox__openTask.send(task);
   }
 }

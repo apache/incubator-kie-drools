@@ -252,191 +252,203 @@ exports[`CounterfactualInputDomainEdit renders correctly 1`] = `
                 }
               >
                 <Form>
-                  <form
-                    className="pf-c-form"
-                    noValidate={true}
+                  <FormBase
+                    innerRef={null}
                   >
-                    <Split
-                      hasGutter={true}
+                    <form
+                      className="pf-c-form"
+                      noValidate={true}
                     >
-                      <div
-                        className="pf-l-split pf-m-gutter"
+                      <Split
+                        hasGutter={true}
                       >
-                        <SplitItem>
-                          <div
-                            className="pf-l-split__item"
-                          >
-                            <FormGroup
-                              fieldId="min"
-                              isRequired={true}
-                              label="Minimum value"
+                        <div
+                          className="pf-l-split pf-m-gutter"
+                        >
+                          <SplitItem>
+                            <div
+                              className="pf-l-split__item"
                             >
-                              <div
-                                className="pf-c-form__group"
+                              <FormGroup
+                                fieldId="min"
+                                isRequired={true}
+                                label="Minimum value"
                               >
-                                <div
-                                  className="pf-c-form__group-label"
+                                <GenerateId
+                                  prefix="pf-random-id-"
                                 >
-                                  <label
-                                    className="pf-c-form__label"
-                                    htmlFor="min"
+                                  <div
+                                    className="pf-c-form__group"
                                   >
-                                    <span
-                                      className="pf-c-form__label-text"
+                                    <div
+                                      className="pf-c-form__group-label"
                                     >
-                                      Minimum value
-                                    </span>
-                                    <span
-                                      aria-hidden="true"
-                                      className="pf-c-form__label-required"
-                                    >
+                                      <label
+                                        className="pf-c-form__label"
+                                        htmlFor="min"
+                                      >
+                                        <span
+                                          className="pf-c-form__label-text"
+                                        >
+                                          Minimum value
+                                        </span>
+                                        <span
+                                          aria-hidden="true"
+                                          className="pf-c-form__label-required"
+                                        >
+                                           
+                                          *
+                                        </span>
+                                      </label>
                                        
-                                      *
-                                    </span>
-                                  </label>
-                                   
-                                </div>
-                                <div
-                                  className="pf-c-form__group-control"
-                                >
-                                  <TextInput
-                                    id="min"
-                                    isRequired={true}
-                                    name="min"
-                                    onChange={[Function]}
-                                    type="number"
-                                    value=""
-                                  >
-                                    <TextInputBase
-                                      aria-label={null}
-                                      className=""
-                                      id="min"
-                                      innerRef={null}
-                                      isDisabled={false}
-                                      isLeftTruncated={false}
-                                      isReadOnly={false}
-                                      isRequired={true}
-                                      name="min"
-                                      onChange={[Function]}
-                                      ouiaSafe={true}
-                                      type="number"
-                                      validated="default"
-                                      value=""
+                                    </div>
+                                    <div
+                                      className="pf-c-form__group-control"
                                     >
-                                      <input
-                                        aria-invalid={false}
-                                        aria-label={null}
-                                        className="pf-c-form-control"
-                                        data-ouia-component-id="OUIA-Generated-TextInputBase-1"
-                                        data-ouia-component-type="PF4/TextInput"
-                                        data-ouia-safe={true}
-                                        disabled={false}
+                                      <TextInput
                                         id="min"
+                                        isRequired={true}
                                         name="min"
-                                        onBlur={[Function]}
                                         onChange={[Function]}
-                                        onFocus={[Function]}
-                                        readOnly={false}
-                                        required={true}
                                         type="number"
                                         value=""
-                                      />
-                                    </TextInputBase>
-                                  </TextInput>
-                                </div>
-                              </div>
-                            </FormGroup>
-                          </div>
-                        </SplitItem>
-                        <SplitItem>
-                          <div
-                            className="pf-l-split__item"
-                          >
-                            <FormGroup
-                              fieldId="max"
-                              isRequired={true}
-                              label="Maximum value"
+                                      >
+                                        <TextInputBase
+                                          aria-label={null}
+                                          className=""
+                                          id="min"
+                                          innerRef={null}
+                                          isDisabled={false}
+                                          isIconSprite={false}
+                                          isLeftTruncated={false}
+                                          isReadOnly={false}
+                                          isRequired={true}
+                                          name="min"
+                                          onChange={[Function]}
+                                          ouiaSafe={true}
+                                          type="number"
+                                          validated="default"
+                                          value=""
+                                        >
+                                          <input
+                                            aria-invalid={false}
+                                            aria-label={null}
+                                            className="pf-c-form-control"
+                                            data-ouia-component-id="OUIA-Generated-TextInputBase-1"
+                                            data-ouia-component-type="PF4/TextInput"
+                                            data-ouia-safe={true}
+                                            disabled={false}
+                                            id="min"
+                                            name="min"
+                                            onBlur={[Function]}
+                                            onChange={[Function]}
+                                            onFocus={[Function]}
+                                            required={true}
+                                            type="number"
+                                            value=""
+                                          />
+                                        </TextInputBase>
+                                      </TextInput>
+                                    </div>
+                                  </div>
+                                </GenerateId>
+                              </FormGroup>
+                            </div>
+                          </SplitItem>
+                          <SplitItem>
+                            <div
+                              className="pf-l-split__item"
                             >
-                              <div
-                                className="pf-c-form__group"
+                              <FormGroup
+                                fieldId="max"
+                                isRequired={true}
+                                label="Maximum value"
                               >
-                                <div
-                                  className="pf-c-form__group-label"
+                                <GenerateId
+                                  prefix="pf-random-id-"
                                 >
-                                  <label
-                                    className="pf-c-form__label"
-                                    htmlFor="max"
+                                  <div
+                                    className="pf-c-form__group"
                                   >
-                                    <span
-                                      className="pf-c-form__label-text"
+                                    <div
+                                      className="pf-c-form__group-label"
                                     >
-                                      Maximum value
-                                    </span>
-                                    <span
-                                      aria-hidden="true"
-                                      className="pf-c-form__label-required"
-                                    >
+                                      <label
+                                        className="pf-c-form__label"
+                                        htmlFor="max"
+                                      >
+                                        <span
+                                          className="pf-c-form__label-text"
+                                        >
+                                          Maximum value
+                                        </span>
+                                        <span
+                                          aria-hidden="true"
+                                          className="pf-c-form__label-required"
+                                        >
+                                           
+                                          *
+                                        </span>
+                                      </label>
                                        
-                                      *
-                                    </span>
-                                  </label>
-                                   
-                                </div>
-                                <div
-                                  className="pf-c-form__group-control"
-                                >
-                                  <TextInput
-                                    id="max"
-                                    isRequired={true}
-                                    name="max"
-                                    onChange={[Function]}
-                                    type="number"
-                                    value=""
-                                  >
-                                    <TextInputBase
-                                      aria-label={null}
-                                      className=""
-                                      id="max"
-                                      innerRef={null}
-                                      isDisabled={false}
-                                      isLeftTruncated={false}
-                                      isReadOnly={false}
-                                      isRequired={true}
-                                      name="max"
-                                      onChange={[Function]}
-                                      ouiaSafe={true}
-                                      type="number"
-                                      validated="default"
-                                      value=""
+                                    </div>
+                                    <div
+                                      className="pf-c-form__group-control"
                                     >
-                                      <input
-                                        aria-invalid={false}
-                                        aria-label={null}
-                                        className="pf-c-form-control"
-                                        data-ouia-component-id="OUIA-Generated-TextInputBase-2"
-                                        data-ouia-component-type="PF4/TextInput"
-                                        data-ouia-safe={true}
-                                        disabled={false}
+                                      <TextInput
                                         id="max"
+                                        isRequired={true}
                                         name="max"
-                                        onBlur={[Function]}
                                         onChange={[Function]}
-                                        onFocus={[Function]}
-                                        readOnly={false}
-                                        required={true}
                                         type="number"
                                         value=""
-                                      />
-                                    </TextInputBase>
-                                  </TextInput>
-                                </div>
-                              </div>
-                            </FormGroup>
-                          </div>
-                        </SplitItem>
-                      </div>
-                    </Split>
-                  </form>
+                                      >
+                                        <TextInputBase
+                                          aria-label={null}
+                                          className=""
+                                          id="max"
+                                          innerRef={null}
+                                          isDisabled={false}
+                                          isIconSprite={false}
+                                          isLeftTruncated={false}
+                                          isReadOnly={false}
+                                          isRequired={true}
+                                          name="max"
+                                          onChange={[Function]}
+                                          ouiaSafe={true}
+                                          type="number"
+                                          validated="default"
+                                          value=""
+                                        >
+                                          <input
+                                            aria-invalid={false}
+                                            aria-label={null}
+                                            className="pf-c-form-control"
+                                            data-ouia-component-id="OUIA-Generated-TextInputBase-2"
+                                            data-ouia-component-type="PF4/TextInput"
+                                            data-ouia-safe={true}
+                                            disabled={false}
+                                            id="max"
+                                            name="max"
+                                            onBlur={[Function]}
+                                            onChange={[Function]}
+                                            onFocus={[Function]}
+                                            required={true}
+                                            type="number"
+                                            value=""
+                                          />
+                                        </TextInputBase>
+                                      </TextInput>
+                                    </div>
+                                  </div>
+                                </GenerateId>
+                              </FormGroup>
+                            </div>
+                          </SplitItem>
+                        </div>
+                      </Split>
+                    </form>
+                  </FormBase>
                 </Form>
               </CounterfactualNumericalDomainEdit>
             </div>

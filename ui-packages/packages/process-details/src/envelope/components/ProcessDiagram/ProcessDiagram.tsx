@@ -21,7 +21,12 @@ import {
   ReactSvgPanZoomLoader,
   SvgLoaderSelectElement
 } from 'react-svg-pan-zoom-loader';
-import { Title, Card, CardHeader, CardBody } from '@patternfly/react-core';
+import {
+  Card,
+  CardHeader,
+  CardBody
+} from '@patternfly/react-core/dist/js/components/Card';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
 
 interface SvgType {
   src: string;

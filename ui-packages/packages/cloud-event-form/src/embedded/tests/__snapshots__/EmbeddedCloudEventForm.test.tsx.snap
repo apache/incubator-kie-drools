@@ -15,9 +15,25 @@ exports[`EmbeddedCloudEventForm tests Snapshot - defaultValue 1`] = `
   }
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      EmbeddedCloudEventFormChannelApiImpl {
+        "driver": Object {
+          "triggerCloudEvent": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;
 
@@ -31,9 +47,25 @@ exports[`EmbeddedCloudEventForm tests Snapshot - isNewInstanceEvent 1`] = `
   isNewInstanceEvent={true}
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      EmbeddedCloudEventFormChannelApiImpl {
+        "driver": Object {
+          "triggerCloudEvent": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;
 
@@ -46,8 +78,24 @@ exports[`EmbeddedCloudEventForm tests Snapshot 1`] = `
   }
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      EmbeddedCloudEventFormChannelApiImpl {
+        "driver": Object {
+          "triggerCloudEvent": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;

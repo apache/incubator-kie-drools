@@ -15,13 +15,13 @@
  */
 
 import React from 'react';
+import { AboutModal } from '@patternfly/react-core/dist/js/components/AboutModal';
 import {
-  AboutModal,
   TextContent,
   Text,
   TextList,
   TextListItem
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Text';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import '../../styles.css';
 import aboutPageBackground from '../../../static/kogitoAbout.png';

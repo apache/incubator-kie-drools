@@ -18,16 +18,20 @@ import React from 'react';
 import {
   Modal,
   ModalVariant,
-  Button,
-  ModalBoxBody,
-  Form,
-  FormGroup,
-  TextInput,
+  ModalBoxBody
+} from '@patternfly/react-core/dist/js/components/Modal';
+import {
   TextContent,
   Text
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Text';
+import {
+  Form,
+  FormGroup
+} from '@patternfly/react-core/dist/js/components/Form';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
 import { Job } from '../../types';
-import { OutlinedClockIcon } from '@patternfly/react-icons';
+import { OutlinedClockIcon } from '@patternfly/react-icons/dist/js/icons/outlined-clock-icon';
 import DateTimePicker from 'react-datetime-picker';
 import { setTitle } from '../../utils/Utils';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';

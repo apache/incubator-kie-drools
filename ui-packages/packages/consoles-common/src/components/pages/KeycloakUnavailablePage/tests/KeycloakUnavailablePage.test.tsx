@@ -1,4 +1,4 @@
-import { Button } from '@patternfly/react-core';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { mount } from 'enzyme';
 import React from 'react';
 import KeyCloakUnavailablePage from '../KeycloakUnavailablePage';

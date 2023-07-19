@@ -16,7 +16,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { EnvelopeBus } from '@kogito-tooling/envelope-bus/dist/api';
+import { EnvelopeBus } from '@kie-tools-core/envelope-bus/dist/api';
 import {
   CustomDashboardListChannelApi,
   CustomDashboardListEnvelopeApi
@@ -27,7 +27,7 @@ import {
   CustomDashboardListEnvelopeViewApi
 } from './CustomDashboardListEnvelopeView';
 import { CustomDashboardListEnvelopeApiImpl } from './CustomDashboardListEnvelopeApiImpl';
-import { Envelope, EnvelopeDivConfig } from '@kogito-tooling/envelope';
+import { Envelope, EnvelopeDivConfig } from '@kie-tools-core/envelope';
 
 /**
  * Function that starts an Envelope application.

@@ -15,8 +15,8 @@
  */
 
 import { init } from '@kogito-apps/form-displayer';
-import { EnvelopeBusMessage } from '@kogito-tooling/envelope-bus/dist/api';
-import { ContainerType } from '@kogito-tooling/envelope/dist/api';
+import { EnvelopeBusMessage } from '@kie-tools-core/envelope-bus/dist/api';
+import { ContainerType } from '@kie-tools-core/envelope/dist/api';
 
 init({
   container: document.getElementById('displayer-app')!,

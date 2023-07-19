@@ -16,15 +16,19 @@
 
 import React from 'react';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
-import { Bullseye, Gallery, GalleryItem } from '@patternfly/react-core';
+import {
+  Gallery,
+  GalleryItem
+} from '@patternfly/react-core/dist/js/layouts/Gallery';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import { CustomDashboardInfo } from '../../../api/CustomDashboardListEnvelopeApi';
 import CustomDashboardCard from '../CustomDashboardCard/CustomDashboardCard';
 import { CustomDashboardListDriver } from '../../../api/CustomDashboardListDriver';
+import KogitoSpinner from '@kogito-apps/components-common/dist/components/KogitoSpinner/KogitoSpinner';
 import {
   KogitoEmptyState,
-  KogitoEmptyStateType,
-  KogitoSpinner
-} from '@kogito-apps/components-common';
+  KogitoEmptyStateType
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState/KogitoEmptyState';
 
 export interface CustomDashboardGalleryProps {
   driver: CustomDashboardListDriver;

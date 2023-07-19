@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import React, { useMemo, useState } from 'react';
-import { Dropdown, DropdownItem, KebabToggle } from '@patternfly/react-core';
+import {
+  Dropdown,
+  DropdownItem,
+  KebabToggle
+} from '@patternfly/react-core/dist/js/components/Dropdown';
 import {
   ProcessInstance,
   ProcessInstanceState

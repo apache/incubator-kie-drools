@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useMemo } from 'react';
-import { EnvelopeServer } from '@kogito-tooling/envelope-bus/dist/channel';
-import { EmbeddedEnvelopeFactory } from '@kogito-tooling/envelope/dist/embedded';
-import { ContainerType } from '@kogito-tooling/envelope/dist/api';
+import React, { useCallback } from 'react';
+import { EnvelopeServer } from '@kie-tools-core/envelope-bus/dist/channel';
+import {
+  EmbeddedEnvelopeProps,
+  RefForwardingEmbeddedEnvelope
+} from '@kie-tools-core/envelope/dist/embedded';
+import { ContainerType } from '@kie-tools-core/envelope/dist/api';
 import { init } from '../envelope';
 import {
   JobsManagementApi,
@@ -32,58 +35,64 @@ export interface Props {
   driver: JobsManagementDriver;
 }
 
-export const EmbeddedJobsManagement = React.forwardRef<
-  JobsManagementApi,
-  Props
->((props, forwardedRef) => {
-  const pollInit = useCallback(
-    (
-      envelopeServer: EnvelopeServer<
-        JobsManagementChannelApi,
-        JobsManagementEnvelopeApi
-      >,
-      container: () => HTMLDivElement
-    ) => {
-      init({
-        config: {
-          containerType: ContainerType.DIV,
-          envelopeId: envelopeServer.id
-        },
-        container: container(),
-        bus: {
-          postMessage(message, targetOrigin, transfer) {
-            window.postMessage(message, targetOrigin, transfer);
+export const EmbeddedJobsManagement = React.forwardRef(
+  (props: Props, forwardedRef: React.Ref<JobsManagementApi>) => {
+    const refDelegate = useCallback(
+      (
+        envelopeServer: EnvelopeServer<
+          JobsManagementChannelApi,
+          JobsManagementEnvelopeApi
+        >
+      ): JobsManagementApi => ({}),
+      []
+    );
+    const pollInit = useCallback(
+      (
+        envelopeServer: EnvelopeServer<
+          JobsManagementChannelApi,
+          JobsManagementEnvelopeApi
+        >,
+        container: () => HTMLDivElement
+      ) => {
+        init({
+          config: {
+            containerType: ContainerType.DIV,
+            envelopeId: envelopeServer.id
+          },
+          container: container(),
+          bus: {
+            postMessage(message, targetOrigin, transfer) {
+              window.postMessage(message, targetOrigin, transfer);
+            }
           }
-        }
-      });
+        });
 
-      return envelopeServer.envelopeApi.requests.jobsManagement__init({
-        origin: envelopeServer.origin,
-        envelopeServerId: envelopeServer.id
-      });
-    },
-    []
-  );
+        return envelopeServer.envelopeApi.requests.jobsManagement__init({
+          origin: envelopeServer.origin,
+          envelopeServerId: envelopeServer.id
+        });
+      },
+      []
+    );
 
-  const refDelegate = useCallback(
-    (
-      envelopeServer: EnvelopeServer<
-        JobsManagementChannelApi,
-        JobsManagementEnvelopeApi
-      >
-    ): JobsManagementApi => ({}),
-    []
-  );
+    return (
+      <EmbeddedJobsManagementEnvelope
+        ref={forwardedRef}
+        apiImpl={new JobsManagementChannelApiImpl(props.driver)}
+        origin={props.targetOrigin}
+        refDelegate={refDelegate}
+        pollInit={pollInit}
+        config={{ containerType: ContainerType.DIV }}
+      />
+    );
+  }
+);
 
-  const EmbeddedEnvelope = useMemo(() => {
-    return EmbeddedEnvelopeFactory({
-      api: new JobsManagementChannelApiImpl(props.driver),
-      origin: props.targetOrigin,
-      refDelegate,
-      pollInit,
-      config: { containerType: ContainerType.DIV }
-    });
-  }, []);
-
-  return <EmbeddedEnvelope ref={forwardedRef} />;
-});
+const EmbeddedJobsManagementEnvelope = React.forwardRef<
+  JobsManagementApi,
+  EmbeddedEnvelopeProps<
+    JobsManagementChannelApi,
+    JobsManagementEnvelopeApi,
+    JobsManagementApi
+  >
+>(RefForwardingEmbeddedEnvelope);

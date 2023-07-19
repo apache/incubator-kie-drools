@@ -96,7 +96,7 @@ exports[`Process details error modal tests Snapshot test with default props 1`] 
                   aria-disabled="false"
                   aria-label="Close"
                   class="pf-c-button pf-m-plain"
-                  data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                  data-ouia-component-id="OUIA-Generated-Modal-small-1-ModalBoxCloseButton"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   type="button"
@@ -221,199 +221,219 @@ exports[`Process details error modal tests Snapshot test with default props 1`] 
           <div
             className="pf-c-backdrop"
           >
-            <FocusTrap
+            <ForwardRef
               active={true}
               className="pf-l-bullseye"
               focusTrapOptions={
                 Object {
                   "clickOutsideDeactivates": true,
+                  "tabbableOptions": Object {
+                    "displayCheck": "none",
+                  },
                 }
               }
-              paused={false}
-              preventScrollOnDeactivate={false}
             >
-              <div
+              <FocusTrap
+                active={true}
                 className="pf-l-bullseye"
+                focusTrapOptions={
+                  Object {
+                    "clickOutsideDeactivates": true,
+                    "tabbableOptions": Object {
+                      "displayCheck": "none",
+                    },
+                  }
+                }
+                innerRef={null}
+                paused={false}
+                preventScrollOnDeactivate={false}
               >
-                <ModalBox
-                  aria-describedby="pf-modal-part-2"
-                  aria-label="Error modal"
-                  aria-labelledby="pf-modal-part-0 Error modal"
-                  className=""
-                  data-ouia-component-id="OUIA-Generated-Modal-small-1"
-                  data-ouia-component-type="PF4/ModalContent"
-                  data-ouia-safe={true}
-                  id="pf-modal-part-0"
-                  style={Object {}}
-                  variant="small"
+                <div
+                  className="pf-l-bullseye"
                 >
-                  <div
+                  <ModalBox
                     aria-describedby="pf-modal-part-2"
                     aria-label="Error modal"
                     aria-labelledby="pf-modal-part-0 Error modal"
-                    aria-modal="true"
-                    className="pf-c-modal-box pf-m-sm"
+                    className=""
                     data-ouia-component-id="OUIA-Generated-Modal-small-1"
                     data-ouia-component-type="PF4/ModalContent"
                     data-ouia-safe={true}
                     id="pf-modal-part-0"
-                    role="dialog"
                     style={Object {}}
+                    variant="small"
                   >
-                    <ModalBoxCloseButton
-                      onClose={[MockFunction]}
+                    <div
+                      aria-describedby="pf-modal-part-2"
+                      aria-label="Error modal"
+                      aria-labelledby="pf-modal-part-0 Error modal"
+                      aria-modal="true"
+                      className="pf-c-modal-box pf-m-sm"
+                      data-ouia-component-id="OUIA-Generated-Modal-small-1"
+                      data-ouia-component-type="PF4/ModalContent"
+                      data-ouia-safe={true}
+                      id="pf-modal-part-0"
+                      role="dialog"
+                      style={Object {}}
                     >
-                      <Button
-                        aria-label="Close"
-                        className=""
-                        onClick={[MockFunction]}
-                        variant="plain"
+                      <ModalBoxCloseButton
+                        onClose={[MockFunction]}
+                        ouiaId="OUIA-Generated-Modal-small-1"
                       >
-                        <ButtonBase
+                        <Button
                           aria-label="Close"
                           className=""
-                          innerRef={null}
                           onClick={[MockFunction]}
+                          ouiaId="OUIA-Generated-Modal-small-1-ModalBoxCloseButton"
                           variant="plain"
                         >
-                          <button
-                            aria-disabled={false}
+                          <ButtonBase
                             aria-label="Close"
-                            className="pf-c-button pf-m-plain"
-                            data-ouia-component-id="OUIA-Generated-Button-plain-1"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
+                            className=""
+                            innerRef={null}
                             onClick={[MockFunction]}
-                            role={null}
-                            type="button"
+                            ouiaId="OUIA-Generated-Modal-small-1-ModalBoxCloseButton"
+                            variant="plain"
                           >
-                            <TimesIcon
-                              color="currentColor"
-                              noVerticalAlign={false}
-                              size="sm"
+                            <button
+                              aria-disabled={false}
+                              aria-label="Close"
+                              className="pf-c-button pf-m-plain"
+                              data-ouia-component-id="OUIA-Generated-Modal-small-1-ModalBoxCloseButton"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              onClick={[MockFunction]}
+                              role={null}
+                              type="button"
                             >
-                              <svg
-                                aria-hidden={true}
-                                aria-labelledby={null}
-                                fill="currentColor"
-                                height="1em"
-                                role="img"
-                                style={
-                                  Object {
-                                    "verticalAlign": "-0.125em",
-                                  }
-                                }
-                                viewBox="0 0 352 512"
-                                width="1em"
+                              <TimesIcon
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
                               >
-                                <path
-                                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                                />
-                              </svg>
-                            </TimesIcon>
-                          </button>
-                        </ButtonBase>
-                      </Button>
-                    </ModalBoxCloseButton>
-                    <ModalBoxHeader
-                      help={null}
-                    >
-                      <header
-                        className="pf-c-modal-box__header"
+                                <svg
+                                  aria-hidden={true}
+                                  aria-labelledby={null}
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style={
+                                    Object {
+                                      "verticalAlign": "-0.125em",
+                                    }
+                                  }
+                                  viewBox="0 0 352 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                  />
+                                </svg>
+                              </TimesIcon>
+                            </button>
+                          </ButtonBase>
+                        </Button>
+                      </ModalBoxCloseButton>
+                      <ModalBoxHeader
+                        help={null}
                       >
-                        <Title
-                          headingLevel="h1"
-                          size="2xl"
+                        <header
+                          className="pf-c-modal-box__header"
                         >
-                          <h1
-                            className="pf-c-title pf-m-2xl"
-                            data-ouia-component-id="OUIA-Generated-Title-1"
-                            data-ouia-component-type="PF4/Title"
-                            data-ouia-safe={true}
+                          <Title
+                            headingLevel="h1"
+                            size="2xl"
                           >
-                            <InfoCircleIcon
-                              className="pf-u-mr-sm"
-                              color="var(--pf-global--danger-color--100)"
+                            <h1
+                              className="pf-c-title pf-m-2xl"
+                              data-ouia-component-id="OUIA-Generated-Title-1"
+                              data-ouia-component-type="PF4/Title"
+                              data-ouia-safe={true}
                             >
-                              <MockedIcon />
-                            </InfoCircleIcon>
-                            <span>
-                              Process Visualization
-                            </span>
-                          </h1>
-                        </Title>
-                      </header>
-                    </ModalBoxHeader>
-                    <ModalBoxBody
-                      data-ouia-component-type="process-details-error-modal"
-                      data-ouia-safe={true}
-                      id="pf-modal-part-2"
-                    >
-                      <div
-                        className="pf-c-modal-box__body"
+                              <InfoCircleIcon
+                                className="pf-u-mr-sm"
+                                color="var(--pf-global--danger-color--100)"
+                              >
+                                <MockedIcon />
+                              </InfoCircleIcon>
+                              <span>
+                                Process Visualization
+                              </span>
+                            </h1>
+                          </Title>
+                        </header>
+                      </ModalBoxHeader>
+                      <ModalBoxBody
                         data-ouia-component-type="process-details-error-modal"
                         data-ouia-safe={true}
                         id="pf-modal-part-2"
                       >
-                        <ModalBoxBody>
-                          <div
-                            className="pf-c-modal-box__body"
-                          >
-                            <TextContent>
-                              <div
-                                className="pf-c-content"
-                              >
-                                <Text>
-                                  <p
-                                    className=""
-                                    data-ouia-component-id="OUIA-Generated-Text-1"
-                                    data-ouia-component-type="PF4/Text"
-                                    data-ouia-safe={true}
-                                    data-pf-content={true}
-                                  >
-                                    404-not found
-                                  </p>
-                                </Text>
-                              </div>
-                            </TextContent>
-                          </div>
-                        </ModalBoxBody>
-                      </div>
-                    </ModalBoxBody>
-                    <ModalBoxFooter>
-                      <footer
-                        className="pf-c-modal-box__footer"
-                      >
-                        <Button
-                          key="confirm-selection"
-                          variant="primary"
+                        <div
+                          className="pf-c-modal-box__body"
+                          data-ouia-component-type="process-details-error-modal"
+                          data-ouia-safe={true}
+                          id="pf-modal-part-2"
                         >
-                          <ButtonBase
-                            innerRef={null}
+                          <ModalBoxBody>
+                            <div
+                              className="pf-c-modal-box__body"
+                            >
+                              <TextContent>
+                                <div
+                                  className="pf-c-content"
+                                >
+                                  <Text>
+                                    <p
+                                      className=""
+                                      data-ouia-component-id="OUIA-Generated-Text-1"
+                                      data-ouia-component-type="PF4/Text"
+                                      data-ouia-safe={true}
+                                      data-pf-content={true}
+                                    >
+                                      404-not found
+                                    </p>
+                                  </Text>
+                                </div>
+                              </TextContent>
+                            </div>
+                          </ModalBoxBody>
+                        </div>
+                      </ModalBoxBody>
+                      <ModalBoxFooter>
+                        <footer
+                          className="pf-c-modal-box__footer"
+                        >
+                          <Button
+                            key="confirm-selection"
                             variant="primary"
                           >
-                            <button
-                              aria-disabled={false}
-                              aria-label={null}
-                              className="pf-c-button pf-m-primary"
-                              data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                              data-ouia-component-type="PF4/Button"
-                              data-ouia-safe={true}
-                              disabled={false}
-                              role={null}
-                              type="button"
+                            <ButtonBase
+                              innerRef={null}
+                              variant="primary"
                             >
-                              OK
-                            </button>
-                          </ButtonBase>
-                        </Button>
-                      </footer>
-                    </ModalBoxFooter>
-                  </div>
-                </ModalBox>
-              </div>
-            </FocusTrap>
+                              <button
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-primary"
+                                data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                role={null}
+                                type="button"
+                              >
+                                OK
+                              </button>
+                            </ButtonBase>
+                          </Button>
+                        </footer>
+                      </ModalBoxFooter>
+                    </div>
+                  </ModalBox>
+                </div>
+              </FocusTrap>
+            </ForwardRef>
           </div>
         </Backdrop>
       </ModalContent>

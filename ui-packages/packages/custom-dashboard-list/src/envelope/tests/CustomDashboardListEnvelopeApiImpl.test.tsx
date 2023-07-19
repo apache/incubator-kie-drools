@@ -15,10 +15,10 @@
  */
 
 import {
-  MockedEnvelopeBusController,
+  MockedEnvelopeClient,
   MockedCustomDashboardListEnvelopeViewApi
 } from './mocks/Mocks';
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import {
   CustomDashboardListChannelApi,
   CustomDashboardListEnvelopeApi
@@ -28,8 +28,8 @@ import { CustomDashboardListEnvelopeViewApi } from '../CustomDashboardListEnvelo
 import { CustomDashboardListEnvelopeContext } from '../CustomDashboardListEnvelopeContext';
 
 describe('CustomDashboardListEnvelopeApiImpl tests', () => {
-  it('initialize', () => {
-    const envelopeBusController = MockedEnvelopeBusController;
+  it('initialize', async () => {
+    const envelopeClient = MockedEnvelopeClient;
     const view = new MockedCustomDashboardListEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       CustomDashboardListEnvelopeApi,
@@ -37,9 +37,9 @@ describe('CustomDashboardListEnvelopeApiImpl tests', () => {
       CustomDashboardListEnvelopeViewApi,
       CustomDashboardListEnvelopeContext
     > = {
-      envelopeBusController,
+      envelopeClient,
       envelopeContext: {},
-      view: () => view
+      viewDelegate: () => Promise.resolve(() => view)
     };
 
     const envelopeApi = new CustomDashboardListEnvelopeApiImpl(args);
@@ -49,10 +49,11 @@ describe('CustomDashboardListEnvelopeApiImpl tests', () => {
       origin: 'origin'
     });
 
-    expect(envelopeBusController.associate).toHaveBeenCalledWith(
+    expect(envelopeClient.associate).toHaveBeenCalledWith(
       'origin',
       'envelopeServerId'
     );
-    expect(view.initialize).toHaveBeenCalled();
+    const calledView = await view.initialize;
+    expect(calledView).toHaveBeenCalled();
   });
 });

@@ -13,6 +13,7 @@ exports[`FormsListEnvelopeView tests Snapshot 2`] = `
         "formsList__getFormsQuery": [MockFunction],
         "formsList__openForm": [MockFunction],
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -29,6 +30,7 @@ exports[`FormsListEnvelopeView tests Snapshot 2`] = `
             "formsList__getFormsQuery": [MockFunction],
             "formsList__openForm": [MockFunction],
           },
+          "shared": [MockFunction],
           "subscribe": [MockFunction],
           "unsubscribe": [MockFunction],
         },

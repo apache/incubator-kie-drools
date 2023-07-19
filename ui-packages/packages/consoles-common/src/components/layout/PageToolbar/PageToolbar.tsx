@@ -16,15 +16,17 @@
 
 import React, { useState } from 'react';
 import {
-  Avatar,
   Dropdown,
   DropdownItem,
   DropdownSeparator,
-  DropdownToggle,
+  DropdownToggle
+} from '@patternfly/react-core/dist/js/components/Dropdown';
+import {
   Toolbar,
   ToolbarGroup,
   ToolbarItem
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Toolbar';
+import { Avatar } from '@patternfly/react-core/dist/js/components/Avatar';
 import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
 import { css } from '@patternfly/react-styles';
 

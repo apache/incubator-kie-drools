@@ -15,7 +15,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Bullseye } from '@patternfly/react-core';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import {
   Table,
   TableHeader,
@@ -25,7 +25,7 @@ import {
   ICell,
   sortable,
   ISortBy
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/dist/js/components/Table';
 import isEmpty from 'lodash/isEmpty';
 import filter from 'lodash/filter';
 import sample from 'lodash/sample';

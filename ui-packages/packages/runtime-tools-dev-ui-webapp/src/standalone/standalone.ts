@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 import devUIEnvelopeIndex from '!!raw-loader!../../resources/iframe.html';
-import { EnvelopeServer } from '@kogito-tooling/envelope-bus/dist/channel';
+import { EnvelopeServer } from '@kie-tools-core/envelope-bus/dist/channel';
 import {
   RuntimeToolsDevUIChannelApi,
   RuntimeToolsDevUIEnvelopeApi,
@@ -168,14 +168,14 @@ export function open(args: {
     args.availablePages,
     args.omittedProcessTimelineEvents ?? []
   );
-
+  const channelApi = new RuntimeToolsDevUIChannelApiImpl();
   const listener = (message: MessageEvent) => {
-    envelopeServer.receive(message.data, new RuntimeToolsDevUIChannelApiImpl());
+    envelopeServer.receive(message.data, channelApi);
   };
   window.addEventListener('message', listener);
 
   args.container.appendChild(iframe);
-  envelopeServer.startInitPolling();
+  envelopeServer.startInitPolling(channelApi);
 
   return createDevUI(envelopeServer, listener, iframe);
 }

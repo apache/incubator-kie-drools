@@ -393,7 +393,22 @@ exports[`CustomTaskFormDisplayer Test Rendering form 1`] = `
               onOpenForm={[Function]}
               targetOrigin="http://localhost"
             >
-              <ForwardRef>
+              <ForwardRef(RefForwardingEmbeddedEnvelope)
+                apiImpl={
+                  Object {
+                    "notifyOnOpenForm": [Function],
+                  }
+                }
+                config={
+                  Object {
+                    "containerType": "iframe",
+                    "envelopePath": "resources/form-displayer.html",
+                  }
+                }
+                origin="http://localhost"
+                pollInit={[Function]}
+                refDelegate={[Function]}
+              >
                 <iframe
                   src="resources/form-displayer.html"
                   style={
@@ -411,7 +426,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form 1`] = `
                   }
                   title="X"
                 />
-              </ForwardRef>
+              </ForwardRef(RefForwardingEmbeddedEnvelope)>
             </ForwardRef>
           </div>
         </StackItem>
@@ -796,7 +811,22 @@ exports[`CustomTaskFormDisplayer Test Rendering form 2`] = `
               onOpenForm={[Function]}
               targetOrigin="http://localhost"
             >
-              <ForwardRef>
+              <ForwardRef(RefForwardingEmbeddedEnvelope)
+                apiImpl={
+                  Object {
+                    "notifyOnOpenForm": [Function],
+                  }
+                }
+                config={
+                  Object {
+                    "containerType": "iframe",
+                    "envelopePath": "resources/form-displayer.html",
+                  }
+                }
+                origin="http://localhost"
+                pollInit={[Function]}
+                refDelegate={[Function]}
+              >
                 <iframe
                   src="resources/form-displayer.html"
                   style={
@@ -814,7 +844,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form 2`] = `
                   }
                   title="X"
                 />
-              </ForwardRef>
+              </ForwardRef(RefForwardingEmbeddedEnvelope)>
             </ForwardRef>
           </div>
         </StackItem>
@@ -1240,7 +1270,22 @@ exports[`CustomTaskFormDisplayer Test Rendering form with error 1`] = `
               onOpenForm={[Function]}
               targetOrigin="http://localhost"
             >
-              <ForwardRef>
+              <ForwardRef(RefForwardingEmbeddedEnvelope)
+                apiImpl={
+                  Object {
+                    "notifyOnOpenForm": [Function],
+                  }
+                }
+                config={
+                  Object {
+                    "containerType": "iframe",
+                    "envelopePath": "resources/form-displayer.html",
+                  }
+                }
+                origin="http://localhost"
+                pollInit={[Function]}
+                refDelegate={[Function]}
+              >
                 <iframe
                   src="resources/form-displayer.html"
                   style={
@@ -1258,7 +1303,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form with error 1`] = `
                   }
                   title="X"
                 />
-              </ForwardRef>
+              </ForwardRef(RefForwardingEmbeddedEnvelope)>
             </ForwardRef>
           </div>
         </StackItem>
@@ -1643,7 +1688,22 @@ exports[`CustomTaskFormDisplayer Test Rendering form with error 2`] = `
               onOpenForm={[Function]}
               targetOrigin="http://localhost"
             >
-              <ForwardRef>
+              <ForwardRef(RefForwardingEmbeddedEnvelope)
+                apiImpl={
+                  Object {
+                    "notifyOnOpenForm": [Function],
+                  }
+                }
+                config={
+                  Object {
+                    "containerType": "iframe",
+                    "envelopePath": "resources/form-displayer.html",
+                  }
+                }
+                origin="http://localhost"
+                pollInit={[Function]}
+                refDelegate={[Function]}
+              >
                 <iframe
                   src="resources/form-displayer.html"
                   style={
@@ -1661,7 +1721,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form with error 2`] = `
                   }
                   title="X"
                 />
-              </ForwardRef>
+              </ForwardRef(RefForwardingEmbeddedEnvelope)>
             </ForwardRef>
           </div>
         </StackItem>

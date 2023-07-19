@@ -11,9 +11,23 @@ exports[`CustomDashboardViewContainer tests Snapshot 1`] = `
     driver={CustomDashboardViewGatewayApiImpl {}}
     targetOrigin="http://localhost:9000"
   >
-    <ForwardRef>
+    <ForwardRef(RefForwardingEmbeddedEnvelope)
+      apiImpl={
+        CustomDashboardViewChannelApiImpl {
+          "driver": CustomDashboardViewGatewayApiImpl {},
+        }
+      }
+      config={
+        Object {
+          "containerType": "div",
+        }
+      }
+      origin="http://localhost:9000"
+      pollInit={[Function]}
+      refDelegate={[Function]}
+    >
       <div />
-    </ForwardRef>
+    </ForwardRef(RefForwardingEmbeddedEnvelope)>
   </ForwardRef>
 </CustomDashboardViewContainer>
 `;

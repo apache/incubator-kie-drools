@@ -15,13 +15,13 @@
  */
 
 import {
+  ApiNotificationConsumers,
   MessageBusClientApi,
-  NotificationPropertyNames,
   RequestPropertyNames
-} from '@kogito-tooling/envelope-bus/dist/api';
-import { MessageBusServer } from '@kogito-tooling/envelope-bus/dist/api';
-import { EnvelopeBusMessageManager } from '@kogito-tooling/envelope-bus/dist/common';
-import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
+} from '@kie-tools-core/envelope-bus/dist/api';
+import { MessageBusServer } from '@kie-tools-core/envelope-bus/dist/api';
+import { EnvelopeBusMessageManager } from '@kie-tools-core/envelope-bus/dist/common';
+import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormChannelApi, TaskFormEnvelopeApi } from '../../../api';
 import { TaskFormEnvelopeViewApi } from '../../TaskFormEnvelopeView';
@@ -84,7 +84,7 @@ export const MockedApiRequests = jest.fn<
 }));
 
 export const MockedApiNotifications = jest.fn<
-  Pick<TaskFormChannelApi, NotificationPropertyNames<TaskFormChannelApi>>,
+  ApiNotificationConsumers<TaskFormChannelApi>,
   []
 >(() => ({}));
 
@@ -95,7 +95,8 @@ export const MockedMessageBusClientApi = jest.fn<
   requests: new MockedApiRequests(),
   notifications: new MockedApiNotifications(),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
+  unsubscribe: jest.fn(),
+  shared: jest.fn()
 }));
 
 export const MockedMessageBusServer = jest.fn<
@@ -130,7 +131,7 @@ export const MockedEnvelopeBusMessageManager = jest.fn<
 }));
 
 export const MockedEnvelopeBusControllerDefinition = jest.fn<
-  Partial<EnvelopeBusController<TaskFormEnvelopeApi, TaskFormChannelApi>>,
+  Partial<EnvelopeClient<TaskFormEnvelopeApi, TaskFormChannelApi>>,
   []
 >(() => ({
   bus: jest.fn(),
@@ -146,8 +147,8 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController =
-  new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+export const MockedEnvelopeClient =
+  new MockedEnvelopeBusControllerDefinition() as EnvelopeClient<
     TaskFormEnvelopeApi,
     TaskFormChannelApi
   >;

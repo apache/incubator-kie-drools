@@ -16,18 +16,19 @@
 
 import React, { useState } from 'react';
 import {
-  Button,
   ToolbarFilter,
   ToolbarGroup,
   ToolbarItem,
   ToolbarToggleGroup,
   Toolbar,
-  ToolbarContent,
-  TextInput,
-  InputGroup,
-  Tooltip
-} from '@patternfly/react-core';
-import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
+  ToolbarContent
+} from '@patternfly/react-core/dist/js/components/Toolbar';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
+import { InputGroup } from '@patternfly/react-core/dist/js/components/InputGroup';
+import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
+import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
 import remove from 'lodash/remove';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 interface ProcessDefinitionListToolbarProps {

@@ -17,7 +17,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import ProcessInfoModal from '../ProcessInfoModal';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 
 const props = {
   modalTitle: (

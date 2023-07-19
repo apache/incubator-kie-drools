@@ -17,16 +17,20 @@
 import React from 'react';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import {
+  FormGroup,
+  Form
+} from '@patternfly/react-core/dist/js/components/Form';
+import {
   Card,
   CardBody,
   CardHeaderMain,
-  CardHeader,
+  CardHeader
+} from '@patternfly/react-core/dist/js/components/Card';
+import {
   TextVariants,
-  Text,
-  Label,
-  FormGroup,
-  Form
-} from '@patternfly/react-core';
+  Text
+} from '@patternfly/react-core/dist/js/components/Text';
+import { Label } from '@patternfly/react-core/dist/js/components/Label';
 import { FormInfo } from '../../../api/FormsListEnvelopeApi';
 import { FormsListDriver } from '../../../api/FormsListDriver';
 import Moment from 'react-moment';

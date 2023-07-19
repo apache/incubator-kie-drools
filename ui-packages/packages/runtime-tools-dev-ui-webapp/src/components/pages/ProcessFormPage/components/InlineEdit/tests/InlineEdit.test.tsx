@@ -3,7 +3,8 @@ import { mount } from 'enzyme';
 import InlineEdit from '../InlineEdit';
 import * as hooks from '../../../../../../channel/ProcessForm/ProcessFormContext';
 import { ProcessFormGatewayApiImpl } from '../../../../../../channel/ProcessForm/ProcessFormGatewayApi';
-import { Button, TextInput } from '@patternfly/react-core';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
 import { act } from 'react-dom/test-utils';
 
 const props = {

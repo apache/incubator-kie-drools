@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import {
   Association,
   FormDisplayerChannelApi,
@@ -28,6 +28,7 @@ import { FormDisplayerEnvelopeContext } from './FormDisplayerEnvelopeContext';
 import isEmpty from 'lodash/isEmpty';
 
 export class FormDisplayerEnvelopeApiImpl implements FormDisplayerEnvelopeApi {
+  private view: () => FormDisplayerEnvelopeViewApi;
   private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
@@ -50,7 +51,7 @@ export class FormDisplayerEnvelopeApiImpl implements FormDisplayerEnvelopeApi {
     association: Association,
     initArgs: FormDisplayerInitArgs
   ) {
-    this.args.envelopeBusController.associate(
+    this.args.envelopeClient.associate(
       association.origin,
       association.envelopeServerId
     );
@@ -60,20 +61,21 @@ export class FormDisplayerEnvelopeApiImpl implements FormDisplayerEnvelopeApi {
     }
 
     this.ackCapturedInitRequest();
+    this.view = await this.args.viewDelegate();
 
     if (!isEmpty(initArgs.form)) {
-      this.args.view().initForm(initArgs);
+      this.view().initForm(initArgs);
     }
   }
   formDisplayer__notifyInit = (initArgs: FormDisplayerInitArgs): void => {
-    this.args.view().initForm(initArgs);
+    this.view().initForm(initArgs);
   };
 
   formDisplayer__startSubmit(context: FormSubmitContext): Promise<any> {
-    return this.args.view().startSubmit(context);
+    return this.view().startSubmit(context);
   }
 
   formDisplayer__notifySubmitResponse(response: FormSubmitResponse) {
-    this.args.view().notifySubmitResponse(response);
+    this.view().notifySubmitResponse(response);
   }
 }

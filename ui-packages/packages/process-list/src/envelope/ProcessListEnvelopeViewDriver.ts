@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import {
   BulkProcessInstanceActionResponse,
   OperationType,
@@ -81,7 +81,7 @@ export default class ProcessListEnvelopeViewDriver
   }
 
   openTriggerCloudEvent(processInstance?: ProcessInstance): void {
-    this.channelApi.notifications.processList__openTriggerCloudEvent(
+    this.channelApi.notifications.processList__openTriggerCloudEvent.send(
       processInstance
     );
   }

@@ -18,8 +18,8 @@ import React from 'react';
 import JobsDetailsModal from '../JobsDetailsModal';
 import { JobStatus } from '../../../types';
 import { mount } from 'enzyme';
-import { InfoCircleIcon } from '@patternfly/react-icons';
-import { Button } from '@patternfly/react-core';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
 
 jest.mock('react-datetime-picker');
 const props = {

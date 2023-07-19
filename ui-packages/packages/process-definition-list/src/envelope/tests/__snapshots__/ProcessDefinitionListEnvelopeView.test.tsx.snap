@@ -7,7 +7,11 @@ exports[`ProcessDefinitionListEnvelopeView tests Snapshot 2`] = `
   channelApi={
     Object {
       "notifications": Object {
-        "processDefinitionsList__openTriggerCloudEvent": [MockFunction],
+        "processDefinitionsList__openTriggerCloudEvent": Object {
+          "send": [MockFunction],
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
       },
       "requests": Object {
         "processDefinitionList__getProcessDefinitionFilter": [MockFunction],
@@ -15,6 +19,7 @@ exports[`ProcessDefinitionListEnvelopeView tests Snapshot 2`] = `
         "processDefinitionList__openProcessForm": [MockFunction],
         "processDefinitionList__setProcessDefinitionFilter": [MockFunction],
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -25,7 +30,11 @@ exports[`ProcessDefinitionListEnvelopeView tests Snapshot 2`] = `
       ProcessDefinitionListEnvelopeViewDriver {
         "channelApi": Object {
           "notifications": Object {
-            "processDefinitionsList__openTriggerCloudEvent": [MockFunction],
+            "processDefinitionsList__openTriggerCloudEvent": Object {
+              "send": [MockFunction],
+              "subscribe": [MockFunction],
+              "unsubscribe": [MockFunction],
+            },
           },
           "requests": Object {
             "processDefinitionList__getProcessDefinitionFilter": [MockFunction],
@@ -33,6 +42,7 @@ exports[`ProcessDefinitionListEnvelopeView tests Snapshot 2`] = `
             "processDefinitionList__openProcessForm": [MockFunction],
             "processDefinitionList__setProcessDefinitionFilter": [MockFunction],
           },
+          "shared": [MockFunction],
           "subscribe": [MockFunction],
           "unsubscribe": [MockFunction],
         },

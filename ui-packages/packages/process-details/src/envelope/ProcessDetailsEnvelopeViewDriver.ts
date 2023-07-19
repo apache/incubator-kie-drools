@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import { ProcessDetailsChannelApi, ProcessDetailsDriver } from '../api';
 import {
   ProcessInstance,
@@ -99,7 +99,9 @@ export default class ProcessDetailsEnvelopeViewDriver
     return this.channelApi.requests.processDetails__jobsQuery(id);
   }
   openProcessInstanceDetails(id: string): void {
-    return this.channelApi.notifications.processDetails__openProcessDetails(id);
+    return this.channelApi.notifications.processDetails__openProcessDetails.send(
+      id
+    );
   }
 
   handleProcessRetry(processInstance: ProcessInstance): Promise<void> {

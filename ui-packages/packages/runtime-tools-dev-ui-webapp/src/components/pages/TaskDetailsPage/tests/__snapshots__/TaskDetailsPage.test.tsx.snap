@@ -196,7 +196,139 @@ exports[`TaskDetailsPage tests Error notification 1`] = `
                 }
                 title="Apply for visa"
               >
-                <MockedComponent />
+                <Flex
+                  data-ouia-component-type="page-title"
+                  data-ouia-safe={true}
+                >
+                  <div
+                    className="pf-l-flex"
+                    data-ouia-component-type="page-title"
+                    data-ouia-safe={true}
+                  >
+                    <FlexItem
+                      spacer={
+                        Object {
+                          "default": "spacerSm",
+                        }
+                      }
+                    >
+                      <div
+                        className="pf-m-spacer-sm"
+                      >
+                        <Title
+                          headingLevel="h1"
+                          size="4xl"
+                        >
+                          <h1
+                            className="pf-c-title pf-m-4xl"
+                            data-ouia-component-id="OUIA-Generated-Title-10"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
+                          >
+                            Apply for visa
+                          </h1>
+                        </Title>
+                      </div>
+                    </FlexItem>
+                    <FlexItem
+                      spacer={
+                        Object {
+                          "default": "spacerSm",
+                        }
+                      }
+                    >
+                      <div
+                        className="pf-m-spacer-sm"
+                      >
+                        <TaskState
+                          task={
+                            Object {
+                              "actualOwner": null,
+                              "adminGroups": Array [],
+                              "adminUsers": Array [],
+                              "completed": null,
+                              "description": null,
+                              "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "excludedUsers": Array [],
+                              "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+                              "lastUpdate": 2020-02-19T11:11:56.282Z,
+                              "name": "VisaApplication",
+                              "outputs": "{}",
+                              "potentialGroups": Array [],
+                              "potentialUsers": Array [],
+                              "priority": "1",
+                              "processId": "travels",
+                              "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                              "referenceName": "Apply for visa",
+                              "rootProcessId": null,
+                              "rootProcessInstanceId": null,
+                              "started": 2020-02-19T11:11:56.282Z,
+                              "state": "Ready",
+                            }
+                          }
+                          variant="label"
+                        >
+                          <Label
+                            color="blue"
+                            data-ouia-component-type="task-state"
+                            data-ouia-safe={true}
+                            icon={
+                              <OnRunningIcon
+                                className="pf-u-mr-sm"
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
+                              />
+                            }
+                          >
+                            <span
+                              className="pf-c-label pf-m-blue"
+                              data-ouia-component-type="task-state"
+                              data-ouia-safe={true}
+                            >
+                              <span
+                                className="pf-c-label__content"
+                              >
+                                <span
+                                  className="pf-c-label__icon"
+                                >
+                                  <OnRunningIcon
+                                    className="pf-u-mr-sm"
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      className="pf-u-mr-sm"
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 1024 1024"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M512.1,895.9 C300.3,895.9 128.1,723.8 128.1,511.9 C128.1,300.2 300.3,127.9 512.1,127.9 C723.9,127.9 896,300.2 896.100043,511.9 C896.2,723.6 723.8,895.9 512.1,895.9 M512.1,0 C229.7,0 0,229.7 0,512 C0,794.3 229.7,1024 512.1,1024 C794.3,1024 1024,794.3 1024,512 C1024,229.7 794.3,0 512.1,0 M716.3,482.9 C710,495.2 575.5,679.5 493.7,782.4 C478,800.2 463.4,794.2 457.3,790.3 C443.9,781.4 443.1,771.7 451,745 C458.9,718.3 494.1,576 494.1,576 L341.3,576 C328.2,576.2 312.2,576.2 307.1,563.8 C302.2,552 306.9,541.2 314.4,530.8 C370,453.5 508.1,264.9 508.1,264.9 C508.1,264.9 527.2,239.7 541.4,238.3 C554.4,237 562.9,240.5 567,249.6 C572.1,260.2 570.4,272.9 566.8,286.9 C563.5,300 526.4,448 526.4,448 L695.3,448 C702.6,448 711.5,449.4 717.4,457 C723.3,464.6 719.5,477 716.3,482.9"
+                                      />
+                                    </svg>
+                                  </OnRunningIcon>
+                                </span>
+                                Ready
+                              </span>
+                            </span>
+                          </Label>
+                        </TaskState>
+                      </div>
+                    </FlexItem>
+                  </div>
+                </Flex>
               </PageTitle>
             </div>
           </FlexItem>
@@ -209,7 +341,28 @@ exports[`TaskDetailsPage tests Error notification 1`] = `
                 onClick={[Function]}
                 variant="secondary"
               >
-                <MockedComponent />
+                <ButtonBase
+                  id="view-details"
+                  innerRef={null}
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-4"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="view-details"
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    View details
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </FlexItem>
@@ -398,11 +551,16 @@ exports[`TaskDetailsPage tests Error notification 1`] = `
                 <DrawerPanelContent
                   className="Dev-ui__card-size"
                 >
-                  <div
-                    className="pf-c-drawer__panel Dev-ui__card-size"
-                    hidden={true}
-                    onTransitionEnd={[Function]}
-                  />
+                  <GenerateId
+                    prefix="pf-drawer-panel-"
+                  >
+                    <div
+                      className="pf-c-drawer__panel Dev-ui__card-size"
+                      hidden={true}
+                      id="pf-drawer-panel-3"
+                      onTransitionEnd={[Function]}
+                    />
+                  </GenerateId>
                 </DrawerPanelContent>
               </div>
             </DrawerMain>
@@ -515,7 +673,139 @@ exports[`TaskDetailsPage tests Error notification 2`] = `
                 }
                 title="Apply for visa"
               >
-                <MockedComponent />
+                <Flex
+                  data-ouia-component-type="page-title"
+                  data-ouia-safe={true}
+                >
+                  <div
+                    className="pf-l-flex"
+                    data-ouia-component-type="page-title"
+                    data-ouia-safe={true}
+                  >
+                    <FlexItem
+                      spacer={
+                        Object {
+                          "default": "spacerSm",
+                        }
+                      }
+                    >
+                      <div
+                        className="pf-m-spacer-sm"
+                      >
+                        <Title
+                          headingLevel="h1"
+                          size="4xl"
+                        >
+                          <h1
+                            className="pf-c-title pf-m-4xl"
+                            data-ouia-component-id="OUIA-Generated-Title-10"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
+                          >
+                            Apply for visa
+                          </h1>
+                        </Title>
+                      </div>
+                    </FlexItem>
+                    <FlexItem
+                      spacer={
+                        Object {
+                          "default": "spacerSm",
+                        }
+                      }
+                    >
+                      <div
+                        className="pf-m-spacer-sm"
+                      >
+                        <TaskState
+                          task={
+                            Object {
+                              "actualOwner": null,
+                              "adminGroups": Array [],
+                              "adminUsers": Array [],
+                              "completed": null,
+                              "description": null,
+                              "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "excludedUsers": Array [],
+                              "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+                              "lastUpdate": 2020-02-19T11:11:56.282Z,
+                              "name": "VisaApplication",
+                              "outputs": "{}",
+                              "potentialGroups": Array [],
+                              "potentialUsers": Array [],
+                              "priority": "1",
+                              "processId": "travels",
+                              "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                              "referenceName": "Apply for visa",
+                              "rootProcessId": null,
+                              "rootProcessInstanceId": null,
+                              "started": 2020-02-19T11:11:56.282Z,
+                              "state": "Ready",
+                            }
+                          }
+                          variant="label"
+                        >
+                          <Label
+                            color="blue"
+                            data-ouia-component-type="task-state"
+                            data-ouia-safe={true}
+                            icon={
+                              <OnRunningIcon
+                                className="pf-u-mr-sm"
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
+                              />
+                            }
+                          >
+                            <span
+                              className="pf-c-label pf-m-blue"
+                              data-ouia-component-type="task-state"
+                              data-ouia-safe={true}
+                            >
+                              <span
+                                className="pf-c-label__content"
+                              >
+                                <span
+                                  className="pf-c-label__icon"
+                                >
+                                  <OnRunningIcon
+                                    className="pf-u-mr-sm"
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      className="pf-u-mr-sm"
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 1024 1024"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M512.1,895.9 C300.3,895.9 128.1,723.8 128.1,511.9 C128.1,300.2 300.3,127.9 512.1,127.9 C723.9,127.9 896,300.2 896.100043,511.9 C896.2,723.6 723.8,895.9 512.1,895.9 M512.1,0 C229.7,0 0,229.7 0,512 C0,794.3 229.7,1024 512.1,1024 C794.3,1024 1024,794.3 1024,512 C1024,229.7 794.3,0 512.1,0 M716.3,482.9 C710,495.2 575.5,679.5 493.7,782.4 C478,800.2 463.4,794.2 457.3,790.3 C443.9,781.4 443.1,771.7 451,745 C458.9,718.3 494.1,576 494.1,576 L341.3,576 C328.2,576.2 312.2,576.2 307.1,563.8 C302.2,552 306.9,541.2 314.4,530.8 C370,453.5 508.1,264.9 508.1,264.9 C508.1,264.9 527.2,239.7 541.4,238.3 C554.4,237 562.9,240.5 567,249.6 C572.1,260.2 570.4,272.9 566.8,286.9 C563.5,300 526.4,448 526.4,448 L695.3,448 C702.6,448 711.5,449.4 717.4,457 C723.3,464.6 719.5,477 716.3,482.9"
+                                      />
+                                    </svg>
+                                  </OnRunningIcon>
+                                </span>
+                                Ready
+                              </span>
+                            </span>
+                          </Label>
+                        </TaskState>
+                      </div>
+                    </FlexItem>
+                  </div>
+                </Flex>
               </PageTitle>
             </div>
           </FlexItem>
@@ -528,7 +818,28 @@ exports[`TaskDetailsPage tests Error notification 2`] = `
                 onClick={[Function]}
                 variant="secondary"
               >
-                <MockedComponent />
+                <ButtonBase
+                  id="view-details"
+                  innerRef={null}
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-4"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="view-details"
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    View details
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </FlexItem>
@@ -695,11 +1006,16 @@ exports[`TaskDetailsPage tests Error notification 2`] = `
                 <DrawerPanelContent
                   className="Dev-ui__card-size"
                 >
-                  <div
-                    className="pf-c-drawer__panel Dev-ui__card-size"
-                    hidden={true}
-                    onTransitionEnd={[Function]}
-                  />
+                  <GenerateId
+                    prefix="pf-drawer-panel-"
+                  >
+                    <div
+                      className="pf-c-drawer__panel Dev-ui__card-size"
+                      hidden={true}
+                      id="pf-drawer-panel-3"
+                      onTransitionEnd={[Function]}
+                    />
+                  </GenerateId>
                 </DrawerPanelContent>
               </div>
             </DrawerMain>
@@ -906,7 +1222,139 @@ exports[`TaskDetailsPage tests Normal State 1`] = `
                 }
                 title="Apply for visa"
               >
-                <MockedComponent />
+                <Flex
+                  data-ouia-component-type="page-title"
+                  data-ouia-safe={true}
+                >
+                  <div
+                    className="pf-l-flex"
+                    data-ouia-component-type="page-title"
+                    data-ouia-safe={true}
+                  >
+                    <FlexItem
+                      spacer={
+                        Object {
+                          "default": "spacerSm",
+                        }
+                      }
+                    >
+                      <div
+                        className="pf-m-spacer-sm"
+                      >
+                        <Title
+                          headingLevel="h1"
+                          size="4xl"
+                        >
+                          <h1
+                            className="pf-c-title pf-m-4xl"
+                            data-ouia-component-id="OUIA-Generated-Title-4"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
+                          >
+                            Apply for visa
+                          </h1>
+                        </Title>
+                      </div>
+                    </FlexItem>
+                    <FlexItem
+                      spacer={
+                        Object {
+                          "default": "spacerSm",
+                        }
+                      }
+                    >
+                      <div
+                        className="pf-m-spacer-sm"
+                      >
+                        <TaskState
+                          task={
+                            Object {
+                              "actualOwner": null,
+                              "adminGroups": Array [],
+                              "adminUsers": Array [],
+                              "completed": null,
+                              "description": null,
+                              "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "excludedUsers": Array [],
+                              "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+                              "lastUpdate": 2020-02-19T11:11:56.282Z,
+                              "name": "VisaApplication",
+                              "outputs": "{}",
+                              "potentialGroups": Array [],
+                              "potentialUsers": Array [],
+                              "priority": "1",
+                              "processId": "travels",
+                              "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                              "referenceName": "Apply for visa",
+                              "rootProcessId": null,
+                              "rootProcessInstanceId": null,
+                              "started": 2020-02-19T11:11:56.282Z,
+                              "state": "Ready",
+                            }
+                          }
+                          variant="label"
+                        >
+                          <Label
+                            color="blue"
+                            data-ouia-component-type="task-state"
+                            data-ouia-safe={true}
+                            icon={
+                              <OnRunningIcon
+                                className="pf-u-mr-sm"
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
+                              />
+                            }
+                          >
+                            <span
+                              className="pf-c-label pf-m-blue"
+                              data-ouia-component-type="task-state"
+                              data-ouia-safe={true}
+                            >
+                              <span
+                                className="pf-c-label__content"
+                              >
+                                <span
+                                  className="pf-c-label__icon"
+                                >
+                                  <OnRunningIcon
+                                    className="pf-u-mr-sm"
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      className="pf-u-mr-sm"
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 1024 1024"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M512.1,895.9 C300.3,895.9 128.1,723.8 128.1,511.9 C128.1,300.2 300.3,127.9 512.1,127.9 C723.9,127.9 896,300.2 896.100043,511.9 C896.2,723.6 723.8,895.9 512.1,895.9 M512.1,0 C229.7,0 0,229.7 0,512 C0,794.3 229.7,1024 512.1,1024 C794.3,1024 1024,794.3 1024,512 C1024,229.7 794.3,0 512.1,0 M716.3,482.9 C710,495.2 575.5,679.5 493.7,782.4 C478,800.2 463.4,794.2 457.3,790.3 C443.9,781.4 443.1,771.7 451,745 C458.9,718.3 494.1,576 494.1,576 L341.3,576 C328.2,576.2 312.2,576.2 307.1,563.8 C302.2,552 306.9,541.2 314.4,530.8 C370,453.5 508.1,264.9 508.1,264.9 C508.1,264.9 527.2,239.7 541.4,238.3 C554.4,237 562.9,240.5 567,249.6 C572.1,260.2 570.4,272.9 566.8,286.9 C563.5,300 526.4,448 526.4,448 L695.3,448 C702.6,448 711.5,449.4 717.4,457 C723.3,464.6 719.5,477 716.3,482.9"
+                                      />
+                                    </svg>
+                                  </OnRunningIcon>
+                                </span>
+                                Ready
+                              </span>
+                            </span>
+                          </Label>
+                        </TaskState>
+                      </div>
+                    </FlexItem>
+                  </div>
+                </Flex>
               </PageTitle>
             </div>
           </FlexItem>
@@ -919,7 +1367,28 @@ exports[`TaskDetailsPage tests Normal State 1`] = `
                 onClick={[Function]}
                 variant="secondary"
               >
-                <MockedComponent />
+                <ButtonBase
+                  id="view-details"
+                  innerRef={null}
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-1"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="view-details"
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    View details
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </FlexItem>
@@ -1086,11 +1555,16 @@ exports[`TaskDetailsPage tests Normal State 1`] = `
                 <DrawerPanelContent
                   className="Dev-ui__card-size"
                 >
-                  <div
-                    className="pf-c-drawer__panel Dev-ui__card-size"
-                    hidden={true}
-                    onTransitionEnd={[Function]}
-                  />
+                  <GenerateId
+                    prefix="pf-drawer-panel-"
+                  >
+                    <div
+                      className="pf-c-drawer__panel Dev-ui__card-size"
+                      hidden={true}
+                      id="pf-drawer-panel-0"
+                      onTransitionEnd={[Function]}
+                    />
+                  </GenerateId>
                 </DrawerPanelContent>
               </div>
             </DrawerMain>
@@ -1203,7 +1677,139 @@ exports[`TaskDetailsPage tests Success notification 1`] = `
                 }
                 title="Apply for visa"
               >
-                <MockedComponent />
+                <Flex
+                  data-ouia-component-type="page-title"
+                  data-ouia-safe={true}
+                >
+                  <div
+                    className="pf-l-flex"
+                    data-ouia-component-type="page-title"
+                    data-ouia-safe={true}
+                  >
+                    <FlexItem
+                      spacer={
+                        Object {
+                          "default": "spacerSm",
+                        }
+                      }
+                    >
+                      <div
+                        className="pf-m-spacer-sm"
+                      >
+                        <Title
+                          headingLevel="h1"
+                          size="4xl"
+                        >
+                          <h1
+                            className="pf-c-title pf-m-4xl"
+                            data-ouia-component-id="OUIA-Generated-Title-6"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
+                          >
+                            Apply for visa
+                          </h1>
+                        </Title>
+                      </div>
+                    </FlexItem>
+                    <FlexItem
+                      spacer={
+                        Object {
+                          "default": "spacerSm",
+                        }
+                      }
+                    >
+                      <div
+                        className="pf-m-spacer-sm"
+                      >
+                        <TaskState
+                          task={
+                            Object {
+                              "actualOwner": null,
+                              "adminGroups": Array [],
+                              "adminUsers": Array [],
+                              "completed": null,
+                              "description": null,
+                              "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "excludedUsers": Array [],
+                              "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+                              "lastUpdate": 2020-02-19T11:11:56.282Z,
+                              "name": "VisaApplication",
+                              "outputs": "{}",
+                              "potentialGroups": Array [],
+                              "potentialUsers": Array [],
+                              "priority": "1",
+                              "processId": "travels",
+                              "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                              "referenceName": "Apply for visa",
+                              "rootProcessId": null,
+                              "rootProcessInstanceId": null,
+                              "started": 2020-02-19T11:11:56.282Z,
+                              "state": "Ready",
+                            }
+                          }
+                          variant="label"
+                        >
+                          <Label
+                            color="blue"
+                            data-ouia-component-type="task-state"
+                            data-ouia-safe={true}
+                            icon={
+                              <OnRunningIcon
+                                className="pf-u-mr-sm"
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
+                              />
+                            }
+                          >
+                            <span
+                              className="pf-c-label pf-m-blue"
+                              data-ouia-component-type="task-state"
+                              data-ouia-safe={true}
+                            >
+                              <span
+                                className="pf-c-label__content"
+                              >
+                                <span
+                                  className="pf-c-label__icon"
+                                >
+                                  <OnRunningIcon
+                                    className="pf-u-mr-sm"
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      className="pf-u-mr-sm"
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 1024 1024"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M512.1,895.9 C300.3,895.9 128.1,723.8 128.1,511.9 C128.1,300.2 300.3,127.9 512.1,127.9 C723.9,127.9 896,300.2 896.100043,511.9 C896.2,723.6 723.8,895.9 512.1,895.9 M512.1,0 C229.7,0 0,229.7 0,512 C0,794.3 229.7,1024 512.1,1024 C794.3,1024 1024,794.3 1024,512 C1024,229.7 794.3,0 512.1,0 M716.3,482.9 C710,495.2 575.5,679.5 493.7,782.4 C478,800.2 463.4,794.2 457.3,790.3 C443.9,781.4 443.1,771.7 451,745 C458.9,718.3 494.1,576 494.1,576 L341.3,576 C328.2,576.2 312.2,576.2 307.1,563.8 C302.2,552 306.9,541.2 314.4,530.8 C370,453.5 508.1,264.9 508.1,264.9 C508.1,264.9 527.2,239.7 541.4,238.3 C554.4,237 562.9,240.5 567,249.6 C572.1,260.2 570.4,272.9 566.8,286.9 C563.5,300 526.4,448 526.4,448 L695.3,448 C702.6,448 711.5,449.4 717.4,457 C723.3,464.6 719.5,477 716.3,482.9"
+                                      />
+                                    </svg>
+                                  </OnRunningIcon>
+                                </span>
+                                Ready
+                              </span>
+                            </span>
+                          </Label>
+                        </TaskState>
+                      </div>
+                    </FlexItem>
+                  </div>
+                </Flex>
               </PageTitle>
             </div>
           </FlexItem>
@@ -1216,7 +1822,28 @@ exports[`TaskDetailsPage tests Success notification 1`] = `
                 onClick={[Function]}
                 variant="secondary"
               >
-                <MockedComponent />
+                <ButtonBase
+                  id="view-details"
+                  innerRef={null}
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-2"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="view-details"
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    View details
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </FlexItem>
@@ -1405,11 +2032,16 @@ exports[`TaskDetailsPage tests Success notification 1`] = `
                 <DrawerPanelContent
                   className="Dev-ui__card-size"
                 >
-                  <div
-                    className="pf-c-drawer__panel Dev-ui__card-size"
-                    hidden={true}
-                    onTransitionEnd={[Function]}
-                  />
+                  <GenerateId
+                    prefix="pf-drawer-panel-"
+                  >
+                    <div
+                      className="pf-c-drawer__panel Dev-ui__card-size"
+                      hidden={true}
+                      id="pf-drawer-panel-1"
+                      onTransitionEnd={[Function]}
+                    />
+                  </GenerateId>
                 </DrawerPanelContent>
               </div>
             </DrawerMain>
@@ -1522,7 +2154,139 @@ exports[`TaskDetailsPage tests Success notification 2`] = `
                 }
                 title="Apply for visa"
               >
-                <MockedComponent />
+                <Flex
+                  data-ouia-component-type="page-title"
+                  data-ouia-safe={true}
+                >
+                  <div
+                    className="pf-l-flex"
+                    data-ouia-component-type="page-title"
+                    data-ouia-safe={true}
+                  >
+                    <FlexItem
+                      spacer={
+                        Object {
+                          "default": "spacerSm",
+                        }
+                      }
+                    >
+                      <div
+                        className="pf-m-spacer-sm"
+                      >
+                        <Title
+                          headingLevel="h1"
+                          size="4xl"
+                        >
+                          <h1
+                            className="pf-c-title pf-m-4xl"
+                            data-ouia-component-id="OUIA-Generated-Title-6"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
+                          >
+                            Apply for visa
+                          </h1>
+                        </Title>
+                      </div>
+                    </FlexItem>
+                    <FlexItem
+                      spacer={
+                        Object {
+                          "default": "spacerSm",
+                        }
+                      }
+                    >
+                      <div
+                        className="pf-m-spacer-sm"
+                      >
+                        <TaskState
+                          task={
+                            Object {
+                              "actualOwner": null,
+                              "adminGroups": Array [],
+                              "adminUsers": Array [],
+                              "completed": null,
+                              "description": null,
+                              "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "excludedUsers": Array [],
+                              "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+                              "lastUpdate": 2020-02-19T11:11:56.282Z,
+                              "name": "VisaApplication",
+                              "outputs": "{}",
+                              "potentialGroups": Array [],
+                              "potentialUsers": Array [],
+                              "priority": "1",
+                              "processId": "travels",
+                              "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                              "referenceName": "Apply for visa",
+                              "rootProcessId": null,
+                              "rootProcessInstanceId": null,
+                              "started": 2020-02-19T11:11:56.282Z,
+                              "state": "Ready",
+                            }
+                          }
+                          variant="label"
+                        >
+                          <Label
+                            color="blue"
+                            data-ouia-component-type="task-state"
+                            data-ouia-safe={true}
+                            icon={
+                              <OnRunningIcon
+                                className="pf-u-mr-sm"
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
+                              />
+                            }
+                          >
+                            <span
+                              className="pf-c-label pf-m-blue"
+                              data-ouia-component-type="task-state"
+                              data-ouia-safe={true}
+                            >
+                              <span
+                                className="pf-c-label__content"
+                              >
+                                <span
+                                  className="pf-c-label__icon"
+                                >
+                                  <OnRunningIcon
+                                    className="pf-u-mr-sm"
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      className="pf-u-mr-sm"
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 1024 1024"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M512.1,895.9 C300.3,895.9 128.1,723.8 128.1,511.9 C128.1,300.2 300.3,127.9 512.1,127.9 C723.9,127.9 896,300.2 896.100043,511.9 C896.2,723.6 723.8,895.9 512.1,895.9 M512.1,0 C229.7,0 0,229.7 0,512 C0,794.3 229.7,1024 512.1,1024 C794.3,1024 1024,794.3 1024,512 C1024,229.7 794.3,0 512.1,0 M716.3,482.9 C710,495.2 575.5,679.5 493.7,782.4 C478,800.2 463.4,794.2 457.3,790.3 C443.9,781.4 443.1,771.7 451,745 C458.9,718.3 494.1,576 494.1,576 L341.3,576 C328.2,576.2 312.2,576.2 307.1,563.8 C302.2,552 306.9,541.2 314.4,530.8 C370,453.5 508.1,264.9 508.1,264.9 C508.1,264.9 527.2,239.7 541.4,238.3 C554.4,237 562.9,240.5 567,249.6 C572.1,260.2 570.4,272.9 566.8,286.9 C563.5,300 526.4,448 526.4,448 L695.3,448 C702.6,448 711.5,449.4 717.4,457 C723.3,464.6 719.5,477 716.3,482.9"
+                                      />
+                                    </svg>
+                                  </OnRunningIcon>
+                                </span>
+                                Ready
+                              </span>
+                            </span>
+                          </Label>
+                        </TaskState>
+                      </div>
+                    </FlexItem>
+                  </div>
+                </Flex>
               </PageTitle>
             </div>
           </FlexItem>
@@ -1535,7 +2299,28 @@ exports[`TaskDetailsPage tests Success notification 2`] = `
                 onClick={[Function]}
                 variant="secondary"
               >
-                <MockedComponent />
+                <ButtonBase
+                  id="view-details"
+                  innerRef={null}
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-2"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="view-details"
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    View details
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </FlexItem>
@@ -1702,11 +2487,16 @@ exports[`TaskDetailsPage tests Success notification 2`] = `
                 <DrawerPanelContent
                   className="Dev-ui__card-size"
                 >
-                  <div
-                    className="pf-c-drawer__panel Dev-ui__card-size"
-                    hidden={true}
-                    onTransitionEnd={[Function]}
-                  />
+                  <GenerateId
+                    prefix="pf-drawer-panel-"
+                  >
+                    <div
+                      className="pf-c-drawer__panel Dev-ui__card-size"
+                      hidden={true}
+                      id="pf-drawer-panel-1"
+                      onTransitionEnd={[Function]}
+                    />
+                  </GenerateId>
                 </DrawerPanelContent>
               </div>
             </DrawerMain>

@@ -15,8 +15,10 @@
  */
 
 import React, { useState } from 'react';
-import { Button, CardTitle, Divider } from '@patternfly/react-core';
-import { ISortBy } from '@patternfly/react-table';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { CardTitle } from '@patternfly/react-core/dist/js/components/Card';
+import { Divider } from '@patternfly/react-core/dist/js/components/Divider';
+import { ISortBy } from '@patternfly/react-table/dist/js/components/Table';
 import {
   ServerErrors,
   KogitoEmptyState,

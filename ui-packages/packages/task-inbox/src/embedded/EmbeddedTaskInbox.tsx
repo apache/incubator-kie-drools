@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useMemo, Ref } from 'react';
-import { EnvelopeServer } from '@kogito-tooling/envelope-bus/dist/channel';
-import { EmbeddedEnvelopeFactory } from '@kogito-tooling/envelope/dist/embedded';
+import React, { useCallback } from 'react';
+import { EnvelopeServer } from '@kie-tools-core/envelope-bus/dist/channel';
+import {
+  EmbeddedEnvelopeProps,
+  RefForwardingEmbeddedEnvelope
+} from '@kie-tools-core/envelope/dist/embedded';
 import {
   TaskInboxApi,
   TaskInboxChannelApi,
@@ -24,7 +27,7 @@ import {
   TaskInboxState
 } from '../api';
 import { TaskInboxChannelApiImpl } from './TaskInboxChannelApiImpl';
-import { ContainerType } from '@kogito-tooling/envelope/dist/api';
+import { ContainerType } from '@kie-tools-core/envelope/dist/api';
 import { init } from '../envelope';
 
 export interface Props {
@@ -35,8 +38,20 @@ export interface Props {
   activeTaskStates?: string[];
 }
 
-export const EmbeddedTaskInbox = React.forwardRef<TaskInboxApi, Props>(
-  (props, forwardedRef: Ref<TaskInboxApi>) => {
+export const EmbeddedTaskInbox = React.forwardRef(
+  (props: Props, forwardedRef: React.Ref<TaskInboxApi>) => {
+    const refDelegate = useCallback(
+      (
+        envelopeServer: EnvelopeServer<
+          TaskInboxChannelApi,
+          TaskInboxEnvelopeApi
+        >
+      ): TaskInboxApi => ({
+        taskInbox__notify: (userName) =>
+          envelopeServer.envelopeApi.requests.taskInbox__notify(userName)
+      }),
+      []
+    );
     const pollInit = useCallback(
       (
         envelopeServer: EnvelopeServer<
@@ -72,29 +87,20 @@ export const EmbeddedTaskInbox = React.forwardRef<TaskInboxApi, Props>(
       [props.allTaskStates, props.activeTaskStates]
     );
 
-    const refDelegate = useCallback(
-      (
-        envelopeServer: EnvelopeServer<
-          TaskInboxChannelApi,
-          TaskInboxEnvelopeApi
-        >
-      ): TaskInboxApi => ({
-        taskInbox__notify: (userName) =>
-          envelopeServer.envelopeApi.requests.taskInbox__notify(userName)
-      }),
-      []
+    return (
+      <EmbeddedTaskInboxEnvelope
+        ref={forwardedRef}
+        apiImpl={new TaskInboxChannelApiImpl(props.driver)}
+        origin={props.targetOrigin}
+        refDelegate={refDelegate}
+        pollInit={pollInit}
+        config={{ containerType: ContainerType.DIV }}
+      />
     );
-
-    const EmbeddedEnvelope = useMemo(() => {
-      return EmbeddedEnvelopeFactory({
-        api: new TaskInboxChannelApiImpl(props.driver),
-        origin: props.targetOrigin,
-        refDelegate,
-        pollInit,
-        config: { containerType: ContainerType.DIV }
-      });
-    }, []);
-
-    return <EmbeddedEnvelope ref={forwardedRef} />;
   }
 );
+
+const EmbeddedTaskInboxEnvelope = React.forwardRef<
+  TaskInboxApi,
+  EmbeddedEnvelopeProps<TaskInboxChannelApi, TaskInboxEnvelopeApi, TaskInboxApi>
+>(RefForwardingEmbeddedEnvelope);

@@ -15,10 +15,10 @@
  */
 
 import {
-  MockedEnvelopeBusController,
+  MockedEnvelopeClient,
   MockedRuntimeToolsDevUIEnvelopeViewApi
 } from './mocks/Mocks';
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import {
   RuntimeToolsDevUIChannelApi,
   RuntimeToolsDevUIEnvelopeApi
@@ -29,7 +29,7 @@ import { RuntimeToolsDevUIEnvelopeViewApi } from '../RuntimeToolsDevUIEnvelopeVi
 
 describe('JobsManagementEnvelopeApiImpl tests', () => {
   it('initialize', () => {
-    const envelopeBusController = new MockedEnvelopeBusController();
+    const envelopeClient = new MockedEnvelopeClient();
     const view = new MockedRuntimeToolsDevUIEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       RuntimeToolsDevUIEnvelopeApi,
@@ -37,9 +37,9 @@ describe('JobsManagementEnvelopeApiImpl tests', () => {
       RuntimeToolsDevUIEnvelopeViewApi,
       RuntimeToolsDevUIEnvelopeContextType
     > = {
-      envelopeBusController,
+      envelopeClient,
       envelopeContext: {} as any,
-      view: () => view
+      viewDelegate: () => Promise.resolve(() => view)
     };
 
     const envelopeApi = new RuntimeToolsDevUIEnvelopeApiImpl(args);
@@ -62,7 +62,7 @@ describe('JobsManagementEnvelopeApiImpl tests', () => {
       }
     );
 
-    expect(envelopeBusController.associate).toHaveBeenCalledWith(
+    expect(envelopeClient.associate).toHaveBeenCalledWith(
       'origin',
       'envelopeServerId'
     );

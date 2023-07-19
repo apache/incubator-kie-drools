@@ -13,8 +13,27 @@ exports[`EmbeddedCustomDashboardList tests Snapshot 1`] = `
   envelopePath="path"
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      CustomDashboardListChannelApiImpl {
+        "driver": Object {
+          "applyFilter": [MockFunction],
+          "getCustomDashboardFilter": [MockFunction],
+          "getCustomDashboardsQuery": [MockFunction],
+          "openDashboard": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;

@@ -1681,10 +1681,13 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           onFocus={[Function]}
                           onMouseEnter={[Function]}
                           onMouseLeave={[Function]}
+                          onPopperMouseEnter={[Function]}
+                          onPopperMouseLeave={[Function]}
                           onTriggerEnter={[Function]}
                           placement="top"
                           popper={
                             <div
+                              aria-live="off"
                               className="pf-c-tooltip"
                               id="pf-tooltip-470"
                               role="tooltip"
@@ -1708,11 +1711,20 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           positionModifiers={
                             Object {
                               "bottom": "pf-m-bottom",
+                              "bottom-end": "pf-m-bottom-right",
+                              "bottom-start": "pf-m-bottom-left",
                               "left": "pf-m-left",
+                              "left-end": "pf-m-left-bottom",
+                              "left-start": "pf-m-left-top",
                               "right": "pf-m-right",
+                              "right-end": "pf-m-right-bottom",
+                              "right-start": "pf-m-right-top",
                               "top": "pf-m-top",
+                              "top-end": "pf-m-top-right",
+                              "top-start": "pf-m-top-left",
                             }
                           }
+                          removeFindDomNode={false}
                           trigger={
                             <OnRunningIcon
                               className="kogito-process-details--timeline-status"
@@ -1818,10 +1830,13 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           onFocus={[Function]}
                           onMouseEnter={[Function]}
                           onMouseLeave={[Function]}
+                          onPopperMouseEnter={[Function]}
+                          onPopperMouseLeave={[Function]}
                           onTriggerEnter={[Function]}
                           placement="top"
                           popper={
                             <div
+                              aria-live="off"
                               className="pf-c-tooltip"
                               id="pf-tooltip-471"
                               role="tooltip"
@@ -1845,11 +1860,20 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           positionModifiers={
                             Object {
                               "bottom": "pf-m-bottom",
+                              "bottom-end": "pf-m-bottom-right",
+                              "bottom-start": "pf-m-bottom-left",
                               "left": "pf-m-left",
+                              "left-end": "pf-m-left-bottom",
+                              "left-start": "pf-m-left-top",
                               "right": "pf-m-right",
+                              "right-end": "pf-m-right-bottom",
+                              "right-start": "pf-m-right-top",
                               "top": "pf-m-top",
+                              "top-end": "pf-m-top-right",
+                              "top-start": "pf-m-top-left",
                             }
                           }
+                          removeFindDomNode={false}
                           trigger={
                             <OnRunningIcon
                               className="kogito-process-details--timeline-status"
@@ -1917,10 +1941,13 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                                     onFocus={[Function]}
                                     onMouseEnter={[Function]}
                                     onMouseLeave={[Function]}
+                                    onPopperMouseEnter={[Function]}
+                                    onPopperMouseLeave={[Function]}
                                     onTriggerEnter={[Function]}
                                     placement="top"
                                     popper={
                                       <div
+                                        aria-live="off"
                                         className="pf-c-tooltip"
                                         id="pf-tooltip-472"
                                         role="tooltip"
@@ -1944,11 +1971,20 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                                     positionModifiers={
                                       Object {
                                         "bottom": "pf-m-bottom",
+                                        "bottom-end": "pf-m-bottom-right",
+                                        "bottom-start": "pf-m-bottom-left",
                                         "left": "pf-m-left",
+                                        "left-end": "pf-m-left-bottom",
+                                        "left-start": "pf-m-left-top",
                                         "right": "pf-m-right",
+                                        "right-end": "pf-m-right-bottom",
+                                        "right-start": "pf-m-right-top",
                                         "top": "pf-m-top",
+                                        "top-end": "pf-m-top-right",
+                                        "top-start": "pf-m-top-left",
                                       }
                                     }
+                                    removeFindDomNode={false}
                                     trigger={
                                       <UserIcon
                                         className="pf-u-ml-sm"
@@ -2033,10 +2069,13 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           onFocus={[Function]}
                           onMouseEnter={[Function]}
                           onMouseLeave={[Function]}
+                          onPopperMouseEnter={[Function]}
+                          onPopperMouseLeave={[Function]}
                           onTriggerEnter={[Function]}
                           placement="top"
                           popper={
                             <div
+                              aria-live="off"
                               className="pf-c-tooltip"
                               id="pf-tooltip-473"
                               role="tooltip"
@@ -2060,11 +2099,20 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           positionModifiers={
                             Object {
                               "bottom": "pf-m-bottom",
+                              "bottom-end": "pf-m-bottom-right",
+                              "bottom-start": "pf-m-bottom-left",
                               "left": "pf-m-left",
+                              "left-end": "pf-m-left-bottom",
+                              "left-start": "pf-m-left-top",
                               "right": "pf-m-right",
+                              "right-end": "pf-m-right-bottom",
+                              "right-start": "pf-m-right-top",
                               "top": "pf-m-top",
+                              "top-end": "pf-m-top-right",
+                              "top-start": "pf-m-top-left",
                             }
                           }
+                          removeFindDomNode={false}
                           trigger={
                             <ErrorCircleOIcon
                               className="kogito-process-details--timeline-status"
@@ -2134,10 +2182,13 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                                     onFocus={[Function]}
                                     onMouseEnter={[Function]}
                                     onMouseLeave={[Function]}
+                                    onPopperMouseEnter={[Function]}
+                                    onPopperMouseLeave={[Function]}
                                     onTriggerEnter={[Function]}
                                     placement="top"
                                     popper={
                                       <div
+                                        aria-live="off"
                                         className="pf-c-tooltip"
                                         id="pf-tooltip-474"
                                         role="tooltip"
@@ -2161,11 +2212,20 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                                     positionModifiers={
                                       Object {
                                         "bottom": "pf-m-bottom",
+                                        "bottom-end": "pf-m-bottom-right",
+                                        "bottom-start": "pf-m-bottom-left",
                                         "left": "pf-m-left",
+                                        "left-end": "pf-m-left-bottom",
+                                        "left-start": "pf-m-left-top",
                                         "right": "pf-m-right",
+                                        "right-end": "pf-m-right-bottom",
+                                        "right-start": "pf-m-right-top",
                                         "top": "pf-m-top",
+                                        "top-end": "pf-m-top-right",
+                                        "top-start": "pf-m-top-left",
                                       }
                                     }
+                                    removeFindDomNode={false}
                                     trigger={
                                       <UserIcon
                                         className="pf-u-ml-sm"

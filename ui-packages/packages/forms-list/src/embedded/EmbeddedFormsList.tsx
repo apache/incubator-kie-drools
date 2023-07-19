@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useMemo, Ref } from 'react';
-import { EnvelopeServer } from '@kogito-tooling/envelope-bus/dist/channel';
-import { EmbeddedEnvelopeFactory } from '@kogito-tooling/envelope/dist/embedded';
+import React, { useCallback } from 'react';
+import { EnvelopeServer } from '@kie-tools-core/envelope-bus/dist/channel';
+import {
+  EmbeddedEnvelopeProps,
+  RefForwardingEmbeddedEnvelope
+} from '@kie-tools-core/envelope/dist/embedded';
 import {
   FormsListApi,
   FormsListChannelApi,
@@ -23,7 +26,7 @@ import {
   FormsListDriver
 } from '../api';
 import { FormsListChannelApiImpl } from './FormsListChannelApiImpl';
-import { ContainerType } from '@kogito-tooling/envelope/dist/api';
+import { ContainerType } from '@kie-tools-core/envelope/dist/api';
 import { init } from '../envelope';
 
 export interface Props {
@@ -31,8 +34,17 @@ export interface Props {
   driver: FormsListDriver;
 }
 
-export const EmbeddedFormsList = React.forwardRef<FormsListApi, Props>(
-  (props, forwardedRef: Ref<FormsListApi>) => {
+export const EmbeddedFormsList = React.forwardRef(
+  (props: Props, forwardedRef: React.Ref<FormsListApi>) => {
+    const refDelegate = useCallback(
+      (
+        envelopeServer: EnvelopeServer<
+          FormsListChannelApi,
+          FormsListEnvelopeApi
+        >
+      ): FormsListApi => ({}),
+      []
+    );
     const pollInit = useCallback(
       (
         envelopeServer: EnvelopeServer<
@@ -61,26 +73,20 @@ export const EmbeddedFormsList = React.forwardRef<FormsListApi, Props>(
       []
     );
 
-    const refDelegate = useCallback(
-      (
-        envelopeServer: EnvelopeServer<
-          FormsListChannelApi,
-          FormsListEnvelopeApi
-        >
-      ): FormsListApi => ({}),
-      []
+    return (
+      <EmbeddedFormsListEnvelope
+        ref={forwardedRef}
+        apiImpl={new FormsListChannelApiImpl(props.driver)}
+        origin={props.targetOrigin}
+        refDelegate={refDelegate}
+        pollInit={pollInit}
+        config={{ containerType: ContainerType.DIV }}
+      />
     );
-
-    const EmbeddedEnvelope = useMemo(() => {
-      return EmbeddedEnvelopeFactory({
-        api: new FormsListChannelApiImpl(props.driver),
-        origin: props.targetOrigin,
-        refDelegate,
-        pollInit,
-        config: { containerType: ContainerType.DIV }
-      });
-    }, []);
-
-    return <EmbeddedEnvelope ref={forwardedRef} />;
   }
 );
+
+const EmbeddedFormsListEnvelope = React.forwardRef<
+  FormsListApi,
+  EmbeddedEnvelopeProps<FormsListChannelApi, FormsListEnvelopeApi, FormsListApi>
+>(RefForwardingEmbeddedEnvelope);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import { ProcessFormEnvelopeViewApi } from './ProcessFormEnvelopeView';
 import {
   Association,
@@ -27,6 +27,7 @@ import { ProcessFormEnvelopeContext } from './ProcessFormEnvelopeContext';
  * Implementation of the ProcessFormEnvelopeApi
  */
 export class ProcessFormEnvelopeApiImpl implements ProcessFormEnvelopeApi {
+  private view: () => ProcessFormEnvelopeViewApi;
   private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
@@ -49,7 +50,7 @@ export class ProcessFormEnvelopeApiImpl implements ProcessFormEnvelopeApi {
     association: Association,
     processDefinition: any
   ): Promise<void> => {
-    this.args.envelopeBusController.associate(
+    this.args.envelopeClient.associate(
       association.origin,
       association.envelopeServerId
     );
@@ -58,6 +59,7 @@ export class ProcessFormEnvelopeApiImpl implements ProcessFormEnvelopeApi {
       return;
     }
     this.ackCapturedInitRequest();
-    this.args.view().initialize(processDefinition);
+    this.view = await this.args.viewDelegate();
+    this.view().initialize(processDefinition);
   };
 }

@@ -9,6 +9,7 @@ exports[`ProcessFormEnvelopeView tests Snapshot 1`] = `
         "processForm__getProcessFormSchema": [MockFunction],
         "processForm__startProcess": [MockFunction],
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -23,6 +24,7 @@ exports[`ProcessFormEnvelopeView tests Snapshot 1`] = `
             "processForm__getProcessFormSchema": [MockFunction],
             "processForm__startProcess": [MockFunction],
           },
+          "shared": [MockFunction],
           "subscribe": [MockFunction],
           "unsubscribe": [MockFunction],
         },

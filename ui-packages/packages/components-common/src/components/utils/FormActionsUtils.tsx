@@ -16,7 +16,7 @@
 
 import React from 'react';
 import _ from 'lodash';
-import { Button } from '@patternfly/react-core';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
 
 export enum ActionType {
   SUBMIT = 'submit',

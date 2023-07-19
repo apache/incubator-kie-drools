@@ -18,16 +18,18 @@ import React from 'react';
 import {
   CardBody,
   Card,
-  CardHeader,
-  Title,
+  CardHeader
+} from '@patternfly/react-core/dist/js/components/Card';
+import { Label } from '@patternfly/react-core/dist/js/components/Label';
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import {
   TextContent,
   TextVariants,
-  Label,
-  Text,
-  Tooltip
-} from '@patternfly/react-core';
+  Text
+} from '@patternfly/react-core/dist/js/components/Text';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import '../styles.css';
 import { Milestone } from '@kogito-apps/management-console-shared';
 

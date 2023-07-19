@@ -8,9 +8,11 @@ exports[`DisablePopup component tests snapshot testing for no process-management
 >
   <Checkbox
     className=""
+    component="div"
     id="test"
     isChecked={false}
     isDisabled={false}
+    isRequired={false}
     isValid={true}
     onChange={[Function]}
     ouiaSafe={true}
@@ -26,9 +28,11 @@ exports[`DisablePopup component tests snapshot testing for no service URL and no
 >
   <Checkbox
     className=""
+    component="div"
     id="test"
     isChecked={false}
     isDisabled={false}
+    isRequired={false}
     isValid={true}
     onChange={[Function]}
     ouiaSafe={true}
@@ -44,9 +48,11 @@ exports[`DisablePopup component tests snapshot testing for no service URL and on
 >
   <Checkbox
     className=""
+    component="div"
     id="test"
     isChecked={false}
     isDisabled={false}
+    isRequired={false}
     isValid={true}
     onChange={[Function]}
     ouiaSafe={true}
@@ -62,9 +68,11 @@ exports[`DisablePopup component tests snapshot testing for service URL and proce
 >
   <Checkbox
     className=""
+    component="div"
     id="test"
     isChecked={false}
     isDisabled={false}
+    isRequired={false}
     isValid={true}
     onChange={[Function]}
     ouiaSafe={true}

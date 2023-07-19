@@ -17,17 +17,19 @@
 import React, { useState } from 'react';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
-  Bullseye,
-  Button,
-  ClipboardCopy,
-  ClipboardCopyVariant,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant,
-  Title
-} from '@patternfly/react-core';
-import { ExclamationCircleIcon } from '@patternfly/react-icons';
+  EmptyStateVariant
+} from '@patternfly/react-core/dist/js/components/EmptyState';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import {
+  ClipboardCopy,
+  ClipboardCopyVariant
+} from '@patternfly/react-core/dist/js/components/ClipboardCopy';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 import '@patternfly/patternfly/patternfly.css';
 

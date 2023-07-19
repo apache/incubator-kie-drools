@@ -30,9 +30,27 @@ exports[`WorkflowFormContainer tests Snapshot 1`] = `
       }
     }
   >
-    <ForwardRef>
+    <ForwardRef(RefForwardingEmbeddedEnvelope)
+      apiImpl={
+        EmbeddedWorkflowFormChannelApiImpl {
+          "driver": Object {
+            "getCustomWorkflowSchema": [Function],
+            "resetBusinessKey": [Function],
+            "startWorkflow": [Function],
+          },
+        }
+      }
+      config={
+        Object {
+          "containerType": "div",
+        }
+      }
+      origin="http://localhost:9000"
+      pollInit={[Function]}
+      refDelegate={[Function]}
+    >
       <div />
-    </ForwardRef>
+    </ForwardRef(RefForwardingEmbeddedEnvelope)>
   </ForwardRef>
 </WorkflowFormContainer>
 `;

@@ -17,7 +17,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import * as Keycloak from '../../../../utils/KeycloakClient';
-import { PageSidebar } from '@patternfly/react-core';
+import { PageSidebar } from '@patternfly/react-core/dist/js/components/Page';
 import { mount } from 'enzyme';
 
 import PageLayout from '../PageLayout';

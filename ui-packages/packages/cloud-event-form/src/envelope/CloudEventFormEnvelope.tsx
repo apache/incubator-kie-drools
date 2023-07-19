@@ -16,8 +16,8 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { EnvelopeBus } from '@kogito-tooling/envelope-bus/dist/api';
-import { Envelope, EnvelopeDivConfig } from '@kogito-tooling/envelope';
+import { EnvelopeBus } from '@kie-tools-core/envelope-bus/dist/api';
+import { Envelope, EnvelopeDivConfig } from '@kie-tools-core/envelope';
 import { CloudEventFormChannelApi, CloudEventFormEnvelopeApi } from '../api';
 
 import './styles.css';

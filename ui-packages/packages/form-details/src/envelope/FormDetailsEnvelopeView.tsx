@@ -15,7 +15,7 @@
  */
 
 import React, { useImperativeHandle, useState } from 'react';
-import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import { FormDetailsChannelApi } from '../api';
 import FormDetails from './components/FormDetails/FormDetails';
 import FormDetailsEnvelopeViewDriver from './FormDetailsEnvelopeViewDriver';

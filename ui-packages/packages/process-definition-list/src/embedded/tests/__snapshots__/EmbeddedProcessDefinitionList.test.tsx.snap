@@ -15,8 +15,28 @@ exports[`EmbeddedProcessDefinitionList tests Snapshot 1`] = `
   singularProcessLabel="Workflow"
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      ProcessDefinitionListChannelApiImpl {
+        "driver": Object {
+          "getProcessDefinitionFilter": [MockFunction],
+          "getProcessDefinitionsQuery": [MockFunction],
+          "openProcessForm": [MockFunction],
+          "openTriggerCloudEvent": [MockFunction],
+          "setProcessDefinitionFilter": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;

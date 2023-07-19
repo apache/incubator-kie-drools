@@ -104,8 +104,37 @@ exports[`EmbeddedProcessDetails tests Snapshot 1`] = `
   singularProcessLabel="Workflow"
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      ProcessDetailsChannelApiImpl {
+        "driver": Object {
+          "cancelJob": [MockFunction],
+          "getProcessDiagram": [MockFunction],
+          "getTriggerableNodes": [MockFunction],
+          "handleNodeInstanceCancel": [MockFunction],
+          "handleNodeInstanceRetrigger": [MockFunction],
+          "handleNodeTrigger": [MockFunction],
+          "handleProcessAbort": [MockFunction],
+          "handleProcessRetry": [MockFunction],
+          "handleProcessSkip": [MockFunction],
+          "handleProcessVariableUpdate": [MockFunction],
+          "jobsQuery": [MockFunction],
+          "openProcessInstanceDetails": [MockFunction],
+          "processDetailsQuery": [MockFunction],
+          "rescheduleJob": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;

@@ -20,6 +20,7 @@ exports[`WorkflowFormEnvelopeView tests Custom Workflow Form 1`] = `
         "workflowForm__resetBusinessKey": [MockFunction],
         "workflowForm__startWorkflow": [MockFunction],
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -72,6 +73,7 @@ exports[`WorkflowFormEnvelopeView tests Custom Workflow Form 1`] = `
             "workflowForm__resetBusinessKey": [MockFunction],
             "workflowForm__startWorkflow": [MockFunction],
           },
+          "shared": [MockFunction],
           "subscribe": [MockFunction],
           "unsubscribe": [MockFunction],
         },
@@ -97,6 +99,7 @@ exports[`WorkflowFormEnvelopeView tests Loading 1`] = `
         "workflowForm__resetBusinessKey": [MockFunction],
         "workflowForm__startWorkflow": [MockFunction],
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -143,6 +146,7 @@ exports[`WorkflowFormEnvelopeView tests Workflow Form 1`] = `
         "workflowForm__resetBusinessKey": [MockFunction],
         "workflowForm__startWorkflow": [MockFunction],
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -168,6 +172,7 @@ exports[`WorkflowFormEnvelopeView tests Workflow Form 1`] = `
             "workflowForm__resetBusinessKey": [MockFunction],
             "workflowForm__startWorkflow": [MockFunction],
           },
+          "shared": [MockFunction],
           "subscribe": [MockFunction],
           "unsubscribe": [MockFunction],
         },

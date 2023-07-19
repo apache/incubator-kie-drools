@@ -15,8 +15,30 @@ exports[`EmbeddedJobsManagement tests Snapshot 1`] = `
   }
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      JobsManagementChannelApiImpl {
+        "driver": Object {
+          "applyFilter": [MockFunction],
+          "bulkCancel": [MockFunction],
+          "cancelJob": [MockFunction],
+          "initialLoad": [MockFunction],
+          "query": [MockFunction],
+          "rescheduleJob": [MockFunction],
+          "sortBy": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;

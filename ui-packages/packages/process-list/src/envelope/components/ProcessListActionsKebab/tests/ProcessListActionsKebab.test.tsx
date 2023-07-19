@@ -16,7 +16,11 @@
 import React from 'react';
 import ProcessListActionsKebab from '../ProcessListActionsKebab';
 import { mount } from 'enzyme';
-import { Dropdown, KebabToggle, DropdownItem } from '@patternfly/react-core';
+import {
+  Dropdown,
+  KebabToggle,
+  DropdownItem
+} from '@patternfly/react-core/dist/js/components/Dropdown';
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
 
 describe('Process list actions kebab tests', () => {

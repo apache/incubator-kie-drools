@@ -47,6 +47,7 @@ exports[`ProcessForm Test Envelope not connected 1`] = `
                 >
                   <Spinner>
                     <span
+                      aria-label="Contents"
                       aria-valuetext="Loading..."
                       className="pf-c-spinner pf-m-xl"
                       role="progressbar"

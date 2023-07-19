@@ -28,7 +28,8 @@ import {
 } from '../utils/ProcessDefinitionListUtils';
 import { ProcessDefinitionListDriver } from '../../../api/ProcessDefinitionListDriver';
 import { ProcessDefinition } from '../../../api/ProcessDefinitionListEnvelopeApi';
-import { Bullseye, Divider } from '@patternfly/react-core';
+import { Divider } from '@patternfly/react-core/dist/js/components/Divider';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import ProcessDefinitionListToolbar from '../ProcessDefinitionListToolbar/ProcessDefinitionListToolbar';
 
 export interface ProcessDefinitionListProps {

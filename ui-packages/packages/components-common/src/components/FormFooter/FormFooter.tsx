@@ -16,7 +16,10 @@
 
 import React from 'react';
 import _ from 'lodash';
-import { ActionList, ActionListItem } from '@patternfly/react-core';
+import {
+  ActionList,
+  ActionListItem
+} from '@patternfly/react-core/dist/js/components/ActionList';
 import { convertActionsToButton, FormAction } from '../utils';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import '../styles.css';

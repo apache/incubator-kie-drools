@@ -15,7 +15,9 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Bullseye, Card, PageSection } from '@patternfly/react-core';
+import { Card } from '@patternfly/react-core/dist/js/components/Card';
+import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import { KogitoSpinner, ServerErrors } from '@kogito-apps/components-common';
 import { OUIAProps, ouiaPageTypeAndObjectId } from '@kogito-apps/ouia-tools';
 import { RouteComponentProps } from 'react-router-dom';

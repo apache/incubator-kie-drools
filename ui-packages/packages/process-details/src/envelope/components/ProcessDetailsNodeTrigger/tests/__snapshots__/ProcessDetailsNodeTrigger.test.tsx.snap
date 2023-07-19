@@ -250,12 +250,15 @@ exports[`Process details node trigger component tests select a node test  1`] = 
                     </DropdownItem>,
                   ]
                 }
+                isFlipEnabled={true}
                 isGrouped={false}
                 isOpen={false}
                 isPlain={false}
+                isText={false}
                 menuAppendTo="inline"
                 onSelect={[Function]}
                 position="left"
+                removeFindDomNode={false}
                 toggle={
                   <DropdownToggle
                     id="toggle-id"
@@ -265,6 +268,7 @@ exports[`Process details node trigger component tests select a node test  1`] = 
                     Book
                   </DropdownToggle>
                 }
+                zIndex={9999}
               >
                 <div
                   className="pf-c-dropdown pf-m-top"
@@ -278,6 +282,7 @@ exports[`Process details node trigger component tests select a node test  1`] = 
                     id="toggle-id"
                     isOpen={false}
                     isPlain={false}
+                    isText={false}
                     key=".0"
                     onEnter={[Function]}
                     onToggle={[Function]}
@@ -342,6 +347,7 @@ exports[`Process details node trigger component tests select a node test  1`] = 
                       isPlain={false}
                       isPrimary={false}
                       isSplitButton={false}
+                      isText={false}
                       onEnter={[Function]}
                       onToggle={[Function]}
                       parentRef={
@@ -388,6 +394,7 @@ exports[`Process details node trigger component tests select a node test  1`] = 
                           </div>,
                         }
                       }
+                      toggleVariant="default"
                     >
                       <button
                         aria-expanded={false}
@@ -856,12 +863,15 @@ exports[`Process details node trigger component tests snapshot testing with none
                     </DropdownItem>,
                   ]
                 }
+                isFlipEnabled={true}
                 isGrouped={false}
                 isOpen={false}
                 isPlain={false}
+                isText={false}
                 menuAppendTo="inline"
                 onSelect={[Function]}
                 position="left"
+                removeFindDomNode={false}
                 toggle={
                   <DropdownToggle
                     id="toggle-id"
@@ -871,6 +881,7 @@ exports[`Process details node trigger component tests snapshot testing with none
                     select a node
                   </DropdownToggle>
                 }
+                zIndex={9999}
               >
                 <div
                   className="pf-c-dropdown pf-m-top"
@@ -884,6 +895,7 @@ exports[`Process details node trigger component tests snapshot testing with none
                     id="toggle-id"
                     isOpen={false}
                     isPlain={false}
+                    isText={false}
                     key=".0"
                     onEnter={[Function]}
                     onToggle={[Function]}
@@ -948,6 +960,7 @@ exports[`Process details node trigger component tests snapshot testing with none
                       isPlain={false}
                       isPrimary={false}
                       isSplitButton={false}
+                      isText={false}
                       onEnter={[Function]}
                       onToggle={[Function]}
                       parentRef={
@@ -994,6 +1007,7 @@ exports[`Process details node trigger component tests snapshot testing with none
                           </div>,
                         }
                       }
+                      toggleVariant="default"
                     >
                       <button
                         aria-expanded={false}

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Envelope } from '@kogito-tooling/envelope';
+import { Envelope } from '@kie-tools-core/envelope';
 import {
   RuntimeToolsDevUIEnvelopeApi,
   RuntimeToolsDevUIChannelApi

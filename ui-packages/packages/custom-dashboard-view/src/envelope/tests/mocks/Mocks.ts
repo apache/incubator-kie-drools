@@ -17,14 +17,14 @@
 import {
   MessageBusClientApi,
   RequestPropertyNames
-} from '@kogito-tooling/envelope-bus/dist/api';
+} from '@kie-tools-core/envelope-bus/dist/api';
 import {
   CustomDashboardViewChannelApi,
   CustomDashboardViewEnvelopeApi
 } from '../../../api';
-import { MessageBusServer } from '@kogito-tooling/envelope-bus/dist/api';
-import { EnvelopeBusMessageManager } from '@kogito-tooling/envelope-bus/dist/common';
-import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
+import { MessageBusServer } from '@kie-tools-core/envelope-bus/dist/api';
+import { EnvelopeBusMessageManager } from '@kie-tools-core/envelope-bus/dist/common';
+import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';
 import { CustomDashboardViewEnvelopeViewApi } from '../../CustomDashboardViewEnvelopeView';
 
 export const MockedApiRequests = jest.fn<
@@ -44,7 +44,8 @@ export const MockedMessageBusClientApi = jest.fn<
   requests: new MockedApiRequests(),
   notifications: jest.fn(),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
+  unsubscribe: jest.fn(),
+  shared: jest.fn()
 }));
 
 export const MockedMessageBusServer = jest.fn<
@@ -86,9 +87,9 @@ export const MockedEnvelopeBusMessageManager = jest.fn<
   getNextRequestId: jest.fn()
 }));
 
-export const MockedEnvelopeBusControllerDefinition = jest.fn<
+export const MockedEnvelopeClientDefinition = jest.fn<
   Partial<
-    EnvelopeBusController<
+    EnvelopeClient<
       CustomDashboardViewEnvelopeApi,
       CustomDashboardViewChannelApi
     >
@@ -108,8 +109,8 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController =
-  new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+export const MockedEnvelopeClient =
+  new MockedEnvelopeClientDefinition() as EnvelopeClient<
     CustomDashboardViewEnvelopeApi,
     CustomDashboardViewChannelApi
   >;

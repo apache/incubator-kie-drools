@@ -15,15 +15,15 @@
  */
 
 import {
+  ApiNotificationConsumers,
   MessageBusClientApi,
-  NotificationPropertyNames,
   RequestPropertyNames
-} from '@kogito-tooling/envelope-bus/dist/api';
+} from '@kie-tools-core/envelope-bus/dist/api';
 import { TaskInboxChannelApi, TaskInboxEnvelopeApi } from '../../../api';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { MessageBusServer } from '@kogito-tooling/envelope-bus/dist/api';
-import { EnvelopeBusMessageManager } from '@kogito-tooling/envelope-bus/dist/common';
-import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
+import { MessageBusServer } from '@kie-tools-core/envelope-bus/dist/api';
+import { EnvelopeBusMessageManager } from '@kie-tools-core/envelope-bus/dist/common';
+import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';
 import { TaskInboxEnvelopeViewApi } from '../../TaskInboxEnvelopeView';
 
 export const userTask: UserTaskInstance = {
@@ -53,6 +53,12 @@ export const userTask: UserTaskInstance = {
     'http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3'
 };
 
+const mockNotificationConsumer = {
+  subscribe: jest.fn(),
+  unsubscribe: jest.fn(),
+  send: jest.fn()
+};
+
 export const MockedApiRequests = jest.fn<
   Pick<TaskInboxChannelApi, RequestPropertyNames<TaskInboxChannelApi>>,
   []
@@ -65,10 +71,10 @@ export const MockedApiRequests = jest.fn<
 }));
 
 export const MockedApiNotifications = jest.fn<
-  Pick<TaskInboxChannelApi, NotificationPropertyNames<TaskInboxChannelApi>>,
+  ApiNotificationConsumers<TaskInboxChannelApi>,
   []
 >(() => ({
-  taskInbox__openTask: jest.fn()
+  taskInbox__openTask: mockNotificationConsumer
 }));
 
 export const MockedMessageBusClientApi = jest.fn<
@@ -78,7 +84,8 @@ export const MockedMessageBusClientApi = jest.fn<
   requests: new MockedApiRequests(),
   notifications: new MockedApiNotifications(),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
+  unsubscribe: jest.fn(),
+  shared: jest.fn()
 }));
 
 export const MockedMessageBusServer = jest.fn<
@@ -113,7 +120,7 @@ export const MockedEnvelopeBusMessageManager = jest.fn<
 }));
 
 export const MockedEnvelopeBusControllerDefinition = jest.fn<
-  Partial<EnvelopeBusController<TaskInboxEnvelopeApi, TaskInboxChannelApi>>,
+  Partial<EnvelopeClient<TaskInboxEnvelopeApi, TaskInboxChannelApi>>,
   []
 >(() => ({
   bus: jest.fn(),
@@ -129,8 +136,8 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController =
-  new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+export const MockedEnvelopeClient =
+  new MockedEnvelopeBusControllerDefinition() as EnvelopeClient<
     TaskInboxEnvelopeApi,
     TaskInboxChannelApi
   >;

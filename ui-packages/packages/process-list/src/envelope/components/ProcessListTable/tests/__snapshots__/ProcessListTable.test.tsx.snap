@@ -786,6 +786,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="__toggle"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <CollapseColumn
                             aria-labelledby="simple-node0 expand-toggle0"
@@ -882,13 +883,16 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="__select"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <Checkbox
                             aria-label="process-list-checkbox"
                             className=""
+                            component="div"
                             id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                             isChecked={false}
                             isDisabled={false}
+                            isRequired={false}
                             isValid={true}
                             name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                             onChange={[Function]}
@@ -909,6 +913,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
+                                required={false}
                                 type="checkbox"
                               />
                             </div>
@@ -936,6 +941,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="id"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <a
                             className="kogito-process-list__link"
@@ -981,10 +987,13 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                     onFocus={[Function]}
                                     onMouseEnter={[Function]}
                                     onMouseLeave={[Function]}
+                                    onPopperMouseEnter={[Function]}
+                                    onPopperMouseLeave={[Function]}
                                     onTriggerEnter={[Function]}
                                     placement="top"
                                     popper={
                                       <div
+                                        aria-live="off"
                                         className="pf-c-tooltip"
                                         data-ouia-component-type="item-descriptor"
                                         data-ouia-safe={true}
@@ -1010,11 +1019,20 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                     positionModifiers={
                                       Object {
                                         "bottom": "pf-m-bottom",
+                                        "bottom-end": "pf-m-bottom-right",
+                                        "bottom-start": "pf-m-bottom-left",
                                         "left": "pf-m-left",
+                                        "left-end": "pf-m-left-bottom",
+                                        "left-start": "pf-m-left-top",
                                         "right": "pf-m-right",
+                                        "right-end": "pf-m-right-bottom",
+                                        "right-start": "pf-m-right-top",
                                         "top": "pf-m-top",
+                                        "top-end": "pf-m-top-right",
+                                        "top-start": "pf-m-top-left",
                                       }
                                     }
+                                    removeFindDomNode={false}
                                     trigger={
                                       <span>
                                         travels
@@ -1139,6 +1157,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="status"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <MockedErrorPopover
                             onRetryClick={[Function]}
@@ -1228,6 +1247,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="created"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <t
                             ago={false}
@@ -1275,6 +1295,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="last update"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <span>
                             <HistoryIcon
@@ -1352,6 +1373,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="__actions"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <MockedProcessListActionsKebab
                             key="538f9feb-5a14-4096-b791-2055b38da7c6"
@@ -1455,6 +1477,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       >
                         <td
                           className=""
+                          onMouseEnter={[Function]}
                         />
                       </TdBase>
                     </Td>
@@ -1472,6 +1495,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           className=""
                           colSpan={6}
                           data-label="__Toggle"
+                          onMouseEnter={[Function]}
                         >
                           <ExpandableRowContent>
                             <div
@@ -1547,6 +1571,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="__toggle"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <CollapseColumn
                             aria-labelledby="simple-node1 expand-toggle1"
@@ -1576,13 +1601,16 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="__select"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <Checkbox
                             aria-label="process-list-checkbox"
                             className=""
+                            component="div"
                             id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                             isChecked={false}
                             isDisabled={false}
+                            isRequired={false}
                             isValid={true}
                             name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                             onChange={[Function]}
@@ -1603,6 +1631,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
+                                required={false}
                                 type="checkbox"
                               />
                             </div>
@@ -1630,6 +1659,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="id"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <a
                             className="kogito-process-list__link"
@@ -1675,10 +1705,13 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                     onFocus={[Function]}
                                     onMouseEnter={[Function]}
                                     onMouseLeave={[Function]}
+                                    onPopperMouseEnter={[Function]}
+                                    onPopperMouseLeave={[Function]}
                                     onTriggerEnter={[Function]}
                                     placement="top"
                                     popper={
                                       <div
+                                        aria-live="off"
                                         className="pf-c-tooltip"
                                         data-ouia-component-type="item-descriptor"
                                         data-ouia-safe={true}
@@ -1704,11 +1737,20 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                     positionModifiers={
                                       Object {
                                         "bottom": "pf-m-bottom",
+                                        "bottom-end": "pf-m-bottom-right",
+                                        "bottom-start": "pf-m-bottom-left",
                                         "left": "pf-m-left",
+                                        "left-end": "pf-m-left-bottom",
+                                        "left-start": "pf-m-left-top",
                                         "right": "pf-m-right",
+                                        "right-end": "pf-m-right-bottom",
+                                        "right-start": "pf-m-right-top",
                                         "top": "pf-m-top",
+                                        "top-end": "pf-m-top-right",
+                                        "top-start": "pf-m-top-left",
                                       }
                                     }
+                                    removeFindDomNode={false}
                                     trigger={
                                       <span>
                                         travels
@@ -1833,6 +1875,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="status"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <MockedErrorPopover
                             onRetryClick={[Function]}
@@ -1921,6 +1964,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="created"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <t
                             ago={false}
@@ -1968,6 +2012,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="last update"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <span>
                             <HistoryIcon
@@ -2045,6 +2090,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           data-ouia-component-id="__actions"
                           data-ouia-component-type="process-list-cell"
                           data-ouia-safe={true}
+                          onMouseEnter={[Function]}
                         >
                           <MockedProcessListActionsKebab
                             key="538f9feb-5a14-4096-b791-2055b38da7c6"
@@ -2147,6 +2193,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                       >
                         <td
                           className=""
+                          onMouseEnter={[Function]}
                         />
                       </TdBase>
                     </Td>
@@ -2164,6 +2211,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                           className=""
                           colSpan={6}
                           data-label="__Toggle"
+                          onMouseEnter={[Function]}
                         >
                           <ExpandableRowContent>
                             <div

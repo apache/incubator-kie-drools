@@ -18,6 +18,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import CustomDashboardList from '../CustomDashboardList';
 import { MockedCustomDashboardListDriver } from '../../../tests/mocks/MockedCustomDashboardsListDriver';
+import { ToggleGroupItem } from '@patternfly/react-core/dist/js/components/ToggleGroup';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
 import TestCustomDashboardListDriver from '../__mocks__/TestCustomDashboardListDriver';

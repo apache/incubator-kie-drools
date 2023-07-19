@@ -20,7 +20,7 @@ import TestProcessListDriver from '../../ProcessList/tests/mocks/TestProcessList
 import { childProcessInstances } from './mocks/Mocks';
 import ProcessListChildTable from '../ProcessListChildTable';
 import { ProcessInstances } from '../../ProcessListTable/tests/mocks/Mocks';
-import { Checkbox } from '@patternfly/react-core';
+import { Checkbox } from '@patternfly/react-core/dist/js/components/Checkbox';
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 
 const MockedComponent = (): React.ReactElement => {

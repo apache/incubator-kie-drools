@@ -16,29 +16,30 @@
 
 import Moment from 'react-moment';
 import {
-  Card,
-  CardBody,
-  CardHeader,
-  Title,
-  Text,
-  TextContent,
-  TextVariants,
-  Split,
-  SplitItem,
-  Stack,
   Dropdown,
   KebabToggle,
-  DropdownItem,
-  Tooltip,
-  Button
-} from '@patternfly/react-core';
+  DropdownItem
+} from '@patternfly/react-core/dist/js/components/Dropdown';
+import { Split, SplitItem } from '@patternfly/react-core/dist/js/layouts/Split';
+import { Stack } from '@patternfly/react-core/dist/js/layouts/Stack';
 import {
-  UserIcon,
-  CheckCircleIcon,
-  ErrorCircleOIcon,
-  OnRunningIcon,
-  OutlinedClockIcon
-} from '@patternfly/react-icons';
+  Text,
+  TextContent,
+  TextVariants
+} from '@patternfly/react-core/dist/js/components/Text';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import {
+  Card,
+  CardBody,
+  CardHeader
+} from '@patternfly/react-core/dist/js/components/Card';
+import { UserIcon } from '@patternfly/react-icons/dist/js/icons/user-icon';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-circle-o-icon';
+import { OnRunningIcon } from '@patternfly/react-icons/dist/js/icons/on-running-icon';
+import { OutlinedClockIcon } from '@patternfly/react-icons/dist/js/icons/outlined-clock-icon';
 import React, { useCallback, useState } from 'react';
 import '../styles.css';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';

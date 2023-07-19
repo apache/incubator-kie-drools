@@ -15,7 +15,7 @@
  */
 
 import React, { useImperativeHandle, useState } from 'react';
-import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import { ProcessDefinition, ProcessFormChannelApi } from '../api';
 import '@patternfly/patternfly/patternfly.css';
 import ProcessForm from './components/ProcessForm/ProcessForm';

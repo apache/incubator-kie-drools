@@ -20,9 +20,35 @@ exports[`CustomDashboardListContainer tests Snapshot 1`] = `
     }
     targetOrigin="*"
   >
-    <ForwardRef>
+    <ForwardRef(RefForwardingEmbeddedEnvelope)
+      apiImpl={
+        CustomDashboardListChannelApiImpl {
+          "driver": CustomDashboardListGatewayApiImpl {
+            "_CustomDashboardFilter": Object {
+              "customDashboardNames": Array [],
+            },
+            "applyFilter": [Function],
+            "getCustomDashboardFilter": [Function],
+            "listeners": Array [
+              Object {
+                "onOpen": [Function],
+              },
+            ],
+            "openDashboard": [Function],
+          },
+        }
+      }
+      config={
+        Object {
+          "containerType": "div",
+        }
+      }
+      origin="*"
+      pollInit={[Function]}
+      refDelegate={[Function]}
+    >
       <div />
-    </ForwardRef>
+    </ForwardRef(RefForwardingEmbeddedEnvelope)>
   </ForwardRef>
 </CustomDashboardListContainer>
 `;

@@ -10,6 +10,7 @@ exports[`FormDisplayerEnvelopeView tests Snapshot 2`] = `
         "notifyOnOpenForm": [MockFunction],
       },
       "requests": Object {},
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }

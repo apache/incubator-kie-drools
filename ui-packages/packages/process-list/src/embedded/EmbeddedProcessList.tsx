@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useMemo } from 'react';
-import { EnvelopeServer } from '@kogito-tooling/envelope-bus/dist/channel';
-import { EmbeddedEnvelopeFactory } from '@kogito-tooling/envelope/dist/embedded';
+import React, { useCallback } from 'react';
+import { EnvelopeServer } from '@kie-tools-core/envelope-bus/dist/channel';
+import {
+  EmbeddedEnvelopeProps,
+  RefForwardingEmbeddedEnvelope
+} from '@kie-tools-core/envelope/dist/embedded';
 import {
   ProcessListApi,
   ProcessListChannelApi,
@@ -24,7 +27,7 @@ import {
   ProcessListDriver
 } from '../api';
 import { ProcessListChannelApiImpl } from './ProcessListChannelApiImpl';
-import { ContainerType } from '@kogito-tooling/envelope/dist/api';
+import { ContainerType } from '@kie-tools-core/envelope/dist/api';
 import { init } from '../envelope';
 import { ProcessListState } from '@kogito-apps/management-console-shared';
 
@@ -38,8 +41,17 @@ export interface Props {
   isTriggerCloudEventEnabled?: boolean;
 }
 
-export const EmbeddedProcessList = React.forwardRef<ProcessListApi, Props>(
-  (props, forwardedRef) => {
+export const EmbeddedProcessList = React.forwardRef(
+  (props: Props, forwardedRef: React.Ref<ProcessListApi>) => {
+    const refDelegate = useCallback(
+      (
+        envelopeServer: EnvelopeServer<
+          ProcessListChannelApi,
+          ProcessListEnvelopeApi
+        >
+      ): ProcessListApi => ({}),
+      []
+    );
     const pollInit = useCallback(
       (
         envelopeServer: EnvelopeServer<
@@ -77,26 +89,24 @@ export const EmbeddedProcessList = React.forwardRef<ProcessListApi, Props>(
       []
     );
 
-    const refDelegate = useCallback(
-      (
-        envelopeServer: EnvelopeServer<
-          ProcessListChannelApi,
-          ProcessListEnvelopeApi
-        >
-      ): ProcessListApi => ({}),
-      []
+    return (
+      <EmbeddedProcessListEnvelope
+        ref={forwardedRef}
+        apiImpl={new ProcessListChannelApiImpl(props.driver)}
+        origin={props.targetOrigin}
+        refDelegate={refDelegate}
+        pollInit={pollInit}
+        config={{ containerType: ContainerType.DIV }}
+      />
     );
-
-    const EmbeddedEnvelope = useMemo(() => {
-      return EmbeddedEnvelopeFactory({
-        api: new ProcessListChannelApiImpl(props.driver),
-        origin: props.targetOrigin,
-        refDelegate,
-        pollInit,
-        config: { containerType: ContainerType.DIV }
-      });
-    }, []);
-
-    return <EmbeddedEnvelope ref={forwardedRef} />;
   }
 );
+
+const EmbeddedProcessListEnvelope = React.forwardRef<
+  ProcessListApi,
+  EmbeddedEnvelopeProps<
+    ProcessListChannelApi,
+    ProcessListEnvelopeApi,
+    ProcessListApi
+  >
+>(RefForwardingEmbeddedEnvelope);

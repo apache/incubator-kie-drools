@@ -77,6 +77,8 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
         <InfoCircleIcon
           className="pf-u-mr-sm"
           color="var(--pf-global--info-color--100)"
+          noVerticalAlign={false}
+          size="sm"
         />
         <span>
           Job Details
@@ -111,6 +113,8 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
           <InfoCircleIcon
             className="pf-u-mr-sm"
             color="var(--pf-global--info-color--100)"
+            noVerticalAlign={false}
+            size="sm"
           />
           <span>
             Job Details
@@ -157,6 +161,8 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
               <InfoCircleIcon
                 className="pf-u-mr-sm"
                 color="var(--pf-global--info-color--100)"
+                noVerticalAlign={false}
+                size="sm"
               />
               <span>
                 Job Details
@@ -332,18 +338,22 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
           </DropdownItem>,
         ]
       }
+      isFlipEnabled={true}
       isGrouped={false}
       isOpen={true}
       isPlain={true}
+      isText={false}
       menuAppendTo="inline"
       onSelect={[Function]}
       position="right"
+      removeFindDomNode={false}
       toggle={
         <KebabToggle
           id="kebab-toggle"
           onToggle={[Function]}
         />
       }
+      zIndex={9999}
     >
       <div
         aria-label="Job actions dropdown"
@@ -359,6 +369,7 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
           id="kebab-toggle"
           isOpen={true}
           isPlain={true}
+          isText={false}
           key=".0"
           onEnter={[Function]}
           onToggle={[Function]}
@@ -400,7 +411,7 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
                   role="menu"
                 >
                   <li
-                    role="menuitem"
+                    role="none"
                   >
                     <button
                       aria-disabled="false"
@@ -408,6 +419,7 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
                       data-ouia-component-id="OUIA-Generated-DropdownItem-1"
                       data-ouia-component-type="PF4/DropdownItem"
                       data-ouia-safe="true"
+                      role="menuitem"
                       tabindex="-1"
                       type="button"
                     >
@@ -432,6 +444,7 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
             isPlain={true}
             isPrimary={false}
             isSplitButton={false}
+            isText={false}
             onEnter={[Function]}
             onToggle={[Function]}
             parentRef={
@@ -472,7 +485,7 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
                     role="menu"
                   >
                     <li
-                      role="menuitem"
+                      role="none"
                     >
                       <button
                         aria-disabled="false"
@@ -480,6 +493,7 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
                         data-ouia-component-id="OUIA-Generated-DropdownItem-1"
                         data-ouia-component-type="PF4/DropdownItem"
                         data-ouia-safe="true"
+                        role="menuitem"
                         tabindex="-1"
                         type="button"
                       >
@@ -577,7 +591,6 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
                 }
                 isAriaDisabled={false}
                 isDisabled={false}
-                isHovered={false}
                 isPlainText={false}
                 onClick={[Function]}
                 role="menuitem"
@@ -586,10 +599,9 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
                 tooltipProps={Object {}}
               >
                 <li
-                  className={null}
                   onClick={[Function]}
                   onKeyDown={[Function]}
-                  role="menuitem"
+                  role="none"
                 >
                   <button
                     aria-disabled={false}
@@ -597,6 +609,7 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
                     data-ouia-component-id="OUIA-Generated-DropdownItem-1"
                     data-ouia-component-type="PF4/DropdownItem"
                     data-ouia-safe={true}
+                    role="menuitem"
                     tabIndex={-1}
                     type="button"
                   >

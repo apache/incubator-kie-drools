@@ -16,19 +16,17 @@
 
 import React from 'react';
 import {
-  Bullseye,
-  Button,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant,
-  Title
-} from '@patternfly/react-core';
-import {
-  ExclamationTriangleIcon,
-  InfoCircleIcon,
-  SearchIcon
-} from '@patternfly/react-icons';
+  EmptyStateVariant
+} from '@patternfly/react-core/dist/js/components/EmptyState';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import '@patternfly/patternfly/patternfly-addons.css';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 

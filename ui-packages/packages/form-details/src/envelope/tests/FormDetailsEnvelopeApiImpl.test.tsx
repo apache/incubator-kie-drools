@@ -15,19 +15,19 @@
  */
 
 import {
-  MockedEnvelopeBusController,
+  MockedEnvelopeClient,
   MockedFormDetailsEnvelopeViewApi
 } from './mocks/Mocks';
 import { FormType } from '@kogito-apps/forms-list';
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import { FormDetailsChannelApi, FormDetailsEnvelopeApi } from '../../api';
 import { FormDetailsEnvelopeApiImpl } from '../FormDetailsEnvelopeApiImpl';
 import { FormDetailsEnvelopeViewApi } from '../FormDetailsEnvelopeView';
 import { FormDetailsEnvelopeContext } from '../FormDetailsEnvelopeContext';
 
 describe('FormDetailsEnvelopeApiImpl tests', () => {
-  it('initialize', () => {
-    const envelopeBusController = MockedEnvelopeBusController;
+  it('initialize', async () => {
+    const envelopeClient = MockedEnvelopeClient;
     const view = new MockedFormDetailsEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       FormDetailsEnvelopeApi,
@@ -35,9 +35,9 @@ describe('FormDetailsEnvelopeApiImpl tests', () => {
       FormDetailsEnvelopeViewApi,
       FormDetailsEnvelopeContext
     > = {
-      envelopeBusController,
+      envelopeClient,
       envelopeContext: {},
-      view: () => view
+      viewDelegate: () => Promise.resolve(() => view)
     };
 
     const envelopeApi = new FormDetailsEnvelopeApiImpl(args);
@@ -54,10 +54,11 @@ describe('FormDetailsEnvelopeApiImpl tests', () => {
       }
     );
 
-    expect(envelopeBusController.associate).toHaveBeenCalledWith(
+    expect(envelopeClient.associate).toHaveBeenCalledWith(
       'origin',
       'envelopeServerId'
     );
-    expect(view.initialize).toHaveBeenCalled();
+    const calledView = await view.initialize;
+    expect(calledView).toHaveBeenCalled();
   });
 });

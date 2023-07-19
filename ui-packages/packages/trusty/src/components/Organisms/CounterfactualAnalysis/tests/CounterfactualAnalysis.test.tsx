@@ -59,39 +59,20 @@ describe('CounterfactualAnalysis', () => {
     expect(wrapper.find('CounterfactualTable Thead Tr')).toHaveLength(1);
     expect(wrapper.find('CounterfactualTable Tbody Tr')).toHaveLength(2);
     expect(
-      wrapper
-        .find('CounterfactualTable Tbody Tr Td')
-        .at(1)
-        .text()
+      wrapper.find('CounterfactualTable Tbody Tr Td').at(1).text()
     ).toMatch('Credit Score');
     expect(
-      wrapper
-        .find('CounterfactualTable Tbody Tr Td')
-        .at(3)
-        .text()
+      wrapper.find('CounterfactualTable Tbody Tr Td').at(3).text()
     ).toMatch('738');
     expect(
-      wrapper
-        .find('CounterfactualTable Tbody Tr')
-        .at(1)
-        .find('Td')
-        .at(1)
-        .text()
+      wrapper.find('CounterfactualTable Tbody Tr').at(1).find('Td').at(1).text()
     ).toMatch('Type');
     expect(
-      wrapper
-        .find('CounterfactualTable Tbody Tr')
-        .at(1)
-        .find('Td')
-        .at(3)
-        .text()
+      wrapper.find('CounterfactualTable Tbody Tr').at(1).find('Td').at(3).text()
     ).toMatch('Lease');
 
     expect(
-      wrapper
-        .find('CounterfactualTable Tbody Tr Td')
-        .at(4)
-        .text()
+      wrapper.find('CounterfactualTable Tbody Tr Td').at(4).text()
     ).toMatch('No available results');
   });
 
@@ -139,6 +120,7 @@ describe('CounterfactualAnalysis', () => {
       .find(
         'CounterfactualTable Tbody Tr:first-child Td:first-child SelectColumn'
       )
+      .find('input')
       .simulate('change');
 
     wrapper
@@ -210,9 +192,9 @@ describe('CounterfactualAnalysis', () => {
         .at(2)
         .find('Checkbox.counterfactual-outcome__floating')
         .props()
-        ['onChange']({ currentTarget: { checked: true } } as FormEvent<
-          HTMLInputElement
-        >);
+        ['onChange']({
+          currentTarget: { checked: true }
+        } as FormEvent<HTMLInputElement>);
     });
     wrapper.update();
 
@@ -369,10 +351,7 @@ describe('CounterfactualAnalysis', () => {
     );
 
     expect(
-      wrapper
-        .find('CounterfactualTable Tbody Tr:first-child Td')
-        .at(5)
-        .text()
+      wrapper.find('CounterfactualTable Tbody Tr:first-child Td').at(5).text()
     ).toMatch(`ID #${cfResultsFinal.solutions[0].solutionId}`);
 
     expect(
@@ -540,6 +519,7 @@ describe('CounterfactualAnalysis', () => {
       .find(
         'CounterfactualTable Tbody Tr:first-child Td:first-child SelectColumn'
       )
+      .find('input')
       .simulate('change');
 
     wrapper

@@ -16,8 +16,8 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { EnvelopeBus } from '@kogito-tooling/envelope-bus/dist/api';
-import { Envelope, EnvelopeIFrameConfig } from '@kogito-tooling/envelope';
+import { EnvelopeBus } from '@kie-tools-core/envelope-bus/dist/api';
+import { Envelope, EnvelopeIFrameConfig } from '@kie-tools-core/envelope';
 import { FormDisplayerChannelApi, FormDisplayerEnvelopeApi } from '../api';
 import { FormDisplayerEnvelopeContext } from './FormDisplayerEnvelopeContext';
 import {

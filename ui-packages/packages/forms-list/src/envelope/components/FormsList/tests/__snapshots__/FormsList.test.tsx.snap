@@ -67,6 +67,7 @@ exports[`forms list tests render forms list - gallery 1`] = `
                     />
                   }
                   isSelected={false}
+                  key=".0"
                   onChange={[Function]}
                 >
                   <div
@@ -126,6 +127,7 @@ exports[`forms list tests render forms list - gallery 1`] = `
                     />
                   }
                   isSelected={true}
+                  key=".1"
                   onChange={[Function]}
                 >
                   <div
@@ -274,6 +276,7 @@ exports[`forms list tests render forms list - table 1`] = `
                     />
                   }
                   isSelected={true}
+                  key=".0"
                   onChange={[Function]}
                 >
                   <div
@@ -333,6 +336,7 @@ exports[`forms list tests render forms list - table 1`] = `
                     />
                   }
                   isSelected={false}
+                  key=".1"
                   onChange={[Function]}
                 >
                   <div

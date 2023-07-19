@@ -340,8 +340,10 @@ exports[`ProcessListChildTable test render table 1`] = `
   singularProcessLabel="Workflow"
 >
   <Table
+    actionsMenuAppendTo="inline"
     aria-label="Process List Child Table"
     borders={true}
+    canCollapseAll={false}
     canSelectAll={true}
     canSortFavorites={true}
     cells={
@@ -367,6 +369,7 @@ exports[`ProcessListChildTable test render table 1`] = `
       ]
     }
     className="kogito-management-console__compact-table"
+    collapseAllAriaLabel=""
     contentId="expanded-content"
     data-ouia-component-type="process-list-child-table"
     data-ouia-safe={true}
@@ -374,6 +377,8 @@ exports[`ProcessListChildTable test render table 1`] = `
     dropdownPosition="right"
     expandId="expandable-toggle"
     gridBreakPoint="grid-md"
+    isHeaderSelectDisabled={false}
+    isNested={false}
     isStickyHeader={false}
     isTreeTable={false}
     ouiaSafe={true}
@@ -393,9 +398,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                 <Checkbox
                   aria-label="process-list-checkbox"
                   className=""
+                  component="div"
                   id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                   isChecked={false}
                   isDisabled={false}
+                  isRequired={false}
                   isValid={true}
                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                   onChange={[Function]}
@@ -658,9 +665,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                 <Checkbox
                   aria-label="process-list-checkbox"
                   className=""
+                  component="div"
                   id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                   isChecked={false}
                   isDisabled={false}
+                  isRequired={false}
                   isValid={true}
                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                   onChange={[Function]}
@@ -921,9 +930,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                 <Checkbox
                   aria-label="process-list-checkbox"
                   className=""
+                  component="div"
                   id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                   isChecked={false}
                   isDisabled={false}
+                  isRequired={false}
                   isValid={true}
                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                   onChange={[Function]}
@@ -1379,15 +1390,20 @@ exports[`ProcessListChildTable test render table 1`] = `
               "actionResolver": undefined,
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 0,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -1426,15 +1442,20 @@ exports[`ProcessListChildTable test render table 1`] = `
               "actionResolver": undefined,
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 0,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -1473,15 +1494,20 @@ exports[`ProcessListChildTable test render table 1`] = `
               "actionResolver": undefined,
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 0,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -1520,15 +1546,20 @@ exports[`ProcessListChildTable test render table 1`] = `
               "actionResolver": undefined,
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 0,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -1567,15 +1598,20 @@ exports[`ProcessListChildTable test render table 1`] = `
               "actionResolver": undefined,
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 0,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -1614,15 +1650,20 @@ exports[`ProcessListChildTable test render table 1`] = `
               "actionResolver": undefined,
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 0,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -1652,6 +1693,7 @@ exports[`ProcessListChildTable test render table 1`] = `
       data-ouia-component-type="process-list-child-table"
       data-ouia-safe={true}
       gridBreakPoint="grid-md"
+      isNested={false}
       isStickyHeader={false}
       isTreeTable={false}
       ouiaSafe={true}
@@ -1677,6 +1719,7 @@ exports[`ProcessListChildTable test render table 1`] = `
         data-ouia-component-type="process-list-child-table"
         data-ouia-safe={true}
         gridBreakPoint="grid-md"
+        isNested={false}
         isStickyHeader={false}
         isTreeTable={false}
         ouiaSafe={true}
@@ -1691,6 +1734,7 @@ exports[`ProcessListChildTable test render table 1`] = `
           data-ouia-safe={true}
           gridBreakPoint="grid-md"
           innerRef={null}
+          isNested={false}
           isStickyHeader={false}
           isTreeTable={false}
           ouiaSafe={true}
@@ -1709,7 +1753,7 @@ exports[`ProcessListChildTable test render table 1`] = `
               <ContextHeader
                 headerRows={null}
               >
-                <Component
+                <Header
                   className=""
                   headerRows={null}
                 >
@@ -1731,15 +1775,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1778,15 +1827,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1825,15 +1879,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1872,15 +1931,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1919,15 +1983,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1966,15 +2035,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -2068,15 +2142,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -2115,15 +2194,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -2162,15 +2246,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -2209,15 +2298,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -2256,15 +2350,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -2303,15 +2402,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -2589,10 +2693,10 @@ exports[`ProcessListChildTable test render table 1`] = `
                       </TheadBase>
                     </Thead>
                   </BaseHeader>
-                </Component>
+                </Header>
               </ContextHeader>
             </TableHeader>
-            <Component>
+            <TableBody>
               <ContextBody
                 className=""
                 headerData={
@@ -2611,15 +2715,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                         "actionResolver": undefined,
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 0,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2658,15 +2767,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                         "actionResolver": undefined,
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 0,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2705,15 +2819,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                         "actionResolver": undefined,
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 0,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2752,15 +2871,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                         "actionResolver": undefined,
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 0,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2799,15 +2923,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                         "actionResolver": undefined,
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 0,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2846,15 +2975,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                         "actionResolver": undefined,
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 0,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2899,9 +3033,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                             <Checkbox
                               aria-label="process-list-checkbox"
                               className=""
+                              component="div"
                               id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               isChecked={false}
                               isDisabled={false}
+                              isRequired={false}
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
@@ -3164,9 +3300,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                             <Checkbox
                               aria-label="process-list-checkbox"
                               className=""
+                              component="div"
                               id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               isChecked={false}
                               isDisabled={false}
+                              isRequired={false}
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
@@ -3427,9 +3565,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                             <Checkbox
                               aria-label="process-list-checkbox"
                               className=""
+                              component="div"
                               id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               isChecked={false}
                               isDisabled={false}
+                              isRequired={false}
                               isValid={true}
                               name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               onChange={[Function]}
@@ -3863,7 +4003,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                   ]
                 }
               >
-                <Component
+                <Body
                   className=""
                   headerRows={null}
                   mappedRows={
@@ -3880,9 +4020,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
@@ -4144,9 +4286,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                             <Checkbox
                               aria-label="process-list-checkbox"
                               className=""
+                              component="div"
                               id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               isChecked={false}
                               isDisabled={false}
+                              isRequired={false}
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
@@ -4425,9 +4569,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
@@ -4687,9 +4833,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                             <Checkbox
                               aria-label="process-list-checkbox"
                               className=""
+                              component="div"
                               id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               isChecked={false}
                               isDisabled={false}
+                              isRequired={false}
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
@@ -4966,9 +5114,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
@@ -5410,9 +5560,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                             <Checkbox
                               aria-label="process-list-checkbox"
                               className=""
+                              component="div"
                               id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               isChecked={false}
                               isDisabled={false}
+                              isRequired={false}
                               isValid={true}
                               name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               onChange={[Function]}
@@ -5877,9 +6029,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
@@ -6141,9 +6295,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                             <Checkbox
                               aria-label="process-list-checkbox"
                               className=""
+                              component="div"
                               id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               isChecked={false}
                               isDisabled={false}
+                              isRequired={false}
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
@@ -6422,9 +6578,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
@@ -6684,9 +6842,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                             <Checkbox
                               aria-label="process-list-checkbox"
                               className=""
+                              component="div"
                               id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               isChecked={false}
                               isDisabled={false}
+                              isRequired={false}
                               isValid={true}
                               name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                               onChange={[Function]}
@@ -6963,9 +7123,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
@@ -7407,9 +7569,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                             <Checkbox
                               aria-label="process-list-checkbox"
                               className=""
+                              component="div"
                               id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               isChecked={false}
                               isDisabled={false}
+                              isRequired={false}
                               isValid={true}
                               name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                               onChange={[Function]}
@@ -7877,15 +8041,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -7924,15 +8093,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -7971,15 +8145,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -8018,15 +8197,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -8065,15 +8249,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -8112,15 +8301,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                             "actionResolver": undefined,
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 0,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -8162,9 +8356,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 <Checkbox
                                   aria-label="process-list-checkbox"
                                   className=""
+                                  component="div"
                                   id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   isChecked={false}
                                   isDisabled={false}
+                                  isRequired={false}
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
@@ -8426,9 +8622,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
@@ -8707,9 +8905,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 <Checkbox
                                   aria-label="process-list-checkbox"
                                   className=""
+                                  component="div"
                                   id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   isChecked={false}
                                   isDisabled={false}
+                                  isRequired={false}
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
@@ -8969,9 +9169,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
@@ -9248,9 +9450,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 <Checkbox
                                   aria-label="process-list-checkbox"
                                   className=""
+                                  component="div"
                                   id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   isChecked={false}
                                   isDisabled={false}
+                                  isRequired={false}
                                   isValid={true}
                                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   onChange={[Function]}
@@ -9692,9 +9896,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
@@ -10183,9 +10389,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 <Checkbox
                                   aria-label="process-list-checkbox"
                                   className=""
+                                  component="div"
                                   id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   isChecked={false}
                                   isDisabled={false}
+                                  isRequired={false}
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
@@ -10447,9 +10655,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
@@ -10728,9 +10938,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 <Checkbox
                                   aria-label="process-list-checkbox"
                                   className=""
+                                  component="div"
                                   id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   isChecked={false}
                                   isDisabled={false}
+                                  isRequired={false}
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
@@ -10990,9 +11202,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                 onChange={[Function]}
@@ -11269,9 +11483,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 <Checkbox
                                   aria-label="process-list-checkbox"
                                   className=""
+                                  component="div"
                                   id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   isChecked={false}
                                   isDisabled={false}
+                                  isRequired={false}
                                   isValid={true}
                                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   onChange={[Function]}
@@ -11713,9 +11929,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                               <Checkbox
                                 aria-label="process-list-checkbox"
                                 className=""
+                                component="div"
                                 id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 isChecked={false}
                                 isDisabled={false}
+                                isRequired={false}
                                 isValid={true}
                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                 onChange={[Function]}
@@ -12182,9 +12400,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   <Checkbox
                                     aria-label="process-list-checkbox"
                                     className=""
+                                    component="div"
                                     id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                     isChecked={false}
                                     isDisabled={false}
+                                    isRequired={false}
                                     isValid={true}
                                     name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                     onChange={[Function]}
@@ -12446,9 +12666,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 <Checkbox
                                   aria-label="process-list-checkbox"
                                   className=""
+                                  component="div"
                                   id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   isChecked={false}
                                   isDisabled={false}
+                                  isRequired={false}
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
@@ -12727,9 +12949,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   <Checkbox
                                     aria-label="process-list-checkbox"
                                     className=""
+                                    component="div"
                                     id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                     isChecked={false}
                                     isDisabled={false}
+                                    isRequired={false}
                                     isValid={true}
                                     name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                     onChange={[Function]}
@@ -12989,9 +13213,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 <Checkbox
                                   aria-label="process-list-checkbox"
                                   className=""
+                                  component="div"
                                   id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   isChecked={false}
                                   isDisabled={false}
+                                  isRequired={false}
                                   isValid={true}
                                   name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                   onChange={[Function]}
@@ -13268,9 +13494,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                   <Checkbox
                                     aria-label="process-list-checkbox"
                                     className=""
+                                    component="div"
                                     id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                     isChecked={false}
                                     isDisabled={false}
+                                    isRequired={false}
                                     isValid={true}
                                     name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                     onChange={[Function]}
@@ -13712,9 +13940,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                 <Checkbox
                                   aria-label="process-list-checkbox"
                                   className=""
+                                  component="div"
                                   id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   isChecked={false}
                                   isDisabled={false}
+                                  isRequired={false}
                                   isValid={true}
                                   name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                   onChange={[Function]}
@@ -14192,15 +14422,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -14239,15 +14474,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -14286,15 +14526,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -14333,15 +14578,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -14380,15 +14630,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -14427,15 +14682,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -14484,9 +14744,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                         <Checkbox
                                           aria-label="process-list-checkbox"
                                           className=""
+                                          component="div"
                                           id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           isChecked={false}
                                           isDisabled={false}
+                                          isRequired={false}
                                           isValid={true}
                                           name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           onChange={[Function]}
@@ -14748,9 +15010,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       <Checkbox
                                         aria-label="process-list-checkbox"
                                         className=""
+                                        component="div"
                                         id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                         isChecked={false}
                                         isDisabled={false}
+                                        isRequired={false}
                                         isValid={true}
                                         name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                         onChange={[Function]}
@@ -15023,7 +15287,8 @@ exports[`ProcessListChildTable test render table 1`] = `
                             >
                               <RowWrapper
                                 className=""
-                                onMouseDown={[Function]}
+                                onClick={[Function]}
+                                onKeyDown={[Function]}
                                 row={
                                   Object {
                                     "cells": Array [
@@ -15037,9 +15302,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                           <Checkbox
                                             aria-label="process-list-checkbox"
                                             className=""
+                                            component="div"
                                             id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                             isChecked={false}
                                             isDisabled={false}
+                                            isRequired={false}
                                             isValid={true}
                                             name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                             onChange={[Function]}
@@ -15301,9 +15568,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                         <Checkbox
                                           aria-label="process-list-checkbox"
                                           className=""
+                                          component="div"
                                           id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           isChecked={false}
                                           isDisabled={false}
+                                          isRequired={false}
                                           isValid={true}
                                           name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           onChange={[Function]}
@@ -15580,12 +15849,14 @@ exports[`ProcessListChildTable test render table 1`] = `
                               >
                                 <Tr
                                   className=""
-                                  onMouseDown={[Function]}
+                                  onClick={[Function]}
+                                  onKeyDown={[Function]}
                                 >
                                   <TrBase
                                     className=""
                                     innerRef={null}
-                                    onMouseDown={[Function]}
+                                    onClick={[Function]}
+                                    onKeyDown={[Function]}
                                   >
                                     <tr
                                       className=""
@@ -15593,7 +15864,8 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       data-ouia-component-type="PF4/TableRow"
                                       data-ouia-safe={true}
                                       hidden={false}
-                                      onMouseDown={[Function]}
+                                      onClick={[Function]}
+                                      onKeyDown={[Function]}
                                     >
                                       <BodyCell
                                         data-key={0}
@@ -15639,9 +15911,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                               <Checkbox
                                                 aria-label="process-list-checkbox"
                                                 className=""
+                                                component="div"
                                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                 isChecked={false}
                                                 isDisabled={false}
+                                                isRequired={false}
                                                 isValid={true}
                                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                 onChange={[Function]}
@@ -15662,6 +15936,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                     name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                     onChange={[Function]}
+                                                    required={false}
                                                     type="checkbox"
                                                   />
                                                 </div>
@@ -15892,22 +16167,26 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     flipBehavior={
                                                       Array [
                                                         "top",
-                                                        "right",
                                                         "bottom",
                                                         "left",
-                                                        "top",
                                                         "right",
-                                                        "bottom",
+                                                        "top-start",
+                                                        "top-end",
+                                                        "bottom-start",
+                                                        "bottom-end",
+                                                        "left-start",
+                                                        "left-end",
+                                                        "right-start",
+                                                        "right-end",
                                                       ]
                                                     }
                                                     isVisible={false}
                                                     onDocumentClick={[Function]}
                                                     onDocumentKeyDown={[Function]}
                                                     onTriggerClick={[Function]}
-                                                    onTriggerEnter={[Function]}
                                                     placement="auto"
                                                     popper={
-                                                      <FocusTrap
+                                                      <ForwardRef
                                                         active={false}
                                                         aria-describedby="popover-538f9feb-5a14-4096-b791-2055b38da7c6-body"
                                                         aria-labelledby="popover-538f9feb-5a14-4096-b791-2055b38da7c6-header"
@@ -15920,10 +16199,12 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                             "clickOutsideDeactivates": true,
                                                             "fallbackFocus": [Function],
                                                             "returnFocusOnDeactivate": true,
+                                                            "tabbableOptions": Object {
+                                                              "displayCheck": "none",
+                                                            },
                                                           }
                                                         }
                                                         onMouseDown={[Function]}
-                                                        paused={false}
                                                         preventScrollOnDeactivate={true}
                                                         role="dialog"
                                                         style={
@@ -15942,7 +16223,10 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                             onClose={[Function]}
                                                           />
                                                           <PopoverHeader
+                                                            alertSeverityScreenReaderText="undefined alert:"
+                                                            icon={null}
                                                             id="popover-538f9feb-5a14-4096-b791-2055b38da7c6-header"
+                                                            titleHeadingLevel="h6"
                                                           >
                                                             <div>
                                                               Process error
@@ -15976,7 +16260,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                             </Button>
                                                           </PopoverFooter>
                                                         </PopoverContent>
-                                                      </FocusTrap>
+                                                      </ForwardRef>
                                                     }
                                                     popperMatchesTriggerWidth={false}
                                                     positionModifiers={
@@ -15995,6 +16279,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         "top-start": "pf-m-top-left",
                                                       }
                                                     }
+                                                    removeFindDomNode={false}
                                                     trigger={
                                                       <Button
                                                         isInline={true}
@@ -16413,12 +16698,15 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         </DropdownItem>,
                                                       ]
                                                     }
+                                                    isFlipEnabled={true}
                                                     isGrouped={false}
                                                     isOpen={false}
                                                     isPlain={true}
+                                                    isText={false}
                                                     menuAppendTo="inline"
                                                     onSelect={[Function]}
                                                     position="right"
+                                                    removeFindDomNode={false}
                                                     toggle={
                                                       <KebabToggle
                                                         id="kebab-toggle"
@@ -16426,6 +16714,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         onToggle={[Function]}
                                                       />
                                                     }
+                                                    zIndex={9999}
                                                   >
                                                     <div
                                                       aria-label="process instance actions dropdown"
@@ -16442,6 +16731,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         isDisabled={false}
                                                         isOpen={false}
                                                         isPlain={true}
+                                                        isText={false}
                                                         key=".0"
                                                         onEnter={[Function]}
                                                         onToggle={[Function]}
@@ -16494,6 +16784,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                           isPlain={true}
                                                           isPrimary={false}
                                                           isSplitButton={false}
+                                                          isText={false}
                                                           onEnter={[Function]}
                                                           onToggle={[Function]}
                                                           parentRef={
@@ -16600,15 +16891,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -16647,15 +16943,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -16694,15 +16995,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -16741,15 +17047,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -16788,15 +17099,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -16835,15 +17151,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -16892,9 +17213,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                         <Checkbox
                                           aria-label="process-list-checkbox"
                                           className=""
+                                          component="div"
                                           id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           isChecked={false}
                                           isDisabled={false}
+                                          isRequired={false}
                                           isValid={true}
                                           name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           onChange={[Function]}
@@ -17154,9 +17477,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       <Checkbox
                                         aria-label="process-list-checkbox"
                                         className=""
+                                        component="div"
                                         id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                         isChecked={false}
                                         isDisabled={false}
+                                        isRequired={false}
                                         isValid={true}
                                         name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                         onChange={[Function]}
@@ -17427,7 +17752,8 @@ exports[`ProcessListChildTable test render table 1`] = `
                             >
                               <RowWrapper
                                 className=""
-                                onMouseDown={[Function]}
+                                onClick={[Function]}
+                                onKeyDown={[Function]}
                                 row={
                                   Object {
                                     "cells": Array [
@@ -17441,9 +17767,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                           <Checkbox
                                             aria-label="process-list-checkbox"
                                             className=""
+                                            component="div"
                                             id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                             isChecked={false}
                                             isDisabled={false}
+                                            isRequired={false}
                                             isValid={true}
                                             name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                             onChange={[Function]}
@@ -17703,9 +18031,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                         <Checkbox
                                           aria-label="process-list-checkbox"
                                           className=""
+                                          component="div"
                                           id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           isChecked={false}
                                           isDisabled={false}
+                                          isRequired={false}
                                           isValid={true}
                                           name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                           onChange={[Function]}
@@ -17980,12 +18310,14 @@ exports[`ProcessListChildTable test render table 1`] = `
                               >
                                 <Tr
                                   className=""
-                                  onMouseDown={[Function]}
+                                  onClick={[Function]}
+                                  onKeyDown={[Function]}
                                 >
                                   <TrBase
                                     className=""
                                     innerRef={null}
-                                    onMouseDown={[Function]}
+                                    onClick={[Function]}
+                                    onKeyDown={[Function]}
                                   >
                                     <tr
                                       className=""
@@ -17993,7 +18325,8 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       data-ouia-component-type="PF4/TableRow"
                                       data-ouia-safe={true}
                                       hidden={false}
-                                      onMouseDown={[Function]}
+                                      onClick={[Function]}
+                                      onKeyDown={[Function]}
                                     >
                                       <BodyCell
                                         data-key={0}
@@ -18039,9 +18372,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                               <Checkbox
                                                 aria-label="process-list-checkbox"
                                                 className=""
+                                                component="div"
                                                 id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                 isChecked={false}
                                                 isDisabled={false}
+                                                isRequired={false}
                                                 isValid={true}
                                                 name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                 onChange={[Function]}
@@ -18062,6 +18397,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     id="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                     name="checkbox-538f9feb-5a14-4096-b791-2055b38da7c6"
                                                     onChange={[Function]}
+                                                    required={false}
                                                     type="checkbox"
                                                   />
                                                 </div>
@@ -18291,22 +18627,26 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     flipBehavior={
                                                       Array [
                                                         "top",
-                                                        "right",
                                                         "bottom",
                                                         "left",
-                                                        "top",
                                                         "right",
-                                                        "bottom",
+                                                        "top-start",
+                                                        "top-end",
+                                                        "bottom-start",
+                                                        "bottom-end",
+                                                        "left-start",
+                                                        "left-end",
+                                                        "right-start",
+                                                        "right-end",
                                                       ]
                                                     }
                                                     isVisible={false}
                                                     onDocumentClick={[Function]}
                                                     onDocumentKeyDown={[Function]}
                                                     onTriggerClick={[Function]}
-                                                    onTriggerEnter={[Function]}
                                                     placement="auto"
                                                     popper={
-                                                      <FocusTrap
+                                                      <ForwardRef
                                                         active={false}
                                                         aria-describedby="popover-538f9feb-5a14-4096-b791-2055b38da7c6-body"
                                                         aria-labelledby="popover-538f9feb-5a14-4096-b791-2055b38da7c6-header"
@@ -18319,10 +18659,12 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                             "clickOutsideDeactivates": true,
                                                             "fallbackFocus": [Function],
                                                             "returnFocusOnDeactivate": true,
+                                                            "tabbableOptions": Object {
+                                                              "displayCheck": "none",
+                                                            },
                                                           }
                                                         }
                                                         onMouseDown={[Function]}
-                                                        paused={false}
                                                         preventScrollOnDeactivate={true}
                                                         role="dialog"
                                                         style={
@@ -18341,7 +18683,10 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                             onClose={[Function]}
                                                           />
                                                           <PopoverHeader
+                                                            alertSeverityScreenReaderText="undefined alert:"
+                                                            icon={null}
                                                             id="popover-538f9feb-5a14-4096-b791-2055b38da7c6-header"
+                                                            titleHeadingLevel="h6"
                                                           >
                                                             <div>
                                                               Process error
@@ -18375,7 +18720,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                             </Button>
                                                           </PopoverFooter>
                                                         </PopoverContent>
-                                                      </FocusTrap>
+                                                      </ForwardRef>
                                                     }
                                                     popperMatchesTriggerWidth={false}
                                                     positionModifiers={
@@ -18394,6 +18739,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         "top-start": "pf-m-top-left",
                                                       }
                                                     }
+                                                    removeFindDomNode={false}
                                                     trigger={
                                                       <Button
                                                         isInline={true}
@@ -18811,12 +19157,15 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         </DropdownItem>,
                                                       ]
                                                     }
+                                                    isFlipEnabled={true}
                                                     isGrouped={false}
                                                     isOpen={false}
                                                     isPlain={true}
+                                                    isText={false}
                                                     menuAppendTo="inline"
                                                     onSelect={[Function]}
                                                     position="right"
+                                                    removeFindDomNode={false}
                                                     toggle={
                                                       <KebabToggle
                                                         id="kebab-toggle"
@@ -18824,6 +19173,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         onToggle={[Function]}
                                                       />
                                                     }
+                                                    zIndex={9999}
                                                   >
                                                     <div
                                                       aria-label="process instance actions dropdown"
@@ -18840,6 +19190,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         isDisabled={false}
                                                         isOpen={false}
                                                         isPlain={true}
+                                                        isText={false}
                                                         key=".0"
                                                         onEnter={[Function]}
                                                         onToggle={[Function]}
@@ -18892,6 +19243,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                           isPlain={true}
                                                           isPrimary={false}
                                                           isSplitButton={false}
+                                                          isText={false}
                                                           onEnter={[Function]}
                                                           onToggle={[Function]}
                                                           parentRef={
@@ -18998,15 +19350,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -19045,15 +19402,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -19092,15 +19454,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -19139,15 +19506,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -19186,15 +19558,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -19233,15 +19610,20 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       "actionResolver": undefined,
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 0,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -19290,9 +19672,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                         <Checkbox
                                           aria-label="process-list-checkbox"
                                           className=""
+                                          component="div"
                                           id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                           isChecked={false}
                                           isDisabled={false}
+                                          isRequired={false}
                                           isValid={true}
                                           name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                           onChange={[Function]}
@@ -19734,9 +20118,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       <Checkbox
                                         aria-label="process-list-checkbox"
                                         className=""
+                                        component="div"
                                         id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                         isChecked={false}
                                         isDisabled={false}
+                                        isRequired={false}
                                         isValid={true}
                                         name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                         onChange={[Function]}
@@ -20189,7 +20575,8 @@ exports[`ProcessListChildTable test render table 1`] = `
                             >
                               <RowWrapper
                                 className=""
-                                onMouseDown={[Function]}
+                                onClick={[Function]}
+                                onKeyDown={[Function]}
                                 row={
                                   Object {
                                     "cells": Array [
@@ -20203,9 +20590,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                           <Checkbox
                                             aria-label="process-list-checkbox"
                                             className=""
+                                            component="div"
                                             id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                             isChecked={false}
                                             isDisabled={false}
+                                            isRequired={false}
                                             isValid={true}
                                             name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                             onChange={[Function]}
@@ -20647,9 +21036,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                         <Checkbox
                                           aria-label="process-list-checkbox"
                                           className=""
+                                          component="div"
                                           id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                           isChecked={false}
                                           isDisabled={false}
+                                          isRequired={false}
                                           isValid={true}
                                           name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                           onChange={[Function]}
@@ -21106,12 +21497,14 @@ exports[`ProcessListChildTable test render table 1`] = `
                               >
                                 <Tr
                                   className=""
-                                  onMouseDown={[Function]}
+                                  onClick={[Function]}
+                                  onKeyDown={[Function]}
                                 >
                                   <TrBase
                                     className=""
                                     innerRef={null}
-                                    onMouseDown={[Function]}
+                                    onClick={[Function]}
+                                    onKeyDown={[Function]}
                                   >
                                     <tr
                                       className=""
@@ -21119,7 +21512,8 @@ exports[`ProcessListChildTable test render table 1`] = `
                                       data-ouia-component-type="PF4/TableRow"
                                       data-ouia-safe={true}
                                       hidden={false}
-                                      onMouseDown={[Function]}
+                                      onClick={[Function]}
+                                      onKeyDown={[Function]}
                                     >
                                       <BodyCell
                                         data-key={0}
@@ -21165,9 +21559,11 @@ exports[`ProcessListChildTable test render table 1`] = `
                                               <Checkbox
                                                 aria-label="process-list-checkbox"
                                                 className=""
+                                                component="div"
                                                 id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                                 isChecked={false}
                                                 isDisabled={false}
+                                                isRequired={false}
                                                 isValid={true}
                                                 name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                                 onChange={[Function]}
@@ -21188,6 +21584,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     id="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                                     name="checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d"
                                                     onChange={[Function]}
+                                                    required={false}
                                                     type="checkbox"
                                                   />
                                                 </div>
@@ -21508,22 +21905,26 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                     flipBehavior={
                                                       Array [
                                                         "top",
-                                                        "right",
                                                         "bottom",
                                                         "left",
-                                                        "top",
                                                         "right",
-                                                        "bottom",
+                                                        "top-start",
+                                                        "top-end",
+                                                        "bottom-start",
+                                                        "bottom-end",
+                                                        "left-start",
+                                                        "left-end",
+                                                        "right-start",
+                                                        "right-end",
                                                       ]
                                                     }
                                                     isVisible={false}
                                                     onDocumentClick={[Function]}
                                                     onDocumentKeyDown={[Function]}
                                                     onTriggerClick={[Function]}
-                                                    onTriggerEnter={[Function]}
                                                     placement="auto"
                                                     popper={
-                                                      <FocusTrap
+                                                      <ForwardRef
                                                         active={false}
                                                         aria-describedby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-body"
                                                         aria-labelledby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
@@ -21536,10 +21937,12 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                             "clickOutsideDeactivates": true,
                                                             "fallbackFocus": [Function],
                                                             "returnFocusOnDeactivate": true,
+                                                            "tabbableOptions": Object {
+                                                              "displayCheck": "none",
+                                                            },
                                                           }
                                                         }
                                                         onMouseDown={[Function]}
-                                                        paused={false}
                                                         preventScrollOnDeactivate={true}
                                                         role="dialog"
                                                         style={
@@ -21558,7 +21961,10 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                             onClose={[Function]}
                                                           />
                                                           <PopoverHeader
+                                                            alertSeverityScreenReaderText="undefined alert:"
+                                                            icon={null}
                                                             id="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
+                                                            titleHeadingLevel="h6"
                                                           >
                                                             <div>
                                                               Process error
@@ -21592,7 +21998,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                             </Button>
                                                           </PopoverFooter>
                                                         </PopoverContent>
-                                                      </FocusTrap>
+                                                      </ForwardRef>
                                                     }
                                                     popperMatchesTriggerWidth={false}
                                                     positionModifiers={
@@ -21611,6 +22017,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         "top-start": "pf-m-top-left",
                                                       }
                                                     }
+                                                    removeFindDomNode={false}
                                                     trigger={
                                                       <Button
                                                         isInline={true}
@@ -22119,12 +22526,15 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         </DropdownItem>,
                                                       ]
                                                     }
+                                                    isFlipEnabled={true}
                                                     isGrouped={false}
                                                     isOpen={false}
                                                     isPlain={true}
+                                                    isText={false}
                                                     menuAppendTo="inline"
                                                     onSelect={[Function]}
                                                     position="right"
+                                                    removeFindDomNode={false}
                                                     toggle={
                                                       <KebabToggle
                                                         id="kebab-toggle"
@@ -22132,6 +22542,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         onToggle={[Function]}
                                                       />
                                                     }
+                                                    zIndex={9999}
                                                   >
                                                     <div
                                                       aria-label="process instance actions dropdown"
@@ -22148,6 +22559,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                         isDisabled={false}
                                                         isOpen={false}
                                                         isPlain={true}
+                                                        isText={false}
                                                         key=".0"
                                                         onEnter={[Function]}
                                                         onToggle={[Function]}
@@ -22200,6 +22612,7 @@ exports[`ProcessListChildTable test render table 1`] = `
                                                           isPlain={true}
                                                           isPrimary={false}
                                                           isSplitButton={false}
+                                                          isText={false}
                                                           onEnter={[Function]}
                                                           onToggle={[Function]}
                                                           parentRef={
@@ -22294,9 +22707,9 @@ exports[`ProcessListChildTable test render table 1`] = `
                       </Tbody>
                     </BodyWrapper>
                   </BaseBody>
-                </Component>
+                </Body>
               </ContextBody>
-            </Component>
+            </TableBody>
           </table>
         </TableComposableBase>
       </TableComposable>

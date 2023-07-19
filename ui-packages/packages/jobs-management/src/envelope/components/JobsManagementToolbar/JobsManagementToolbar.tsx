@@ -16,24 +16,30 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Button,
+  DropdownItem,
+  Dropdown,
+  KebabToggle
+} from '@patternfly/react-core/dist/js/components/Dropdown';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import {
   Select,
   SelectOption,
-  SelectVariant,
+  SelectVariant
+} from '@patternfly/react-core/dist/js/components/Select';
+import {
   Toolbar,
   ToolbarContent,
   ToolbarFilter,
   ToolbarGroup,
-  ToolbarItem,
-  DropdownItem,
+  ToolbarItem
+} from '@patternfly/react-core/dist/js/components/Toolbar';
+import {
   OverflowMenu,
   OverflowMenuContent,
   OverflowMenuItem,
-  OverflowMenuControl,
-  Dropdown,
-  KebabToggle
-} from '@patternfly/react-core';
-import { SyncIcon } from '@patternfly/react-icons';
+  OverflowMenuControl
+} from '@patternfly/react-core/dist/js/components/OverflowMenu';
+import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   IOperations,

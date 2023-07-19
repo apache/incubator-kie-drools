@@ -16,7 +16,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import DisablePopup from '../DisablePopup';
-import { Checkbox } from '@patternfly/react-core';
+import { Checkbox } from '@patternfly/react-core/dist/js/components/Checkbox';
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
 
 const props1 = {

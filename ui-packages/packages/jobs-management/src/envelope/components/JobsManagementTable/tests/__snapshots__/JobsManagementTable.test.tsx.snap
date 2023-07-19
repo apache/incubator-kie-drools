@@ -100,8 +100,10 @@ exports[`Jobs management table component tests Snapshot test with default props 
 >
   <Table
     actionResolver={[Function]}
+    actionsMenuAppendTo="inline"
     aria-label="Jobs management Table"
     borders={true}
+    canCollapseAll={false}
     canSelectAll={true}
     canSortFavorites={true}
     cells={
@@ -160,6 +162,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
       ]
     }
     className="kogito-jobs-management__table"
+    collapseAllAriaLabel=""
     contentId="expanded-content"
     data-ouia-component-type="jobs-management-table"
     data-ouia-safe={true}
@@ -167,6 +170,8 @@ exports[`Jobs management table component tests Snapshot test with default props 
     dropdownPosition="right"
     expandId="expandable-toggle"
     gridBreakPoint="grid-md"
+    isHeaderSelectDisabled={false}
+    isNested={false}
     isStickyHeader={false}
     isTreeTable={false}
     onSelect={[Function]}
@@ -451,15 +456,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
               "actionResolver": [Function],
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 1,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -499,15 +509,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
               "actionResolver": [Function],
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 1,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -547,15 +562,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
               "actionResolver": [Function],
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 1,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -596,15 +616,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
               "actionResolver": [Function],
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 1,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -645,15 +670,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
               "actionResolver": [Function],
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 1,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -694,15 +724,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
               "actionResolver": [Function],
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 1,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -743,15 +778,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
               "actionResolver": [Function],
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 1,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -793,15 +833,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
               "actionResolver": [Function],
               "actions": undefined,
               "actionsToggle": undefined,
+              "allRowsExpanded": false,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
+              "canCollapseAll": false,
               "canSelectAll": true,
               "canSortFavorites": true,
+              "collapseAllAriaLabel": "",
               "contentId": "expanded-content",
               "dropdownDirection": "down",
               "dropdownPosition": "right",
               "expandId": "expandable-toggle",
               "firstUserColumnIndex": 1,
+              "isHeaderSelectDisabled": false,
+              "menuAppendTo": "inline",
               "onCollapse": undefined,
               "onExpand": undefined,
               "onFavorite": undefined,
@@ -832,6 +877,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
       data-ouia-component-type="jobs-management-table"
       data-ouia-safe={true}
       gridBreakPoint="grid-md"
+      isNested={false}
       isStickyHeader={false}
       isTreeTable={false}
       ouiaSafe={true}
@@ -857,6 +903,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
         data-ouia-component-type="jobs-management-table"
         data-ouia-safe={true}
         gridBreakPoint="grid-md"
+        isNested={false}
         isStickyHeader={false}
         isTreeTable={false}
         ouiaSafe={true}
@@ -871,6 +918,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
           data-ouia-safe={true}
           gridBreakPoint="grid-md"
           innerRef={null}
+          isNested={false}
           isStickyHeader={false}
           isTreeTable={false}
           ouiaSafe={true}
@@ -889,7 +937,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
               <ContextHeader
                 headerRows={null}
               >
-                <Component
+                <Header
                   className=""
                   headerRows={null}
                 >
@@ -912,15 +960,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -960,15 +1013,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1008,15 +1066,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1057,15 +1120,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1106,15 +1174,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1155,15 +1228,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1204,15 +1282,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1254,15 +1337,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -1358,15 +1446,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                     "actionResolver": [Function],
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 1,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -1406,15 +1499,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                     "actionResolver": [Function],
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 1,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -1454,15 +1552,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                     "actionResolver": [Function],
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 1,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -1503,15 +1606,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                     "actionResolver": [Function],
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 1,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -1552,15 +1660,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                     "actionResolver": [Function],
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 1,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -1601,15 +1714,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                     "actionResolver": [Function],
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 1,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -1650,15 +1768,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                     "actionResolver": [Function],
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 1,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -1700,15 +1823,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                     "actionResolver": [Function],
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 1,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -1793,13 +1921,15 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                             onSelect={[Function]}
                                             selectVariant="checkbox"
                                           >
-                                            <input
-                                              aria-label="Select all rows"
-                                              checked={false}
-                                              name="check-all"
-                                              onChange={[Function]}
-                                              type="checkbox"
-                                            />
+                                            <label>
+                                              <input
+                                                aria-label="Select all rows"
+                                                checked={false}
+                                                name="check-all"
+                                                onChange={[Function]}
+                                                type="checkbox"
+                                              />
+                                            </label>
                                           </SelectColumn>
                                         </td>
                                       </ThBase>
@@ -2366,10 +2496,10 @@ exports[`Jobs management table component tests Snapshot test with default props 
                       </TheadBase>
                     </Thead>
                   </BaseHeader>
-                </Component>
+                </Header>
               </ContextHeader>
             </TableHeader>
-            <Component>
+            <TableBody>
               <ContextBody
                 className=""
                 headerData={
@@ -2389,15 +2519,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                         "actionResolver": [Function],
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 1,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2437,15 +2572,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                         "actionResolver": [Function],
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 1,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2485,15 +2625,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                         "actionResolver": [Function],
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 1,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2534,15 +2679,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                         "actionResolver": [Function],
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 1,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2583,15 +2733,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                         "actionResolver": [Function],
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 1,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2632,15 +2787,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                         "actionResolver": [Function],
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 1,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2681,15 +2841,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                         "actionResolver": [Function],
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 1,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -2731,15 +2896,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                         "actionResolver": [Function],
                         "actions": undefined,
                         "actionsToggle": undefined,
+                        "allRowsExpanded": false,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
+                        "canCollapseAll": false,
                         "canSelectAll": true,
                         "canSortFavorites": true,
+                        "collapseAllAriaLabel": "",
                         "contentId": "expanded-content",
                         "dropdownDirection": "down",
                         "dropdownPosition": "right",
                         "expandId": "expandable-toggle",
                         "firstUserColumnIndex": 1,
+                        "isHeaderSelectDisabled": false,
+                        "menuAppendTo": "inline",
                         "onCollapse": undefined,
                         "onExpand": undefined,
                         "onFavorite": undefined,
@@ -3024,7 +3194,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                   ]
                 }
               >
-                <Component
+                <Body
                   className=""
                   headerRows={null}
                   mappedRows={
@@ -4193,15 +4363,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -4241,15 +4416,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -4289,15 +4469,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -4338,15 +4523,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -4387,15 +4577,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -4436,15 +4631,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -4485,15 +4685,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -4535,15 +4740,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             "actionResolver": [Function],
                             "actions": undefined,
                             "actionsToggle": undefined,
+                            "allRowsExpanded": false,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
+                            "canCollapseAll": false,
                             "canSelectAll": true,
                             "canSortFavorites": true,
+                            "collapseAllAriaLabel": "",
                             "contentId": "expanded-content",
                             "dropdownDirection": "down",
                             "dropdownPosition": "right",
                             "expandId": "expandable-toggle",
                             "firstUserColumnIndex": 1,
+                            "isHeaderSelectDisabled": false,
+                            "menuAppendTo": "inline",
                             "onCollapse": undefined,
                             "onExpand": undefined,
                             "onFavorite": undefined,
@@ -6348,15 +6558,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -6396,15 +6611,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -6444,15 +6664,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -6493,15 +6718,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -6542,15 +6772,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -6591,15 +6826,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -6640,15 +6880,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -6690,15 +6935,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -6902,7 +7152,8 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             >
                               <RowWrapper
                                 className=""
-                                onMouseDown={[Function]}
+                                onClick={[Function]}
+                                onKeyDown={[Function]}
                                 row={
                                   Object {
                                     "cells": Array [
@@ -7074,12 +7325,14 @@ exports[`Jobs management table component tests Snapshot test with default props 
                               >
                                 <Tr
                                   className=""
-                                  onMouseDown={[Function]}
+                                  onClick={[Function]}
+                                  onKeyDown={[Function]}
                                 >
                                   <TrBase
                                     className=""
                                     innerRef={null}
-                                    onMouseDown={[Function]}
+                                    onClick={[Function]}
+                                    onKeyDown={[Function]}
                                   >
                                     <tr
                                       className=""
@@ -7087,7 +7340,8 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       data-ouia-component-type="PF4/TableRow"
                                       data-ouia-safe={true}
                                       hidden={false}
-                                      onMouseDown={[Function]}
+                                      onClick={[Function]}
+                                      onKeyDown={[Function]}
                                     >
                                       <BodyCell
                                         className="pf-c-table__check"
@@ -7127,13 +7381,15 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                 onSelect={[Function]}
                                                 selectVariant="checkbox"
                                               >
-                                                <input
-                                                  aria-label="Select row 0"
-                                                  checked={false}
-                                                  name="checkrow0"
-                                                  onChange={[Function]}
-                                                  type="checkbox"
-                                                />
+                                                <label>
+                                                  <input
+                                                    aria-label="Select row 0"
+                                                    checked={false}
+                                                    name="checkrow0"
+                                                    onChange={[Function]}
+                                                    type="checkbox"
+                                                  />
+                                                </label>
                                               </SelectColumn>
                                             </td>
                                           </TdBase>
@@ -7194,10 +7450,13 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                   onFocus={[Function]}
                                                   onMouseEnter={[Function]}
                                                   onMouseLeave={[Function]}
+                                                  onPopperMouseEnter={[Function]}
+                                                  onPopperMouseLeave={[Function]}
                                                   onTriggerEnter={[Function]}
                                                   placement="top"
                                                   popper={
                                                     <div
+                                                      aria-live="off"
                                                       className="pf-c-tooltip"
                                                       id="pf-tooltip-1"
                                                       role="tooltip"
@@ -7221,11 +7480,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                   positionModifiers={
                                                     Object {
                                                       "bottom": "pf-m-bottom",
+                                                      "bottom-end": "pf-m-bottom-right",
+                                                      "bottom-start": "pf-m-bottom-left",
                                                       "left": "pf-m-left",
+                                                      "left-end": "pf-m-left-bottom",
+                                                      "left-start": "pf-m-left-top",
                                                       "right": "pf-m-right",
+                                                      "right-end": "pf-m-right-bottom",
+                                                      "right-start": "pf-m-right-top",
                                                       "top": "pf-m-top",
+                                                      "top-end": "pf-m-top-right",
+                                                      "top-start": "pf-m-top-left",
                                                     }
                                                   }
+                                                  removeFindDomNode={false}
                                                   trigger={
                                                     <span>
                                                       6e74a57
@@ -7469,7 +7737,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                         style={
                                           Object {
                                             "paddingRight": 0,
-                                            "width": "auto",
                                           }
                                         }
                                       >
@@ -7482,7 +7749,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                           style={
                                             Object {
                                               "paddingRight": 0,
-                                              "width": "auto",
                                             }
                                           }
                                           textCenter={false}
@@ -7497,7 +7763,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                             style={
                                               Object {
                                                 "paddingRight": 0,
-                                                "width": "auto",
                                               }
                                             }
                                             textCenter={false}
@@ -7510,7 +7775,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                               style={
                                                 Object {
                                                   "paddingRight": 0,
-                                                  "width": "auto",
                                                 }
                                               }
                                             >
@@ -7534,15 +7798,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                         "actionResolver": [Function],
                                                         "actions": undefined,
                                                         "actionsToggle": undefined,
+                                                        "allRowsExpanded": false,
                                                         "allRowsSelected": false,
                                                         "areActionsDisabled": undefined,
+                                                        "canCollapseAll": false,
                                                         "canSelectAll": true,
                                                         "canSortFavorites": true,
+                                                        "collapseAllAriaLabel": "",
                                                         "contentId": "expanded-content",
                                                         "dropdownDirection": "down",
                                                         "dropdownPosition": "right",
                                                         "expandId": "expandable-toggle",
                                                         "firstUserColumnIndex": 1,
+                                                        "isHeaderSelectDisabled": false,
+                                                        "menuAppendTo": "inline",
                                                         "onCollapse": undefined,
                                                         "onExpand": undefined,
                                                         "onFavorite": undefined,
@@ -7581,6 +7850,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                     },
                                                   ]
                                                 }
+                                                menuAppendTo="inline"
                                                 rowData={
                                                   Object {
                                                     "cells": Array [
@@ -7759,6 +8029,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                   }
                                                   isOpen={false}
                                                   isPlain={true}
+                                                  menuAppendTo="inline"
                                                   position="right"
                                                   toggle={
                                                     <KebabToggle
@@ -7781,17 +8052,21 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                         </DropdownItem>,
                                                       ]
                                                     }
+                                                    isFlipEnabled={true}
                                                     isGrouped={false}
                                                     isOpen={false}
                                                     isPlain={true}
+                                                    isText={false}
                                                     menuAppendTo="inline"
                                                     onSelect={[Function]}
                                                     position="right"
+                                                    removeFindDomNode={false}
                                                     toggle={
                                                       <KebabToggle
                                                         onToggle={[Function]}
                                                       />
                                                     }
+                                                    zIndex={9999}
                                                   >
                                                     <div
                                                       className="pf-c-dropdown pf-m-align-right"
@@ -7805,6 +8080,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                         id="pf-dropdown-toggle-id-0"
                                                         isOpen={false}
                                                         isPlain={true}
+                                                        isText={false}
                                                         key=".0"
                                                         onEnter={[Function]}
                                                         onToggle={[Function]}
@@ -7855,6 +8131,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                           isPlain={true}
                                                           isPrimary={false}
                                                           isSplitButton={false}
+                                                          isText={false}
                                                           onEnter={[Function]}
                                                           onToggle={[Function]}
                                                           parentRef={
@@ -7960,15 +8237,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -8008,15 +8290,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -8056,15 +8343,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -8105,15 +8397,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -8154,15 +8451,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -8203,15 +8505,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -8252,15 +8559,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -8302,15 +8614,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -8558,7 +8875,8 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             >
                               <RowWrapper
                                 className=""
-                                onMouseDown={[Function]}
+                                onClick={[Function]}
+                                onKeyDown={[Function]}
                                 row={
                                   Object {
                                     "cells": Array [
@@ -8774,12 +9092,14 @@ exports[`Jobs management table component tests Snapshot test with default props 
                               >
                                 <Tr
                                   className=""
-                                  onMouseDown={[Function]}
+                                  onClick={[Function]}
+                                  onKeyDown={[Function]}
                                 >
                                   <TrBase
                                     className=""
                                     innerRef={null}
-                                    onMouseDown={[Function]}
+                                    onClick={[Function]}
+                                    onKeyDown={[Function]}
                                   >
                                     <tr
                                       className=""
@@ -8787,7 +9107,8 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       data-ouia-component-type="PF4/TableRow"
                                       data-ouia-safe={true}
                                       hidden={false}
-                                      onMouseDown={[Function]}
+                                      onClick={[Function]}
+                                      onKeyDown={[Function]}
                                     >
                                       <BodyCell
                                         className="pf-c-table__check"
@@ -8827,13 +9148,15 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                 onSelect={[Function]}
                                                 selectVariant="checkbox"
                                               >
-                                                <input
-                                                  aria-label="Select row 1"
-                                                  checked={false}
-                                                  name="checkrow1"
-                                                  onChange={[Function]}
-                                                  type="checkbox"
-                                                />
+                                                <label>
+                                                  <input
+                                                    aria-label="Select row 1"
+                                                    checked={false}
+                                                    name="checkrow1"
+                                                    onChange={[Function]}
+                                                    type="checkbox"
+                                                  />
+                                                </label>
                                               </SelectColumn>
                                             </td>
                                           </TdBase>
@@ -8894,10 +9217,13 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                   onFocus={[Function]}
                                                   onMouseEnter={[Function]}
                                                   onMouseLeave={[Function]}
+                                                  onPopperMouseEnter={[Function]}
+                                                  onPopperMouseLeave={[Function]}
                                                   onTriggerEnter={[Function]}
                                                   placement="top"
                                                   popper={
                                                     <div
+                                                      aria-live="off"
                                                       className="pf-c-tooltip"
                                                       id="pf-tooltip-2"
                                                       role="tooltip"
@@ -8921,11 +9247,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                   positionModifiers={
                                                     Object {
                                                       "bottom": "pf-m-bottom",
+                                                      "bottom-end": "pf-m-bottom-right",
+                                                      "bottom-start": "pf-m-bottom-left",
                                                       "left": "pf-m-left",
+                                                      "left-end": "pf-m-left-bottom",
+                                                      "left-start": "pf-m-left-top",
                                                       "right": "pf-m-right",
+                                                      "right-end": "pf-m-right-bottom",
+                                                      "right-start": "pf-m-right-top",
                                                       "top": "pf-m-top",
+                                                      "top-end": "pf-m-top-right",
+                                                      "top-start": "pf-m-top-left",
                                                     }
                                                   }
+                                                  removeFindDomNode={false}
                                                   trigger={
                                                     <span>
                                                       dad3aa8
@@ -9193,7 +9528,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                         style={
                                           Object {
                                             "paddingRight": 0,
-                                            "width": "auto",
                                           }
                                         }
                                       >
@@ -9206,7 +9540,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                           style={
                                             Object {
                                               "paddingRight": 0,
-                                              "width": "auto",
                                             }
                                           }
                                           textCenter={false}
@@ -9221,7 +9554,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                             style={
                                               Object {
                                                 "paddingRight": 0,
-                                                "width": "auto",
                                               }
                                             }
                                             textCenter={false}
@@ -9234,7 +9566,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                               style={
                                                 Object {
                                                   "paddingRight": 0,
-                                                  "width": "auto",
                                                 }
                                               }
                                             >
@@ -9258,15 +9589,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                         "actionResolver": [Function],
                                                         "actions": undefined,
                                                         "actionsToggle": undefined,
+                                                        "allRowsExpanded": false,
                                                         "allRowsSelected": false,
                                                         "areActionsDisabled": undefined,
+                                                        "canCollapseAll": false,
                                                         "canSelectAll": true,
                                                         "canSortFavorites": true,
+                                                        "collapseAllAriaLabel": "",
                                                         "contentId": "expanded-content",
                                                         "dropdownDirection": "down",
                                                         "dropdownPosition": "right",
                                                         "expandId": "expandable-toggle",
                                                         "firstUserColumnIndex": 1,
+                                                        "isHeaderSelectDisabled": false,
+                                                        "menuAppendTo": "inline",
                                                         "onCollapse": undefined,
                                                         "onExpand": undefined,
                                                         "onFavorite": undefined,
@@ -9313,6 +9649,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                     },
                                                   ]
                                                 }
+                                                menuAppendTo="inline"
                                                 rowData={
                                                   Object {
                                                     "cells": Array [
@@ -9549,6 +9886,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                   }
                                                   isOpen={false}
                                                   isPlain={true}
+                                                  menuAppendTo="inline"
                                                   position="right"
                                                   toggle={
                                                     <KebabToggle
@@ -9585,17 +9923,21 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                         </DropdownItem>,
                                                       ]
                                                     }
+                                                    isFlipEnabled={true}
                                                     isGrouped={false}
                                                     isOpen={false}
                                                     isPlain={true}
+                                                    isText={false}
                                                     menuAppendTo="inline"
                                                     onSelect={[Function]}
                                                     position="right"
+                                                    removeFindDomNode={false}
                                                     toggle={
                                                       <KebabToggle
                                                         onToggle={[Function]}
                                                       />
                                                     }
+                                                    zIndex={9999}
                                                   >
                                                     <div
                                                       className="pf-c-dropdown pf-m-align-right"
@@ -9609,6 +9951,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                         id="pf-dropdown-toggle-id-1"
                                                         isOpen={false}
                                                         isPlain={true}
+                                                        isText={false}
                                                         key=".0"
                                                         onEnter={[Function]}
                                                         onToggle={[Function]}
@@ -9659,6 +10002,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                           isPlain={true}
                                                           isPrimary={false}
                                                           isSplitButton={false}
+                                                          isText={false}
                                                           onEnter={[Function]}
                                                           onToggle={[Function]}
                                                           parentRef={
@@ -9764,15 +10108,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -9812,15 +10161,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -9860,15 +10214,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -9909,15 +10268,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -9958,15 +10322,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -10007,15 +10376,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -10056,15 +10430,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -10106,15 +10485,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       "actionResolver": [Function],
                                       "actions": undefined,
                                       "actionsToggle": undefined,
+                                      "allRowsExpanded": false,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
+                                      "canCollapseAll": false,
                                       "canSelectAll": true,
                                       "canSortFavorites": true,
+                                      "collapseAllAriaLabel": "",
                                       "contentId": "expanded-content",
                                       "dropdownDirection": "down",
                                       "dropdownPosition": "right",
                                       "expandId": "expandable-toggle",
                                       "firstUserColumnIndex": 1,
+                                      "isHeaderSelectDisabled": false,
+                                      "menuAppendTo": "inline",
                                       "onCollapse": undefined,
                                       "onExpand": undefined,
                                       "onFavorite": undefined,
@@ -10362,7 +10746,8 @@ exports[`Jobs management table component tests Snapshot test with default props 
                             >
                               <RowWrapper
                                 className=""
-                                onMouseDown={[Function]}
+                                onClick={[Function]}
+                                onKeyDown={[Function]}
                                 row={
                                   Object {
                                     "cells": Array [
@@ -10578,12 +10963,14 @@ exports[`Jobs management table component tests Snapshot test with default props 
                               >
                                 <Tr
                                   className=""
-                                  onMouseDown={[Function]}
+                                  onClick={[Function]}
+                                  onKeyDown={[Function]}
                                 >
                                   <TrBase
                                     className=""
                                     innerRef={null}
-                                    onMouseDown={[Function]}
+                                    onClick={[Function]}
+                                    onKeyDown={[Function]}
                                   >
                                     <tr
                                       className=""
@@ -10591,7 +10978,8 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                       data-ouia-component-type="PF4/TableRow"
                                       data-ouia-safe={true}
                                       hidden={false}
-                                      onMouseDown={[Function]}
+                                      onClick={[Function]}
+                                      onKeyDown={[Function]}
                                     >
                                       <BodyCell
                                         className="pf-c-table__check"
@@ -10631,13 +11019,15 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                 onSelect={[Function]}
                                                 selectVariant="checkbox"
                                               >
-                                                <input
-                                                  aria-label="Select row 2"
-                                                  checked={false}
-                                                  name="checkrow2"
-                                                  onChange={[Function]}
-                                                  type="checkbox"
-                                                />
+                                                <label>
+                                                  <input
+                                                    aria-label="Select row 2"
+                                                    checked={false}
+                                                    name="checkrow2"
+                                                    onChange={[Function]}
+                                                    type="checkbox"
+                                                  />
+                                                </label>
                                               </SelectColumn>
                                             </td>
                                           </TdBase>
@@ -10698,10 +11088,13 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                   onFocus={[Function]}
                                                   onMouseEnter={[Function]}
                                                   onMouseLeave={[Function]}
+                                                  onPopperMouseEnter={[Function]}
+                                                  onPopperMouseLeave={[Function]}
                                                   onTriggerEnter={[Function]}
                                                   placement="top"
                                                   popper={
                                                     <div
+                                                      aria-live="off"
                                                       className="pf-c-tooltip"
                                                       id="pf-tooltip-3"
                                                       role="tooltip"
@@ -10725,11 +11118,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                   positionModifiers={
                                                     Object {
                                                       "bottom": "pf-m-bottom",
+                                                      "bottom-end": "pf-m-bottom-right",
+                                                      "bottom-start": "pf-m-bottom-left",
                                                       "left": "pf-m-left",
+                                                      "left-end": "pf-m-left-bottom",
+                                                      "left-start": "pf-m-left-top",
                                                       "right": "pf-m-right",
+                                                      "right-end": "pf-m-right-bottom",
+                                                      "right-start": "pf-m-right-top",
                                                       "top": "pf-m-top",
+                                                      "top-end": "pf-m-top-right",
+                                                      "top-start": "pf-m-top-left",
                                                     }
                                                   }
+                                                  removeFindDomNode={false}
                                                   trigger={
                                                     <span>
                                                       2234dde
@@ -10997,7 +11399,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                         style={
                                           Object {
                                             "paddingRight": 0,
-                                            "width": "auto",
                                           }
                                         }
                                       >
@@ -11010,7 +11411,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                           style={
                                             Object {
                                               "paddingRight": 0,
-                                              "width": "auto",
                                             }
                                           }
                                           textCenter={false}
@@ -11025,7 +11425,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                             style={
                                               Object {
                                                 "paddingRight": 0,
-                                                "width": "auto",
                                               }
                                             }
                                             textCenter={false}
@@ -11038,7 +11437,6 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                               style={
                                                 Object {
                                                   "paddingRight": 0,
-                                                  "width": "auto",
                                                 }
                                               }
                                             >
@@ -11062,15 +11460,20 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                         "actionResolver": [Function],
                                                         "actions": undefined,
                                                         "actionsToggle": undefined,
+                                                        "allRowsExpanded": false,
                                                         "allRowsSelected": false,
                                                         "areActionsDisabled": undefined,
+                                                        "canCollapseAll": false,
                                                         "canSelectAll": true,
                                                         "canSortFavorites": true,
+                                                        "collapseAllAriaLabel": "",
                                                         "contentId": "expanded-content",
                                                         "dropdownDirection": "down",
                                                         "dropdownPosition": "right",
                                                         "expandId": "expandable-toggle",
                                                         "firstUserColumnIndex": 1,
+                                                        "isHeaderSelectDisabled": false,
+                                                        "menuAppendTo": "inline",
                                                         "onCollapse": undefined,
                                                         "onExpand": undefined,
                                                         "onFavorite": undefined,
@@ -11109,6 +11512,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                     },
                                                   ]
                                                 }
+                                                menuAppendTo="inline"
                                                 rowData={
                                                   Object {
                                                     "cells": Array [
@@ -11331,6 +11735,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                   }
                                                   isOpen={false}
                                                   isPlain={true}
+                                                  menuAppendTo="inline"
                                                   position="right"
                                                   toggle={
                                                     <KebabToggle
@@ -11353,17 +11758,21 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                         </DropdownItem>,
                                                       ]
                                                     }
+                                                    isFlipEnabled={true}
                                                     isGrouped={false}
                                                     isOpen={false}
                                                     isPlain={true}
+                                                    isText={false}
                                                     menuAppendTo="inline"
                                                     onSelect={[Function]}
                                                     position="right"
+                                                    removeFindDomNode={false}
                                                     toggle={
                                                       <KebabToggle
                                                         onToggle={[Function]}
                                                       />
                                                     }
+                                                    zIndex={9999}
                                                   >
                                                     <div
                                                       className="pf-c-dropdown pf-m-align-right"
@@ -11377,6 +11786,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                         id="pf-dropdown-toggle-id-2"
                                                         isOpen={false}
                                                         isPlain={true}
+                                                        isText={false}
                                                         key=".0"
                                                         onEnter={[Function]}
                                                         onToggle={[Function]}
@@ -11427,6 +11837,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                           isPlain={true}
                                                           isPrimary={false}
                                                           isSplitButton={false}
+                                                          isText={false}
                                                           onEnter={[Function]}
                                                           onToggle={[Function]}
                                                           parentRef={
@@ -11519,9 +11930,9 @@ exports[`Jobs management table component tests Snapshot test with default props 
                       </Tbody>
                     </BodyWrapper>
                   </BaseBody>
-                </Component>
+                </Body>
               </ContextBody>
-            </Component>
+            </TableBody>
           </table>
         </TableComposableBase>
       </TableComposable>

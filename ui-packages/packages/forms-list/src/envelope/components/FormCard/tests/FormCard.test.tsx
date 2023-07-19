@@ -21,7 +21,7 @@ import {
   formList
 } from '../../../tests/mocks/MockedFormsListDriver';
 import FormCard from '../FormCard';
-import { Card } from '@patternfly/react-core';
+import { Card } from '@patternfly/react-core/dist/js/components/Card';
 
 describe('Form card tests', () => {
   Date.now = jest.fn(() => 1487076708000);

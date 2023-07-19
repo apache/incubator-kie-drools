@@ -11,7 +11,80 @@ exports[`customDashboard gallery tests renders empty state component 1`] = `
     title="No results found"
     type={0}
   >
-    <MockedComponent />
+    <Bullseye
+      data-ouia-component-type="kogito-empty-state"
+      data-ouia-safe={true}
+    >
+      <div
+        className="pf-l-bullseye"
+        data-ouia-component-type="kogito-empty-state"
+        data-ouia-safe={true}
+      >
+        <EmptyState
+          variant="full"
+        >
+          <div
+            className="pf-c-empty-state"
+          >
+            <div
+              className="pf-c-empty-state__content"
+            >
+              <EmptyStateIcon
+                icon={[Function]}
+              >
+                <SearchIcon
+                  aria-hidden="true"
+                  className="pf-c-empty-state__icon"
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                >
+                  <svg
+                    aria-hidden="true"
+                    aria-labelledby={null}
+                    className="pf-c-empty-state__icon"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style={
+                      Object {
+                        "verticalAlign": "-0.125em",
+                      }
+                    }
+                    viewBox="0 0 512 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                    />
+                  </svg>
+                </SearchIcon>
+              </EmptyStateIcon>
+              <Title
+                headingLevel="h5"
+                size="lg"
+              >
+                <h5
+                  className="pf-c-title pf-m-lg"
+                  data-ouia-component-id="OUIA-Generated-Title-2"
+                  data-ouia-component-type="PF4/Title"
+                  data-ouia-safe={true}
+                >
+                  No results found
+                </h5>
+              </Title>
+              <EmptyStateBody>
+                <div
+                  className="pf-c-empty-state__body"
+                >
+                  Try using different filters
+                </div>
+              </EmptyStateBody>
+            </div>
+          </div>
+        </EmptyState>
+      </div>
+    </Bullseye>
   </KogitoEmptyState>
 </CustomDashboardsGallery>
 `;
@@ -126,115 +199,127 @@ exports[`customDashboard gallery tests renders gallery of customDashboard 1`] = 
                       className="pf-u-mt-md"
                     >
                       <Form>
-                        <form
-                          className="pf-c-form"
-                          noValidate={true}
+                        <FormBase
+                          innerRef={null}
                         >
-                          <FormGroup
-                            fieldId="path"
-                            label="Path"
+                          <form
+                            className="pf-c-form"
+                            noValidate={true}
                           >
-                            <div
-                              className="pf-c-form__group"
+                            <FormGroup
+                              fieldId="path"
+                              label="Path"
                             >
-                              <div
-                                className="pf-c-form__group-label"
+                              <GenerateId
+                                prefix="pf-random-id-"
                               >
-                                <label
-                                  className="pf-c-form__label"
-                                  htmlFor="path"
+                                <div
+                                  className="pf-c-form__group"
                                 >
-                                  <span
-                                    className="pf-c-form__label-text"
+                                  <div
+                                    className="pf-c-form__group-label"
                                   >
-                                    Path
-                                  </span>
-                                </label>
-                                 
-                              </div>
-                              <div
-                                className="pf-c-form__group-control"
-                              >
-                                <Text
-                                  component="p"
-                                >
-                                  <p
-                                    className=""
-                                    data-ouia-component-id="OUIA-Generated-Text-2"
-                                    data-ouia-component-type="PF4/Text"
-                                    data-ouia-safe={true}
-                                    data-pf-content={true}
-                                  >
-                                    /user/home
-                                  </p>
-                                </Text>
-                              </div>
-                            </div>
-                          </FormGroup>
-                          <FormGroup
-                            fieldId="lastModified"
-                            label="LastModified"
-                          >
-                            <div
-                              className="pf-c-form__group"
-                            >
-                              <div
-                                className="pf-c-form__group-label"
-                              >
-                                <label
-                                  className="pf-c-form__label"
-                                  htmlFor="lastModified"
-                                >
-                                  <span
-                                    className="pf-c-form__label-text"
-                                  >
-                                    LastModified
-                                  </span>
-                                </label>
-                                 
-                              </div>
-                              <div
-                                className="pf-c-form__group-control"
-                              >
-                                <Text
-                                  component="p"
-                                >
-                                  <p
-                                    className=""
-                                    data-ouia-component-id="OUIA-Generated-Text-3"
-                                    data-ouia-component-type="PF4/Text"
-                                    data-ouia-safe={true}
-                                    data-pf-content={true}
-                                  >
-                                    <t
-                                      ago={false}
-                                      calendar={false}
-                                      decimal={false}
-                                      element={null}
-                                      filter={[Function]}
-                                      fromNow={true}
-                                      interval={60000}
-                                      local={false}
-                                      onChange={[Function]}
-                                      titleFormat=""
-                                      toNow={false}
-                                      unit={null}
-                                      unix={false}
-                                      utc={false}
-                                      withTitle={false}
+                                    <label
+                                      className="pf-c-form__label"
+                                      htmlFor="path"
                                     >
-                                      <time
-                                        dateTime={"2022-07-11T18:30:00.000Z"}
+                                      <span
+                                        className="pf-c-form__label-text"
                                       >
-                                        in 5 years
-                                      </time>
-                                    </t>
-                                  </p>
-                                </Text>
-                              </div>
-                            </div>
-                          </FormGroup>
-                        </form>
+                                        Path
+                                      </span>
+                                    </label>
+                                     
+                                  </div>
+                                  <div
+                                    className="pf-c-form__group-control"
+                                  >
+                                    <Text
+                                      component="p"
+                                    >
+                                      <p
+                                        className=""
+                                        data-ouia-component-id="OUIA-Generated-Text-2"
+                                        data-ouia-component-type="PF4/Text"
+                                        data-ouia-safe={true}
+                                        data-pf-content={true}
+                                      >
+                                        /user/home
+                                      </p>
+                                    </Text>
+                                  </div>
+                                </div>
+                              </GenerateId>
+                            </FormGroup>
+                            <FormGroup
+                              fieldId="lastModified"
+                              label="LastModified"
+                            >
+                              <GenerateId
+                                prefix="pf-random-id-"
+                              >
+                                <div
+                                  className="pf-c-form__group"
+                                >
+                                  <div
+                                    className="pf-c-form__group-label"
+                                  >
+                                    <label
+                                      className="pf-c-form__label"
+                                      htmlFor="lastModified"
+                                    >
+                                      <span
+                                        className="pf-c-form__label-text"
+                                      >
+                                        LastModified
+                                      </span>
+                                    </label>
+                                     
+                                  </div>
+                                  <div
+                                    className="pf-c-form__group-control"
+                                  >
+                                    <Text
+                                      component="p"
+                                    >
+                                      <p
+                                        className=""
+                                        data-ouia-component-id="OUIA-Generated-Text-3"
+                                        data-ouia-component-type="PF4/Text"
+                                        data-ouia-safe={true}
+                                        data-pf-content={true}
+                                      >
+                                        <t
+                                          ago={false}
+                                          calendar={false}
+                                          decimal={false}
+                                          element={null}
+                                          filter={[Function]}
+                                          fromNow={true}
+                                          interval={60000}
+                                          local={false}
+                                          onChange={[Function]}
+                                          titleFormat=""
+                                          toNow={false}
+                                          unit={null}
+                                          unix={false}
+                                          utc={false}
+                                          withTitle={false}
+                                        >
+                                          <time
+                                            dateTime={"2022-07-11T18:30:00.000Z"}
+                                          >
+                                            in 5 years
+                                          </time>
+                                        </t>
+                                      </p>
+                                    </Text>
+                                  </div>
+                                </div>
+                              </GenerateId>
+                            </FormGroup>
+                          </form>
+                        </FormBase>
                       </Form>
                     </div>
                   </div>
@@ -315,115 +400,127 @@ exports[`customDashboard gallery tests renders gallery of customDashboard 1`] = 
                       className="pf-u-mt-md"
                     >
                       <Form>
-                        <form
-                          className="pf-c-form"
-                          noValidate={true}
+                        <FormBase
+                          innerRef={null}
                         >
-                          <FormGroup
-                            fieldId="path"
-                            label="Path"
+                          <form
+                            className="pf-c-form"
+                            noValidate={true}
                           >
-                            <div
-                              className="pf-c-form__group"
+                            <FormGroup
+                              fieldId="path"
+                              label="Path"
                             >
-                              <div
-                                className="pf-c-form__group-label"
+                              <GenerateId
+                                prefix="pf-random-id-"
                               >
-                                <label
-                                  className="pf-c-form__label"
-                                  htmlFor="path"
+                                <div
+                                  className="pf-c-form__group"
                                 >
-                                  <span
-                                    className="pf-c-form__label-text"
+                                  <div
+                                    className="pf-c-form__group-label"
                                   >
-                                    Path
-                                  </span>
-                                </label>
-                                 
-                              </div>
-                              <div
-                                className="pf-c-form__group-control"
-                              >
-                                <Text
-                                  component="p"
-                                >
-                                  <p
-                                    className=""
-                                    data-ouia-component-id="OUIA-Generated-Text-5"
-                                    data-ouia-component-type="PF4/Text"
-                                    data-ouia-safe={true}
-                                    data-pf-content={true}
-                                  >
-                                    /user/home
-                                  </p>
-                                </Text>
-                              </div>
-                            </div>
-                          </FormGroup>
-                          <FormGroup
-                            fieldId="lastModified"
-                            label="LastModified"
-                          >
-                            <div
-                              className="pf-c-form__group"
-                            >
-                              <div
-                                className="pf-c-form__group-label"
-                              >
-                                <label
-                                  className="pf-c-form__label"
-                                  htmlFor="lastModified"
-                                >
-                                  <span
-                                    className="pf-c-form__label-text"
-                                  >
-                                    LastModified
-                                  </span>
-                                </label>
-                                 
-                              </div>
-                              <div
-                                className="pf-c-form__group-control"
-                              >
-                                <Text
-                                  component="p"
-                                >
-                                  <p
-                                    className=""
-                                    data-ouia-component-id="OUIA-Generated-Text-6"
-                                    data-ouia-component-type="PF4/Text"
-                                    data-ouia-safe={true}
-                                    data-pf-content={true}
-                                  >
-                                    <t
-                                      ago={false}
-                                      calendar={false}
-                                      decimal={false}
-                                      element={null}
-                                      filter={[Function]}
-                                      fromNow={true}
-                                      interval={60000}
-                                      local={false}
-                                      onChange={[Function]}
-                                      titleFormat=""
-                                      toNow={false}
-                                      unit={null}
-                                      unix={false}
-                                      utc={false}
-                                      withTitle={false}
+                                    <label
+                                      className="pf-c-form__label"
+                                      htmlFor="path"
                                     >
-                                      <time
-                                        dateTime={"2022-07-11T18:30:00.000Z"}
+                                      <span
+                                        className="pf-c-form__label-text"
                                       >
-                                        in 5 years
-                                      </time>
-                                    </t>
-                                  </p>
-                                </Text>
-                              </div>
-                            </div>
-                          </FormGroup>
-                        </form>
+                                        Path
+                                      </span>
+                                    </label>
+                                     
+                                  </div>
+                                  <div
+                                    className="pf-c-form__group-control"
+                                  >
+                                    <Text
+                                      component="p"
+                                    >
+                                      <p
+                                        className=""
+                                        data-ouia-component-id="OUIA-Generated-Text-5"
+                                        data-ouia-component-type="PF4/Text"
+                                        data-ouia-safe={true}
+                                        data-pf-content={true}
+                                      >
+                                        /user/home
+                                      </p>
+                                    </Text>
+                                  </div>
+                                </div>
+                              </GenerateId>
+                            </FormGroup>
+                            <FormGroup
+                              fieldId="lastModified"
+                              label="LastModified"
+                            >
+                              <GenerateId
+                                prefix="pf-random-id-"
+                              >
+                                <div
+                                  className="pf-c-form__group"
+                                >
+                                  <div
+                                    className="pf-c-form__group-label"
+                                  >
+                                    <label
+                                      className="pf-c-form__label"
+                                      htmlFor="lastModified"
+                                    >
+                                      <span
+                                        className="pf-c-form__label-text"
+                                      >
+                                        LastModified
+                                      </span>
+                                    </label>
+                                     
+                                  </div>
+                                  <div
+                                    className="pf-c-form__group-control"
+                                  >
+                                    <Text
+                                      component="p"
+                                    >
+                                      <p
+                                        className=""
+                                        data-ouia-component-id="OUIA-Generated-Text-6"
+                                        data-ouia-component-type="PF4/Text"
+                                        data-ouia-safe={true}
+                                        data-pf-content={true}
+                                      >
+                                        <t
+                                          ago={false}
+                                          calendar={false}
+                                          decimal={false}
+                                          element={null}
+                                          filter={[Function]}
+                                          fromNow={true}
+                                          interval={60000}
+                                          local={false}
+                                          onChange={[Function]}
+                                          titleFormat=""
+                                          toNow={false}
+                                          unit={null}
+                                          unix={false}
+                                          utc={false}
+                                          withTitle={false}
+                                        >
+                                          <time
+                                            dateTime={"2022-07-11T18:30:00.000Z"}
+                                          >
+                                            in 5 years
+                                          </time>
+                                        </t>
+                                      </p>
+                                    </Text>
+                                  </div>
+                                </div>
+                              </GenerateId>
+                            </FormGroup>
+                          </form>
+                        </FormBase>
                       </Form>
                     </div>
                   </div>
@@ -465,7 +562,63 @@ exports[`customDashboard gallery tests renders loading component 1`] = `
         ouiaId="custom-dashboard-list-loading-custom-dashboard"
         spinnerText="Loading customDashboard..."
       >
-        <MockedComponent />
+        <EmptyState
+          data-ouia-component-id="custom-dashboard-list-loading-custom-dashboard"
+          data-ouia-component-type="kogito-spinner"
+          data-ouia-safe={true}
+        >
+          <div
+            className="pf-c-empty-state"
+            data-ouia-component-id="custom-dashboard-list-loading-custom-dashboard"
+            data-ouia-component-type="kogito-spinner"
+            data-ouia-safe={true}
+          >
+            <div
+              className="pf-c-empty-state__content"
+            >
+              <EmptyStateIcon
+                component={[Function]}
+                variant="container"
+              >
+                <div
+                  className="pf-c-empty-state__icon"
+                >
+                  <Spinner>
+                    <span
+                      aria-label="Contents"
+                      aria-valuetext="Loading..."
+                      className="pf-c-spinner pf-m-xl"
+                      role="progressbar"
+                    >
+                      <span
+                        className="pf-c-spinner__clipper"
+                      />
+                      <span
+                        className="pf-c-spinner__lead-ball"
+                      />
+                      <span
+                        className="pf-c-spinner__tail-ball"
+                      />
+                    </span>
+                  </Spinner>
+                </div>
+              </EmptyStateIcon>
+              <Title
+                headingLevel="h3"
+                size="lg"
+              >
+                <h3
+                  className="pf-c-title pf-m-lg"
+                  data-ouia-component-id="OUIA-Generated-Title-1"
+                  data-ouia-component-type="PF4/Title"
+                  data-ouia-safe={true}
+                >
+                  Loading customDashboard...
+                </h3>
+              </Title>
+            </div>
+          </div>
+        </EmptyState>
       </KogitoSpinner>
     </div>
   </Bullseye>

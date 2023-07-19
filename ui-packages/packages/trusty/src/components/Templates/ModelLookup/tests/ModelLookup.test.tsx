@@ -16,7 +16,7 @@ jest.mock('react-router-dom', () => ({
     url: '/audit/:executionType/:executionId/model-lookup'
   })
 }));
-jest.mock('@kogito-tooling/kie-editors-standalone/dist/dmn');
+jest.mock('@kie-tools/kie-editors-standalone/dist/dmn');
 
 afterAll(() => jest.resetAllMocks());
 

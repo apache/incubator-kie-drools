@@ -18,7 +18,9 @@ import React from 'react';
 import { mount } from 'enzyme';
 import CustomDashboardListToolbar from '../CustomDashboardListToolbar';
 import { act } from 'react-dom/test-utils';
-import { Button, ToolbarFilter, Tooltip } from '@patternfly/react-core';
+import { ToolbarFilter } from '@patternfly/react-core/dist/js/components/Toolbar';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
 
 describe('CustomDashboard list toolbar tests', () => {
   it('render toolbar', () => {

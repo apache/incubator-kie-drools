@@ -18,15 +18,15 @@ import {
   MessageBusClientApi,
   NotificationPropertyNames,
   RequestPropertyNames
-} from '@kogito-tooling/envelope-bus/dist/api';
+} from '@kie-tools-core/envelope-bus/dist/api';
 import {
   JobsManagementChannelApi,
   JobsManagementEnvelopeApi
 } from '../../../api';
 import { Job, JobStatus } from '@kogito-apps/management-console-shared';
-import { MessageBusServer } from '@kogito-tooling/envelope-bus/dist/api';
-import { EnvelopeBusMessageManager } from '@kogito-tooling/envelope-bus/dist/common';
-import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
+import { MessageBusServer } from '@kie-tools-core/envelope-bus/dist/api';
+import { EnvelopeBusMessageManager } from '@kie-tools-core/envelope-bus/dist/common';
+import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';
 import { JobsManagementEnvelopeViewApi } from '../../JobsManagementEnvelopeView';
 
 export const Jobs: Job = {
@@ -81,7 +81,8 @@ export const MockedMessageBusClientApi = jest.fn<
   requests: new MockedApiRequests(),
   notifications: new MockedApiNotifications(),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
+  unsubscribe: jest.fn(),
+  shared: jest.fn()
 }));
 
 export const MockedMessageBusServer = jest.fn<
@@ -120,10 +121,8 @@ export const MockedEnvelopeBusMessageManager = jest.fn<
   getNextRequestId: jest.fn()
 }));
 
-export const MockedEnvelopeBusControllerDefinition = jest.fn<
-  Partial<
-    EnvelopeBusController<JobsManagementEnvelopeApi, JobsManagementChannelApi>
-  >,
+export const MockedEnvelopeClientDefinition = jest.fn<
+  Partial<EnvelopeClient<JobsManagementEnvelopeApi, JobsManagementChannelApi>>,
   []
 >(() => ({
   bus: jest.fn(),
@@ -139,8 +138,8 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController =
-  new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+export const MockedEnvelopeClient =
+  new MockedEnvelopeClientDefinition() as EnvelopeClient<
     JobsManagementEnvelopeApi,
     JobsManagementChannelApi
   >;

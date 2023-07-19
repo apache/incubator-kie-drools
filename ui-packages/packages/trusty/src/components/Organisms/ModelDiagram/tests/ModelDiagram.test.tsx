@@ -4,7 +4,7 @@ import ModelDiagram from '../ModelDiagram';
 import { ModelData } from '../../../../types';
 
 const mockOpenFunction = jest.fn();
-jest.mock('@kogito-tooling/kie-editors-standalone/dist/dmn', () => ({
+jest.mock('@kie-tools/kie-editors-standalone/dist/dmn', () => ({
   open: () => mockOpenFunction()
 }));
 

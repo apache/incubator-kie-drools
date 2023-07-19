@@ -17,7 +17,11 @@
 import React from 'react';
 import JobActionsKebab from '../JobActionsKebab';
 import { mount } from 'enzyme';
-import { Dropdown, KebabToggle, DropdownItem } from '@patternfly/react-core';
+import {
+  Dropdown,
+  KebabToggle,
+  DropdownItem
+} from '@patternfly/react-core/dist/js/components/Dropdown';
 import { act } from 'react-dom/test-utils';
 import { MockedProcessDetailsDriver } from '../../../../embedded/tests/mocks/Mocks';
 import { JobStatus } from '@kogito-apps/management-console-shared';

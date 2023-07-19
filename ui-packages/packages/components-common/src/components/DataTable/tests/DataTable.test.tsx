@@ -18,7 +18,7 @@ import React from 'react';
 import DataTable, { DataTableColumn } from '../DataTable';
 import { gql } from 'apollo-boost';
 import { MockedProvider } from '@apollo/react-testing';
-import { Label } from '@patternfly/react-core';
+import { Label } from '@patternfly/react-core/dist/js/components/Label';
 import { mount } from 'enzyme';
 
 // tslint:disable: no-string-literal

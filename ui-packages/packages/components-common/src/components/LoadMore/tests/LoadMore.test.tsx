@@ -21,9 +21,9 @@ import {
   DropdownToggle,
   DropdownItem,
   DropdownToggleAction
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Dropdown';
 import { act } from 'react-dom/test-utils';
-import { CheckIcon } from '@patternfly/react-icons';
+import { CheckIcon } from '@patternfly/react-icons/dist/js/icons/check-icon';
 
 describe('LoadMore component tests with isLoading false', () => {
   const props = {

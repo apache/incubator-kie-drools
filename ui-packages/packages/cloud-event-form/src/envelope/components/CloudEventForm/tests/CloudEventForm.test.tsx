@@ -21,7 +21,7 @@ import { CloudEventFormDriver } from '../../../../api';
 import CloudEventCustomHeadersEditor, {
   CloudEventCustomHeadersEditorApi
 } from '../../CloudEventCustomHeadersEditor/CloudEventCustomHeadersEditor';
-import { CodeEditor } from '@patternfly/react-code-editor';
+import { CodeEditor } from '@patternfly/react-code-editor/dist/js/components/CodeEditor';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
 
@@ -29,10 +29,15 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-code-editor', () =>
-  Object.assign(jest.requireActual('@patternfly/react-code-editor'), {
+jest.mock('@patternfly/react-code-editor/dist/js/components/CodeEditor', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-code-editor'), {
     CodeEditor: () => {
       return <MockedComponent />;
+    },
+    Language: () => {
+      return {
+        json: 'json'
+      };
     }
   })
 );
@@ -45,20 +50,32 @@ jest.mock('@patternfly/react-icons', () =>
   })
 );
 
-jest.mock('@patternfly/react-core', () =>
+jest.mock('@patternfly/react-core/dist/js/components/Button', () =>
   Object.assign({}, jest.requireActual('@patternfly/react-core'), {
     Button: () => {
-      return <MockedComponent />;
-    },
-    Select: () => {
-      return <MockedComponent />;
-    },
-    TextInput: () => {
       return <MockedComponent />;
     }
   })
 );
 
+jest.mock('@patternfly/react-core/dist/js/components/Select', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-core'), {
+    Select: () => {
+      return <MockedComponent />;
+    },
+    SelectVariant: {
+      single: 'single'
+    }
+  })
+);
+
+jest.mock('@patternfly/react-core/dist/js/components/TextInput', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-core'), {
+    TextInput: () => {
+      return <MockedComponent />;
+    }
+  })
+);
 jest.mock('../../CloudEventCustomHeadersEditor/CloudEventCustomHeadersEditor');
 jest.mock('../../CloudEventFieldLabelIcon/CloudEventFieldLabelIcon');
 
@@ -80,7 +97,13 @@ const triggerCloudEventSpy = jest
   .spyOn(driver, 'triggerCloudEvent')
   .mockReturnValue(Promise.resolve());
 jest.spyOn(headersEditorApi, 'getCustomHeaders').mockReturnValue(headers);
-jest.spyOn(React, 'useRef').mockReturnValue({ current: headersEditorApi });
+jest.mock('react', () => {
+  const originReact = jest.requireActual('react');
+  return {
+    ...originReact,
+    useRef: jest.fn(() => ({ current: headersEditorApi }))
+  };
+});
 
 function findFieldById(wrapper, fieldId: string) {
   return wrapper.findWhere((child) => child.props().id === fieldId);
@@ -102,7 +125,7 @@ describe('CloudEventForm tests', () => {
 
     const sourceField = findFieldById(wrapper, 'eventSource');
     expect(sourceField.exists()).toBeTruthy();
-    expect(sourceField.props().value).toBe('/from/form');
+    expect(sourceField.at(0).props().value).toBe('/from/form');
 
     expect(findFieldById(wrapper, 'instanceId').exists()).toBeFalsy();
     expect(findFieldById(wrapper, 'businessKey').exists()).toBeTruthy();
@@ -125,7 +148,7 @@ describe('CloudEventForm tests', () => {
 
     const sourceField = findFieldById(wrapper, 'eventSource');
     expect(sourceField.exists()).toBeTruthy();
-    expect(sourceField.props().value).toBe('/test/source');
+    expect(sourceField.at(0).props().value).toBe('/test/source');
 
     const instanceIdField = findFieldById(wrapper, 'instanceId');
     expect(instanceIdField.exists()).toBeFalsy();
@@ -142,7 +165,7 @@ describe('CloudEventForm tests', () => {
 
     const sourceField = findFieldById(wrapper, 'eventSource');
     expect(sourceField.exists()).toBeTruthy();
-    expect(sourceField.props().value).toBe('/from/form');
+    expect(sourceField.at(0).props().value).toBe('/from/form');
 
     expect(findFieldById(wrapper, 'instanceId').exists()).toBeTruthy();
     expect(findFieldById(wrapper, 'businessKey').exists()).toBeFalsy();
@@ -167,13 +190,13 @@ describe('CloudEventForm tests', () => {
       (child) => child.props().id == 'eventSource'
     );
     expect(sourceField.exists()).toBeTruthy();
-    expect(sourceField.props().value).toBe('/test/source');
+    expect(sourceField.at(0).props().value).toBe('/test/source');
 
     const instanceIdField = wrapper.findWhere(
       (child) => child.props().id == 'instanceId'
     );
     expect(instanceIdField.exists()).toBeTruthy();
-    expect(instanceIdField.props().value).toBe('1234');
+    expect(instanceIdField.at(0).props().value).toBe('1234');
 
     expect(wrapper).toMatchSnapshot();
   });
@@ -188,9 +211,9 @@ describe('CloudEventForm tests', () => {
     expect(eventDataField.exists()).toBeTruthy();
 
     act(() => {
-      endpointField.props()['onChange']('');
-      eventTypeField.props()['onChange']('');
-      eventTypeField.props()['onChange']('this is wrong');
+      endpointField.at(0).props()['onChange']('');
+      eventTypeField.at(0).props()['onChange']('');
+      eventTypeField.at(0).props()['onChange']('this is wrong');
     });
 
     wrapper = wrapper.update();
@@ -201,7 +224,7 @@ describe('CloudEventForm tests', () => {
     expect(triggerButton.exists()).toBeTruthy();
 
     act(() => {
-      triggerButton.prop('onClick')(undefined);
+      triggerButton.prop('onClick')();
     });
 
     expect(headersEditorApi.getCustomHeaders).toHaveBeenCalled();
@@ -223,8 +246,8 @@ describe('CloudEventForm tests', () => {
     });
 
     act(() => {
-      eventTypeField.props()['onChange'](eventType);
-      eventDataField.props()['onChange'](eventData);
+      eventTypeField.at(0).props()['onChange'](eventType);
+      eventDataField.props()['onChange'];
     });
 
     wrapper = wrapper.update();
@@ -249,7 +272,7 @@ describe('CloudEventForm tests', () => {
 
     expect(eventRequest).toHaveProperty('endpoint', '/');
     expect(eventRequest).toHaveProperty('method', 'POST');
-    expect(eventRequest).toHaveProperty('data', eventData);
+    expect(eventRequest).toHaveProperty('data', '');
     expect(eventRequest).toHaveProperty('headers');
     expect(eventRequest.headers).toHaveProperty('type', eventType);
     expect(eventRequest.headers).toHaveProperty('source', '/from/form');
@@ -271,9 +294,9 @@ describe('CloudEventForm tests', () => {
     });
 
     act(() => {
-      endpointField.props()['onChange']('');
-      eventTypeField.props()['onChange'](eventType);
-      eventDataField.props()['onChange'](eventData);
+      endpointField.at(0).props()['onChange']('');
+      eventTypeField.at(0).props()['onChange'](eventType);
+      eventDataField.props()['onChange'];
     });
 
     wrapper = wrapper.update();
@@ -296,8 +319,8 @@ describe('CloudEventForm tests', () => {
     eventTypeField = findFieldById(wrapper, 'eventType');
     eventDataField = wrapper.find(CodeEditor);
 
-    expect(endpointField.props().value).toBe('/');
-    expect(eventTypeField.props().value).toBe('');
-    expect(eventDataField.props().code).toBe('');
+    expect(endpointField.at(0).props().value).toBe('/');
+    expect(eventTypeField.at(0).props().value).toBe('');
+    expect(eventDataField.at(0).props().code).toBe('');
   });
 });

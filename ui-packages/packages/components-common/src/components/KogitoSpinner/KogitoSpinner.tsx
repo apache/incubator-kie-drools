@@ -16,11 +16,11 @@
 
 import React from 'react';
 import {
-  Title,
   EmptyState,
-  EmptyStateIcon,
-  Spinner
-} from '@patternfly/react-core';
+  EmptyStateIcon
+} from '@patternfly/react-core/dist/js/components/EmptyState';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 interface KogitoSpinnerProps {

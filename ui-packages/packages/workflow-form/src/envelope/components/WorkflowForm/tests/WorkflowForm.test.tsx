@@ -38,6 +38,19 @@ jest.mock('@patternfly/react-core/dist/js/components/Alert', () =>
   )
 );
 
+jest.mock('@patternfly/react-code-editor/dist/js/components/CodeEditor', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-code-editor'), {
+    CodeEditor: () => {
+      return <MockedComponent />;
+    },
+    Language: () => {
+      return {
+        json: 'json'
+      };
+    }
+  })
+);
+
 jest.mock('@patternfly/react-core/dist/js/components/Popover', () =>
   Object.assign(
     {},
@@ -99,6 +112,20 @@ describe('WorkflowForm Test', () => {
         endpoint: 'http://localhost:4000/hiring'
       }
     };
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // Deprecated
+        removeListener: jest.fn(), // Deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn()
+      }))
+    });
+    //HTMLCanvasElement.prototype.getContext = jest.fn();
   });
 
   it('Workflow Form - rendering', () => {

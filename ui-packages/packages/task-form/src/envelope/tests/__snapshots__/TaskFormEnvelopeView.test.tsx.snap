@@ -30,6 +30,7 @@ exports[`TaskFormEnvelopeView tests Custom Task Form 1`] = `
           ],
         },
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -85,6 +86,7 @@ exports[`TaskFormEnvelopeView tests Custom Task Form 1`] = `
               ],
             },
           },
+          "shared": [MockFunction],
           "subscribe": [MockFunction],
           "unsubscribe": [MockFunction],
         },
@@ -261,6 +263,7 @@ exports[`TaskFormEnvelopeView tests Empty State 1`] = `
           ],
         },
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -289,6 +292,7 @@ exports[`TaskFormEnvelopeView tests Loading 1`] = `
         "taskForm__getCustomForm": [MockFunction],
         "taskForm__getTaskFormSchema": [MockFunction],
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -345,6 +349,7 @@ exports[`TaskFormEnvelopeView tests Task Form 1`] = `
           ],
         },
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -383,6 +388,7 @@ exports[`TaskFormEnvelopeView tests Task Form 1`] = `
               ],
             },
           },
+          "shared": [MockFunction],
           "subscribe": [MockFunction],
           "unsubscribe": [MockFunction],
         },

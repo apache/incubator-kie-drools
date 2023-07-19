@@ -16,7 +16,7 @@
 
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
-import { Bullseye } from '@patternfly/react-core';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import {
   DataTable,
   DataTableColumn,

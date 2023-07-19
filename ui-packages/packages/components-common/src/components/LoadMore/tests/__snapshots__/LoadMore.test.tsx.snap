@@ -17,6 +17,7 @@ exports[`LoadMore component tests with isLoading false simulate loading state in
       size="md"
     >
       <span
+        aria-label="Contents"
         aria-valuetext="Loading..."
         className="pf-c-spinner pf-m-md kogito-components-common__load-more-spinner"
         role="progressbar"

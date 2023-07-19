@@ -22,12 +22,12 @@ import {
   getDefaultTaskStates
 } from '../../utils/TaskInboxUtils';
 import {
-  Chip,
   Select,
-  SelectOption,
-  TextInputBase,
-  ToolbarFilter
-} from '@patternfly/react-core';
+  SelectOption
+} from '@patternfly/react-core/dist/js/components/Select';
+import { Chip } from '@patternfly/react-core/dist/js/components/Chip';
+import { ToolbarFilter } from '@patternfly/react-core/dist/js/components/Toolbar';
+import { TextInputBase } from '@patternfly/react-core/dist/js/components/TextInput';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
 

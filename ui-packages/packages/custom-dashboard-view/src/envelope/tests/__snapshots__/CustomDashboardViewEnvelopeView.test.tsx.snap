@@ -22,6 +22,7 @@ exports[`CustomDashboardViewEnvelopeView tests Snapshot 2`] = `
           ],
         },
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -48,6 +49,7 @@ exports[`CustomDashboardViewEnvelopeView tests Snapshot 2`] = `
               ],
             },
           },
+          "shared": [MockFunction],
           "subscribe": [MockFunction],
           "unsubscribe": [MockFunction],
         },

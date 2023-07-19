@@ -18,18 +18,19 @@ import React, { useState } from 'react';
 import {
   DataList,
   DataListItem,
-  DataListCell,
-  Spinner,
+  DataListCell
+} from '@patternfly/react-core/dist/js/components/DataList';
+import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
+import {
   DropdownItem,
   Dropdown,
   DropdownToggle,
-  DropdownToggleAction,
-  Split,
-  SplitItem
-} from '@patternfly/react-core';
+  DropdownToggleAction
+} from '@patternfly/react-core/dist/js/components/Dropdown';
+import { Split, SplitItem } from '@patternfly/react-core/dist/js/layouts/Split';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import '../styles.css';
-import { CheckIcon } from '@patternfly/react-icons';
+import { CheckIcon } from '@patternfly/react-icons/dist/js/icons/check-icon';
 
 interface IOwnProps {
   offset: number;

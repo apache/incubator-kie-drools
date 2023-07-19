@@ -120,12 +120,15 @@ exports[`TaskInboxPage tests Snapshot 1`] = `
                         </DropdownItem>,
                       ]
                     }
+                    isFlipEnabled={true}
                     isGrouped={false}
                     isOpen={false}
                     isPlain={true}
+                    isText={false}
                     menuAppendTo="inline"
                     onSelect={[Function]}
                     position="left"
+                    removeFindDomNode={false}
                     toggle={
                       <DropdownToggle
                         aria-label="Applications"
@@ -143,6 +146,7 @@ exports[`TaskInboxPage tests Snapshot 1`] = `
                         John snow
                       </DropdownToggle>
                     }
+                    zIndex={9999}
                   >
                     <div
                       className="pf-c-dropdown DevUI-switchUser-dropdown-styling"
@@ -164,6 +168,7 @@ exports[`TaskInboxPage tests Snapshot 1`] = `
                         id="toggle-id-7"
                         isOpen={false}
                         isPlain={true}
+                        isText={false}
                         key=".0"
                         onEnter={[Function]}
                         onToggle={[Function]}
@@ -247,6 +252,7 @@ exports[`TaskInboxPage tests Snapshot 1`] = `
                           isPlain={true}
                           isPrimary={false}
                           isSplitButton={false}
+                          isText={false}
                           onEnter={[Function]}
                           onToggle={[Function]}
                           parentRef={
@@ -311,6 +317,7 @@ exports[`TaskInboxPage tests Snapshot 1`] = `
                               </div>,
                             }
                           }
+                          toggleVariant="default"
                         >
                           <button
                             aria-expanded={false}

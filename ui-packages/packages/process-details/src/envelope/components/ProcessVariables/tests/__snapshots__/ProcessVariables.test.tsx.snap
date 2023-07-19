@@ -101,7 +101,7 @@ exports[`ProcessVariables component tests snapshot testing with variables 1`] = 
                   className="pf-c-label__icon"
                 >
                   <InfoCircleIcon>
-                    <MockedComponent />
+                    <MockedIcon />
                   </InfoCircleIcon>
                 </span>
                  
@@ -124,7 +124,7 @@ exports[`ProcessVariables component tests snapshot testing with variables 1`] = 
                   className="pf-c-label__icon"
                 >
                   <InfoCircleIcon>
-                    <MockedComponent />
+                    <MockedIcon />
                   </InfoCircleIcon>
                 </span>
                  

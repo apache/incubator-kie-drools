@@ -15,11 +15,14 @@
  */
 
 import {
-  MockedEnvelopeBusController,
+  MockedEnvelopeClient,
   MockedProcessListEnvelopeViewApi
 } from './mocks/Mocks';
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
-import { ProcessListChannelApi, ProcessListEnvelopeApi } from '../../api';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
+import {
+  ProcessListChannelApi,
+  ProcessListEnvelopeApi
+} from '../../api';
 import { ProcessListEnvelopeApiImpl } from '../ProcessListEnvelopeApiImpl';
 import { ProcessListEnvelopeViewApi } from '../ProcessListEnvelopeView';
 import { ProcessListEnvelopeContext } from '../ProcessListEnvelopeContext';
@@ -29,8 +32,8 @@ import {
 } from '@kogito-apps/management-console-shared';
 
 describe('ProcessListEnvelopeApiImpl tests', () => {
-  it('initialize', () => {
-    const envelopeBusController = MockedEnvelopeBusController;
+  it('initialize', async () => {
+    const envelopeClient = MockedEnvelopeClient;
     const view = new MockedProcessListEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       ProcessListEnvelopeApi,
@@ -38,9 +41,9 @@ describe('ProcessListEnvelopeApiImpl tests', () => {
       ProcessListEnvelopeViewApi,
       ProcessListEnvelopeContext
     > = {
-      envelopeBusController,
+      envelopeClient,
       envelopeContext: {},
-      view: () => view
+      viewDelegate: () => Promise.resolve(() => view)
     };
 
     const envelopeApi = new ProcessListEnvelopeApiImpl(args);
@@ -66,10 +69,11 @@ describe('ProcessListEnvelopeApiImpl tests', () => {
       }
     );
 
-    expect(envelopeBusController.associate).toHaveBeenCalledWith(
+    expect(envelopeClient.associate).toHaveBeenCalledWith(
       'origin',
       'envelopeServerId'
     );
-    expect(view.initialize).toHaveBeenCalled();
+    const initializedView = await view.initialize;
+    expect(initializedView).toHaveBeenCalled();
   });
 });

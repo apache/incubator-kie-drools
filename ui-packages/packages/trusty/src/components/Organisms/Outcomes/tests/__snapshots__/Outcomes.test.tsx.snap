@@ -84,7 +84,7 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                 ouiaId="Mortgage Approval"
               >
                 <article
-                  className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
+                  className="pf-c-card pf-m-selectable outcome-cards__card outcome-cards__card--list-view"
                   data-ouia-component-id="Mortgage Approval"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
@@ -241,7 +241,7 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                 ouiaId="Risk Score"
               >
                 <article
-                  className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
+                  className="pf-c-card pf-m-selectable outcome-cards__card outcome-cards__card--list-view"
                   data-ouia-component-id="Risk Score"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
@@ -398,7 +398,7 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                 ouiaId="Client Score"
               >
                 <article
-                  className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
+                  className="pf-c-card pf-m-selectable outcome-cards__card outcome-cards__card--list-view"
                   data-ouia-component-id="Client Score"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
@@ -765,7 +765,7 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                 ouiaId="Recommended Loan Products"
               >
                 <article
-                  className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
+                  className="pf-c-card pf-m-selectable outcome-cards__card outcome-cards__card--list-view"
                   data-ouia-component-id="Recommended Loan Products"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
@@ -1512,7 +1512,7 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                 ouiaId="Recommended Loan Products"
               >
                 <article
-                  className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
+                  className="pf-c-card pf-m-selectable outcome-cards__card outcome-cards__card--list-view"
                   data-ouia-component-id="Recommended Loan Products"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
@@ -1773,7 +1773,7 @@ exports[`Outcomes renders a single outcome without the list view 1`] = `
       >
         <article
           className="pf-c-card"
-          data-ouia-component-id="OUIA-Generated-Card-1"
+          data-ouia-component-id="OUIA-Generated-Card-13"
           data-ouia-component-type="PF4/Card"
           data-ouia-safe={true}
           id=""
@@ -1912,7 +1912,7 @@ exports[`Outcomes renders a skipped decision with no outcome 1`] = `
                 ouiaId="Bank Score"
               >
                 <article
-                  className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
+                  className="pf-c-card pf-m-selectable outcome-cards__card outcome-cards__card--list-view"
                   data-ouia-component-id="Bank Score"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
@@ -2242,7 +2242,7 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                 ouiaId="Client Ratings"
               >
                 <article
-                  className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
+                  className="pf-c-card pf-m-selectable outcome-cards__card outcome-cards__card--list-view"
                   data-ouia-component-id="Client Ratings"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
@@ -3226,7 +3226,7 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
                 ouiaId="Last Transaction"
               >
                 <article
-                  className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
+                  className="pf-c-card pf-m-selectable outcome-cards__card outcome-cards__card--list-view"
                   data-ouia-component-id="Last Transaction"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
@@ -3597,7 +3597,7 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
                 ouiaId="Merchant Blacklist"
               >
                 <article
-                  className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
+                  className="pf-c-card pf-m-selectable outcome-cards__card outcome-cards__card--list-view"
                   data-ouia-component-id="Merchant Blacklist"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}

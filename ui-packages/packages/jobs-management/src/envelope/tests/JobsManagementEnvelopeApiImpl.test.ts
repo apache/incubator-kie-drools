@@ -15,18 +15,18 @@
  */
 
 import {
-  MockedEnvelopeBusController,
+  MockedEnvelopeClient,
   MockedJobsManagementEnvelopeViewApi
 } from './mocks/Mocks';
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import { JobsManagementChannelApi, JobsManagementEnvelopeApi } from '../../api';
 import { JobsManagementEnvelopeApiImpl } from '../JobsManagementEnvelopeApiImpl';
 import { JobsManagementEnvelopeViewApi } from '../JobsManagementEnvelopeView';
 import { JobsManagementEnvelopeContext } from '../JobsManagementEnvelopeContext';
 
 describe('JobsManagementEnvelopeApiImpl tests', () => {
-  it('initialize', () => {
-    const envelopeBusController = MockedEnvelopeBusController;
+  it('initialize', async () => {
+    const envelopeClient = MockedEnvelopeClient;
     const view = new MockedJobsManagementEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       JobsManagementEnvelopeApi,
@@ -34,9 +34,9 @@ describe('JobsManagementEnvelopeApiImpl tests', () => {
       JobsManagementEnvelopeViewApi,
       JobsManagementEnvelopeContext
     > = {
-      envelopeBusController,
+      envelopeClient,
       envelopeContext: {},
-      view: () => view
+      viewDelegate: () => Promise.resolve(() => view)
     };
 
     const envelopeApi = new JobsManagementEnvelopeApiImpl(args);
@@ -46,9 +46,11 @@ describe('JobsManagementEnvelopeApiImpl tests', () => {
       origin: 'origin'
     });
 
-    expect(envelopeBusController.associate).toHaveBeenCalledWith(
+    expect(envelopeClient.associate).toHaveBeenCalledWith(
       'origin',
       'envelopeServerId'
     );
+    const calledView = await view.initialize;
+    expect(calledView).toHaveBeenCalled();
   });
 });

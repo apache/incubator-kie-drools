@@ -24,7 +24,7 @@ import {
   ServerErrors,
   FormAction
 } from '@kogito-apps/components-common';
-import { Bullseye } from '@patternfly/react-core';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 export interface ProcessFormProps {
   processDefinition: ProcessDefinition;
   driver: ProcessFormDriver;

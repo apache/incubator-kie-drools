@@ -18,10 +18,12 @@ import React from 'react';
 import {
   Modal,
   ModalVariant,
-  ModalBoxBody,
+  ModalBoxBody
+} from '@patternfly/react-core/dist/js/components/Modal';
+import {
   TextContent,
   Text
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Text';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 
 interface IOwnProps {

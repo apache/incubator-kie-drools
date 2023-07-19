@@ -28,9 +28,26 @@ exports[`ProcessFormContainer tests Snapshot 1`] = `
     }
     targetOrigin="http://localhost:9000"
   >
-    <ForwardRef>
+    <ForwardRef(RefForwardingEmbeddedEnvelope)
+      apiImpl={
+        EmbeddedProcessFormChannelApiImpl {
+          "driver": Object {
+            "getProcessFormSchema": [Function],
+            "startProcess": [Function],
+          },
+        }
+      }
+      config={
+        Object {
+          "containerType": "div",
+        }
+      }
+      origin="http://localhost:9000"
+      pollInit={[Function]}
+      refDelegate={[Function]}
+    >
       <div />
-    </ForwardRef>
+    </ForwardRef(RefForwardingEmbeddedEnvelope)>
   </ForwardRef>
 </ProcessFormContainer>
 `;

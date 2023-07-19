@@ -15,15 +15,15 @@
  */
 
 import {
+  ApiNotificationConsumers,
   MessageBusClientApi,
-  NotificationPropertyNames,
   RequestPropertyNames
-} from '@kogito-tooling/envelope-bus/dist/api';
+} from '@kie-tools-core/envelope-bus/dist/api';
 import {
   ProcessDefinitionListChannelApi,
   ProcessDefinitionListEnvelopeApi
 } from '../../../api';
-import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
+import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';
 import { ProcessDefinitionListEnvelopeViewApi } from '../../ProcessDefinitionListEnvelopeView';
 
 export const MockedApiRequests = jest.fn<
@@ -39,14 +39,17 @@ export const MockedApiRequests = jest.fn<
   processDefinitionList__getProcessDefinitionFilter: jest.fn()
 }));
 
+const mockNotificationConsumer = {
+  subscribe: jest.fn(),
+  unsubscribe: jest.fn(),
+  send: jest.fn()
+};
+
 export const MockedApiNotifications = jest.fn<
-  Pick<
-    ProcessDefinitionListChannelApi,
-    NotificationPropertyNames<ProcessDefinitionListChannelApi>
-  >,
+  ApiNotificationConsumers<ProcessDefinitionListChannelApi>,
   []
 >(() => ({
-  processDefinitionsList__openTriggerCloudEvent: jest.fn()
+  processDefinitionsList__openTriggerCloudEvent: mockNotificationConsumer
 }));
 
 export const MockedMessageBusClientApi = jest.fn<
@@ -56,11 +59,12 @@ export const MockedMessageBusClientApi = jest.fn<
   requests: new MockedApiRequests(),
   notifications: new MockedApiNotifications(),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
+  unsubscribe: jest.fn(),
+  shared: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = jest.fn<
-  EnvelopeBusController<
+export const MockedEnvelopeClient = jest.fn<
+  EnvelopeClient<
     ProcessDefinitionListEnvelopeApi,
     ProcessDefinitionListChannelApi
   >,

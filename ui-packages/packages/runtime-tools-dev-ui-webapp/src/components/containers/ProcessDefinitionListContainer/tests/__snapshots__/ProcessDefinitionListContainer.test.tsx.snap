@@ -22,9 +22,33 @@ exports[`ProcessDefinitionListContainer tests Snapshot 1`] = `
     singularProcessLabel="test-singular"
     targetOrigin="http://localhost:9000"
   >
-    <ForwardRef>
+    <ForwardRef(RefForwardingEmbeddedEnvelope)
+      apiImpl={
+        ProcessDefinitionListChannelApiImpl {
+          "driver": ProcessDefinitionListGatewayApiImpl {
+            "devUIUrl": "http://localhost:9000",
+            "onOpenProcessListeners": Array [
+              Object {
+                "onOpen": [Function],
+              },
+            ],
+            "onOpenTriggerCloudEventListeners": Array [],
+            "openApiPath": "/mocked",
+            "processDefinitonFilter": Array [],
+          },
+        }
+      }
+      config={
+        Object {
+          "containerType": "div",
+        }
+      }
+      origin="http://localhost:9000"
+      pollInit={[Function]}
+      refDelegate={[Function]}
+    >
       <div />
-    </ForwardRef>
+    </ForwardRef(RefForwardingEmbeddedEnvelope)>
   </ForwardRef>
 </ProcessDefinitionListContainer>
 `;

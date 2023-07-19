@@ -16,16 +16,16 @@
 
 import React, { useState } from 'react';
 import {
-  PageSection,
-  Bullseye,
   EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
-  Button,
-  EmptyStateBody,
-  Title
-} from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
+  EmptyStateBody
+} from '@patternfly/react-core/dist/js/components/EmptyState';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
 import { Redirect } from 'react-router';
 import {
   componentOuiaProps,

@@ -15,15 +15,15 @@
  */
 
 import {
+  ApiNotificationConsumers,
   MessageBusClientApi,
-  NotificationPropertyNames,
   RequestPropertyNames
-} from '@kogito-tooling/envelope-bus/dist/api';
+} from '@kie-tools-core/envelope-bus/dist/api';
 import {
   RuntimeToolsDevUIChannelApi,
   RuntimeToolsDevUIEnvelopeApi
 } from '../../../api';
-import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
+import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';
 import { RuntimeToolsDevUIEnvelopeViewApi } from '../../RuntimeToolsDevUIEnvelopeViewApi';
 
 export const MockedApiRequests = jest.fn<
@@ -35,10 +35,7 @@ export const MockedApiRequests = jest.fn<
 >(() => ({}));
 
 export const MockedApiNotifications = jest.fn<
-  Pick<
-    RuntimeToolsDevUIChannelApi,
-    NotificationPropertyNames<RuntimeToolsDevUIChannelApi>
-  >,
+  ApiNotificationConsumers<RuntimeToolsDevUIChannelApi>,
   []
 >(() => ({}));
 
@@ -49,14 +46,12 @@ export const MockedMessageBusClientApi = jest.fn<
   requests: new MockedApiRequests(),
   notifications: new MockedApiNotifications(),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
+  unsubscribe: jest.fn(),
+  shared: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = jest.fn<
-  EnvelopeBusController<
-    RuntimeToolsDevUIEnvelopeApi,
-    RuntimeToolsDevUIChannelApi
-  >,
+export const MockedEnvelopeClient = jest.fn<
+  EnvelopeClient<RuntimeToolsDevUIEnvelopeApi, RuntimeToolsDevUIChannelApi>,
   []
 >(() => ({
   bus: jest.fn(),

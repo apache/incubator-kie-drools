@@ -13,8 +13,27 @@ exports[`EmbeddedFormsList tests Snapshot 1`] = `
   envelopePath="path"
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      FormsListChannelApiImpl {
+        "driver": Object {
+          "applyFilter": [MockFunction],
+          "getFormFilter": [MockFunction],
+          "getFormsQuery": [MockFunction],
+          "openForm": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;

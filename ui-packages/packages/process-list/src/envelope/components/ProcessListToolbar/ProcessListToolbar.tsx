@@ -15,31 +15,38 @@
  */
 import React, { useCallback, useState } from 'react';
 import {
+  Dropdown,
+  DropdownItem,
+  KebabToggle,
+  DropdownPosition,
+  DropdownToggle,
+  DropdownToggleCheckbox
+} from '@patternfly/react-core/dist/js/components/Dropdown';
+import {
   Toolbar,
   ToolbarItem,
   ToolbarContent,
   ToolbarFilter,
   ToolbarToggleGroup,
-  ToolbarGroup,
-  Button,
-  Select,
-  SelectOption,
-  SelectVariant,
-  InputGroup,
-  TextInput,
-  Tooltip,
+  ToolbarGroup
+} from '@patternfly/react-core/dist/js/components/Toolbar';
+import {
+  OverflowMenu,
   OverflowMenuContent,
   OverflowMenuControl,
-  Dropdown,
-  DropdownItem,
-  KebabToggle,
-  OverflowMenu,
-  OverflowMenuItem,
-  DropdownPosition,
-  DropdownToggle,
-  DropdownToggleCheckbox
-} from '@patternfly/react-core';
-import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
+  OverflowMenuItem
+} from '@patternfly/react-core/dist/js/components/OverflowMenu';
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import {
+  Select,
+  SelectOption,
+  SelectVariant
+} from '@patternfly/react-core/dist/js/components/Select';
+import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
+import { InputGroup } from '@patternfly/react-core/dist/js/components/InputGroup';
+import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
+import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
 import _ from 'lodash';
 import {
   BulkListType,

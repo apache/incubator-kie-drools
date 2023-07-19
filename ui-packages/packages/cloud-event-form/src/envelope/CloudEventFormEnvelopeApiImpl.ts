@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import {
   Association,
   CloudEventFormChannelApi,
@@ -29,6 +29,7 @@ import { CloudEventFormEnvelopeViewApi } from './CloudEventFormEnvelopeView';
 export class CloudEventFormEnvelopeApiImpl
   implements CloudEventFormEnvelopeApi
 {
+  private view: () => CloudEventFormEnvelopeViewApi;
   private capturedInitRequestYet = false;
 
   constructor(
@@ -52,7 +53,7 @@ export class CloudEventFormEnvelopeApiImpl
     association: Association,
     args: CloudEventFormInitArgs
   ): Promise<void> => {
-    this.args.envelopeBusController.associate(
+    this.args.envelopeClient.associate(
       association.origin,
       association.envelopeServerId
     );
@@ -61,6 +62,7 @@ export class CloudEventFormEnvelopeApiImpl
       return;
     }
     this.ackCapturedInitRequest();
-    this.args.view().initialize(args);
+    this.view = await this.args.viewDelegate();
+    this.view().initialize(args);
   };
 }

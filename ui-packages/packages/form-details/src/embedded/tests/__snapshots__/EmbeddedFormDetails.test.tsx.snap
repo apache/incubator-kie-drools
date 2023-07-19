@@ -18,8 +18,25 @@ exports[`EmbeddedFormDetails tests Snapshot 1`] = `
   }
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      FormDetailsChannelApiImpl {
+        "driver": Object {
+          "getFormContent": [MockFunction],
+          "saveFormContent": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;

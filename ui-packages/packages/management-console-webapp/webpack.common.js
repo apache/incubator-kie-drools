@@ -9,6 +9,13 @@ module.exports = {
   entry: {
     app: path.resolve(__dirname, 'src', 'index.tsx')
   },
+  devServer: {
+    client: {
+      overlay: {
+        runtimeErrors: false,
+      },
+    },
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src', 'index.html'),

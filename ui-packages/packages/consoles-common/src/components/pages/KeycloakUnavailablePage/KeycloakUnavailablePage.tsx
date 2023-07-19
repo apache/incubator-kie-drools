@@ -15,15 +15,15 @@
  */
 
 import {
-  Brand,
-  Bullseye,
-  Button,
   Card,
   CardBody,
   CardHeader,
   CardHeaderMain,
   CardTitle
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Card';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Brand } from '@patternfly/react-core/dist/js/components/Brand';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import React from 'react';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import kogitoLogo from '../../../static/kogito.png';

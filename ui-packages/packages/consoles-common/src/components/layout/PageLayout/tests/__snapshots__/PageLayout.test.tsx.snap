@@ -18,6 +18,8 @@ exports[`PageLayout component tests open with PageSidebar closed 1`] = `
     data-ouia-component-type="page"
     data-ouia-safe={true}
     defaultManagedSidebarIsOpen={true}
+    getBreakpoint={[Function]}
+    getVerticalBreakpoint={[Function]}
     header={
       <PageHeader
         data-ouia-header="true"
@@ -68,7 +70,7 @@ exports[`PageLayout component tests open with PageSidebar closed 1`] = `
     }
   >
     <div
-      className="pf-c-page kogito-consoles-common--PageLayout"
+      className="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
       data-ouia-component-type="page"
       data-ouia-safe={true}
     >
@@ -248,6 +250,8 @@ exports[`PageLayout component tests open with PageSidebar closed 2`] = `
     data-ouia-component-type="page"
     data-ouia-safe={true}
     defaultManagedSidebarIsOpen={true}
+    getBreakpoint={[Function]}
+    getVerticalBreakpoint={[Function]}
     header={
       <PageHeader
         data-ouia-header="true"
@@ -298,7 +302,7 @@ exports[`PageLayout component tests open with PageSidebar closed 2`] = `
     }
   >
     <div
-      className="pf-c-page kogito-consoles-common--PageLayout"
+      className="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
       data-ouia-component-type="page"
       data-ouia-safe={true}
     >
@@ -477,6 +481,8 @@ exports[`PageLayout component tests snapshot tests 1`] = `
     data-ouia-component-type="page"
     data-ouia-safe={true}
     defaultManagedSidebarIsOpen={true}
+    getBreakpoint={[Function]}
+    getVerticalBreakpoint={[Function]}
     header={
       <PageHeader
         data-ouia-header="true"
@@ -527,7 +533,7 @@ exports[`PageLayout component tests snapshot tests 1`] = `
     }
   >
     <div
-      className="pf-c-page kogito-consoles-common--PageLayout"
+      className="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
       data-ouia-component-type="page"
       data-ouia-safe={true}
     >

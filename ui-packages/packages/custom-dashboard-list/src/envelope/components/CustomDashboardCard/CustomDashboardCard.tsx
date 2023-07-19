@@ -17,15 +17,19 @@
 import React from 'react';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import {
+  TextVariants,
+  Text
+} from '@patternfly/react-core/dist/js/components/Text';
+import {
   Card,
   CardBody,
   CardHeaderMain,
-  CardHeader,
-  TextVariants,
-  Text,
+  CardHeader
+} from '@patternfly/react-core/dist/js/components/Card';
+import {
   FormGroup,
   Form
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Form';
 import { CustomDashboardInfo } from '../../../api/CustomDashboardListEnvelopeApi';
 import { CustomDashboardListDriver } from '../../../api/CustomDashboardListDriver';
 import Moment from 'react-moment';

@@ -18,7 +18,7 @@ import * as React from 'react';
 import { useImperativeHandle, useState } from 'react';
 
 import { TaskDetailsChannelApi } from '../api';
-import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import TaskDetails from './component/TaskDetails';
 

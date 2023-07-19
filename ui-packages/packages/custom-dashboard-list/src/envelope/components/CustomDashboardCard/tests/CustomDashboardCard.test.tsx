@@ -21,7 +21,7 @@ import {
   customDashboardInfos
 } from '../../../tests/mocks/MockedCustomDashboardsListDriver';
 import CustomDashboardCard from '../CustomDashboardCard';
-import { Card } from '@patternfly/react-core';
+import { Card } from '@patternfly/react-core/dist/js/components/Card';
 
 describe('customDashboard card tests', () => {
   Date.now = jest.fn(() => 1487076708000);

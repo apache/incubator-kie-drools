@@ -26,7 +26,7 @@ import {
   FormOpened
 } from '../api';
 import { EmbeddedFormApi } from './components/FormDisplayer/apis';
-import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import FormDisplayer from './components/FormDisplayer/FormDisplayer';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
@@ -84,7 +84,7 @@ export const FormDisplayerEnvelopeView = React.forwardRef<
   );
 
   const onOpen = (opened: FormOpened) => {
-    props.channelApi.notifications.notifyOnOpenForm(opened);
+    props.channelApi.notifications.notifyOnOpenForm.send(opened);
   };
 
   return (

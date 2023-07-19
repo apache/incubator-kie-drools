@@ -15,18 +15,18 @@
  */
 
 import {
-  MockedEnvelopeBusController,
+  MockedEnvelopeClient,
   MockedTaskInboxEnvelopeViewApi
 } from './mocks/Mocks';
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import { TaskInboxChannelApi, TaskInboxEnvelopeApi } from '../../api';
 import { TaskInboxEnvelopeApiImpl } from '../TaskInboxEnvelopeApiImpl';
 import { TaskInboxEnvelopeViewApi } from '../TaskInboxEnvelopeView';
 import { TaskInboxEnvelopeContext } from '../TaskInboxEnvelopeContext';
 
 describe('TaskInboxEnvelopeApiImpl tests', () => {
-  it('initialize', () => {
-    const envelopeBusController = MockedEnvelopeBusController;
+  it('initialize', async () => {
+    const envelopeClient = MockedEnvelopeClient;
     const view = new MockedTaskInboxEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       TaskInboxEnvelopeApi,
@@ -34,9 +34,9 @@ describe('TaskInboxEnvelopeApiImpl tests', () => {
       TaskInboxEnvelopeViewApi,
       TaskInboxEnvelopeContext
     > = {
-      envelopeBusController,
+      envelopeClient,
       envelopeContext: {},
-      view: () => view
+      viewDelegate: () => Promise.resolve(() => view)
     };
 
     const envelopeApi = new TaskInboxEnvelopeApiImpl(args);
@@ -54,14 +54,14 @@ describe('TaskInboxEnvelopeApiImpl tests', () => {
         allTaskStates
       }
     );
-    envelopeApi.taskInbox__notify('John');
-
-    expect(envelopeBusController.associate).toHaveBeenCalledWith(
+    expect(envelopeClient.associate).toHaveBeenCalledWith(
       'origin',
       'envelopeServerId'
     );
+    const initializedView = await view.initialize;
+    envelopeApi.taskInbox__notify('John');
 
-    expect(view.initialize).toHaveBeenCalledWith(
+    expect(initializedView).toHaveBeenCalledWith(
       undefined,
       allTaskStates,
       activeTaskStates

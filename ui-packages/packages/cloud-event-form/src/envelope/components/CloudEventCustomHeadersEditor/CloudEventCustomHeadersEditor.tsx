@@ -21,14 +21,10 @@ import React, {
   useState
 } from 'react';
 import uuidv4 from 'uuid';
-import {
-  Button,
-  Grid,
-  GridItem,
-  Stack,
-  StackItem,
-  TextInput
-} from '@patternfly/react-core';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Grid, GridItem } from '@patternfly/react-core/dist/js/layouts/Grid';
+import { Stack, StackItem } from '@patternfly/react-core/dist/js/layouts/Stack';
+import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
 import PlusCircleIcon from '@patternfly/react-icons/dist/esm/icons/plus-circle-icon';
 import TrashIcon from '@patternfly/react-icons/dist/esm/icons/trash-icon';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';

@@ -58,13 +58,17 @@ const processInstance = {
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
+
+const MockedIcon = (): React.ReactElement => {
+  return <></>;
+};
 jest.mock('react-json-view', () =>
   jest.fn((_props) => <MockedComponent {..._props} />)
 );
-jest.mock('@patternfly/react-icons', () =>
+jest.mock('@patternfly/react-icons/dist/js/icons/info-circle-icon', () =>
   Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
     InfoCircleIcon: () => {
-      return <MockedComponent />;
+      return <MockedIcon />;
     }
   })
 );

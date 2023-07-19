@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ApolloClient } from 'apollo-client';
 import ProcessListContext from './ProcessListContext';
 import { ProcessListGatewayApiImpl } from './ProcessListGatewayApi';
@@ -29,14 +29,14 @@ const ProcessListContextProvider: React.FC<ProcessListContextProviderProps> = ({
   apolloClient,
   children
 }) => {
+  const gatewayApiImpl = useMemo(() => {
+    return new ProcessListGatewayApiImpl(
+      new GraphQLProcessListQueries(apolloClient)
+    );
+  }, []);
+
   return (
-    <ProcessListContext.Provider
-      value={
-        new ProcessListGatewayApiImpl(
-          new GraphQLProcessListQueries(apolloClient)
-        )
-      }
-    >
+    <ProcessListContext.Provider value={gatewayApiImpl}>
       {children}
     </ProcessListContext.Provider>
   );

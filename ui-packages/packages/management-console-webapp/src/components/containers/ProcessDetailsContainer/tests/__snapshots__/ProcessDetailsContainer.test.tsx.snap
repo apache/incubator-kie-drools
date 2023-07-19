@@ -45,9 +45,52 @@ exports[`WebApp - ProcessDetailsContainer tests Snapshot test with default value
     singularProcessLabel="process"
     targetOrigin="http://localhost"
   >
-    <ForwardRef>
+    <ForwardRef(RefForwardingEmbeddedEnvelope)
+      apiImpl={
+        ProcessDetailsChannelApiImpl {
+          "driver": ProcessDetailsGatewayApiImpl {
+            "_ProcessDetailsState": Object {
+              "id": "",
+            },
+            "cancelJob": [Function],
+            "getProcessDiagram": [Function],
+            "handleProcessAbort": [Function],
+            "handleProcessVariableUpdate": [Function],
+            "listeners": Array [
+              Object {
+                "onOpen": [Function],
+              },
+            ],
+            "queries": Object {
+              "getJobs": [MockFunction],
+              "getProcessDetails": [MockFunction],
+              "getSVG": [MockFunction],
+              "getTriggerableNodes": [MockFunction],
+              "handleNodeInstanceCancel": [MockFunction],
+              "handleNodeInstanceRetrigger": [MockFunction],
+              "handleNodeTrigger": [MockFunction],
+              "handleProcessAbort": [MockFunction],
+              "handleProcessRetry": [MockFunction],
+              "handleProcessSkip": [MockFunction],
+              "handleProcessVariableUpdate": [MockFunction],
+              "jobCancel": [MockFunction],
+              "rescheduleJob": [MockFunction],
+            },
+            "rescheduleJob": [Function],
+          },
+        }
+      }
+      config={
+        Object {
+          "containerType": "div",
+        }
+      }
+      origin="http://localhost"
+      pollInit={[Function]}
+      refDelegate={[Function]}
+    >
       <div />
-    </ForwardRef>
+    </ForwardRef(RefForwardingEmbeddedEnvelope)>
   </ForwardRef>
 </ProcessDetailsContainer>
 `;

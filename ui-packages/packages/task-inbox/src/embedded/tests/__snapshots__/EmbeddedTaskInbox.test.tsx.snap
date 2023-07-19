@@ -26,8 +26,29 @@ exports[`EmbeddedTaskInbox tests Snapshot 1`] = `
   envelopePath="path"
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      TaskInboxChannelApiImpl {
+        "driver": Object {
+          "applyFilter": [MockFunction],
+          "applySorting": [MockFunction],
+          "openTask": [MockFunction],
+          "query": [MockFunction],
+          "refresh": [MockFunction],
+          "setInitialState": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;

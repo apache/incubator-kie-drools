@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useMemo, Ref } from 'react';
-import { EnvelopeServer } from '@kogito-tooling/envelope-bus/dist/channel';
-import { EmbeddedEnvelopeFactory } from '@kogito-tooling/envelope/dist/embedded';
+import React, { useCallback } from 'react';
+import { EnvelopeServer } from '@kie-tools-core/envelope-bus/dist/channel';
+import {
+  EmbeddedEnvelopeProps,
+  RefForwardingEmbeddedEnvelope
+} from '@kie-tools-core/envelope/dist/embedded';
 import {
   CustomDashboardListApi,
   CustomDashboardListChannelApi,
@@ -23,7 +26,7 @@ import {
   CustomDashboardListDriver
 } from '../api';
 import { CustomDashboardListChannelApiImpl } from './CustomDashboardListChannelApiImpl';
-import { ContainerType } from '@kogito-tooling/envelope/dist/api';
+import { ContainerType } from '@kie-tools-core/envelope/dist/api';
 import { init } from '../envelope';
 
 export interface Props {
@@ -31,57 +34,63 @@ export interface Props {
   driver: CustomDashboardListDriver;
 }
 
-export const EmbeddedCustomDashboardList = React.forwardRef<
-  CustomDashboardListApi,
-  Props
->((props, forwardedRef: Ref<CustomDashboardListApi>) => {
-  const pollInit = useCallback(
-    (
-      envelopeServer: EnvelopeServer<
-        CustomDashboardListChannelApi,
-        CustomDashboardListEnvelopeApi
-      >,
-      container: () => HTMLDivElement
-    ) => {
-      init({
-        config: {
-          containerType: ContainerType.DIV,
-          envelopeId: envelopeServer.id
-        },
-        container: container(),
-        bus: {
-          postMessage(message, targetOrigin, transfer) {
-            window.postMessage(message, targetOrigin, transfer);
+export const EmbeddedCustomDashboardList = React.forwardRef(
+  (props: Props, forwardedRef: React.Ref<CustomDashboardListApi>) => {
+    const refDelegate = useCallback(
+      (
+        envelopeServer: EnvelopeServer<
+          CustomDashboardListChannelApi,
+          CustomDashboardListEnvelopeApi
+        >
+      ): CustomDashboardListApi => ({}),
+      []
+    );
+    const pollInit = useCallback(
+      (
+        envelopeServer: EnvelopeServer<
+          CustomDashboardListChannelApi,
+          CustomDashboardListEnvelopeApi
+        >,
+        container: () => HTMLDivElement
+      ) => {
+        init({
+          config: {
+            containerType: ContainerType.DIV,
+            envelopeId: envelopeServer.id
+          },
+          container: container(),
+          bus: {
+            postMessage(message, targetOrigin, transfer) {
+              window.postMessage(message, targetOrigin, transfer);
+            }
           }
-        }
-      });
-      return envelopeServer.envelopeApi.requests.customDashboardList__init({
-        origin: envelopeServer.origin,
-        envelopeServerId: envelopeServer.id
-      });
-    },
-    []
-  );
+        });
+        return envelopeServer.envelopeApi.requests.customDashboardList__init({
+          origin: envelopeServer.origin,
+          envelopeServerId: envelopeServer.id
+        });
+      },
+      []
+    );
 
-  const refDelegate = useCallback(
-    (
-      envelopeServer: EnvelopeServer<
-        CustomDashboardListChannelApi,
-        CustomDashboardListEnvelopeApi
-      >
-    ): CustomDashboardListApi => ({}),
-    []
-  );
+    return (
+      <EmbeddedCustomDashboardListEnvelope
+        ref={forwardedRef}
+        apiImpl={new CustomDashboardListChannelApiImpl(props.driver)}
+        origin={props.targetOrigin}
+        refDelegate={refDelegate}
+        pollInit={pollInit}
+        config={{ containerType: ContainerType.DIV }}
+      />
+    );
+  }
+);
 
-  const EmbeddedEnvelope = useMemo(() => {
-    return EmbeddedEnvelopeFactory({
-      api: new CustomDashboardListChannelApiImpl(props.driver),
-      origin: props.targetOrigin,
-      refDelegate,
-      pollInit,
-      config: { containerType: ContainerType.DIV }
-    });
-  }, []);
-
-  return <EmbeddedEnvelope ref={forwardedRef} />;
-});
+const EmbeddedCustomDashboardListEnvelope = React.forwardRef<
+  CustomDashboardListApi,
+  EmbeddedEnvelopeProps<
+    CustomDashboardListChannelApi,
+    CustomDashboardListEnvelopeApi,
+    CustomDashboardListApi
+  >
+>(RefForwardingEmbeddedEnvelope);

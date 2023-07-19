@@ -17,7 +17,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { shallow, mount } from 'enzyme';
-import { Dropdown } from '@patternfly/react-core';
+import { Dropdown } from '@patternfly/react-core/dist/js/components/Dropdown';
 import PageToolbar from '../PageToolbar';
 import {
   resetTestKogitoAppContext,

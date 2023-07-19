@@ -19,7 +19,7 @@ import {
   AlertActionCloseButton,
   AlertActionLink,
   Alert
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Alert';
 import { mount } from 'enzyme';
 import FormDetailsNotification, {
   Notification

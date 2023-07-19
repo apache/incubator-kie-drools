@@ -15,13 +15,13 @@
  */
 
 import React, { ReactText, useEffect, useState } from 'react';
+import { Card } from '@patternfly/react-core/dist/js/components/Card';
+import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
 import {
-  Card,
-  PageSection,
   Tab,
   Tabs,
   TabTitleText
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Tabs';
 import {
   OUIAProps,
   ouiaPageTypeAndObjectId,

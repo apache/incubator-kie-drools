@@ -17,7 +17,14 @@
 import * as React from 'react';
 import { isEmpty } from 'lodash';
 import Moment from 'react-moment';
-import { Form, FormGroup, Text, TextVariants } from '@patternfly/react-core';
+import {
+  Form,
+  FormGroup
+} from '@patternfly/react-core/dist/js/components/Form';
+import {
+  Text,
+  TextVariants
+} from '@patternfly/react-core/dist/js/components/Text';
 import { KogitoSpinner } from '@kogito-apps/components-common';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { TaskState, UserTaskInstance } from '@kogito-apps/task-console-shared';

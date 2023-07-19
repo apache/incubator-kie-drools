@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import {
-  MockedEnvelopeBusController,
+  MockedEnvelopeClient,
   MockedTaskFormEnvelopeViewApi,
   testUserTask
 } from './mocks/Mocks';
@@ -30,8 +30,8 @@ import { TaskFormEnvelopeContext } from '../TaskFormEnvelopeContext';
 import { TaskFormEnvelopeApiImpl } from '../TaskFormEnvelopeApiImpl';
 
 describe('TaskFormEnvelopeApiImpl tests', () => {
-  it('initialize', () => {
-    const envelopeBusController = MockedEnvelopeBusController;
+  it('initialize', async () => {
+    const envelopeClient = MockedEnvelopeClient;
     const view = new MockedTaskFormEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       TaskFormEnvelopeApi,
@@ -39,9 +39,9 @@ describe('TaskFormEnvelopeApiImpl tests', () => {
       TaskFormEnvelopeViewApi,
       TaskFormEnvelopeContext
     > = {
-      envelopeBusController,
+      envelopeClient,
       envelopeContext: {},
-      view: () => view
+      viewDelegate: () => Promise.resolve(() => view)
     };
 
     const envelopeApi = new TaskFormEnvelopeApiImpl(args);
@@ -62,11 +62,12 @@ describe('TaskFormEnvelopeApiImpl tests', () => {
       initArgs
     );
 
-    expect(envelopeBusController.associate).toHaveBeenCalledWith(
+    expect(envelopeClient.associate).toHaveBeenCalledWith(
       'origin',
       'envelopeServerId'
     );
 
-    expect(view.initialize).toHaveBeenCalledWith(initArgs);
+    const initializedView = await view.initialize;
+    expect(initializedView).toHaveBeenCalledWith(initArgs);
   });
 });

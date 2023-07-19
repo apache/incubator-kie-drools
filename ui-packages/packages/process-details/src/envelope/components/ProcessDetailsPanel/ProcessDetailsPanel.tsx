@@ -16,18 +16,23 @@
 
 import Moment from 'react-moment';
 import {
-  Button,
   Card,
   CardBody,
-  CardHeader,
+  CardHeader
+} from '@patternfly/react-core/dist/js/components/Card';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import {
   Form,
-  FormGroup,
+  FormGroup
+} from '@patternfly/react-core/dist/js/components/Form';
+import {
   Text,
-  TextVariants,
-  Title
-} from '@patternfly/react-core';
+  TextVariants
+} from '@patternfly/react-core/dist/js/components/Text';
 import React from 'react';
-import { LevelDownAltIcon, LevelUpAltIcon } from '@patternfly/react-icons';
+import { LevelDownAltIcon } from '@patternfly/react-icons/dist/js/icons/level-down-alt-icon';
+import { LevelUpAltIcon } from '@patternfly/react-icons/dist/js/icons/level-up-alt-icon';
 import {
   getProcessInstanceDescription,
   ProcessInstance,

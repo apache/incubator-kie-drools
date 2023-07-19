@@ -15,8 +15,11 @@
  */
 
 import React, { useEffect, useImperativeHandle, useState } from 'react';
-import { Button, TextInput } from '@patternfly/react-core';
-import { PencilAltIcon, CheckIcon, TimesIcon } from '@patternfly/react-icons';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
+import { PencilAltIcon } from '@patternfly/react-icons/dist/js/icons/pencil-alt-icon';
+import { CheckIcon } from '@patternfly/react-icons/dist/js/icons/check-icon';
+import { TimesIcon } from '@patternfly/react-icons/dist/js/icons/times-icon';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 
 export interface InlineEditApi {

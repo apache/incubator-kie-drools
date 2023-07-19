@@ -22,7 +22,7 @@ import {
   Table,
   TableBody,
   TableHeader
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/dist/js/components/Table';
 import React, { useEffect, useState } from 'react';
 import {
   ProcessInstance,
@@ -42,10 +42,10 @@ import {
   getProcessInstanceDescription,
   ProcessInstanceIconCreator
 } from '../utils/ProcessListUtils';
-import { HistoryIcon } from '@patternfly/react-icons';
+import { HistoryIcon } from '@patternfly/react-icons/dist/js/icons/history-icon';
 import Moment from 'react-moment';
 import ProcessListActionsKebab from '../ProcessListActionsKebab/ProcessListActionsKebab';
-import { Checkbox } from '@patternfly/react-core';
+import { Checkbox } from '@patternfly/react-core/dist/js/components/Checkbox';
 import DisablePopup from '../DisablePopup/DisablePopup';
 import ErrorPopover from '../ErrorPopover/ErrorPopover';
 import '../styles.css';

@@ -18,9 +18,9 @@ import React, { useState } from 'react';
 import {
   DropdownItem,
   Dropdown,
-  KebabToggle,
-  Button
-} from '@patternfly/react-core';
+  KebabToggle
+} from '@patternfly/react-core/dist/js/components/Dropdown';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import {
   JobsDetailsModal,
   JobsRescheduleModal,

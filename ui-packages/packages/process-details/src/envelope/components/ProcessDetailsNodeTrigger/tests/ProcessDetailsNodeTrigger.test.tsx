@@ -16,7 +16,11 @@
 
 import React from 'react';
 import ProcessDetailsNodeTrigger from '../ProcessDetailsNodeTrigger';
-import { DropdownToggle, DropdownItem, FlexItem } from '@patternfly/react-core';
+import {
+  DropdownToggle,
+  DropdownItem
+} from '@patternfly/react-core/dist/js/components/Dropdown';
+import { FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 import {

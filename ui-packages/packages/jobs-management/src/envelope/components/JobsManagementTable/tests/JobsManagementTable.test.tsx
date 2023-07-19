@@ -17,12 +17,10 @@
 import React from 'react';
 import axios from 'axios';
 import JobsManagementTable from '../JobsManagementTable';
-import { KogitoSpinner } from '@kogito-apps/components-common';
+import KogitoSpinner from '@kogito-apps/components-common/dist/components/KogitoSpinner/KogitoSpinner';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
-import { Dropdown, DropdownItem, KebabToggle } from '@patternfly/react-core';
-import { SelectColumn } from '@patternfly/react-table';
-import { JobStatus } from '@kogito-apps/management-console-shared';
+import { JobStatus } from '@kogito-apps/management-console-shared/dist/types';
 import { MockedJobsManagementDriver } from '../../../../api/mocks/MockedJobsManagementDriver';
 import wait from 'waait';
 jest.mock('axios');
@@ -33,17 +31,32 @@ const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () =>
+jest.mock('@patternfly/react-icons/dist/js/icons/history-icon', () =>
   Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
     HistoryIcon: () => {
       return <MockedIcon />;
-    },
+    }
+  })
+);
+
+jest.mock('@patternfly/react-icons/dist/js/icons/clock-icon', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
     ClockIcon: () => {
       return <MockedIcon />;
-    },
+    }
+  })
+);
+
+jest.mock('@patternfly/react-icons/dist/js/icons/ban-icon', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
     BanIcon: () => {
       return <MockedIcon />;
-    },
+    }
+  })
+);
+
+jest.mock('@patternfly/react-icons/dist/js/icons/check-circle-icon', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
     CheckCircleIcon: () => {
       return <MockedIcon />;
     }
@@ -142,7 +155,7 @@ describe('Jobs management table component tests', () => {
     // select 1 row
     await act(async () => {
       wrapperWithoutSelectedInstances
-        .find(SelectColumn)
+        .find('SelectColumn')
         .at(2)
         .simulate('change');
     });
@@ -154,13 +167,16 @@ describe('Jobs management table component tests', () => {
     ).find('JobsManagementTable');
     //deselect 1 row
     await act(async () => {
-      wrapperWithSelectedInstances.find(SelectColumn).at(2).simulate('change');
+      wrapperWithSelectedInstances
+        .find('SelectColumn')
+        .at(2)
+        .simulate('change');
     });
     expect(props.setSelectedJobInstances).toHaveBeenCalled();
     //select all rows
     await act(async () => {
       wrapperWithoutSelectedInstances
-        .find(SelectColumn)
+        .find('SelectColumn')
         .at(0)
         .simulate('change');
     });
@@ -172,7 +188,7 @@ describe('Jobs management table component tests', () => {
     ).find('JobsManagementTable');
     //deselect all rows
     await act(async () => {
-      wrapperWithAllSelected.find(SelectColumn).at(0).simulate('change');
+      wrapperWithAllSelected.find('SelectColumn').at(0).simulate('change');
     });
     expect(props.setSelectedJobInstances).toHaveBeenCalled();
   });
@@ -202,23 +218,22 @@ describe('Jobs management table component tests', () => {
       wrapper = wrapper.update().find('JobsManagementTable');
     });
     wrapper
-      .find(Dropdown)
+      .find('TableBody Body BodyCell Dropdown')
       .at(1)
-      .find(KebabToggle)
+      .find('KebabToggle Toggle')
       .find('button')
-      .at(0)
       .simulate('click');
     wrapper = wrapper.update();
     expect(
       wrapper
-        .find(DropdownItem)
+        .find('DropdownMenu DropdownItem')
         .at(0)
         .find('button')
         .children()
         .contains('Details')
     ).toBeTruthy();
     await act(async () => {
-      wrapper.find(DropdownItem).at(0).find('button').simulate('click');
+      wrapper.find('DropdownItem').at(0).find('button').simulate('click');
     });
     expect(props.handleDetailsToggle).toHaveBeenCalled();
   });
@@ -238,23 +253,23 @@ describe('Jobs management table component tests', () => {
       wrapper = wrapper.update().find('JobsManagementTable');
     });
     wrapper
-      .find(Dropdown)
+      .find('Dropdown')
       .at(1)
-      .find(KebabToggle)
+      .find('KebabToggle')
       .find('button')
       .at(0)
       .simulate('click');
     wrapper = wrapper.update();
     expect(
       wrapper
-        .find(DropdownItem)
+        .find('DropdownItem')
         .at(2)
         .find('button')
         .children()
         .contains('Cancel')
     ).toBeTruthy();
     await act(async () => {
-      wrapper.find(DropdownItem).at(2).find('button').simulate('click');
+      wrapper.find('DropdownItem').at(2).find('button').simulate('click');
     });
     expect(jobCancelSpy).toHaveBeenCalled();
   });
@@ -268,23 +283,23 @@ describe('Jobs management table component tests', () => {
       wrapper = wrapper.update().find('JobsManagementTable');
     });
     wrapper
-      .find(Dropdown)
+      .find('Dropdown')
       .at(1)
-      .find(KebabToggle)
+      .find('KebabToggle')
       .find('button')
       .at(0)
       .simulate('click');
     wrapper = wrapper.update();
     expect(
       wrapper
-        .find(DropdownItem)
+        .find('DropdownItem')
         .at(1)
         .find('button')
         .children()
         .contains('Reschedule')
     ).toBeTruthy();
     await act(async () => {
-      wrapper.find(DropdownItem).at(1).find('button').simulate('click');
+      wrapper.find('DropdownItem').at(1).find('button').simulate('click');
     });
     expect(props.handleRescheduleToggle).toHaveBeenCalled();
   });

@@ -16,7 +16,7 @@
 
 import React, { useContext } from 'react';
 import { RuntimeToolsDevUIChannelApi } from '../api/RuntimeToolsDevUIChannelApi';
-import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 
 export interface RuntimeToolsDevUIEnvelopeContextType {
   channelApi: MessageBusClientApi<RuntimeToolsDevUIChannelApi>;

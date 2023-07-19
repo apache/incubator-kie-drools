@@ -149,7 +149,82 @@ exports[`TaskDetailsPage tests Error notification 1`] = `
       data-ouia-safe={true}
     >
       <Breadcrumb>
-        <MockedComponent />
+        <nav
+          aria-label="Breadcrumb"
+          className="pf-c-breadcrumb"
+          data-ouia-component-id="OUIA-Generated-Breadcrumb-4"
+          data-ouia-component-type="PF4/Breadcrumb"
+          data-ouia-safe={true}
+        >
+          <ol
+            className="pf-c-breadcrumb__list"
+          >
+            <BreadcrumbItem
+              key=".0"
+              showDivider={false}
+            >
+              <li
+                className="pf-c-breadcrumb__item"
+              >
+                <Link
+                  onClick={[Function]}
+                  to="/"
+                >
+                  <LinkAnchor
+                    href="/"
+                    navigate={[Function]}
+                    onClick={[Function]}
+                  >
+                    <a
+                      href="/"
+                      onClick={[Function]}
+                    >
+                      Task Inbox
+                    </a>
+                  </LinkAnchor>
+                </Link>
+              </li>
+            </BreadcrumbItem>
+            <BreadcrumbItem
+              key=".1"
+              showDivider={true}
+            >
+              <li
+                className="pf-c-breadcrumb__item"
+              >
+                <span
+                  className="pf-c-breadcrumb__item-divider"
+                >
+                  <AngleRightIcon
+                    color="currentColor"
+                    noVerticalAlign={false}
+                    size="sm"
+                  >
+                    <svg
+                      aria-hidden={true}
+                      aria-labelledby={null}
+                      fill="currentColor"
+                      height="1em"
+                      role="img"
+                      style={
+                        Object {
+                          "verticalAlign": "-0.125em",
+                        }
+                      }
+                      viewBox="0 0 256 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                      />
+                    </svg>
+                  </AngleRightIcon>
+                </span>
+                Apply for visa
+              </li>
+            </BreadcrumbItem>
+          </ol>
+        </nav>
       </Breadcrumb>
       <Flex
         justifyContent={
@@ -212,7 +287,28 @@ exports[`TaskDetailsPage tests Error notification 1`] = `
                 onClick={[Function]}
                 variant="secondary"
               >
-                <MockedComponent />
+                <ButtonBase
+                  id="view-details"
+                  innerRef={null}
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-4"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="view-details"
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    View details
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </FlexItem>
@@ -397,11 +493,16 @@ exports[`TaskDetailsPage tests Error notification 1`] = `
                 <DrawerPanelContent
                   className="kogito-task-console__full-size"
                 >
-                  <div
-                    className="pf-c-drawer__panel kogito-task-console__full-size"
-                    hidden={true}
-                    onTransitionEnd={[Function]}
-                  />
+                  <GenerateId
+                    prefix="pf-drawer-panel-"
+                  >
+                    <div
+                      className="pf-c-drawer__panel kogito-task-console__full-size"
+                      hidden={true}
+                      id="pf-drawer-panel-3"
+                      onTransitionEnd={[Function]}
+                    />
+                  </GenerateId>
                 </DrawerPanelContent>
               </div>
             </DrawerMain>
@@ -467,7 +568,82 @@ exports[`TaskDetailsPage tests Error notification 2`] = `
       data-ouia-safe={true}
     >
       <Breadcrumb>
-        <MockedComponent />
+        <nav
+          aria-label="Breadcrumb"
+          className="pf-c-breadcrumb"
+          data-ouia-component-id="OUIA-Generated-Breadcrumb-4"
+          data-ouia-component-type="PF4/Breadcrumb"
+          data-ouia-safe={true}
+        >
+          <ol
+            className="pf-c-breadcrumb__list"
+          >
+            <BreadcrumbItem
+              key=".0"
+              showDivider={false}
+            >
+              <li
+                className="pf-c-breadcrumb__item"
+              >
+                <Link
+                  onClick={[Function]}
+                  to="/"
+                >
+                  <LinkAnchor
+                    href="/"
+                    navigate={[Function]}
+                    onClick={[Function]}
+                  >
+                    <a
+                      href="/"
+                      onClick={[Function]}
+                    >
+                      Task Inbox
+                    </a>
+                  </LinkAnchor>
+                </Link>
+              </li>
+            </BreadcrumbItem>
+            <BreadcrumbItem
+              key=".1"
+              showDivider={true}
+            >
+              <li
+                className="pf-c-breadcrumb__item"
+              >
+                <span
+                  className="pf-c-breadcrumb__item-divider"
+                >
+                  <AngleRightIcon
+                    color="currentColor"
+                    noVerticalAlign={false}
+                    size="sm"
+                  >
+                    <svg
+                      aria-hidden={true}
+                      aria-labelledby={null}
+                      fill="currentColor"
+                      height="1em"
+                      role="img"
+                      style={
+                        Object {
+                          "verticalAlign": "-0.125em",
+                        }
+                      }
+                      viewBox="0 0 256 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                      />
+                    </svg>
+                  </AngleRightIcon>
+                </span>
+                Apply for visa
+              </li>
+            </BreadcrumbItem>
+          </ol>
+        </nav>
       </Breadcrumb>
       <Flex
         justifyContent={
@@ -530,7 +706,28 @@ exports[`TaskDetailsPage tests Error notification 2`] = `
                 onClick={[Function]}
                 variant="secondary"
               >
-                <MockedComponent />
+                <ButtonBase
+                  id="view-details"
+                  innerRef={null}
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-4"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="view-details"
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    View details
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </FlexItem>
@@ -697,11 +894,16 @@ exports[`TaskDetailsPage tests Error notification 2`] = `
                 <DrawerPanelContent
                   className="kogito-task-console__full-size"
                 >
-                  <div
-                    className="pf-c-drawer__panel kogito-task-console__full-size"
-                    hidden={true}
-                    onTransitionEnd={[Function]}
-                  />
+                  <GenerateId
+                    prefix="pf-drawer-panel-"
+                  >
+                    <div
+                      className="pf-c-drawer__panel kogito-task-console__full-size"
+                      hidden={true}
+                      id="pf-drawer-panel-3"
+                      onTransitionEnd={[Function]}
+                    />
+                  </GenerateId>
                 </DrawerPanelContent>
               </div>
             </DrawerMain>
@@ -861,7 +1063,82 @@ exports[`TaskDetailsPage tests Normal State 1`] = `
       data-ouia-safe={true}
     >
       <Breadcrumb>
-        <MockedComponent />
+        <nav
+          aria-label="Breadcrumb"
+          className="pf-c-breadcrumb"
+          data-ouia-component-id="OUIA-Generated-Breadcrumb-1"
+          data-ouia-component-type="PF4/Breadcrumb"
+          data-ouia-safe={true}
+        >
+          <ol
+            className="pf-c-breadcrumb__list"
+          >
+            <BreadcrumbItem
+              key=".0"
+              showDivider={false}
+            >
+              <li
+                className="pf-c-breadcrumb__item"
+              >
+                <Link
+                  onClick={[Function]}
+                  to="/"
+                >
+                  <LinkAnchor
+                    href="/"
+                    navigate={[Function]}
+                    onClick={[Function]}
+                  >
+                    <a
+                      href="/"
+                      onClick={[Function]}
+                    >
+                      Task Inbox
+                    </a>
+                  </LinkAnchor>
+                </Link>
+              </li>
+            </BreadcrumbItem>
+            <BreadcrumbItem
+              key=".1"
+              showDivider={true}
+            >
+              <li
+                className="pf-c-breadcrumb__item"
+              >
+                <span
+                  className="pf-c-breadcrumb__item-divider"
+                >
+                  <AngleRightIcon
+                    color="currentColor"
+                    noVerticalAlign={false}
+                    size="sm"
+                  >
+                    <svg
+                      aria-hidden={true}
+                      aria-labelledby={null}
+                      fill="currentColor"
+                      height="1em"
+                      role="img"
+                      style={
+                        Object {
+                          "verticalAlign": "-0.125em",
+                        }
+                      }
+                      viewBox="0 0 256 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                      />
+                    </svg>
+                  </AngleRightIcon>
+                </span>
+                Apply for visa
+              </li>
+            </BreadcrumbItem>
+          </ol>
+        </nav>
       </Breadcrumb>
       <Flex
         justifyContent={
@@ -924,7 +1201,28 @@ exports[`TaskDetailsPage tests Normal State 1`] = `
                 onClick={[Function]}
                 variant="secondary"
               >
-                <MockedComponent />
+                <ButtonBase
+                  id="view-details"
+                  innerRef={null}
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-1"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="view-details"
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    View details
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </FlexItem>
@@ -1091,11 +1389,16 @@ exports[`TaskDetailsPage tests Normal State 1`] = `
                 <DrawerPanelContent
                   className="kogito-task-console__full-size"
                 >
-                  <div
-                    className="pf-c-drawer__panel kogito-task-console__full-size"
-                    hidden={true}
-                    onTransitionEnd={[Function]}
-                  />
+                  <GenerateId
+                    prefix="pf-drawer-panel-"
+                  >
+                    <div
+                      className="pf-c-drawer__panel kogito-task-console__full-size"
+                      hidden={true}
+                      id="pf-drawer-panel-0"
+                      onTransitionEnd={[Function]}
+                    />
+                  </GenerateId>
                 </DrawerPanelContent>
               </div>
             </DrawerMain>
@@ -1161,7 +1464,82 @@ exports[`TaskDetailsPage tests Success notification 1`] = `
       data-ouia-safe={true}
     >
       <Breadcrumb>
-        <MockedComponent />
+        <nav
+          aria-label="Breadcrumb"
+          className="pf-c-breadcrumb"
+          data-ouia-component-id="OUIA-Generated-Breadcrumb-2"
+          data-ouia-component-type="PF4/Breadcrumb"
+          data-ouia-safe={true}
+        >
+          <ol
+            className="pf-c-breadcrumb__list"
+          >
+            <BreadcrumbItem
+              key=".0"
+              showDivider={false}
+            >
+              <li
+                className="pf-c-breadcrumb__item"
+              >
+                <Link
+                  onClick={[Function]}
+                  to="/"
+                >
+                  <LinkAnchor
+                    href="/"
+                    navigate={[Function]}
+                    onClick={[Function]}
+                  >
+                    <a
+                      href="/"
+                      onClick={[Function]}
+                    >
+                      Task Inbox
+                    </a>
+                  </LinkAnchor>
+                </Link>
+              </li>
+            </BreadcrumbItem>
+            <BreadcrumbItem
+              key=".1"
+              showDivider={true}
+            >
+              <li
+                className="pf-c-breadcrumb__item"
+              >
+                <span
+                  className="pf-c-breadcrumb__item-divider"
+                >
+                  <AngleRightIcon
+                    color="currentColor"
+                    noVerticalAlign={false}
+                    size="sm"
+                  >
+                    <svg
+                      aria-hidden={true}
+                      aria-labelledby={null}
+                      fill="currentColor"
+                      height="1em"
+                      role="img"
+                      style={
+                        Object {
+                          "verticalAlign": "-0.125em",
+                        }
+                      }
+                      viewBox="0 0 256 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                      />
+                    </svg>
+                  </AngleRightIcon>
+                </span>
+                Apply for visa
+              </li>
+            </BreadcrumbItem>
+          </ol>
+        </nav>
       </Breadcrumb>
       <Flex
         justifyContent={
@@ -1224,7 +1602,28 @@ exports[`TaskDetailsPage tests Success notification 1`] = `
                 onClick={[Function]}
                 variant="secondary"
               >
-                <MockedComponent />
+                <ButtonBase
+                  id="view-details"
+                  innerRef={null}
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-2"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="view-details"
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    View details
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </FlexItem>
@@ -1409,11 +1808,16 @@ exports[`TaskDetailsPage tests Success notification 1`] = `
                 <DrawerPanelContent
                   className="kogito-task-console__full-size"
                 >
-                  <div
-                    className="pf-c-drawer__panel kogito-task-console__full-size"
-                    hidden={true}
-                    onTransitionEnd={[Function]}
-                  />
+                  <GenerateId
+                    prefix="pf-drawer-panel-"
+                  >
+                    <div
+                      className="pf-c-drawer__panel kogito-task-console__full-size"
+                      hidden={true}
+                      id="pf-drawer-panel-1"
+                      onTransitionEnd={[Function]}
+                    />
+                  </GenerateId>
                 </DrawerPanelContent>
               </div>
             </DrawerMain>
@@ -1479,7 +1883,82 @@ exports[`TaskDetailsPage tests Success notification 2`] = `
       data-ouia-safe={true}
     >
       <Breadcrumb>
-        <MockedComponent />
+        <nav
+          aria-label="Breadcrumb"
+          className="pf-c-breadcrumb"
+          data-ouia-component-id="OUIA-Generated-Breadcrumb-2"
+          data-ouia-component-type="PF4/Breadcrumb"
+          data-ouia-safe={true}
+        >
+          <ol
+            className="pf-c-breadcrumb__list"
+          >
+            <BreadcrumbItem
+              key=".0"
+              showDivider={false}
+            >
+              <li
+                className="pf-c-breadcrumb__item"
+              >
+                <Link
+                  onClick={[Function]}
+                  to="/"
+                >
+                  <LinkAnchor
+                    href="/"
+                    navigate={[Function]}
+                    onClick={[Function]}
+                  >
+                    <a
+                      href="/"
+                      onClick={[Function]}
+                    >
+                      Task Inbox
+                    </a>
+                  </LinkAnchor>
+                </Link>
+              </li>
+            </BreadcrumbItem>
+            <BreadcrumbItem
+              key=".1"
+              showDivider={true}
+            >
+              <li
+                className="pf-c-breadcrumb__item"
+              >
+                <span
+                  className="pf-c-breadcrumb__item-divider"
+                >
+                  <AngleRightIcon
+                    color="currentColor"
+                    noVerticalAlign={false}
+                    size="sm"
+                  >
+                    <svg
+                      aria-hidden={true}
+                      aria-labelledby={null}
+                      fill="currentColor"
+                      height="1em"
+                      role="img"
+                      style={
+                        Object {
+                          "verticalAlign": "-0.125em",
+                        }
+                      }
+                      viewBox="0 0 256 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                      />
+                    </svg>
+                  </AngleRightIcon>
+                </span>
+                Apply for visa
+              </li>
+            </BreadcrumbItem>
+          </ol>
+        </nav>
       </Breadcrumb>
       <Flex
         justifyContent={
@@ -1542,7 +2021,28 @@ exports[`TaskDetailsPage tests Success notification 2`] = `
                 onClick={[Function]}
                 variant="secondary"
               >
-                <MockedComponent />
+                <ButtonBase
+                  id="view-details"
+                  innerRef={null}
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-2"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="view-details"
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    View details
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </FlexItem>
@@ -1709,11 +2209,16 @@ exports[`TaskDetailsPage tests Success notification 2`] = `
                 <DrawerPanelContent
                   className="kogito-task-console__full-size"
                 >
-                  <div
-                    className="pf-c-drawer__panel kogito-task-console__full-size"
-                    hidden={true}
-                    onTransitionEnd={[Function]}
-                  />
+                  <GenerateId
+                    prefix="pf-drawer-panel-"
+                  >
+                    <div
+                      className="pf-c-drawer__panel kogito-task-console__full-size"
+                      hidden={true}
+                      id="pf-drawer-panel-1"
+                      onTransitionEnd={[Function]}
+                    />
+                  </GenerateId>
                 </DrawerPanelContent>
               </div>
             </DrawerMain>

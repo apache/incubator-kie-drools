@@ -18,17 +18,17 @@ import { TaskDetailsChannelApi, TaskDetailsEnvelopeApi } from '../../api';
 
 import { TaskDetailsEnvelopeViewApi } from '../TaskDetailsEnvelopeView';
 import { TaskDetailsEnvelopeContext } from '../TaskDetailsEnvelopeContext';
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import { TaskDetailsEnvelopeApiImpl } from '../TaskDetailsEnvelopeApiImpl';
 import {
-  MockedEnvelopeBusController,
+  MockedEnvelopeClient,
   MockedTaskDetailsEnvelopeViewApi,
   userTask
 } from './utils/Mocks';
 
 describe('TaskDetailsEnvelopeApiImpl tests', () => {
-  it('init', () => {
-    const envelopeBusController = MockedEnvelopeBusController;
+  it('init', async () => {
+    const envelopeClient = MockedEnvelopeClient;
     const view = new MockedTaskDetailsEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       TaskDetailsEnvelopeApi,
@@ -36,9 +36,9 @@ describe('TaskDetailsEnvelopeApiImpl tests', () => {
       TaskDetailsEnvelopeViewApi,
       TaskDetailsEnvelopeContext
     > = {
-      envelopeBusController,
+      envelopeClient,
       envelopeContext: {},
-      view: () => view
+      viewDelegate: () => Promise.resolve(() => view)
     };
 
     const envelopeApi = new TaskDetailsEnvelopeApiImpl(args);
@@ -53,10 +53,11 @@ describe('TaskDetailsEnvelopeApiImpl tests', () => {
       }
     );
 
-    expect(envelopeBusController.associate).toHaveBeenCalledWith(
+    expect(envelopeClient.associate).toHaveBeenCalledWith(
       'origin',
       'envelopeServerId'
     );
-    expect(view.setTask).toHaveBeenCalledWith(userTask);
+    const setTaskView = await view.setTask;
+    expect(setTaskView).toHaveBeenCalledWith(userTask);
   });
 });

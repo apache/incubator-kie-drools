@@ -16,29 +16,49 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import { Button } from '@patternfly/react-core';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { KogitoEmptyState, KogitoEmptyStateType } from '../KogitoEmptyState';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () =>
+jest.mock('@patternfly/react-icons/dist/js/icons/info-circle-icon', () =>
   Object.assign(
     { __esModule: true },
     jest.requireActual('@patternfly/react-icons'),
     {
       InfoCircleIcon: () => {
         return <MockedComponent />;
-      },
+      }
+    }
+  )
+);
+
+jest.mock('@patternfly/react-icons/dist/js/icons/search-icon', () =>
+  Object.assign(
+    { __esModule: true },
+    jest.requireActual('@patternfly/react-icons'),
+    {
       SearchIcon: () => {
-        return <MockedComponent />;
-      },
-      ExclamationTriangleIcon: () => {
         return <MockedComponent />;
       }
     }
   )
+);
+
+jest.mock(
+  '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon',
+  () =>
+    Object.assign(
+      { __esModule: true },
+      jest.requireActual('@patternfly/react-icons'),
+      {
+        ExclamationTriangleIcon: () => {
+          return <MockedComponent />;
+        }
+      }
+    )
 );
 
 const props = {

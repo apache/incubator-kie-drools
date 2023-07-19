@@ -18,10 +18,10 @@ import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardHeader,
-  Title,
-  CardBody,
-  Tooltip
-} from '@patternfly/react-core';
+  CardBody
+} from '@patternfly/react-core/dist/js/components/Card';
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
 import {
   Table,
   TableVariant,
@@ -29,7 +29,7 @@ import {
   TableBody,
   IRow,
   ICell
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/dist/js/components/Table';
 import Moment from 'react-moment';
 import JobActionsKebab from '../JobActionsKebab/JobActionsKebab';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';

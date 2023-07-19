@@ -16,7 +16,7 @@
 import React from 'react';
 import ErrorPopover from '../ErrorPopover';
 import { mount } from 'enzyme';
-import { Popover } from '@patternfly/react-core';
+import { Popover } from '@patternfly/react-core/dist/js/components/Popover';
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
 const props = {
   processInstanceData: {

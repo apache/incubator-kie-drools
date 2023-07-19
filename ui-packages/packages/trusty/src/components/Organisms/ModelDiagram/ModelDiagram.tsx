@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { ModelData } from '../../../types';
-import { StandaloneEditorApi } from '@kogito-tooling/kie-editors-standalone/dist/common/Editor';
-import * as DmnEditor from '@kogito-tooling/kie-editors-standalone/dist/dmn';
+import { StandaloneEditorApi } from '@kie-tools/kie-editors-standalone/dist/common/Editor';
+import * as DmnEditor from '@kie-tools/kie-editors-standalone/dist/dmn';
 import {
   EmptyState,
   EmptyStateBody,

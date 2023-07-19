@@ -16,14 +16,14 @@
 
 import React from 'react';
 import ProcessDetailsErrorModal from '../ProcessDetailsErrorModal';
-import { Button } from '@patternfly/react-core';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { setTitle } from '@kogito-apps/management-console-shared';
 import { mount } from 'enzyme';
 
 const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('@patternfly/react-icons', () =>
+jest.mock('@patternfly/react-icons/dist/js/icons/info-circle-icon', () =>
   Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
     InfoCircleIcon: () => {
       return <MockedIcon />;

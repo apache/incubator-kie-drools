@@ -19,10 +19,10 @@ import {
   TextContent,
   TextVariants,
   Text,
-  Divider,
   TextList,
   TextListItem
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Text';
+import { Divider } from '@patternfly/react-core/dist/js/components/Divider';
 import { ItemDescriptor } from '@kogito-apps/components-common';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 

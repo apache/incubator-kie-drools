@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,13 @@
  */
 
 import { init } from '@kogito-apps/form-displayer';
-import { EnvelopeBusMessage } from '@kogito-tooling/envelope-bus/dist/api';
-import { ContainerType } from '@kogito-tooling/envelope/dist/api';
+import { ContainerType } from '@kie-tools-core/envelope/dist/api';
 
 init({
   container: document.getElementById('displayer-app')!,
   config: { containerType: ContainerType.IFRAME },
   bus: {
-    postMessage<D, Type>(
-      message: EnvelopeBusMessage<D, Type>,
-      targetOrigin?: string,
-      transfer?: any
-    ) {
-      window.parent.postMessage(message, '*', transfer);
-    }
+    postMessage: (message, targetOrigin, _) =>
+      window.parent.postMessage(message, targetOrigin, _)
   }
 });

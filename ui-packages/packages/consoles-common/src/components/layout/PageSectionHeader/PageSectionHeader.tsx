@@ -15,11 +15,11 @@
  */
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
 import {
-  PageSection,
   Breadcrumb,
   BreadcrumbItem
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Breadcrumb';
 import PageTitle from '../PageTitle/PageTitle';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import * as H from 'history';

@@ -15,11 +15,12 @@
  */
 
 import {
+  ApiNotificationConsumers,
   MessageBusClientApi,
   NotificationPropertyNames,
   RequestPropertyNames
-} from '@kogito-tooling/envelope-bus/dist/api';
-import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
+} from '@kie-tools-core/envelope-bus/dist/api';
+import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';
 import { WorkflowFormChannelApi, WorkflowFormEnvelopeApi } from '../../../api';
 import { WorkflowFormEnvelopeViewApi } from '../../WorkflowFormEnvelopeView';
 
@@ -56,10 +57,7 @@ export const MockedApiRequests = jest.fn<
 }));
 
 export const MockedApiNotifications = jest.fn<
-  Pick<
-    WorkflowFormChannelApi,
-    NotificationPropertyNames<WorkflowFormChannelApi>
-  >,
+  ApiNotificationConsumers<WorkflowFormChannelApi>,
   []
 >(() => ({}));
 
@@ -70,11 +68,12 @@ export const MockedMessageBusClientApi = jest.fn<
   requests: new MockedApiRequests(),
   notifications: new MockedApiNotifications(),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
+  unsubscribe: jest.fn(),
+  shared: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = jest.fn<
-  EnvelopeBusController<WorkflowFormEnvelopeApi, WorkflowFormChannelApi>,
+export const MockedEnvelopeClient = jest.fn<
+  EnvelopeClient<WorkflowFormEnvelopeApi, WorkflowFormChannelApi>,
   []
 >(() => ({
   bus: jest.fn(),

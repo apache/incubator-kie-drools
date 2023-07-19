@@ -92,29 +92,24 @@ exports[`AboutModal component tests snapshot testing 1`] = `
                       />
                       <dl
                         class=""
-                        data-pf-content="true"
                       >
                         <dt
                           class=""
-                          data-pf-content="true"
                         >
                           Version: 
                         </dt>
                         <dd
                           class=""
-                          data-pf-content="true"
                         >
                           1.2.3-MOCKED-VERSION
                         </dd>
                         <dt
                           class=""
-                          data-pf-content="true"
                         >
                           License information: 
                         </dt>
                         <dd
                           class=""
-                          data-pf-content="true"
                         >
                           <a
                             href="https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE"
@@ -126,13 +121,11 @@ exports[`AboutModal component tests snapshot testing 1`] = `
                         </dd>
                         <dt
                           class=""
-                          data-pf-content="true"
                         >
                           Report a bug: 
                         </dt>
                         <dd
                           class=""
-                          data-pf-content="true"
                         >
                           <a
                             href="https://issues.redhat.com/projects/KOGITO"
@@ -144,13 +137,11 @@ exports[`AboutModal component tests snapshot testing 1`] = `
                         </dd>
                         <dt
                           class=""
-                          data-pf-content="true"
                         >
                           Get involved/help/docs: 
                         </dt>
                         <dd
                           class=""
-                          data-pf-content="true"
                         >
                           <a
                             href="https://docs.jboss.org/kogito/release/latest/html_single/"
@@ -162,13 +153,11 @@ exports[`AboutModal component tests snapshot testing 1`] = `
                         </dd>
                         <dt
                           class=""
-                          data-pf-content="true"
                         >
                           Kogito URL: 
                         </dt>
                         <dd
                           class=""
-                          data-pf-content="true"
                         >
                           <a
                             href="https://kogito.kie.org"
@@ -180,13 +169,11 @@ exports[`AboutModal component tests snapshot testing 1`] = `
                         </dd>
                         <dt
                           class=""
-                          data-pf-content="true"
                         >
                           Data-Index URL: 
                         </dt>
                         <dd
                           class=""
-                          data-pf-content="true"
                         >
                            
                         </dd>
@@ -229,318 +216,322 @@ exports[`AboutModal component tests snapshot testing 1`] = `
         <div
           className="pf-c-backdrop"
         >
-          <FocusTrap
+          <ForwardRef
             active={true}
             className="pf-l-bullseye"
             focusTrapOptions={
               Object {
                 "clickOutsideDeactivates": true,
+                "tabbableOptions": Object {
+                  "displayCheck": "none",
+                },
               }
             }
-            paused={false}
-            preventScrollOnDeactivate={false}
           >
-            <div
+            <FocusTrap
+              active={true}
               className="pf-l-bullseye"
+              focusTrapOptions={
+                Object {
+                  "clickOutsideDeactivates": true,
+                  "tabbableOptions": Object {
+                    "displayCheck": "none",
+                  },
+                }
+              }
+              innerRef={null}
+              paused={false}
+              preventScrollOnDeactivate={false}
             >
-              <AboutModalBox
-                aria-describedby="pf-about-modal-content-0"
-                aria-labelledby="pf-about-modal-title-0"
-                className="kogito-consoles-common--aboutModalBox"
+              <div
+                className="pf-l-bullseye"
               >
-                <div
+                <AboutModalBox
                   aria-describedby="pf-about-modal-content-0"
                   aria-labelledby="pf-about-modal-title-0"
-                  aria-modal="true"
-                  className="pf-c-about-modal-box kogito-consoles-common--aboutModalBox"
-                  role="dialog"
+                  className="kogito-consoles-common--aboutModalBox"
                 >
-                  <AboutModalBoxBrand
-                    alt="kogito image alt text"
-                    src="kogito-image-src"
+                  <div
+                    aria-describedby="pf-about-modal-content-0"
+                    aria-labelledby="pf-about-modal-title-0"
+                    aria-modal="true"
+                    className="pf-c-about-modal-box kogito-consoles-common--aboutModalBox"
+                    role="dialog"
                   >
-                    <div
-                      className="pf-c-about-modal-box__brand"
+                    <AboutModalBoxBrand
+                      alt="kogito image alt text"
+                      src="kogito-image-src"
                     >
-                      <img
-                        alt="kogito image alt text"
-                        className="pf-c-about-modal-box__brand-image"
-                        src="kogito-image-src"
-                      />
-                    </div>
-                  </AboutModalBoxBrand>
-                  <AboutModalBoxCloseButton
-                    onClose={[MockFunction]}
-                  >
-                    <div
-                      className="pf-c-about-modal-box__close"
-                    >
-                      <Button
-                        aria-label="Close Dialog"
-                        onClick={[MockFunction]}
-                        variant="plain"
+                      <div
+                        className="pf-c-about-modal-box__brand"
                       >
-                        <ButtonBase
+                        <img
+                          alt="kogito image alt text"
+                          className="pf-c-about-modal-box__brand-image"
+                          src="kogito-image-src"
+                        />
+                      </div>
+                    </AboutModalBoxBrand>
+                    <AboutModalBoxCloseButton
+                      onClose={[MockFunction]}
+                    >
+                      <div
+                        className="pf-c-about-modal-box__close"
+                      >
+                        <Button
                           aria-label="Close Dialog"
-                          innerRef={null}
                           onClick={[MockFunction]}
                           variant="plain"
                         >
-                          <button
-                            aria-disabled={false}
+                          <ButtonBase
                             aria-label="Close Dialog"
-                            className="pf-c-button pf-m-plain"
-                            data-ouia-component-id="OUIA-Generated-Button-plain-1"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
+                            innerRef={null}
                             onClick={[MockFunction]}
-                            role={null}
-                            type="button"
+                            variant="plain"
                           >
-                            <TimesIcon
-                              color="currentColor"
-                              noVerticalAlign={false}
-                              size="sm"
+                            <button
+                              aria-disabled={false}
+                              aria-label="Close Dialog"
+                              className="pf-c-button pf-m-plain"
+                              data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              onClick={[MockFunction]}
+                              role={null}
+                              type="button"
                             >
-                              <svg
-                                aria-hidden={true}
-                                aria-labelledby={null}
-                                fill="currentColor"
-                                height="1em"
-                                role="img"
-                                style={
-                                  Object {
-                                    "verticalAlign": "-0.125em",
-                                  }
-                                }
-                                viewBox="0 0 352 512"
-                                width="1em"
+                              <TimesIcon
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
                               >
-                                <path
-                                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                                />
-                              </svg>
-                            </TimesIcon>
-                          </button>
-                        </ButtonBase>
-                      </Button>
-                    </div>
-                  </AboutModalBoxCloseButton>
-                  <AboutModalBoxContent
-                    data-ouia-component-type="AboutModalBox"
-                    data-ouia-safe={true}
-                    id="pf-about-modal-content-0"
-                    noAboutModalBoxContentContainer={false}
-                    trademark="undefined is part of Kogito, an open source software released under the Apache Software License 2.0"
-                  >
-                    <div
-                      className="pf-c-about-modal-box__content"
+                                <svg
+                                  aria-hidden={true}
+                                  aria-labelledby={null}
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style={
+                                    Object {
+                                      "verticalAlign": "-0.125em",
+                                    }
+                                  }
+                                  viewBox="0 0 352 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                  />
+                                </svg>
+                              </TimesIcon>
+                            </button>
+                          </ButtonBase>
+                        </Button>
+                      </div>
+                    </AboutModalBoxCloseButton>
+                    <AboutModalBoxContent
                       data-ouia-component-type="AboutModalBox"
                       data-ouia-safe={true}
                       id="pf-about-modal-content-0"
+                      noAboutModalBoxContentContainer={false}
+                      trademark="undefined is part of Kogito, an open source software released under the Apache Software License 2.0"
                     >
                       <div
-                        className="pf-c-about-modal-box__body"
+                        className="pf-c-about-modal-box__content"
+                        data-ouia-component-type="AboutModalBox"
+                        data-ouia-safe={true}
+                        id="pf-about-modal-content-0"
                       >
                         <div
-                          className="pf-c-content"
+                          className="pf-c-about-modal-box__body"
                         >
-                          <TextContent>
-                            <div
-                              className="pf-c-content"
-                            >
-                              <Text
-                                component="h5"
+                          <div
+                            className="pf-c-content"
+                          >
+                            <TextContent>
+                              <div
+                                className="pf-c-content"
                               >
-                                <h5
-                                  className=""
-                                  data-ouia-component-id="OUIA-Generated-Text-1"
-                                  data-ouia-component-type="PF4/Text"
-                                  data-ouia-safe={true}
-                                  data-pf-content={true}
-                                />
-                              </Text>
-                              <TextList
-                                component="dl"
-                              >
-                                <dl
-                                  className=""
-                                  data-pf-content={true}
+                                <Text
+                                  component="h5"
                                 >
-                                  <TextListItem
-                                    component="dt"
+                                  <h5
+                                    className=""
+                                    data-ouia-component-id="OUIA-Generated-Text-1"
+                                    data-ouia-component-type="PF4/Text"
+                                    data-ouia-safe={true}
+                                    data-pf-content={true}
+                                  />
+                                </Text>
+                                <TextList
+                                  component="dl"
+                                >
+                                  <dl
+                                    className=""
                                   >
-                                    <dt
-                                      className=""
-                                      data-pf-content={true}
+                                    <TextListItem
+                                      component="dt"
                                     >
-                                      Version: 
-                                    </dt>
-                                  </TextListItem>
-                                  <TextListItem
-                                    component="dd"
-                                  >
-                                    <dd
-                                      className=""
-                                      data-pf-content={true}
-                                    >
-                                      1.2.3-MOCKED-VERSION
-                                    </dd>
-                                  </TextListItem>
-                                  <TextListItem
-                                    component="dt"
-                                  >
-                                    <dt
-                                      className=""
-                                      data-pf-content={true}
-                                    >
-                                      License information: 
-                                    </dt>
-                                  </TextListItem>
-                                  <TextListItem
-                                    component="dd"
-                                  >
-                                    <dd
-                                      className=""
-                                      data-pf-content={true}
-                                    >
-                                      <a
-                                        href="https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE"
-                                        rel="noreferrer"
-                                        target="_blank"
+                                      <dt
+                                        className=""
                                       >
-                                        https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE
-                                      </a>
-                                    </dd>
-                                  </TextListItem>
-                                  <TextListItem
-                                    component="dt"
-                                  >
-                                    <dt
-                                      className=""
-                                      data-pf-content={true}
+                                        Version: 
+                                      </dt>
+                                    </TextListItem>
+                                    <TextListItem
+                                      component="dd"
                                     >
-                                      Report a bug: 
-                                    </dt>
-                                  </TextListItem>
-                                  <TextListItem
-                                    component="dd"
-                                  >
-                                    <dd
-                                      className=""
-                                      data-pf-content={true}
-                                    >
-                                      <a
-                                        href="https://issues.redhat.com/projects/KOGITO"
-                                        rel="noreferrer"
-                                        target="_blank"
+                                      <dd
+                                        className=""
                                       >
-                                        https://issues.redhat.com/projects/KOGITO
-                                      </a>
-                                    </dd>
-                                  </TextListItem>
-                                  <TextListItem
-                                    component="dt"
-                                  >
-                                    <dt
-                                      className=""
-                                      data-pf-content={true}
+                                        1.2.3-MOCKED-VERSION
+                                      </dd>
+                                    </TextListItem>
+                                    <TextListItem
+                                      component="dt"
                                     >
-                                      Get involved/help/docs: 
-                                    </dt>
-                                  </TextListItem>
-                                  <TextListItem
-                                    component="dd"
-                                  >
-                                    <dd
-                                      className=""
-                                      data-pf-content={true}
-                                    >
-                                      <a
-                                        href="https://docs.jboss.org/kogito/release/latest/html_single/"
-                                        rel="noreferrer"
-                                        target="_blank"
+                                      <dt
+                                        className=""
                                       >
-                                        https://docs.jboss.org/kogito/release/latest/html_single/
-                                      </a>
-                                    </dd>
-                                  </TextListItem>
-                                  <TextListItem
-                                    component="dt"
-                                  >
-                                    <dt
-                                      className=""
-                                      data-pf-content={true}
+                                        License information: 
+                                      </dt>
+                                    </TextListItem>
+                                    <TextListItem
+                                      component="dd"
                                     >
-                                      Kogito URL: 
-                                    </dt>
-                                  </TextListItem>
-                                  <TextListItem
-                                    component="dd"
-                                  >
-                                    <dd
-                                      className=""
-                                      data-pf-content={true}
-                                    >
-                                      <a
-                                        href="https://kogito.kie.org"
-                                        rel="noreferrer"
-                                        target="_blank"
+                                      <dd
+                                        className=""
                                       >
-                                        https://kogito.kie.org
-                                      </a>
-                                    </dd>
-                                  </TextListItem>
-                                  <TextListItem
-                                    component="dt"
-                                  >
-                                    <dt
-                                      className=""
-                                      data-pf-content={true}
+                                        <a
+                                          href="https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE"
+                                          rel="noreferrer"
+                                          target="_blank"
+                                        >
+                                          https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE
+                                        </a>
+                                      </dd>
+                                    </TextListItem>
+                                    <TextListItem
+                                      component="dt"
                                     >
-                                      Data-Index URL: 
-                                    </dt>
-                                  </TextListItem>
-                                  <TextListItem
-                                    component="dd"
-                                  >
-                                    <dd
-                                      className=""
-                                      data-pf-content={true}
+                                      <dt
+                                        className=""
+                                      >
+                                        Report a bug: 
+                                      </dt>
+                                    </TextListItem>
+                                    <TextListItem
+                                      component="dd"
                                     >
-                                       
-                                    </dd>
-                                  </TextListItem>
-                                </dl>
-                              </TextList>
-                            </div>
-                          </TextContent>
+                                      <dd
+                                        className=""
+                                      >
+                                        <a
+                                          href="https://issues.redhat.com/projects/KOGITO"
+                                          rel="noreferrer"
+                                          target="_blank"
+                                        >
+                                          https://issues.redhat.com/projects/KOGITO
+                                        </a>
+                                      </dd>
+                                    </TextListItem>
+                                    <TextListItem
+                                      component="dt"
+                                    >
+                                      <dt
+                                        className=""
+                                      >
+                                        Get involved/help/docs: 
+                                      </dt>
+                                    </TextListItem>
+                                    <TextListItem
+                                      component="dd"
+                                    >
+                                      <dd
+                                        className=""
+                                      >
+                                        <a
+                                          href="https://docs.jboss.org/kogito/release/latest/html_single/"
+                                          rel="noreferrer"
+                                          target="_blank"
+                                        >
+                                          https://docs.jboss.org/kogito/release/latest/html_single/
+                                        </a>
+                                      </dd>
+                                    </TextListItem>
+                                    <TextListItem
+                                      component="dt"
+                                    >
+                                      <dt
+                                        className=""
+                                      >
+                                        Kogito URL: 
+                                      </dt>
+                                    </TextListItem>
+                                    <TextListItem
+                                      component="dd"
+                                    >
+                                      <dd
+                                        className=""
+                                      >
+                                        <a
+                                          href="https://kogito.kie.org"
+                                          rel="noreferrer"
+                                          target="_blank"
+                                        >
+                                          https://kogito.kie.org
+                                        </a>
+                                      </dd>
+                                    </TextListItem>
+                                    <TextListItem
+                                      component="dt"
+                                    >
+                                      <dt
+                                        className=""
+                                      >
+                                        Data-Index URL: 
+                                      </dt>
+                                    </TextListItem>
+                                    <TextListItem
+                                      component="dd"
+                                    >
+                                      <dd
+                                        className=""
+                                      >
+                                         
+                                      </dd>
+                                    </TextListItem>
+                                  </dl>
+                                </TextList>
+                              </div>
+                            </TextContent>
+                          </div>
                         </div>
+                        <p
+                          className="pf-c-about-modal-box__strapline"
+                        >
+                          undefined is part of Kogito, an open source software released under the Apache Software License 2.0
+                        </p>
                       </div>
-                      <p
-                        className="pf-c-about-modal-box__strapline"
-                      >
-                        undefined is part of Kogito, an open source software released under the Apache Software License 2.0
-                      </p>
-                    </div>
-                  </AboutModalBoxContent>
-                  <AboutModalBoxHero
-                    backgroundImageSrc="kogitoAbout.png"
-                  >
-                    <div
-                      className="pf-c-about-modal-box__hero"
-                      style={
-                        Object {
-                          "--pf-c-about-modal-box__hero--sm--BackgroundImage": "url(kogitoAbout.png)",
+                    </AboutModalBoxContent>
+                    <AboutModalBoxHero
+                      backgroundImageSrc="kogitoAbout.png"
+                    >
+                      <div
+                        className="pf-c-about-modal-box__hero"
+                        style={
+                          Object {
+                            "--pf-c-about-modal-box__hero--sm--BackgroundImage": "url(kogitoAbout.png)",
+                          }
                         }
-                      }
-                    />
-                  </AboutModalBoxHero>
-                </div>
-              </AboutModalBox>
-            </div>
-          </FocusTrap>
+                      />
+                    </AboutModalBoxHero>
+                  </div>
+                </AboutModalBox>
+              </div>
+            </FocusTrap>
+          </ForwardRef>
         </div>
       </Backdrop>
     </AboutModalContainer>

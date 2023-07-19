@@ -15,7 +15,11 @@
  */
 
 import React from 'react';
-import { Nav, NavItem, NavList } from '@patternfly/react-core';
+import {
+  Nav,
+  NavItem,
+  NavList
+} from '@patternfly/react-core/dist/js/components/Nav';
 import { Link } from 'react-router-dom';
 import { ouiaAttribute } from '@kogito-apps/ouia-tools';
 import { useDevUIAppContext } from '../../contexts/DevUIAppContext';

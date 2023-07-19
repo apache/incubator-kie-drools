@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import { ProcessListEnvelopeViewApi } from './ProcessListEnvelopeView';
 import {
   Association,
@@ -24,6 +24,7 @@ import {
 } from '../api';
 import { ProcessListEnvelopeContext } from './ProcessListEnvelopeContext';
 export class ProcessListEnvelopeApiImpl implements ProcessListEnvelopeApi {
+  private view: () => ProcessListEnvelopeViewApi;
   private capturedInitRequestYet = false;
 
   constructor(
@@ -47,7 +48,7 @@ export class ProcessListEnvelopeApiImpl implements ProcessListEnvelopeApi {
     association: Association,
     initArgs: ProcessListInitArgs
   ): Promise<void> => {
-    this.args.envelopeBusController.associate(
+    this.args.envelopeClient.associate(
       association.origin,
       association.envelopeServerId
     );
@@ -57,7 +58,7 @@ export class ProcessListEnvelopeApiImpl implements ProcessListEnvelopeApi {
     }
 
     this.ackCapturedInitRequest();
-
-    this.args.view().initialize(initArgs);
+    this.view = await this.args.viewDelegate();
+    this.view().initialize(initArgs);
   };
 }

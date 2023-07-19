@@ -79,22 +79,26 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
       flipBehavior={
         Array [
           "top",
-          "right",
           "bottom",
           "left",
-          "top",
           "right",
-          "bottom",
+          "top-start",
+          "top-end",
+          "bottom-start",
+          "bottom-end",
+          "left-start",
+          "left-end",
+          "right-start",
+          "right-end",
         ]
       }
       isVisible={false}
       onDocumentClick={[Function]}
       onDocumentKeyDown={[Function]}
       onTriggerClick={[Function]}
-      onTriggerEnter={[Function]}
       placement="auto"
       popper={
-        <FocusTrap
+        <ForwardRef
           active={false}
           aria-describedby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-body"
           aria-labelledby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
@@ -107,10 +111,12 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
               "clickOutsideDeactivates": true,
               "fallbackFocus": [Function],
               "returnFocusOnDeactivate": true,
+              "tabbableOptions": Object {
+                "displayCheck": "none",
+              },
             }
           }
           onMouseDown={[Function]}
-          paused={false}
           preventScrollOnDeactivate={true}
           role="dialog"
           style={
@@ -129,7 +135,10 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
               onClose={[Function]}
             />
             <PopoverHeader
+              alertSeverityScreenReaderText="undefined alert:"
+              icon={null}
               id="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
+              titleHeadingLevel="h6"
             >
               <div>
                 Process error
@@ -163,7 +172,7 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
               </Button>
             </PopoverFooter>
           </PopoverContent>
-        </FocusTrap>
+        </ForwardRef>
       }
       popperMatchesTriggerWidth={false}
       positionModifiers={
@@ -182,6 +191,7 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
           "top-start": "pf-m-top-left",
         }
       }
+      removeFindDomNode={false}
       trigger={
         <Button
           isInline={true}
@@ -335,22 +345,26 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
       flipBehavior={
         Array [
           "top",
-          "right",
           "bottom",
           "left",
-          "top",
           "right",
-          "bottom",
+          "top-start",
+          "top-end",
+          "bottom-start",
+          "bottom-end",
+          "left-start",
+          "left-end",
+          "right-start",
+          "right-end",
         ]
       }
       isVisible={false}
       onDocumentClick={[Function]}
       onDocumentKeyDown={[Function]}
       onTriggerClick={[Function]}
-      onTriggerEnter={[Function]}
       placement="auto"
       popper={
-        <FocusTrap
+        <ForwardRef
           active={false}
           aria-describedby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-body"
           aria-labelledby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
@@ -363,10 +377,12 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
               "clickOutsideDeactivates": true,
               "fallbackFocus": [Function],
               "returnFocusOnDeactivate": true,
+              "tabbableOptions": Object {
+                "displayCheck": "none",
+              },
             }
           }
           onMouseDown={[Function]}
-          paused={false}
           preventScrollOnDeactivate={true}
           role="dialog"
           style={
@@ -385,7 +401,10 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
               onClose={[Function]}
             />
             <PopoverHeader
+              alertSeverityScreenReaderText="undefined alert:"
+              icon={null}
               id="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
+              titleHeadingLevel="h6"
             >
               <div>
                 Process error
@@ -419,7 +438,7 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
               </Button>
             </PopoverFooter>
           </PopoverContent>
-        </FocusTrap>
+        </ForwardRef>
       }
       popperMatchesTriggerWidth={false}
       positionModifiers={
@@ -438,6 +457,7 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
           "top-start": "pf-m-top-left",
         }
       }
+      removeFindDomNode={false}
       trigger={
         <Button
           isInline={true}

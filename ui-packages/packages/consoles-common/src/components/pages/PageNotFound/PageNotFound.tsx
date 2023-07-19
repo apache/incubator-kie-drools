@@ -16,16 +16,16 @@
 
 import React, { useState } from 'react';
 import {
-  PageSection,
-  Bullseye,
   EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
-  Button,
-  EmptyStateBody,
-  Title
-} from '@patternfly/react-core';
-import { ExclamationCircleIcon } from '@patternfly/react-icons';
+  EmptyStateBody
+} from '@patternfly/react-core/dist/js/components/EmptyState';
+import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { Redirect, StaticContext, RouteComponentProps } from 'react-router';
 import {
   componentOuiaProps,

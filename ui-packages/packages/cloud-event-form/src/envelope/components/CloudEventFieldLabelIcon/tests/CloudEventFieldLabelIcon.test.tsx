@@ -22,7 +22,7 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () =>
+jest.mock('@patternfly/react-icons/dist/esm/icons/help-icon', () =>
   Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
     HelpIcon: () => {
       return <MockedComponent />;
@@ -30,7 +30,7 @@ jest.mock('@patternfly/react-icons', () =>
   })
 );
 
-jest.mock('@patternfly/react-core', () =>
+jest.mock('@patternfly/react-core/dist/js/components/Popover', () =>
   Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
     Popover: () => {
       return <MockedComponent />;

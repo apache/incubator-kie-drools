@@ -16,7 +16,7 @@
 
 import * as React from 'react';
 import { useImperativeHandle, useState } from 'react';
-import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import {
   DiagramPreviewSize,
   ProcessDetailsChannelApi,

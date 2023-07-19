@@ -345,11 +345,16 @@ exports[`CounterfactualAnalysis displays a warning message for unsupported low s
                 }
               }
             >
-              <div
-                className="pf-c-drawer__panel pf-m-width-33"
-                hidden={true}
-                onTransitionEnd={[Function]}
-              />
+              <GenerateId
+                prefix="pf-drawer-panel-"
+              >
+                <div
+                  className="pf-c-drawer__panel pf-m-width-33"
+                  hidden={true}
+                  id="pf-drawer-panel-20"
+                  onTransitionEnd={[Function]}
+                />
+              </GenerateId>
             </DrawerPanelContent>
           </div>
         </DrawerMain>
@@ -826,10 +831,13 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                     onFocus={[Function]}
                                                     onMouseEnter={[Function]}
                                                     onMouseLeave={[Function]}
+                                                    onPopperMouseEnter={[Function]}
+                                                    onPopperMouseLeave={[Function]}
                                                     onTriggerEnter={[Function]}
                                                     placement="top"
                                                     popper={
                                                       <div
+                                                        aria-live="off"
                                                         className="pf-c-tooltip"
                                                         id="pf-tooltip-1"
                                                         role="tooltip"
@@ -855,11 +863,20 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                     positionModifiers={
                                                       Object {
                                                         "bottom": "pf-m-bottom",
+                                                        "bottom-end": "pf-m-bottom-right",
+                                                        "bottom-start": "pf-m-bottom-left",
                                                         "left": "pf-m-left",
+                                                        "left-end": "pf-m-left-bottom",
+                                                        "left-start": "pf-m-left-top",
                                                         "right": "pf-m-right",
+                                                        "right-end": "pf-m-right-bottom",
+                                                        "right-start": "pf-m-right-top",
                                                         "top": "pf-m-top",
+                                                        "top-end": "pf-m-top-right",
+                                                        "top-start": "pf-m-top-left",
                                                       }
                                                     }
+                                                    removeFindDomNode={false}
                                                     trigger={
                                                       <Button
                                                         aria-label="Run counterfactual analysis"
@@ -948,10 +965,13 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                     onFocus={[Function]}
                                                     onMouseEnter={[Function]}
                                                     onMouseLeave={[Function]}
+                                                    onPopperMouseEnter={[Function]}
+                                                    onPopperMouseLeave={[Function]}
                                                     onTriggerEnter={[Function]}
                                                     placement="top"
                                                     popper={
                                                       <div
+                                                        aria-live="off"
                                                         className="pf-c-tooltip"
                                                         id="pf-tooltip-2"
                                                         role="tooltip"
@@ -977,11 +997,20 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                     positionModifiers={
                                                       Object {
                                                         "bottom": "pf-m-bottom",
+                                                        "bottom-end": "pf-m-bottom-right",
+                                                        "bottom-start": "pf-m-bottom-left",
                                                         "left": "pf-m-left",
+                                                        "left-end": "pf-m-left-bottom",
+                                                        "left-start": "pf-m-left-top",
                                                         "right": "pf-m-right",
+                                                        "right-end": "pf-m-right-bottom",
+                                                        "right-start": "pf-m-right-top",
                                                         "top": "pf-m-top",
+                                                        "top-end": "pf-m-top-right",
+                                                        "top-start": "pf-m-top-left",
                                                       }
                                                     }
+                                                    removeFindDomNode={false}
                                                     trigger={
                                                       <Button
                                                         id="counterfactual-setup-outcomes"
@@ -1073,10 +1102,13 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                     onFocus={[Function]}
                                                     onMouseEnter={[Function]}
                                                     onMouseLeave={[Function]}
+                                                    onPopperMouseEnter={[Function]}
+                                                    onPopperMouseLeave={[Function]}
                                                     onTriggerEnter={[Function]}
                                                     placement="top"
                                                     popper={
                                                       <div
+                                                        aria-live="off"
                                                         className="pf-c-tooltip"
                                                         id="pf-tooltip-3"
                                                         role="tooltip"
@@ -1102,11 +1134,20 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                     positionModifiers={
                                                       Object {
                                                         "bottom": "pf-m-bottom",
+                                                        "bottom-end": "pf-m-bottom-right",
+                                                        "bottom-start": "pf-m-bottom-left",
                                                         "left": "pf-m-left",
+                                                        "left-end": "pf-m-left-bottom",
+                                                        "left-start": "pf-m-left-top",
                                                         "right": "pf-m-right",
+                                                        "right-end": "pf-m-right-bottom",
+                                                        "right-start": "pf-m-right-top",
                                                         "top": "pf-m-top",
+                                                        "top-end": "pf-m-top-right",
+                                                        "top-start": "pf-m-top-left",
                                                       }
                                                     }
+                                                    removeFindDomNode={false}
                                                     trigger={
                                                       <Button
                                                         id="counterfactual-reset"
@@ -1215,6 +1256,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                         collapseListedFiltersBreakpoint="lg"
                                         isExpanded={false}
                                         numberOfFilters={0}
+                                        numberOfFiltersText={[Function]}
                                         showClearFiltersButton={false}
                                       >
                                         <div
@@ -1408,13 +1450,15 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                         onSelect={[Function]}
                                                                         selectVariant="checkbox"
                                                                       >
-                                                                        <input
-                                                                          aria-label="Select all rows"
-                                                                          checked={false}
-                                                                          name="check-all"
-                                                                          onChange={[Function]}
-                                                                          type="checkbox"
-                                                                        />
+                                                                        <label>
+                                                                          <input
+                                                                            aria-label="Select all rows"
+                                                                            checked={false}
+                                                                            name="check-all"
+                                                                            onChange={[Function]}
+                                                                            type="checkbox"
+                                                                          />
+                                                                        </label>
                                                                       </SelectColumn>
                                                                     </td>
                                                                   </ThBase>
@@ -1482,10 +1526,13 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                 onFocus={[Function]}
                                                                                 onMouseEnter={[Function]}
                                                                                 onMouseLeave={[Function]}
+                                                                                onPopperMouseEnter={[Function]}
+                                                                                onPopperMouseLeave={[Function]}
                                                                                 onTriggerEnter={[Function]}
                                                                                 placement="top"
                                                                                 popper={
                                                                                   <div
+                                                                                    aria-live="off"
                                                                                     className="pf-c-tooltip"
                                                                                     id="pf-tooltip-10"
                                                                                     role="tooltip"
@@ -1509,11 +1556,20 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                 positionModifiers={
                                                                                   Object {
                                                                                     "bottom": "pf-m-bottom",
+                                                                                    "bottom-end": "pf-m-bottom-right",
+                                                                                    "bottom-start": "pf-m-bottom-left",
                                                                                     "left": "pf-m-left",
+                                                                                    "left-end": "pf-m-left-bottom",
+                                                                                    "left-start": "pf-m-left-top",
                                                                                     "right": "pf-m-right",
+                                                                                    "right-end": "pf-m-right-bottom",
+                                                                                    "right-start": "pf-m-right-top",
                                                                                     "top": "pf-m-top",
+                                                                                    "top-end": "pf-m-top-right",
+                                                                                    "top-start": "pf-m-top-left",
                                                                                   }
                                                                                 }
+                                                                                removeFindDomNode={false}
                                                                                 trigger={
                                                                                   <Button
                                                                                     aria-label="Inputs to the decision model."
@@ -1646,10 +1702,13 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                 onFocus={[Function]}
                                                                                 onMouseEnter={[Function]}
                                                                                 onMouseLeave={[Function]}
+                                                                                onPopperMouseEnter={[Function]}
+                                                                                onPopperMouseLeave={[Function]}
                                                                                 onTriggerEnter={[Function]}
                                                                                 placement="top"
                                                                                 popper={
                                                                                   <div
+                                                                                    aria-live="off"
                                                                                     className="pf-c-tooltip"
                                                                                     id="pf-tooltip-11"
                                                                                     role="tooltip"
@@ -1673,11 +1732,20 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                 positionModifiers={
                                                                                   Object {
                                                                                     "bottom": "pf-m-bottom",
+                                                                                    "bottom-end": "pf-m-bottom-right",
+                                                                                    "bottom-start": "pf-m-bottom-left",
                                                                                     "left": "pf-m-left",
+                                                                                    "left-end": "pf-m-left-bottom",
+                                                                                    "left-start": "pf-m-left-top",
                                                                                     "right": "pf-m-right",
+                                                                                    "right-end": "pf-m-right-bottom",
+                                                                                    "right-start": "pf-m-right-top",
                                                                                     "top": "pf-m-top",
+                                                                                    "top-end": "pf-m-top-right",
+                                                                                    "top-start": "pf-m-top-left",
                                                                                   }
                                                                                 }
+                                                                                removeFindDomNode={false}
                                                                                 trigger={
                                                                                   <Button
                                                                                     aria-label="Limits the data used in the counterfactual."
@@ -1810,10 +1878,13 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                 onFocus={[Function]}
                                                                                 onMouseEnter={[Function]}
                                                                                 onMouseLeave={[Function]}
+                                                                                onPopperMouseEnter={[Function]}
+                                                                                onPopperMouseLeave={[Function]}
                                                                                 onTriggerEnter={[Function]}
                                                                                 placement="top"
                                                                                 popper={
                                                                                   <div
+                                                                                    aria-live="off"
                                                                                     className="pf-c-tooltip"
                                                                                     id="pf-tooltip-12"
                                                                                     role="tooltip"
@@ -1837,11 +1908,20 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                 positionModifiers={
                                                                                   Object {
                                                                                     "bottom": "pf-m-bottom",
+                                                                                    "bottom-end": "pf-m-bottom-right",
+                                                                                    "bottom-start": "pf-m-bottom-left",
                                                                                     "left": "pf-m-left",
+                                                                                    "left-end": "pf-m-left-bottom",
+                                                                                    "left-start": "pf-m-left-top",
                                                                                     "right": "pf-m-right",
+                                                                                    "right-end": "pf-m-right-bottom",
+                                                                                    "right-start": "pf-m-right-top",
                                                                                     "top": "pf-m-top",
+                                                                                    "top-end": "pf-m-top-right",
+                                                                                    "top-start": "pf-m-top-left",
                                                                                   }
                                                                                 }
+                                                                                removeFindDomNode={false}
                                                                                 trigger={
                                                                                   <Button
                                                                                     aria-label="The original input value used by the decision model."
@@ -1981,6 +2061,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                   >
                                                                     <td
                                                                       className="pf-c-table__check"
+                                                                      onMouseEnter={[Function]}
                                                                     >
                                                                       <SelectColumn
                                                                         aria-label="Select row 0"
@@ -1989,13 +2070,15 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                         onSelect={[Function]}
                                                                         selectVariant="checkbox"
                                                                       >
-                                                                        <input
-                                                                          aria-label="Select row 0"
-                                                                          checked={false}
-                                                                          name="checkrow0"
-                                                                          onChange={[Function]}
-                                                                          type="checkbox"
-                                                                        />
+                                                                        <label>
+                                                                          <input
+                                                                            aria-label="Select row 0"
+                                                                            checked={false}
+                                                                            name="checkrow0"
+                                                                            onChange={[Function]}
+                                                                            type="checkbox"
+                                                                          />
+                                                                        </label>
                                                                       </SelectColumn>
                                                                     </td>
                                                                   </TdBase>
@@ -2011,6 +2094,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                     <td
                                                                       className=""
                                                                       data-label="Input"
+                                                                      onMouseEnter={[Function]}
                                                                     >
                                                                       Credit Score
                                                                     </td>
@@ -2027,6 +2111,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                     <td
                                                                       className=""
                                                                       data-label="Constraint"
+                                                                      onMouseEnter={[Function]}
                                                                     >
                                                                       <ConstraintCell
                                                                         isInputConstraintSupported={[Function]}
@@ -2139,6 +2224,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                     <td
                                                                       className=""
                                                                       data-label="Input Value"
+                                                                      onMouseEnter={[Function]}
                                                                     >
                                                                       <FormattedValue
                                                                         value={738}
@@ -2164,6 +2250,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                     <td
                                                                       className="cf-table__no-result-cell"
                                                                       data-label="Counterfactual Result"
+                                                                      onMouseEnter={[Function]}
                                                                     >
                                                                       No available results
                                                                     </td>
@@ -2209,6 +2296,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                   >
                                                                     <td
                                                                       className="pf-c-table__check"
+                                                                      onMouseEnter={[Function]}
                                                                     >
                                                                       <SelectColumn
                                                                         aria-label="Select row 1"
@@ -2219,14 +2307,16 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                         onSelect={[Function]}
                                                                         selectVariant="checkbox"
                                                                       >
-                                                                        <input
-                                                                          aria-label="Select row 1"
-                                                                          checked={false}
-                                                                          disabled={true}
-                                                                          name="checkrow1"
-                                                                          onChange={[Function]}
-                                                                          type="checkbox"
-                                                                        />
+                                                                        <label>
+                                                                          <input
+                                                                            aria-label="Select row 1"
+                                                                            checked={false}
+                                                                            disabled={true}
+                                                                            name="checkrow1"
+                                                                            onChange={[Function]}
+                                                                            type="checkbox"
+                                                                          />
+                                                                        </label>
                                                                       </SelectColumn>
                                                                     </td>
                                                                   </TdBase>
@@ -2242,6 +2332,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                     <td
                                                                       className=""
                                                                       data-label="Input"
+                                                                      onMouseEnter={[Function]}
                                                                     >
                                                                       Type
                                                                     </td>
@@ -2258,6 +2349,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                     <td
                                                                       className=""
                                                                       data-label="Constraint"
+                                                                      onMouseEnter={[Function]}
                                                                     >
                                                                       <ConstraintCell
                                                                         isInputConstraintSupported={[Function]}
@@ -2298,6 +2390,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                     <td
                                                                       className=""
                                                                       data-label="Input Value"
+                                                                      onMouseEnter={[Function]}
                                                                     >
                                                                       <FormattedValue
                                                                         value="Lease"
@@ -2323,6 +2416,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                     <td
                                                                       className="cf-table__no-result-cell"
                                                                       data-label="Counterfactual Result"
+                                                                      onMouseEnter={[Function]}
                                                                     >
                                                                       No available results
                                                                     </td>
@@ -2408,11 +2502,16 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                 }
               }
             >
-              <div
-                className="pf-c-drawer__panel pf-m-width-33"
-                hidden={true}
-                onTransitionEnd={[Function]}
-              />
+              <GenerateId
+                prefix="pf-drawer-panel-"
+              >
+                <div
+                  className="pf-c-drawer__panel pf-m-width-33"
+                  hidden={true}
+                  id="pf-drawer-panel-0"
+                  onTransitionEnd={[Function]}
+                />
+              </GenerateId>
             </DrawerPanelContent>
           </div>
         </DrawerMain>

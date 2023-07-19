@@ -6,6 +6,7 @@ exports[`TaskDetailsEnvelopeApiImpl tests Snapshot test 1`] = `
     Object {
       "notifications": [MockFunction],
       "requests": [MockFunction],
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -21,6 +22,7 @@ exports[`TaskDetailsEnvelopeApiImpl tests Snapshot test 2`] = `
     Object {
       "notifications": [MockFunction],
       "requests": [MockFunction],
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }

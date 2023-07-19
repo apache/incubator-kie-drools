@@ -16,7 +16,8 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import { Button, EmptyStateBody } from '@patternfly/react-core';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { EmptyStateBody } from '@patternfly/react-core/dist/js/components';
 import ServerErrors from '../ServerErrors';
 
 const errorMessage1 =
@@ -140,7 +141,7 @@ describe('ServerErrors component tests', () => {
 
   it('display error button click with small variant and not full error message ', () => {
     let wrapper = mount(<ServerErrors {...props3} />).find('ServerErrors');
-
+    console.log('test', wrapper.debug());
     expect(wrapper.find(EmptyStateBody).first().text()).toEqual(
       'An error occurred while accessing data. See more details'
     );
@@ -154,7 +155,7 @@ describe('ServerErrors component tests', () => {
 
   it('display error title ', () => {
     let wrapper = mount(<ServerErrors {...props4} />).find('ServerErrors');
-
+    console.log('test', wrapper.debug());
     expect(wrapper.find(EmptyStateBody).first().text()).toEqual(
       'An error occurred while accessing data. It is possible the data index is still being loaded, please try again in a few moments. See more details'
     );

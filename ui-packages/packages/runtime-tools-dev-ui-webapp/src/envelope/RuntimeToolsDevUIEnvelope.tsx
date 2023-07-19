@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Envelope, EnvelopeApiFactory } from '@kogito-tooling/envelope';
+import { Envelope, EnvelopeApiFactory } from '@kie-tools-core/envelope';
 import {
   RuntimeToolsDevUIChannelApi,
   RuntimeToolsDevUIEnvelopeApi

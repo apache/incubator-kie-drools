@@ -16,21 +16,24 @@
 
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
-  Select,
-  SelectOption,
-  SelectVariant,
   ToolbarFilter,
   ToolbarGroup,
   ToolbarItem,
   ToolbarToggleGroup,
   Toolbar,
-  ToolbarContent,
-  TextInput,
-  InputGroup,
-  Tooltip
-} from '@patternfly/react-core';
-import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
+  ToolbarContent
+} from '@patternfly/react-core/dist/js/components/Toolbar';
+import {
+  Select,
+  SelectOption,
+  SelectVariant
+} from '@patternfly/react-core/dist/js/components/Select';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { InputGroup } from '@patternfly/react-core/dist/js/components/InputGroup';
+import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
+import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
+import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
 import _ from 'lodash';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { QueryFilter } from '../../../api';

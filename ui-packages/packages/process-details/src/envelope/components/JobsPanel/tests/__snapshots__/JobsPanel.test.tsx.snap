@@ -101,9 +101,11 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
           className="pf-c-card__body"
         >
           <Table
+            actionsMenuAppendTo="inline"
             aria-label="Process details jobs panel"
             aria-labelledby="Process details jobs panel"
             borders={true}
+            canCollapseAll={false}
             canSelectAll={true}
             canSortFavorites={true}
             cells={
@@ -123,11 +125,14 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
               ]
             }
             className=""
+            collapseAllAriaLabel=""
             contentId="expanded-content"
             dropdownDirection="down"
             dropdownPosition="right"
             expandId="expandable-toggle"
             gridBreakPoint="grid-md"
+            isHeaderSelectDisabled={false}
+            isNested={false}
             isStickyHeader={false}
             isTreeTable={false}
             ouiaSafe={true}
@@ -228,15 +233,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                       "actionResolver": undefined,
                       "actions": undefined,
                       "actionsToggle": undefined,
+                      "allRowsExpanded": false,
                       "allRowsSelected": false,
                       "areActionsDisabled": undefined,
+                      "canCollapseAll": false,
                       "canSelectAll": true,
                       "canSortFavorites": true,
+                      "collapseAllAriaLabel": "",
                       "contentId": "expanded-content",
                       "dropdownDirection": "down",
                       "dropdownPosition": "right",
                       "expandId": "expandable-toggle",
                       "firstUserColumnIndex": 0,
+                      "isHeaderSelectDisabled": false,
+                      "menuAppendTo": "inline",
                       "onCollapse": undefined,
                       "onExpand": undefined,
                       "onFavorite": undefined,
@@ -275,15 +285,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                       "actionResolver": undefined,
                       "actions": undefined,
                       "actionsToggle": undefined,
+                      "allRowsExpanded": false,
                       "allRowsSelected": false,
                       "areActionsDisabled": undefined,
+                      "canCollapseAll": false,
                       "canSelectAll": true,
                       "canSortFavorites": true,
+                      "collapseAllAriaLabel": "",
                       "contentId": "expanded-content",
                       "dropdownDirection": "down",
                       "dropdownPosition": "right",
                       "expandId": "expandable-toggle",
                       "firstUserColumnIndex": 0,
+                      "isHeaderSelectDisabled": false,
+                      "menuAppendTo": "inline",
                       "onCollapse": undefined,
                       "onExpand": undefined,
                       "onFavorite": undefined,
@@ -322,15 +337,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                       "actionResolver": undefined,
                       "actions": undefined,
                       "actionsToggle": undefined,
+                      "allRowsExpanded": false,
                       "allRowsSelected": false,
                       "areActionsDisabled": undefined,
+                      "canCollapseAll": false,
                       "canSelectAll": true,
                       "canSortFavorites": true,
+                      "collapseAllAriaLabel": "",
                       "contentId": "expanded-content",
                       "dropdownDirection": "down",
                       "dropdownPosition": "right",
                       "expandId": "expandable-toggle",
                       "firstUserColumnIndex": 0,
+                      "isHeaderSelectDisabled": false,
+                      "menuAppendTo": "inline",
                       "onCollapse": undefined,
                       "onExpand": undefined,
                       "onFavorite": undefined,
@@ -369,15 +389,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                       "actionResolver": undefined,
                       "actions": undefined,
                       "actionsToggle": undefined,
+                      "allRowsExpanded": false,
                       "allRowsSelected": false,
                       "areActionsDisabled": undefined,
+                      "canCollapseAll": false,
                       "canSelectAll": true,
                       "canSortFavorites": true,
+                      "collapseAllAriaLabel": "",
                       "contentId": "expanded-content",
                       "dropdownDirection": "down",
                       "dropdownPosition": "right",
                       "expandId": "expandable-toggle",
                       "firstUserColumnIndex": 0,
+                      "isHeaderSelectDisabled": false,
+                      "menuAppendTo": "inline",
                       "onCollapse": undefined,
                       "onExpand": undefined,
                       "onFavorite": undefined,
@@ -405,6 +430,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                 ]
               }
               gridBreakPoint="grid-md"
+              isNested={false}
               isStickyHeader={false}
               isTreeTable={false}
               ouiaSafe={true}
@@ -429,6 +455,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                 borders={true}
                 className=""
                 gridBreakPoint="grid-md"
+                isNested={false}
                 isStickyHeader={false}
                 isTreeTable={false}
                 ouiaSafe={true}
@@ -442,6 +469,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                   className=""
                   gridBreakPoint="grid-md"
                   innerRef={null}
+                  isNested={false}
                   isStickyHeader={false}
                   isTreeTable={false}
                   ouiaSafe={true}
@@ -461,7 +489,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                       <ContextHeader
                         headerRows={null}
                       >
-                        <Component
+                        <Header
                           className=""
                           headerRows={null}
                         >
@@ -483,15 +511,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -530,15 +563,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -577,15 +615,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -624,15 +667,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -726,15 +774,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                             "actionResolver": undefined,
                                             "actions": undefined,
                                             "actionsToggle": undefined,
+                                            "allRowsExpanded": false,
                                             "allRowsSelected": false,
                                             "areActionsDisabled": undefined,
+                                            "canCollapseAll": false,
                                             "canSelectAll": true,
                                             "canSortFavorites": true,
+                                            "collapseAllAriaLabel": "",
                                             "contentId": "expanded-content",
                                             "dropdownDirection": "down",
                                             "dropdownPosition": "right",
                                             "expandId": "expandable-toggle",
                                             "firstUserColumnIndex": 0,
+                                            "isHeaderSelectDisabled": false,
+                                            "menuAppendTo": "inline",
                                             "onCollapse": undefined,
                                             "onExpand": undefined,
                                             "onFavorite": undefined,
@@ -773,15 +826,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                             "actionResolver": undefined,
                                             "actions": undefined,
                                             "actionsToggle": undefined,
+                                            "allRowsExpanded": false,
                                             "allRowsSelected": false,
                                             "areActionsDisabled": undefined,
+                                            "canCollapseAll": false,
                                             "canSelectAll": true,
                                             "canSortFavorites": true,
+                                            "collapseAllAriaLabel": "",
                                             "contentId": "expanded-content",
                                             "dropdownDirection": "down",
                                             "dropdownPosition": "right",
                                             "expandId": "expandable-toggle",
                                             "firstUserColumnIndex": 0,
+                                            "isHeaderSelectDisabled": false,
+                                            "menuAppendTo": "inline",
                                             "onCollapse": undefined,
                                             "onExpand": undefined,
                                             "onFavorite": undefined,
@@ -820,15 +878,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                             "actionResolver": undefined,
                                             "actions": undefined,
                                             "actionsToggle": undefined,
+                                            "allRowsExpanded": false,
                                             "allRowsSelected": false,
                                             "areActionsDisabled": undefined,
+                                            "canCollapseAll": false,
                                             "canSelectAll": true,
                                             "canSortFavorites": true,
+                                            "collapseAllAriaLabel": "",
                                             "contentId": "expanded-content",
                                             "dropdownDirection": "down",
                                             "dropdownPosition": "right",
                                             "expandId": "expandable-toggle",
                                             "firstUserColumnIndex": 0,
+                                            "isHeaderSelectDisabled": false,
+                                            "menuAppendTo": "inline",
                                             "onCollapse": undefined,
                                             "onExpand": undefined,
                                             "onFavorite": undefined,
@@ -867,15 +930,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                             "actionResolver": undefined,
                                             "actions": undefined,
                                             "actionsToggle": undefined,
+                                            "allRowsExpanded": false,
                                             "allRowsSelected": false,
                                             "areActionsDisabled": undefined,
+                                            "canCollapseAll": false,
                                             "canSelectAll": true,
                                             "canSortFavorites": true,
+                                            "collapseAllAriaLabel": "",
                                             "contentId": "expanded-content",
                                             "dropdownDirection": "down",
                                             "dropdownPosition": "right",
                                             "expandId": "expandable-toggle",
                                             "firstUserColumnIndex": 0,
+                                            "isHeaderSelectDisabled": false,
+                                            "menuAppendTo": "inline",
                                             "onCollapse": undefined,
                                             "onExpand": undefined,
                                             "onFavorite": undefined,
@@ -1079,10 +1147,10 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                               </TheadBase>
                             </Thead>
                           </BaseHeader>
-                        </Component>
+                        </Header>
                       </ContextHeader>
                     </TableHeader>
-                    <Component>
+                    <TableBody>
                       <ContextBody
                         className=""
                         headerData={
@@ -1101,15 +1169,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                 "actionResolver": undefined,
                                 "actions": undefined,
                                 "actionsToggle": undefined,
+                                "allRowsExpanded": false,
                                 "allRowsSelected": false,
                                 "areActionsDisabled": undefined,
+                                "canCollapseAll": false,
                                 "canSelectAll": true,
                                 "canSortFavorites": true,
+                                "collapseAllAriaLabel": "",
                                 "contentId": "expanded-content",
                                 "dropdownDirection": "down",
                                 "dropdownPosition": "right",
                                 "expandId": "expandable-toggle",
                                 "firstUserColumnIndex": 0,
+                                "isHeaderSelectDisabled": false,
+                                "menuAppendTo": "inline",
                                 "onCollapse": undefined,
                                 "onExpand": undefined,
                                 "onFavorite": undefined,
@@ -1148,15 +1221,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                 "actionResolver": undefined,
                                 "actions": undefined,
                                 "actionsToggle": undefined,
+                                "allRowsExpanded": false,
                                 "allRowsSelected": false,
                                 "areActionsDisabled": undefined,
+                                "canCollapseAll": false,
                                 "canSelectAll": true,
                                 "canSortFavorites": true,
+                                "collapseAllAriaLabel": "",
                                 "contentId": "expanded-content",
                                 "dropdownDirection": "down",
                                 "dropdownPosition": "right",
                                 "expandId": "expandable-toggle",
                                 "firstUserColumnIndex": 0,
+                                "isHeaderSelectDisabled": false,
+                                "menuAppendTo": "inline",
                                 "onCollapse": undefined,
                                 "onExpand": undefined,
                                 "onFavorite": undefined,
@@ -1195,15 +1273,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                 "actionResolver": undefined,
                                 "actions": undefined,
                                 "actionsToggle": undefined,
+                                "allRowsExpanded": false,
                                 "allRowsSelected": false,
                                 "areActionsDisabled": undefined,
+                                "canCollapseAll": false,
                                 "canSelectAll": true,
                                 "canSortFavorites": true,
+                                "collapseAllAriaLabel": "",
                                 "contentId": "expanded-content",
                                 "dropdownDirection": "down",
                                 "dropdownPosition": "right",
                                 "expandId": "expandable-toggle",
                                 "firstUserColumnIndex": 0,
+                                "isHeaderSelectDisabled": false,
+                                "menuAppendTo": "inline",
                                 "onCollapse": undefined,
                                 "onExpand": undefined,
                                 "onFavorite": undefined,
@@ -1242,15 +1325,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                 "actionResolver": undefined,
                                 "actions": undefined,
                                 "actionsToggle": undefined,
+                                "allRowsExpanded": false,
                                 "allRowsSelected": false,
                                 "areActionsDisabled": undefined,
+                                "canCollapseAll": false,
                                 "canSelectAll": true,
                                 "canSortFavorites": true,
+                                "collapseAllAriaLabel": "",
                                 "contentId": "expanded-content",
                                 "dropdownDirection": "down",
                                 "dropdownPosition": "right",
                                 "expandId": "expandable-toggle",
                                 "firstUserColumnIndex": 0,
+                                "isHeaderSelectDisabled": false,
+                                "menuAppendTo": "inline",
                                 "onCollapse": undefined,
                                 "onExpand": undefined,
                                 "onFavorite": undefined,
@@ -1353,7 +1441,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                           ]
                         }
                       >
-                        <Component
+                        <Body
                           className=""
                           headerRows={null}
                           mappedRows={
@@ -1691,15 +1779,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -1738,15 +1831,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -1785,15 +1883,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -1832,15 +1935,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -2398,15 +2506,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                               "actionResolver": undefined,
                                               "actions": undefined,
                                               "actionsToggle": undefined,
+                                              "allRowsExpanded": false,
                                               "allRowsSelected": false,
                                               "areActionsDisabled": undefined,
+                                              "canCollapseAll": false,
                                               "canSelectAll": true,
                                               "canSortFavorites": true,
+                                              "collapseAllAriaLabel": "",
                                               "contentId": "expanded-content",
                                               "dropdownDirection": "down",
                                               "dropdownPosition": "right",
                                               "expandId": "expandable-toggle",
                                               "firstUserColumnIndex": 0,
+                                              "isHeaderSelectDisabled": false,
+                                              "menuAppendTo": "inline",
                                               "onCollapse": undefined,
                                               "onExpand": undefined,
                                               "onFavorite": undefined,
@@ -2445,15 +2558,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                               "actionResolver": undefined,
                                               "actions": undefined,
                                               "actionsToggle": undefined,
+                                              "allRowsExpanded": false,
                                               "allRowsSelected": false,
                                               "areActionsDisabled": undefined,
+                                              "canCollapseAll": false,
                                               "canSelectAll": true,
                                               "canSortFavorites": true,
+                                              "collapseAllAriaLabel": "",
                                               "contentId": "expanded-content",
                                               "dropdownDirection": "down",
                                               "dropdownPosition": "right",
                                               "expandId": "expandable-toggle",
                                               "firstUserColumnIndex": 0,
+                                              "isHeaderSelectDisabled": false,
+                                              "menuAppendTo": "inline",
                                               "onCollapse": undefined,
                                               "onExpand": undefined,
                                               "onFavorite": undefined,
@@ -2492,15 +2610,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                               "actionResolver": undefined,
                                               "actions": undefined,
                                               "actionsToggle": undefined,
+                                              "allRowsExpanded": false,
                                               "allRowsSelected": false,
                                               "areActionsDisabled": undefined,
+                                              "canCollapseAll": false,
                                               "canSelectAll": true,
                                               "canSortFavorites": true,
+                                              "collapseAllAriaLabel": "",
                                               "contentId": "expanded-content",
                                               "dropdownDirection": "down",
                                               "dropdownPosition": "right",
                                               "expandId": "expandable-toggle",
                                               "firstUserColumnIndex": 0,
+                                              "isHeaderSelectDisabled": false,
+                                              "menuAppendTo": "inline",
                                               "onCollapse": undefined,
                                               "onExpand": undefined,
                                               "onFavorite": undefined,
@@ -2539,15 +2662,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                               "actionResolver": undefined,
                                               "actions": undefined,
                                               "actionsToggle": undefined,
+                                              "allRowsExpanded": false,
                                               "allRowsSelected": false,
                                               "areActionsDisabled": undefined,
+                                              "canCollapseAll": false,
                                               "canSelectAll": true,
                                               "canSortFavorites": true,
+                                              "collapseAllAriaLabel": "",
                                               "contentId": "expanded-content",
                                               "dropdownDirection": "down",
                                               "dropdownPosition": "right",
                                               "expandId": "expandable-toggle",
                                               "firstUserColumnIndex": 0,
+                                              "isHeaderSelectDisabled": false,
+                                              "menuAppendTo": "inline",
                                               "onCollapse": undefined,
                                               "onExpand": undefined,
                                               "onFavorite": undefined,
@@ -2743,7 +2871,8 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                     >
                                       <RowWrapper
                                         className=""
-                                        onMouseDown={[Function]}
+                                        onClick={[Function]}
+                                        onKeyDown={[Function]}
                                         row={
                                           Object {
                                             "actions": Object {
@@ -2908,12 +3037,14 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                       >
                                         <Tr
                                           className=""
-                                          onMouseDown={[Function]}
+                                          onClick={[Function]}
+                                          onKeyDown={[Function]}
                                         >
                                           <TrBase
                                             className=""
                                             innerRef={null}
-                                            onMouseDown={[Function]}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
                                           >
                                             <tr
                                               className=""
@@ -2921,7 +3052,8 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                               data-ouia-component-type="PF4/TableRow"
                                               data-ouia-safe={true}
                                               hidden={false}
-                                              onMouseDown={[Function]}
+                                              onClick={[Function]}
+                                              onKeyDown={[Function]}
                                             >
                                               <BodyCell
                                                 data-key={0}
@@ -2977,10 +3109,13 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                                           onFocus={[Function]}
                                                           onMouseEnter={[Function]}
                                                           onMouseLeave={[Function]}
+                                                          onPopperMouseEnter={[Function]}
+                                                          onPopperMouseLeave={[Function]}
                                                           onTriggerEnter={[Function]}
                                                           placement="top"
                                                           popper={
                                                             <div
+                                                              aria-live="off"
                                                               className="pf-c-tooltip"
                                                               id="pf-tooltip-1"
                                                               role="tooltip"
@@ -3004,11 +3139,20 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                                           positionModifiers={
                                                             Object {
                                                               "bottom": "pf-m-bottom",
+                                                              "bottom-end": "pf-m-bottom-right",
+                                                              "bottom-start": "pf-m-bottom-left",
                                                               "left": "pf-m-left",
+                                                              "left-end": "pf-m-left-bottom",
+                                                              "left-start": "pf-m-left-top",
                                                               "right": "pf-m-right",
+                                                              "right-end": "pf-m-right-bottom",
+                                                              "right-start": "pf-m-right-top",
                                                               "top": "pf-m-top",
+                                                              "top-end": "pf-m-top-right",
+                                                              "top-start": "pf-m-top-left",
                                                             }
                                                           }
+                                                          removeFindDomNode={false}
                                                           trigger={
                                                             <span>
                                                               6e74a57
@@ -3184,9 +3328,9 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                               </Tbody>
                             </BodyWrapper>
                           </BaseBody>
-                        </Component>
+                        </Body>
                       </ContextBody>
-                    </Component>
+                    </TableBody>
                   </table>
                 </TableComposableBase>
               </TableComposable>
@@ -3276,9 +3420,11 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
           className="pf-c-card__body"
         >
           <Table
+            actionsMenuAppendTo="inline"
             aria-label="Process details jobs panel"
             aria-labelledby="Process details jobs panel"
             borders={true}
+            canCollapseAll={false}
             canSelectAll={true}
             canSortFavorites={true}
             cells={
@@ -3298,11 +3444,14 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
               ]
             }
             className=""
+            collapseAllAriaLabel=""
             contentId="expanded-content"
             dropdownDirection="down"
             dropdownPosition="right"
             expandId="expandable-toggle"
             gridBreakPoint="grid-md"
+            isHeaderSelectDisabled={false}
+            isNested={false}
             isStickyHeader={false}
             isTreeTable={false}
             ouiaSafe={true}
@@ -3426,15 +3575,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                       "actionResolver": undefined,
                       "actions": undefined,
                       "actionsToggle": undefined,
+                      "allRowsExpanded": false,
                       "allRowsSelected": false,
                       "areActionsDisabled": undefined,
+                      "canCollapseAll": false,
                       "canSelectAll": true,
                       "canSortFavorites": true,
+                      "collapseAllAriaLabel": "",
                       "contentId": "expanded-content",
                       "dropdownDirection": "down",
                       "dropdownPosition": "right",
                       "expandId": "expandable-toggle",
                       "firstUserColumnIndex": 0,
+                      "isHeaderSelectDisabled": false,
+                      "menuAppendTo": "inline",
                       "onCollapse": undefined,
                       "onExpand": undefined,
                       "onFavorite": undefined,
@@ -3473,15 +3627,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                       "actionResolver": undefined,
                       "actions": undefined,
                       "actionsToggle": undefined,
+                      "allRowsExpanded": false,
                       "allRowsSelected": false,
                       "areActionsDisabled": undefined,
+                      "canCollapseAll": false,
                       "canSelectAll": true,
                       "canSortFavorites": true,
+                      "collapseAllAriaLabel": "",
                       "contentId": "expanded-content",
                       "dropdownDirection": "down",
                       "dropdownPosition": "right",
                       "expandId": "expandable-toggle",
                       "firstUserColumnIndex": 0,
+                      "isHeaderSelectDisabled": false,
+                      "menuAppendTo": "inline",
                       "onCollapse": undefined,
                       "onExpand": undefined,
                       "onFavorite": undefined,
@@ -3520,15 +3679,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                       "actionResolver": undefined,
                       "actions": undefined,
                       "actionsToggle": undefined,
+                      "allRowsExpanded": false,
                       "allRowsSelected": false,
                       "areActionsDisabled": undefined,
+                      "canCollapseAll": false,
                       "canSelectAll": true,
                       "canSortFavorites": true,
+                      "collapseAllAriaLabel": "",
                       "contentId": "expanded-content",
                       "dropdownDirection": "down",
                       "dropdownPosition": "right",
                       "expandId": "expandable-toggle",
                       "firstUserColumnIndex": 0,
+                      "isHeaderSelectDisabled": false,
+                      "menuAppendTo": "inline",
                       "onCollapse": undefined,
                       "onExpand": undefined,
                       "onFavorite": undefined,
@@ -3567,15 +3731,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                       "actionResolver": undefined,
                       "actions": undefined,
                       "actionsToggle": undefined,
+                      "allRowsExpanded": false,
                       "allRowsSelected": false,
                       "areActionsDisabled": undefined,
+                      "canCollapseAll": false,
                       "canSelectAll": true,
                       "canSortFavorites": true,
+                      "collapseAllAriaLabel": "",
                       "contentId": "expanded-content",
                       "dropdownDirection": "down",
                       "dropdownPosition": "right",
                       "expandId": "expandable-toggle",
                       "firstUserColumnIndex": 0,
+                      "isHeaderSelectDisabled": false,
+                      "menuAppendTo": "inline",
                       "onCollapse": undefined,
                       "onExpand": undefined,
                       "onFavorite": undefined,
@@ -3603,6 +3772,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                 ]
               }
               gridBreakPoint="grid-md"
+              isNested={false}
               isStickyHeader={false}
               isTreeTable={false}
               ouiaSafe={true}
@@ -3627,6 +3797,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                 borders={true}
                 className=""
                 gridBreakPoint="grid-md"
+                isNested={false}
                 isStickyHeader={false}
                 isTreeTable={false}
                 ouiaSafe={true}
@@ -3640,6 +3811,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                   className=""
                   gridBreakPoint="grid-md"
                   innerRef={null}
+                  isNested={false}
                   isStickyHeader={false}
                   isTreeTable={false}
                   ouiaSafe={true}
@@ -3659,7 +3831,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                       <ContextHeader
                         headerRows={null}
                       >
-                        <Component
+                        <Header
                           className=""
                           headerRows={null}
                         >
@@ -3681,15 +3853,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -3728,15 +3905,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -3775,15 +3957,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -3822,15 +4009,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -3924,15 +4116,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                             "actionResolver": undefined,
                                             "actions": undefined,
                                             "actionsToggle": undefined,
+                                            "allRowsExpanded": false,
                                             "allRowsSelected": false,
                                             "areActionsDisabled": undefined,
+                                            "canCollapseAll": false,
                                             "canSelectAll": true,
                                             "canSortFavorites": true,
+                                            "collapseAllAriaLabel": "",
                                             "contentId": "expanded-content",
                                             "dropdownDirection": "down",
                                             "dropdownPosition": "right",
                                             "expandId": "expandable-toggle",
                                             "firstUserColumnIndex": 0,
+                                            "isHeaderSelectDisabled": false,
+                                            "menuAppendTo": "inline",
                                             "onCollapse": undefined,
                                             "onExpand": undefined,
                                             "onFavorite": undefined,
@@ -3971,15 +4168,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                             "actionResolver": undefined,
                                             "actions": undefined,
                                             "actionsToggle": undefined,
+                                            "allRowsExpanded": false,
                                             "allRowsSelected": false,
                                             "areActionsDisabled": undefined,
+                                            "canCollapseAll": false,
                                             "canSelectAll": true,
                                             "canSortFavorites": true,
+                                            "collapseAllAriaLabel": "",
                                             "contentId": "expanded-content",
                                             "dropdownDirection": "down",
                                             "dropdownPosition": "right",
                                             "expandId": "expandable-toggle",
                                             "firstUserColumnIndex": 0,
+                                            "isHeaderSelectDisabled": false,
+                                            "menuAppendTo": "inline",
                                             "onCollapse": undefined,
                                             "onExpand": undefined,
                                             "onFavorite": undefined,
@@ -4018,15 +4220,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                             "actionResolver": undefined,
                                             "actions": undefined,
                                             "actionsToggle": undefined,
+                                            "allRowsExpanded": false,
                                             "allRowsSelected": false,
                                             "areActionsDisabled": undefined,
+                                            "canCollapseAll": false,
                                             "canSelectAll": true,
                                             "canSortFavorites": true,
+                                            "collapseAllAriaLabel": "",
                                             "contentId": "expanded-content",
                                             "dropdownDirection": "down",
                                             "dropdownPosition": "right",
                                             "expandId": "expandable-toggle",
                                             "firstUserColumnIndex": 0,
+                                            "isHeaderSelectDisabled": false,
+                                            "menuAppendTo": "inline",
                                             "onCollapse": undefined,
                                             "onExpand": undefined,
                                             "onFavorite": undefined,
@@ -4065,15 +4272,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                             "actionResolver": undefined,
                                             "actions": undefined,
                                             "actionsToggle": undefined,
+                                            "allRowsExpanded": false,
                                             "allRowsSelected": false,
                                             "areActionsDisabled": undefined,
+                                            "canCollapseAll": false,
                                             "canSelectAll": true,
                                             "canSortFavorites": true,
+                                            "collapseAllAriaLabel": "",
                                             "contentId": "expanded-content",
                                             "dropdownDirection": "down",
                                             "dropdownPosition": "right",
                                             "expandId": "expandable-toggle",
                                             "firstUserColumnIndex": 0,
+                                            "isHeaderSelectDisabled": false,
+                                            "menuAppendTo": "inline",
                                             "onCollapse": undefined,
                                             "onExpand": undefined,
                                             "onFavorite": undefined,
@@ -4277,10 +4489,10 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                               </TheadBase>
                             </Thead>
                           </BaseHeader>
-                        </Component>
+                        </Header>
                       </ContextHeader>
                     </TableHeader>
-                    <Component>
+                    <TableBody>
                       <ContextBody
                         className=""
                         headerData={
@@ -4299,15 +4511,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                 "actionResolver": undefined,
                                 "actions": undefined,
                                 "actionsToggle": undefined,
+                                "allRowsExpanded": false,
                                 "allRowsSelected": false,
                                 "areActionsDisabled": undefined,
+                                "canCollapseAll": false,
                                 "canSelectAll": true,
                                 "canSortFavorites": true,
+                                "collapseAllAriaLabel": "",
                                 "contentId": "expanded-content",
                                 "dropdownDirection": "down",
                                 "dropdownPosition": "right",
                                 "expandId": "expandable-toggle",
                                 "firstUserColumnIndex": 0,
+                                "isHeaderSelectDisabled": false,
+                                "menuAppendTo": "inline",
                                 "onCollapse": undefined,
                                 "onExpand": undefined,
                                 "onFavorite": undefined,
@@ -4346,15 +4563,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                 "actionResolver": undefined,
                                 "actions": undefined,
                                 "actionsToggle": undefined,
+                                "allRowsExpanded": false,
                                 "allRowsSelected": false,
                                 "areActionsDisabled": undefined,
+                                "canCollapseAll": false,
                                 "canSelectAll": true,
                                 "canSortFavorites": true,
+                                "collapseAllAriaLabel": "",
                                 "contentId": "expanded-content",
                                 "dropdownDirection": "down",
                                 "dropdownPosition": "right",
                                 "expandId": "expandable-toggle",
                                 "firstUserColumnIndex": 0,
+                                "isHeaderSelectDisabled": false,
+                                "menuAppendTo": "inline",
                                 "onCollapse": undefined,
                                 "onExpand": undefined,
                                 "onFavorite": undefined,
@@ -4393,15 +4615,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                 "actionResolver": undefined,
                                 "actions": undefined,
                                 "actionsToggle": undefined,
+                                "allRowsExpanded": false,
                                 "allRowsSelected": false,
                                 "areActionsDisabled": undefined,
+                                "canCollapseAll": false,
                                 "canSelectAll": true,
                                 "canSortFavorites": true,
+                                "collapseAllAriaLabel": "",
                                 "contentId": "expanded-content",
                                 "dropdownDirection": "down",
                                 "dropdownPosition": "right",
                                 "expandId": "expandable-toggle",
                                 "firstUserColumnIndex": 0,
+                                "isHeaderSelectDisabled": false,
+                                "menuAppendTo": "inline",
                                 "onCollapse": undefined,
                                 "onExpand": undefined,
                                 "onFavorite": undefined,
@@ -4440,15 +4667,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                 "actionResolver": undefined,
                                 "actions": undefined,
                                 "actionsToggle": undefined,
+                                "allRowsExpanded": false,
                                 "allRowsSelected": false,
                                 "areActionsDisabled": undefined,
+                                "canCollapseAll": false,
                                 "canSelectAll": true,
                                 "canSortFavorites": true,
+                                "collapseAllAriaLabel": "",
                                 "contentId": "expanded-content",
                                 "dropdownDirection": "down",
                                 "dropdownPosition": "right",
                                 "expandId": "expandable-toggle",
                                 "firstUserColumnIndex": 0,
+                                "isHeaderSelectDisabled": false,
+                                "menuAppendTo": "inline",
                                 "onCollapse": undefined,
                                 "onExpand": undefined,
                                 "onFavorite": undefined,
@@ -4574,7 +4806,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                           ]
                         }
                       >
-                        <Component
+                        <Body
                           className=""
                           headerRows={null}
                           mappedRows={
@@ -5004,15 +5236,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -5051,15 +5288,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -5098,15 +5340,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -5145,15 +5392,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                     "actionResolver": undefined,
                                     "actions": undefined,
                                     "actionsToggle": undefined,
+                                    "allRowsExpanded": false,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
+                                    "canCollapseAll": false,
                                     "canSelectAll": true,
                                     "canSortFavorites": true,
+                                    "collapseAllAriaLabel": "",
                                     "contentId": "expanded-content",
                                     "dropdownDirection": "down",
                                     "dropdownPosition": "right",
                                     "expandId": "expandable-toggle",
                                     "firstUserColumnIndex": 0,
+                                    "isHeaderSelectDisabled": false,
+                                    "menuAppendTo": "inline",
                                     "onCollapse": undefined,
                                     "onExpand": undefined,
                                     "onFavorite": undefined,
@@ -5849,15 +6101,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                               "actionResolver": undefined,
                                               "actions": undefined,
                                               "actionsToggle": undefined,
+                                              "allRowsExpanded": false,
                                               "allRowsSelected": false,
                                               "areActionsDisabled": undefined,
+                                              "canCollapseAll": false,
                                               "canSelectAll": true,
                                               "canSortFavorites": true,
+                                              "collapseAllAriaLabel": "",
                                               "contentId": "expanded-content",
                                               "dropdownDirection": "down",
                                               "dropdownPosition": "right",
                                               "expandId": "expandable-toggle",
                                               "firstUserColumnIndex": 0,
+                                              "isHeaderSelectDisabled": false,
+                                              "menuAppendTo": "inline",
                                               "onCollapse": undefined,
                                               "onExpand": undefined,
                                               "onFavorite": undefined,
@@ -5896,15 +6153,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                               "actionResolver": undefined,
                                               "actions": undefined,
                                               "actionsToggle": undefined,
+                                              "allRowsExpanded": false,
                                               "allRowsSelected": false,
                                               "areActionsDisabled": undefined,
+                                              "canCollapseAll": false,
                                               "canSelectAll": true,
                                               "canSortFavorites": true,
+                                              "collapseAllAriaLabel": "",
                                               "contentId": "expanded-content",
                                               "dropdownDirection": "down",
                                               "dropdownPosition": "right",
                                               "expandId": "expandable-toggle",
                                               "firstUserColumnIndex": 0,
+                                              "isHeaderSelectDisabled": false,
+                                              "menuAppendTo": "inline",
                                               "onCollapse": undefined,
                                               "onExpand": undefined,
                                               "onFavorite": undefined,
@@ -5943,15 +6205,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                               "actionResolver": undefined,
                                               "actions": undefined,
                                               "actionsToggle": undefined,
+                                              "allRowsExpanded": false,
                                               "allRowsSelected": false,
                                               "areActionsDisabled": undefined,
+                                              "canCollapseAll": false,
                                               "canSelectAll": true,
                                               "canSortFavorites": true,
+                                              "collapseAllAriaLabel": "",
                                               "contentId": "expanded-content",
                                               "dropdownDirection": "down",
                                               "dropdownPosition": "right",
                                               "expandId": "expandable-toggle",
                                               "firstUserColumnIndex": 0,
+                                              "isHeaderSelectDisabled": false,
+                                              "menuAppendTo": "inline",
                                               "onCollapse": undefined,
                                               "onExpand": undefined,
                                               "onFavorite": undefined,
@@ -5990,15 +6257,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                               "actionResolver": undefined,
                                               "actions": undefined,
                                               "actionsToggle": undefined,
+                                              "allRowsExpanded": false,
                                               "allRowsSelected": false,
                                               "areActionsDisabled": undefined,
+                                              "canCollapseAll": false,
                                               "canSelectAll": true,
                                               "canSortFavorites": true,
+                                              "collapseAllAriaLabel": "",
                                               "contentId": "expanded-content",
                                               "dropdownDirection": "down",
                                               "dropdownPosition": "right",
                                               "expandId": "expandable-toggle",
                                               "firstUserColumnIndex": 0,
+                                              "isHeaderSelectDisabled": false,
+                                              "menuAppendTo": "inline",
                                               "onCollapse": undefined,
                                               "onExpand": undefined,
                                               "onFavorite": undefined,
@@ -6240,7 +6512,8 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                     >
                                       <RowWrapper
                                         className=""
-                                        onMouseDown={[Function]}
+                                        onClick={[Function]}
+                                        onKeyDown={[Function]}
                                         row={
                                           Object {
                                             "actions": Object {
@@ -6451,12 +6724,14 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                       >
                                         <Tr
                                           className=""
-                                          onMouseDown={[Function]}
+                                          onClick={[Function]}
+                                          onKeyDown={[Function]}
                                         >
                                           <TrBase
                                             className=""
                                             innerRef={null}
-                                            onMouseDown={[Function]}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
                                           >
                                             <tr
                                               className=""
@@ -6464,7 +6739,8 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                               data-ouia-component-type="PF4/TableRow"
                                               data-ouia-safe={true}
                                               hidden={false}
-                                              onMouseDown={[Function]}
+                                              onClick={[Function]}
+                                              onKeyDown={[Function]}
                                             >
                                               <BodyCell
                                                 data-key={0}
@@ -6520,10 +6796,13 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                                           onFocus={[Function]}
                                                           onMouseEnter={[Function]}
                                                           onMouseLeave={[Function]}
+                                                          onPopperMouseEnter={[Function]}
+                                                          onPopperMouseLeave={[Function]}
                                                           onTriggerEnter={[Function]}
                                                           placement="top"
                                                           popper={
                                                             <div
+                                                              aria-live="off"
                                                               className="pf-c-tooltip"
                                                               id="pf-tooltip-2"
                                                               role="tooltip"
@@ -6547,11 +6826,20 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                                           positionModifiers={
                                                             Object {
                                                               "bottom": "pf-m-bottom",
+                                                              "bottom-end": "pf-m-bottom-right",
+                                                              "bottom-start": "pf-m-bottom-left",
                                                               "left": "pf-m-left",
+                                                              "left-end": "pf-m-left-bottom",
+                                                              "left-start": "pf-m-left-top",
                                                               "right": "pf-m-right",
+                                                              "right-end": "pf-m-right-bottom",
+                                                              "right-start": "pf-m-right-top",
                                                               "top": "pf-m-top",
+                                                              "top-end": "pf-m-top-right",
+                                                              "top-start": "pf-m-top-left",
                                                             }
                                                           }
+                                                          removeFindDomNode={false}
                                                           trigger={
                                                             <span>
                                                               6e74a57
@@ -6752,9 +7040,9 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                               </Tbody>
                             </BodyWrapper>
                           </BaseBody>
-                        </Component>
+                        </Body>
                       </ContextBody>
-                    </Component>
+                    </TableBody>
                   </table>
                 </TableComposableBase>
               </TableComposable>

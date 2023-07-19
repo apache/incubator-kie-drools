@@ -1,7 +1,8 @@
 import React from 'react';
 import { DataTableColumn } from '@kogito-apps/components-common';
-import { PlayIcon } from '@patternfly/react-icons';
-import { Tooltip, Button } from '@patternfly/react-core';
+import { PlayIcon } from '@patternfly/react-icons/dist/js/icons/play-icon';
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { ProcessDefinition } from '../../../api/ProcessDefinitionListEnvelopeApi';
 export const getColumn = (
   columnPath: string,

@@ -17,13 +17,7 @@ exports[`CloudEventCustomHeadersEditor tests Add headers 1`] = `
             className="pf-l-stack__item"
           >
             <Button
-              icon={
-                <PlusCircleIcon
-                  color="currentColor"
-                  noVerticalAlign={false}
-                  size="sm"
-                />
-              }
+              icon={<UNDEFINED />}
               isInline={true}
               key="add-header-button"
               onClick={[Function]}
@@ -149,13 +143,7 @@ exports[`CloudEventCustomHeadersEditor tests Snapshot - empty 1`] = `
             className="pf-l-stack__item"
           >
             <Button
-              icon={
-                <PlusCircleIcon
-                  color="currentColor"
-                  noVerticalAlign={false}
-                  size="sm"
-                />
-              }
+              icon={<UNDEFINED />}
               isInline={true}
               key="add-header-button"
               onClick={[Function]}

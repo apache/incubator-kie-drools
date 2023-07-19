@@ -30,9 +30,26 @@ exports[`FormDetailsContainer tests Snapshot 1`] = `
     }
     targetOrigin="http://localhost:9000"
   >
-    <ForwardRef>
+    <ForwardRef(RefForwardingEmbeddedEnvelope)
+      apiImpl={
+        FormDetailsChannelApiImpl {
+          "driver": Object {
+            "getFormContent": [Function],
+            "saveFormContent": [Function],
+          },
+        }
+      }
+      config={
+        Object {
+          "containerType": "div",
+        }
+      }
+      origin="http://localhost:9000"
+      pollInit={[Function]}
+      refDelegate={[Function]}
+    >
       <div />
-    </ForwardRef>
+    </ForwardRef(RefForwardingEmbeddedEnvelope)>
   </ForwardRef>
 </FormDetailsContainer>
 `;

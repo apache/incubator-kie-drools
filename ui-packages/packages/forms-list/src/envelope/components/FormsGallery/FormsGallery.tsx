@@ -16,7 +16,11 @@
 
 import React from 'react';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
-import { Bullseye, Gallery, GalleryItem } from '@patternfly/react-core';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import {
+  Gallery,
+  GalleryItem
+} from '@patternfly/react-core/dist/js/layouts/Gallery';
 import { FormInfo } from '../../../api/FormsListEnvelopeApi';
 import FormCard from '../FormCard/FormCard';
 import { FormsListDriver } from '../../../api/FormsListDriver';

@@ -74,12 +74,15 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
                           </DropdownItem>,
                         ]
                       }
+                      isFlipEnabled={true}
                       isGrouped={false}
                       isOpen={false}
                       isPlain={true}
+                      isText={false}
                       menuAppendTo="inline"
                       onSelect={[Function]}
                       position="right"
+                      removeFindDomNode={false}
                       toggle={
                         <DropdownToggle
                           icon={
@@ -93,6 +96,7 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
                           Anonymous
                         </DropdownToggle>
                       }
+                      zIndex={9999}
                     >
                       <div
                         className="pf-c-dropdown pf-m-align-right"
@@ -112,6 +116,7 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
                           id="pf-dropdown-toggle-id-0"
                           isOpen={false}
                           isPlain={true}
+                          isText={false}
                           key=".0"
                           onEnter={[Function]}
                           onToggle={[Function]}
@@ -184,6 +189,7 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
                             isPlain={true}
                             isPrimary={false}
                             isSplitButton={false}
+                            isText={false}
                             onEnter={[Function]}
                             onToggle={[Function]}
                             parentRef={
@@ -239,6 +245,7 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
                                 </div>,
                               }
                             }
+                            toggleVariant="default"
                           >
                             <button
                               aria-expanded={false}
@@ -328,6 +335,7 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
           collapseListedFiltersBreakpoint="lg"
           isExpanded={false}
           numberOfFilters={0}
+          numberOfFiltersText={[Function]}
           showClearFiltersButton={false}
         >
           <div
@@ -440,12 +448,15 @@ exports[`PageToolbar component tests Snapshot testing - auth enabled 1`] = `
                           </DropdownItem>,
                         ]
                       }
+                      isFlipEnabled={true}
                       isGrouped={false}
                       isOpen={false}
                       isPlain={true}
+                      isText={false}
                       menuAppendTo="inline"
                       onSelect={[Function]}
                       position="right"
+                      removeFindDomNode={false}
                       toggle={
                         <DropdownToggle
                           icon={
@@ -459,6 +470,7 @@ exports[`PageToolbar component tests Snapshot testing - auth enabled 1`] = `
                           jdoe
                         </DropdownToggle>
                       }
+                      zIndex={9999}
                     >
                       <div
                         className="pf-c-dropdown pf-m-align-right"
@@ -478,6 +490,7 @@ exports[`PageToolbar component tests Snapshot testing - auth enabled 1`] = `
                           id="pf-dropdown-toggle-id-1"
                           isOpen={false}
                           isPlain={true}
+                          isText={false}
                           key=".0"
                           onEnter={[Function]}
                           onToggle={[Function]}
@@ -550,6 +563,7 @@ exports[`PageToolbar component tests Snapshot testing - auth enabled 1`] = `
                             isPlain={true}
                             isPrimary={false}
                             isSplitButton={false}
+                            isText={false}
                             onEnter={[Function]}
                             onToggle={[Function]}
                             parentRef={
@@ -605,6 +619,7 @@ exports[`PageToolbar component tests Snapshot testing - auth enabled 1`] = `
                                 </div>,
                               }
                             }
+                            toggleVariant="default"
                           >
                             <button
                               aria-expanded={false}
@@ -694,6 +709,7 @@ exports[`PageToolbar component tests Snapshot testing - auth enabled 1`] = `
           collapseListedFiltersBreakpoint="lg"
           isExpanded={false}
           numberOfFilters={0}
+          numberOfFiltersText={[Function]}
           showClearFiltersButton={false}
         >
           <div

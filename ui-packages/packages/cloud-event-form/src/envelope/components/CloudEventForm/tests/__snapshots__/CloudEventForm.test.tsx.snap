@@ -21,302 +21,278 @@ exports[`CloudEventForm tests Snapshot - new instance -  default values 1`] = `
     <Form
       isHorizontal={true}
     >
-      <form
-        className="pf-c-form pf-m-horizontal"
-        noValidate={true}
+      <FormBase
+        innerRef={null}
+        isHorizontal={true}
       >
-        <FormGroup
-          fieldId="endpoint"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isRequired={true}
-          label="Event Endpoint"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="endpoint"
-              helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
-            />
-          }
-          validated="default"
+        <form
+          className="pf-c-form pf-m-horizontal"
+          noValidate={true}
         >
-          <div
-            className="pf-c-form__group"
-          >
-            <div
-              className="pf-c-form__group-label"
-            >
-              <label
-                className="pf-c-form__label"
-                htmlFor="endpoint"
-              >
-                <span
-                  className="pf-c-form__label-text"
-                >
-                  Event Endpoint
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="pf-c-form__label-required"
-                >
-                   
-                  *
-                </span>
-              </label>
-               
+          <FormGroup
+            fieldId="endpoint"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isRequired={true}
+            label="Event Endpoint"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="endpoint"
                 helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <InputGroup>
-                <div
-                  className="pf-c-input-group"
-                >
-                  <Select
-                    id="method"
-                    isOpen={false}
-                    key=".0"
-                    onSelect={[Function]}
-                    onToggle={[Function]}
-                    selections="POST"
-                    variant="single"
-                    width="100px"
-                  >
-                    <MockedComponent />
-                  </Select>
-                  <TextInput
-                    id="endpoint"
-                    isRequired={true}
-                    key=".1"
-                    onChange={[Function]}
-                    validated="default"
-                    value="/"
-                  >
-                    <MockedComponent />
-                  </TextInput>
-                </div>
-              </InputGroup>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventType"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isRequired={true}
-          label="Event Type"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="type"
-              fieldId="eventType"
-              helpMessage="Sets the type of the cloud event."
-            />
-          }
-          validated="default"
-        >
-          <div
-            className="pf-c-form__group"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventType"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Type
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="pf-c-form__label-required"
-                >
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="endpoint"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Endpoint
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="pf-c-form__label-required"
+                    >
+                       
+                      *
+                    </span>
+                  </label>
                    
-                  *
-                </span>
-              </label>
-               
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="endpoint"
+                    helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <InputGroup>
+                    <div
+                      className="pf-c-input-group"
+                    >
+                      <Select
+                        id="method"
+                        isOpen={false}
+                        onSelect={[Function]}
+                        onToggle={[Function]}
+                        selections="POST"
+                        variant="single"
+                        width="100px"
+                      >
+                        <MockedComponent />
+                      </Select>
+                      <TextInput
+                        id="endpoint"
+                        isRequired={true}
+                        onChange={[Function]}
+                        validated="default"
+                        value="/"
+                      >
+                        <MockedComponent />
+                      </TextInput>
+                    </div>
+                  </InputGroup>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventType"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isRequired={true}
+            label="Event Type"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="type"
                 fieldId="eventType"
                 helpMessage="Sets the type of the cloud event."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="eventType"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                validated="default"
-                value=""
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventSource"
-          label="Event Source"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="source"
-              fieldId="eventSource"
-              helpMessage="Sets the source of the cloud event."
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventSource"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Source
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventType"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Type
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="pf-c-form__label-required"
+                    >
+                       
+                      *
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="type"
+                    fieldId="eventType"
+                    helpMessage="Sets the type of the cloud event."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="eventType"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    validated="default"
+                    value=""
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventSource"
+            label="Event Source"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="source"
                 fieldId="eventSource"
                 helpMessage="Sets the source of the cloud event."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="eventSource"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                value="/test/source"
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="businessKey"
-          label="Business Key"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="kogitobusinesskey"
-              fieldId="businessKey"
-              helpMessage="Sets the Business Key for the Serverless Workflow instance started by the cloud event."
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="businessKey"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Business Key
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventSource"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Source
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="source"
+                    fieldId="eventSource"
+                    helpMessage="Sets the source of the cloud event."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="eventSource"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    value="/test/source"
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="businessKey"
+            label="Business Key"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="kogitobusinesskey"
                 fieldId="businessKey"
                 helpMessage="Sets the Business Key for the Serverless Workflow instance started by the cloud event."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="businessKey"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                value=""
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="customHeaders"
-          label="Event Custom Headers"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="customHeaders"
-              helpMessage={
-                <div>
-                  <p>
-                    Sets the custom headers that will be added into the Cloud Event.
-                  </p>
-                  <p>
-                    Press the
-                     
-                    <span
-                      className="pf-u-link-color"
-                    >
-                      Add Header
-                    </span>
-                     button to start adding new headers.
-                  </p>
-                  <p>
-                    Headers with empty Name won't be added into the Cloud Event.
-                  </p>
-                </div>
-              }
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="customHeaders"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Custom Headers
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="businessKey"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Business Key
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="kogitobusinesskey"
+                    fieldId="businessKey"
+                    helpMessage="Sets the Business Key for the Serverless Workflow instance started by the cloud event."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="businessKey"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    value=""
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="customHeaders"
+            label="Event Custom Headers"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="customHeaders"
                 helpMessage={
@@ -340,104 +316,146 @@ exports[`CloudEventForm tests Snapshot - new instance -  default values 1`] = `
                   </div>
                 }
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <ForwardRef />
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventData"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isHelperTextBeforeField={true}
-          label="Event Data"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="eventData"
-              helpMessage="Sets the content of the cloud event in JSON format."
-            />
-          }
-          validated="default"
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventData"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Data
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="customHeaders"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Custom Headers
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="customHeaders"
+                    helpMessage={
+                      <div>
+                        <p>
+                          Sets the custom headers that will be added into the Cloud Event.
+                        </p>
+                        <p>
+                          Press the
+                           
+                          <span
+                            className="pf-u-link-color"
+                          >
+                            Add Header
+                          </span>
+                           button to start adding new headers.
+                        </p>
+                        <p>
+                          Headers with empty Name won't be added into the Cloud Event.
+                        </p>
+                      </div>
+                    }
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <ForwardRef />
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventData"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isHelperTextBeforeField={true}
+            label="Event Data"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="eventData"
                 helpMessage="Sets the content of the cloud event in JSON format."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <CodeEditor
-                code=""
-                height="300px"
-                isCopyEnabled={false}
-                isDarkTheme={false}
-                isLanguageLabelVisible={false}
-                isLineNumbersVisible={true}
-                isMinimapVisible={true}
-                isReadOnly={false}
-                language="json"
-                onChange={[Function]}
-              >
-                <MockedComponent />
-              </CodeEditor>
-            </div>
-          </div>
-        </FormGroup>
-        <ActionGroup>
-          <div
-            className="pf-c-form__group pf-m-action"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-control"
+            <GenerateId
+              prefix="pf-random-id-"
             >
               <div
-                className="pf-c-form__actions"
+                className="pf-c-form__group"
               >
-                <Button
-                  key="triggerCloudEventButton"
-                  onClick={[Function]}
-                  variant="primary"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  <MockedComponent />
-                </Button>
-                <Button
-                  key="resetCloudEventFormButton"
-                  onClick={[Function]}
-                  variant="secondary"
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventData"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Data
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="eventData"
+                    helpMessage="Sets the content of the cloud event in JSON format."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
                 >
-                  <MockedComponent />
-                </Button>
+                  <CodeEditor
+                    code=""
+                    height="300px"
+                    isCopyEnabled={false}
+                    isDarkTheme={false}
+                    isLanguageLabelVisible={false}
+                    isLineNumbersVisible={true}
+                    isMinimapVisible={true}
+                    isReadOnly={false}
+                    onChange={[Function]}
+                  >
+                    <MockedComponent />
+                  </CodeEditor>
+                </div>
               </div>
+            </GenerateId>
+          </FormGroup>
+          <ActionListGroup>
+            <div
+              className="pf-c-action-list__group"
+            >
+              <Button
+                key="triggerCloudEventButton"
+                onClick={[Function]}
+                variant="primary"
+              >
+                <MockedComponent />
+              </Button>
+              <Button
+                key="resetCloudEventFormButton"
+                onClick={[Function]}
+                variant="secondary"
+              >
+                <MockedComponent />
+              </Button>
             </div>
-          </div>
-        </ActionGroup>
-      </form>
+          </ActionListGroup>
+        </form>
+      </FormBase>
     </Form>
   </div>
 </CloudEventForm>
@@ -459,302 +477,278 @@ exports[`CloudEventForm tests Snapshot - new instance 1`] = `
     <Form
       isHorizontal={true}
     >
-      <form
-        className="pf-c-form pf-m-horizontal"
-        noValidate={true}
+      <FormBase
+        innerRef={null}
+        isHorizontal={true}
       >
-        <FormGroup
-          fieldId="endpoint"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isRequired={true}
-          label="Event Endpoint"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="endpoint"
-              helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
-            />
-          }
-          validated="default"
+        <form
+          className="pf-c-form pf-m-horizontal"
+          noValidate={true}
         >
-          <div
-            className="pf-c-form__group"
-          >
-            <div
-              className="pf-c-form__group-label"
-            >
-              <label
-                className="pf-c-form__label"
-                htmlFor="endpoint"
-              >
-                <span
-                  className="pf-c-form__label-text"
-                >
-                  Event Endpoint
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="pf-c-form__label-required"
-                >
-                   
-                  *
-                </span>
-              </label>
-               
+          <FormGroup
+            fieldId="endpoint"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isRequired={true}
+            label="Event Endpoint"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="endpoint"
                 helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <InputGroup>
-                <div
-                  className="pf-c-input-group"
-                >
-                  <Select
-                    id="method"
-                    isOpen={false}
-                    key=".0"
-                    onSelect={[Function]}
-                    onToggle={[Function]}
-                    selections="POST"
-                    variant="single"
-                    width="100px"
-                  >
-                    <MockedComponent />
-                  </Select>
-                  <TextInput
-                    id="endpoint"
-                    isRequired={true}
-                    key=".1"
-                    onChange={[Function]}
-                    validated="default"
-                    value="/"
-                  >
-                    <MockedComponent />
-                  </TextInput>
-                </div>
-              </InputGroup>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventType"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isRequired={true}
-          label="Event Type"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="type"
-              fieldId="eventType"
-              helpMessage="Sets the type of the cloud event."
-            />
-          }
-          validated="default"
-        >
-          <div
-            className="pf-c-form__group"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventType"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Type
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="pf-c-form__label-required"
-                >
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="endpoint"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Endpoint
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="pf-c-form__label-required"
+                    >
+                       
+                      *
+                    </span>
+                  </label>
                    
-                  *
-                </span>
-              </label>
-               
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="endpoint"
+                    helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <InputGroup>
+                    <div
+                      className="pf-c-input-group"
+                    >
+                      <Select
+                        id="method"
+                        isOpen={false}
+                        onSelect={[Function]}
+                        onToggle={[Function]}
+                        selections="POST"
+                        variant="single"
+                        width="100px"
+                      >
+                        <MockedComponent />
+                      </Select>
+                      <TextInput
+                        id="endpoint"
+                        isRequired={true}
+                        onChange={[Function]}
+                        validated="default"
+                        value="/"
+                      >
+                        <MockedComponent />
+                      </TextInput>
+                    </div>
+                  </InputGroup>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventType"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isRequired={true}
+            label="Event Type"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="type"
                 fieldId="eventType"
                 helpMessage="Sets the type of the cloud event."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="eventType"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                validated="default"
-                value=""
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventSource"
-          label="Event Source"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="source"
-              fieldId="eventSource"
-              helpMessage="Sets the source of the cloud event."
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventSource"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Source
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventType"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Type
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="pf-c-form__label-required"
+                    >
+                       
+                      *
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="type"
+                    fieldId="eventType"
+                    helpMessage="Sets the type of the cloud event."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="eventType"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    validated="default"
+                    value=""
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventSource"
+            label="Event Source"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="source"
                 fieldId="eventSource"
                 helpMessage="Sets the source of the cloud event."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="eventSource"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                value="/from/form"
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="businessKey"
-          label="Business Key"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="kogitobusinesskey"
-              fieldId="businessKey"
-              helpMessage="Sets the Business Key for the Serverless Workflow instance started by the cloud event."
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="businessKey"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Business Key
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventSource"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Source
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="source"
+                    fieldId="eventSource"
+                    helpMessage="Sets the source of the cloud event."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="eventSource"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    value="/from/form"
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="businessKey"
+            label="Business Key"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="kogitobusinesskey"
                 fieldId="businessKey"
                 helpMessage="Sets the Business Key for the Serverless Workflow instance started by the cloud event."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="businessKey"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                value=""
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="customHeaders"
-          label="Event Custom Headers"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="customHeaders"
-              helpMessage={
-                <div>
-                  <p>
-                    Sets the custom headers that will be added into the Cloud Event.
-                  </p>
-                  <p>
-                    Press the
-                     
-                    <span
-                      className="pf-u-link-color"
-                    >
-                      Add Header
-                    </span>
-                     button to start adding new headers.
-                  </p>
-                  <p>
-                    Headers with empty Name won't be added into the Cloud Event.
-                  </p>
-                </div>
-              }
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="customHeaders"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Custom Headers
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="businessKey"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Business Key
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="kogitobusinesskey"
+                    fieldId="businessKey"
+                    helpMessage="Sets the Business Key for the Serverless Workflow instance started by the cloud event."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="businessKey"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    value=""
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="customHeaders"
+            label="Event Custom Headers"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="customHeaders"
                 helpMessage={
@@ -778,104 +772,146 @@ exports[`CloudEventForm tests Snapshot - new instance 1`] = `
                   </div>
                 }
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <ForwardRef />
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventData"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isHelperTextBeforeField={true}
-          label="Event Data"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="eventData"
-              helpMessage="Sets the content of the cloud event in JSON format."
-            />
-          }
-          validated="default"
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventData"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Data
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="customHeaders"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Custom Headers
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="customHeaders"
+                    helpMessage={
+                      <div>
+                        <p>
+                          Sets the custom headers that will be added into the Cloud Event.
+                        </p>
+                        <p>
+                          Press the
+                           
+                          <span
+                            className="pf-u-link-color"
+                          >
+                            Add Header
+                          </span>
+                           button to start adding new headers.
+                        </p>
+                        <p>
+                          Headers with empty Name won't be added into the Cloud Event.
+                        </p>
+                      </div>
+                    }
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <ForwardRef />
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventData"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isHelperTextBeforeField={true}
+            label="Event Data"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="eventData"
                 helpMessage="Sets the content of the cloud event in JSON format."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <CodeEditor
-                code=""
-                height="300px"
-                isCopyEnabled={false}
-                isDarkTheme={false}
-                isLanguageLabelVisible={false}
-                isLineNumbersVisible={true}
-                isMinimapVisible={true}
-                isReadOnly={false}
-                language="json"
-                onChange={[Function]}
-              >
-                <MockedComponent />
-              </CodeEditor>
-            </div>
-          </div>
-        </FormGroup>
-        <ActionGroup>
-          <div
-            className="pf-c-form__group pf-m-action"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-control"
+            <GenerateId
+              prefix="pf-random-id-"
             >
               <div
-                className="pf-c-form__actions"
+                className="pf-c-form__group"
               >
-                <Button
-                  key="triggerCloudEventButton"
-                  onClick={[Function]}
-                  variant="primary"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  <MockedComponent />
-                </Button>
-                <Button
-                  key="resetCloudEventFormButton"
-                  onClick={[Function]}
-                  variant="secondary"
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventData"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Data
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="eventData"
+                    helpMessage="Sets the content of the cloud event in JSON format."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
                 >
-                  <MockedComponent />
-                </Button>
+                  <CodeEditor
+                    code=""
+                    height="300px"
+                    isCopyEnabled={false}
+                    isDarkTheme={false}
+                    isLanguageLabelVisible={false}
+                    isLineNumbersVisible={true}
+                    isMinimapVisible={true}
+                    isReadOnly={false}
+                    onChange={[Function]}
+                  >
+                    <MockedComponent />
+                  </CodeEditor>
+                </div>
               </div>
+            </GenerateId>
+          </FormGroup>
+          <ActionListGroup>
+            <div
+              className="pf-c-action-list__group"
+            >
+              <Button
+                key="triggerCloudEventButton"
+                onClick={[Function]}
+                variant="primary"
+              >
+                <MockedComponent />
+              </Button>
+              <Button
+                key="resetCloudEventFormButton"
+                onClick={[Function]}
+                variant="secondary"
+              >
+                <MockedComponent />
+              </Button>
             </div>
-          </div>
-        </ActionGroup>
-      </form>
+          </ActionListGroup>
+        </form>
+      </FormBase>
     </Form>
   </div>
 </CloudEventForm>
@@ -902,302 +938,278 @@ exports[`CloudEventForm tests Snapshot - send cloud event -  default values 1`] 
     <Form
       isHorizontal={true}
     >
-      <form
-        className="pf-c-form pf-m-horizontal"
-        noValidate={true}
+      <FormBase
+        innerRef={null}
+        isHorizontal={true}
       >
-        <FormGroup
-          fieldId="endpoint"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isRequired={true}
-          label="Event Endpoint"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="endpoint"
-              helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
-            />
-          }
-          validated="default"
+        <form
+          className="pf-c-form pf-m-horizontal"
+          noValidate={true}
         >
-          <div
-            className="pf-c-form__group"
-          >
-            <div
-              className="pf-c-form__group-label"
-            >
-              <label
-                className="pf-c-form__label"
-                htmlFor="endpoint"
-              >
-                <span
-                  className="pf-c-form__label-text"
-                >
-                  Event Endpoint
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="pf-c-form__label-required"
-                >
-                   
-                  *
-                </span>
-              </label>
-               
+          <FormGroup
+            fieldId="endpoint"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isRequired={true}
+            label="Event Endpoint"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="endpoint"
                 helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <InputGroup>
-                <div
-                  className="pf-c-input-group"
-                >
-                  <Select
-                    id="method"
-                    isOpen={false}
-                    key=".0"
-                    onSelect={[Function]}
-                    onToggle={[Function]}
-                    selections="POST"
-                    variant="single"
-                    width="100px"
-                  >
-                    <MockedComponent />
-                  </Select>
-                  <TextInput
-                    id="endpoint"
-                    isRequired={true}
-                    key=".1"
-                    onChange={[Function]}
-                    validated="default"
-                    value="/"
-                  >
-                    <MockedComponent />
-                  </TextInput>
-                </div>
-              </InputGroup>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventType"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isRequired={true}
-          label="Event Type"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="type"
-              fieldId="eventType"
-              helpMessage="Sets the type of the cloud event."
-            />
-          }
-          validated="default"
-        >
-          <div
-            className="pf-c-form__group"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventType"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Type
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="pf-c-form__label-required"
-                >
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="endpoint"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Endpoint
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="pf-c-form__label-required"
+                    >
+                       
+                      *
+                    </span>
+                  </label>
                    
-                  *
-                </span>
-              </label>
-               
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="endpoint"
+                    helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <InputGroup>
+                    <div
+                      className="pf-c-input-group"
+                    >
+                      <Select
+                        id="method"
+                        isOpen={false}
+                        onSelect={[Function]}
+                        onToggle={[Function]}
+                        selections="POST"
+                        variant="single"
+                        width="100px"
+                      >
+                        <MockedComponent />
+                      </Select>
+                      <TextInput
+                        id="endpoint"
+                        isRequired={true}
+                        onChange={[Function]}
+                        validated="default"
+                        value="/"
+                      >
+                        <MockedComponent />
+                      </TextInput>
+                    </div>
+                  </InputGroup>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventType"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isRequired={true}
+            label="Event Type"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="type"
                 fieldId="eventType"
                 helpMessage="Sets the type of the cloud event."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="eventType"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                validated="default"
-                value=""
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventSource"
-          label="Event Source"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="source"
-              fieldId="eventSource"
-              helpMessage="Sets the source of the cloud event."
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventSource"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Source
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventType"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Type
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="pf-c-form__label-required"
+                    >
+                       
+                      *
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="type"
+                    fieldId="eventType"
+                    helpMessage="Sets the type of the cloud event."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="eventType"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    validated="default"
+                    value=""
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventSource"
+            label="Event Source"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="source"
                 fieldId="eventSource"
                 helpMessage="Sets the source of the cloud event."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="eventSource"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                value="/test/source"
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="instanceId"
-          label="Instance Id"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="kogitoprocrefid"
-              fieldId="instanceId"
-              helpMessage="Sets the Service Workflow instance Id the cloud event will interact with."
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="instanceId"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Instance Id
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventSource"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Source
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="source"
+                    fieldId="eventSource"
+                    helpMessage="Sets the source of the cloud event."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="eventSource"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    value="/test/source"
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="instanceId"
+            label="Instance Id"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="kogitoprocrefid"
                 fieldId="instanceId"
                 helpMessage="Sets the Service Workflow instance Id the cloud event will interact with."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="instanceId"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                value="1234"
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="customHeaders"
-          label="Event Custom Headers"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="customHeaders"
-              helpMessage={
-                <div>
-                  <p>
-                    Sets the custom headers that will be added into the Cloud Event.
-                  </p>
-                  <p>
-                    Press the
-                     
-                    <span
-                      className="pf-u-link-color"
-                    >
-                      Add Header
-                    </span>
-                     button to start adding new headers.
-                  </p>
-                  <p>
-                    Headers with empty Name won't be added into the Cloud Event.
-                  </p>
-                </div>
-              }
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="customHeaders"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Custom Headers
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="instanceId"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Instance Id
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="kogitoprocrefid"
+                    fieldId="instanceId"
+                    helpMessage="Sets the Service Workflow instance Id the cloud event will interact with."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="instanceId"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    value="1234"
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="customHeaders"
+            label="Event Custom Headers"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="customHeaders"
                 helpMessage={
@@ -1221,104 +1233,146 @@ exports[`CloudEventForm tests Snapshot - send cloud event -  default values 1`] 
                   </div>
                 }
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <ForwardRef />
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventData"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isHelperTextBeforeField={true}
-          label="Event Data"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="eventData"
-              helpMessage="Sets the content of the cloud event in JSON format."
-            />
-          }
-          validated="default"
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventData"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Data
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="customHeaders"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Custom Headers
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="customHeaders"
+                    helpMessage={
+                      <div>
+                        <p>
+                          Sets the custom headers that will be added into the Cloud Event.
+                        </p>
+                        <p>
+                          Press the
+                           
+                          <span
+                            className="pf-u-link-color"
+                          >
+                            Add Header
+                          </span>
+                           button to start adding new headers.
+                        </p>
+                        <p>
+                          Headers with empty Name won't be added into the Cloud Event.
+                        </p>
+                      </div>
+                    }
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <ForwardRef />
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventData"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isHelperTextBeforeField={true}
+            label="Event Data"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="eventData"
                 helpMessage="Sets the content of the cloud event in JSON format."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <CodeEditor
-                code=""
-                height="300px"
-                isCopyEnabled={false}
-                isDarkTheme={false}
-                isLanguageLabelVisible={false}
-                isLineNumbersVisible={true}
-                isMinimapVisible={true}
-                isReadOnly={false}
-                language="json"
-                onChange={[Function]}
-              >
-                <MockedComponent />
-              </CodeEditor>
-            </div>
-          </div>
-        </FormGroup>
-        <ActionGroup>
-          <div
-            className="pf-c-form__group pf-m-action"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-control"
+            <GenerateId
+              prefix="pf-random-id-"
             >
               <div
-                className="pf-c-form__actions"
+                className="pf-c-form__group"
               >
-                <Button
-                  key="triggerCloudEventButton"
-                  onClick={[Function]}
-                  variant="primary"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  <MockedComponent />
-                </Button>
-                <Button
-                  key="resetCloudEventFormButton"
-                  onClick={[Function]}
-                  variant="secondary"
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventData"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Data
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="eventData"
+                    helpMessage="Sets the content of the cloud event in JSON format."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
                 >
-                  <MockedComponent />
-                </Button>
+                  <CodeEditor
+                    code=""
+                    height="300px"
+                    isCopyEnabled={false}
+                    isDarkTheme={false}
+                    isLanguageLabelVisible={false}
+                    isLineNumbersVisible={true}
+                    isMinimapVisible={true}
+                    isReadOnly={false}
+                    onChange={[Function]}
+                  >
+                    <MockedComponent />
+                  </CodeEditor>
+                </div>
               </div>
+            </GenerateId>
+          </FormGroup>
+          <ActionListGroup>
+            <div
+              className="pf-c-action-list__group"
+            >
+              <Button
+                key="triggerCloudEventButton"
+                onClick={[Function]}
+                variant="primary"
+              >
+                <MockedComponent />
+              </Button>
+              <Button
+                key="resetCloudEventFormButton"
+                onClick={[Function]}
+                variant="secondary"
+              >
+                <MockedComponent />
+              </Button>
             </div>
-          </div>
-        </ActionGroup>
-      </form>
+          </ActionListGroup>
+        </form>
+      </FormBase>
     </Form>
   </div>
 </CloudEventForm>
@@ -1339,302 +1393,278 @@ exports[`CloudEventForm tests Snapshot - send cloud event 1`] = `
     <Form
       isHorizontal={true}
     >
-      <form
-        className="pf-c-form pf-m-horizontal"
-        noValidate={true}
+      <FormBase
+        innerRef={null}
+        isHorizontal={true}
       >
-        <FormGroup
-          fieldId="endpoint"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isRequired={true}
-          label="Event Endpoint"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="endpoint"
-              helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
-            />
-          }
-          validated="default"
+        <form
+          className="pf-c-form pf-m-horizontal"
+          noValidate={true}
         >
-          <div
-            className="pf-c-form__group"
-          >
-            <div
-              className="pf-c-form__group-label"
-            >
-              <label
-                className="pf-c-form__label"
-                htmlFor="endpoint"
-              >
-                <span
-                  className="pf-c-form__label-text"
-                >
-                  Event Endpoint
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="pf-c-form__label-required"
-                >
-                   
-                  *
-                </span>
-              </label>
-               
+          <FormGroup
+            fieldId="endpoint"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isRequired={true}
+            label="Event Endpoint"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="endpoint"
                 helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <InputGroup>
-                <div
-                  className="pf-c-input-group"
-                >
-                  <Select
-                    id="method"
-                    isOpen={false}
-                    key=".0"
-                    onSelect={[Function]}
-                    onToggle={[Function]}
-                    selections="POST"
-                    variant="single"
-                    width="100px"
-                  >
-                    <MockedComponent />
-                  </Select>
-                  <TextInput
-                    id="endpoint"
-                    isRequired={true}
-                    key=".1"
-                    onChange={[Function]}
-                    validated="default"
-                    value="/"
-                  >
-                    <MockedComponent />
-                  </TextInput>
-                </div>
-              </InputGroup>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventType"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isRequired={true}
-          label="Event Type"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="type"
-              fieldId="eventType"
-              helpMessage="Sets the type of the cloud event."
-            />
-          }
-          validated="default"
-        >
-          <div
-            className="pf-c-form__group"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventType"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Type
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="pf-c-form__label-required"
-                >
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="endpoint"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Endpoint
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="pf-c-form__label-required"
+                    >
+                       
+                      *
+                    </span>
+                  </label>
                    
-                  *
-                </span>
-              </label>
-               
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="endpoint"
+                    helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <InputGroup>
+                    <div
+                      className="pf-c-input-group"
+                    >
+                      <Select
+                        id="method"
+                        isOpen={false}
+                        onSelect={[Function]}
+                        onToggle={[Function]}
+                        selections="POST"
+                        variant="single"
+                        width="100px"
+                      >
+                        <MockedComponent />
+                      </Select>
+                      <TextInput
+                        id="endpoint"
+                        isRequired={true}
+                        onChange={[Function]}
+                        validated="default"
+                        value="/"
+                      >
+                        <MockedComponent />
+                      </TextInput>
+                    </div>
+                  </InputGroup>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventType"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isRequired={true}
+            label="Event Type"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="type"
                 fieldId="eventType"
                 helpMessage="Sets the type of the cloud event."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="eventType"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                validated="default"
-                value=""
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventSource"
-          label="Event Source"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="source"
-              fieldId="eventSource"
-              helpMessage="Sets the source of the cloud event."
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventSource"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Source
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventType"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Type
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="pf-c-form__label-required"
+                    >
+                       
+                      *
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="type"
+                    fieldId="eventType"
+                    helpMessage="Sets the type of the cloud event."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="eventType"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    validated="default"
+                    value=""
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventSource"
+            label="Event Source"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="source"
                 fieldId="eventSource"
                 helpMessage="Sets the source of the cloud event."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="eventSource"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                value="/from/form"
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="instanceId"
-          label="Instance Id"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              cloudEventHeader="kogitoprocrefid"
-              fieldId="instanceId"
-              helpMessage="Sets the Service Workflow instance Id the cloud event will interact with."
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="instanceId"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Instance Id
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventSource"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Source
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="source"
+                    fieldId="eventSource"
+                    helpMessage="Sets the source of the cloud event."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="eventSource"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    value="/from/form"
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="instanceId"
+            label="Instance Id"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 cloudEventHeader="kogitoprocrefid"
                 fieldId="instanceId"
                 helpMessage="Sets the Service Workflow instance Id the cloud event will interact with."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <TextInput
-                id="instanceId"
-                isRequired={true}
-                onChange={[Function]}
-                type="text"
-                value=""
-              >
-                <MockedComponent />
-              </TextInput>
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="customHeaders"
-          label="Event Custom Headers"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="customHeaders"
-              helpMessage={
-                <div>
-                  <p>
-                    Sets the custom headers that will be added into the Cloud Event.
-                  </p>
-                  <p>
-                    Press the
-                     
-                    <span
-                      className="pf-u-link-color"
-                    >
-                      Add Header
-                    </span>
-                     button to start adding new headers.
-                  </p>
-                  <p>
-                    Headers with empty Name won't be added into the Cloud Event.
-                  </p>
-                </div>
-              }
-            />
-          }
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="customHeaders"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Custom Headers
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="instanceId"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Instance Id
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    cloudEventHeader="kogitoprocrefid"
+                    fieldId="instanceId"
+                    helpMessage="Sets the Service Workflow instance Id the cloud event will interact with."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <TextInput
+                    id="instanceId"
+                    isRequired={true}
+                    onChange={[Function]}
+                    type="text"
+                    value=""
+                  >
+                    <MockedComponent />
+                  </TextInput>
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="customHeaders"
+            label="Event Custom Headers"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="customHeaders"
                 helpMessage={
@@ -1658,104 +1688,146 @@ exports[`CloudEventForm tests Snapshot - send cloud event 1`] = `
                   </div>
                 }
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <ForwardRef />
-            </div>
-          </div>
-        </FormGroup>
-        <FormGroup
-          fieldId="eventData"
-          helperTextInvalidIcon={
-            <ExclamationCircleIcon
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          }
-          isHelperTextBeforeField={true}
-          label="Event Data"
-          labelIcon={
-            <MockedCloudEventFieldLabelIcon
-              fieldId="eventData"
-              helpMessage="Sets the content of the cloud event in JSON format."
-            />
-          }
-          validated="default"
-        >
-          <div
-            className="pf-c-form__group"
+            }
           >
-            <div
-              className="pf-c-form__group-label"
+            <GenerateId
+              prefix="pf-random-id-"
             >
-              <label
-                className="pf-c-form__label"
-                htmlFor="eventData"
+              <div
+                className="pf-c-form__group"
               >
-                <span
-                  className="pf-c-form__label-text"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  Event Data
-                </span>
-              </label>
-               
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="customHeaders"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Custom Headers
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="customHeaders"
+                    helpMessage={
+                      <div>
+                        <p>
+                          Sets the custom headers that will be added into the Cloud Event.
+                        </p>
+                        <p>
+                          Press the
+                           
+                          <span
+                            className="pf-u-link-color"
+                          >
+                            Add Header
+                          </span>
+                           button to start adding new headers.
+                        </p>
+                        <p>
+                          Headers with empty Name won't be added into the Cloud Event.
+                        </p>
+                      </div>
+                    }
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <ForwardRef />
+                </div>
+              </div>
+            </GenerateId>
+          </FormGroup>
+          <FormGroup
+            fieldId="eventData"
+            helperTextInvalidIcon={
+              <ExclamationCircleIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isHelperTextBeforeField={true}
+            label="Event Data"
+            labelIcon={
               <MockedCloudEventFieldLabelIcon
                 fieldId="eventData"
                 helpMessage="Sets the content of the cloud event in JSON format."
               />
-            </div>
-            <div
-              className="pf-c-form__group-control"
-            >
-              <CodeEditor
-                code=""
-                height="300px"
-                isCopyEnabled={false}
-                isDarkTheme={false}
-                isLanguageLabelVisible={false}
-                isLineNumbersVisible={true}
-                isMinimapVisible={true}
-                isReadOnly={false}
-                language="json"
-                onChange={[Function]}
-              >
-                <MockedComponent />
-              </CodeEditor>
-            </div>
-          </div>
-        </FormGroup>
-        <ActionGroup>
-          <div
-            className="pf-c-form__group pf-m-action"
+            }
+            validated="default"
           >
-            <div
-              className="pf-c-form__group-control"
+            <GenerateId
+              prefix="pf-random-id-"
             >
               <div
-                className="pf-c-form__actions"
+                className="pf-c-form__group"
               >
-                <Button
-                  key="triggerCloudEventButton"
-                  onClick={[Function]}
-                  variant="primary"
+                <div
+                  className="pf-c-form__group-label"
                 >
-                  <MockedComponent />
-                </Button>
-                <Button
-                  key="resetCloudEventFormButton"
-                  onClick={[Function]}
-                  variant="secondary"
+                  <label
+                    className="pf-c-form__label"
+                    htmlFor="eventData"
+                  >
+                    <span
+                      className="pf-c-form__label-text"
+                    >
+                      Event Data
+                    </span>
+                  </label>
+                   
+                  <MockedCloudEventFieldLabelIcon
+                    fieldId="eventData"
+                    helpMessage="Sets the content of the cloud event in JSON format."
+                  />
+                </div>
+                <div
+                  className="pf-c-form__group-control"
                 >
-                  <MockedComponent />
-                </Button>
+                  <CodeEditor
+                    code=""
+                    height="300px"
+                    isCopyEnabled={false}
+                    isDarkTheme={false}
+                    isLanguageLabelVisible={false}
+                    isLineNumbersVisible={true}
+                    isMinimapVisible={true}
+                    isReadOnly={false}
+                    onChange={[Function]}
+                  >
+                    <MockedComponent />
+                  </CodeEditor>
+                </div>
               </div>
+            </GenerateId>
+          </FormGroup>
+          <ActionListGroup>
+            <div
+              className="pf-c-action-list__group"
+            >
+              <Button
+                key="triggerCloudEventButton"
+                onClick={[Function]}
+                variant="primary"
+              >
+                <MockedComponent />
+              </Button>
+              <Button
+                key="resetCloudEventFormButton"
+                onClick={[Function]}
+                variant="secondary"
+              >
+                <MockedComponent />
+              </Button>
             </div>
-          </div>
-        </ActionGroup>
-      </form>
+          </ActionListGroup>
+        </form>
+      </FormBase>
     </Form>
   </div>
 </CloudEventForm>

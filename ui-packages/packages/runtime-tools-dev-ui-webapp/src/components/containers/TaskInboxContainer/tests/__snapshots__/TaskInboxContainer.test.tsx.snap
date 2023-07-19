@@ -36,9 +36,34 @@ exports[`TaskInboxContainer tests Snapshot 1`] = `
     }
     targetOrigin="http://localhost:9000"
   >
-    <ForwardRef>
+    <ForwardRef(RefForwardingEmbeddedEnvelope)
+      apiImpl={
+        TaskInboxChannelApiImpl {
+          "driver": TaskInboxGatewayApiImpl {
+            "getCurrentUser": [MockFunction],
+            "listeners": Array [
+              Object {
+                "onOpen": [Function],
+              },
+            ],
+            "queries": Object {
+              "getUserTaskById": [MockFunction],
+              "getUserTasks": [MockFunction],
+            },
+          },
+        }
+      }
+      config={
+        Object {
+          "containerType": "div",
+        }
+      }
+      origin="http://localhost:9000"
+      pollInit={[Function]}
+      refDelegate={[Function]}
+    >
       <div />
-    </ForwardRef>
+    </ForwardRef(RefForwardingEmbeddedEnvelope)>
   </ForwardRef>
 </TaskInboxContainer>
 `;

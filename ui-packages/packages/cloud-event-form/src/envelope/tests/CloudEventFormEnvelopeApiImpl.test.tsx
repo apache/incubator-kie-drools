@@ -16,17 +16,17 @@
 
 import {
   MockedCloudEventFormEnvelopeViewApi,
-  MockedEnvelopeBusControllerDefinition
+  MockedEnvelopeClientDefinition
 } from './mocks/Mocks';
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
-import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
+import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';
 import { CloudEventFormChannelApi, CloudEventFormEnvelopeApi } from '../../api';
 import { CloudEventFormEnvelopeViewApi } from '../CloudEventFormEnvelopeView';
 import { CloudEventFormEnvelopeApiImpl } from '../CloudEventFormEnvelopeApiImpl';
 
 describe('CloudEventFormEnvelopeApiImpl tests', () => {
-  it('initialize', () => {
-    const envelopeBusController = new MockedEnvelopeBusControllerDefinition();
+  it('initialize', async () => {
+    const envelopeClient = new MockedEnvelopeClientDefinition();
     const view = new MockedCloudEventFormEnvelopeViewApi();
 
     const args: EnvelopeApiFactoryArgs<
@@ -35,12 +35,12 @@ describe('CloudEventFormEnvelopeApiImpl tests', () => {
       CloudEventFormEnvelopeViewApi,
       undefined
     > = {
-      envelopeBusController: envelopeBusController as EnvelopeBusController<
+      envelopeClient: envelopeClient as EnvelopeClient<
         CloudEventFormEnvelopeApi,
         CloudEventFormChannelApi
       >,
       envelopeContext: undefined,
-      view: () => view
+      viewDelegate: () => Promise.resolve(() => view)
     };
 
     const envelopeApi = new CloudEventFormEnvelopeApiImpl(args);
@@ -59,11 +59,11 @@ describe('CloudEventFormEnvelopeApiImpl tests', () => {
       }
     );
 
-    expect(envelopeBusController.associate).toHaveBeenCalledWith(
+    expect(envelopeClient.associate).toHaveBeenCalledWith(
       'origin',
       'envelopeServerId'
     );
-
-    expect(view.initialize).toHaveBeenCalled();
+    const calledView = await view.initialize;
+    expect(calledView).toHaveBeenCalled();
   });
 });

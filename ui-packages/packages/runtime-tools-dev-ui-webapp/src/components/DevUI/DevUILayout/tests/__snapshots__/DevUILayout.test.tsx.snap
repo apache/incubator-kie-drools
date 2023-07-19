@@ -15,6 +15,8 @@ exports[`DevUILayout tests Snapshot test with Processing disabled 1`] = `
     data-ouia-component-type="page"
     data-ouia-safe={true}
     defaultManagedSidebarIsOpen={true}
+    getBreakpoint={[Function]}
+    getVerticalBreakpoint={[Function]}
     header={<React.Fragment />}
     isBreadcrumbWidthLimited={false}
     isManagedSidebar={false}
@@ -37,7 +39,7 @@ exports[`DevUILayout tests Snapshot test with Processing disabled 1`] = `
     }
   >
     <div
-      className="pf-c-page kogito-consoles-common--PageLayout"
+      className="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
       data-ouia-component-type="page"
       data-ouia-safe={true}
     >
@@ -208,6 +210,8 @@ exports[`DevUILayout tests Snapshot test with Tracing disabled 1`] = `
     data-ouia-component-type="page"
     data-ouia-safe={true}
     defaultManagedSidebarIsOpen={true}
+    getBreakpoint={[Function]}
+    getVerticalBreakpoint={[Function]}
     header={<React.Fragment />}
     isBreadcrumbWidthLimited={false}
     isManagedSidebar={false}
@@ -230,7 +234,7 @@ exports[`DevUILayout tests Snapshot test with Tracing disabled 1`] = `
     }
   >
     <div
-      className="pf-c-page kogito-consoles-common--PageLayout"
+      className="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
       data-ouia-component-type="page"
       data-ouia-safe={true}
     >
@@ -611,6 +615,8 @@ exports[`DevUILayout tests Snapshot test with default props 1`] = `
     data-ouia-component-type="page"
     data-ouia-safe={true}
     defaultManagedSidebarIsOpen={true}
+    getBreakpoint={[Function]}
+    getVerticalBreakpoint={[Function]}
     header={<React.Fragment />}
     isBreadcrumbWidthLimited={false}
     isManagedSidebar={false}
@@ -633,7 +639,7 @@ exports[`DevUILayout tests Snapshot test with default props 1`] = `
     }
   >
     <div
-      className="pf-c-page kogito-consoles-common--PageLayout"
+      className="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
       data-ouia-component-type="page"
       data-ouia-safe={true}
     >

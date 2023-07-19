@@ -54,12 +54,15 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
       isLoading={true}
     >
       <Table
+        actionsMenuAppendTo="inline"
         aria-label="Data Table"
         borders={true}
+        canCollapseAll={false}
         canSelectAll={true}
         canSortFavorites={true}
         cells={Array []}
         className=""
+        collapseAllAriaLabel=""
         contentId="expanded-content"
         data-ouia-component-type="data-table"
         data-ouia-safe={false}
@@ -67,6 +70,8 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
         dropdownPosition="right"
         expandId="expandable-toggle"
         gridBreakPoint="grid-md"
+        isHeaderSelectDisabled={false}
+        isNested={false}
         isStickyHeader={false}
         isTreeTable={false}
         onSort={[Function]}
@@ -85,6 +90,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
           data-ouia-component-type="data-table"
           data-ouia-safe={false}
           gridBreakPoint="grid-md"
+          isNested={false}
           isStickyHeader={false}
           isTreeTable={false}
           ouiaSafe={true}
@@ -110,6 +116,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
             data-ouia-component-type="data-table"
             data-ouia-safe={false}
             gridBreakPoint="grid-md"
+            isNested={false}
             isStickyHeader={false}
             isTreeTable={false}
             ouiaSafe={true}
@@ -124,6 +131,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
               data-ouia-safe={false}
               gridBreakPoint="grid-md"
               innerRef={null}
+              isNested={false}
               isStickyHeader={false}
               isTreeTable={false}
               ouiaSafe={true}
@@ -142,7 +150,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
                   <ContextHeader
                     headerRows={null}
                   >
-                    <Component
+                    <Header
                       className=""
                       headerRows={null}
                     >
@@ -208,6 +216,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
                                     innerRef={null}
                                   >
                                     <tr
+                                      aria-label=""
                                       className=""
                                       data-ouia-component-id="OUIA-Generated-TableRow-3"
                                       data-ouia-component-type="PF4/TableRow"
@@ -221,10 +230,10 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
                           </TheadBase>
                         </Thead>
                       </BaseHeader>
-                    </Component>
+                    </Header>
                   </ContextHeader>
                 </TableHeader>
-                <Component
+                <TableBody
                   rowKey="rowKey"
                 >
                   <ContextBody
@@ -236,7 +245,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
                     rowKey="rowKey"
                     rows={Array []}
                   />
-                </Component>
+                </TableBody>
               </table>
             </TableComposableBase>
           </TableComposable>
@@ -303,12 +312,15 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table with
       isLoading={true}
     >
       <Table
+        actionsMenuAppendTo="inline"
         aria-label="Data Table"
         borders={true}
+        canCollapseAll={false}
         canSelectAll={true}
         canSortFavorites={true}
         cells={Array []}
         className=""
+        collapseAllAriaLabel=""
         contentId="expanded-content"
         data-ouia-component-type="data-table"
         data-ouia-safe={false}
@@ -316,6 +328,8 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table with
         dropdownPosition="right"
         expandId="expandable-toggle"
         gridBreakPoint="grid-md"
+        isHeaderSelectDisabled={false}
+        isNested={false}
         isStickyHeader={false}
         isTreeTable={false}
         onSort={[Function]}
@@ -334,6 +348,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table with
           data-ouia-component-type="data-table"
           data-ouia-safe={false}
           gridBreakPoint="grid-md"
+          isNested={false}
           isStickyHeader={false}
           isTreeTable={false}
           ouiaSafe={true}
@@ -359,6 +374,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table with
             data-ouia-component-type="data-table"
             data-ouia-safe={false}
             gridBreakPoint="grid-md"
+            isNested={false}
             isStickyHeader={false}
             isTreeTable={false}
             ouiaSafe={true}
@@ -373,6 +389,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table with
               data-ouia-safe={false}
               gridBreakPoint="grid-md"
               innerRef={null}
+              isNested={false}
               isStickyHeader={false}
               isTreeTable={false}
               ouiaSafe={true}
@@ -391,7 +408,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table with
                   <ContextHeader
                     headerRows={null}
                   >
-                    <Component
+                    <Header
                       className=""
                       headerRows={null}
                     >
@@ -457,6 +474,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table with
                                     innerRef={null}
                                   >
                                     <tr
+                                      aria-label=""
                                       className=""
                                       data-ouia-component-id="OUIA-Generated-TableRow-5"
                                       data-ouia-component-type="PF4/TableRow"
@@ -470,10 +488,10 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table with
                           </TheadBase>
                         </Thead>
                       </BaseHeader>
-                    </Component>
+                    </Header>
                   </ContextHeader>
                 </TableHeader>
-                <Component
+                <TableBody
                   rowKey="rowKey"
                 >
                   <ContextBody
@@ -485,7 +503,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table with
                     rowKey="rowKey"
                     rows={Array []}
                   />
-                </Component>
+                </TableBody>
               </table>
             </TableComposableBase>
           </TableComposable>

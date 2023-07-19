@@ -20,13 +20,11 @@ import {
   CodeEditor,
   CodeEditorControl,
   Language
-} from '@patternfly/react-code-editor';
-import {
-  PlayIcon,
-  RedoIcon,
-  SaveIcon,
-  UndoIcon
-} from '@patternfly/react-icons';
+} from '@patternfly/react-code-editor/dist/js/components/CodeEditor';
+import { UndoIcon } from '@patternfly/react-icons/dist/js/icons/undo-icon';
+import { SaveIcon } from '@patternfly/react-icons/dist/js/icons/save-icon';
+import { RedoIcon } from '@patternfly/react-icons/dist/js/icons/redo-icon';
+import { PlayIcon } from '@patternfly/react-icons/dist/js/icons/play-icon';
 import { Form } from '../../../api';
 import { useFormDetailsContext } from '../contexts/FormDetailsContext';
 import { ResizableContent } from '../FormDetails/FormDetails';

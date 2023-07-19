@@ -46,8 +46,26 @@ exports[`EmbeddedTaskForm tests Snapshot 1`] = `
     }
   }
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      EmbeddedTaskFormChannelApiImpl {
+        "driver": Object {
+          "doSubmit": [MockFunction],
+          "getCustomForm": [MockFunction],
+          "getTaskFormSchema": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;

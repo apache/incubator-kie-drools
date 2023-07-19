@@ -56,11 +56,6 @@ exports[`KeycloakUnavailablePage test render the page 1`] = `
                     alt="Kogito keycloak"
                     className="pf-c-brand"
                     src="kogito.png"
-                    style={
-                      Object {
-                        "height": "30px",
-                      }
-                    }
                   />
                 </Brand>
               </div>

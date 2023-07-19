@@ -43,9 +43,52 @@ exports[`ProcessListContainer tests Snapshot 1`] = `
     singularProcessLabel="Process"
     targetOrigin="http://localhost"
   >
-    <ForwardRef>
+    <ForwardRef(RefForwardingEmbeddedEnvelope)
+      apiImpl={
+        ProcessListChannelApiImpl {
+          "driver": ProcessListGatewayApiImpl {
+            "_ProcessListState": Object {
+              "filters": Object {
+                "businessKey": Array [],
+                "status": Array [],
+              },
+              "sortBy": Object {},
+            },
+            "applyFilter": [Function],
+            "applySorting": [Function],
+            "handleProcessAbort": [Function],
+            "handleProcessMultipleAction": [Function],
+            "handleProcessRetry": [Function],
+            "handleProcessSkip": [Function],
+            "initialLoad": [Function],
+            "listeners": Array [
+              Object {
+                "onOpen": [Function],
+              },
+            ],
+            "openProcess": [Function],
+            "queries": Object {
+              "getChildProcessInstances": [MockFunction],
+              "getProcessInstances": [MockFunction],
+              "handleProcessAbort": [MockFunction],
+              "handleProcessMultipleAction": [MockFunction],
+              "handleProcessRetry": [MockFunction],
+              "handleProcessSkip": [MockFunction],
+            },
+          },
+        }
+      }
+      config={
+        Object {
+          "containerType": "div",
+        }
+      }
+      origin="http://localhost"
+      pollInit={[Function]}
+      refDelegate={[Function]}
+    >
       <div />
-    </ForwardRef>
+    </ForwardRef(RefForwardingEmbeddedEnvelope)>
   </ForwardRef>
 </ProcessListContainer>
 `;

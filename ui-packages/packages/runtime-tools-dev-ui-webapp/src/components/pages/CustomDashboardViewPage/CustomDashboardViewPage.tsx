@@ -16,7 +16,8 @@
 
 import React from 'react';
 import { OUIAProps } from '@kogito-apps/ouia-tools';
-import { Card, PageSection } from '@patternfly/react-core';
+import { Card } from '@patternfly/react-core/dist/js/components/Card';
+import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
 import { PageTitle } from '@kogito-apps/consoles-common';
 import { useHistory } from 'react-router-dom';
 import CustomDashboardViewContainer from '../../containers/CustomDashboardViewContainer/CustomDashboardViewContainer';

@@ -15,25 +15,27 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { Flex, FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex';
+import { Grid, GridItem } from '@patternfly/react-core/dist/js/layouts/Grid';
+import { Split, SplitItem } from '@patternfly/react-core/dist/js/layouts/Split';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import {
-  Grid,
-  GridItem,
-  Title,
-  Split,
-  SplitItem,
+  Modal,
+  ModalVariant
+} from '@patternfly/react-core/dist/js/components/Modal';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import {
   OverflowMenu,
   OverflowMenuContent,
-  OverflowMenuGroup,
-  Flex,
-  FlexItem,
-  Card,
-  Button,
-  Modal,
-  ModalVariant,
-  TitleSizes,
-  Bullseye
-} from '@patternfly/react-core';
-import { SyncIcon, InfoCircleIcon } from '@patternfly/react-icons';
+  OverflowMenuGroup
+} from '@patternfly/react-core/dist/js/components/OverflowMenu';
+import { Card } from '@patternfly/react-core/dist/js/components/Card';
+import {
+  Title,
+  TitleSizes
+} from '@patternfly/react-core/dist/js/components/Title';
+import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import {
   ItemDescriptor,
   KogitoSpinner,

@@ -16,12 +16,12 @@
 
 import React from 'react';
 import {
-  Tooltip,
-  Badge,
   TextContent,
   Text,
   TextVariants
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Text';
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { Badge } from '@patternfly/react-core/dist/js/components/Badge';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 export interface ItemDescription {

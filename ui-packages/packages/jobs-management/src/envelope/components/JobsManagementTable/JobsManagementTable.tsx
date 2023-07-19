@@ -22,8 +22,8 @@ import {
   sortable,
   IRow,
   ISortBy
-} from '@patternfly/react-table';
-import { Tooltip } from '@patternfly/react-core';
+} from '@patternfly/react-table/dist/js/components/Table';
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
 import {
   KogitoEmptyState,
   KogitoSpinner,
@@ -40,7 +40,7 @@ import Moment from 'react-moment';
 import _ from 'lodash';
 import { JobsIconCreator } from '../../../utils/utils';
 import { JobsManagementDriver } from '../../../api';
-import { HistoryIcon } from '@patternfly/react-icons';
+import { HistoryIcon } from '@patternfly/react-icons/dist/js/icons/history-icon';
 import '../styles.css';
 
 interface ActionsMeta {

@@ -16,9 +16,9 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { EnvelopeBus } from '@kogito-tooling/envelope-bus/dist/api';
+import { EnvelopeBus } from '@kie-tools-core/envelope-bus/dist/api';
 import { ProcessDetailsChannelApi, ProcessDetailsEnvelopeApi } from '../api';
-import { Envelope, EnvelopeDivConfig } from '@kogito-tooling/envelope';
+import { Envelope, EnvelopeDivConfig } from '@kie-tools-core/envelope';
 import { ProcessDetailsEnvelopeContext } from './ProcessDetailsEnvelopeContext';
 import {
   ProcessDetailsEnvelopeView,

@@ -11,6 +11,7 @@ exports[`FormDetailsEnvelopeView tests Snapshot 2`] = `
         "formDetails__getFormContent": [MockFunction],
         "formDetails__saveFormContent": [MockFunction],
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -26,6 +27,7 @@ exports[`FormDetailsEnvelopeView tests Snapshot 2`] = `
               "formDetails__getFormContent": [MockFunction],
               "formDetails__saveFormContent": [MockFunction],
             },
+            "shared": [MockFunction],
             "subscribe": [MockFunction],
             "unsubscribe": [MockFunction],
           },

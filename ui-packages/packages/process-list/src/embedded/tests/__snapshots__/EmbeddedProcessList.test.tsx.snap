@@ -36,8 +36,34 @@ exports[`EmbeddedProcessList tests Snapshot 1`] = `
   singularProcessLabel="Workflow"
   targetOrigin="origin"
 >
-  <ForwardRef>
+  <ForwardRef(RefForwardingEmbeddedEnvelope)
+    apiImpl={
+      ProcessListChannelApiImpl {
+        "driver": Object {
+          "applyFilter": [MockFunction],
+          "applySorting": [MockFunction],
+          "getChildProcessesQuery": [MockFunction],
+          "handleProcessAbort": [MockFunction],
+          "handleProcessMultipleAction": [MockFunction],
+          "handleProcessRetry": [MockFunction],
+          "handleProcessSkip": [MockFunction],
+          "initialLoad": [MockFunction],
+          "openProcess": [MockFunction],
+          "openTriggerCloudEvent": [MockFunction],
+          "query": [MockFunction],
+        },
+      }
+    }
+    config={
+      Object {
+        "containerType": "div",
+      }
+    }
+    origin="origin"
+    pollInit={[Function]}
+    refDelegate={[Function]}
+  >
     <div />
-  </ForwardRef>
+  </ForwardRef(RefForwardingEmbeddedEnvelope)>
 </ForwardRef>
 `;

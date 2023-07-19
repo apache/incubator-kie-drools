@@ -20,13 +20,13 @@ import FormDisplayer from '../FormDisplayer';
 import { FormType, Form } from '../../../../api';
 import HtmlFormRenderer from '../../HtmlFormRenderer/HtmlFormRenderer';
 import ReactFormRenderer from '../../ReactFormRenderer/ReactFormRenderer';
-import { Bullseye } from '@patternfly/react-core';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () =>
+jest.mock('@patternfly/react-core/dist/js/layouts/Bullseye', () =>
   Object.assign({}, jest.requireActual('@patternfly/react-core'), {
     Bullseye: () => <MockedComponent />
   })

@@ -23,19 +23,24 @@ import {
   KOGITO_BUSINESS_KEY,
   KOGITO_PROCESS_REFERENCE_ID
 } from '../../../api';
+import { ActionListGroup } from '@patternfly/react-core/dist/js/components/ActionList';
 import {
-  ActionGroup,
-  Button,
-  Form,
-  FormGroup,
-  InputGroup,
   Select,
   SelectOption,
-  SelectVariant,
-  TextInput,
-  ValidatedOptions
-} from '@patternfly/react-core';
-import { CodeEditor, Language } from '@patternfly/react-code-editor';
+  SelectVariant
+} from '@patternfly/react-core/dist/js/components/Select';
+import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import {
+  Form,
+  FormGroup
+} from '@patternfly/react-core/dist/js/components/Form';
+import { InputGroup } from '@patternfly/react-core/dist/js/components/InputGroup';
+import { ValidatedOptions } from '@patternfly/react-core/dist/js/helpers';
+import {
+  CodeEditor,
+  Language
+} from '@patternfly/react-code-editor/dist/js/components/CodeEditor';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
 import {
   FormValidations,
@@ -337,7 +342,7 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
             onChange={setEventData}
           />
         </FormGroup>
-        <ActionGroup>
+        <ActionListGroup>
           <Button
             key={'triggerCloudEventButton'}
             variant="primary"
@@ -352,7 +357,7 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
           >
             Reset
           </Button>
-        </ActionGroup>
+        </ActionListGroup>
       </Form>
     </div>
   );

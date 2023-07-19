@@ -17,14 +17,14 @@
 import React from 'react';
 import _ from 'lodash';
 import {
-  Bullseye,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateSecondaryActions,
-  Title
-} from '@patternfly/react-core';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+  EmptyStateSecondaryActions
+} from '@patternfly/react-core/dist/js/components/EmptyState';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { convertActionsToButton } from '@kogito-apps/components-common';

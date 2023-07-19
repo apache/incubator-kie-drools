@@ -16,13 +16,11 @@
 
 import React from 'react';
 import { JobStatus } from '@kogito-apps/management-console-shared';
-import {
-  CheckCircleIcon,
-  BanIcon,
-  ErrorCircleOIcon,
-  UndoIcon,
-  ClockIcon
-} from '@patternfly/react-icons';
+import { UndoIcon } from '@patternfly/react-icons/dist/js/icons/undo-icon';
+import { ClockIcon } from '@patternfly/react-icons/dist/js/icons/clock-icon';
+import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-circle-o-icon';
+import { BanIcon } from '@patternfly/react-icons/dist/js/icons/ban-icon';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 
 export const JobsIconCreator = (state: JobStatus): JSX.Element => {
   switch (state) {

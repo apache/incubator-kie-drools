@@ -17,7 +17,7 @@
 import {
   MessageBusClientApi,
   RequestPropertyNames
-} from '@kogito-tooling/envelope-bus/dist/api';
+} from '@kie-tools-core/envelope-bus/dist/api';
 import { TaskFormChannelApi } from '../../api';
 import { TaskFormEnvelopeViewDriver } from '../TaskFormEnvelopeViewDriver';
 import { MockedMessageBusClientApi } from './mocks/Mocks';

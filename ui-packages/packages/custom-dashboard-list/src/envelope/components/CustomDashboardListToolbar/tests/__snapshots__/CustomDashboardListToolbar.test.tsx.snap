@@ -146,6 +146,7 @@ exports[`CustomDashboard list toolbar tests render toolbar 1`] = `
                                     id="customDashboardName"
                                     innerRef={null}
                                     isDisabled={false}
+                                    isIconSprite={false}
                                     isLeftTruncated={false}
                                     isReadOnly={false}
                                     isRequired={false}
@@ -173,7 +174,6 @@ exports[`CustomDashboard list toolbar tests render toolbar 1`] = `
                                       onFocus={[Function]}
                                       onKeyPress={[Function]}
                                       placeholder="Filter by dashboard name"
-                                      readOnly={false}
                                       required={false}
                                       type="search"
                                       value=""
@@ -272,10 +272,13 @@ exports[`CustomDashboard list toolbar tests render toolbar 1`] = `
                           onFocus={[Function]}
                           onMouseEnter={[Function]}
                           onMouseLeave={[Function]}
+                          onPopperMouseEnter={[Function]}
+                          onPopperMouseLeave={[Function]}
                           onTriggerEnter={[Function]}
                           placement="top"
                           popper={
                             <div
+                              aria-live="off"
                               className="pf-c-tooltip"
                               id="pf-tooltip-1"
                               role="tooltip"
@@ -299,11 +302,20 @@ exports[`CustomDashboard list toolbar tests render toolbar 1`] = `
                           positionModifiers={
                             Object {
                               "bottom": "pf-m-bottom",
+                              "bottom-end": "pf-m-bottom-right",
+                              "bottom-start": "pf-m-bottom-left",
                               "left": "pf-m-left",
+                              "left-end": "pf-m-left-bottom",
+                              "left-start": "pf-m-left-top",
                               "right": "pf-m-right",
+                              "right-end": "pf-m-right-bottom",
+                              "right-start": "pf-m-right-top",
                               "top": "pf-m-top",
+                              "top-end": "pf-m-top-right",
+                              "top-start": "pf-m-top-left",
                             }
                           }
+                          removeFindDomNode={false}
                           trigger={
                             <Button
                               id="refresh"
@@ -443,6 +455,7 @@ exports[`CustomDashboard list toolbar tests render toolbar 1`] = `
         collapseListedFiltersBreakpoint="xl"
         isExpanded={false}
         numberOfFilters={0}
+        numberOfFiltersText={[Function]}
         showClearFiltersButton={false}
       >
         <div

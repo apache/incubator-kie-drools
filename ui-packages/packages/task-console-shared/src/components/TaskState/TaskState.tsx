@@ -16,12 +16,10 @@
 
 import React from 'react';
 
-import { Label } from '@patternfly/react-core';
-import {
-  BanIcon,
-  CheckCircleIcon,
-  OnRunningIcon
-} from '@patternfly/react-icons';
+import { Label } from '@patternfly/react-core/dist/js/components/Label';
+import { BanIcon } from '@patternfly/react-icons/dist/js/icons/ban-icon';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { OnRunningIcon } from '@patternfly/react-icons/dist/js/icons/on-running-icon';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { UserTaskInstance } from '../../types';
 

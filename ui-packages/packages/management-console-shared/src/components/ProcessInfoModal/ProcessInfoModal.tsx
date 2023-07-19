@@ -15,7 +15,12 @@
  */
 
 import React from 'react';
-import { Modal, Button, TextContent, Text } from '@patternfly/react-core';
+import {
+  TextContent,
+  Text
+} from '@patternfly/react-core/dist/js/components/Text';
+import { Modal } from '@patternfly/react-core/dist/js/components/Modal';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import BulkList, { IOperation } from '../BulkList/BulkList';
 interface IOwnProps {

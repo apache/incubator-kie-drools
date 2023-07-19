@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ApolloClient } from 'apollo-client';
 import ProcessListContext from '../../channel/ProcessList/ProcessListContext';
 import { ProcessListGatewayApiImpl } from '../../channel/ProcessList/ProcessListGatewayApi';
@@ -29,14 +29,13 @@ const ProcessListContextProvider: React.FC<ProcessListContextProviderProps> = ({
   apolloClient,
   children
 }) => {
+  const gatewayApiImpl = useMemo(() => {
+    return new ProcessListGatewayApiImpl(
+      new GraphQLProcessListQueries(apolloClient)
+    );
+  }, []);
   return (
-    <ProcessListContext.Provider
-      value={
-        new ProcessListGatewayApiImpl(
-          new GraphQLProcessListQueries(apolloClient)
-        )
-      }
-    >
+    <ProcessListContext.Provider value={gatewayApiImpl}>
       {children}
     </ProcessListContext.Provider>
   );

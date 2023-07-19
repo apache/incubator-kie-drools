@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 import React from 'react';
-import {
-  OnRunningIcon,
-  CheckCircleIcon,
-  BanIcon,
-  PausedIcon,
-  ErrorCircleOIcon
-} from '@patternfly/react-icons';
+import { BanIcon } from '@patternfly/react-icons/dist/js/icons/ban-icon';
+import { OnRunningIcon } from '@patternfly/react-icons/dist/js/icons/on-running-icon';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { PausedIcon } from '@patternfly/react-icons/dist/js/icons/paused-icon';
+import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-circle-o-icon';
 import {
   ProcessInstanceState,
   ProcessInstance,

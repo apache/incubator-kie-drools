@@ -17,10 +17,6 @@
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
-  Bullseye,
-  Button,
-  Card,
-  CardBody,
   Drawer,
   DrawerActions,
   DrawerCloseButton,
@@ -28,14 +24,15 @@ import {
   DrawerContentBody,
   DrawerHead,
   DrawerPanelBody,
-  DrawerPanelContent,
-  Flex,
-  FlexItem,
-  Grid,
-  GridItem,
-  PageSection,
-  Title
-} from '@patternfly/react-core';
+  DrawerPanelContent
+} from '@patternfly/react-core/dist/js/components/Drawer';
+import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
+import { Grid, GridItem } from '@patternfly/react-core/dist/js/layouts/Grid';
+import { Flex, FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
 import {
   KogitoSpinner,
   ServerErrors,
@@ -49,7 +46,7 @@ import {
   componentOuiaProps,
   ouiaPageTypeAndObjectId
 } from '@kogito-apps/ouia-tools';
-import { PageTitle } from '@kogito-apps/consoles-common';
+import PageTitle from '@kogito-apps/consoles-common/dist/components/layout/PageTitle/PageTitle';
 import { UserTaskInstance, TaskState } from '@kogito-apps/task-console-shared';
 import { TaskInboxGatewayApi } from '../../../channel/TaskInbox';
 import { useTaskInboxGatewayApi } from '../../../channel/TaskInbox/TaskInboxContext';

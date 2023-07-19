@@ -64,8 +64,7 @@ describe('customDashboard gallery tests', () => {
       />
     );
     expect(wrapper).toMatchSnapshot();
-    const loadingComponent = wrapper.find(KogitoSpinner);
-    expect(loadingComponent.exists()).toBeTruthy();
+    expect(wrapper.find(KogitoSpinner)).toBeTruthy();
   });
 
   it('renders empty state component', () => {
@@ -77,7 +76,6 @@ describe('customDashboard gallery tests', () => {
       />
     );
     expect(wrapper).toMatchSnapshot();
-    const emptyStateComponent = wrapper.find(KogitoEmptyState);
-    expect(emptyStateComponent.exists()).toBeTruthy();
+    expect(wrapper.find(KogitoEmptyState)).toBeTruthy();
   });
 });

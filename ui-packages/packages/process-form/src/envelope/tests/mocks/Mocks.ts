@@ -15,11 +15,11 @@
  */
 
 import {
+  ApiNotificationConsumers,
   MessageBusClientApi,
-  NotificationPropertyNames,
   RequestPropertyNames
-} from '@kogito-tooling/envelope-bus/dist/api';
-import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
+} from '@kie-tools-core/envelope-bus/dist/api';
+import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';
 import { ProcessFormChannelApi, ProcessFormEnvelopeApi } from '../../../api';
 import { ProcessFormEnvelopeViewApi } from '../../ProcessFormEnvelopeView';
 
@@ -32,7 +32,7 @@ export const MockedApiRequests = jest.fn<
 }));
 
 export const MockedApiNotifications = jest.fn<
-  Pick<ProcessFormChannelApi, NotificationPropertyNames<ProcessFormChannelApi>>,
+  ApiNotificationConsumers<ProcessFormChannelApi>,
   []
 >(() => ({}));
 
@@ -43,11 +43,12 @@ export const MockedMessageBusClientApi = jest.fn<
   requests: new MockedApiRequests(),
   notifications: new MockedApiNotifications(),
   subscribe: jest.fn(),
-  unsubscribe: jest.fn()
+  unsubscribe: jest.fn(),
+  shared: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = jest.fn<
-  EnvelopeBusController<ProcessFormEnvelopeApi, ProcessFormChannelApi>,
+export const MockedEnvelopeClient = jest.fn<
+  EnvelopeClient<ProcessFormEnvelopeApi, ProcessFormChannelApi>,
   []
 >(() => ({
   bus: jest.fn(),

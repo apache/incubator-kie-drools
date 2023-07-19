@@ -29,7 +29,8 @@ import TaskFormContainer from '../../../containers/TaskFormContainer/TaskFormCon
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
 import { DefaultUser, User } from '@kogito-apps/consoles-common';
 
-import { Button, DrawerPanelContent } from '@patternfly/react-core';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { DrawerPanelContent } from '@patternfly/react-core/dist/js/components/Drawer';
 
 const userTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
@@ -357,11 +358,9 @@ describe('TaskDetailsPage tests', () => {
     wrapper.update();
     // open details drawer
     await act(async () => {
-      const button = wrapper
-        .find(Button)
-        .findWhere((node) => node.props().id === 'view-details');
+      const button = wrapper.find(Button).at(0);
 
-      button.props().onClick();
+      button.simulate('click');
     });
     wrapper = wrapper.update();
 

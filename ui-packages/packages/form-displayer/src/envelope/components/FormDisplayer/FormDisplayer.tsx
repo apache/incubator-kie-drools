@@ -15,7 +15,7 @@
  */
 
 import React, { useEffect, useImperativeHandle, useState } from 'react';
-import { Bullseye } from '@patternfly/react-core';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { BallBeat } from 'react-pure-loaders';
 import { Form, FormOpened, FormOpenedState } from '../../../api';

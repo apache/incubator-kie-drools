@@ -28,7 +28,8 @@ import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { CustomForm } from '../../../types';
 import { generateFormData } from '../utils/TaskFormDataUtils';
 import { TaskFormDriver, User } from '../../../api';
-import { Bullseye, Stack, StackItem } from '@patternfly/react-core';
+import { Stack, StackItem } from '@patternfly/react-core/layouts/Stack';
+import { Bullseye } from '@patternfly/react-core/layouts/Bullseye';
 import {
   KogitoSpinner,
   FormAction,

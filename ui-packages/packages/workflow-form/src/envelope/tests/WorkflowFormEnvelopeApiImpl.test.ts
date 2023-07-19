@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import {
-  MockedEnvelopeBusController,
+  MockedEnvelopeClient,
   MockedWorkflowFormEnvelopeViewApi
 } from './mocks/Mocks';
 import { WorkflowFormChannelApi, WorkflowFormEnvelopeApi } from '../../api';
@@ -30,8 +30,8 @@ const workflowDefinitionData = {
 };
 
 describe('WorkflowFormEnvelopeApiImpl tests', () => {
-  it('initialize', () => {
-    const envelopeBusController = new MockedEnvelopeBusController();
+  it('initialize', async () => {
+    const envelopeClient = new MockedEnvelopeClient();
     const view = new MockedWorkflowFormEnvelopeViewApi();
     const args: EnvelopeApiFactoryArgs<
       WorkflowFormEnvelopeApi,
@@ -39,9 +39,9 @@ describe('WorkflowFormEnvelopeApiImpl tests', () => {
       WorkflowFormEnvelopeViewApi,
       WorkflowFormEnvelopeContext
     > = {
-      envelopeBusController,
+      envelopeClient,
       envelopeContext: {},
-      view: () => view
+      viewDelegate: () => Promise.resolve(() => view)
     };
 
     const envelopeApi = new WorkflowFormEnvelopeApiImpl(args);
@@ -56,11 +56,12 @@ describe('WorkflowFormEnvelopeApiImpl tests', () => {
       }
     );
 
-    expect(envelopeBusController.associate).toHaveBeenCalledWith(
+    expect(envelopeClient.associate).toHaveBeenCalledWith(
       'origin',
       'envelopeServerId'
     );
-    expect(view.initialize).toHaveBeenCalledWith({
+    const initializedView = await view.initialize;
+    expect(initializedView).toHaveBeenCalledWith({
       workflowDefinition: workflowDefinitionData
     });
   });

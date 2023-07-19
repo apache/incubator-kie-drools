@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 import React, { useEffect, useMemo, useState } from 'react';
+import { ExpandableRowContent } from '@patternfly/react-table/dist/js/components/Table';
 import {
   TableComposable,
   Thead,
   Tbody,
   Tr,
   Th,
-  Td,
-  ExpandableRowContent
-} from '@patternfly/react-table';
+  Td
+} from '@patternfly/react-table/dist/js/components/TableComposable';
 import _ from 'lodash';
 import {
   ProcessInstance,
@@ -40,7 +40,7 @@ import {
   EndpointLink
 } from '@kogito-apps/components-common';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
-import { HistoryIcon } from '@patternfly/react-icons';
+import { HistoryIcon } from '@patternfly/react-icons/dist/js/icons/history-icon';
 import Moment from 'react-moment';
 import {
   getProcessInstanceDescription,
@@ -48,7 +48,7 @@ import {
 } from '../utils/ProcessListUtils';
 import { ProcessListDriver } from '../../../api';
 import ProcessListActionsKebab from '../ProcessListActionsKebab/ProcessListActionsKebab';
-import { Checkbox } from '@patternfly/react-core';
+import { Checkbox } from '@patternfly/react-core/dist/js/components/Checkbox';
 import DisablePopup from '../DisablePopup/DisablePopup';
 import '../styles.css';
 import ErrorPopover from '../ErrorPopover/ErrorPopover';

@@ -10,6 +10,7 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 2`] = `
       "requests": Object {
         "cloudEventForm__triggerCloudEvent": [MockFunction],
       },
+      "shared": [MockFunction],
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -29,6 +30,7 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 2`] = `
           "requests": Object {
             "cloudEventForm__triggerCloudEvent": [MockFunction],
           },
+          "shared": [MockFunction],
           "subscribe": [MockFunction],
           "unsubscribe": [MockFunction],
         },

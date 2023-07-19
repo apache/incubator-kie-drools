@@ -156,7 +156,33 @@ exports[`EmptyTaskForm Test Empty form completed task rendering 1`] = `
               color="var(--pf-global--info-color--100)"
               icon={[Function]}
             >
-              <MockedComponent />
+              <InfoCircleIcon
+                aria-hidden="true"
+                className="pf-c-empty-state__icon"
+                color="var(--pf-global--info-color--100)"
+                noVerticalAlign={false}
+                size="sm"
+              >
+                <svg
+                  aria-hidden="true"
+                  aria-labelledby={null}
+                  className="pf-c-empty-state__icon"
+                  fill="var(--pf-global--info-color--100)"
+                  height="1em"
+                  role="img"
+                  style={
+                    Object {
+                      "verticalAlign": "-0.125em",
+                    }
+                  }
+                  viewBox="0 0 512 512"
+                  width="1em"
+                >
+                  <path
+                    d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                  />
+                </svg>
+              </InfoCircleIcon>
             </EmptyStateIcon>
             <Title
               headingLevel="h4"
@@ -352,7 +378,33 @@ exports[`EmptyTaskForm Test Empty form rendering 1`] = `
               color="var(--pf-global--info-color--100)"
               icon={[Function]}
             >
-              <MockedComponent />
+              <InfoCircleIcon
+                aria-hidden="true"
+                className="pf-c-empty-state__icon"
+                color="var(--pf-global--info-color--100)"
+                noVerticalAlign={false}
+                size="sm"
+              >
+                <svg
+                  aria-hidden="true"
+                  aria-labelledby={null}
+                  className="pf-c-empty-state__icon"
+                  fill="var(--pf-global--info-color--100)"
+                  height="1em"
+                  role="img"
+                  style={
+                    Object {
+                      "verticalAlign": "-0.125em",
+                    }
+                  }
+                  viewBox="0 0 512 512"
+                  width="1em"
+                >
+                  <path
+                    d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                  />
+                </svg>
+              </InfoCircleIcon>
             </EmptyStateIcon>
             <Title
               headingLevel="h4"
@@ -399,7 +451,28 @@ exports[`EmptyTaskForm Test Empty form rendering 1`] = `
                   type="submit"
                   variant="primary"
                 >
-                  <MockedComponent />
+                  <ButtonBase
+                    innerRef={null}
+                    isDisabled={false}
+                    onClick={[Function]}
+                    type="submit"
+                    variant="primary"
+                  >
+                    <button
+                      aria-disabled={false}
+                      aria-label={null}
+                      className="pf-c-button pf-m-primary"
+                      data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                      data-ouia-component-type="PF4/Button"
+                      data-ouia-safe={true}
+                      disabled={false}
+                      onClick={[Function]}
+                      role={null}
+                      type="submit"
+                    >
+                      Complete
+                    </button>
+                  </ButtonBase>
                 </Button>
                 <Button
                   isDisabled={false}
@@ -408,7 +481,28 @@ exports[`EmptyTaskForm Test Empty form rendering 1`] = `
                   type="submit"
                   variant="secondary"
                 >
-                  <MockedComponent />
+                  <ButtonBase
+                    innerRef={null}
+                    isDisabled={false}
+                    onClick={[Function]}
+                    type="submit"
+                    variant="secondary"
+                  >
+                    <button
+                      aria-disabled={false}
+                      aria-label={null}
+                      className="pf-c-button pf-m-secondary"
+                      data-ouia-component-id="OUIA-Generated-Button-secondary-1"
+                      data-ouia-component-type="PF4/Button"
+                      data-ouia-safe={true}
+                      disabled={false}
+                      onClick={[Function]}
+                      role={null}
+                      type="submit"
+                    >
+                      Release
+                    </button>
+                  </ButtonBase>
                 </Button>
               </div>
             </EmptyStateSecondaryActions>

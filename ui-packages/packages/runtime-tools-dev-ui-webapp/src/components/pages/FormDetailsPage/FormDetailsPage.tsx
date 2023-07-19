@@ -15,13 +15,13 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { Card } from '@patternfly/react-core/dist/js/components/Card';
+import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
+import { Label } from '@patternfly/react-core/dist/js/components/Label';
 import {
-  Card,
-  Label,
-  PageSection,
   Text,
   TextVariants
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Text';
 import { OUIAProps, ouiaPageTypeAndObjectId } from '@kogito-apps/ouia-tools';
 import FormDetailsContainer from '../../containers/FormDetailsContainer/FormDetailsContainer';
 import '../../styles.css';

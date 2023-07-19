@@ -22,13 +22,11 @@ import {
   setTitle,
   NodeInstance
 } from '@kogito-apps/management-console-shared';
-import {
-  BanIcon,
-  CheckCircleIcon,
-  ClockIcon,
-  ErrorCircleOIcon,
-  UndoIcon
-} from '@patternfly/react-icons';
+import { ClockIcon } from '@patternfly/react-icons/dist/js/icons/clock-icon';
+import { BanIcon } from '@patternfly/react-icons/dist/js/icons/ban-icon';
+import { UndoIcon } from '@patternfly/react-icons/dist/js/icons/undo-icon';
+import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-circle-o-icon';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ProcessDetailsDriver } from '../api';
 
 export const JobsIconCreator = (state: JobStatus): JSX.Element => {

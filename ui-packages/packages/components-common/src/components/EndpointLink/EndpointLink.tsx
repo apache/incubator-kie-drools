@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Button } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 interface IOwnProps {
   serviceUrl: string;

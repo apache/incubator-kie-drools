@@ -20,10 +20,10 @@ import React, {
   useMemo,
   useState
 } from 'react';
-import { Bullseye } from '@patternfly/react-core';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { KogitoSpinner } from '@kogito-apps/components-common';
-import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import {
   CloudEventFormChannelApi,
   CloudEventFormDefaultValues,

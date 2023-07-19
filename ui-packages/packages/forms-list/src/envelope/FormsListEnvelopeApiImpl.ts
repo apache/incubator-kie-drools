@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import { FormsListEnvelopeViewApi } from './FormsListEnvelopeView';
 import { Association, FormsListChannelApi, FormsListEnvelopeApi } from '../api';
 import { FormsListEnvelopeContext } from './FormsListEnvelopeContext';
@@ -23,6 +23,7 @@ import { FormsListEnvelopeContext } from './FormsListEnvelopeContext';
  * Implementation of the FormsListEnvelopeApi
  */
 export class FormsListEnvelopeApiImpl implements FormsListEnvelopeApi {
+  private view: () => FormsListEnvelopeViewApi;
   private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
@@ -42,7 +43,7 @@ export class FormsListEnvelopeApiImpl implements FormsListEnvelopeApi {
   }
 
   formsList__init = async (association: Association): Promise<void> => {
-    this.args.envelopeBusController.associate(
+    this.args.envelopeClient.associate(
       association.origin,
       association.envelopeServerId
     );
@@ -52,6 +53,7 @@ export class FormsListEnvelopeApiImpl implements FormsListEnvelopeApi {
     }
 
     this.ackCapturedInitRequest();
-    this.args.view().initialize();
+    this.view = await this.args.viewDelegate();
+    this.view().initialize();
   };
 }

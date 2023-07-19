@@ -84,9 +84,23 @@ exports[`WebApp - JobsManagementPage tests Snapshot test with default values 1`]
               driver={null}
               targetOrigin="http://localhost:9000"
             >
-              <ForwardRef>
+              <ForwardRef(RefForwardingEmbeddedEnvelope)
+                apiImpl={
+                  JobsManagementChannelApiImpl {
+                    "driver": null,
+                  }
+                }
+                config={
+                  Object {
+                    "containerType": "div",
+                  }
+                }
+                origin="http://localhost:9000"
+                pollInit={[Function]}
+                refDelegate={[Function]}
+              >
                 <div />
-              </ForwardRef>
+              </ForwardRef(RefForwardingEmbeddedEnvelope)>
             </ForwardRef>
           </JobsManagementContainer>
         </article>

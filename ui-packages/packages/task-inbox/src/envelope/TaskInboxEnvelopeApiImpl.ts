@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import { TaskInboxEnvelopeViewApi } from './TaskInboxEnvelopeView';
 import {
   Association,
@@ -28,6 +28,7 @@ import { TaskInboxEnvelopeContext } from './TaskInboxEnvelopeContext';
  * Implementation of the TaskInboxEnvelopeApi
  */
 export class TaskInboxEnvelopeApiImpl implements TaskInboxEnvelopeApi {
+  private view: () => TaskInboxEnvelopeViewApi;
   private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
@@ -50,7 +51,7 @@ export class TaskInboxEnvelopeApiImpl implements TaskInboxEnvelopeApi {
     association: Association,
     initArgs: TaskInboxInitArgs
   ): Promise<void> => {
-    this.args.envelopeBusController.associate(
+    this.args.envelopeClient.associate(
       association.origin,
       association.envelopeServerId
     );
@@ -58,19 +59,17 @@ export class TaskInboxEnvelopeApiImpl implements TaskInboxEnvelopeApi {
     if (this.hasCapturedInitRequestYet()) {
       return;
     }
-
+    this.view = await this.args.viewDelegate();
     this.ackCapturedInitRequest();
-    this.args
-      .view()
-      .initialize(
-        initArgs.initialState,
-        initArgs.allTaskStates,
-        initArgs.activeTaskStates
-      );
+    this.view().initialize(
+      initArgs.initialState,
+      initArgs.allTaskStates,
+      initArgs.activeTaskStates
+    );
   };
 
   taskInbox__notify = (userName): Promise<void> => {
-    this.args.view().notify(userName);
+    this.view().notify(userName);
     return Promise.resolve();
   };
 }

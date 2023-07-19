@@ -7,9 +7,21 @@ exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
   channelApi={
     Object {
       "notifications": Object {
-        "jobList__sortBy": [MockFunction],
-        "processDetails__handleProcessVariableUpdate": [MockFunction],
-        "processDetails__openProcessDetails": [MockFunction],
+        "jobList__sortBy": Object {
+          "send": [MockFunction],
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
+        "processDetails__handleProcessVariableUpdate": Object {
+          "send": [MockFunction],
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
+        "processDetails__openProcessDetails": Object {
+          "send": [MockFunction],
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
       },
       "requests": Object {
         "processDetails__cancelJob": [MockFunction],
@@ -27,6 +39,14 @@ exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
         "processDetails__processDetailsQuery": [MockFunction],
         "processDetails__rescheduleJob": [MockFunction],
       },
+      "shared": Object {
+        "processDetails__handleProcessVariableUpdate": Object {
+          "send": [MockFunction],
+          "set": [MockFunction],
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
+      },
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
     }
@@ -37,9 +57,21 @@ exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
       ProcessDetailsEnvelopeViewDriver {
         "channelApi": Object {
           "notifications": Object {
-            "jobList__sortBy": [MockFunction],
-            "processDetails__handleProcessVariableUpdate": [MockFunction],
-            "processDetails__openProcessDetails": [MockFunction],
+            "jobList__sortBy": Object {
+              "send": [MockFunction],
+              "subscribe": [MockFunction],
+              "unsubscribe": [MockFunction],
+            },
+            "processDetails__handleProcessVariableUpdate": Object {
+              "send": [MockFunction],
+              "subscribe": [MockFunction],
+              "unsubscribe": [MockFunction],
+            },
+            "processDetails__openProcessDetails": Object {
+              "send": [MockFunction],
+              "subscribe": [MockFunction],
+              "unsubscribe": [MockFunction],
+            },
           },
           "requests": Object {
             "processDetails__cancelJob": [MockFunction],
@@ -56,6 +88,14 @@ exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
             "processDetails__jobsQuery": [MockFunction],
             "processDetails__processDetailsQuery": [MockFunction],
             "processDetails__rescheduleJob": [MockFunction],
+          },
+          "shared": Object {
+            "processDetails__handleProcessVariableUpdate": Object {
+              "send": [MockFunction],
+              "set": [MockFunction],
+              "subscribe": [MockFunction],
+              "unsubscribe": [MockFunction],
+            },
           },
           "subscribe": [MockFunction],
           "unsubscribe": [MockFunction],

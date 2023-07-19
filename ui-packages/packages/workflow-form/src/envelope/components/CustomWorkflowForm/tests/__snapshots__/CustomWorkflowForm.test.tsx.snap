@@ -87,6 +87,7 @@ exports[`CustomWorkflowForm Test Custom Workflow Form - loading 1`] = `
                 >
                   <Spinner>
                     <span
+                      aria-label="Contents"
                       aria-valuetext="Loading..."
                       className="pf-c-spinner pf-m-xl"
                       role="progressbar"

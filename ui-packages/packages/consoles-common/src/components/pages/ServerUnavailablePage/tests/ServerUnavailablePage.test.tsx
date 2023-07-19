@@ -16,7 +16,8 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import { Button, EmptyStateBody } from '@patternfly/react-core';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { EmptyStateBody } from '@patternfly/react-core/dist/js/components/EmptyState';
 import ServerUnavailablePage from '../ServerUnavailablePage';
 import { act } from 'react-dom/test-utils';
 

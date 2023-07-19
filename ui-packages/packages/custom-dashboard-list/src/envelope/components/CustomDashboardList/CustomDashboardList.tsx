@@ -18,13 +18,20 @@ import React, { useEffect, useState } from 'react';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { CustomDashboardListDriver } from '../../../api/CustomDashboardListDriver';
 import CustomDashboardListToolbar from '../CustomDashboardListToolbar/CustomDashboardListToolbar';
-import { Divider, Split, SplitItem } from '@patternfly/react-core';
+import { Divider } from '@patternfly/react-core/dist/js/components/Divider';
+import {
+  ToggleGroup,
+  ToggleGroupItem
+} from '@patternfly/react-core/dist/js/components/ToggleGroup';
+import { Split, SplitItem } from '@patternfly/react-core/dist/js/layouts/Split';
 import {
   CustomDashboardInfo,
   CustomDashboardFilter
 } from '../../../api/CustomDashboardListEnvelopeApi';
 import CustomDashboardsTable from '../CustomDashboardsTable/CustomDashboardsTable';
 import CustomDashboardsGallery from '../CustomDashboardsGallery/CustomDashboardsGallery';
+import { BarsIcon } from '@patternfly/react-icons/dist/js/icons/bars-icon';
+import { ThIcon } from '@patternfly/react-icons/dist/js/icons/th-icon';
 import { ServerErrors } from '@kogito-apps/components-common';
 export interface CustomDashboardListProps {
   isEnvelopeConnectedToChannel: boolean;

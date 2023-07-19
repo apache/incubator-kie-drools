@@ -15,17 +15,18 @@
  */
 
 import React from 'react';
+import { BanIcon } from '@patternfly/react-icons/dist/js/icons/ban-icon';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-circle-o-icon';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
+import { OnRunningIcon } from '@patternfly/react-icons/dist/js/icons/on-running-icon';
 import {
-  BanIcon,
-  CheckCircleIcon,
-  ErrorCircleOIcon,
-  InfoCircleIcon,
-  OnRunningIcon,
-  PausedIcon
-} from '@patternfly/react-icons';
-import { Title, TitleSizes } from '@patternfly/react-core';
+  Title,
+  TitleSizes
+} from '@patternfly/react-core/dist/js/components/Title';
 import { BulkListItem } from '../components/BulkList/BulkList';
 import { Job, ProcessInstance, ProcessInstanceState } from '../types';
+import PausedIcon from '@patternfly/react-icons/dist/js/icons/paused-icon';
 
 export const setTitle = (
   titleStatus: string,

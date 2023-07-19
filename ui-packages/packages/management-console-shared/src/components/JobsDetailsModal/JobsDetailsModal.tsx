@@ -18,15 +18,13 @@ import React from 'react';
 import { Job } from '../../types';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import {
-  Modal,
   TextContent,
-  Flex,
-  FlexItem,
-  Split,
-  SplitItem,
   Text,
   TextVariants
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Text';
+import { Modal } from '@patternfly/react-core/dist/js/components/Modal';
+import { Flex, FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex';
+import { Split, SplitItem } from '@patternfly/react-core/dist/js/layouts/Split';
 import Moment from 'react-moment';
 import '../styles.css';
 

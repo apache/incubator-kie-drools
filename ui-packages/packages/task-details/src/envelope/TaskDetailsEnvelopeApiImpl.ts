@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
+import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import {
   Association,
   TaskDetailsChannelApi,
@@ -25,6 +25,7 @@ import { TaskDetailsEnvelopeViewApi } from './TaskDetailsEnvelopeView';
 import { TaskDetailsEnvelopeContext } from './TaskDetailsEnvelopeContext';
 
 export class TaskDetailsEnvelopeApiImpl implements TaskDetailsEnvelopeApi {
+  private view: () => TaskDetailsEnvelopeViewApi;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
       TaskDetailsEnvelopeApi,
@@ -38,10 +39,11 @@ export class TaskDetailsEnvelopeApiImpl implements TaskDetailsEnvelopeApi {
     association: Association,
     initArgs: TaskDetailsInitArgs
   ) {
-    this.args.envelopeBusController.associate(
+    this.args.envelopeClient.associate(
       association.origin,
       association.envelopeServerId
     );
-    this.args.view().setTask(initArgs.task);
+    this.view = await this.args.viewDelegate();
+    this.view().setTask(initArgs.task);
   }
 }

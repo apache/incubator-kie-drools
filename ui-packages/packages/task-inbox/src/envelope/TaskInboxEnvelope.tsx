@@ -16,7 +16,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { EnvelopeBus } from '@kogito-tooling/envelope-bus/dist/api';
+import { EnvelopeBus } from '@kie-tools-core/envelope-bus/dist/api';
 import { TaskInboxChannelApi, TaskInboxEnvelopeApi } from '../api';
 import { TaskInboxEnvelopeContext } from './TaskInboxEnvelopeContext';
 import {
@@ -24,7 +24,7 @@ import {
   TaskInboxEnvelopeViewApi
 } from './TaskInboxEnvelopeView';
 import { TaskInboxEnvelopeApiImpl } from './TaskInboxEnvelopeApiImpl';
-import { Envelope, EnvelopeDivConfig } from '@kogito-tooling/envelope';
+import { Envelope, EnvelopeDivConfig } from '@kie-tools-core/envelope';
 
 /**
  * Function that starts an Envelope application.

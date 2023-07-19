@@ -34,6 +34,7 @@ exports[`DatePicker renders correctly 1`] = `
             }
           }
           isDisabled={false}
+          isIconSprite={false}
           isLeftTruncated={false}
           isReadOnly={false}
           isRequired={false}
@@ -56,7 +57,6 @@ exports[`DatePicker renders correctly 1`] = `
             onBlur={[Function]}
             onChange={[Function]}
             onFocus={[Function]}
-            readOnly={false}
             required={false}
             type="date"
           />

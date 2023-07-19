@@ -60,6 +60,7 @@ exports[`WorkflowForm Test Workflow Form - loading 1`] = `
                 >
                   <Spinner>
                     <span
+                      aria-label="Contents"
                       aria-valuetext="Loading..."
                       className="pf-c-spinner pf-m-xl"
                       role="progressbar"
@@ -168,71 +169,27 @@ exports[`WorkflowForm Test Workflow Form - loading 2`] = `
             <Form
               isHorizontal={true}
             >
-              <form
-                className="pf-c-form pf-m-horizontal"
-                noValidate={true}
+              <FormBase
+                innerRef={null}
+                isHorizontal={true}
               >
-                <FormGroup
-                  fieldId="workflowData"
-                  helperTextInvalid={false}
-                  helperTextInvalidIcon={
-                    <ExclamationCircleIcon
-                      color="currentColor"
-                      noVerticalAlign={false}
-                      size="sm"
-                    />
-                  }
-                  isRequired={true}
-                  label="Start Workflow Data"
-                  labelIcon={
-                    <Popover
-                      bodyContent={
-                        <div>
-                          Fill the data to start the Workflow in JSON format.
-                        </div>
-                      }
-                      id="workflow-form-data-help"
-                    >
-                      <button
-                        aria-label="More info for data field"
-                        className="pf-c-form__group-label-help"
-                        onClick={[Function]}
-                        type="button"
-                      >
-                        <HelpIcon
-                          color="currentColor"
-                          noVerticalAlign={true}
-                          size="sm"
-                        />
-                      </button>
-                    </Popover>
-                  }
-                  validated="default"
+                <form
+                  className="pf-c-form pf-m-horizontal"
+                  noValidate={true}
                 >
-                  <div
-                    className="pf-c-form__group"
-                  >
-                    <div
-                      className="pf-c-form__group-label"
-                    >
-                      <label
-                        className="pf-c-form__label"
-                        htmlFor="workflowData"
-                      >
-                        <span
-                          className="pf-c-form__label-text"
-                        >
-                          Start Workflow Data
-                        </span>
-                        <span
-                          aria-hidden="true"
-                          className="pf-c-form__label-required"
-                        >
-                           
-                          *
-                        </span>
-                      </label>
-                       
+                  <FormGroup
+                    fieldId="workflowData"
+                    helperTextInvalid={false}
+                    helperTextInvalidIcon={
+                      <ExclamationCircleIcon
+                        color="currentColor"
+                        noVerticalAlign={false}
+                        size="sm"
+                      />
+                    }
+                    isRequired={true}
+                    label="Start Workflow Data"
+                    labelIcon={
                       <Popover
                         bodyContent={
                           <div>
@@ -241,94 +198,146 @@ exports[`WorkflowForm Test Workflow Form - loading 2`] = `
                         }
                         id="workflow-form-data-help"
                       >
-                        <MockedComponent />
+                        <button
+                          aria-label="More info for data field"
+                          className="pf-c-form__group-label-help"
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <HelpIcon
+                            color="currentColor"
+                            noVerticalAlign={true}
+                            size="sm"
+                          />
+                        </button>
                       </Popover>
-                    </div>
-                    <div
-                      className="pf-c-form__group-control"
-                    >
-                      <CodeEditor
-                        code=""
-                        height="400px"
-                        isCopyEnabled={false}
-                        isDarkTheme={false}
-                        isLanguageLabelVisible={false}
-                        isLineNumbersVisible={true}
-                        isMinimapVisible={true}
-                        isReadOnly={false}
-                        language="json"
-                        onChange={[Function]}
-                      >
-                        <MockedComponent />
-                      </CodeEditor>
-                    </div>
-                  </div>
-                </FormGroup>
-                <ActionGroup>
-                  <div
-                    className="pf-c-form__group pf-m-action"
+                    }
+                    validated="default"
                   >
-                    <div
-                      className="pf-c-form__group-control"
+                    <GenerateId
+                      prefix="pf-random-id-"
                     >
                       <div
-                        className="pf-c-form__actions"
+                        className="pf-c-form__group"
                       >
-                        <Button
-                          onClick={[Function]}
-                          variant="primary"
+                        <div
+                          className="pf-c-form__group-label"
                         >
-                          <ButtonBase
-                            innerRef={null}
+                          <label
+                            className="pf-c-form__label"
+                            htmlFor="workflowData"
+                          >
+                            <span
+                              className="pf-c-form__label-text"
+                            >
+                              Start Workflow Data
+                            </span>
+                            <span
+                              aria-hidden="true"
+                              className="pf-c-form__label-required"
+                            >
+                               
+                              *
+                            </span>
+                          </label>
+                           
+                          <Popover
+                            bodyContent={
+                              <div>
+                                Fill the data to start the Workflow in JSON format.
+                              </div>
+                            }
+                            id="workflow-form-data-help"
+                          >
+                            <MockedComponent />
+                          </Popover>
+                        </div>
+                        <div
+                          className="pf-c-form__group-control"
+                        >
+                          <CodeEditor
+                            code=""
+                            height="400px"
+                            isCopyEnabled={false}
+                            isDarkTheme={false}
+                            isLanguageLabelVisible={false}
+                            isLineNumbersVisible={true}
+                            isMinimapVisible={true}
+                            isReadOnly={false}
+                            onChange={[Function]}
+                          >
+                            <MockedComponent />
+                          </CodeEditor>
+                        </div>
+                      </div>
+                    </GenerateId>
+                  </FormGroup>
+                  <ActionGroup>
+                    <div
+                      className="pf-c-form__group pf-m-action"
+                    >
+                      <div
+                        className="pf-c-form__group-control"
+                      >
+                        <div
+                          className="pf-c-form__actions"
+                        >
+                          <Button
                             onClick={[Function]}
                             variant="primary"
                           >
-                            <button
-                              aria-disabled={false}
-                              aria-label={null}
-                              className="pf-c-button pf-m-primary"
-                              data-ouia-component-id="OUIA-Generated-Button-primary-5"
-                              data-ouia-component-type="PF4/Button"
-                              data-ouia-safe={true}
-                              disabled={false}
+                            <ButtonBase
+                              innerRef={null}
                               onClick={[Function]}
-                              role={null}
-                              type="button"
+                              variant="primary"
                             >
-                              Start
-                            </button>
-                          </ButtonBase>
-                        </Button>
-                        <Button
-                          onClick={[Function]}
-                          variant="secondary"
-                        >
-                          <ButtonBase
-                            innerRef={null}
+                              <button
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-primary"
+                                data-ouia-component-id="OUIA-Generated-Button-primary-5"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                onClick={[Function]}
+                                role={null}
+                                type="button"
+                              >
+                                Start
+                              </button>
+                            </ButtonBase>
+                          </Button>
+                          <Button
                             onClick={[Function]}
                             variant="secondary"
                           >
-                            <button
-                              aria-disabled={false}
-                              aria-label={null}
-                              className="pf-c-button pf-m-secondary"
-                              data-ouia-component-id="OUIA-Generated-Button-secondary-5"
-                              data-ouia-component-type="PF4/Button"
-                              data-ouia-safe={true}
-                              disabled={false}
+                            <ButtonBase
+                              innerRef={null}
                               onClick={[Function]}
-                              role={null}
-                              type="button"
+                              variant="secondary"
                             >
-                              Reset
-                            </button>
-                          </ButtonBase>
-                        </Button>
+                              <button
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-secondary"
+                                data-ouia-component-id="OUIA-Generated-Button-secondary-5"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                onClick={[Function]}
+                                role={null}
+                                type="button"
+                              >
+                                Reset
+                              </button>
+                            </ButtonBase>
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </ActionGroup>
-              </form>
+                  </ActionGroup>
+                </form>
+              </FormBase>
             </Form>
           </div>
         </StackItem>
@@ -384,71 +393,27 @@ exports[`WorkflowForm Test Workflow Form - rendering 1`] = `
             <Form
               isHorizontal={true}
             >
-              <form
-                className="pf-c-form pf-m-horizontal"
-                noValidate={true}
+              <FormBase
+                innerRef={null}
+                isHorizontal={true}
               >
-                <FormGroup
-                  fieldId="workflowData"
-                  helperTextInvalid={false}
-                  helperTextInvalidIcon={
-                    <ExclamationCircleIcon
-                      color="currentColor"
-                      noVerticalAlign={false}
-                      size="sm"
-                    />
-                  }
-                  isRequired={true}
-                  label="Start Workflow Data"
-                  labelIcon={
-                    <Popover
-                      bodyContent={
-                        <div>
-                          Fill the data to start the Workflow in JSON format.
-                        </div>
-                      }
-                      id="workflow-form-data-help"
-                    >
-                      <button
-                        aria-label="More info for data field"
-                        className="pf-c-form__group-label-help"
-                        onClick={[Function]}
-                        type="button"
-                      >
-                        <HelpIcon
-                          color="currentColor"
-                          noVerticalAlign={true}
-                          size="sm"
-                        />
-                      </button>
-                    </Popover>
-                  }
-                  validated="default"
+                <form
+                  className="pf-c-form pf-m-horizontal"
+                  noValidate={true}
                 >
-                  <div
-                    className="pf-c-form__group"
-                  >
-                    <div
-                      className="pf-c-form__group-label"
-                    >
-                      <label
-                        className="pf-c-form__label"
-                        htmlFor="workflowData"
-                      >
-                        <span
-                          className="pf-c-form__label-text"
-                        >
-                          Start Workflow Data
-                        </span>
-                        <span
-                          aria-hidden="true"
-                          className="pf-c-form__label-required"
-                        >
-                           
-                          *
-                        </span>
-                      </label>
-                       
+                  <FormGroup
+                    fieldId="workflowData"
+                    helperTextInvalid={false}
+                    helperTextInvalidIcon={
+                      <ExclamationCircleIcon
+                        color="currentColor"
+                        noVerticalAlign={false}
+                        size="sm"
+                      />
+                    }
+                    isRequired={true}
+                    label="Start Workflow Data"
+                    labelIcon={
                       <Popover
                         bodyContent={
                           <div>
@@ -457,94 +422,146 @@ exports[`WorkflowForm Test Workflow Form - rendering 1`] = `
                         }
                         id="workflow-form-data-help"
                       >
-                        <MockedComponent />
+                        <button
+                          aria-label="More info for data field"
+                          className="pf-c-form__group-label-help"
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <HelpIcon
+                            color="currentColor"
+                            noVerticalAlign={true}
+                            size="sm"
+                          />
+                        </button>
                       </Popover>
-                    </div>
-                    <div
-                      className="pf-c-form__group-control"
-                    >
-                      <CodeEditor
-                        code=""
-                        height="400px"
-                        isCopyEnabled={false}
-                        isDarkTheme={false}
-                        isLanguageLabelVisible={false}
-                        isLineNumbersVisible={true}
-                        isMinimapVisible={true}
-                        isReadOnly={false}
-                        language="json"
-                        onChange={[Function]}
-                      >
-                        <MockedComponent />
-                      </CodeEditor>
-                    </div>
-                  </div>
-                </FormGroup>
-                <ActionGroup>
-                  <div
-                    className="pf-c-form__group pf-m-action"
+                    }
+                    validated="default"
                   >
-                    <div
-                      className="pf-c-form__group-control"
+                    <GenerateId
+                      prefix="pf-random-id-"
                     >
                       <div
-                        className="pf-c-form__actions"
+                        className="pf-c-form__group"
                       >
-                        <Button
-                          onClick={[Function]}
-                          variant="primary"
+                        <div
+                          className="pf-c-form__group-label"
                         >
-                          <ButtonBase
-                            innerRef={null}
+                          <label
+                            className="pf-c-form__label"
+                            htmlFor="workflowData"
+                          >
+                            <span
+                              className="pf-c-form__label-text"
+                            >
+                              Start Workflow Data
+                            </span>
+                            <span
+                              aria-hidden="true"
+                              className="pf-c-form__label-required"
+                            >
+                               
+                              *
+                            </span>
+                          </label>
+                           
+                          <Popover
+                            bodyContent={
+                              <div>
+                                Fill the data to start the Workflow in JSON format.
+                              </div>
+                            }
+                            id="workflow-form-data-help"
+                          >
+                            <MockedComponent />
+                          </Popover>
+                        </div>
+                        <div
+                          className="pf-c-form__group-control"
+                        >
+                          <CodeEditor
+                            code=""
+                            height="400px"
+                            isCopyEnabled={false}
+                            isDarkTheme={false}
+                            isLanguageLabelVisible={false}
+                            isLineNumbersVisible={true}
+                            isMinimapVisible={true}
+                            isReadOnly={false}
+                            onChange={[Function]}
+                          >
+                            <MockedComponent />
+                          </CodeEditor>
+                        </div>
+                      </div>
+                    </GenerateId>
+                  </FormGroup>
+                  <ActionGroup>
+                    <div
+                      className="pf-c-form__group pf-m-action"
+                    >
+                      <div
+                        className="pf-c-form__group-control"
+                      >
+                        <div
+                          className="pf-c-form__actions"
+                        >
+                          <Button
                             onClick={[Function]}
                             variant="primary"
                           >
-                            <button
-                              aria-disabled={false}
-                              aria-label={null}
-                              className="pf-c-button pf-m-primary"
-                              data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                              data-ouia-component-type="PF4/Button"
-                              data-ouia-safe={true}
-                              disabled={false}
+                            <ButtonBase
+                              innerRef={null}
                               onClick={[Function]}
-                              role={null}
-                              type="button"
+                              variant="primary"
                             >
-                              Start
-                            </button>
-                          </ButtonBase>
-                        </Button>
-                        <Button
-                          onClick={[Function]}
-                          variant="secondary"
-                        >
-                          <ButtonBase
-                            innerRef={null}
+                              <button
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-primary"
+                                data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                onClick={[Function]}
+                                role={null}
+                                type="button"
+                              >
+                                Start
+                              </button>
+                            </ButtonBase>
+                          </Button>
+                          <Button
                             onClick={[Function]}
                             variant="secondary"
                           >
-                            <button
-                              aria-disabled={false}
-                              aria-label={null}
-                              className="pf-c-button pf-m-secondary"
-                              data-ouia-component-id="OUIA-Generated-Button-secondary-1"
-                              data-ouia-component-type="PF4/Button"
-                              data-ouia-safe={true}
-                              disabled={false}
+                            <ButtonBase
+                              innerRef={null}
                               onClick={[Function]}
-                              role={null}
-                              type="button"
+                              variant="secondary"
                             >
-                              Reset
-                            </button>
-                          </ButtonBase>
-                        </Button>
+                              <button
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-secondary"
+                                data-ouia-component-id="OUIA-Generated-Button-secondary-1"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                onClick={[Function]}
+                                role={null}
+                                type="button"
+                              >
+                                Reset
+                              </button>
+                            </ButtonBase>
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </ActionGroup>
-              </form>
+                  </ActionGroup>
+                </form>
+              </FormBase>
             </Form>
           </div>
         </StackItem>
@@ -600,71 +617,27 @@ exports[`WorkflowForm Test Workflow Form - validation error 1`] = `
             <Form
               isHorizontal={true}
             >
-              <form
-                className="pf-c-form pf-m-horizontal"
-                noValidate={true}
+              <FormBase
+                innerRef={null}
+                isHorizontal={true}
               >
-                <FormGroup
-                  fieldId="workflowData"
-                  helperTextInvalid="The Workflow Data should have a JSON format."
-                  helperTextInvalidIcon={
-                    <ExclamationCircleIcon
-                      color="currentColor"
-                      noVerticalAlign={false}
-                      size="sm"
-                    />
-                  }
-                  isRequired={true}
-                  label="Start Workflow Data"
-                  labelIcon={
-                    <Popover
-                      bodyContent={
-                        <div>
-                          Fill the data to start the Workflow in JSON format.
-                        </div>
-                      }
-                      id="workflow-form-data-help"
-                    >
-                      <button
-                        aria-label="More info for data field"
-                        className="pf-c-form__group-label-help"
-                        onClick={[Function]}
-                        type="button"
-                      >
-                        <HelpIcon
-                          color="currentColor"
-                          noVerticalAlign={true}
-                          size="sm"
-                        />
-                      </button>
-                    </Popover>
-                  }
-                  validated="error"
+                <form
+                  className="pf-c-form pf-m-horizontal"
+                  noValidate={true}
                 >
-                  <div
-                    className="pf-c-form__group"
-                  >
-                    <div
-                      className="pf-c-form__group-label"
-                    >
-                      <label
-                        className="pf-c-form__label"
-                        htmlFor="workflowData"
-                      >
-                        <span
-                          className="pf-c-form__label-text"
-                        >
-                          Start Workflow Data
-                        </span>
-                        <span
-                          aria-hidden="true"
-                          className="pf-c-form__label-required"
-                        >
-                           
-                          *
-                        </span>
-                      </label>
-                       
+                  <FormGroup
+                    fieldId="workflowData"
+                    helperTextInvalid="The Workflow Data should have a JSON format."
+                    helperTextInvalidIcon={
+                      <ExclamationCircleIcon
+                        color="currentColor"
+                        noVerticalAlign={false}
+                        size="sm"
+                      />
+                    }
+                    isRequired={true}
+                    label="Start Workflow Data"
+                    labelIcon={
                       <Popover
                         bodyContent={
                           <div>
@@ -673,129 +646,181 @@ exports[`WorkflowForm Test Workflow Form - validation error 1`] = `
                         }
                         id="workflow-form-data-help"
                       >
-                        <MockedComponent />
-                      </Popover>
-                    </div>
-                    <div
-                      className="pf-c-form__group-control"
-                    >
-                      <CodeEditor
-                        code=""
-                        height="400px"
-                        isCopyEnabled={false}
-                        isDarkTheme={false}
-                        isLanguageLabelVisible={false}
-                        isLineNumbersVisible={true}
-                        isMinimapVisible={true}
-                        isReadOnly={false}
-                        language="json"
-                        onChange={[Function]}
-                      >
-                        <MockedComponent />
-                      </CodeEditor>
-                      <div
-                        aria-live="polite"
-                        className="pf-c-form__helper-text pf-m-error"
-                        id="workflowData-helper"
-                      >
-                        <span
-                          className="pf-c-form__helper-text-icon"
-                        >
-                          <ExclamationCircleIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
-                          >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 512 512"
-                              width="1em"
-                            >
-                              <path
-                                d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
-                              />
-                            </svg>
-                          </ExclamationCircleIcon>
-                        </span>
-                        The Workflow Data should have a JSON format.
-                      </div>
-                    </div>
-                  </div>
-                </FormGroup>
-                <ActionGroup>
-                  <div
-                    className="pf-c-form__group pf-m-action"
-                  >
-                    <div
-                      className="pf-c-form__group-control"
-                    >
-                      <div
-                        className="pf-c-form__actions"
-                      >
-                        <Button
+                        <button
+                          aria-label="More info for data field"
+                          className="pf-c-form__group-label-help"
                           onClick={[Function]}
-                          variant="primary"
+                          type="button"
                         >
-                          <ButtonBase
-                            innerRef={null}
+                          <HelpIcon
+                            color="currentColor"
+                            noVerticalAlign={true}
+                            size="sm"
+                          />
+                        </button>
+                      </Popover>
+                    }
+                    validated="error"
+                  >
+                    <GenerateId
+                      prefix="pf-random-id-"
+                    >
+                      <div
+                        className="pf-c-form__group"
+                      >
+                        <div
+                          className="pf-c-form__group-label"
+                        >
+                          <label
+                            className="pf-c-form__label"
+                            htmlFor="workflowData"
+                          >
+                            <span
+                              className="pf-c-form__label-text"
+                            >
+                              Start Workflow Data
+                            </span>
+                            <span
+                              aria-hidden="true"
+                              className="pf-c-form__label-required"
+                            >
+                               
+                              *
+                            </span>
+                          </label>
+                           
+                          <Popover
+                            bodyContent={
+                              <div>
+                                Fill the data to start the Workflow in JSON format.
+                              </div>
+                            }
+                            id="workflow-form-data-help"
+                          >
+                            <MockedComponent />
+                          </Popover>
+                        </div>
+                        <div
+                          className="pf-c-form__group-control"
+                        >
+                          <CodeEditor
+                            code=""
+                            height="400px"
+                            isCopyEnabled={false}
+                            isDarkTheme={false}
+                            isLanguageLabelVisible={false}
+                            isLineNumbersVisible={true}
+                            isMinimapVisible={true}
+                            isReadOnly={false}
+                            onChange={[Function]}
+                          >
+                            <MockedComponent />
+                          </CodeEditor>
+                          <div
+                            aria-live="polite"
+                            className="pf-c-form__helper-text pf-m-error"
+                            id="workflowData-helper"
+                          >
+                            <span
+                              className="pf-c-form__helper-text-icon"
+                            >
+                              <ExclamationCircleIcon
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
+                              >
+                                <svg
+                                  aria-hidden={true}
+                                  aria-labelledby={null}
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style={
+                                    Object {
+                                      "verticalAlign": "-0.125em",
+                                    }
+                                  }
+                                  viewBox="0 0 512 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+                                  />
+                                </svg>
+                              </ExclamationCircleIcon>
+                            </span>
+                            The Workflow Data should have a JSON format.
+                          </div>
+                        </div>
+                      </div>
+                    </GenerateId>
+                  </FormGroup>
+                  <ActionGroup>
+                    <div
+                      className="pf-c-form__group pf-m-action"
+                    >
+                      <div
+                        className="pf-c-form__group-control"
+                      >
+                        <div
+                          className="pf-c-form__actions"
+                        >
+                          <Button
                             onClick={[Function]}
                             variant="primary"
                           >
-                            <button
-                              aria-disabled={false}
-                              aria-label={null}
-                              className="pf-c-button pf-m-primary"
-                              data-ouia-component-id="OUIA-Generated-Button-primary-3"
-                              data-ouia-component-type="PF4/Button"
-                              data-ouia-safe={true}
-                              disabled={false}
+                            <ButtonBase
+                              innerRef={null}
                               onClick={[Function]}
-                              role={null}
-                              type="button"
+                              variant="primary"
                             >
-                              Start
-                            </button>
-                          </ButtonBase>
-                        </Button>
-                        <Button
-                          onClick={[Function]}
-                          variant="secondary"
-                        >
-                          <ButtonBase
-                            innerRef={null}
+                              <button
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-primary"
+                                data-ouia-component-id="OUIA-Generated-Button-primary-3"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                onClick={[Function]}
+                                role={null}
+                                type="button"
+                              >
+                                Start
+                              </button>
+                            </ButtonBase>
+                          </Button>
+                          <Button
                             onClick={[Function]}
                             variant="secondary"
                           >
-                            <button
-                              aria-disabled={false}
-                              aria-label={null}
-                              className="pf-c-button pf-m-secondary"
-                              data-ouia-component-id="OUIA-Generated-Button-secondary-3"
-                              data-ouia-component-type="PF4/Button"
-                              data-ouia-safe={true}
-                              disabled={false}
+                            <ButtonBase
+                              innerRef={null}
                               onClick={[Function]}
-                              role={null}
-                              type="button"
+                              variant="secondary"
                             >
-                              Reset
-                            </button>
-                          </ButtonBase>
-                        </Button>
+                              <button
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-secondary"
+                                data-ouia-component-id="OUIA-Generated-Button-secondary-3"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                onClick={[Function]}
+                                role={null}
+                                type="button"
+                              >
+                                Reset
+                              </button>
+                            </ButtonBase>
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </ActionGroup>
-              </form>
+                  </ActionGroup>
+                </form>
+              </FormBase>
             </Form>
           </div>
         </StackItem>
