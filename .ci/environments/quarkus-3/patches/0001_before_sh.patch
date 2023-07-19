@@ -330,7 +330,7 @@ index 914a5ed1a5..840df84c51 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index 4173d8cd80..3d7a550a92 100644
+index 4173d8cd80..8cdb515b46 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,9 +16,9 @@
@@ -391,8 +391,7 @@ index 4173d8cd80..3d7a550a92 100644
 +    <version.io.micrometer>1.10.5</version.io.micrometer>
      <version.org.flywaydb>9.8.3</version.org.flywaydb>
      <version.org.postgresql>42.5.1</version.org.postgresql>
--    <version.io.serverlessworkflow>4.0.4.Final</version.io.serverlessworkflow>
-+    <version.io.serverlessworkflow>4.0.3.Final</version.io.serverlessworkflow>
+     <version.io.serverlessworkflow>4.0.4.Final</version.io.serverlessworkflow>
      <!-- Aligned with Quarkus 2.7 (LTS) - see https://issues.redhat.com/browse/KOGITO-7971 -->
 -    <version.io.smallrye-open-api>3.1.1</version.io.smallrye-open-api>
 +    <version.io.smallrye-open-api>3.3.2</version.io.smallrye-open-api>

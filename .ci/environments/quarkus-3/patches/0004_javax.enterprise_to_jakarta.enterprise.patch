@@ -1,9 +1,3 @@
-commit ab7f929c80c55efa0d0151d97225c0348f97d5ce
-Author: radtriste <radtriste@jenkins.redhat>
-Date:   Tue Apr 18 14:57:52 2023 +0200
-
-    patch: javax.enterprise -> jakarta.enterprise
-
 diff --git a/kogito-codegen-modules/GUIDELINES.adoc b/kogito-codegen-modules/GUIDELINES.adoc
 index ae862535a4..a8ad497c5d 100644
 --- a/kogito-codegen-modules/GUIDELINES.adoc
@@ -27,7 +21,7 @@ index ae862535a4..a8ad497c5d 100644
      });
  ----
 diff --git a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
-index 54cef037a5..7f3857df63 100644
+index f06c26e151..27eb8803ca 100644
 --- a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
 +++ b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
 @@ -35,7 +35,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
@@ -74,7 +68,7 @@ index 54cef037a5..7f3857df63 100644
 +        node.addAnnotation("jakarta.enterprise.inject.Produces");
          return node;
      }
- }
+ 
 diff --git a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java
 index 64bd6d374c..023cf9e482 100644
 --- a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java
