@@ -32,6 +32,7 @@ import static org.drools.parser.DRLParserHelper.getTextWithoutErrorNode;
 import static org.drools.parser.ParserStringUtils.getTextPreservingWhitespace;
 import static org.drools.parser.ParserStringUtils.getTokenTextPreservingWhitespace;
 import static org.drools.parser.ParserStringUtils.safeStripStringDelimiters;
+import static org.drools.parser.ParserStringUtils.trimThen;
 import static org.drools.util.StringUtils.unescapeJava;
 
 public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
@@ -152,7 +153,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
         if (ctx.rhs() != null) {
             ruleDescr.setConsequenceLocation(ctx.rhs().getStart().getLine(), ctx.rhs().getStart().getCharPositionInLine()); // location of "then"
-            ruleDescr.setConsequence(getTextPreservingWhitespace(ctx.rhs().consequence()));
+            ruleDescr.setConsequence(trimThen(getTextPreservingWhitespace(ctx.rhs())));
         }
 
         return ruleDescr;
