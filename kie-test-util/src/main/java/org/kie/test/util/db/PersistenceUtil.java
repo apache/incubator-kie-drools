@@ -148,7 +148,7 @@ public class PersistenceUtil {
             String jdbcUrl = dsProps.getProperty("url");
             // fix an incomplete JDBC URL used by some tests
             if (jdbcUrl.startsWith("jdbc:h2:") && !jdbcUrl.contains("tcp://") && !jdbcUrl.contains("mem:")) {
-                dsProps.put("url", jdbcUrl + "tcp://localhost/target/./persistence-test");
+                dsProps.put("url", jdbcUrl + "tcp://localhost/target/./persistence-test;MODE=LEGACY;OLD_INFORMATION_SCHEMA=TRUE");
             }
             h2Server.start();
         }
@@ -168,7 +168,7 @@ public class PersistenceUtil {
         if (defaultProperties == null) {
             String[] keyArr = { "serverName", "portNumber", "databaseName", "url", "user", "password", "driverClassName",
                     "className", "maxPoolSize", "allowLocalTransactions" };
-            String[] defaultPropArr = { "", "", "", "jdbc:h2:tcp://localhost/JPADroolsFlow", "sa", "", "org.h2.Driver",
+            String[] defaultPropArr = { "", "", "", "jdbc:h2:tcp://localhost/JPADroolsFlow;MODE=LEGACY;OLD_INFORMATION_SCHEMA=TRUE", "sa", "", "org.h2.Driver",
                     "org.h2.jdbcx.JdbcDataSource", "16", "true" };
             if (keyArr.length != defaultPropArr.length) {
                 throw new IllegalStateException("Unequal number of keys for default properties!");
