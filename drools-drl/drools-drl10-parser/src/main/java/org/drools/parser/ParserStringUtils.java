@@ -38,4 +38,12 @@ public class ParserStringUtils {
         // tokenStream is required to get hidden channel token (e.g. whitespace). Unlike getTextPreservingWhitespace, this method reflects Lexer normalizeString
         return tokenStream.getText(ctx.start, ctx.stop);
     }
+
+    public static String trimThen(String rhs) {
+        if (rhs.startsWith("then")) {
+            return rhs.substring("then".length());
+        } else {
+            throw new DRLParserException("rhs has to start with 'then' : rhs = " + rhs);
+        }
+    }
 }
