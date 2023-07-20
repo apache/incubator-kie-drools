@@ -41,4 +41,11 @@ public interface ProcessEvent
      */
     Date getEventDate();
 
+    /**
+     * @return associated identity that performed the event
+     */
+    default String getEventIdentity(){
+        return null;
+    }
+
 }
