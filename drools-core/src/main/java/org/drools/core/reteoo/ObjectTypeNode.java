@@ -283,20 +283,20 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         retractLeftTuples( factHandle, context, reteEvaluator );
     }
 
-    public static void expireLeftTuple(LeftTuple leftTuple) {
+    public static void expireLeftTuple(AbstractLeftTuple leftTuple) {
         if (!leftTuple.isExpired()) {
             leftTuple.setExpired();
-            for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
+            for ( AbstractLeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
                 expireLeftTuple(child);
             }
-            for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
+            for ( AbstractLeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
                 expireLeftTuple(peer);
             }
         }
     }
 
     public static void expireRightTuple(RightTuple rightTuple) {
-        for ( LeftTuple child = rightTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
+        for ( AbstractLeftTuple child = rightTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
             expireLeftTuple(child);
         }
     }

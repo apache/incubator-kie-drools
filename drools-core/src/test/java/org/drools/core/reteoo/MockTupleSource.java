@@ -69,7 +69,7 @@ public class MockTupleSource extends LeftTupleSource {
     }
 
     @Override
-    public LeftTuple createPeer(LeftTuple original) {
+    public AbstractLeftTuple createPeer(AbstractLeftTuple original) {
         return null;
     }
 }

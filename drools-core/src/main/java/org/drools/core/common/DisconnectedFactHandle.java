@@ -21,7 +21,7 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ArrayElements;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.reteoo.AbstractLeftTuple;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
@@ -198,7 +198,7 @@ public class DisconnectedFactHandle
         return this.recency;
     }
 
-    public LeftTuple getLastLeftTuple() {
+    public AbstractLeftTuple getLastLeftTuple() {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
@@ -271,7 +271,7 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
-    public void setLastLeftTuple(LeftTuple leftTuple) {
+    public void setLastLeftTuple(AbstractLeftTuple leftTuple) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
@@ -312,7 +312,7 @@ public class DisconnectedFactHandle
         return toExternalForm();
     }
 
-    public LeftTuple getFirstLeftTuple() {
+    public AbstractLeftTuple getFirstLeftTuple() {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
@@ -336,15 +336,15 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "Not supported yet." );
     }
 
-    public void addFirstLeftTuple(LeftTuple leftTuple) {
+    public void addFirstLeftTuple(AbstractLeftTuple leftTuple) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
-    public void addLastLeftTuple(LeftTuple leftTuple) {
+    public void addLastLeftTuple(AbstractLeftTuple leftTuple) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
-    public void removeLeftTuple(LeftTuple leftTuple) {
+    public void removeLeftTuple(AbstractLeftTuple leftTuple) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 

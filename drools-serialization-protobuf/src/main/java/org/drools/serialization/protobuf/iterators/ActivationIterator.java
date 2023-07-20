@@ -18,7 +18,7 @@ package org.drools.serialization.protobuf.iterators;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
@@ -36,7 +36,7 @@ public class ActivationIterator
 
     private TerminalNode          node;
     
-    private Iterator<LeftTuple>   leftTupleIter;
+    private Iterator<AbstractLeftTuple>   leftTupleIter;
 
     private Tuple                 currentTuple;
 

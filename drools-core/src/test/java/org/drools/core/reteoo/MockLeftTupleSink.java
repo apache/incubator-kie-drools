@@ -118,33 +118,33 @@ public class MockLeftTupleSink extends LeftTupleSource
         return NodeTypeEnums.RuleTerminalNode;
     }
 
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+    public AbstractLeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
     }
 
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
+    public AbstractLeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final AbstractLeftTuple leftTuple,
                                      final Sink sink) {
         return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
                                      Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
+                                     AbstractLeftTuple currentLeftChild,
+                                     AbstractLeftTuple currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
@@ -169,7 +169,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     @Override
-    public LeftTuple createPeer(LeftTuple original) {
+    public AbstractLeftTuple createPeer(AbstractLeftTuple original) {
         return null;
     }
 }

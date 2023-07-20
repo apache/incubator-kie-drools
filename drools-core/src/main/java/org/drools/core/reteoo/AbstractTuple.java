@@ -65,7 +65,7 @@ public abstract class AbstractTuple implements Tuple {
     }
 
     public void clearStaged() {
-        this.stagedType = LeftTuple.NONE;
+        this.stagedType = AbstractLeftTuple.NONE;
         this.stagedNext = null;
         this.stagedPrevious = null;
     }

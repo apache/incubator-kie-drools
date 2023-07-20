@@ -31,7 +31,7 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.base.reteoo.InitialFactImpl;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -126,7 +126,7 @@ public class MVELAccumulateBuilderTest {
                 tuple,
                 ksession)).isEqualTo(Integer.valueOf( 18 ));
 
-        LeftTuple match = new JoinNodeLeftTuple();
+        AbstractLeftTuple match = new JoinNodeLeftTuple();
         match.setContextObject(value1);
         acc.tryReverse(wmContext,
                        accContext,

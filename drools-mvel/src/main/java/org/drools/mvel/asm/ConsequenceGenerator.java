@@ -18,7 +18,7 @@ import org.drools.base.base.ValueResolver;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.CompiledInvoker;
@@ -55,8 +55,8 @@ public class ConsequenceGenerator {
                 // Tuple tuple = knowledgeHelper.getTuple();
                 mv.visitVarInsn(ALOAD, 1);
                 invokeInterface(ConsequenceContext.class, "getTuple", BaseTuple.class);
-                cast(LeftTuple.class);
-                mv.visitVarInsn(ASTORE, 3); // LeftTuple
+                cast(AbstractLeftTuple.class);
+                mv.visitVarInsn(ASTORE, 3); // AbstractLeftTuple
 
                 // Declaration[] declarations = knowledgeHelper.getRequiredDeclarations();
                 mv.visitVarInsn(ALOAD, 1);

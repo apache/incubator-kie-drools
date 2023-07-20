@@ -28,34 +28,34 @@ public interface LeftTuple extends Tuple {
      */
     void setLeftTupleSink(LeftTupleSink sink);
 
-    LeftTuple getLeftParent();
-    void setLeftParent(LeftTuple leftParent);
+    AbstractLeftTuple getLeftParent();
+    void setLeftParent(AbstractLeftTuple leftParent);
 
     RightTuple getRightParent();
     void setRightParent(RightTuple rightParent);
 
-    LeftTuple getRightParentPrevious();
-    void setRightParentPrevious(LeftTuple rightParentLeft);
+    AbstractLeftTuple getRightParentPrevious();
+    void setRightParentPrevious(AbstractLeftTuple rightParentLeft);
 
-    LeftTuple getRightParentNext();
-    void setRightParentNext(LeftTuple rightParentRight);
+    AbstractLeftTuple getRightParentNext();
+    void setRightParentNext(AbstractLeftTuple rightParentRight);
 
     void clearBlocker();
     void setBlocker(RightTuple blocker);
     RightTuple getBlocker();
 
-    LeftTuple getBlockedPrevious();
-    void setBlockedPrevious(LeftTuple blockerPrevious);
+    AbstractLeftTuple getBlockedPrevious();
+    void setBlockedPrevious(AbstractLeftTuple blockerPrevious);
 
-    LeftTuple getBlockedNext();
-    void setBlockedNext(LeftTuple blockerNext);
+    AbstractLeftTuple getBlockedNext();
+    void setBlockedNext(AbstractLeftTuple blockerNext);
 
-    LeftTuple getParent();
+    AbstractLeftTuple getParent();
 
-    LeftTuple getNextParentWithHandle();
+    AbstractLeftTuple getNextParentWithHandle();
 
-    void setPeer(LeftTuple peer);
-    LeftTuple getPeer();
+    void setPeer(AbstractLeftTuple peer);
+    AbstractLeftTuple getPeer();
 
     short getStagedTypeForQueries();
     void setStagedTypeForQueries( short stagedTypeForQueries );

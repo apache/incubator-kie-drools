@@ -26,7 +26,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -5609,7 +5609,7 @@ public class TraitTest extends CommonTraitTest {
 
         for ( final Object o : ksession.getObjects(object -> object.getClass().getName().contains( "test.A" )) ) {
             InternalFactHandle handle = (InternalFactHandle) ksession.getFactHandle( o );
-            LeftTuple first = handle.getFirstLeftTuple();
+            AbstractLeftTuple first = handle.getFirstLeftTuple();
             assertThat(first instanceof RuleTerminalNodeLeftTuple).isTrue();
             assertThat(((RuleTerminalNodeLeftTuple) first).getRule().getName()).isEqualTo("Check");
         }

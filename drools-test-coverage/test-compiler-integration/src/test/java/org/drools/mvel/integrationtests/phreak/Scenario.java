@@ -26,7 +26,7 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.RightTuple;
@@ -51,19 +51,19 @@ public class Scenario {
     BetaMemory            bm;
     InternalWorkingMemory wm;
 
-    TupleSets<LeftTuple>  leftTuples;
+    TupleSets<AbstractLeftTuple>  leftTuples;
     TupleSets<RightTuple> rightRuples;
 
     StagedBuilder expectedResultBuilder;
 
-    TupleSets<LeftTuple> actualResultLeftTuples;
+    TupleSets<AbstractLeftTuple> actualResultLeftTuples;
 
-    TupleSets<LeftTuple> previousResultTuples;
+    TupleSets<AbstractLeftTuple> previousResultTuples;
 
     List<StagedBuilder> preStagedBuilders;
     List<StagedBuilder> postStagedBuilders;
 
-    List<LeftTuple>  leftMemory;
+    List<AbstractLeftTuple>  leftMemory;
     List<RightTuple> rightMemory;
 
     private boolean testLeftMemory;
@@ -79,13 +79,13 @@ public class Scenario {
         this.sinkNode = sinkNode;
         this.bm = bm;
         this.wm = wm;
-        this.leftTuples = new TupleSetsImpl<LeftTuple>();
+        this.leftTuples = new TupleSetsImpl<AbstractLeftTuple>();
         this.rightRuples = new TupleSetsImpl<RightTuple>();
         this.preStagedBuilders = new ArrayList<StagedBuilder>();
         this.postStagedBuilders = new ArrayList<StagedBuilder>();
 
         this.bm.setStagedRightTuples(rightRuples);
-        this.leftMemory = new ArrayList<LeftTuple>();
+        this.leftMemory = new ArrayList<AbstractLeftTuple>();
         this.rightMemory = new ArrayList<RightTuple>();
     }
 
@@ -114,7 +114,7 @@ public class Scenario {
         this.testRightMemory = testRightMemory;
     }
 
-    public TupleSets<LeftTuple> getActualResultLeftTuples() {
+    public TupleSets<AbstractLeftTuple> getActualResultLeftTuples() {
         return actualResultLeftTuples;
     }  
     
@@ -154,7 +154,7 @@ public class Scenario {
         return rightRuples;
     }
 
-    public TupleSets<LeftTuple> getLeftTuples() {
+    public TupleSets<AbstractLeftTuple> getLeftTuples() {
         return leftTuples;
     }
 
@@ -162,7 +162,7 @@ public class Scenario {
         return rightRuples;
     }
 
-    public List<LeftTuple> getLeftMemory() {
+    public List<AbstractLeftTuple> getLeftMemory() {
         return leftMemory;
     }
 
@@ -172,7 +172,7 @@ public class Scenario {
 
     public Scenario run() {
         previousResultTuples = bm.getSegmentMemory().getFirst().getStagedLeftTuples();
-        actualResultLeftTuples = new TupleSetsImpl<LeftTuple>();
+        actualResultLeftTuples = new TupleSetsImpl<AbstractLeftTuple>();
         
         if ( phreakNode == PhreakJoinNode.class ) {
             new PhreakJoinNode().doNode( (JoinNode) betaNode, sinkNode,
@@ -193,8 +193,8 @@ public class Scenario {
         
         if ( !preStagedBuilders.isEmpty() ) {
             for ( StagedBuilder stagedBuilder : preStagedBuilders ) {
-                TupleSets<LeftTuple> expected = stagedBuilder.get();
-                TupleSets<LeftTuple> actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
+                TupleSets<AbstractLeftTuple> expected = stagedBuilder.get();
+                TupleSets<AbstractLeftTuple> actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
                 
                 assertEquals( expected, actual, stagedBuilder.isTestStagedInsert(), stagedBuilder.isTestStagedDelete(), stagedBuilder.isTestStagedUpdate() );    
             }
@@ -211,8 +211,8 @@ public class Scenario {
         
         if ( !postStagedBuilders.isEmpty() ) {
             for ( StagedBuilder stagedBuilder : postStagedBuilders ) {
-                TupleSets<LeftTuple> expected = stagedBuilder.get();
-                TupleSets<LeftTuple> actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
+                TupleSets<AbstractLeftTuple> expected = stagedBuilder.get();
+                TupleSets<AbstractLeftTuple> actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
                 
                 assertEquals( expected, actual, stagedBuilder.isTestStagedInsert(), stagedBuilder.isTestStagedDelete(), stagedBuilder.isTestStagedUpdate() );    
             }
@@ -239,8 +239,8 @@ public class Scenario {
         return stagedBuilder;        
     }      
 
-    public void assertEquals(TupleSets<LeftTuple> expected,
-                             TupleSets<LeftTuple> actual,
+    public void assertEquals(TupleSets<AbstractLeftTuple> expected,
+                             TupleSets<AbstractLeftTuple> actual,
                              boolean testInsert,
                              boolean testDelete,
                              boolean testUpdate) {
@@ -299,7 +299,7 @@ public class Scenario {
     }
 
     public boolean equals(final Tuple expected, Tuple actual) {
-        // we know the object is never null and always of the  type LeftTuple
+        // we know the object is never null and always of the  type AbstractLeftTuple
         if ( expected == actual ) {
             return true;
         }
@@ -315,32 +315,32 @@ public class Scenario {
             actual = actual.getParent();
         }
 
-        // A LeftTuple is  only the same if it has the same hashCode, factId and parent
+        // A AbstractLeftTuple is  only the same if it has the same hashCode, factId and parent
         return expected.hashCode() == actual.hashCode() &&
                expected.getFactHandle() == actual.getFactHandle() &&
                equals( expected.getParent(), actual.getParent() );
 
     }
 
-    public void equalsLeftMemory(List<LeftTuple> leftTuples) {
+    public void equalsLeftMemory(List<AbstractLeftTuple> leftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
 
         int length = 0;
-        for ( LeftTuple expectedLeftTuple : leftTuples ) {
+        for ( AbstractLeftTuple expectedLeftTuple : leftTuples ) {
             FastIterator it = betaNode.getLeftIterator( ltm );
             Tuple actualLeftTuple = null;
-            for ( actualLeftTuple = BetaNode.getFirstTuple( ltm, it ); actualLeftTuple != null; actualLeftTuple = (LeftTuple) it.next( actualLeftTuple ) ) {
+            for ( actualLeftTuple = BetaNode.getFirstTuple( ltm, it ); actualLeftTuple != null; actualLeftTuple = (AbstractLeftTuple) it.next( actualLeftTuple ) ) {
                 if ( expectedLeftTuple.equals( actualLeftTuple ) ) {
                     length++;
                     break;
                 }
             }
             if ( actualLeftTuple == null ) {
-                fail( "Could not find LeftTuple: " + expectedLeftTuple );
+                fail( "Could not find AbstractLeftTuple: " + expectedLeftTuple );
             }
         }
         if ( leftTuples.size() != ltm.size() ) {
-            fail( "LeftTuple memory size did not match: " + length );
+            fail( "AbstractLeftTuple memory size did not match: " + length );
         }
     }
 

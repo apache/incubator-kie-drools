@@ -33,7 +33,7 @@ import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.base.rule.Declaration;
@@ -135,7 +135,7 @@ public interface InternalMatch extends Serializable, QueueEntry, Match {
         return Collections.unmodifiableList( list );
     }
 
-    default List<Object> getObjectsDeep(LeftTuple entry) {
+    default List<Object> getObjectsDeep(AbstractLeftTuple entry) {
         List<Object> list = new ArrayList<>();
         while ( entry != null ) {
             if ( entry.getFactHandle() != null ) {

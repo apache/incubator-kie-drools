@@ -21,7 +21,7 @@ import org.drools.core.phreak.PhreakBranchNode;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.metric.util.MetricLogUtils;
 
@@ -32,9 +32,9 @@ public class PhreakBranchNodeMetric extends PhreakBranchNode {
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
                        ActivationsManager activationsManager,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples,
+                       TupleSets<AbstractLeftTuple> srcLeftTuples,
+                       TupleSets<AbstractLeftTuple> trgLeftTuples,
+                       TupleSets<AbstractLeftTuple> stagedLeftTuples,
                        RuleExecutor executor) {
 
         try {

@@ -38,10 +38,10 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
         // constructor needed for serialisation
     }
 
-    public ReactiveFromNodeLeftTuple(final LeftTuple leftTuple,
+    public ReactiveFromNodeLeftTuple(final AbstractLeftTuple leftTuple,
                                      final RightTuple rightTuple,
-                                     final LeftTuple currentLeftChild,
-                                     final LeftTuple currentRightChild,
+                                     final AbstractLeftTuple currentLeftChild,
+                                     final AbstractLeftTuple currentRightChild,
                                      final Sink sink,
                                      final boolean leftTupleMemoryEnabled) {
         super(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
@@ -49,7 +49,7 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
     }
 
 
-    public ReactiveFromNodeLeftTuple( InternalFactHandle factHandle, LeftTuple leftTuple, Sink sink ) {
+    public ReactiveFromNodeLeftTuple( InternalFactHandle factHandle, AbstractLeftTuple leftTuple, Sink sink ) {
         super(factHandle, leftTuple, sink);
         storeTupleObjects(leftTuple, factHandle);
     }
@@ -60,7 +60,7 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
         hash = Arrays.hashCode( objects );
     }
 
-    private void storeTupleObjects(LeftTuple leftTuple, FactHandle factHandle) {
+    private void storeTupleObjects(AbstractLeftTuple leftTuple, FactHandle factHandle) {
         Object[] leftObjects = leftTuple.toObjects();
         // left tuple size + 1 for the right object
         objects = new Object[leftObjects.length + 1];

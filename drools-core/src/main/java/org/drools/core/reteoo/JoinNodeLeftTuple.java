@@ -37,25 +37,25 @@ public class JoinNodeLeftTuple extends AbstractLeftTuple {
     }
 
     public JoinNodeLeftTuple(final InternalFactHandle factHandle,
-                             final LeftTuple leftTuple,
+                             final AbstractLeftTuple leftTuple,
                              final Sink sink) {
         super( factHandle, leftTuple, sink );
     }
 
-    public JoinNodeLeftTuple(final LeftTuple leftTuple,
+    public JoinNodeLeftTuple(final AbstractLeftTuple leftTuple,
                              final Sink sink,
                              final PropagationContext pctx,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple, sink, pctx, leftTupleMemoryEnabled);
     }
 
-    public JoinNodeLeftTuple(final LeftTuple leftTuple,
+    public JoinNodeLeftTuple(final AbstractLeftTuple leftTuple,
                              final RightTuple rightTuple,
                              final Sink sink) {
         super(leftTuple, rightTuple, sink);
     }
 
-    public JoinNodeLeftTuple(final LeftTuple leftTuple,
+    public JoinNodeLeftTuple(final AbstractLeftTuple leftTuple,
                              final RightTuple rightTuple,
                              final Sink sink,
                              final boolean leftTupleMemoryEnabled) {
@@ -67,10 +67,10 @@ public class JoinNodeLeftTuple extends AbstractLeftTuple {
              leftTupleMemoryEnabled);
     }
 
-    public JoinNodeLeftTuple(final LeftTuple leftTuple,
+    public JoinNodeLeftTuple(final AbstractLeftTuple leftTuple,
                              final RightTuple rightTuple,
-                             final LeftTuple currentLeftChild,
-                             final LeftTuple currentRightChild,
+                             final AbstractLeftTuple currentLeftChild,
+                             final AbstractLeftTuple currentRightChild,
                              final Sink sink,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple,

@@ -193,7 +193,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     @SuppressWarnings("unchecked")
-    public RightTuple createRightTuple( final LeftTuple leftTuple,
+    public RightTuple createRightTuple( final AbstractLeftTuple leftTuple,
                                         final PropagationContext context,
                                         final ReteEvaluator reteEvaluator,
                                         final Object object ) {
@@ -244,7 +244,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
    
 
     @Override
-    public LeftTuple createPeer(LeftTuple original) {
+    public AbstractLeftTuple createPeer(AbstractLeftTuple original) {
         JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
         peer.initPeer((AbstractLeftTuple) original, this);
         original.setPeer( peer );
@@ -355,34 +355,34 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         }
     }
     
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+    public AbstractLeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
     }
 
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
+    public AbstractLeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final AbstractLeftTuple leftTuple,
                                      final Sink sink) {
         return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
                                      Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, sink, pctx,
                                      leftTupleMemoryEnabled );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
+                                     AbstractLeftTuple currentLeftChild,
+                                     AbstractLeftTuple currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        

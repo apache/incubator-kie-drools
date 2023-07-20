@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.CompiledInvoker;
 import org.drools.base.rule.accessor.EvalExpression;
@@ -75,8 +75,8 @@ public class EvalGenerator {
                 int[] declarationsParamsPos = new int[declarations.length];
 
                 mv.visitVarInsn(ALOAD, 1);
-                cast(LeftTuple.class);
-                mv.visitVarInsn(ASTORE, 5); // LeftTuple
+                cast(AbstractLeftTuple.class);
+                mv.visitVarInsn(ASTORE, 5); // AbstractLeftTuple
 
                 BaseTuple currentTuple = tuple;
                 for (DeclarationMatcher matcher : declarationMatchers) {
@@ -91,7 +91,7 @@ public class EvalGenerator {
                     mv.visitVarInsn(ALOAD, 3); // reteEvaluator
 
                     mv.visitVarInsn(ALOAD, 5);
-                    invokeInterface(LeftTuple.class, "getFactHandle", FactHandle.class);
+                    invokeInterface(AbstractLeftTuple.class, "getFactHandle", FactHandle.class);
                     invokeInterface(FactHandle.class, "getObject", Object.class); // tuple.getFactHandle().getObject()
 
                     storeObjectFromDeclaration(declarations[i], expectedDeclarations[i]);

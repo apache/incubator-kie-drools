@@ -75,12 +75,12 @@ public class RuleTerminalNodeLeftTuple extends AbstractLeftTuple implements Inte
     }
 
     public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
+                                     final AbstractLeftTuple leftTuple,
                                      final Sink sink) {
         super(factHandle, leftTuple, sink);
     }
 
-    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
+    public RuleTerminalNodeLeftTuple(final AbstractLeftTuple leftTuple,
                                      final Sink sink,
                                      final PropagationContext pctx,
                                      final boolean leftTupleMemoryEnabled) {
@@ -90,7 +90,7 @@ public class RuleTerminalNodeLeftTuple extends AbstractLeftTuple implements Inte
               leftTupleMemoryEnabled);
     }
 
-    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
+    public RuleTerminalNodeLeftTuple(final AbstractLeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
         super(leftTuple,
@@ -98,10 +98,10 @@ public class RuleTerminalNodeLeftTuple extends AbstractLeftTuple implements Inte
               sink);
     }
 
-    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
+    public RuleTerminalNodeLeftTuple(final AbstractLeftTuple leftTuple,
                                      final RightTuple rightTuple,
-                                     final LeftTuple currentLeftChild,
-                                     final LeftTuple currentRightChild,
+                                     final AbstractLeftTuple currentLeftChild,
+                                     final AbstractLeftTuple currentRightChild,
                                      final Sink sink,
                                      final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -152,7 +152,7 @@ public class RuleTerminalNodeLeftTuple extends AbstractLeftTuple implements Inte
      *
      * @return The tuple.
      */
-    public LeftTuple getTuple() {
+    public AbstractLeftTuple getTuple() {
         return this;
     }
 

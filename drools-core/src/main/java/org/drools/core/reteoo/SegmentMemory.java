@@ -50,7 +50,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private SegmentPrototype   proto;
     private Memory[]       nodeMemories;
     private final List<PathMemory>   pathMemories = new ArrayList<>(1);;
-    private final TupleSets<LeftTuple> stagedLeftTuples = new TupleSetsImpl<>();
+    private final TupleSets<AbstractLeftTuple> stagedLeftTuples = new TupleSetsImpl<>();
     private long linkedNodeMask;
     private long dirtyNodeMask;
     private long allLinkedMaskTest;
@@ -347,7 +347,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.pos = pos;
     }
 
-    public TupleSets<LeftTuple> getStagedLeftTuples() {
+    public TupleSets<AbstractLeftTuple> getStagedLeftTuples() {
         return stagedLeftTuples;
     }
 

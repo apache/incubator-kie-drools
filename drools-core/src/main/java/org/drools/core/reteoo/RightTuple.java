@@ -22,13 +22,13 @@ import org.drools.core.common.PropagationContext;
 
 public interface RightTuple extends Tuple {
 
-    LeftTuple getBlocked();
-    void setBlocked( LeftTuple leftTuple );
-    void addBlocked( LeftTuple leftTuple );
-    void removeBlocked( LeftTuple leftTuple );
+    AbstractLeftTuple getBlocked();
+    void setBlocked( AbstractLeftTuple leftTuple );
+    void addBlocked( AbstractLeftTuple leftTuple );
+    void removeBlocked( AbstractLeftTuple leftTuple );
 
-    LeftTuple getTempBlocked();
-    void setTempBlocked( LeftTuple tempBlocked );
+    AbstractLeftTuple getTempBlocked();
+    void setTempBlocked( AbstractLeftTuple tempBlocked );
 
     RightTuple getTempNextRightTuple();
     void setTempNextRightTuple( RightTuple tempNextRightTuple );

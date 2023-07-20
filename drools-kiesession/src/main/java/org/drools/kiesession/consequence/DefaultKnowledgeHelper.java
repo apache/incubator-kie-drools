@@ -30,7 +30,7 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.process.AbstractProcessContext;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.consequence.InternalMatch;
@@ -81,7 +81,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         internalMatch = (InternalMatch) in.readObject();
-        tuple = (LeftTuple) in.readObject();
+        tuple = (AbstractLeftTuple) in.readObject();
         reteEvaluator = (ReteEvaluator) in.readObject();
     }
 

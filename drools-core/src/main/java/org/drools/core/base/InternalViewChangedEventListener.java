@@ -20,14 +20,14 @@ import java.util.List;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 
 public interface InternalViewChangedEventListener {
-    void rowAdded(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator);
+    void rowAdded(RuleImpl rule, AbstractLeftTuple tuple, ReteEvaluator reteEvaluator);
 
-    void rowRemoved(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator);
+    void rowRemoved(RuleImpl rule, AbstractLeftTuple tuple, ReteEvaluator reteEvaluator);
 
-    void rowUpdated(RuleImpl rule, LeftTuple leftTuple, ReteEvaluator reteEvaluator);
+    void rowUpdated(RuleImpl rule, AbstractLeftTuple leftTuple, ReteEvaluator reteEvaluator);
     
     List<? extends Object> getResults();
 }

@@ -25,9 +25,9 @@ public class EvalNodeLeftTuple extends AbstractLeftTuple {
 
     private RightTuple blocker;
 
-    private LeftTuple blockedPrevious;
+    private AbstractLeftTuple blockedPrevious;
 
-    private LeftTuple blockedNext;
+    private AbstractLeftTuple blockedNext;
 
     public EvalNodeLeftTuple() {
         // constructor needed for serialisation
@@ -45,12 +45,12 @@ public class EvalNodeLeftTuple extends AbstractLeftTuple {
     }
 
     public EvalNodeLeftTuple(final InternalFactHandle factHandle,
-                             final LeftTuple leftTuple,
+                             final AbstractLeftTuple leftTuple,
                              final Sink sink) {
         super( factHandle, leftTuple, sink );
     }
 
-    public EvalNodeLeftTuple(final LeftTuple leftTuple,
+    public EvalNodeLeftTuple(final AbstractLeftTuple leftTuple,
                              final Sink sink,
                              final PropagationContext pctx,
                              final boolean leftTupleMemoryEnabled) {
@@ -60,7 +60,7 @@ public class EvalNodeLeftTuple extends AbstractLeftTuple {
               leftTupleMemoryEnabled);
     }
 
-    public EvalNodeLeftTuple(final LeftTuple leftTuple,
+    public EvalNodeLeftTuple(final AbstractLeftTuple leftTuple,
                              RightTuple rightTuple,
                              Sink sink) {
         super(leftTuple,
@@ -68,7 +68,7 @@ public class EvalNodeLeftTuple extends AbstractLeftTuple {
               sink);
     }
 
-    public EvalNodeLeftTuple(final LeftTuple leftTuple,
+    public EvalNodeLeftTuple(final AbstractLeftTuple leftTuple,
                              final RightTuple rightTuple,
                              final Sink sink,
                              final boolean leftTupleMemoryEnabled) {
@@ -80,10 +80,10 @@ public class EvalNodeLeftTuple extends AbstractLeftTuple {
              leftTupleMemoryEnabled);
     }
 
-    public EvalNodeLeftTuple(final LeftTuple leftTuple,
+    public EvalNodeLeftTuple(final AbstractLeftTuple leftTuple,
                              final RightTuple rightTuple,
-                             final LeftTuple currentLeftChild,
-                             final LeftTuple currentRightChild,
+                             final AbstractLeftTuple currentLeftChild,
+                             final AbstractLeftTuple currentRightChild,
                              final Sink sink,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -95,7 +95,7 @@ public class EvalNodeLeftTuple extends AbstractLeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#unlinkFromLeftParent()
+     * @see org.kie.reteoo.AbstractLeftTuple#unlinkFromLeftParent()
      */
     public void unlinkFromLeftParent() {
         super.unlinkFromLeftParent();
@@ -103,7 +103,7 @@ public class EvalNodeLeftTuple extends AbstractLeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#unlinkFromRightParent()
+     * @see org.kie.reteoo.AbstractLeftTuple#unlinkFromRightParent()
      */
     public void unlinkFromRightParent() {
         super.unlinkFromRightParent();
@@ -117,44 +117,44 @@ public class EvalNodeLeftTuple extends AbstractLeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
+     * @see org.kie.reteoo.AbstractLeftTuple#setBlocker(org.kie.reteoo.RightTuple)
      */
     public void setBlocker(RightTuple blocker) {
         this.blocker = blocker;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getBlocker()
+     * @see org.kie.reteoo.AbstractLeftTuple#getBlocker()
      */
     public RightTuple getBlocker() {
         return this.blocker;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getBlockedPrevious()
+     * @see org.kie.reteoo.AbstractLeftTuple#getBlockedPrevious()
      */
-    public LeftTuple getBlockedPrevious() {
+    public AbstractLeftTuple getBlockedPrevious() {
         return this.blockedPrevious;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setBlockedPrevious(org.kie.reteoo.LeftTuple)
+     * @see org.kie.reteoo.AbstractLeftTuple#setBlockedPrevious(org.kie.reteoo.AbstractLeftTuple)
      */
-    public void setBlockedPrevious(LeftTuple blockerPrevious) {
+    public void setBlockedPrevious(AbstractLeftTuple blockerPrevious) {
         this.blockedPrevious = blockerPrevious;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getBlockedNext()
+     * @see org.kie.reteoo.AbstractLeftTuple#getBlockedNext()
      */
-    public LeftTuple getBlockedNext() {
+    public AbstractLeftTuple getBlockedNext() {
         return this.blockedNext;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setBlockedNext(org.kie.reteoo.LeftTuple)
+     * @see org.kie.reteoo.AbstractLeftTuple#setBlockedNext(org.kie.reteoo.AbstractLeftTuple)
      */
-    public void setBlockedNext(LeftTuple blockerNext) {
+    public void setBlockedNext(AbstractLeftTuple blockerNext) {
         this.blockedNext = blockerNext;
     }
 }

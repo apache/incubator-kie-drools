@@ -23,7 +23,7 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.ReactiveFromNodeLeftTuple;
@@ -104,9 +104,9 @@ public class ReactiveObjectUtil {
                            mem.getStagedLeftTuples(),
                            null );
             } else {
-                LeftTuple childLeftTuple = ((LeftTuple)leftTuple).getFirstChild();
+                AbstractLeftTuple childLeftTuple = ((AbstractLeftTuple)leftTuple).getFirstChild();
                 while (childLeftTuple != null) {
-                    LeftTuple next = childLeftTuple.getHandleNext();
+                    AbstractLeftTuple next = childLeftTuple.getHandleNext();
                     if ( object == childLeftTuple.getFactHandle().getObject() ) {
                         deleteChildLeftTuple( propagationContext, mem.getStagedLeftTuples(), null, childLeftTuple );
                     }

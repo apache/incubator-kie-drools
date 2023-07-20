@@ -30,7 +30,7 @@ import java.util.Set;
 import org.drools.base.base.ValueResolver;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.GlobalResolver;
@@ -359,7 +359,7 @@ public class MVELCompilationUnit
             }
         }
 
-        FactHandle[] handles = tuple instanceof LeftTuple ? tuple.toFactHandles() : null;
+        FactHandle[] handles = tuple instanceof AbstractLeftTuple ? tuple.toFactHandles() : null;
         if ( operators.length > 0 ) {
             for (EvaluatorWrapper operator : operators) {
                 // TODO: need to have one operator per working memory

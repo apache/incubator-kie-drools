@@ -25,7 +25,7 @@ import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.common.PropagationContext;
@@ -41,7 +41,7 @@ public interface MarshallerReaderContext extends ObjectInput {
     InternalWorkingMemory getWorkingMemory();
     InternalRuleBase getKnowledgeBase();
     Map<Long, InternalFactHandle> getHandles();
-    Map<Integer, LeftTuple> getTerminalTupleMap();
+    Map<Integer, AbstractLeftTuple> getTerminalTupleMap();
     ActivationsFilter getFilter();
     Map<Integer, BaseNode> getSinks();
     Map<Long, PropagationContext> getPropagationContexts();
@@ -57,7 +57,7 @@ public interface MarshallerReaderContext extends ObjectInput {
     Object getReaderForInt(int i);
     void setReaderForInt(int i, Object reader);
 
-    InternalFactHandle createAccumulateHandle(EntryPointId entryPointId, ReteEvaluator reteEvaluator, LeftTuple leftTuple, Object result, int nodeId);
+    InternalFactHandle createAccumulateHandle(EntryPointId entryPointId, ReteEvaluator reteEvaluator, AbstractLeftTuple leftTuple, Object result, int nodeId);
     InternalFactHandle createAsyncNodeHandle( Tuple leftTuple, ReteEvaluator reteEvaluator, Object object, int nodeId, ObjectTypeConf objectTypeConf );
     QueryElementFactHandle createQueryResultHandle( Tuple leftTuple, Object[] objects, int nodeId );
     InternalFactHandle createQueryHandle(Tuple leftTuple, ReteEvaluator reteEvaluator, int nodeId );

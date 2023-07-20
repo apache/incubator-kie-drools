@@ -230,7 +230,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
 
 
         while ( true ) {
-            LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple(partition);
+            AbstractLeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple(partition);
             ObjectTypeNode otn = null;
             if (leftTuple != null) {
                 LeftTupleSink leftTupleSink = leftTuple.getTupleSink();

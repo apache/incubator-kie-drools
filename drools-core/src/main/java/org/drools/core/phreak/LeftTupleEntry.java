@@ -17,26 +17,26 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.Memory;
 import org.drools.core.common.PhreakPropagationContext;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.common.PropagationContext;
 
 public class LeftTupleEntry implements TupleEntry {
-    private final LeftTuple          lt;
+    private final AbstractLeftTuple          lt;
     private final PropagationContext pctx;
     private final Memory             nodeMemory;
     private final int                propagationType;
 
     private TupleEntry next;
 
-    public LeftTupleEntry(LeftTuple lt, PropagationContext pctx, Memory nodeMemory, int propagationType) {
+    public LeftTupleEntry(AbstractLeftTuple lt, PropagationContext pctx, Memory nodeMemory, int propagationType) {
         this.lt = lt;
         this.pctx = pctx;
         this.nodeMemory = nodeMemory;
         this.propagationType = propagationType;
     }
 
-    public LeftTuple getLeftTuple() {
+    public AbstractLeftTuple getLeftTuple() {
         return lt;
     }
 

@@ -31,11 +31,11 @@ public class ModifyPreviousTuples {
         this.linkedTuples = linkedTuples;
     }
     
-    public LeftTuple peekLeftTuple(int partition) {
+    public AbstractLeftTuple peekLeftTuple(int partition) {
         return linkedTuples.getFirstLeftTuple(partition);
     }
 
-    public LeftTuple peekLeftTuple(RuleBasePartitionId partitionId) {
+    public AbstractLeftTuple peekLeftTuple(RuleBasePartitionId partitionId) {
         return linkedTuples.getFirstLeftTuple(partitionId);
     }
 
@@ -69,15 +69,15 @@ public class ModifyPreviousTuples {
         linkedTuples.forEachRightTuple( rt -> doRightDelete(pctx, reteEvaluator, rt) );
     }
 
-    public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, LeftTuple leftTuple) {
-        LeftInputAdapterNode liaNode = leftTuple.getTupleSource();
+    public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, AbstractLeftTuple leftTuple) {
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getTupleSource();
         LeftInputAdapterNode.LiaNodeMemory lm = reteEvaluator.getNodeMemory( liaNode );
         SegmentMemory sm = lm.getSegmentMemory();
         if (sm != null) {
             LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, sm, reteEvaluator, liaNode, true, lm );
         } else {
             ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
-            TerminalNode rtn = leftTuple.getTupleSink();
+            TerminalNode rtn = (TerminalNode) leftTuple.getTupleSink();
             PathMemory pathMemory = reteEvaluator.getNodeMemory( rtn );
             PhreakRuleTerminalNode.doLeftDelete(activationsManager, pathMemory.getRuleAgendaItem().getRuleExecutor(), leftTuple);
         }

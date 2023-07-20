@@ -21,7 +21,7 @@ import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.reteoo.AbstractLeftTuple;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
@@ -81,7 +81,7 @@ public interface InternalFactHandle
     
     RightTuple getFirstRightTuple();
 
-    LeftTuple getFirstLeftTuple();
+    AbstractLeftTuple getFirstLeftTuple();
 
     default ReteEvaluator getReteEvaluator() {
         return null;
@@ -99,11 +99,11 @@ public interface InternalFactHandle
     
     void disconnect();
 
-    void addFirstLeftTuple(LeftTuple leftTuple);
+    void addFirstLeftTuple(AbstractLeftTuple leftTuple);
 
-    void addLastLeftTuple( LeftTuple leftTuple );
+    void addLastLeftTuple( AbstractLeftTuple leftTuple );
 
-    void removeLeftTuple( LeftTuple leftTuple );
+    void removeLeftTuple( AbstractLeftTuple leftTuple );
 
     void clearLeftTuples();
 
@@ -124,7 +124,7 @@ public interface InternalFactHandle
     void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer );
     void forEachLeftTuple(Consumer<AbstractLeftTuple> leftTupleConsumer);
 
-    LeftTuple findFirstLeftTuple(Predicate<AbstractLeftTuple> lefttTuplePredicate );
+    AbstractLeftTuple findFirstLeftTuple(Predicate<AbstractLeftTuple> lefttTuplePredicate );
 
     LinkedTuples detachLinkedTuples();
     LinkedTuples detachLinkedTuplesForPartition(int i);
@@ -141,12 +141,12 @@ public interface InternalFactHandle
 
         boolean hasTuples();
 
-        void addFirstLeftTuple( LeftTuple leftTuple );
-        void addLastLeftTuple( LeftTuple leftTuple );
+        void addFirstLeftTuple( AbstractLeftTuple leftTuple );
+        void addLastLeftTuple( AbstractLeftTuple leftTuple );
 
         void addTupleInPosition( Tuple tuple );
 
-        void removeLeftTuple( LeftTuple leftTuple );
+        void removeLeftTuple( AbstractLeftTuple leftTuple );
 
         void addFirstRightTuple( RightTuple rightTuple );
         void addLastRightTuple( RightTuple rightTuple );
@@ -161,9 +161,9 @@ public interface InternalFactHandle
         void forEachLeftTuple(Consumer<AbstractLeftTuple> leftTupleConsumer);
         AbstractLeftTuple findFirstLeftTuple(Predicate<AbstractLeftTuple> leftTuplePredicate );
 
-        LeftTuple getFirstLeftTuple( int partition);
+        AbstractLeftTuple getFirstLeftTuple( int partition);
 
-        default LeftTuple getFirstLeftTuple(RuleBasePartitionId partitionId) {
+        default AbstractLeftTuple getFirstLeftTuple(RuleBasePartitionId partitionId) {
             return getFirstLeftTuple( partitionId.getParallelEvaluationSlot() );
         }
 
@@ -282,7 +282,7 @@ public interface InternalFactHandle
         }
 
         @Override
-        public LeftTuple getFirstLeftTuple() {
+        public AbstractLeftTuple getFirstLeftTuple() {
             throw new UnsupportedOperationException();
         }
 
@@ -312,17 +312,17 @@ public interface InternalFactHandle
         }
 
         @Override
-        public void addFirstLeftTuple( LeftTuple leftTuple ) {
+        public void addFirstLeftTuple( AbstractLeftTuple leftTuple ) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void addLastLeftTuple( LeftTuple leftTuple ) {
+        public void addLastLeftTuple( AbstractLeftTuple leftTuple ) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void removeLeftTuple( LeftTuple leftTuple ) {
+        public void removeLeftTuple( AbstractLeftTuple leftTuple ) {
             throw new UnsupportedOperationException();
         }
 
@@ -387,7 +387,7 @@ public interface InternalFactHandle
         }
 
         @Override
-        public LeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
+        public AbstractLeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
             throw new UnsupportedOperationException();
         }
 

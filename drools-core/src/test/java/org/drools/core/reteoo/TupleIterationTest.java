@@ -65,12 +65,12 @@ public class TupleIterationTest {
 t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t2_3_2, t3                  
         };
 
-        final List<LeftTuple> foundLeafs = new ArrayList<LeftTuple>();
+        final List<AbstractLeftTuple> foundLeafs = new ArrayList<AbstractLeftTuple>();
         
         TupleIterator iterator = new TupleIterator();
         OnLeaf onLeaf = new OnLeaf() {
 
-            public void execute(LeftTuple leafLeftTuple) {
+            public void execute(AbstractLeftTuple leafLeftTuple) {
                 foundLeafs.add( leafLeftTuple );
             }
             
@@ -86,7 +86,7 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
     public void testMidTraversal() {
         JoinNodeLeftTuple tm2 = new JoinNodeLeftTuple();
         JoinNodeLeftTuple tm1 = new JoinNodeLeftTuple(tm2, null, (PropagationContext) null,true);
-        LeftTuple tm1_1 = new JoinNodeLeftTuple(tm1, null, (PropagationContext) null,true); // this leaf will not be included
+        AbstractLeftTuple tm1_1 = new JoinNodeLeftTuple(tm1, null, (PropagationContext) null,true); // this leaf will not be included
         
         JoinNodeLeftTuple t0 = new JoinNodeLeftTuple(tm1, null, (PropagationContext) null,true); // insert two nodes before our root traversal position
         
@@ -124,12 +124,12 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
 t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t2_3_2, t3                  
         };
 
-        final List<LeftTuple> foundLeafs = new ArrayList<LeftTuple>();
+        final List<AbstractLeftTuple> foundLeafs = new ArrayList<AbstractLeftTuple>();
         
         TupleIterator iterator = new TupleIterator();
         OnLeaf onLeaf = new OnLeaf() {
 
-            public void execute(LeftTuple leafLeftTuple) {
+            public void execute(AbstractLeftTuple leafLeftTuple) {
                 foundLeafs.add( leafLeftTuple );
             }
             

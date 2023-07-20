@@ -22,7 +22,7 @@ import java.io.ObjectOutput;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
@@ -100,7 +100,7 @@ public class TupleStartEqualsConstraint
 
     public boolean isAllowedCachedRight(final BaseTuple tuple,
                                         final ContextEntry context) {
-        LeftTuple nonEmptyLeftTuple = (LeftTuple) tuple.skipEmptyHandles();
+        AbstractLeftTuple nonEmptyLeftTuple = (AbstractLeftTuple) tuple.skipEmptyHandles();
         return nonEmptyLeftTuple.equals( ((TupleStartEqualsConstraintContextEntry) context).rightTuple.getSubTuple(nonEmptyLeftTuple.size()));
     }
 
@@ -172,7 +172,7 @@ public class TupleStartEqualsConstraint
                                          final FactHandle handle) {
             // if it is not a rete tuple, then there is a bug in the engine...
             // it MUST be a rete tuple
-            this.rightTuple = ((LeftTuple) handle.getObject()).skipEmptyHandles();
+            this.rightTuple = ((AbstractLeftTuple) handle.getObject()).skipEmptyHandles();
         }
 
         public void resetTuple() {

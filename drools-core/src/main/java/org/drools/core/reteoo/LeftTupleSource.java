@@ -44,7 +44,7 @@ import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
  * </p>
  *
  * @see LeftTupleSource
- * @see LeftTuple
+ * @see AbstractLeftTuple
  */
 public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode {
 
@@ -95,7 +95,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
 
     public abstract short getType();
 
-    public abstract LeftTuple createPeer(LeftTuple original);
+    public abstract AbstractLeftTuple createPeer(AbstractLeftTuple original);
 
     public void addTupleSink(final LeftTupleSink tupleSink) {
         addTupleSink(tupleSink, null);

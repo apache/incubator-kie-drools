@@ -111,13 +111,13 @@ public interface Tuple extends BaseTuple, Serializable, Entry<Tuple> {
 
     Tuple skipEmptyHandles();
 
-    LeftTuple getFirstChild();
+    AbstractLeftTuple getFirstChild();
 
-    void setFirstChild( LeftTuple firstChild );
+    void setFirstChild( AbstractLeftTuple firstChild );
 
-    LeftTuple getLastChild();
+    AbstractLeftTuple getLastChild();
 
-    void setLastChild( LeftTuple firstChild );
+    void setLastChild( AbstractLeftTuple firstChild );
 
     <T extends Tuple> T getHandlePrevious();
 

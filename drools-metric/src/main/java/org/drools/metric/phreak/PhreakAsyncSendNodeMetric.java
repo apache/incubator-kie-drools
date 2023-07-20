@@ -20,7 +20,7 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakAsyncSendNode;
 import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.AsyncSendNode.AsyncSendMemory;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakAsyncSendNodeMetric extends PhreakAsyncSendNode {
@@ -29,7 +29,7 @@ public class PhreakAsyncSendNodeMetric extends PhreakAsyncSendNode {
     public void doNode(AsyncSendNode node,
                        AsyncSendMemory memory,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples) {
+                       TupleSets<AbstractLeftTuple> srcLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(node);
