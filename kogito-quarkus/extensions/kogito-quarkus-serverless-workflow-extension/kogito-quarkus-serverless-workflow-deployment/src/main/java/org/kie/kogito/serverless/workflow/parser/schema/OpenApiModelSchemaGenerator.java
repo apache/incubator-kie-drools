@@ -59,14 +59,20 @@ public final class OpenApiModelSchemaGenerator {
     public static void addOpenAPIModelSchema(KogitoWorkflowProcess workflow, Map<String, Schema> schemas) {
         if (workflow instanceof WorkflowProcess) {
             WorkflowProcess workflowProcess = (WorkflowProcess) workflow;
-            getSchema(workflowProcess.getInputValidator()).ifPresent(v -> {
-                String key = getSchemaName(workflow.getId(), INPUT_SUFFIX);
-                schemas.put(key, schemaTitle(key, v));
-            });
-            getSchema(workflowProcess.getOutputValidator()).ifPresent(v -> {
-                String key = getSchemaName(workflow.getId(), OUTPUT_SUFFIX);
-                schemas.put(key, createOutputSchema(schemaTitle(key, v)));
-            });
+            RefSchemas.init(workflow.getId());
+            try {
+                getSchema(workflowProcess.getInputValidator()).ifPresent(v -> {
+                    String key = getSchemaName(workflow.getId(), INPUT_SUFFIX);
+                    schemas.put(key, schemaTitle(key, v));
+                });
+                getSchema(workflowProcess.getOutputValidator()).ifPresent(v -> {
+                    String key = getSchemaName(workflow.getId(), OUTPUT_SUFFIX);
+                    schemas.put(key, createOutputSchema(schemaTitle(key, v)));
+                });
+                schemas.putAll(RefSchemas.get());
+            } finally {
+                RefSchemas.reset();
+            }
         }
     }
 

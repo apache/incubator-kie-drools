@@ -36,6 +36,7 @@ import org.kie.kogito.serverless.workflow.extensions.FunctionNamespaces;
 import org.kie.kogito.serverless.workflow.extensions.OutputSchema;
 import org.kie.kogito.serverless.workflow.extensions.URIDefinitions;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
+import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.Builder;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.suppliers.ConfigWorkItemSupplier;
@@ -195,9 +196,10 @@ public class ServerlessWorkflowUtils {
     public static Optional<byte[]> loadResourceFile(String uriStr, Optional<Workflow> workflow, Optional<ParserContext> parserContext, String authRef) {
         final URI uri = URI.create(uriStr);
         try {
-            final byte[] bytes =
-                    URIContentLoaderFactory.readAllBytes(URIContentLoaderFactory.loader(uri, parserContext.map(p -> p.getContext().getClassLoader()), Optional.empty(), workflow, authRef));
-            return Optional.of(bytes);
+            Builder builder = URIContentLoaderFactory.builder(uri).withAuthRef(authRef);
+            workflow.ifPresent(builder::withWorkflow);
+            parserContext.map(p -> p.getContext().getClassLoader()).ifPresent(builder::withClassloader);
+            return Optional.of(URIContentLoaderFactory.readAllBytes(builder.build()));
         } catch (UncheckedIOException io) {
             // if file cannot be found in build context, warn it and return the unmodified uri (it might be possible that later the resource is available at runtime)
             logger.warn("Resource {} cannot be found at build time, ignoring", uri, io);

@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion.VersionFlag;
 import com.networknt.schema.ValidationMessage;
@@ -43,7 +44,7 @@ public class JsonSchemaValidator implements WorkflowModelValidator {
 
     protected final String schemaRef;
     protected final boolean failOnValidationErrors;
-    private final AtomicReference<JsonNode> schemaObject = new AtomicReference<>();
+    private final AtomicReference<JsonSchema> schemaObject = new AtomicReference<>();
 
     public JsonSchemaValidator(String schema, boolean failOnValidationErrors) {
         this.schemaRef = schema;
@@ -54,7 +55,7 @@ public class JsonSchemaValidator implements WorkflowModelValidator {
     public void validate(Map<String, Object> model) {
         try {
             Set<ValidationMessage> report =
-                    JsonSchemaFactory.getInstance(VersionFlag.V4).getSchema(schemaData()).validate((JsonNode) model.getOrDefault(SWFConstants.DEFAULT_WORKFLOW_VAR, NullNode.instance));
+                    schema().validate((JsonNode) model.getOrDefault(SWFConstants.DEFAULT_WORKFLOW_VAR, NullNode.instance));
             if (!report.isEmpty()) {
                 StringBuilder sb = new StringBuilder("There are JsonSchema validation errors:");
                 report.forEach(m -> sb.append(System.lineSeparator()).append(m.getMessage()));
@@ -70,9 +71,13 @@ public class JsonSchemaValidator implements WorkflowModelValidator {
     }
 
     public JsonNode schemaData() throws IOException {
-        JsonNode result = schemaObject.get();
+        return schema().getSchemaNode();
+    }
+
+    private JsonSchema schema() throws IOException {
+        JsonSchema result = schemaObject.get();
         if (result == null) {
-            result = ObjectMapperFactory.get().readTree(readAllBytes(runtimeLoader(schemaRef)));
+            result = JsonSchemaFactory.getInstance(VersionFlag.V7).getSchema(ObjectMapperFactory.get().readTree(readAllBytes(runtimeLoader(schemaRef))));
             schemaObject.set(result);
         }
         return result;

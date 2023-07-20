@@ -23,9 +23,6 @@ public enum URIContentLoaderType {
     HTTP;
 
     public static URIContentLoaderType from(URI uri) {
-        if (uri.getScheme() == null) {
-            return CLASSPATH;
-        }
         switch (uri.getScheme().toLowerCase()) {
             case "file":
                 return FILE;
