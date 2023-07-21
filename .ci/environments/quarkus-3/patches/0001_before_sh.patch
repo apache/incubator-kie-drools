@@ -3367,19 +3367,6 @@ index c168a06b34..3b6391cbc9 100644
  
  import org.kie.kogito.incubation.common.DataContext;
  import org.kie.kogito.incubation.common.ExtendedDataContext;
-diff --git a/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes-integration-test-hot-reload/src/main/java/io/quarkus/it/kogito/process/CalculationService.java b/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes-integration-test-hot-reload/src/main/java/io/quarkus/it/kogito/process/CalculationService.java
-index 03de815b57..a5d09dfa94 100644
---- a/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes-integration-test-hot-reload/src/main/java/io/quarkus/it/kogito/process/CalculationService.java
-+++ b/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes-integration-test-hot-reload/src/main/java/io/quarkus/it/kogito/process/CalculationService.java
-@@ -18,7 +18,7 @@ package io.quarkus.it.kogito.process;
- import java.security.SecureRandom;
- import java.util.Random;
- 
--import javax.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.context.ApplicationScoped;
- 
- @ApplicationScoped
- public class CalculationService {
 diff --git a/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes-integration-test-hot-reload/src/test/java/io/quarkus/it/kogito/process/HotReloadTestHelper.java b/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes-integration-test-hot-reload/src/test/java/io/quarkus/it/kogito/process/HotReloadTestHelper.java
 index afa85f97fa..48d597db45 100644
 --- a/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes-integration-test-hot-reload/src/test/java/io/quarkus/it/kogito/process/HotReloadTestHelper.java
