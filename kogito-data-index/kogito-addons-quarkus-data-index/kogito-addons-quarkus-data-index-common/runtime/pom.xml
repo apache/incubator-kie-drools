@@ -20,6 +20,10 @@
             <artifactId>data-index-common</artifactId>
         </dependency>
         <dependency>
+             <groupId>org.kie.kogito</groupId>
+             <artifactId>jbpm-flow</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-addons-process-svg</artifactId>
         </dependency>
