@@ -30,7 +30,7 @@ pipeline {
 
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
-        // Keep here for visitibility
+        // Keep here for visibility
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
@@ -98,7 +98,6 @@ pipeline {
 
                     // Need artifacts available locally
                     getMavenCommand().withProperty('quickly').run('clean install')
-                    maven.mvnSetVersionProperty(getMavenCommand(getIntegrationTestHotReloadPath()), "data-index-ephemeral.image.test", "${getCurrentNightlyImage()}" )
                     maven.mvnSetVersionProperty(getMavenCommand(getWorkflowCommonDeploymentPath()), "data-index-ephemeral.image", "${getNextProdImage()}" )
                 }
             }
@@ -333,10 +332,6 @@ String getLocalDeploymentFolder() {
 
 String getWorkflowCommonDeploymentPath() {
     return "${getRepoName()}/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment"
-}
-
-String getIntegrationTestHotReloadPath() {
-    return "${getRepoName()}/quarkus/extensions/kogito-quarkus-processes-extension/kogito-quarkus-processes-integration-test-hot-reload"
 }
 
 String getCurrentNightlyImage() {
