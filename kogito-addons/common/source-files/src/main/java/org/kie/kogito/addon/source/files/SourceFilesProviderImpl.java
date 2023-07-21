@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.kie.kogito.codegen.process.ProcessCodegen;
+import org.kie.kogito.internal.SupportedExtensions;
 
 public final class SourceFilesProviderImpl implements SourceFilesProvider {
 
@@ -54,9 +54,6 @@ public final class SourceFilesProviderImpl implements SourceFilesProvider {
     }
 
     private boolean isValidDefinitionSource(SourceFile sourceFile) {
-        if (ProcessCodegen.SUPPORTED_BPMN_EXTENSIONS.stream().noneMatch(sourceFile.getUri()::endsWith)) {
-            return ProcessCodegen.SUPPORTED_SW_EXTENSIONS.keySet().stream().anyMatch(sourceFile.getUri()::endsWith);
-        }
-        return true;
+        return SupportedExtensions.isSourceFile(sourceFile.getUri());
     }
 }

@@ -26,7 +26,9 @@ import org.drools.io.FileSystemResource;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.kie.api.definition.process.Process;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
+import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 
 /**
  * Utilities for unit Process generation tests
@@ -57,13 +59,10 @@ public class ProcessGenerationUtils {
         for (File processSourceFile : processFiles) {
             try {
                 FileSystemResource r = new FileSystemResource(processSourceFile);
-                if (ProcessCodegen.SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(processSourceFile.getPath()::endsWith)) {
+                if (SupportedExtensions.getBPMNExtensions().stream().anyMatch(processSourceFile.getPath()::endsWith)) {
                     processes.addAll(ProcessCodegen.parseProcessFile(r));
-                } else {
-                    ProcessCodegen.SUPPORTED_SW_EXTENSIONS.entrySet()
-                            .stream()
-                            .filter(e -> processSourceFile.getPath().endsWith(e.getKey()))
-                            .forEach(e -> processes.add(ProcessCodegen.parseWorkflowFile(r, e.getValue(), JavaKogitoBuildContext.builder().build()).info()));
+                } else if (SupportedExtensions.getSWFExtensions().stream().anyMatch(processSourceFile.getPath()::endsWith)) {
+                    processes.add(ProcessCodegen.parseWorkflowFile(r, WorkflowFormat.fromFileName(processSourceFile.getPath()), JavaKogitoBuildContext.builder().build()).info());
                 }
                 if (processes.isEmpty()) {
                     throw new IllegalArgumentException("Unable to process file with unsupported extension: " + processSourceFile);

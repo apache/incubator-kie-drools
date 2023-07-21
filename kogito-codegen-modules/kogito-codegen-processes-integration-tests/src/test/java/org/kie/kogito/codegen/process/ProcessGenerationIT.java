@@ -69,6 +69,7 @@ import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenIT;
 import org.kie.kogito.codegen.api.io.CollectedResource;
+import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcess;
 
@@ -112,8 +113,7 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
         Set<String> ignoredFiles = Files.lines(BASE_PATH.resolve("org/kie/kogito/codegen/process/process-generation-test.skip.txt"))
                 .collect(Collectors.toSet());
         return Files.find(BASE_PATH, 10, ((path, basicFileAttributes) -> basicFileAttributes.isRegularFile()
-                && (ProcessCodegen.SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(ext -> path.getFileName().toString().endsWith(ext))
-                        || ProcessCodegen.SUPPORTED_SW_EXTENSIONS.keySet().stream().anyMatch(ext -> path.getFileName().toString().endsWith(ext)))))
+                && SupportedExtensions.isSourceFile(path)))
                 .map(BASE_PATH::relativize)
                 .map(Path::toString)
                 .filter(p -> ignoredFiles.stream().noneMatch(ignored -> p.contains(ignored)));

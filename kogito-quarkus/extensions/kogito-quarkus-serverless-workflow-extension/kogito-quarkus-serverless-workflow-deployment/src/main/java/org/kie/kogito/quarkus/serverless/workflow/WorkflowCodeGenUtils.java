@@ -30,12 +30,13 @@ import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.process.ProcessCodegen;
+import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationId;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactory;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactoryProvider;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,12 +96,12 @@ public class WorkflowCodeGenUtils {
     }
 
     private static Optional<Workflow> getWorkflow(Path path) {
-        return workflowCache.computeIfAbsent(path, p -> ProcessCodegen.SUPPORTED_SW_EXTENSIONS.entrySet()
+        return workflowCache.computeIfAbsent(path, p -> SupportedExtensions.getSWFExtensions()
                 .stream()
-                .filter(e -> p.getFileName().toString().endsWith(e.getKey()))
+                .filter(e -> p.getFileName().toString().endsWith(e))
                 .map(e -> {
                     try (Reader r = Files.newBufferedReader(p)) {
-                        return Optional.of(ServerlessWorkflowUtils.getWorkflow(r, e.getValue()));
+                        return Optional.of(ServerlessWorkflowUtils.getWorkflow(r, WorkflowFormat.fromFileName(p.getFileName())));
                     } catch (IOException ex) {
                         if (ConfigProvider.getConfig().getOptionalValue(FAIL_ON_ERROR_PROPERTY, Boolean.class).orElse(true)) {
                             throw new UncheckedIOException(ex);

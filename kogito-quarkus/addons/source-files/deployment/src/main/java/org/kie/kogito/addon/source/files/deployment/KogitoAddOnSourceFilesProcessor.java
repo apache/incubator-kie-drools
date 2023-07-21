@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import org.kie.kogito.addon.source.files.SourceFilesProviderProducer;
 import org.kie.kogito.addon.source.files.SourceFilesRecorder;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
 import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
@@ -36,9 +37,6 @@ import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
-
-import static org.kie.kogito.codegen.process.ProcessCodegen.SUPPORTED_BPMN_EXTENSIONS;
-import static org.kie.kogito.codegen.process.ProcessCodegen.SUPPORTED_SW_EXTENSIONS;
 
 class KogitoAddOnSourceFilesProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
@@ -98,7 +96,6 @@ class KogitoAddOnSourceFilesProcessor extends OneOfCapabilityKogitoAddOnProcesso
     }
 
     private boolean isSourceFile(Path file) {
-        return SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(extension -> file.toString().endsWith(extension))
-                || SUPPORTED_SW_EXTENSIONS.keySet().stream().anyMatch(extension -> file.toString().endsWith(extension));
+        return SupportedExtensions.isSourceFile(file);
     }
 }

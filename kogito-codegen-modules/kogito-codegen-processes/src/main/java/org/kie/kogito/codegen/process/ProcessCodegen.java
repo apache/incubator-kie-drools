@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,6 +57,7 @@ import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.process.events.ProcessCloudEventMetaFactoryGenerator;
+import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.validation.ValidationException;
 import org.kie.kogito.process.validation.ValidationLogDecorator;
@@ -90,9 +90,7 @@ public class ProcessCodegen extends AbstractGenerator {
     private static final GeneratedFileType MESSAGE_CONSUMER_TYPE = GeneratedFileType.of("MESSAGE_CONSUMER", GeneratedFileType.Category.SOURCE);
     private static final GeneratedFileType PRODUCER_TYPE = GeneratedFileType.of("PRODUCER", GeneratedFileType.Category.SOURCE);
     private static final SemanticModules BPMN_SEMANTIC_MODULES = new SemanticModules();
-    public static final Set<String> SUPPORTED_BPMN_EXTENSIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(".bpmn", ".bpmn2")));
     public static final String SVG_EXPORT_NAME_EXPRESION = "%s-svg.svg";
-    public static final Map<String, WorkflowFormat> SUPPORTED_SW_EXTENSIONS;
 
     private static final String GLOBAL_OPERATIONAL_DASHBOARD_TEMPLATE = "/grafana-dashboard-template/processes/global-operational-dashboard-template.json";
     private static final String PROCESS_OPERATIONAL_DASHBOARD_TEMPLATE = "/grafana-dashboard-template/processes/process-operational-dashboard-template.json";
@@ -102,11 +100,6 @@ public class ProcessCodegen extends AbstractGenerator {
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNSemanticModule());
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNExtensionsSemanticModule());
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNDISemanticModule());
-
-        SUPPORTED_SW_EXTENSIONS = Map.of(
-                ".sw.yml", WorkflowFormat.YAML,
-                ".sw.yaml", WorkflowFormat.YAML,
-                ".sw.json", WorkflowFormat.JSON);
     }
 
     private final List<ProcessGenerator> processGenerators = new ArrayList<>();
@@ -119,22 +112,19 @@ public class ProcessCodegen extends AbstractGenerator {
                 .map(CollectedResource::resource)
                 .flatMap(resource -> {
                     try {
-                        if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(resource.getSourcePath()::endsWith)) {
+                        if (SupportedExtensions.getBPMNExtensions().stream().anyMatch(resource.getSourcePath()::endsWith)) {
                             Collection<Process> p = parseProcessFile(resource);
                             notifySourceFileCodegenBindListeners(context, resource, p);
                             if (useSvgAddon) {
                                 processSVG(resource, resources, p, processSVGMap);
                             }
                             return p.stream().map(KogitoWorkflowProcess.class::cast).map(GeneratedInfo::new).map(info -> addResource(info, resource));
+                        } else if (SupportedExtensions.getSWFExtensions().stream().anyMatch(resource.getSourcePath()::endsWith)) {
+                            GeneratedInfo<KogitoWorkflowProcess> generatedInfo = parseWorkflowFile(resource, WorkflowFormat.fromFileName(resource.getSourcePath()), context);
+                            notifySourceFileCodegenBindListeners(context, resource, Collections.singletonList(generatedInfo.info()));
+                            return Stream.of(addResource(generatedInfo, resource));
                         } else {
-                            return SUPPORTED_SW_EXTENSIONS.entrySet()
-                                    .stream()
-                                    .filter(e -> resource.getSourcePath().endsWith(e.getKey()))
-                                    .map(e -> {
-                                        GeneratedInfo<KogitoWorkflowProcess> generatedInfo = parseWorkflowFile(resource, e.getValue(), context);
-                                        notifySourceFileCodegenBindListeners(context, resource, Collections.singletonList(generatedInfo.info()));
-                                        return addResource(generatedInfo, resource);
-                                    });
+                            return Stream.empty();
                         }
                     } catch (ValidationException | ProcessParsingException e) {
                         processesErrors.put(resource.getSourcePath(), e);
