@@ -13,11 +13,17 @@
   <name>Kogito Apps :: Integration Tests :: Data Index</name>
   <packaging>pom</packaging>
 
+  <modules>
+    <module>integration-tests-data-index-service-quarkus-devservice</module>
+  </modules>
+
   <profiles>
     <profile>
       <id>default</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>!productized</name>
+        </property>
       </activation>
       <modules>
         <module>integration-tests-data-index-service-common</module>

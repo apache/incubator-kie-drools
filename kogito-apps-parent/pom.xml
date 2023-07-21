@@ -74,6 +74,7 @@
         <module>ui-packages</module>
         <module>kogito-quarkus-serverless-workflow-devui-parent</module>
         <module>jobs-service</module>
+        <module>apps-integration-tests</module>
       </modules>
     </profile>
     <profile>

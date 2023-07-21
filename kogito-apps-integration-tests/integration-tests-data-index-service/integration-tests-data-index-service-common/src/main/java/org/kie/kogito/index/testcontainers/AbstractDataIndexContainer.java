@@ -29,7 +29,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 public abstract class AbstractDataIndexContainer extends KogitoGenericContainer<AbstractDataIndexContainer>
         implements TestResource {
 
-    public static final int PORT = 8180;
+    public static final int PORT = 8080;
 
     public AbstractDataIndexContainer(String containerName) {
         super(containerName);
