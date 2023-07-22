@@ -197,10 +197,10 @@ index e93c007f1e..d584c3f0c9 100755
  import org.jbpm.bpmn2.JbpmBpmn2TestCase;
  import org.jbpm.bpmn2.objects.Person;
 diff --git a/jbpm/jbpm-flow/pom.xml b/jbpm/jbpm-flow/pom.xml
-index da9b6da4da..3f182557c0 100755
+index bace24ddfa..b75ab0c3dc 100755
 --- a/jbpm/jbpm-flow/pom.xml
 +++ b/jbpm/jbpm-flow/pom.xml
-@@ -85,9 +85,10 @@
+@@ -86,9 +86,10 @@
      </dependency>
  
      <dependency>
