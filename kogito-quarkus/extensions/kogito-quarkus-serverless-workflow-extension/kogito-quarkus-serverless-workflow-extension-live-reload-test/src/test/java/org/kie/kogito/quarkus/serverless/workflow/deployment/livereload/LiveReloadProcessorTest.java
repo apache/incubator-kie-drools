@@ -91,7 +91,8 @@ public class LiveReloadProcessorTest {
                 "quarkus.grpc.clients.Greeter.host=localhost",
                 "quarkus.grpc.clients.Greeter.port=" + PORT,
                 "quarkus.grpc.server.port=" + PORT,
-                "quarkus.grpc.server.test-port=" + PORT)
+                "quarkus.grpc.server.test-port=" + PORT,
+                "quarkus.devservices.enabled=false")
                 .collect(Collectors.joining(System.lineSeparator()));
     }
 

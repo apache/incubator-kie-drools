@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>kogito-quarkus-serverless-workflow-extension-live-reload-test</artifactId>
-    <name>Kogito :: Quarkus Workflows Extension :: Image Integration Tests</name>
+    <name>Kogito :: Quarkus Serverless Workflow Extension :: Live Reload Tests</name>
 
     <dependencies>
         <dependency>
