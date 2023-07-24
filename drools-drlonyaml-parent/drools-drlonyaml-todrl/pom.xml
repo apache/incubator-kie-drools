@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-drlonyaml-parent</artifactId>
-    <version>8.42.0-SNAPSHOT</version>
+    <version>8.43.0-SNAPSHOT</version>
   </parent>
   <artifactId>drools-drlonyaml-todrl</artifactId>
   <name>Drools :: DRL on YAML :: to DRL emitter</name>

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools-ruleunits</artifactId>
-        <version>8.42.0-SNAPSHOT</version>
+        <version>8.43.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.drools</groupId>

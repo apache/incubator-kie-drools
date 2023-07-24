@@ -5,7 +5,7 @@
   <parent>
     <artifactId>drools-impact-analysis</artifactId>
     <groupId>org.drools</groupId>
-    <version>8.42.0-SNAPSHOT</version>
+    <version>8.43.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 

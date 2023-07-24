@@ -13,7 +13,7 @@
   <groupId>org.kie</groupId>
   <artifactId>drools-parent</artifactId>
   <packaging>pom</packaging>
-  <version>8.42.0-SNAPSHOT</version>
+  <version>8.43.0-SNAPSHOT</version>
 
   <name>Drools :: Parent</name>
   <description>
