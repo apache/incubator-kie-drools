@@ -18,12 +18,6 @@ git:
   - name: 8.38.x-prod
     seed:
       branch: seed-drools-8.38.x
-  - name: 8.39.x
-    seed:
-      branch: seed-drools-8.39.x
-  - name: 8.40.x
-    seed:
-      branch: seed-drools-8.40.x
   - name: 8.40.x-prod
     seed:
       branch: seed-drools-8.40.x
