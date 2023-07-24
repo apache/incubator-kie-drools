@@ -58,7 +58,7 @@ disable:
   triggers: false
 repositories:
 - name: drools
-  branch: 9.x
+  branch: 9.42.x
 productized_repositories:
 - name: drools
 git:
