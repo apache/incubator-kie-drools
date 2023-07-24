@@ -18,18 +18,12 @@ import org.kie.jenkins.jobdsl.Utils
 
 jenkins_path = '.ci/jenkins'
 
-boolean isStream8() {
-    return getDroolsStream() == '8'
-}
-
 String getDroolsStream() {
     String gitMainBranch = "${GIT_MAIN_BRANCH}"
     if (gitMainBranch == 'main') {
         return '8'
-    } else if (gitMainBranch == '9.x') {
-        return '9'
     } else {
-        return gitMainBranch
+        return gitMainBranch.split("\\.")[0]
     }
 }
 
