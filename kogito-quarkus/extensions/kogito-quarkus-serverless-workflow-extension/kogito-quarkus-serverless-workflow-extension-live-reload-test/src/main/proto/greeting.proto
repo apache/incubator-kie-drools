@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_package="org.kie.kogito.quarkus.serverless.workflow.deployment.livereload";
+
+
+
+// The greeter service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+  rpc SayHelloAllLanguages (HelloRequest) returns (stream HelloReply) {}
+  rpc SayHelloMultipleLanguagesAtOnce (stream HelloRequest) returns (HelloReply) {}
+  rpc SayHelloMultipleLanguages (stream HelloRequest) returns (stream HelloReply) {}
+  rpc SayHelloMultipleLanguagesError (stream HelloRequest) returns (stream HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+  string language=2;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}

@@ -42,7 +42,7 @@ public abstract class WorkflowWorkItemHandler implements KogitoWorkItemHandler {
 
     protected abstract Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters);
 
-    protected final <V> V buildBody(Map<String, Object> params, Class<V> clazz) {
+    protected static <V> V buildBody(Map<String, Object> params, Class<V> clazz) {
         for (Object obj : params.values()) {
             if (obj != null && clazz.isAssignableFrom(obj.getClass())) {
                 return clazz.cast(obj);

@@ -44,7 +44,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.SuperExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -107,7 +106,7 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
             if (annotation != null) {
                 methodCallExpr.addArgument(new CastExpr(fromClass(param), new MethodCallExpr(parameters, "remove").addArgument(new StringLiteralExpr(annotation.value().asString()))));
             } else {
-                methodCallExpr.addArgument(new MethodCallExpr(new SuperExpr(), "buildBody").addArgument(parameters).addArgument(new ClassExpr(fromClass(param))));
+                methodCallExpr.addArgument(new MethodCallExpr("buildBody").addArgument(parameters).addArgument(new ClassExpr(fromClass(param))));
             }
         }
         clazz.addMethod("getRestClass", Keyword.PROTECTED).setType(parseClassOrInterfaceType(Class.class.getCanonicalName()).setTypeArguments(classNameType))

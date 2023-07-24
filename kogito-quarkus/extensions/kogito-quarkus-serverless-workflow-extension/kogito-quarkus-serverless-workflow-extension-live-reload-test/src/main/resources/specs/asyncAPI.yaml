@@ -1,0 +1,40 @@
+asyncapi: '2.0.0'
+id: 'oneConsumer'
+info:
+  title: Kafka Application
+  version: '1.0.0'
+  description: Kafka Application
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+  production:
+    url: localhost:9092
+    description: Development server
+    protocol: kafka
+    protocolVersion: '1.0.0'
+channels:
+  wait:
+    description: A message channel
+    subscribe:
+      operationId: wait
+      summary: Get messages
+      message:
+        $ref: '#/components/messages/message'
+    publish:
+      operationId: sendWait
+      summary: Send messages
+      message:
+        $ref: '#/components/messages/message'
+components:
+  messages:
+    message:
+      name: message
+      title: A message
+      summary: A message
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/message"
+  schemas:
+    message:
+      type: object
