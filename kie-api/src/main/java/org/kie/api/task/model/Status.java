@@ -16,7 +16,7 @@
 
 package org.kie.api.task.model;
 
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 
 
 @XmlType

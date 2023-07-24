@@ -104,5 +104,15 @@ public class TestingModel extends Model {
         return modelName;
     }
 
+    @Override
+    public MiningFunction requireMiningFunction() {
+        return null;
+    }
+
+    @Override
+    public MiningSchema requireMiningSchema() {
+        return null;
+    }
+
 
 }

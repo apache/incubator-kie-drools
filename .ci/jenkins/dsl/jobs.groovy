@@ -60,7 +60,7 @@ void createProjectSetupBranchJob() {
 
 void setupProjectNightlyJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, '0-nightly', JobType.NIGHTLY, "${jenkins_path_project}/Jenkinsfile.nightly", 'Drools Nightly')
-    jobParams.triggers = [cron : '@midnight']
+    jobParams.triggers = [cron : 'H 3 * * *']
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
@@ -120,7 +120,7 @@ void setupProjectPostReleaseJob() {
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 Map getMultijobPRConfig(JenkinsFolder jobFolder) {
-    String defaultBuildMvnOptsCurrent = jobFolder.getDefaultEnvVarValue('BUILD_MVN_OPTS_CURRENT') ?: ''
+    // String defaultBuildMvnOptsCurrent = jobFolder.getDefaultEnvVarValue('BUILD_MVN_OPTS_CURRENT') ?: ''
     def jobConfig = [
         parallel: true,
         buildchain: true,
@@ -133,35 +133,35 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // As we have only Community edition
                     ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
                     // Setup full build if not prod profile
-                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod') || EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3') ? '' : '-Dfull'}",
+                    // BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod') || EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3') ? '' : '-Dfull'}",
                 ]
-            ], [
-                id: 'kogito-runtimes',
-                repository: 'kogito-runtimes'
-            ], [
-                id: 'kogito-apps',
-                repository: 'kogito-apps',
-                env : [
-                    NODE_OPTIONS: '--max_old_space_size=4096',
-                ]
-            ], [
-                id: 'kogito-quarkus-examples',
-                repository: 'kogito-examples',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
-                ],
-            ], [
-                id: 'kogito-springboot-examples',
-                repository: 'kogito-examples',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
-                ],
-            ], [
-                id: 'serverless-workflow-examples',
-                repository: 'kogito-examples',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
-                ],
+            // ], [
+            //     id: 'kogito-runtimes',
+            //     repository: 'kogito-runtimes'
+            // ], [
+            //     id: 'kogito-apps',
+            //     repository: 'kogito-apps',
+            //     env : [
+            //         NODE_OPTIONS: '--max_old_space_size=4096',
+            //     ]
+            // ], [
+            //     id: 'kogito-quarkus-examples',
+            //     repository: 'kogito-examples',
+            //     env : [
+            //         KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
+            //     ],
+            // ], [
+            //     id: 'kogito-springboot-examples',
+            //     repository: 'kogito-examples',
+            //     env : [
+            //         KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
+            //     ],
+            // ], [
+            //     id: 'serverless-workflow-examples',
+            //     repository: 'kogito-examples',
+            //     env : [
+            //         KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
+            //     ],
             ]
         ]
     ]
@@ -187,17 +187,23 @@ Closure addFullProfileJobParamsGetter = { script ->
     return jobParams
 }
 
-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, addFullProfileJobParamsGetter)
+Closure setup3AMCronTriggerJobParamsGetter = { script ->
+    def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
+    jobParams.triggers = [ cron: 'H 3 * * *' ]
+    return jobParams
+}
+
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
 
 // Environment nightlies
-setupSpecificBuildChainNightlyJob('native', addFullProfileJobParamsGetter)
-setupSpecificBuildChainNightlyJob('sonarcloud', addFullProfileJobParamsGetter)
+setupSpecificBuildChainNightlyJob('native', setup3AMCronTriggerJobParamsGetter)
+setupSpecificBuildChainNightlyJob('sonarcloud', setup3AMCronTriggerJobParamsGetter)
 
 // Jobs with integration branch
-setupQuarkusIntegrationJob('quarkus-main', addFullProfileJobParamsGetter)
-setupQuarkusIntegrationJob('quarkus-branch', addFullProfileJobParamsGetter)
-setupQuarkusIntegrationJob('quarkus-lts')
-setupQuarkusIntegrationJob('native-lts')
+setupQuarkusIntegrationJob('quarkus-main', setup3AMCronTriggerJobParamsGetter)
+setupQuarkusIntegrationJob('quarkus-branch', setup3AMCronTriggerJobParamsGetter)
+// setupQuarkusIntegrationJob('quarkus-lts')
+// setupQuarkusIntegrationJob('native-lts')
 // Quarkus 3 nightly is exported to Kogito pipelines for easier integration
 
 // Release jobs
@@ -212,10 +218,10 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
 ])
 
 // Quarkus 3
-if (EnvUtils.isEnvironmentEnabled(this, 'quarkus-3')) {
-    // setupPrQuarkus3RewriteJob() # TODO to enable if you want the PR quarkus-3 rewrite job
-    setupStandaloneQuarkus3RewriteJob()
-}
+// if (EnvUtils.isEnvironmentEnabled(this, 'quarkus-3')) {
+//     // setupPrQuarkus3RewriteJob() # TODO to enable if you want the PR quarkus-3 rewrite job
+//     setupStandaloneQuarkus3RewriteJob()
+// }
 
 /////////////////////////////////////////////////////////////////
 // Methods

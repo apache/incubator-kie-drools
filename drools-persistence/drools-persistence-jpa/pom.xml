@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-persistence</artifactId>
-    <version>8.42.0-SNAPSHOT</version>
+    <version>9.42.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-persistence-jpa</artifactId>
@@ -103,9 +103,10 @@
       <artifactId>drools-mvel</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
       <scope>provided</scope>
+      <version>4.0.3</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
@@ -147,13 +148,8 @@
     </dependency>
 
     <!-- Hibernate -->
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
+    <!--~~(No version provided)~~>--><dependency>
+      <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
       <scope>test</scope>
       <exclusions>
