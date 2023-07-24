@@ -55,10 +55,6 @@
       <artifactId>quarkus-swagger-ui-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkiverse.reactivemessaging.http</groupId>
-      <artifactId>quarkus-reactive-messaging-http-deployment</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-reactive-messaging-deployment</artifactId>
     </dependency>
@@ -69,14 +65,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-health-deployment</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-reactive-messaging-kafka-deployment</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-fault-tolerance-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkiverse.embedded.postgresql</groupId>

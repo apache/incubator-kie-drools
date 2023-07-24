@@ -73,12 +73,12 @@ public abstract class AbstractJobStreams {
         }
     }
 
-    CompletionStage<Void> onAck(JobDetails job) {
+    protected CompletionStage<Void> onAck(JobDetails job) {
         LOGGER.debug("Job Status change published: {}", job);
         return CompletableFuture.completedFuture(null);
     }
 
-    CompletionStage<Void> onNack(Throwable reason, JobDetails job) {
+    protected CompletionStage<Void> onNack(Throwable reason, JobDetails job) {
         String msg = String.format("An error was produced while publishing a Job status change for the job: %s", job);
         LOGGER.error(msg, reason);
         return CompletableFuture.completedFuture(null);

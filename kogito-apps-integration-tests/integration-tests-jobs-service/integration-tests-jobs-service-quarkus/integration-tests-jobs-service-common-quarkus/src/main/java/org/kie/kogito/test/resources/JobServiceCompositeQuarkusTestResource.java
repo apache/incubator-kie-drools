@@ -52,7 +52,13 @@ public class JobServiceCompositeQuarkusTestResource implements QuarkusTestResour
         }
         if (annotation.kafkaEnabled()) {
             resource.withSharedDependencyContainer("kafka", new KogitoKafkaContainer());
-            resource.getServiceContainers(JobServiceContainer.class).forEach(c -> c.addEnv("QUARKUS_PROFILE", "events-support"));
+            resource.getServiceContainers(JobServiceContainer.class).forEach(c -> c.addEnv("QUARKUS_PROFILE", "kafka-events-support"));
+        }
+        if (annotation.knativeEventingEnabled()) {
+            resource.getServiceContainers(JobServiceContainer.class).forEach(c -> {
+                c.addEnv("QUARKUS_PROFILE", "http-events-support");
+                c.addEnv("KOGITO_JOBS_SERVICE_HTTP_JOB_STATUS_CHANGE_EVENTS", "false");
+            });
         }
         if (annotation.dataIndexEnabled()) {
             DataIndexPostgreSqlContainer container = new DataIndexPostgreSqlContainer();

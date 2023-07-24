@@ -22,6 +22,8 @@
     <module>jobs-service-postgresql</module>
     <module>jobs-service-inmemory</module>
     <module>kogito-addons-jobs-service</module>
+    <module>jobs-service-messaging-kafka</module>
+    <module>jobs-service-messaging-http</module>
   </modules>
 
   <profiles>
@@ -91,6 +93,16 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-addons-quarkus-jobs-service-embedded-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>jobs-service-messaging-kafka</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>jobs-service-messaging-http</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

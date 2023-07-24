@@ -49,7 +49,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-abstract class AbstractJobStreamsTest<T extends AbstractJobStreams> {
+public abstract class AbstractJobStreamsTest<T extends AbstractJobStreams> {
 
     protected static final String URL = "http://localhost:8180";
     private static final String SERIALIZED_MESSAGE = "SERIALIZED_MESSAGE";
@@ -66,16 +66,16 @@ abstract class AbstractJobStreamsTest<T extends AbstractJobStreams> {
     private static final Recipient RECIPIENT = new RecipientInstance(HttpRecipient.builder().forStringPayload().url("http://recipient").build());
     private static final Trigger TRIGGER = new PointInTimeTrigger();
     @Captor
-    ArgumentCaptor<Message<String>> messageCaptor;
+    protected ArgumentCaptor<Message<String>> messageCaptor;
 
     @Mock
-    ObjectMapper objectMapper;
+    protected ObjectMapper objectMapper;
 
     @Captor
-    ArgumentCaptor<Object> eventCaptor;
+    protected ArgumentCaptor<Object> eventCaptor;
 
     @Mock
-    Emitter<String> emitter;
+    protected Emitter<String> emitter;
 
     T jobStreams;
 

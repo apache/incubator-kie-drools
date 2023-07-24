@@ -31,7 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import io.cloudevents.CloudEvent;
 
 @ExtendWith(MockitoExtension.class)
-abstract class MessagingEventConsumerTest<T extends ReactiveMessagingEventConsumer> extends ReactiveMessagingEventConsumerTest<T> {
+public abstract class MessagingEventConsumerTest<T extends ReactiveMessagingEventConsumer> extends ReactiveMessagingEventConsumerTest<T> {
 
     @Override
     public CloudEvent newCreateProcessInstanceJobRequestCloudEvent() {

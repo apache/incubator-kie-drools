@@ -50,7 +50,8 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
                 "org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule",
                 "org.kie.kogito.jobs.service.api.event.JobCloudEvent",
                 "org.kie.kogito.jobs.service.api.event.CreateJobEvent",
-                "org.kie.kogito.jobs.service.api.event.DeleteJobEvent"
+                "org.kie.kogito.jobs.service.api.event.DeleteJobEvent",
+                "org.kie.kogito.jobs.service.resource.error.ErrorResponse"
         })
 public class ReflectionConfiguration {
 }

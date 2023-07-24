@@ -62,16 +62,4 @@ public class KogitoAddonsQuarkusJobsServiceEmbeddedRuntimeConfig {
     @ConfigItem(name = "forceExecuteExpiredJobs", defaultValue = "true")
     public boolean forceExecuteExpiredJobs;
 
-    /**
-     * Enables/Disables the kafka messaging support.
-     */
-    @ConfigItem(name = "events-support", defaultValue = "false")
-    public boolean eventsSupport;
-
-    /**
-     * Enables/Disables the knative eventing support.
-     */
-    @ConfigItem(name = "knative-events", defaultValue = "false")
-    public boolean knativeEvents;
-
 }

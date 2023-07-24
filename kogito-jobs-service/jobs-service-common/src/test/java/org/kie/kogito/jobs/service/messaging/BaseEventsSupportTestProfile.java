@@ -27,7 +27,7 @@ public abstract class BaseEventsSupportTestProfile implements QuarkusTestProfile
 
     @Override
     public String getConfigProfile() {
-        return "events-support";
+        return "kafka-events-support";
     }
 
     @Override

@@ -20,18 +20,20 @@
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-timer</artifactId>
+            <artifactId>jobs-service-messaging-kafka</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-smallrye-reactive-messaging</artifactId>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>jobs-service-messaging-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-timer</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-infinispan-client</artifactId>
@@ -46,6 +48,7 @@
             <artifactId>kogito-addons-quarkus-persistence-infinispan-health</artifactId>
         </dependency>
 
+        <!-- Testing -->
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>jobs-service-common</artifactId>

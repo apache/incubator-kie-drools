@@ -16,13 +16,17 @@
 package org.kie.kogito.jobs.service.management;
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.jobs.service.messaging.MessagingHandler;
 import org.kie.kogito.jobs.service.model.JobServiceManagementInfo;
 import org.kie.kogito.jobs.service.repository.JobServiceManagementRepository;
 import org.kie.kogito.jobs.service.repository.impl.DefaultJobServiceManagementRepository;
@@ -35,19 +39,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
-import io.smallrye.reactive.messaging.kafka.KafkaConnector;
 import io.vertx.mutiny.core.TimeoutStream;
 import io.vertx.mutiny.core.Vertx;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class JobServiceInstanceManagerTest {
+class JobServiceInstanceManagerTest {
 
     @InjectMocks
     @Spy
@@ -60,7 +65,9 @@ public class JobServiceInstanceManagerTest {
     JobServiceManagementRepository repository = new DefaultJobServiceManagementRepository();
 
     @Mock
-    KafkaConnector kafkaConnector;
+    Instance<MessagingHandler> messagingHandlerInstance;
+
+    private MessagingHandler messagingHandler;
 
     @Mock
     Event<MessagingChangeEvent> messagingChangeEventEvent;
@@ -79,6 +86,9 @@ public class JobServiceInstanceManagerTest {
         tested.heartbeatExpirationInSeconds = 1;
         tested.leaderCheckIntervalInSeconds = 1;
         tested.heardBeatIntervalInSeconds = 1;
+        messagingHandler = mock(MessagingHandler.class);
+        Stream<MessagingHandler> handlers = Arrays.stream(new MessagingHandler[] { messagingHandler });
+        lenient().doReturn(handlers).when(messagingHandlerInstance).stream();
     }
 
     @Test
@@ -112,6 +122,8 @@ public class JobServiceInstanceManagerTest {
         tested.tryBecomeLeader(info, checkLeader, heartbeat).await().indefinitely();
         verify(repository).getAndUpdate(anyString(), updateFunction.capture());
         assertThat(tested.isLeader()).isTrue();
+        verify(messagingHandler).resume();
+        verify(messagingChangeEventEvent).fire(any());
     }
 
     @Test

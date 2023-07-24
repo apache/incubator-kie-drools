@@ -25,10 +25,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.reactive.messaging.spi.Connector;
+import org.kie.kogito.jobs.service.messaging.MessagingHandler;
 import org.kie.kogito.jobs.service.model.JobServiceManagementInfo;
 import org.kie.kogito.jobs.service.repository.JobServiceManagementRepository;
 import org.kie.kogito.jobs.service.utils.DateUtil;
@@ -38,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import io.smallrye.mutiny.Uni;
-import io.smallrye.reactive.messaging.kafka.KafkaConnector;
 import io.vertx.mutiny.core.TimeoutStream;
 import io.vertx.mutiny.core.Vertx;
 
@@ -60,8 +60,7 @@ public class JobServiceInstanceManager {
     String leaderManagementId;
 
     @Inject
-    @Connector(value = "smallrye-kafka")
-    KafkaConnector kafkaConnector;
+    Instance<MessagingHandler> messagingHandlerInstance;
 
     @Inject
     Event<MessagingChangeEvent> messagingChangeEventEvent;
@@ -105,8 +104,7 @@ public class JobServiceInstanceManager {
 
     private void disableCommunication() {
         //disable consuming events
-        kafkaConnector.getConsumerChannels().stream().forEach(c -> kafkaConnector.getConsumer(c).pause());
-
+        messagingHandlerInstance.stream().forEach(MessagingHandler::pause);
         //disable producing events
         messagingChangeEventEvent.fire(new MessagingChangeEvent(false));
 
@@ -115,8 +113,7 @@ public class JobServiceInstanceManager {
 
     private void enableCommunication() {
         //enable consuming events
-        kafkaConnector.getConsumerChannels().stream().forEach(c -> kafkaConnector.getConsumer(c).resume());
-
+        messagingHandlerInstance.stream().forEach(MessagingHandler::resume);
         //enable producing events
         messagingChangeEventEvent.fire(new MessagingChangeEvent(true));
 
