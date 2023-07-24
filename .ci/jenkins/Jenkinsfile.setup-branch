@@ -78,7 +78,7 @@ pipeline {
         }
         stage('Update Drools version in kie-benchmarks') {
             when {
-                expression { isMainBranch() }
+                expression { isStream8() && isMainBranch() }
             }
             steps {
                 script {
@@ -156,4 +156,8 @@ void mergeAndPush(String prLink, String targetBranch) {
         githubscm.mergePR(prLink, getGitAuthorCredsId())
         githubscm.pushObject('origin', targetBranch, getGitAuthorCredsId())
     }
+}
+
+boolean isStream8() {
+    return env.DROOLS_STREAM == '8'
 }

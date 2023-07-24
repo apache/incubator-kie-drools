@@ -18,6 +18,15 @@ import org.kie.jenkins.jobdsl.Utils
 
 jenkins_path = '.ci/jenkins'
 
+String getDroolsStream() {
+    String gitMainBranch = "${GIT_MAIN_BRANCH}"
+    if (gitMainBranch == 'main') {
+        return '8'
+    } else {
+        return gitMainBranch.split("\\.")[0]
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Whole Drools project jobs
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -48,7 +57,8 @@ void createProjectSetupBranchJob() {
 
         GIT_BRANCH_NAME: "${GIT_BRANCH}",
 
-        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
+        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
+        DROOLS_STREAM: getDroolsStream(),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -65,6 +75,8 @@ void setupProjectNightlyJob() {
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
         GIT_BRANCH_NAME: "${GIT_BRANCH}",
+        
+        DROOLS_STREAM: getDroolsStream(),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -83,6 +95,8 @@ void setupProjectReleaseJob() {
 
         DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
         ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        
+        DROOLS_STREAM: getDroolsStream(),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -104,7 +118,8 @@ void setupProjectPostReleaseJob() {
         GIT_BRANCH_NAME: "${GIT_BRANCH}",
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
         AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-
+        
+        DROOLS_STREAM: getDroolsStream(),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -241,7 +256,8 @@ void createSetupBranchJob() {
 
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
 
-        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
+        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
+        DROOLS_STREAM: getDroolsStream(),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -271,6 +287,8 @@ void setupDeployJob(JobType jobType) {
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        
+        DROOLS_STREAM: getDroolsStream(),
     ])
     if (jobType == JobType.RELEASE) {
         jobParams.env.putAll([
@@ -311,6 +329,8 @@ void setupPromoteJob(JobType jobType) {
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+
+        DROOLS_STREAM: getDroolsStream(),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
