@@ -15,7 +15,6 @@
 
   <properties>
     <java.module.name>org.drools.reliability.infinispan</java.module.name>
-    <version.infinispan>14.0.6.Final</version.infinispan>
     <version.testcontainers>1.17.2</version.testcontainers>
   </properties>
 
@@ -24,7 +23,7 @@
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-bom</artifactId>
-        <version>${version.infinispan}</version>
+        <version>${version.org.infinispan}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

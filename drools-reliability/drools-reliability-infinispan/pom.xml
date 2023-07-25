@@ -15,8 +15,6 @@
 
   <properties>
     <java.module.name>org.drools.reliability.infinispan</java.module.name>
-    <version.infinispan>14.0.6.Final</version.infinispan>
-    <version.testcontainers>1.17.2</version.testcontainers>
   </properties>
 
   <dependencyManagement>
@@ -24,15 +22,9 @@
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-bom</artifactId>
-        <version>${version.infinispan}</version>
+        <version>${version.org.infinispan}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.testcontainers</groupId>
-        <artifactId>junit-jupiter</artifactId>
-        <version>${version.testcontainers}</version>
-        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -54,88 +46,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-reliability-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-server-testdriver-core</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-slf4j-impl</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.infinispan</groupId>
-          <artifactId>infinispan-jboss-marshalling</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-component-annotations</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-model-codegen</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -172,109 +82,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <executions>
-              <execution>
-                <!-- override default-test for embedded -->
-                <id>default-test</id>
-                <configuration>
-                  <excludes>
-                    <exclude>**/*SmokeTest.java</exclude>
-                  </excludes>
-                </configuration>
-              </execution>
-              <execution>
-                <id>smoke-tests-remote</id>
-                <configuration>
-                  <systemPropertyVariables>
-                    <drools.reliability.storage.infinispan.mode>REMOTE</drools.reliability.storage.infinispan.mode>
-                  </systemPropertyVariables>
-                  <includes>
-                    <include>**/smoke/remote/*SmokeTest.java</include>
-                  </includes>
-                </configuration>
-                <goals>
-                  <goal>test</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>smoke-tests-remote-proto</id>
-                <configuration>
-                  <systemPropertyVariables>
-                    <drools.reliability.storage.infinispan.mode>REMOTE</drools.reliability.storage.infinispan.mode>
-                    <drools.reliability.storage.infinispan.marshaller>PROTOSTREAM</drools.reliability.storage.infinispan.marshaller>
-                    <drools.reliability.storage.infinispan.serialization.context.initializer>org.drools.reliability.infinispan.proto.TestProtoStreamSchemaImpl</drools.reliability.storage.infinispan.serialization.context.initializer>
-                  </systemPropertyVariables>
-                  <includes>
-                    <include>**/smoke/proto/*SmokeTest.java</include>
-                  </includes>
-                </configuration>
-                <goals>
-                  <goal>test</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>remote</id>
-      <activation>
-        <property>
-          <name>remote</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <!-- override default-test from embedded to remote -->
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <systemPropertyVariables>
-                <drools.reliability.storage.infinispan.mode>REMOTE</drools.reliability.storage.infinispan.mode>
-              </systemPropertyVariables>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>remote-proto</id>
-      <activation>
-        <property>
-          <name>remote-proto</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <!-- override default-test with Remote+ProtoStream -->
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <systemPropertyVariables>
-                <drools.reliability.storage.infinispan.mode>REMOTE</drools.reliability.storage.infinispan.mode>
-                <drools.reliability.storage.infinispan.marshaller>PROTOSTREAM</drools.reliability.storage.infinispan.marshaller>
-                <drools.reliability.storage.infinispan.serialization.context.initializer>org.drools.reliability.infinispan.proto.TestProtoStreamSchemaImpl</drools.reliability.storage.infinispan.serialization.context.initializer>
-              </systemPropertyVariables>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>
