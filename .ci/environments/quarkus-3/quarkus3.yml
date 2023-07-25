@@ -8,7 +8,7 @@ recipeList:
   }
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.org.kie,
-    newValue: 9.42.0-SNAPSHOT
+    newValue: 9.43.0-SNAPSHOT
   }
 - org.kie.kogito.Quarkus3Migration
 - org.kie.ManagedDependencies

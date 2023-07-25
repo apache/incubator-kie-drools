@@ -548,15 +548,15 @@ index 4173d8cd80..8cdb515b46 100644
        </dependency>
        <dependency>
 diff --git a/kogito-build/kogito-kie-bom/pom.xml b/kogito-build/kogito-kie-bom/pom.xml
-index 48c581f42d..7d45f3d3af 100644
+index 9dc0e254e3..3be5b07f1e 100644
 --- a/kogito-build/kogito-kie-bom/pom.xml
 +++ b/kogito-build/kogito-kie-bom/pom.xml
 @@ -18,7 +18,7 @@
    </description>
  
    <properties>
--    <version.org.kie>8.42.0-SNAPSHOT</version.org.kie>
-+    <version.org.kie>9.42.0-SNAPSHOT</version.org.kie>
+-    <version.org.kie>8.43.0-SNAPSHOT</version.org.kie>
++    <version.org.kie>9.43.0-SNAPSHOT</version.org.kie>
    </properties>
  
    <dependencyManagement>
@@ -3686,8 +3686,21 @@ index 6c3bc7471b..6d23aa87de 100644
  
  import com.fasterxml.jackson.databind.ObjectMapper;
  
+diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/deployment/livereload/LiveReloadProcessor.java b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/deployment/livereload/LiveReloadProcessor.java
+index 398cb4257e..72aa1347bc 100644
+--- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/deployment/livereload/LiveReloadProcessor.java
++++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/deployment/livereload/LiveReloadProcessor.java
+@@ -26,7 +26,7 @@ import java.util.List;
+ import java.util.ServiceLoader;
+ import java.util.stream.Stream;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.drools.codegen.common.GeneratedFile;
+ import org.drools.codegen.common.GeneratedFileType;
 diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java
-index efb1b1bd62..c926eb8941 100644
+index 310ed2cfdf..8d5c291d24 100644
 --- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java
 +++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java
 @@ -19,7 +19,7 @@ import java.lang.annotation.Annotation;
