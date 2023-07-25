@@ -2651,19 +2651,6 @@ index c3f932c0f..0b51bac8a 100644
  
  import org.kie.kogito.jobs.service.model.JobDetails;
  
-diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/health/knative/KSinkInjectionHealthCheck.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/health/knative/KSinkInjectionHealthCheck.java
-index 04aae3f39..70d74a9c3 100644
---- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/health/knative/KSinkInjectionHealthCheck.java
-+++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/health/knative/KSinkInjectionHealthCheck.java
-@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
- import java.net.UnknownHostException;
- import java.util.function.UnaryOperator;
- 
--import javax.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.context.ApplicationScoped;
- 
- import org.eclipse.microprofile.health.HealthCheck;
- import org.eclipse.microprofile.health.HealthCheckResponse;
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/json/JacksonConfiguration.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/json/JacksonConfiguration.java
 index e02ccf976..2f0dc5bb6 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/json/JacksonConfiguration.java
@@ -2695,24 +2682,26 @@ index bcbaf4f9a..66ad2417a 100644
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java
-index 4c54f6461..1f6585c33 100644
+index 5108b2871..fb959acb3 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java
 +++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManager.java
-@@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit;
+@@ -22,11 +22,11 @@ import java.util.concurrent.TimeUnit;
  import java.util.concurrent.atomic.AtomicBoolean;
  import java.util.concurrent.atomic.AtomicReference;
  
 -import javax.enterprise.context.ApplicationScoped;
 -import javax.enterprise.event.Event;
 -import javax.enterprise.event.Observes;
+-import javax.enterprise.inject.Instance;
 -import javax.inject.Inject;
 +import jakarta.enterprise.context.ApplicationScoped;
 +import jakarta.enterprise.event.Event;
 +import jakarta.enterprise.event.Observes;
++import jakarta.enterprise.inject.Instance;
 +import jakarta.inject.Inject;
  
  import org.eclipse.microprofile.config.inject.ConfigProperty;
- import org.eclipse.microprofile.reactive.messaging.spi.Connector;
+ import org.kie.kogito.jobs.service.messaging.MessagingHandler;
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceLeaderHealthCheck.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceLeaderHealthCheck.java
 index 517a3afa8..a15ab67d9 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/management/JobServiceLeaderHealthCheck.java
@@ -2728,79 +2717,6 @@ index 517a3afa8..a15ab67d9 100644
  
  import org.eclipse.microprofile.health.HealthCheck;
  import org.eclipse.microprofile.health.HealthCheckResponse;
-diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/CloudEventConverter.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/CloudEventConverter.java
-index dd32469c3..25b214892 100644
---- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/CloudEventConverter.java
-+++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/CloudEventConverter.java
-@@ -17,7 +17,7 @@ package org.kie.kogito.jobs.service.messaging;
- 
- import java.lang.reflect.Type;
- 
--import javax.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.context.ApplicationScoped;
- 
- import org.eclipse.microprofile.reactive.messaging.Message;
- import org.slf4j.Logger;
-diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/KafkaReactiveMessagingEventConsumer.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/KafkaReactiveMessagingEventConsumer.java
-index 47e8c8c85..fda4780fd 100644
---- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/KafkaReactiveMessagingEventConsumer.java
-+++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/KafkaReactiveMessagingEventConsumer.java
-@@ -16,8 +16,8 @@
- 
- package org.kie.kogito.jobs.service.messaging;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import org.eclipse.microprofile.faulttolerance.Retry;
- import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
-diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/KnativeReactiveMessagingEventConsumer.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/KnativeReactiveMessagingEventConsumer.java
-index 270cc9476..965f81492 100644
---- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/KnativeReactiveMessagingEventConsumer.java
-+++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/KnativeReactiveMessagingEventConsumer.java
-@@ -16,8 +16,8 @@
- 
- package org.kie.kogito.jobs.service.messaging;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import org.eclipse.microprofile.faulttolerance.Retry;
- import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
-diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/v2/KafkaReactiveMessagingEventConsumer.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/v2/KafkaReactiveMessagingEventConsumer.java
-index 0738c4500..cde749a26 100644
---- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/v2/KafkaReactiveMessagingEventConsumer.java
-+++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/v2/KafkaReactiveMessagingEventConsumer.java
-@@ -16,8 +16,8 @@
- 
- package org.kie.kogito.jobs.service.messaging.v2;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import org.eclipse.microprofile.faulttolerance.Retry;
- import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
-diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/v2/KnativeReactiveMessagingEventConsumer.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/v2/KnativeReactiveMessagingEventConsumer.java
-index 72031c697..d4ec6f94c 100644
---- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/v2/KnativeReactiveMessagingEventConsumer.java
-+++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/messaging/v2/KnativeReactiveMessagingEventConsumer.java
-@@ -15,8 +15,8 @@
-  */
- package org.kie.kogito.jobs.service.messaging.v2;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import org.eclipse.microprofile.faulttolerance.Retry;
- import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/repository/impl/DefaultJobServiceManagementRepository.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/repository/impl/DefaultJobServiceManagementRepository.java
 index da2ecfba8..ac21dde92 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/repository/impl/DefaultJobServiceManagementRepository.java
@@ -3163,55 +3079,6 @@ index 156e7fafc..d3d1c45ef 100644
  
  import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
  import org.eclipse.microprofile.reactive.messaging.Channel;
-diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KafkaConfiguration.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KafkaConfiguration.java
-index acaffc9e9..0d9a7ba91 100644
---- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KafkaConfiguration.java
-+++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KafkaConfiguration.java
-@@ -20,9 +20,9 @@ import java.util.Map;
- import java.util.Optional;
- import java.util.stream.Collectors;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.enterprise.inject.Instance;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.inject.Instance;
-+import jakarta.inject.Inject;
- 
- import org.eclipse.microprofile.config.inject.ConfigProperty;
- import org.slf4j.Logger;
-diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KafkaJobStreams.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KafkaJobStreams.java
-index 96fcb8d5b..a163b955f 100644
---- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KafkaJobStreams.java
-+++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KafkaJobStreams.java
-@@ -17,8 +17,8 @@ package org.kie.kogito.jobs.service.stream;
- 
- import java.util.Optional;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import org.eclipse.microprofile.config.inject.ConfigProperty;
- import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
-diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KnativeJobStreams.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KnativeJobStreams.java
-index 6e28819e2..c5cd0dd19 100644
---- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KnativeJobStreams.java
-+++ b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/stream/KnativeJobStreams.java
-@@ -19,9 +19,9 @@ package org.kie.kogito.jobs.service.stream;
- import java.util.Optional;
- import java.util.function.Supplier;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
--import javax.ws.rs.core.HttpHeaders;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
-+import jakarta.ws.rs.core.HttpHeaders;
- 
- import org.eclipse.microprofile.config.inject.ConfigProperty;
- import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 diff --git a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/validation/JobDetailsValidator.java b/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/validation/JobDetailsValidator.java
 index 5cd70b800..44696e3d5 100644
 --- a/jobs-service/jobs-service-common/src/main/java/org/kie/kogito/jobs/service/validation/JobDetailsValidator.java
@@ -3275,15 +3142,17 @@ index 225674149..bc94b2309 100644
  @ApplicationScoped
  public class RecipientValidatorProvider {
 diff --git a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManagerTest.java b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManagerTest.java
-index dd0089524..138a027ff 100644
+index 5fed08fd8..8f95fd1b7 100644
 --- a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManagerTest.java
 +++ b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/management/JobServiceInstanceManagerTest.java
-@@ -18,7 +18,7 @@ package org.kie.kogito.jobs.service.management;
- import java.time.OffsetDateTime;
+@@ -20,8 +20,8 @@ import java.util.Arrays;
  import java.util.function.Function;
+ import java.util.stream.Stream;
  
 -import javax.enterprise.event.Event;
+-import javax.enterprise.inject.Instance;
 +import jakarta.enterprise.event.Event;
++import jakarta.enterprise.inject.Instance;
  
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.Test;
@@ -3331,19 +3200,6 @@ index d32b575d9..cc12a6d31 100644
  
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.eclipse.microprofile.reactive.messaging.Channel;
-diff --git a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/messaging/CloudEventConverterTest.java b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/messaging/CloudEventConverterTest.java
-index a34d72e06..2284e9299 100644
---- a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/messaging/CloudEventConverterTest.java
-+++ b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/messaging/CloudEventConverterTest.java
-@@ -19,7 +19,7 @@ package org.kie.kogito.jobs.service.messaging;
- import java.net.URI;
- import java.time.OffsetDateTime;
- 
--import javax.ws.rs.core.HttpHeaders;
-+import jakarta.ws.rs.core.HttpHeaders;
- 
- import org.eclipse.microprofile.reactive.messaging.Message;
- import org.eclipse.microprofile.reactive.messaging.Metadata;
 diff --git a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/resource/BaseKeycloakJobServiceTest.java b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/resource/BaseKeycloakJobServiceTest.java
 index bb10e274a..4413ac079 100644
 --- a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/resource/BaseKeycloakJobServiceTest.java
@@ -3430,34 +3286,6 @@ index f6386ee7a..0a05caf54 100644
  
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.Test;
-diff --git a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/stream/KafkaConfigurationTest.java b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/stream/KafkaConfigurationTest.java
-index a2129b622..4d60e92ec 100644
---- a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/stream/KafkaConfigurationTest.java
-+++ b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/stream/KafkaConfigurationTest.java
-@@ -21,8 +21,8 @@ import java.util.Map;
- import java.util.Optional;
- import java.util.UUID;
- 
--import javax.enterprise.inject.Instance;
--import javax.inject.Inject;
-+import jakarta.enterprise.inject.Instance;
-+import jakarta.inject.Inject;
- 
- import org.junit.jupiter.api.Test;
- import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
-diff --git a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/stream/KnativeJobStreamsTest.java b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/stream/KnativeJobStreamsTest.java
-index 796f87bf2..d7cbbba8e 100644
---- a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/stream/KnativeJobStreamsTest.java
-+++ b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/stream/KnativeJobStreamsTest.java
-@@ -18,7 +18,7 @@ package org.kie.kogito.jobs.service.stream;
- 
- import java.util.Optional;
- 
--import javax.ws.rs.core.HttpHeaders;
-+import jakarta.ws.rs.core.HttpHeaders;
- 
- import org.eclipse.microprofile.reactive.messaging.Message;
- 
 diff --git a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/validation/RecipientValidatorProviderTest.java b/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/validation/RecipientValidatorProviderTest.java
 index 060bfdf79..a907a1a58 100644
 --- a/jobs-service/jobs-service-common/src/test/java/org/kie/kogito/jobs/service/validation/RecipientValidatorProviderTest.java
@@ -3600,6 +3428,197 @@ index 445948951..58651d8d1 100644
  
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.TestInstance;
+diff --git a/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/CloudEventConverter.java b/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/CloudEventConverter.java
+index 0aed5951d..532a10bed 100644
+--- a/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/CloudEventConverter.java
++++ b/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/CloudEventConverter.java
+@@ -17,7 +17,7 @@ package org.kie.kogito.jobs.service.messaging.http;
+ 
+ import java.lang.reflect.Type;
+ 
+-import javax.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.context.ApplicationScoped;
+ 
+ import org.eclipse.microprofile.reactive.messaging.Message;
+ import org.slf4j.Logger;
+diff --git a/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/HttpReactiveMessagingEventConsumer.java b/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/HttpReactiveMessagingEventConsumer.java
+index e16e2cbb6..ed864f2ad 100644
+--- a/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/HttpReactiveMessagingEventConsumer.java
++++ b/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/HttpReactiveMessagingEventConsumer.java
+@@ -16,8 +16,8 @@
+ 
+ package org.kie.kogito.jobs.service.messaging.http;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.eclipse.microprofile.faulttolerance.Retry;
+ import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
+diff --git a/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/health/knative/KSinkInjectionHealthCheck.java b/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/health/knative/KSinkInjectionHealthCheck.java
+index f0ac31a7a..8c28cebbf 100644
+--- a/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/health/knative/KSinkInjectionHealthCheck.java
++++ b/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/health/knative/KSinkInjectionHealthCheck.java
+@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
+ import java.net.UnknownHostException;
+ import java.util.function.UnaryOperator;
+ 
+-import javax.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.context.ApplicationScoped;
+ 
+ import org.eclipse.microprofile.health.HealthCheck;
+ import org.eclipse.microprofile.health.HealthCheckResponse;
+diff --git a/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/stream/HttpJobStreams.java b/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/stream/HttpJobStreams.java
+index 33e575885..96c09712d 100644
+--- a/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/stream/HttpJobStreams.java
++++ b/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/stream/HttpJobStreams.java
+@@ -19,9 +19,9 @@ package org.kie.kogito.jobs.service.messaging.http.stream;
+ import java.util.Optional;
+ import java.util.function.Supplier;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
+-import javax.ws.rs.core.HttpHeaders;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
++import jakarta.ws.rs.core.HttpHeaders;
+ 
+ import org.eclipse.microprofile.config.inject.ConfigProperty;
+ import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
+diff --git a/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/v2/HttpReactiveMessagingEventConsumer.java b/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/v2/HttpReactiveMessagingEventConsumer.java
+index 9ec17fda7..ed1596223 100644
+--- a/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/v2/HttpReactiveMessagingEventConsumer.java
++++ b/jobs-service/jobs-service-messaging-http/src/main/java/org/kie/kogito/jobs/service/messaging/http/v2/HttpReactiveMessagingEventConsumer.java
+@@ -15,8 +15,8 @@
+  */
+ package org.kie.kogito.jobs.service.messaging.http.v2;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.eclipse.microprofile.faulttolerance.Retry;
+ import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
+diff --git a/jobs-service/jobs-service-messaging-http/src/test/java/org/kie/kogito/jobs/service/messaging/http/CloudEventConverterTest.java b/jobs-service/jobs-service-messaging-http/src/test/java/org/kie/kogito/jobs/service/messaging/http/CloudEventConverterTest.java
+index 6105af82f..e140ae358 100644
+--- a/jobs-service/jobs-service-messaging-http/src/test/java/org/kie/kogito/jobs/service/messaging/http/CloudEventConverterTest.java
++++ b/jobs-service/jobs-service-messaging-http/src/test/java/org/kie/kogito/jobs/service/messaging/http/CloudEventConverterTest.java
+@@ -19,7 +19,7 @@ package org.kie.kogito.jobs.service.messaging.http;
+ import java.net.URI;
+ import java.time.OffsetDateTime;
+ 
+-import javax.ws.rs.core.HttpHeaders;
++import jakarta.ws.rs.core.HttpHeaders;
+ 
+ import org.eclipse.microprofile.reactive.messaging.Message;
+ import org.eclipse.microprofile.reactive.messaging.Metadata;
+diff --git a/jobs-service/jobs-service-messaging-http/src/test/java/org/kie/kogito/jobs/service/messaging/http/stream/HttpJobStreamsTest.java b/jobs-service/jobs-service-messaging-http/src/test/java/org/kie/kogito/jobs/service/messaging/http/stream/HttpJobStreamsTest.java
+index e778e6f99..7784ce6a0 100644
+--- a/jobs-service/jobs-service-messaging-http/src/test/java/org/kie/kogito/jobs/service/messaging/http/stream/HttpJobStreamsTest.java
++++ b/jobs-service/jobs-service-messaging-http/src/test/java/org/kie/kogito/jobs/service/messaging/http/stream/HttpJobStreamsTest.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.jobs.service.messaging.http.stream;
+ 
+ import java.util.Optional;
+ 
+-import javax.ws.rs.core.HttpHeaders;
++import jakarta.ws.rs.core.HttpHeaders;
+ 
+ import org.eclipse.microprofile.reactive.messaging.Message;
+ import org.kie.kogito.jobs.service.stream.AbstractJobStreamsTest;
+diff --git a/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/KafkaMessagingHandler.java b/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/KafkaMessagingHandler.java
+index c36e80a1b..d8bda7e85 100644
+--- a/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/KafkaMessagingHandler.java
++++ b/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/KafkaMessagingHandler.java
+@@ -16,8 +16,8 @@
+ 
+ package org.kie.kogito.jobs.service.messaging.kafka;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.eclipse.microprofile.reactive.messaging.spi.Connector;
+ import org.kie.kogito.jobs.service.messaging.MessagingHandler;
+diff --git a/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/KafkaReactiveMessagingEventConsumer.java b/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/KafkaReactiveMessagingEventConsumer.java
+index 24e8e42db..603e3416c 100644
+--- a/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/KafkaReactiveMessagingEventConsumer.java
++++ b/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/KafkaReactiveMessagingEventConsumer.java
+@@ -16,8 +16,8 @@
+ 
+ package org.kie.kogito.jobs.service.messaging.kafka;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.eclipse.microprofile.faulttolerance.Retry;
+ import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
+diff --git a/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaConfiguration.java b/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaConfiguration.java
+index 3eed9b192..82757265a 100644
+--- a/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaConfiguration.java
++++ b/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaConfiguration.java
+@@ -20,9 +20,9 @@ import java.util.Map;
+ import java.util.Optional;
+ import java.util.stream.Collectors;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Instance;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Instance;
++import jakarta.inject.Inject;
+ 
+ import org.eclipse.microprofile.config.inject.ConfigProperty;
+ import org.slf4j.Logger;
+diff --git a/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaJobStreams.java b/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaJobStreams.java
+index f582b7082..ccc8f3016 100644
+--- a/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaJobStreams.java
++++ b/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaJobStreams.java
+@@ -17,8 +17,8 @@ package org.kie.kogito.jobs.service.messaging.kafka.stream;
+ 
+ import java.util.Optional;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.eclipse.microprofile.config.inject.ConfigProperty;
+ import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
+diff --git a/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/v2/KafkaReactiveMessagingEventConsumer.java b/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/v2/KafkaReactiveMessagingEventConsumer.java
+index 78f08c566..bc79a69eb 100644
+--- a/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/v2/KafkaReactiveMessagingEventConsumer.java
++++ b/jobs-service/jobs-service-messaging-kafka/src/main/java/org/kie/kogito/jobs/service/messaging/kafka/v2/KafkaReactiveMessagingEventConsumer.java
+@@ -16,8 +16,8 @@
+ 
+ package org.kie.kogito.jobs.service.messaging.kafka.v2;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.eclipse.microprofile.faulttolerance.Retry;
+ import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
+diff --git a/jobs-service/jobs-service-messaging-kafka/src/test/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaConfigurationTest.java b/jobs-service/jobs-service-messaging-kafka/src/test/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaConfigurationTest.java
+index 7a8e75f2c..03dcfe812 100644
+--- a/jobs-service/jobs-service-messaging-kafka/src/test/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaConfigurationTest.java
++++ b/jobs-service/jobs-service-messaging-kafka/src/test/java/org/kie/kogito/jobs/service/messaging/kafka/stream/KafkaConfigurationTest.java
+@@ -21,8 +21,8 @@ import java.util.Map;
+ import java.util.Optional;
+ import java.util.UUID;
+ 
+-import javax.enterprise.inject.Instance;
+-import javax.inject.Inject;
++import jakarta.enterprise.inject.Instance;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 diff --git a/jobs-service/jobs-service-mongodb/src/main/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepository.java b/jobs-service/jobs-service-mongodb/src/main/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepository.java
 index 273bd972a..7f4cfd6c6 100644
 --- a/jobs-service/jobs-service-mongodb/src/main/java/org/kie/kogito/jobs/service/repository/mongodb/MongoDBJobRepository.java
@@ -3690,21 +3709,6 @@ index 105b644d2..2e25d4696 100644
  
  import org.kie.kogito.jobs.service.model.JobServiceManagementInfo;
  import org.kie.kogito.jobs.service.repository.JobServiceManagementRepository;
-diff --git a/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java b/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
-index d6ea60277..29de2e09f 100644
---- a/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
-+++ b/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
-@@ -16,8 +16,8 @@
- 
- package org.kie.kogito.jobs.service.messaging;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.ws.rs.Path;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.ws.rs.Path;
- 
- import static org.kie.kogito.jobs.service.messaging.BaseCallbackResource.CALLBACK_RESOURCE_PATH;
- 
 diff --git a/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepositoryTest.java b/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepositoryTest.java
 index 2d7674c3c..95a237d44 100644
 --- a/jobs-service/jobs-service-postgresql-common/src/test/java/org/kie/kogito/jobs/service/repository/postgresql/PostgreSqlJobRepositoryTest.java
@@ -3731,6 +3735,21 @@ index 085655d6d..5f461add9 100644
  
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.Test;
+diff --git a/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java b/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
+index d6ea60277..29de2e09f 100644
+--- a/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
++++ b/jobs-service/jobs-service-postgresql/src/test/java/org/kie/kogito/jobs/service/messaging/PostgreSqlCallbackResource.java
+@@ -16,8 +16,8 @@
+ 
+ package org.kie.kogito.jobs.service.messaging;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.ws.rs.Path;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.ws.rs.Path;
+ 
+ import static org.kie.kogito.jobs.service.messaging.BaseCallbackResource.CALLBACK_RESOURCE_PATH;
+ 
 diff --git a/jobs-service/kogito-addons-jobs-service/kogito-addons-quarkus-jobs-service-embedded/runtime/src/main/java/org/kie/kogito/addons/quarkus/jobs/service/embedded/stream/EventPublisherJobStreams.java b/jobs-service/kogito-addons-jobs-service/kogito-addons-quarkus-jobs-service-embedded/runtime/src/main/java/org/kie/kogito/addons/quarkus/jobs/service/embedded/stream/EventPublisherJobStreams.java
 index dc848c0fd..af4e685b7 100644
 --- a/jobs-service/kogito-addons-jobs-service/kogito-addons-quarkus-jobs-service-embedded/runtime/src/main/java/org/kie/kogito/addons/quarkus/jobs/service/embedded/stream/EventPublisherJobStreams.java
