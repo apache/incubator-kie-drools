@@ -62,6 +62,12 @@ public interface RuleUnitProvider extends KieService {
     }
 
     /**
+     * Invalidates all {@link RuleUnit}s generated from the given class.
+     * @return The number of invalidated ruleunits.
+     */
+    <T extends RuleUnitData> int invalidateRuleUnits(Class<T> ruleUnitDataClass);
+
+    /**
      * Creates a new RuleConfig instance.
      */
     RuleConfig newRuleConfig();

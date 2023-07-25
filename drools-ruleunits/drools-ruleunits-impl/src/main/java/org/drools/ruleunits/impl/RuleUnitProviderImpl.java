@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.DrlProject;
@@ -233,4 +234,29 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
         return new RuleConfigImpl();
     }
 
+    @Override
+    public <T extends RuleUnitData> int invalidateRuleUnits(Class<T> ruleUnitDataClass) {
+        if (NamedRuleUnitData.class.isAssignableFrom(ruleUnitDataClass)) {
+            // NamedRuleUnitData may create multiple RuleUnits
+            List<String> invalidateKeys = ruleUnitMap.entrySet()
+                    .stream()
+                    .filter(entry -> hasSameRuleUnitDataClass(entry.getValue(), ruleUnitDataClass))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+            invalidateKeys.forEach(ruleUnitMap::remove);
+            return invalidateKeys.size();
+        } else {
+            String ruleUnitName = getRuleUnitName(ruleUnitDataClass);
+            RuleUnit remove = ruleUnitMap.remove(ruleUnitName);
+            return remove == null ? 0 : 1;
+        }
+    }
+
+    private static <T extends RuleUnitData> boolean hasSameRuleUnitDataClass(RuleUnit ruleUnit, Class<T> ruleUnitDataClass) {
+        if (ruleUnit instanceof InternalRuleUnit) {
+            return ((InternalRuleUnit) ruleUnit).getRuleUnitDataClass().equals(ruleUnitDataClass);
+        } else {
+            return false;
+        }
+    }
 }
