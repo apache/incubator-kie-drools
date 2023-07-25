@@ -44,10 +44,20 @@
         </property>
       </activation>
       <modules>
-        <module>kogito-serverless-workflow-python-runtime</module>
         <module>kogito-serverless-workflow-executor</module>
-        <module>kogito-serverless-workflow-executor-python</module>
         <module>kogito-serverless-workflow-executor-tests</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>full</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kogito-serverless-workflow-python-runtime</module>
+        <module>kogito-serverless-workflow-executor-python</module>
       </modules>
     </profile>
   </profiles>

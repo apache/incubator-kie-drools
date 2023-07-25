@@ -43,4 +43,30 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  
+   <build>
+     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>pip-install</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+                <goal>exec</goal>
+            </goals>
+            <configuration>
+                <executable>pip</executable>
+                <arguments>
+                    <argument>install</argument>
+                    <argument>-r</argument>
+                    <argument>${project.basedir}/requirements.txt</argument>
+                </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

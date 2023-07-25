@@ -108,6 +108,7 @@ pipeline {
                     dir(getRepoName()) {
                         String mvnCmd = getMavenCommand()
                                             .withProperty('maven.test.failure.ignore', true)
+                                            .withProfiles(['full'])
                                             .skipTests(params.SKIP_TESTS)
                                             .getFullRunCommand('clean install')
                         util.runWithPythonVirtualEnv(mvnCmd, 'swf')
