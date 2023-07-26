@@ -247,7 +247,7 @@ public class PersistenceUtil {
             if (realH2Server == null || !realH2Server.isRunning(false)) {
                 try {
                     DeleteDbFiles.execute("", "JPADroolsFlow", true);
-                    realH2Server = Server.createTcpServer(new String[0]);
+                    realH2Server = Server.createTcpServer(new String[]{"-ifNotExists"});
                     realH2Server.start();
                 } catch (SQLException e) {
                     throw new RuntimeException("Can't start h2 server db", e);
