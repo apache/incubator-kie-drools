@@ -90,19 +90,6 @@ index 0c8c51edb1..15913f8772 100644
                      // reinitialize all fields
                      this.ut = findUserTransaction();
                      this.tm = findTransactionManager(this.ut);
-diff --git a/drools-reliability/drools-reliability-infinispan/pom.xml b/drools-reliability/drools-reliability-infinispan/pom.xml
-index ac15692903..40778f02ee 100644
---- a/drools-reliability/drools-reliability-infinispan/pom.xml
-+++ b/drools-reliability/drools-reliability-infinispan/pom.xml
-@@ -16,7 +16,7 @@
- 
-   <properties>
-     <java.module.name>org.drools.reliability.infinispan</java.module.name>
--    <version.infinispan>14.0.6.Final</version.infinispan>
-+    <version.infinispan>14.0.7.Final</version.infinispan>
-     <version.testcontainers>1.17.2</version.testcontainers>
-   </properties>
- 
 diff --git a/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/integrationtests/KieBuilderTest.java b/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/integrationtests/KieBuilderTest.java
 index d2949bf1df..3726116e3b 100644
 --- a/drools-test-coverage/test-compiler-integration/src/test/java/org/drools/mvel/integrationtests/KieBuilderTest.java
