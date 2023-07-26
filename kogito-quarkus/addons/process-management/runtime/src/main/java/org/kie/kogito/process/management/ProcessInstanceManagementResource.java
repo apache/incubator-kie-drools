@@ -68,6 +68,22 @@ public class ProcessInstanceManagementResource extends BaseProcessInstanceManage
 
     @Override
     @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProcesses() {
+        return doGetProcesses();
+    }
+
+    @Override
+    @GET
+    @Path("/{processId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProcessInfo(@PathParam("processId") String processId) {
+        return doGetProcessInfo(processId);
+    }
+
+    @Override
+    @GET
     @Path("{processId}/nodes")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProcessNodes(@PathParam("processId") String processId) {

@@ -130,4 +130,16 @@ class ProcessInstanceManagementRestControllerTest {
         tested.getProcessNodes(PROCESS_ID);
         verify(tested).doGetProcessNodes(PROCESS_ID);
     }
+
+    @Test
+    public void testGetProcesses() {
+        tested.getProcesses();
+        verify(tested).doGetProcesses();
+    }
+
+    @Test
+    public void testGetProcessInfo() {
+        tested.getProcessInfo(PROCESS_ID);
+        verify(tested).doGetProcessInfo(PROCESS_ID);
+    }
 }

@@ -17,6 +17,10 @@ package org.kie.kogito.process.management;
 
 public interface ProcessInstanceManagement<T> {
 
+    T getProcesses();
+
+    T getProcessInfo(String processId);
+
     T getProcessNodes(String processId);
 
     T getInstanceInError(String processId, String processInstanceId);

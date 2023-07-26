@@ -151,6 +151,18 @@ public class ProcessInstanceManagementResourceTest {
     }
 
     @Test
+    public void testGetProcesses() {
+        resource.getProcesses();
+        verify(resource).doGetProcesses();
+    }
+
+    @Test
+    public void testGetProcessInfo() {
+        resource.getProcessInfo(PROCESS_ID);
+        verify(resource).doGetProcessInfo(PROCESS_ID);
+    }
+
+    @Test
     public void testGetProcessNodes() {
         resource.getProcessNodes(PROCESS_ID);
         verify(resource).doGetProcessNodes(PROCESS_ID);

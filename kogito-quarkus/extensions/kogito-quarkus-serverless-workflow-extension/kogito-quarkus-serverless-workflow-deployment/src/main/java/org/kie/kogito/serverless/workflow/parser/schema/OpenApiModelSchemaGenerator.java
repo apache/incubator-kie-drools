@@ -16,8 +16,6 @@
 
 package org.kie.kogito.serverless.workflow.parser.schema;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +37,12 @@ import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.kogito.Model;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
-import org.kie.kogito.serverless.workflow.actions.JsonSchemaValidator;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModelInput;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModelOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public final class OpenApiModelSchemaGenerator {
 
@@ -116,15 +115,11 @@ public final class OpenApiModelSchemaGenerator {
     }
 
     private static Optional<Schema> getSchema(Optional<WorkflowModelValidator> validator) {
-        return validator.filter(JsonSchemaValidator.class::isInstance).map(JsonSchemaValidator.class::cast).map(OpenApiModelSchemaGenerator::getSchema);
+        return validator.flatMap(v -> v.schema(JsonNode.class)).map(OpenApiModelSchemaGenerator::getSchema);
     }
 
-    private static Schema getSchema(JsonSchemaValidator validator) {
-        try {
-            return ObjectMapperFactory.get().convertValue(validator.schemaData(), JsonSchemaImpl.class);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    private static Schema getSchema(JsonNode jsonNode) {
+        return ObjectMapperFactory.get().convertValue(jsonNode, JsonSchemaImpl.class);
     }
 
     private static String getSchemaName(String id, String suffix) {

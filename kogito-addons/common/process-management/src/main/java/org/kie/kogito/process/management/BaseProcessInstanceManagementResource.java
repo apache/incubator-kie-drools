@@ -20,9 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.kogito.Application;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
@@ -34,6 +36,8 @@ import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 
@@ -52,6 +56,30 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
     public BaseProcessInstanceManagementResource(Processes processes, Application application) {
         this.processes = processes;
         this.application = application;
+    }
+
+    public T doGetProcesses() {
+        return buildOkResponse(processes.processIds());
+    }
+
+    public T doGetProcessInfo(String processId) {
+        return executeOnProcess(processId, process -> {
+            Map<String, Object> data = new HashMap<>();
+            data.put("id", process.id());
+            data.put("name", process.name());
+            data.put("type", process.type());
+            data.put("version", process.version());
+            if (process instanceof Supplier) {
+                org.kie.api.definition.process.Process processDefinition = ((Supplier<org.kie.api.definition.process.Process>) process).get();
+                data.put("description", processDefinition.getMetaData().get("description"));
+                if (processDefinition instanceof WorkflowProcess) {
+                    WorkflowProcess workflowProcess = (WorkflowProcess) processDefinition;
+                    workflowProcess.getInputValidator().flatMap(v -> v.schema(JsonNode.class)).ifPresent(s -> data.put("inputSchema", s));
+                    workflowProcess.getOutputValidator().flatMap(v -> v.schema(JsonNode.class)).ifPresent(s -> data.put("outputSchema", s));
+                }
+            }
+            return buildOkResponse(data);
+        });
     }
 
     public T doGetProcessNodes(String processId) {
