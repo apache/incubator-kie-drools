@@ -1,5 +1,5 @@
 diff --git a/build-parent/pom.xml b/build-parent/pom.xml
-index 1141ce4da6..76a499b856 100644
+index f01825ce2c..d85e31cb62 100644
 --- a/build-parent/pom.xml
 +++ b/build-parent/pom.xml
 @@ -40,22 +40,22 @@
@@ -32,7 +32,7 @@ index 1141ce4da6..76a499b856 100644
      <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
      <version.junit>4.13.1</version.junit>
      <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
-@@ -68,41 +68,41 @@
+@@ -68,42 +68,42 @@
      <version.org.apache.httpcomponents.httpcore>4.4.15</version.org.apache.httpcomponents.httpcore>
      <version.org.apache.maven>3.8.6</version.org.apache.maven>
      <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
@@ -52,6 +52,7 @@ index 1141ce4da6..76a499b856 100644
 -    <version.org.hibernate>5.6.12.Final</version.org.hibernate>
 +    <version.org.hibernate>6.2.0.Final</version.org.hibernate>
      <version.org.hsqldb>2.3.0</version.org.hsqldb>
+     <version.org.infinispan>14.0.13.Final</version.org.infinispan>
      <version.org.javassist>3.26.0-GA</version.org.javassist>
 -    <version.org.jboss.narayana.tomcat>5.13.1.Final</version.org.jboss.narayana.tomcat>
 +    <version.org.jboss.narayana.tomcat>6.0.0.Final</version.org.jboss.narayana.tomcat>
@@ -95,7 +96,7 @@ index 1141ce4da6..76a499b856 100644
      <version.org.junit>5.9.2</version.org.junit>
      <version.org.mvel>2.5.0.Final</version.org.mvel>
      <version.org.powermock>2.0.7</version.org.powermock>
-@@ -131,7 +131,7 @@
+@@ -132,7 +132,7 @@
      <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
      <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
      <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
@@ -104,7 +105,7 @@ index 1141ce4da6..76a499b856 100644
      <!-- Version of JMH -->
      <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
  
-@@ -150,10 +150,10 @@
+@@ -151,10 +151,10 @@
      <version.surefire.plugin>2.22.1</version.surefire.plugin>
      <!-- Add for kie-maven-plugin -->
      <version.plugin.plugin>3.6.4</version.plugin.plugin>
@@ -117,7 +118,7 @@ index 1141ce4da6..76a499b856 100644
      <version.common.exec>1.3</version.common.exec>
      <!-- -->
      <!-- Jacoco plugin configurations -->
-@@ -181,16 +181,16 @@
+@@ -182,16 +182,16 @@
  
      <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
  
@@ -138,7 +139,7 @@ index 1141ce4da6..76a499b856 100644
  
      <!-- JaCoCo coverage data file location -->
      <!--suppress UnresolvedMavenProperty -->
-@@ -266,7 +266,7 @@
+@@ -267,7 +267,7 @@
        </dependency>
        <dependency>
          <groupId>com.fasterxml.jackson.module</groupId>
@@ -147,7 +148,7 @@ index 1141ce4da6..76a499b856 100644
          <version>${version.com.fasterxml.jackson.annotations}</version>
        </dependency>
        <dependency>
-@@ -275,8 +275,8 @@
+@@ -276,8 +276,8 @@
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
@@ -158,7 +159,7 @@ index 1141ce4da6..76a499b856 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -350,9 +350,9 @@
+@@ -351,9 +351,9 @@
          <version>${version.com.sun.xml.bind}</version>
        </dependency>
        <dependency>
@@ -171,7 +172,7 @@ index 1141ce4da6..76a499b856 100644
        </dependency>
        <dependency>
          <groupId>com.sun.xml.bind</groupId>
-@@ -402,8 +402,8 @@
+@@ -403,8 +403,8 @@
        </dependency>
  
        <dependency>
@@ -182,7 +183,7 @@ index 1141ce4da6..76a499b856 100644
          <version>${version.jakarta.json}</version>
        </dependency>
        <dependency>
-@@ -438,8 +438,8 @@
+@@ -439,8 +439,8 @@
        </dependency>
  
        <dependency>
@@ -193,7 +194,7 @@ index 1141ce4da6..76a499b856 100644
          <version>${version.jakarta.activation}</version>
        </dependency>
        <dependency>
-@@ -774,12 +774,12 @@
+@@ -775,12 +775,12 @@
        </dependency>
  
        <dependency>
@@ -208,7 +209,7 @@ index 1141ce4da6..76a499b856 100644
          <artifactId>hibernate-jpamodelgen</artifactId>
          <version>${version.org.hibernate}</version>
          <exclusions>
-@@ -1098,7 +1098,7 @@
+@@ -1099,7 +1099,7 @@
        </dependency>
  
        <dependency>
@@ -217,7 +218,7 @@ index 1141ce4da6..76a499b856 100644
          <artifactId>hibernate-core</artifactId>
          <version>${version.org.hibernate}</version>
          <exclusions>
-@@ -1120,31 +1120,16 @@
+@@ -1121,31 +1121,16 @@
            </exclusion>
          </exclusions>
        </dependency>
@@ -2737,10 +2738,10 @@ index 31038d2afa..775f3f19dc 100644
  import org.drools.core.impl.EnvironmentFactory;
  import org.kie.api.runtime.Environment;
 diff --git a/drools-reliability/drools-reliability-infinispan/pom.xml b/drools-reliability/drools-reliability-infinispan/pom.xml
-index 7f11166ffb..eaca8efabc 100644
+index ffb87b57ff..c48548c093 100644
 --- a/drools-reliability/drools-reliability-infinispan/pom.xml
 +++ b/drools-reliability/drools-reliability-infinispan/pom.xml
-@@ -40,7 +40,7 @@
+@@ -32,7 +32,7 @@
    <dependencies>
      <dependency>
        <groupId>org.infinispan</groupId>
@@ -2749,7 +2750,7 @@ index 7f11166ffb..eaca8efabc 100644
      </dependency>
      <dependency>
        <groupId>org.infinispan.protostream</groupId>
-@@ -49,7 +49,7 @@
+@@ -41,7 +41,7 @@
      </dependency>
      <dependency>
        <groupId>org.infinispan</groupId>
