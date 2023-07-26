@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kogito-quarkus-serverless-workflow-integration-test</artifactId>
-  <name>Kogito :: Quarkus Workflows Extension :: Integration Tests</name>
+  <name>Kogito :: Quarkus Serverless Workflow Extension :: Integration Tests</name>
 
   <properties>
     <quarkus.test.list.include>true</quarkus.test.list.include>
