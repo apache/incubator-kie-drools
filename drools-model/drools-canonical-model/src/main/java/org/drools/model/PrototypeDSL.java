@@ -131,12 +131,16 @@ public class PrototypeDSL {
 
             Prototype prototype = getPrototype();
             Function1<PrototypeFact, Object> leftExtractor = left.asFunction(prototype);
+
             AlphaIndex alphaIndex = null;
+            String exprId = "expr:" + left + ":" + operator + ":" + right;
+
             if (left.getIndexingKey().isPresent() && right instanceof PrototypeExpression.FixedValue && operator instanceof Index.ConstraintType) {
                 String fieldName = left.getIndexingKey().get();
                 Index.ConstraintType constraintType = (Index.ConstraintType) operator;
                 Prototype.Field field = prototype.getField(fieldName);
                 Object value = ((PrototypeExpression.FixedValue) right).getValue();
+                exprId = "expr:" + fieldName + ":" + operator + ":" + value;
 
                 Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : value != null ? value.getClass() : null);
                 if (fieldClass != null) {
@@ -148,7 +152,7 @@ public class PrototypeDSL {
             reactOnFields.addAll(left.getImpactedFields());
             reactOnFields.addAll(right.getImpactedFields());
 
-            expr("expr:" + left + ":" + operator + ":" + right,
+            expr(exprId,
                     asPredicate1(leftExtractor, operator, right.asFunction(prototype)),
                     alphaIndex,
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
@@ -174,7 +178,7 @@ public class PrototypeDSL {
             reactOnFields.addAll(left.getImpactedFields());
             reactOnFields.addAll(right.getImpactedFields());
 
-            expr("expr:" + left + ":" + operator + ":" + right,
+            expr("expr:" + left.getIndexingKey().orElse(left.toString()) + ":" + operator + ":" + right,
                     other, asPredicate2(left.asFunction(prototype), operator, right.asFunction(otherPrototype)),
                     createBetaIndex(left, operator, right, prototype, otherPrototype),
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );

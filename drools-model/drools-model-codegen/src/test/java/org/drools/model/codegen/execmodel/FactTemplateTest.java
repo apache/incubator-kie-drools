@@ -15,19 +15,10 @@
  */
 package org.drools.model.codegen.execmodel;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
-
-import org.drools.core.ClockType;
 import org.drools.base.facttemplates.Event;
 import org.drools.base.facttemplates.Fact;
 import org.drools.base.facttemplates.FactTemplateObjectType;
+import org.drools.core.ClockType;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -37,6 +28,7 @@ import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Model;
 import org.drools.model.Prototype;
+import org.drools.model.PrototypeExpression;
 import org.drools.model.PrototypeFact;
 import org.drools.model.PrototypeVariable;
 import org.drools.model.Query;
@@ -44,6 +36,7 @@ import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
+import org.drools.model.functions.Function1;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.KieBaseBuilder;
 import org.junit.Test;
@@ -57,6 +50,17 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionPseudoClock;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -1454,5 +1458,84 @@ public class FactTemplateTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results).contains(new Result("Mark"));
+    }
+
+    @Test
+    public void testMixFieldNameAndPrototypeExpr() {
+        // DROOLS-7517
+        Prototype personFact = prototype( "org.drools.FactPerson", "name", "age" );
+
+        PrototypeVariable markV = variable( personFact );
+
+        Rule r1 = rule( "R1" )
+                .build(
+                        protoPattern(markV)
+                                .expr( "name", Index.ConstraintType.EQUAL, "Mark" ),
+                        on(markV).execute((drools, p) ->
+                                drools.insert(new Result("R1"))
+                        )
+                );
+
+        Rule r2 = rule( "R2" )
+                .build(
+                        protoPattern(markV)
+                                .expr( "name", Index.ConstraintType.EQUAL, "Mario" ),
+                        on(markV).execute((drools, p) ->
+                                drools.insert(new Result("R2"))
+                        )
+                );
+
+        Rule r3 = rule( "R3" )
+                .build(
+                        protoPattern(markV)
+                                .expr( new MyFieldExpression("name"), Index.ConstraintType.EQUAL, fixedValue("Mark") ),
+                        on(markV).execute((drools, p) ->
+                                drools.insert(new Result("R3"))
+                        )
+                );
+
+        Model model = new ModelImpl().addRule( r1 ).addRule( r2 ).addRule( r3 );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact mark = createMapBasedFact(personFact);
+        mark.set( "name", "Mark" );
+        mark.set( "age", 40 );
+
+        FactHandle fh = ksession.insert( mark );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results).containsExactlyInAnyOrder(new Result("R1"), new Result("R3"));
+    }
+
+    class MyFieldExpression implements PrototypeExpression {
+
+        private final String fieldName;
+
+        MyFieldExpression(String fieldName) {
+            this.fieldName = fieldName;
+        }
+
+        @Override
+        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
+            return prototype.getFieldValueExtractor(fieldName)::apply;
+        }
+
+        @Override
+        public Optional<String> getIndexingKey() {
+            return Optional.of(fieldName);
+        }
+
+        @Override
+        public String toString() {
+            return "MyFieldExpression{" + fieldName + "}";
+        }
+
+        @Override
+        public Collection<String> getImpactedFields() {
+            return Collections.singletonList(fieldName);
+        }
     }
 }
