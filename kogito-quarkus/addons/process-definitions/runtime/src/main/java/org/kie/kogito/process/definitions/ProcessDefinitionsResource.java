@@ -20,6 +20,8 @@ import java.io.StringReader;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -28,6 +30,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.serverless.workflow.executor.StaticWorkflowApplication;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModelInput;
@@ -41,9 +44,13 @@ public class ProcessDefinitionsResource {
 
     private StaticWorkflowApplication application;
 
+    @Inject
+    Instance<ProcessInstancesFactory> factories;
+
     @PostConstruct
     void init() {
         application = StaticWorkflowApplication.create();
+        factories.stream().findFirst().ifPresent(application::processInstancesFactory);
     }
 
     @PreDestroy

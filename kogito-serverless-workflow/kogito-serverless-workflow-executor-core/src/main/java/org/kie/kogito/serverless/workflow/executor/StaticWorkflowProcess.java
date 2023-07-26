@@ -25,6 +25,7 @@ import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 
@@ -32,9 +33,10 @@ class StaticWorkflowProcess extends AbstractProcess<JsonNodeModel> {
 
     private final KogitoWorkflowProcess process;
 
-    public StaticWorkflowProcess(Application app, Collection<KogitoWorkItemHandler> handlers, KogitoWorkflowProcess process) {
-        super(app, handlers, null);
+    public StaticWorkflowProcess(Application app, Collection<KogitoWorkItemHandler> handlers, ProcessInstancesFactory processInstanceFactory, KogitoWorkflowProcess process) {
+        super(app, handlers, null, processInstanceFactory);
         this.process = process;
+        activate();
     }
 
     @Override
@@ -51,6 +53,11 @@ class StaticWorkflowProcess extends AbstractProcess<JsonNodeModel> {
     @Override
     public ProcessInstance<? extends Model> createInstance(Model m) {
         return createInstance((JsonNodeModel) m);
+    }
+
+    @Override
+    public JsonNodeModel createModel() {
+        return new JsonNodeModel();
     }
 
     @Override
