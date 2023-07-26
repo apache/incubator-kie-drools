@@ -197,9 +197,6 @@
           </pomIncludes>
           <projectsDirectory>${project.basedir}</projectsDirectory>
           <goals>clean install</goals>
-          <properties>
-            <kie.maven.settings.custom>${project.build.testOutputDirectory}/kie-ci-tests-custom-settings.xml</kie.maven.settings.custom>
-          </properties>
           <localRepositoryPath>${project.build.directory}/testing-maven-repo</localRepositoryPath>
         </configuration>
         <executions>
