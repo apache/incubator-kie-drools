@@ -131,7 +131,20 @@ public class PrototypeDSL {
 
             Prototype prototype = getPrototype();
             Function1<PrototypeFact, Object> leftExtractor = left.asFunction(prototype);
-            AlphaIndex alphaIndex = null;
+
+            Set<String> reactOnFields = new HashSet<>();
+            reactOnFields.addAll(left.getImpactedFields());
+            reactOnFields.addAll(right.getImpactedFields());
+
+            expr(createExprId(left, operator, right),
+                    asPredicate1(leftExtractor, operator, right.asFunction(prototype)),
+                    createAlphaIndex(left, operator, right, prototype, leftExtractor),
+                    reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
+
+            return this;
+        }
+
+        private static AlphaIndex createAlphaIndex(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right, Prototype prototype, Function1<PrototypeFact, Object> leftExtractor) {
             if (left.getIndexingKey().isPresent() && right instanceof PrototypeExpression.FixedValue && operator instanceof Index.ConstraintType) {
                 String fieldName = left.getIndexingKey().get();
                 Index.ConstraintType constraintType = (Index.ConstraintType) operator;
@@ -140,20 +153,10 @@ public class PrototypeDSL {
 
                 Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : value != null ? value.getClass() : null);
                 if (fieldClass != null) {
-                    alphaIndex = alphaIndexedBy(fieldClass, constraintType, getFieldIndex(prototype, fieldName, field), leftExtractor, value);
+                    return alphaIndexedBy(fieldClass, constraintType, getFieldIndex(prototype, fieldName, field), leftExtractor, value);
                 }
             }
-
-            Set<String> reactOnFields = new HashSet<>();
-            reactOnFields.addAll(left.getImpactedFields());
-            reactOnFields.addAll(right.getImpactedFields());
-
-            expr("expr:" + left + ":" + operator + ":" + right,
-                    asPredicate1(leftExtractor, operator, right.asFunction(prototype)),
-                    alphaIndex,
-                    reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
-
-            return this;
+            return null;
         }
 
         private static int getFieldIndex(Prototype prototype, String fieldName, Prototype.Field field) {
@@ -174,12 +177,18 @@ public class PrototypeDSL {
             reactOnFields.addAll(left.getImpactedFields());
             reactOnFields.addAll(right.getImpactedFields());
 
-            expr("expr:" + left + ":" + operator + ":" + right,
+            expr(createExprId(left, operator, right),
                     other, asPredicate2(left.asFunction(prototype), operator, right.asFunction(otherPrototype)),
                     createBetaIndex(left, operator, right, prototype, otherPrototype),
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
             return this;
+        }
+
+        private static String createExprId(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right) {
+            Object leftId = left.getIndexingKey().orElse(left.toString());
+            Object rightId = right instanceof PrototypeExpression.FixedValue ? ((PrototypeExpression.FixedValue) right).getValue() : right;
+            return "expr:" + leftId + ":" + operator + ":" + rightId;
         }
 
         private BetaIndex createBetaIndex(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right, Prototype prototype, Prototype otherPrototype) {
