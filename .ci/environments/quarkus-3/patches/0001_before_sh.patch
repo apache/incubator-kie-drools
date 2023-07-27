@@ -909,10 +909,10 @@ index fac920d739..cdbc8756bc 100644
  import org.kie.kogito.Application;
  import org.kie.kogito.explainability.model.PredictInput;
 diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/pom.xml b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/pom.xml
-index 42c99a8df5..4b834c9a56 100644
+index 4cf954e2df..02a3964c18 100644
 --- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/pom.xml
 +++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/pom.xml
-@@ -70,7 +70,7 @@
+@@ -77,7 +77,7 @@
          <plugins>
              <plugin>
                  <groupId>io.quarkus</groupId>
@@ -1011,6 +1011,19 @@ index 0f633000df..fbce47a8d7 100644
  
  import org.junit.jupiter.api.Test;
  
+diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/Fabric8KubernetesServiceCatalogTest.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/Fabric8KubernetesServiceCatalogTest.java
+index 9e3d66eb77..2c1751bc6e 100644
+--- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/Fabric8KubernetesServiceCatalogTest.java
++++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/Fabric8KubernetesServiceCatalogTest.java
+@@ -15,7 +15,7 @@
+  */
+ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.BeforeEach;
+ import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalogTest;
 diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/IngressUtilsTest.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/IngressUtilsTest.java
 index dfd5f8c3c3..1005e06c49 100644
 --- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/IngressUtilsTest.java
@@ -1025,7 +1038,7 @@ index dfd5f8c3c3..1005e06c49 100644
  import org.junit.jupiter.api.Test;
  
 diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscoveryTest.java b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscoveryTest.java
-index 217b7d6108..b40d0ac686 100644
+index e42ec2cf50..b6a8597679 100644
 --- a/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscoveryTest.java
 +++ b/quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/java/org/kie/kogito/addons/quarkus/fabric8/k8s/service/catalog/KnativeServiceDiscoveryTest.java
 @@ -18,7 +18,7 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
@@ -1432,12 +1445,12 @@ index 98e2c18678..6bcb3bd7ef 100644
  import org.assertj.core.api.Assertions;
  import org.junit.jupiter.api.AfterAll;
 diff --git a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
-index 2e0c9ed888..6c624e2654 100644
+index 45344199c4..1971c08cb6 100644
 --- a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
 +++ b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
-@@ -20,7 +20,7 @@ import java.util.List;
+@@ -19,7 +19,7 @@ import java.time.Instant;
+ import java.util.List;
  import java.util.Map;
- import java.util.stream.Stream;
  
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
@@ -1543,7 +1556,7 @@ index 78e7e9818c..1e9cabca8c 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.addons.k8s.Endpoint;
 diff --git a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
-index 7d3d496374..f242c1c7ed 100644
+index 21bfd13d42..ab9286b986 100644
 --- a/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
 +++ b/quarkus/addons/kubernetes/runtime/src/test/java/org/kie/kogito/addons/quarkus/k8s/config/KubeDiscoveryConfigCacheUpdaterTest.java
 @@ -17,7 +17,7 @@ package org.kie.kogito.addons.quarkus.k8s.config;
@@ -2422,7 +2435,7 @@ index ce0eedf6cd..eea0ab21f5 100644
          <executions>
            <execution>
 diff --git a/quarkus/addons/process-management/runtime/src/main/java/org/kie/kogito/process/management/ProcessInstanceManagementResource.java b/quarkus/addons/process-management/runtime/src/main/java/org/kie/kogito/process/management/ProcessInstanceManagementResource.java
-index 83487f40f6..5e063515e8 100644
+index dfebf95981..8ee199fd42 100644
 --- a/quarkus/addons/process-management/runtime/src/main/java/org/kie/kogito/process/management/ProcessInstanceManagementResource.java
 +++ b/quarkus/addons/process-management/runtime/src/main/java/org/kie/kogito/process/management/ProcessInstanceManagementResource.java
 @@ -15,16 +15,16 @@
@@ -2453,7 +2466,7 @@ index 83487f40f6..5e063515e8 100644
  import org.kie.kogito.Application;
  import org.kie.kogito.process.Processes;
 diff --git a/quarkus/addons/process-management/runtime/src/test/java/org/kie/kogito/process/management/ProcessInstanceManagementResourceTest.java b/quarkus/addons/process-management/runtime/src/test/java/org/kie/kogito/process/management/ProcessInstanceManagementResourceTest.java
-index cb57bd172c..0722824b67 100644
+index 4bdbcaa8d5..8bb7c5505d 100644
 --- a/quarkus/addons/process-management/runtime/src/test/java/org/kie/kogito/process/management/ProcessInstanceManagementResourceTest.java
 +++ b/quarkus/addons/process-management/runtime/src/test/java/org/kie/kogito/process/management/ProcessInstanceManagementResourceTest.java
 @@ -17,11 +17,11 @@ package org.kie.kogito.process.management;
