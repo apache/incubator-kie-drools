@@ -1,5 +1,5 @@
 diff --git a/build-parent/pom.xml b/build-parent/pom.xml
-index f01825ce2c..d85e31cb62 100644
+index ba78a93374..acb0a5ff7e 100644
 --- a/build-parent/pom.xml
 +++ b/build-parent/pom.xml
 @@ -40,22 +40,22 @@
@@ -18,7 +18,7 @@ index f01825ce2c..d85e31cb62 100644
      <version.com.google.protobuf>3.22.0</version.com.google.protobuf>
 -    <version.com.h2database>2.2.220</version.com.h2database>
 +    <version.com.h2database>2.1.214</version.com.h2database>
-     <version.com.networknt.json-schema-validator>1.0.43</version.com.networknt.json-schema-validator>
+     <version.com.networknt.json-schema-validator>1.0.86</version.com.networknt.json-schema-validator>
      <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
      <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
      <version.guru.nidi>0.18.0</version.guru.nidi>
