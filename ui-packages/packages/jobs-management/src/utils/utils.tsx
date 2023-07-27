@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { JobStatus } from '@kogito-apps/management-console-shared';
+import { JobStatus } from '@kogito-apps/management-console-shared/dist/types';
 import { UndoIcon } from '@patternfly/react-icons/dist/js/icons/undo-icon';
 import { ClockIcon } from '@patternfly/react-icons/dist/js/icons/clock-icon';
 import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-circle-o-icon';

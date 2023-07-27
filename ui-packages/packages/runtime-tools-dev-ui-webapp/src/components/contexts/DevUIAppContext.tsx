@@ -15,7 +15,7 @@
  */
 
 import React, { useContext } from 'react';
-import { User } from '@kogito-apps/consoles-common';
+import { User } from '@kogito-apps/consoles-common/dist/environment/auth';
 import { CustomLabels } from '../../api/CustomLabels';
 import { DiagramPreviewSize } from '@kogito-apps/process-details/dist/api';
 

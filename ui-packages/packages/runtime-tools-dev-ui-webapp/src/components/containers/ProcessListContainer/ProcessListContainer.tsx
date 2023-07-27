@@ -16,7 +16,10 @@
 
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { EmbeddedProcessList } from '@kogito-apps/process-list';
 import {
   ProcessListGatewayApi,
@@ -25,7 +28,7 @@ import {
 import {
   ProcessInstance,
   ProcessListState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 import { CloudEventPageSource } from '../../pages/CloudEventFormPage/CloudEventFormPage';
 

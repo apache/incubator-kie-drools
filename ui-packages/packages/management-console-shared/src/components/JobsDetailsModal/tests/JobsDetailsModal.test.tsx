@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import JobsDetailsModal from '../JobsDetailsModal';
+import { JobsDetailsModal } from '../JobsDetailsModal';
 import { JobStatus } from '../../../types';
 import { mount } from 'enzyme';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';

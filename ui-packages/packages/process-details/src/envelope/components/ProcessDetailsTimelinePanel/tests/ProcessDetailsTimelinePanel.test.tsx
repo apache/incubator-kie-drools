@@ -20,7 +20,7 @@ import ProcessDetailsTimelinePanel from '../ProcessDetailsTimelinePanel';
 import {
   JobStatus,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import { act } from 'react-dom/test-utils';
 import {
   Dropdown,

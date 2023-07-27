@@ -17,7 +17,7 @@
 import React from 'react';
 import axios from 'axios';
 import JobsManagementTable from '../JobsManagementTable';
-import KogitoSpinner from '@kogito-apps/components-common/dist/components/KogitoSpinner/KogitoSpinner';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import { JobStatus } from '@kogito-apps/management-console-shared/dist/types';

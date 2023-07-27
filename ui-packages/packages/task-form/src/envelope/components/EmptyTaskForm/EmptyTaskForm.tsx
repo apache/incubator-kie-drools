@@ -25,9 +25,12 @@ import {
 import { Title } from '@patternfly/react-core/dist/js/components/Title';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { convertActionsToButton } from '@kogito-apps/components-common';
+import { convertActionsToButton } from '@kogito-apps/components-common/dist/components/utils';
 
 interface IOwnProps {
   userTask: UserTaskInstance;

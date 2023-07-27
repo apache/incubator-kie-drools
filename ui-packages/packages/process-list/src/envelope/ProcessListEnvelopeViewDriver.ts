@@ -17,11 +17,11 @@
 import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import {
   BulkProcessInstanceActionResponse,
-  OperationType,
   ProcessInstance,
   ProcessInstanceFilter,
   ProcessListSortBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 import { ProcessListChannelApi, ProcessListDriver } from '../api';
 
 export default class ProcessListEnvelopeViewDriver

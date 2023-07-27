@@ -17,11 +17,11 @@
 import { ProcessListChannelApi, ProcessListDriver } from '../api';
 import {
   BulkProcessInstanceActionResponse,
-  OperationType,
   ProcessInstance,
   ProcessInstanceFilter,
   ProcessListSortBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 
 export class ProcessListChannelApiImpl implements ProcessListChannelApi {
   constructor(private readonly driver: ProcessListDriver) {}

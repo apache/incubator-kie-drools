@@ -19,10 +19,10 @@ import { mount } from 'enzyme';
 import cloneDeep from 'lodash/cloneDeep';
 import { AutoForm } from 'uniforms-patternfly/dist/es6';
 
-import FormRenderer from '../FormRenderer';
+import { FormRenderer } from '../FormRenderer';
 import { FormAction } from '../../utils';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
-import FormFooter from '../../FormFooter/FormFooter';
+import { FormFooter } from '../../FormFooter';
 
 export type UserTaskInstance = {
   id: string;
@@ -78,7 +78,7 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('../../FormFooter/FormFooter');
+jest.mock('../../FormFooter');
 jest.mock('uniforms-patternfly/dist/es6', () =>
   Object.assign({}, jest.requireActual('uniforms-patternfly/dist/es6'), {
     AutoForm: () => {
@@ -130,7 +130,7 @@ describe('FormRenderer test', () => {
     expect(form.exists()).toBeTruthy();
     expect(form.props().disabled).toBeFalsy();
 
-    const footer = wrapper.find(FormFooter);
+    const footer = wrapper.find('FormFooter');
     expect(footer.exists()).toBeTruthy();
     expect(footer.props()['actions']).toHaveLength(1);
     expect(footer.props()['enabled']).toBeTruthy();
@@ -151,7 +151,7 @@ describe('FormRenderer test', () => {
     expect(form.exists()).toBeTruthy();
     expect(form.props().disabled).toBeTruthy();
 
-    const footer = wrapper.find(FormFooter);
+    const footer = wrapper.find('FormFooter');
     expect(footer.exists()).toBeTruthy();
     expect(footer.props()['actions']).toHaveLength(1);
     expect(footer.props()['enabled']).toBeFalsy();
@@ -164,7 +164,7 @@ describe('FormRenderer test', () => {
     const form = wrapper.findWhere((node) => node.type() === AutoForm);
     expect(form.exists()).toBeTruthy();
     expect(form.props()['disabled']).toBeFalsy();
-    const footer = wrapper.find(FormFooter);
+    const footer = wrapper.find('FormFooter');
     expect(footer.exists()).toBeTruthy();
     expect(footer.props()['actions']).toHaveLength(0);
     expect(footer.props()['enabled']).toStrictEqual(true);

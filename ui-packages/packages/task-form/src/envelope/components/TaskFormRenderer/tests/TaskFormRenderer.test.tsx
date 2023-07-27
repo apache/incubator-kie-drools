@@ -21,13 +21,13 @@ import TaskFormRenderer from '../TaskFormRenderer';
 import { mount } from 'enzyme';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
-import { FormRenderer } from '@kogito-apps/components-common';
+import { FormRenderer } from '@kogito-apps/components-common/dist/components/FormRenderer';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/FormRenderer', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     FormRenderer: () => {
       return <MockedComponent />;

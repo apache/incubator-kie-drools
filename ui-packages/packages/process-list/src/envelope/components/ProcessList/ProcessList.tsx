@@ -23,16 +23,19 @@ import {
   ProcessInstanceFilter,
   ProcessListSortBy,
   ProcessListState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import ProcessListTable from '../ProcessListTable/ProcessListTable';
 import ProcessListToolbar from '../ProcessListToolbar/ProcessListToolbar';
+import { LoadMore } from '@kogito-apps/components-common/dist/components/LoadMore';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import {
   KogitoEmptyState,
-  KogitoEmptyStateType,
-  ServerErrors,
-  LoadMore
-} from '@kogito-apps/components-common';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+  KogitoEmptyStateType
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { ISortBy } from '@patternfly/react-table/dist/js/components/Table';
 import _ from 'lodash';
 import {

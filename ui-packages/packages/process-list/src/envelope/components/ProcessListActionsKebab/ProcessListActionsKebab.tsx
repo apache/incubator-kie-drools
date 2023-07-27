@@ -22,8 +22,11 @@ import {
 import {
   ProcessInstance,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+} from '@kogito-apps/management-console-shared/dist/types';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { checkProcessInstanceState } from '../utils/ProcessListUtils';
 
 interface ProcessListActionsKebabProps {

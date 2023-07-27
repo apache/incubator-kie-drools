@@ -29,7 +29,7 @@ import {
   ProcessDetailsDriver,
   DiagramPreviewSize
 } from '../api';
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import { ProcessInstance } from '@kogito-apps/management-console-shared/dist/types';
 import { ProcessDetailsChannelApiImpl } from './ProcessDetailsChannelApiImpl';
 
 export interface Props {

@@ -21,7 +21,7 @@ import {
   customDashboardInfos,
   MockedCustomDashboardListDriver
 } from '../../../tests/mocks/MockedCustomDashboardsListDriver';
-import { DataTable } from '@kogito-apps/components-common';
+import { DataTable } from '@kogito-apps/components-common/dist/components/DataTable';
 
 Date.now = jest.fn(() => 1487076708000); //14.02.2017
 
@@ -29,7 +29,7 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/DataTable', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     DataTable: () => {
       return <MockedComponent />;

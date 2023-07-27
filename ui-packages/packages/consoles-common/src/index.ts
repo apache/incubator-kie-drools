@@ -19,10 +19,9 @@ export * from './environment/auth';
 export * from './utils/KeycloakClient';
 export * from './graphql/types';
 
-export { default as PageLayout } from './components/layout/PageLayout/PageLayout';
-export { default as ServerUnavailablePage } from './components/pages/ServerUnavailablePage/ServerUnavailablePage';
-export { default as PageNotFound } from './components/pages/PageNotFound/PageNotFound';
-export { default as NoData } from './components/pages/NoData/NoData';
-export { default as PageTitle } from './components/layout/PageTitle/PageTitle';
-export { default as PageSectionHeader } from './components/layout/PageSectionHeader/PageSectionHeader';
-export { default as KeycloakUnavailablePage } from './components/pages/KeycloakUnavailablePage/KeycloakUnavailablePage';
+export * from './components/layout/PageLayout/PageLayout';
+export * from './components/pages/ServerUnavailablePage/ServerUnavailablePage';
+export * from './components/pages/PageNotFound/PageNotFound';
+export * from './components/pages/NoData/NoData';
+export * from './components/layout/PageSectionHeader/PageSectionHeader';
+export * from './components/pages/KeycloakUnavailablePage/KeycloakUnavailablePage';

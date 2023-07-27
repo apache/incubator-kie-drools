@@ -15,15 +15,16 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
-import { ProcessDefinition, ProcessFormDriver } from '../../../api';
 import {
-  FormRenderer,
-  KogitoSpinner,
-  FormRendererApi,
-  ServerErrors,
-  FormAction
-} from '@kogito-apps/components-common';
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import { ProcessDefinition, ProcessFormDriver } from '../../../api';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
+import { FormRenderer } from '@kogito-apps/components-common/dist/components/FormRenderer';
+import { FormRendererApi } from '@kogito-apps/components-common/dist/types';
+import { FormAction } from '@kogito-apps/components-common/dist/components/utils';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 export interface ProcessFormProps {
   processDefinition: ProcessDefinition;

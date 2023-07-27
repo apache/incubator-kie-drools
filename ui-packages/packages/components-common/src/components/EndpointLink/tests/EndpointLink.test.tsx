@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { shallow } from 'enzyme';
-import EndpointLink from '../EndpointLink';
+import { EndpointLink } from '../EndpointLink';
 
 const props1 = {
   serviceUrl: 'http://localhost:4000/',

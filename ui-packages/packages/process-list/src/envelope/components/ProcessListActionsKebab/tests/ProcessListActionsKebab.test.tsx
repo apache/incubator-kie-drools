@@ -21,7 +21,7 @@ import {
   KebabToggle,
   DropdownItem
 } from '@patternfly/react-core/dist/js/components/Dropdown';
-import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
+import { ProcessInstanceState } from '@kogito-apps/management-console-shared/dist/types';
 
 describe('Process list actions kebab tests', () => {
   const props = {

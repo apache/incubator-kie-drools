@@ -89,6 +89,9 @@
       "./src/graphql",
       "dist/"
     ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/.*/__mocks__"
+    ],
     "coverageReporters": [
       [
         "lcov",

@@ -24,7 +24,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
 import TestProcessListDriver from '../../ProcessList/tests/mocks/TestProcessListDriver';
-import { OrderBy } from '@kogito-apps/management-console-shared';
+import { OrderBy } from '@kogito-apps/management-console-shared/dist/types';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../../ProcessListChildTable/ProcessListChildTable');
@@ -37,14 +37,26 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/LoadMore', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     LoadMore: () => {
       return <MockedComponent />;
-    },
-    KogitoEmptyState: () => {
-      return <MockedComponent />;
-    },
+    }
+  })
+);
+
+jest.mock(
+  '@kogito-apps/components-common/dist/components/KogitoEmptyState',
+  () =>
+    Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+      KogitoEmptyState: () => {
+        return <MockedComponent />;
+      }
+    })
+);
+
+jest.mock('@kogito-apps/components-common/dist/components/KogitoSpinner', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     KogitoSpinner: () => {
       return <MockedComponent />;
     }

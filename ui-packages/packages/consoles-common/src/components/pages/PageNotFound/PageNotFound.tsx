@@ -40,7 +40,7 @@ interface IOwnProps {
 
 export type LocationProps = H.LocationState & { prev?: string };
 
-const PageNotFound: React.FC<
+export const PageNotFound: React.FC<
   IOwnProps &
     // eslint-disable-next-line @typescript-eslint/ban-types
     RouteComponentProps<{}, StaticContext, LocationProps> &
@@ -90,5 +90,3 @@ const PageNotFound: React.FC<
     </>
   );
 };
-
-export default PageNotFound;

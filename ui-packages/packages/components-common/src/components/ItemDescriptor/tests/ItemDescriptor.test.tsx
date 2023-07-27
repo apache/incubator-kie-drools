@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import ItemDescriptor from '../ItemDescriptor';
+import { ItemDescriptor } from '../ItemDescriptor';
 
 const item1 = {
   id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',

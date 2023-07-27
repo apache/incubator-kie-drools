@@ -17,7 +17,7 @@
 import React from 'react';
 import ProcessDetailsErrorModal from '../ProcessDetailsErrorModal';
 import { Button } from '@patternfly/react-core/dist/js/components/Button';
-import { setTitle } from '@kogito-apps/management-console-shared';
+import { setTitle } from '@kogito-apps/management-console-shared/dist/utils/Utils';
 import { mount } from 'enzyme';
 
 const MockedIcon = (): React.ReactElement => {

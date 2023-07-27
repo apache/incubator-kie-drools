@@ -18,10 +18,14 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '@patternfly/react-core/dist/js/components/Card';
 import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
-import { KogitoSpinner, ServerErrors } from '@kogito-apps/components-common';
-import { OUIAProps, ouiaPageTypeAndObjectId } from '@kogito-apps/ouia-tools';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
+import {
+  OUIAProps,
+  ouiaPageTypeAndObjectId
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { RouteComponentProps } from 'react-router-dom';
-import { PageSectionHeader } from '@kogito-apps/consoles-common';
+import { PageSectionHeader } from '@kogito-apps/consoles-common/dist/components/layout/PageSectionHeader';
 import ProcessDetailsContainer from '../../containers/ProcessDetailsContainer/ProcessDetailsContainer';
 import {
   ProcessDetailsGatewayApi,
@@ -30,7 +34,7 @@ import {
 import { StaticContext, useHistory } from 'react-router';
 import * as H from 'history';
 import '../../styles.css';
-import { ProcessInstance } from 'packages/management-console-shared';
+import { ProcessInstance } from 'packages/management-console-shared/dist/types';
 
 interface MatchProps {
   instanceID: string;

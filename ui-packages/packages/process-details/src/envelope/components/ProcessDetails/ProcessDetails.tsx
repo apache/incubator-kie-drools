@@ -36,21 +36,19 @@ import {
 } from '@patternfly/react-core/dist/js/components/Title';
 import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
+import { ItemDescriptor } from '@kogito-apps/components-common/dist/components/ItemDescriptor';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import {
-  ItemDescriptor,
-  KogitoSpinner,
-  ServerErrors
-} from '@kogito-apps/components-common';
-import {
-  ProcessInfoModal,
   Job,
   ProcessInstance,
   ProcessInstanceState,
-  setTitle,
   TitleType,
   SvgSuccessResponse,
   SvgErrorResponse
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { setTitle } from '@kogito-apps/management-console-shared/dist/utils/Utils';
+import { ProcessInfoModal } from '@kogito-apps/management-console-shared/dist/components/ProcessInfoModal';
 import { DiagramPreviewSize, ProcessDetailsDriver } from '../../../api';
 import ProcessDiagram from '../ProcessDiagram/ProcessDiagram';
 import JobsPanel from '../JobsPanel/JobsPanel';

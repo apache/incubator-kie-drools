@@ -15,7 +15,10 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { FormDetailsDriver } from '../../../api/FormDetailsDriver';
 import { FormInfo } from '@kogito-apps/forms-list';
 import { Card } from '@patternfly/react-core/dist/js/components/Card';
@@ -32,7 +35,8 @@ import {
   TabTitleText
 } from '@patternfly/react-core/dist/js/components/Tabs';
 import FormEditor from '../FormEditor/FormEditor';
-import { ServerErrors, KogitoSpinner } from '@kogito-apps/components-common';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import isEmpty from 'lodash/isEmpty';
 import { Form } from '../../../api';
 import FormDisplayerContainer from '../../containers/FormDisplayerContainer/FormDisplayerContainer';

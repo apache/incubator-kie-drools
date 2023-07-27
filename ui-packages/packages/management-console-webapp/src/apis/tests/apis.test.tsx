@@ -15,7 +15,7 @@
  */
 
 import axios from 'axios';
-import { GraphQL } from '@kogito-apps/consoles-common';
+import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
 import wait from 'waait';
 import {
   getSvg,
@@ -34,11 +34,11 @@ import {
 } from '../apis';
 import {
   BulkProcessInstanceActionResponse,
-  OperationType,
   ProcessInstanceState,
   MilestoneStatus,
   NodeInstance
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 import { processInstance } from '../../channel/ProcessList/tests/ProcessListGatewayApi.test';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;

@@ -15,7 +15,7 @@
  */
 
 import { mount } from 'enzyme';
-import { ServerErrors } from '@kogito-apps/components-common';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import React from 'react';
 import CustomDashboardView, {
   CustomDashboardViewProps

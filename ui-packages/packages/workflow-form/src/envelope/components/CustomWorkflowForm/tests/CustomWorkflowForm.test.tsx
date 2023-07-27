@@ -39,11 +39,16 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/FormRenderer', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     FormRenderer: () => {
       return <MockedComponent />;
-    },
+    }
+  })
+);
+
+jest.mock('@kogito-apps/components-common/dist/components/FormFooter', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     FormFooter: () => {
       return <MockedComponent />;
     }

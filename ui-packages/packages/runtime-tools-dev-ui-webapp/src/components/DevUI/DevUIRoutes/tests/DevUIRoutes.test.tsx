@@ -28,15 +28,22 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/consoles-common', () =>
+jest.mock('@kogito-apps/consoles-common/dist/components/pages/NoData', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/consoles-common'), {
     NoData: () => {
       return <MockedComponent />;
-    },
-    PageNotFound: () => {
-      return <MockedComponent />;
     }
   })
+);
+
+jest.mock(
+  '@kogito-apps/consoles-common/dist/components/pages/PageNotFound',
+  () =>
+    Object.assign({}, jest.requireActual('@kogito-apps/consoles-common'), {
+      PageNotFound: () => {
+        return <MockedComponent />;
+      }
+    })
 );
 
 jest.mock('@kogito-apps/trusty', () =>

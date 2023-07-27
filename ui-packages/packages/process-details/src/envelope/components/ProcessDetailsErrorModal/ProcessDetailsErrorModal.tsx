@@ -24,7 +24,10 @@ import {
   TextContent,
   Text
 } from '@patternfly/react-core/dist/js/components/Text';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 interface IOwnProps {
   errorString: string;

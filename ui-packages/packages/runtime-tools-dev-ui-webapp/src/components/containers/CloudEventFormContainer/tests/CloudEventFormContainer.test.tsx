@@ -24,7 +24,10 @@ import * as CloudEventFormContext from '../../../../channel/CloudEventForm/Cloud
 import { EmbeddedCloudEventForm } from '@kogito-apps/cloud-event-form/dist/embedded';
 import * as DevUIAppContext from '../../../contexts/DevUIAppContext';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 
 const routerParams: CloudEventFormContainerParams = {};
 

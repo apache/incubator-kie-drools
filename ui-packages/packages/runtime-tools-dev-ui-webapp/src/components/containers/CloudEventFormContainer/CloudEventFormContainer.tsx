@@ -15,7 +15,10 @@
  */
 
 import React, { useCallback } from 'react';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { useCloudEventFormGatewayApi } from '../../../channel/CloudEventForm';
 import { EmbeddedCloudEventForm } from '@kogito-apps/cloud-event-form/dist/embedded';
 import { CloudEventRequest } from '@kogito-apps/cloud-event-form/dist/api';

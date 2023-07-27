@@ -30,7 +30,10 @@ import { Avatar } from '@patternfly/react-core/dist/js/components/Avatar';
 import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
 import { css } from '@patternfly/react-styles';
 
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import AboutModalBox from '../AboutModalBox/AboutModalBox';
 import userImage from '../../../static/avatar.svg';
 import {

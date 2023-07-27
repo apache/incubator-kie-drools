@@ -24,7 +24,7 @@ import {
 } from '@patternfly/react-core/dist/js/components/Dropdown';
 import { act } from 'react-dom/test-utils';
 import { MockedProcessDetailsDriver } from '../../../../embedded/tests/mocks/Mocks';
-import { JobStatus } from '@kogito-apps/management-console-shared';
+import { JobStatus } from '@kogito-apps/management-console-shared/dist/types';
 
 const MockedIcon = (): React.ReactElement => {
   return <></>;

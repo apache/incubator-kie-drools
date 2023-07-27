@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import NoData from '../NoData';
+import { NoData } from '../NoData';
 import { Button } from '@patternfly/react-core/dist/js/components/Button';
 
 const props1 = {

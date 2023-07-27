@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { GraphQL } from '@kogito-apps/consoles-common';
+import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
+import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 import {
   BulkProcessInstanceActionResponse,
   NodeInstance,
-  OperationType,
   ProcessInstance,
   TriggerableNode
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import axios from 'axios';
 
 //Rest Api to Cancel multiple Jobs

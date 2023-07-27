@@ -33,13 +33,17 @@ import {
 import React from 'react';
 import { LevelDownAltIcon } from '@patternfly/react-icons/dist/js/icons/level-down-alt-icon';
 import { LevelUpAltIcon } from '@patternfly/react-icons/dist/js/icons/level-up-alt-icon';
+import { ProcessInstance } from '@kogito-apps/management-console-shared/dist/types';
 import {
   getProcessInstanceDescription,
-  ProcessInstance,
   ProcessInstanceIconCreator
-} from '@kogito-apps/management-console-shared';
-import { ItemDescriptor, EndpointLink } from '@kogito-apps/components-common';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+} from '@kogito-apps/management-console-shared/dist/utils/Utils';
+import { ItemDescriptor } from '@kogito-apps/components-common/dist/components/ItemDescriptor';
+import { EndpointLink } from '@kogito-apps/components-common/dist/components/EndpointLink';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { ProcessDetailsDriver } from '../../../api';
 
 interface IOwnProps {

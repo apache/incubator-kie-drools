@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-export { default as JobsCancelModal } from './components/JobsCancelModal/JobsCancelModal';
-export { default as JobsDetailsModal } from './components/JobsDetailsModal/JobsDetailsModal';
-export { default as JobsRescheduleModal } from './components/JobsRescheduleModal/JobsRescheduleModal';
-export { default as ProcessInfoModal } from './components/ProcessInfoModal/ProcessInfoModal';
+export * from './components/JobsCancelModal/JobsCancelModal';
+export * from './components/JobsDetailsModal/JobsDetailsModal';
+export * from './components/JobsRescheduleModal/JobsRescheduleModal';
+export * from './components/ProcessInfoModal/ProcessInfoModal';
 export * from './components/BulkList/BulkList';
 
 export * from './utils/Utils';

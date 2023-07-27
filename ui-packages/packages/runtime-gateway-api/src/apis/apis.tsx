@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import { GraphQL } from '@kogito-apps/consoles-common';
+import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
 import {
   BulkProcessInstanceActionResponse,
   JobCancel,
   NodeInstance,
-  OperationType,
   ProcessInstance,
   TriggerableNode,
   ProcessInstanceFilter,
@@ -27,7 +26,8 @@ import {
   JobStatus,
   Job,
   JobsSortBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 import { ApolloClient } from 'apollo-client';
 import { buildProcessListWhereArgument } from './QueryUtils';
 

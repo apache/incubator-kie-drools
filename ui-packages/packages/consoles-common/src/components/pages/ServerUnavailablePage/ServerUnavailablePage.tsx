@@ -36,7 +36,7 @@ interface Props {
   reload: () => void;
 }
 
-const ServerUnavailablePage: React.FC<Props & OUIAProps> = ({
+export const ServerUnavailablePage: React.FC<Props & OUIAProps> = ({
   displayName,
   reload,
   ouiaId,
@@ -73,5 +73,3 @@ const ServerUnavailablePage: React.FC<Props & OUIAProps> = ({
     </PageSection>
   );
 };
-
-export default ServerUnavailablePage;

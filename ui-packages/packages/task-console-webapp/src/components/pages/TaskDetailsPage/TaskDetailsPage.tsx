@@ -38,17 +38,17 @@ import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import { Grid, GridItem } from '@patternfly/react-core/dist/js/layouts/Grid';
 import { Flex, FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex';
 import {
-  KogitoSpinner,
-  ServerErrors,
   KogitoEmptyState,
   KogitoEmptyStateType
-} from '@kogito-apps/components-common';
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import {
   OUIAProps,
   componentOuiaProps,
   ouiaPageTypeAndObjectId
-} from '@kogito-apps/ouia-tools';
-import { PageTitle } from '@kogito-apps/consoles-common';
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import { PageTitle } from '@kogito-apps/consoles-common/dist/components/layout/PageTitle';
 import { UserTaskInstance, TaskState } from '@kogito-apps/task-console-shared';
 import { TaskInboxGatewayApi } from '../../../channel/inbox';
 import { useTaskInboxGatewayApi } from '../../../channel/inbox/TaskInboxContext';

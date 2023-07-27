@@ -6,7 +6,7 @@ import FormattedDate from '../../Atoms/FormattedDate/FormattedDate';
 import ExecutionId from '../../Atoms/ExecutionId/ExecutionId';
 import { RemoteData, Execution, RemoteDataStatus } from '../../../types';
 import './ExecutionHeader.scss';
-import { attributeOuiaId } from '@kogito-apps/ouia-tools';
+import { attributeOuiaId } from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 type ExecutionHeaderProps = {
   execution: RemoteData<Error, Execution>;

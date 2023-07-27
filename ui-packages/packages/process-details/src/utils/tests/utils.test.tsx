@@ -19,9 +19,9 @@ import {
   JobCancel,
   JobStatus,
   NodeInstance,
-  ProcessInstance,
-  setTitle
-} from '@kogito-apps/management-console-shared';
+  ProcessInstance
+} from '@kogito-apps/management-console-shared/dist/types';
+import { setTitle } from '@kogito-apps/management-console-shared/dist/utils/Utils';
 import {
   handleJobRescheduleUtil,
   handleNodeInstanceCancel,

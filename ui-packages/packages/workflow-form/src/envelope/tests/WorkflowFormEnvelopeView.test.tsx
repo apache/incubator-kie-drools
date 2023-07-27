@@ -25,7 +25,7 @@ import {
 import WorkflowFormEnvelopeView, {
   WorkflowFormEnvelopeViewApi
 } from '../WorkflowFormEnvelopeView';
-import { KogitoSpinner } from '@kogito-apps/components-common';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
 import CustomWorkflowForm from '../components/CustomWorkflowForm/CustomWorkflowForm';
 import WorkflowForm from '../components/WorkflowForm/WorkflowForm';
 
@@ -35,7 +35,7 @@ jest.mock('../components/CustomWorkflowForm/CustomWorkflowForm');
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/KogitoSpinner', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     KogitoSpinner: () => {
       return <MockedComponent />;

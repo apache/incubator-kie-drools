@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { Job, JobStatus } from '@kogito-apps/management-console-shared';
+import {
+  Job,
+  JobStatus
+} from '@kogito-apps/management-console-shared/dist/types';
 import { JobsManagementChannelApiImpl } from '../JobsManagementChannelApiImpl';
 import { JobsManagementDriver } from '../../api';
 import { MockedJobsManagementDriver } from './mocks/Mocks';

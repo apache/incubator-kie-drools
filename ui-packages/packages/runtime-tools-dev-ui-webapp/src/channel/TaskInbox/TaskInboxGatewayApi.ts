@@ -17,7 +17,7 @@
 import { QueryFilter, SortBy, TaskInboxState } from '@kogito-apps/task-inbox';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskInboxQueries } from './TaskInboxQueries';
-import { User } from '@kogito-apps/consoles-common';
+import { User } from '@kogito-apps/consoles-common/dist/environment/auth';
 
 export interface TaskInboxGatewayApi {
   taskInboxState: TaskInboxState;

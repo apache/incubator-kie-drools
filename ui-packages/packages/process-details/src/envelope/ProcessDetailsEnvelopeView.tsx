@@ -24,7 +24,7 @@ import {
 } from '../api';
 import ProcessDetails from './components/ProcessDetails/ProcessDetails';
 import ProcessDetailsEnvelopeViewDriver from './ProcessDetailsEnvelopeViewDriver';
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import { ProcessInstance } from '@kogito-apps/management-console-shared/dist/types';
 import '@patternfly/patternfly/patternfly.css';
 
 export interface ProcessDetailsEnvelopeViewApi {

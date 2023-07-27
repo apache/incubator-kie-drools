@@ -18,10 +18,8 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
 import { mount } from 'enzyme';
-import {
-  KogitoEmptyState,
-  KogitoSpinner
-} from '@kogito-apps/components-common';
+import { KogitoEmptyState } from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
 import {
   customForm,
   MockedMessageBusClientApi,
@@ -41,11 +39,18 @@ import { TaskFormInitArgs } from '../../api';
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock(
+  '@kogito-apps/components-common/dist/components/KogitoEmptyState',
+  () =>
+    Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+      KogitoEmptyState: () => {
+        return <MockedComponent />;
+      }
+    })
+);
+
+jest.mock('@kogito-apps/components-common/dist/components/KogitoSpinner', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    KogitoEmptyState: () => {
-      return <MockedComponent />;
-    },
     KogitoSpinner: () => {
       return <MockedComponent />;
     }

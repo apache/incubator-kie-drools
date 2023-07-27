@@ -25,8 +25,11 @@ import {
   Text,
   TextVariants
 } from '@patternfly/react-core/dist/js/components/Text';
-import { KogitoSpinner } from '@kogito-apps/components-common';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { TaskState, UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 interface TaskDetailsProps {

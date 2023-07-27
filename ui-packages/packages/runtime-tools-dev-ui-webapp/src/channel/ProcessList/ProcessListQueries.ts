@@ -17,11 +17,11 @@
 import { ApolloClient } from 'apollo-client';
 import {
   BulkProcessInstanceActionResponse,
-  OperationType,
   ProcessInstance,
   ProcessListSortBy,
   ProcessInstanceFilter
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 import {
   handleProcessAbort,
   handleProcessMultipleAction,

@@ -20,7 +20,10 @@ import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
 import { PencilAltIcon } from '@patternfly/react-icons/dist/js/icons/pencil-alt-icon';
 import { CheckIcon } from '@patternfly/react-icons/dist/js/icons/check-icon';
 import { TimesIcon } from '@patternfly/react-icons/dist/js/icons/times-icon';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 export interface InlineEditApi {
   reset: () => void;

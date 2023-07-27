@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import BulkList from '../BulkList';
+import { BulkList } from '../BulkList';
 
 const props1 = {
   operationResult: {

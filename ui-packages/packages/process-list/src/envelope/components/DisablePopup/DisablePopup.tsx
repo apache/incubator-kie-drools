@@ -15,8 +15,11 @@
  */
 import React, { ReactElement } from 'react';
 import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import { ProcessInstance } from '@kogito-apps/management-console-shared/dist/types';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 interface DisablePopupProps {
   processInstanceData: ProcessInstance;

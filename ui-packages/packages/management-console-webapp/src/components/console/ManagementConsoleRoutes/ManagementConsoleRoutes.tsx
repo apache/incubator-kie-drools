@@ -21,7 +21,8 @@ import {
   ProcessListPage,
   ProcessDetailsPage
 } from '../../pages';
-import { PageNotFound, NoData } from '@kogito-apps/consoles-common';
+import { PageNotFound } from '@kogito-apps/consoles-common/dist/components/pages/PageNotFound';
+import { NoData } from '@kogito-apps/consoles-common/dist/components/pages/NoData';
 
 const ManagementConsoleRoutes: React.FC = () => {
   return (

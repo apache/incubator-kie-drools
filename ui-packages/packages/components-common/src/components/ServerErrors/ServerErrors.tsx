@@ -31,14 +31,17 @@ import { Title } from '@patternfly/react-core/dist/js/components/Title';
 import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 interface IOwnProps {
   error: any;
   variant: string;
   children?: React.ReactElement;
 }
-const ServerErrors: React.FC<IOwnProps & OUIAProps> = ({
+export const ServerErrors: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe,
   ...props
@@ -125,5 +128,3 @@ const ServerErrors: React.FC<IOwnProps & OUIAProps> = ({
     </>
   );
 };
-
-export default ServerErrors;

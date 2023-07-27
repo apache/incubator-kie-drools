@@ -17,7 +17,7 @@ import {
   ProcessInstanceState,
   ProcessInstance,
   OrderBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import {
   alterOrderByObj,
   checkProcessInstanceState,

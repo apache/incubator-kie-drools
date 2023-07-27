@@ -23,15 +23,15 @@ import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
+import { KeycloakUnavailablePage } from '@kogito-apps/consoles-common/dist/components/pages/KeycloakUnavailablePage';
+import { ServerUnavailablePage } from '@kogito-apps/consoles-common/dist/components/pages/ServerUnavailablePage';
+import { UserContext } from '@kogito-apps/consoles-common/dist/environment/auth';
 import {
   appRenderWithAxiosInterceptorConfig,
   getToken,
   isAuthEnabled,
-  UserContext,
-  ServerUnavailablePage,
-  KeycloakUnavailablePage,
   updateKeycloakToken
-} from '@kogito-apps/consoles-common';
+} from '@kogito-apps/consoles-common/dist/utils/KeycloakClient';
 import ManagementConsole from './components/console/ManagementConsole/ManagementConsole';
 import ManagementConsoleRoutes from './components/console/ManagementConsoleRoutes/ManagementConsoleRoutes';
 

@@ -16,7 +16,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import ProcessListToolbar from '../ProcessListToolbar';
-import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
+import { ProcessInstanceState } from '@kogito-apps/management-console-shared/dist/types';
 import { act } from 'react-dom/test-utils';
 import {
   Dropdown,

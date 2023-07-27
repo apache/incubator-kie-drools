@@ -16,7 +16,10 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import uuidv4 from 'uuid';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import {
   EmbeddedFormDisplayer,
   FormDisplayerApi,
@@ -30,11 +33,9 @@ import { generateFormData } from '../utils/TaskFormDataUtils';
 import { TaskFormDriver, User } from '../../../api';
 import { Stack, StackItem } from '@patternfly/react-core/layouts/Stack';
 import { Bullseye } from '@patternfly/react-core/layouts/Bullseye';
-import {
-  KogitoSpinner,
-  FormAction,
-  FormFooter
-} from '@kogito-apps/components-common';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import { FormFooter } from '@kogito-apps/components-common/dist/components/FormFooter';
+import { FormAction } from '@kogito-apps/components-common/dist/components/utils';
 import { buildTaskFormContext } from './utils/utils';
 
 export interface CustomTaskFormDisplayerProps {

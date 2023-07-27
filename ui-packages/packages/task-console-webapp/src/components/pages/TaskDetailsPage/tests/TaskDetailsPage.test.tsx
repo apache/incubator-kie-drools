@@ -19,7 +19,8 @@ import * as H from 'history';
 import { MemoryRouter } from 'react-router';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
-import { KogitoEmptyState, ServerErrors } from '@kogito-apps/components-common';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
+import { KogitoEmptyState } from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
 import { mount } from 'enzyme';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskInboxGatewayApi } from '../../../../channel/inbox';
@@ -105,18 +106,25 @@ jest.mock('@patternfly/react-core', () =>
   })
 );
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/ServerErrors', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    KogitoEmptyState: () => {
-      return <MockedComponent />;
-    },
     ServerErrors: () => {
       return <MockedComponent />;
     }
   })
 );
 
-jest.mock('@kogito-apps/consoles-common', () =>
+jest.mock(
+  '@kogito-apps/components-common/dist/components/KogitoEmptyState',
+  () =>
+    Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+      KogitoEmptyState: () => {
+        return <MockedComponent />;
+      }
+    })
+);
+
+jest.mock('@kogito-apps/consoles-common/dist/components/layout/PageTitle', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/consoles-common'), {
     PageTitle: () => {
       return <MockedComponent />;

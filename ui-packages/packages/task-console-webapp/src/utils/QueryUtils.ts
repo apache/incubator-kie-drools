@@ -15,7 +15,7 @@
  */
 
 import _ from 'lodash';
-import { User } from '@kogito-apps/consoles-common';
+import { User } from '@kogito-apps/consoles-common/dist/environment/auth';
 import { SortBy, QueryFilter } from '@kogito-apps/task-inbox';
 
 const createSearchTextArray = (taskNames: string[]) => {

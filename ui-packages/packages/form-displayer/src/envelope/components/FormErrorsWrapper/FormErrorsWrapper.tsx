@@ -15,7 +15,10 @@
  */
 
 import React, { useState } from 'react';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import {
   EmptyState,
   EmptyStateBody,

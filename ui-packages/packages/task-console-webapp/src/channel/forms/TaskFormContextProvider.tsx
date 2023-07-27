@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { useKogitoAppContext } from '@kogito-apps/consoles-common';
+import { useKogitoAppContext } from '@kogito-apps/consoles-common/dist/environment/context';
 import { TaskFormGatewayApiImpl } from './TaskFormGatewayApi';
 import TaskFormContext from './TaskFormContext';
 

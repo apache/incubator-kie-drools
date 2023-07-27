@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-export {
-  default as DataTable,
-  DataTableColumn
-} from './components/DataTable/DataTable';
-export {
-  default as ItemDescriptor,
-  ItemDescription
-} from './components/ItemDescriptor/ItemDescriptor';
-export {
-  default as KogitoEmptyState,
-  KogitoEmptyStateType
-} from './components/KogitoEmptyState/KogitoEmptyState';
-export { default as KogitoSpinner } from './components/KogitoSpinner/KogitoSpinner';
-export { default as LoadMore } from './components/LoadMore/LoadMore';
-export { default as ServerErrors } from './components/ServerErrors/ServerErrors';
-export { default as EndpointLink } from './components/EndpointLink/EndpointLink';
-export { default as FormRenderer } from './components/FormRenderer/FormRenderer';
-export {
-  default as FormNotification,
-  Notification
-} from './components/FormNotification/FormNotification';
-export { default as FormFooter } from './components/FormFooter/FormFooter';
+export * from './components/DataTable/DataTable';
+export * from './components/ItemDescriptor/ItemDescriptor';
+export * from './components/KogitoEmptyState/KogitoEmptyState';
+export * from './components/KogitoSpinner/KogitoSpinner';
+export * from './components/LoadMore/LoadMore';
+export * from './components/ServerErrors/ServerErrors';
+export * from './components/EndpointLink/EndpointLink';
+export * from './components/FormRenderer/FormRenderer';
+export * from './components/FormNotification/FormNotification';
+export * from './components/FormFooter/FormFooter';
 export * from './components/utils/FormActionsUtils';
 export * from './components/utils/FormValidator';
 export * from './components/utils/ModelConversionTool';

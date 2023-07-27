@@ -20,7 +20,10 @@ import {
   AlertActionCloseButton,
   AlertActionLink
 } from '@patternfly/react-core/dist/js/components/Alert';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 export interface Notification {
   type: 'success' | 'error';
@@ -39,7 +42,7 @@ interface IOwnProps {
   notification: Notification;
 }
 
-const FormNotification: React.FC<IOwnProps & OUIAProps> = ({
+export const FormNotification: React.FC<IOwnProps & OUIAProps> = ({
   notification,
   ouiaId,
   ouiaSafe
@@ -77,5 +80,3 @@ const FormNotification: React.FC<IOwnProps & OUIAProps> = ({
     </Alert>
   );
 };
-
-export default FormNotification;

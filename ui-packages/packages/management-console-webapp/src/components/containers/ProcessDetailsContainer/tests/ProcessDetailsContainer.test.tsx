@@ -16,7 +16,7 @@
 
 import { mount } from 'enzyme';
 import React from 'react';
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import { ProcessInstance } from '@kogito-apps/management-console-shared/dist/types';
 import ProcessDetailsContainer from '../ProcessDetailsContainer';
 import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/ProcessDetailsContext';
 import { ProcessDetailsGatewayApiImpl } from '../../../../channel/ProcessDetails/ProcessDetailsGatewayApi';

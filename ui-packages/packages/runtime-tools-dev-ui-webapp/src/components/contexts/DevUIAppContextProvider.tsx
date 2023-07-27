@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { User } from '@kogito-apps/consoles-common';
+import { User } from '@kogito-apps/consoles-common/dist/environment/auth';
 import RuntimeToolsDevUIAppContext, {
   DevUIAppContextImpl
 } from './DevUIAppContext';

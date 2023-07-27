@@ -15,7 +15,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { OUIAProps } from '@kogito-apps/ouia-tools';
+import { OUIAProps } from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import {
   EmbeddedCustomDashboardList,
   CustomDashboardInfo

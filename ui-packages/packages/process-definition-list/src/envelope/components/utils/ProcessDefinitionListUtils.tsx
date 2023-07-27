@@ -1,5 +1,5 @@
 import React from 'react';
-import { DataTableColumn } from '@kogito-apps/components-common';
+import { DataTableColumn } from '@kogito-apps/components-common/dist/components/DataTable';
 import { PlayIcon } from '@patternfly/react-icons/dist/js/icons/play-icon';
 import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
 import { Button } from '@patternfly/react-core/dist/js/components/Button';

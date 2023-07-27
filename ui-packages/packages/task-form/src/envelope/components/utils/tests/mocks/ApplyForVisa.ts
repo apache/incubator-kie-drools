@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { SCHEMA_VERSION } from '@kogito-apps/components-common';
+import { SCHEMA_VERSION } from '@kogito-apps/components-common/dist/types';
 
 export const ApplyForVisaForm = {
   $schema: SCHEMA_VERSION.DRAFT_2019_09,

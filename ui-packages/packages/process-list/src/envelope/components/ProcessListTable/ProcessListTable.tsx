@@ -26,20 +26,23 @@ import {
 import _ from 'lodash';
 import {
   ProcessInstance,
-  setTitle,
-  ProcessInfoModal,
   TitleType,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { setTitle } from '@kogito-apps/management-console-shared/dist/utils/Utils';
+import { ProcessInfoModal } from '@kogito-apps/management-console-shared/dist/components/ProcessInfoModal';
 import ProcessListChildTable from '../ProcessListChildTable/ProcessListChildTable';
+import { EndpointLink } from '@kogito-apps/components-common/dist/components/EndpointLink';
 import {
-  ItemDescriptor,
   KogitoEmptyState,
-  KogitoEmptyStateType,
-  KogitoSpinner,
-  EndpointLink
-} from '@kogito-apps/components-common';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+  KogitoEmptyStateType
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import { ItemDescriptor } from '@kogito-apps/components-common/dist/components/ItemDescriptor';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { HistoryIcon } from '@patternfly/react-icons/dist/js/icons/history-icon';
 import Moment from 'react-moment';
 import {

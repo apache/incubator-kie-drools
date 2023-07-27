@@ -21,7 +21,7 @@ import { mount } from 'enzyme';
 import {
   ProcessInstanceState,
   OrderBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 
 describe('EmbeddedProcessList tests', () => {
   it('Snapshot', () => {

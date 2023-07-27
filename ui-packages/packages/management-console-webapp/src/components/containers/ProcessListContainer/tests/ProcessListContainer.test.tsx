@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import { ProcessListState } from '@kogito-apps/management-console-shared';
+import { ProcessListState } from '@kogito-apps/management-console-shared/dist/types';
 import ProcessListContainer from '../ProcessListContainer';
 import * as ProcessListContext from '../../../../channel/ProcessList/ProcessListContext';
 import { ProcessListQueries } from '../../../../channel/ProcessList/ProcessListQueries';

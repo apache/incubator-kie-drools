@@ -23,7 +23,7 @@ import {
   NodeInstance,
   SvgSuccessResponse,
   SvgErrorResponse
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import {
   handleProcessAbort,
   handleProcessSkip,

@@ -37,21 +37,21 @@ import {
   OUIAProps,
   ouiaPageTypeAndObjectId,
   componentOuiaProps
-} from '@kogito-apps/ouia-tools';
-import { PageSectionHeader } from '@kogito-apps/consoles-common';
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import { PageSectionHeader } from '@kogito-apps/consoles-common/dist/components/layout/PageSectionHeader';
 import { ProcessListGatewayApi } from '../../../channel/ProcessList';
 import { useProcessListGatewayApi } from '../../../channel/ProcessList/ProcessListContext';
 import MonitoringContainer from '../../containers/MonitoringContainer/MonitoringContainer';
 import {
   KogitoEmptyState,
   KogitoEmptyStateType
-} from '@kogito-apps/components-common';
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
 import '../../styles.css';
 import {
   ProcessInstance,
   ProcessInstanceState,
   OrderBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import { Dashboard } from '@kogito-apps/monitoring';
 
 interface Props {

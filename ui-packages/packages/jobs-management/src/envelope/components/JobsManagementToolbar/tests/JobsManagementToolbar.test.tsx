@@ -18,7 +18,10 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import JobsManagementToolbar from '../JobsManagementToolbar';
-import { Job, JobStatus } from '@kogito-apps/management-console-shared';
+import {
+  Job,
+  JobStatus
+} from '@kogito-apps/management-console-shared/dist/types';
 import { MockedJobsManagementDriver } from '../../../../api/mocks/MockedJobsManagementDriver';
 
 describe('Jobs Management toolbar tests', () => {

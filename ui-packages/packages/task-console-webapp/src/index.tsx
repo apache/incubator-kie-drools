@@ -22,16 +22,16 @@ import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
+import { UserContext } from '@kogito-apps/consoles-common/dist/environment/auth';
 import {
   appRenderWithAxiosInterceptorConfig,
   getToken,
   isAuthEnabled,
-  UserContext,
-  ServerUnavailablePage,
-  KeycloakUnavailablePage,
   updateKeycloakToken
-} from '@kogito-apps/consoles-common';
+} from '@kogito-apps/consoles-common/dist/utils/KeycloakClient';
+import { KeycloakUnavailablePage } from '@kogito-apps/consoles-common/dist/components/pages/KeycloakUnavailablePage';
 import { TaskConsole, TaskConsoleRoutes } from './components/console';
+import { ServerUnavailablePage } from '@kogito-apps/consoles-common/dist/components/pages/ServerUnavailablePage/ServerUnavailablePage';
 
 const onLoadFailure = () => {
   ReactDOM.render(<KeycloakUnavailablePage />, document.getElementById('root'));

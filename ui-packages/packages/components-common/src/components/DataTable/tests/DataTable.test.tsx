@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import DataTable, { DataTableColumn } from '../DataTable';
+import { DataTable, DataTableColumn } from '../DataTable';
 import { gql } from 'apollo-boost';
 import { MockedProvider } from '@apollo/react-testing';
 import { Label } from '@patternfly/react-core/dist/js/components/Label';
@@ -31,15 +31,15 @@ jest.mock('uuid', () => {
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('../../KogitoEmptyState/KogitoEmptyState', () =>
-  Object.assign(jest.requireActual('../../KogitoEmptyState/KogitoEmptyState'), {
+jest.mock('../../KogitoEmptyState', () =>
+  Object.assign(jest.requireActual('../../KogitoEmptyState'), {
     KogitoEmptyState: () => {
       return <MockedComponent />;
     }
   })
 );
 
-jest.mock('../../KogitoSpinner/KogitoSpinner');
+jest.mock('../../KogitoSpinner');
 
 const data = [
   {

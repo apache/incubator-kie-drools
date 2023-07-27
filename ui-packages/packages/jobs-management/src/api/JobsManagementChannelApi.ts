@@ -20,7 +20,7 @@ import {
   BulkCancel,
   JobCancel,
   JobsSortBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 export interface JobsManagementChannelApi {
   jobList__initialLoad(filter: JobStatus[], orderBy: JobsSortBy): Promise<void>;
   jobList__applyFilter(filter: JobStatus[]): Promise<void>;

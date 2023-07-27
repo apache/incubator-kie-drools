@@ -20,7 +20,10 @@ import TaskFormContainer from '../TaskFormContainer';
 import { TaskFormGatewayApi } from '../../../../channel/TaskForms';
 import * as TaskFormContext from '../../../../channel/TaskForms/TaskFormContext';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
 import * as DevUIAppContext from '../../../contexts/DevUIAppContext';
 import { EmbeddedTaskForm } from '@kogito-apps/task-form';

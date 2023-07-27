@@ -26,7 +26,7 @@ import { mount } from 'enzyme';
 import {
   ProcessInstance,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import TestProcessDetailsDriver from '../../../tests/mocks/TestProcessDetailsDriver';
 import wait from 'waait';
 jest.mock('../../ProcessDetailsErrorModal/ProcessDetailsErrorModal');

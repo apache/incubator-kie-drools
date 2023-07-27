@@ -22,12 +22,12 @@ import { MockedMessageBusClientApi, processInstance } from './mocks/Mocks';
 import ProcessListEnvelopeViewDriver from '../ProcessListEnvelopeViewDriver';
 import { ProcessListChannelApi } from '../../api';
 import {
-  OperationType,
   ProcessInstanceState,
   OrderBy,
   ProcessInstanceFilter,
   ProcessListSortBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 
 let channelApi: MessageBusClientApi<ProcessListChannelApi>;
 let requests: Pick<

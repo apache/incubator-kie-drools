@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import PageNotFound from '../PageNotFound';
+import { PageNotFound } from '../PageNotFound';
 import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import * as H from 'history';
 import { match } from 'react-router';

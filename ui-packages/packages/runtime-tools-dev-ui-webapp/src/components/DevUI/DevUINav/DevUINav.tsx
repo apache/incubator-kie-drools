@@ -21,7 +21,7 @@ import {
   NavList
 } from '@patternfly/react-core/dist/js/components/Nav';
 import { Link } from 'react-router-dom';
-import { ouiaAttribute } from '@kogito-apps/ouia-tools';
+import { ouiaAttribute } from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface IOwnProps {

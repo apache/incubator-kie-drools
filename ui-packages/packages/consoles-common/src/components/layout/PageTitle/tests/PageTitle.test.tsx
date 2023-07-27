@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import PageTitle from '../PageTitle';
+import { PageTitle } from '../PageTitle';
 import { Label } from '@patternfly/react-core/dist/js/components/Label';
 import { mount } from 'enzyme';
 

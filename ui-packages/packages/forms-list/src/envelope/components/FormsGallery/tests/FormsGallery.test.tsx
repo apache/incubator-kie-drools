@@ -21,24 +21,29 @@ import {
   formList,
   MockedFormsListDriver
 } from '../../../tests/mocks/MockedFormsListDriver';
-import {
-  KogitoEmptyState,
-  KogitoSpinner
-} from '@kogito-apps/components-common';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import { KogitoEmptyState } from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/KogitoSpinner', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     KogitoSpinner: () => {
       return <MockedComponent />;
-    },
-    KogitoEmptyState: () => {
-      return <MockedComponent />;
     }
   })
+);
+
+jest.mock(
+  '@kogito-apps/components-common/dist/components/KogitoEmptyState',
+  () =>
+    Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+      KogitoEmptyState: () => {
+        return <MockedComponent />;
+      }
+    })
 );
 
 describe('forms gallery tests', () => {

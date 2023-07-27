@@ -20,7 +20,10 @@ import FormDetailsContainer from '../FormDetailsContainer';
 import * as FormDetailsContext from '../../../../channel/FormDetails/FormDetailsContext';
 import { FormDetailsGatewayApiImpl } from '../../../../channel/FormDetails/FormDetailsGatewayApi';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 import { EmbeddedFormDetails } from '@kogito-apps/form-details';
 import { FormType } from '@kogito-apps/forms-list';
 

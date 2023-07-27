@@ -37,10 +37,13 @@ import React, { useState, useEffect } from 'react';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import {
   ProcessInstance,
-  setTitle,
   TriggerableNode
-} from '@kogito-apps/management-console-shared';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { setTitle } from '@kogito-apps/management-console-shared/dist/utils/Utils';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import ProcessDetailsErrorModal from '../ProcessDetailsErrorModal/ProcessDetailsErrorModal';
 import '../styles.css';
 import { ProcessDetailsDriver } from '../../../api';

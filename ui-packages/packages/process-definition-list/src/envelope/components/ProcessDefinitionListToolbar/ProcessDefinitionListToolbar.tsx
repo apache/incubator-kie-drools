@@ -30,7 +30,10 @@ import { InputGroup } from '@patternfly/react-core/dist/js/components/InputGroup
 import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
 import remove from 'lodash/remove';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 interface ProcessDefinitionListToolbarProps {
   filterProcessNames: string[];
   setFilterProcessNames: React.Dispatch<React.SetStateAction<string[]>>;

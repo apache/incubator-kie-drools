@@ -19,14 +19,19 @@ import _ from 'lodash';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import {
   DataTable,
-  DataTableColumn,
-  LoadMore,
+  DataTableColumn
+} from '@kogito-apps/components-common/dist/components/DataTable';
+import {
   KogitoEmptyState,
-  KogitoEmptyStateType,
-  KogitoSpinner,
-  ServerErrors
-} from '@kogito-apps/components-common';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+  KogitoEmptyStateType
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
+import { LoadMore } from '@kogito-apps/components-common/dist/components/LoadMore';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import {
   QueryFilter,

@@ -22,7 +22,10 @@ import {
 } from '@patternfly/react-core/dist/js/components/Text';
 import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
 import { Badge } from '@patternfly/react-core/dist/js/components/Badge';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 export interface ItemDescription {
   id: string;
@@ -34,7 +37,7 @@ interface IOwnProps {
   itemDescription: ItemDescription;
 }
 
-const ItemDescriptor: React.FC<IOwnProps & OUIAProps> = ({
+export const ItemDescriptor: React.FC<IOwnProps & OUIAProps> = ({
   itemDescription,
   ouiaId,
   ouiaSafe
@@ -72,5 +75,3 @@ const ItemDescriptor: React.FC<IOwnProps & OUIAProps> = ({
     </>
   );
 };
-
-export default ItemDescriptor;

@@ -15,7 +15,7 @@
  */
 
 import axios from 'axios';
-import { User } from '@kogito-apps/consoles-common';
+import { User } from '@kogito-apps/consoles-common/dist/environment/auth';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { CustomForm } from '@kogito-apps/task-form';
 

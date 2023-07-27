@@ -21,8 +21,8 @@ import {
   OUIAProps,
   ouiaPageTypeAndObjectId,
   componentOuiaProps
-} from '@kogito-apps/ouia-tools';
-import { PageSectionHeader } from '@kogito-apps/consoles-common';
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import { PageSectionHeader } from '@kogito-apps/consoles-common/dist/components/layout/PageSectionHeader';
 import JobsManagementContainer from '../../containers/JobsManagementContainer/JobsManagementContainer';
 import '../../styles.css';
 

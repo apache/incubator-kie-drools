@@ -25,9 +25,15 @@ import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { Brand } from '@patternfly/react-core/dist/js/components/Brand';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import React from 'react';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import kogitoLogo from '../../../static/kogito.png';
-const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
+export const KeycloakUnavailablePage: React.FC<OUIAProps> = ({
+  ouiaId,
+  ouiaSafe
+}) => {
   return (
     <div
       style={{
@@ -76,5 +82,3 @@ const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     </div>
   );
 };
-
-export default KeycloakUnavailablePage;

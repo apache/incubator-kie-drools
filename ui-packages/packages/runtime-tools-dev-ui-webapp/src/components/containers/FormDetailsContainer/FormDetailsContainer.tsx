@@ -15,7 +15,10 @@
  */
 
 import React from 'react';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { FormDetailsGatewayApi } from '../../../channel/FormDetails';
 import { useFormDetailsGatewayApi } from '../../../channel/FormDetails/FormDetailsContext';
 import { EmbeddedFormDetails, FormContent } from '@kogito-apps/form-details';

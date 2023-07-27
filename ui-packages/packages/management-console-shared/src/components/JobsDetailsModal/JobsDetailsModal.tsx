@@ -16,7 +16,10 @@
 
 import React from 'react';
 import { Job } from '../../types';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import {
   TextContent,
   Text,
@@ -36,7 +39,7 @@ interface IOwnProps {
   modalAction: JSX.Element[];
   job: Job;
 }
-const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
+export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
   actionType,
   modalTitle,
   isModalOpen,
@@ -174,5 +177,3 @@ const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
     </Modal>
   );
 };
-
-export default JobsDetailsModal;

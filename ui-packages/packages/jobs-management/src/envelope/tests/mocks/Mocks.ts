@@ -23,7 +23,10 @@ import {
   JobsManagementChannelApi,
   JobsManagementEnvelopeApi
 } from '../../../api';
-import { Job, JobStatus } from '@kogito-apps/management-console-shared';
+import {
+  Job,
+  JobStatus
+} from '@kogito-apps/management-console-shared/dist/types';
 import { MessageBusServer } from '@kie-tools-core/envelope-bus/dist/api';
 import { EnvelopeBusMessageManager } from '@kie-tools-core/envelope-bus/dist/common';
 import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';

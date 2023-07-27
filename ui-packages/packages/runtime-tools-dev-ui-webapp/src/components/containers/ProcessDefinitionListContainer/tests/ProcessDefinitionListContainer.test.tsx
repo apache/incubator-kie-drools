@@ -20,7 +20,10 @@ import ProcessDefinitionListContainer from '../ProcessDefinitionListContainer';
 import * as ProcessDefinitionListContext from '../../../../channel/ProcessDefinitionList/ProcessDefinitionListContext';
 import { ProcessDefinitionListGatewayApiImpl } from '../../../../channel/ProcessDefinitionList/ProcessDefinitionListGatewayApi';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 import { EmbeddedProcessDefinitionList } from '@kogito-apps/process-definition-list';
 
 jest

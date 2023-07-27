@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { JobStatus } from '@kogito-apps/management-console-shared';
+import { JobStatus } from '@kogito-apps/management-console-shared/dist/types';
 
 export const Jobs = [
   {

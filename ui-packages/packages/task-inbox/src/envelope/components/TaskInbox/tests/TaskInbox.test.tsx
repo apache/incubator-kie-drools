@@ -17,12 +17,10 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
-import {
-  DataTable,
-  LoadMore,
-  KogitoEmptyState,
-  ServerErrors
-} from '@kogito-apps/components-common';
+import { DataTable } from '@kogito-apps/components-common/dist/components/DataTable';
+import { LoadMore } from '@kogito-apps/components-common/dist/components/LoadMore';
+import { KogitoEmptyState } from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import { mount } from 'enzyme';
 import TestTaskInboxDriver from './mocks/TestTaskInboxDriver';
 import { userTasks } from './mocks/MockData';
@@ -39,21 +37,43 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/DataTable', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     DataTable: () => {
       return <MockedComponent />;
-    },
-    LoadMore: () => {
+    }
+  })
+);
+
+jest.mock('@kogito-apps/components-common/dist/components/ServerErrors', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+    ServerErrors: () => {
       return <MockedComponent />;
-    },
-    KogitoEmptyState: () => {
-      return <MockedComponent />;
-    },
+    }
+  })
+);
+
+jest.mock('@kogito-apps/components-common/dist/components/KogitoSpinner', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     KogitoSpinner: () => {
       return <MockedComponent />;
-    },
-    ServerErrors: () => {
+    }
+  })
+);
+
+jest.mock(
+  '@kogito-apps/components-common/dist/components/KogitoEmptyState',
+  () =>
+    Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+      KogitoEmptyState: () => {
+        return <MockedComponent />;
+      }
+    })
+);
+
+jest.mock('@kogito-apps/components-common/dist/components/LoadMore', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+    LoadMore: () => {
       return <MockedComponent />;
     }
   })

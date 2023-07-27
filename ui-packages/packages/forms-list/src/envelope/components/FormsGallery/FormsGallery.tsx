@@ -15,7 +15,10 @@
  */
 
 import React from 'react';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import {
   Gallery,
@@ -26,9 +29,9 @@ import FormCard from '../FormCard/FormCard';
 import { FormsListDriver } from '../../../api/FormsListDriver';
 import {
   KogitoEmptyState,
-  KogitoEmptyStateType,
-  KogitoSpinner
-} from '@kogito-apps/components-common';
+  KogitoEmptyStateType
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
 
 export interface FormsGalleryProps {
   driver: FormsListDriver;

@@ -15,7 +15,10 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { FormsListDriver } from '../../../api/FormsListDriver';
 import FormsListToolbar from '../FormsListToolbar/FormsListToolbar';
 import {
@@ -29,7 +32,7 @@ import { FormInfo, FormFilter } from '../../../api/FormsListEnvelopeApi';
 import FormsTable from '../FormsTable/FormsTable';
 import FormsGallery from '../FormsGallery/FormsGallery';
 import { BarsIcon, ThIcon } from '@patternfly/react-icons';
-import { ServerErrors } from '@kogito-apps/components-common';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 export interface FormsListProps {
   isEnvelopeConnectedToChannel: boolean;
   driver: FormsListDriver;

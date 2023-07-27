@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import FormNotification, { Notification } from '../FormNotification';
+import { FormNotification, Notification } from '../FormNotification';
 import {
   AlertActionCloseButton,
   AlertActionLink,

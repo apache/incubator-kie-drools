@@ -18,11 +18,11 @@ import { ProcessListChannelApiImpl } from '../ProcessListChannelApiImpl';
 import { ProcessListDriver } from '../../api';
 import { MockedProcessListDriver } from './utils/Mocks';
 import {
-  OperationType,
   ProcessInstance,
   ProcessInstanceState,
   OrderBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 
 const initialState = {
   filters: {

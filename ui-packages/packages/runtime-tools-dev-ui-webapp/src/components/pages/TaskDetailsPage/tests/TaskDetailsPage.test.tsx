@@ -19,7 +19,8 @@ import * as H from 'history';
 import { MemoryRouter } from 'react-router';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
-import { KogitoEmptyState, ServerErrors } from '@kogito-apps/components-common';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
+import { KogitoEmptyState } from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
 import { mount } from 'enzyme';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskInboxGatewayApi } from '../../../../channel/TaskInbox';
@@ -27,7 +28,10 @@ import * as TaskInboxContext from '../../../../channel/TaskInbox/TaskInboxContex
 import TaskDetailsPage from '../TaskDetailsPage';
 import TaskFormContainer from '../../../containers/TaskFormContainer/TaskFormContainer';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 
 import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { DrawerPanelContent } from '@patternfly/react-core/dist/js/components/Drawer';
@@ -101,25 +105,45 @@ jest.mock('@patternfly/react-core', () => ({
   }
 }));
 
-jest.mock('@kogito-apps/components-common', () => ({
-  ...jest.requireActual('@kogito-apps/components-common'),
-  KogitoEmptyState: () => {
-    return <MockedComponent />;
-  },
-  ServerErrors: () => {
-    return <MockedComponent />;
-  },
-  FormNotification: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock(
+  '@kogito-apps/components-common/dist/components/KogitoEmptyState',
+  () => ({
+    ...jest.requireActual('@kogito-apps/components-common'),
+    KogitoEmptyState: () => {
+      return <MockedComponent />;
+    }
+  })
+);
 
-jest.mock('@kogito-apps/consoles-common', () => ({
-  ...jest.requireActual('@kogito-apps/consoles-common'),
-  PageTitle: () => {
-    return <MockedComponent />;
-  }
-}));
+jest.mock(
+  '@kogito-apps/components-common/dist/components/FormNotification',
+  () => ({
+    ...jest.requireActual('@kogito-apps/components-common'),
+    FormNotification: () => {
+      return <MockedComponent />;
+    }
+  })
+);
+
+jest.mock(
+  '@kogito-apps/components-common/dist/components/ServerErrors',
+  () => ({
+    ...jest.requireActual('@kogito-apps/components-common'),
+    ServerErrors: () => {
+      return <MockedComponent />;
+    }
+  })
+);
+
+jest.mock(
+  '@kogito-apps/consoles-common/dist/components/layout/PageTitle',
+  () => ({
+    ...jest.requireActual('@kogito-apps/consoles-common'),
+    PageTitle: () => {
+      return <MockedComponent />;
+    }
+  })
+);
 
 jest.mock('@kogito-apps/task-details', () => ({
   ...jest.requireActual('@kogito-apps/task-details'),

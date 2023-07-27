@@ -20,7 +20,10 @@ import CustomDashboardViewContainer from '../CustomDashboardViewContainer';
 import { CustomDashboardViewGatewayApiImpl } from '../../../../channel/CustomDashboardView/CustomDashboardViewGatewayApi';
 import * as CustomDashboardViewContext from '../../../../channel/CustomDashboardView/CustomDashboardViewContext';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 import { EmbeddedCustomDashboardView } from '@kogito-apps/custom-dashboard-view';
 
 jest

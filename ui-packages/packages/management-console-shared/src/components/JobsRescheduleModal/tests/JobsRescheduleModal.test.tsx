@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import JobsRescheduleModal from '../JobsRescheduleModal';
+import { JobsRescheduleModal } from '../JobsRescheduleModal';
 import { JobStatus } from '../../../types';
 import { mount } from 'enzyme';
 import { Button } from '@patternfly/react-core/dist/js/components/Button';

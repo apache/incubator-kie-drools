@@ -21,9 +21,9 @@ import { PausedIcon } from '@patternfly/react-icons/dist/js/icons/paused-icon';
 import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-circle-o-icon';
 import {
   ProcessInstanceState,
-  ProcessInstance,
-  BulkListItem
-} from '@kogito-apps/management-console-shared';
+  ProcessInstance
+} from '@kogito-apps/management-console-shared/dist/types';
+import { BulkListItem } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 export const ProcessInstanceIconCreator = (
   state: ProcessInstanceState
 ): JSX.Element => {

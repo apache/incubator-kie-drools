@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import PageSectionHeader from '../PageSectionHeader';
+import { PageSectionHeader } from '../PageSectionHeader';
 import { BrowserRouter } from 'react-router-dom';
 
 describe('PageSectionHeader tests', () => {

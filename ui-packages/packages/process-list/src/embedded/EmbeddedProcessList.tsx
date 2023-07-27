@@ -29,7 +29,7 @@ import {
 import { ProcessListChannelApiImpl } from './ProcessListChannelApiImpl';
 import { ContainerType } from '@kie-tools-core/envelope/dist/api';
 import { init } from '../envelope';
-import { ProcessListState } from '@kogito-apps/management-console-shared';
+import { ProcessListState } from '@kogito-apps/management-console-shared/dist/types';
 
 export interface Props {
   targetOrigin: string;

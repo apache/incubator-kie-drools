@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import LoadMore from '../LoadMore';
+import { LoadMore } from '../LoadMore';
 import {
   DropdownToggle,
   DropdownItem,

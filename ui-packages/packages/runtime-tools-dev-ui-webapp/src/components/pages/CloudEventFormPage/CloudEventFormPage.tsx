@@ -21,10 +21,13 @@ import {
   OUIAProps,
   ouiaPageTypeAndObjectId,
   componentOuiaProps
-} from '@kogito-apps/ouia-tools';
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import '../../styles.css';
-import { PageTitle } from '@kogito-apps/consoles-common';
-import { FormNotification, Notification } from '@kogito-apps/components-common';
+import { PageTitle } from '@kogito-apps/consoles-common/dist/components/layout/PageTitle';
+import {
+  FormNotification,
+  Notification
+} from '@kogito-apps/components-common/dist/components/FormNotification';
 import { useHistory } from 'react-router-dom';
 import CloudEventFormContainer from '../../containers/CloudEventFormContainer/CloudEventFormContainer';
 

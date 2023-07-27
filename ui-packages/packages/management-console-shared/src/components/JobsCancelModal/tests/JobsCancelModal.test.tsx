@@ -16,9 +16,17 @@
 
 import React from 'react';
 import { setTitle } from '../../../utils/Utils';
-import JobsCancelModal from '../JobsCancelModal';
+import { JobsCancelModal } from '../JobsCancelModal';
 import { shallow } from 'enzyme';
-jest.mock('../../BulkList/BulkList');
+
+jest.mock('../../BulkList/BulkList', () => {
+  const originalModule = jest.requireActual('../../BulkList/BulkList');
+  return {
+    __esModule: true,
+    ...originalModule,
+    BulkList: jest.fn()
+  };
+});
 
 const jobOperation = {
   CANCEL: {

@@ -28,7 +28,7 @@ import {
   NodeInstance,
   ProcessInstance,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 
 let channelApi: MessageBusClientApi<ProcessDetailsChannelApi>;
 let requests: Pick<

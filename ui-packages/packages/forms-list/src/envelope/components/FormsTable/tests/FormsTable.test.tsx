@@ -21,7 +21,6 @@ import {
   formList,
   MockedFormsListDriver
 } from '../../../tests/mocks/MockedFormsListDriver';
-import { DataTable } from '@kogito-apps/components-common';
 
 Date.now = jest.fn(() => 1487076708000); //14.02.2017
 
@@ -29,7 +28,7 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/DataTable', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     DataTable: () => {
       return <MockedComponent />;
@@ -48,7 +47,7 @@ describe('forms table test', () => {
         setFormsData={jest.fn()}
       />
     );
-    const dataTable = wrapper.find(DataTable);
+    const dataTable = wrapper.find('DataTable');
     expect(dataTable.exists()).toBeTruthy();
   });
 });

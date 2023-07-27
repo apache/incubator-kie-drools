@@ -20,7 +20,10 @@ import WorkflowFormContainer from '../WorkflowFormContainer';
 import * as WorkflowFormContext from '../../../../channel/WorkflowForm/WorkflowFormContext';
 import { WorkflowFormGatewayApi } from '../../../../channel/WorkflowForm/WorkflowFormGatewayApi';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 import { EmbeddedWorkflowForm } from '@kogito-apps/workflow-form';
 
 const MockedComponent = (): React.ReactElement => {

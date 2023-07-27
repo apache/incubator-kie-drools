@@ -28,7 +28,10 @@ import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import '@patternfly/patternfly/patternfly-addons.css';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 export enum KogitoEmptyStateType {
   Search,

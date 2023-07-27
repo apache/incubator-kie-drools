@@ -32,7 +32,10 @@ import {
   CardBody
 } from '@patternfly/react-core/dist/js/components/Card';
 import { Title } from '@patternfly/react-core/dist/js/components/Title';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import {
   EmbeddedEditorFile,
   StateControl
@@ -43,7 +46,7 @@ import {
   SwfPreviewOptionsChannelApiImpl
 } from '@kie-tools/serverless-workflow-combined-editor/dist/impl';
 import { useController } from '../../../hooks/useController';
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import { ProcessInstance } from '@kogito-apps/management-console-shared/dist/types';
 import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import { ServerlessWorkflowCombinedEditorChannelApi } from '@kie-tools/serverless-workflow-combined-editor/dist/api';
 import { ServerlessWorkflowCombinedEditorEnvelopeApi } from '@kie-tools/serverless-workflow-combined-editor/dist/api/ServerlessWorkflowCombinedEditorEnvelopeApi';

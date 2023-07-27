@@ -34,8 +34,11 @@ import reduce from 'lodash/reduce';
 import isFunction from 'lodash/isFunction';
 import uuidv4 from 'uuid';
 import jp from 'jsonpath';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
-import KogitoSpinner from '../KogitoSpinner/KogitoSpinner';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import { KogitoSpinner } from '../KogitoSpinner/KogitoSpinner';
 import {
   KogitoEmptyState,
   KogitoEmptyStateType
@@ -126,7 +129,7 @@ const getRows = (data: any[], columns: ICell[]) => {
   return rowList;
 };
 
-const DataTable: React.FC<IOwnProps & OUIAProps> = ({
+export const DataTable: React.FC<IOwnProps & OUIAProps> = ({
   data,
   isLoading,
   columns,
@@ -231,5 +234,3 @@ const DataTable: React.FC<IOwnProps & OUIAProps> = ({
     </React.Fragment>
   );
 };
-
-export default DataTable;

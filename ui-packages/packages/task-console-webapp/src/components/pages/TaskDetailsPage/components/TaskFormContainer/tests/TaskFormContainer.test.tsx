@@ -20,11 +20,11 @@ import TaskFormContainer from '../TaskFormContainer';
 import { TaskFormGatewayApi } from '../../../../../../channel/forms';
 import * as TaskFormContext from '../../../../../../channel/forms/TaskFormContext';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
+import { KogitoAppContextProvider } from '@kogito-apps/consoles-common/dist/environment/context';
 import {
   DefaultUser,
-  User,
-  KogitoAppContextProvider
-} from '@kogito-apps/consoles-common';
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 
 const testUserTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',

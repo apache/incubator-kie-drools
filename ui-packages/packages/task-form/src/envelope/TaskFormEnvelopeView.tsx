@@ -24,12 +24,15 @@ import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormChannelApi, TaskFormInitArgs, User } from '../api';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
 import {
   KogitoEmptyState,
-  KogitoEmptyStateType,
-  KogitoSpinner
-} from '@kogito-apps/components-common';
+  KogitoEmptyStateType
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
 import { CustomForm } from '../types';
 import { TaskFormEnvelopeViewDriver } from './TaskFormEnvelopeViewDriver';
 import CustomTaskFormDisplayer from './components/CustomTaskFormDisplayer/CustomTaskFormDisplayer';

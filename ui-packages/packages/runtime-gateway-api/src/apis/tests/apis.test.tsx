@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GraphQL } from '@kogito-apps/consoles-common';
+import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
 // import wait from 'waait';
 import {
   handleJobReschedule,
@@ -35,13 +35,13 @@ import {
 } from '../apis';
 import {
   BulkProcessInstanceActionResponse,
-  OperationType,
   ProcessInstanceState,
   NodeInstance,
   ProcessInstance,
   MilestoneStatus,
   JobStatus
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 import { act } from 'react-dom/test-utils';
 import reactApollo from 'react-apollo';
 

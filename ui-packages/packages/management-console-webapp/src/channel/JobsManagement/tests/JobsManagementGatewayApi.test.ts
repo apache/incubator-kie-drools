@@ -15,12 +15,15 @@
  */
 
 import { JobsManagementQueries } from '../JobsManagementQueries';
-import { Job, JobStatus } from '@kogito-apps/management-console-shared';
+import {
+  Job,
+  JobStatus
+} from '@kogito-apps/management-console-shared/dist/types';
 import {
   JobsManagementGatewayApi,
   JobsManagementGatewayApiImpl
 } from '../JobsManagementGatewayApi';
-import { GraphQL } from '@kogito-apps/consoles-common';
+import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
 import {
   handleJobReschedule,
   jobCancel,

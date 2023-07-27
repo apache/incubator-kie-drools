@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ProcessListState } from '@kogito-apps/management-console-shared';
+import { ProcessListState } from '@kogito-apps/management-console-shared/dist/types';
 export interface ProcessListEnvelopeApi {
   processList__init(
     association: Association,

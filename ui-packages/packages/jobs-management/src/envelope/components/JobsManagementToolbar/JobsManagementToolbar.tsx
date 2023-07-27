@@ -40,13 +40,18 @@ import {
   OverflowMenuControl
 } from '@patternfly/react-core/dist/js/components/OverflowMenu';
 import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
-  IOperations,
-  OperationType,
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import {
   JobStatus,
   Job
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import {
+  IOperations,
+  OperationType
+} from '@kogito-apps/management-console-shared/dist/components/BulkList';
 import { JobsManagementDriver } from '../../../api';
 import '../styles.css';
 

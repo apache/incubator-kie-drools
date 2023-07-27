@@ -24,7 +24,7 @@ import {
   SvgErrorResponse,
   TriggerableNode,
   NodeInstance
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 
 export default class ProcessDetailsEnvelopeViewDriver
   implements ProcessDetailsDriver

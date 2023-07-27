@@ -22,7 +22,10 @@ import {
   TaskInboxGatewayApi,
   TaskInboxGatewayApiImpl
 } from '../TaskInboxGatewayApi';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 
 export const task: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',

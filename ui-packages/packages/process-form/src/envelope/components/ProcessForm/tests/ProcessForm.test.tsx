@@ -22,18 +22,23 @@ import ProcessForm, { ProcessFormProps } from '../ProcessForm';
 import { ProcessFormDriver } from '../../../../api';
 import { mount } from 'enzyme';
 import { MockedProcessFormDriver } from '../../../../embedded/tests/mocks/Mocks';
-import { KogitoSpinner } from '@kogito-apps/components-common';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
 import { ConfirmTravelForm } from './mocks/ConfirmTravelForm';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/ServerErrors', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     ServerErrors: () => {
       return <MockedComponent />;
-    },
+    }
+  })
+);
+
+jest.mock('@kogito-apps/components-common/dist/components/FormRenderer', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     FormRenderer: () => {
       return <MockedComponent />;
     }

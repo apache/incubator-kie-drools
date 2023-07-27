@@ -17,7 +17,7 @@
 import React from 'react';
 import Moment from 'react-moment';
 import TaskDescription from '../TaskDescription/TaskDescription';
-import { DataTableColumn } from '@kogito-apps/components-common';
+import { DataTableColumn } from '@kogito-apps/components-common/dist/components/DataTable';
 import { UserTaskInstance, TaskState } from '@kogito-apps/task-console-shared';
 
 export const getDefaultColumn = (

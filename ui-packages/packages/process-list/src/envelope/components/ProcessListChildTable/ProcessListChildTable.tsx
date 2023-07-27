@@ -27,17 +27,20 @@ import React, { useEffect, useState } from 'react';
 import {
   ProcessInstance,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import _ from 'lodash';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import {
-  ServerErrors,
-  KogitoSpinner,
-  ItemDescriptor,
-  EndpointLink,
   KogitoEmptyState,
   KogitoEmptyStateType
-} from '@kogito-apps/components-common';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import { ItemDescriptor } from '@kogito-apps/components-common/dist/components/ItemDescriptor';
+import { EndpointLink } from '@kogito-apps/components-common/dist/components/EndpointLink';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import {
   getProcessInstanceDescription,
   ProcessInstanceIconCreator

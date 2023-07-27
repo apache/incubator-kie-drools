@@ -25,7 +25,7 @@ import ProcessDetails from '../components/ProcessDetails/ProcessDetails';
 import {
   MilestoneStatus,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 
 jest.mock('../components/ProcessDetails/ProcessDetails');
 

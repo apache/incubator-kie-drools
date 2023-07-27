@@ -21,7 +21,7 @@ import {
   NodeInstance,
   ProcessInstance,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import { ProcessDetailsChannelApiImpl } from '../ProcessDetailsChannelApiImpl';
 import { ProcessDetailsDriver } from '../../api';
 import { MockedProcessDetailsDriver } from './mocks/Mocks';

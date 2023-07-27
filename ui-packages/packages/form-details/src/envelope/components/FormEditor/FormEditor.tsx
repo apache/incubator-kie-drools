@@ -15,7 +15,10 @@
  */
 
 import React, { useImperativeHandle, useState } from 'react';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import {
   CodeEditor,
   CodeEditorControl,

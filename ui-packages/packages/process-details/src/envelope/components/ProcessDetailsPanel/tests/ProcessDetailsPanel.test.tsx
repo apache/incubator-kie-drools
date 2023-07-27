@@ -19,7 +19,7 @@ import { shallow } from 'enzyme';
 import {
   ProcessInstance,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import ProcessDetailsPanel from '../ProcessDetailsPanel';
 import TestProcessDetailsDriver from '../../../tests/mocks/TestProcessDetailsDriver';
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20

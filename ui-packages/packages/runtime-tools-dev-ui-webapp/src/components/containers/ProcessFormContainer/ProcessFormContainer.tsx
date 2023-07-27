@@ -15,7 +15,10 @@
  */
 
 import React from 'react';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { ProcessFormGatewayApi } from '../../../channel/ProcessForm/ProcessFormGatewayApi';
 import { useProcessFormGatewayApi } from '../../../channel/ProcessForm/ProcessFormContext';
 import { EmbeddedProcessForm } from '@kogito-apps/process-form';

@@ -19,9 +19,9 @@ import {
   JobStatus,
   Job,
   ProcessInstance,
-  setTitle,
   NodeInstance
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { setTitle } from '@kogito-apps/management-console-shared/dist/utils/Utils';
 import { ClockIcon } from '@patternfly/react-icons/dist/js/icons/clock-icon';
 import { BanIcon } from '@patternfly/react-icons/dist/js/icons/ban-icon';
 import { UndoIcon } from '@patternfly/react-icons/dist/js/icons/undo-icon';

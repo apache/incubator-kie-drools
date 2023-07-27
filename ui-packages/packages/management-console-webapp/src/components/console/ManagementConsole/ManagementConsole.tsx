@@ -18,12 +18,9 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
-
-import {
-  KogitoAppContextProvider,
-  UserContext,
-  PageLayout
-} from '@kogito-apps/consoles-common';
+import { PageLayout } from '@kogito-apps/consoles-common/dist/components/layout/PageLayout';
+import { KogitoAppContextProvider } from '@kogito-apps/consoles-common/dist/environment/context';
+import { UserContext } from '@kogito-apps/consoles-common/dist/environment/auth';
 import ManagementConsoleNav from '../ManagementConsoleNav/ManagementConsoleNav';
 import managementConsoleLogo from '../../../static/managementConsoleLogo.svg';
 import JobsManagementContextProvider from '../../../channel/JobsManagement/JobsManagementContextProvider';

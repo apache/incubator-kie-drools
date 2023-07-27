@@ -23,7 +23,7 @@ import {
   SvgErrorResponse,
   TriggerableNode,
   NodeInstance
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 
 export interface OnOpenProcessInstanceDetailsListener {
   onOpen(id: string): void;

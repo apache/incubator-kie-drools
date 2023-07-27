@@ -15,7 +15,10 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { CustomDashboardListDriver } from '../../../api/CustomDashboardListDriver';
 import CustomDashboardListToolbar from '../CustomDashboardListToolbar/CustomDashboardListToolbar';
 import { Divider } from '@patternfly/react-core/dist/js/components/Divider';
@@ -32,7 +35,7 @@ import CustomDashboardsTable from '../CustomDashboardsTable/CustomDashboardsTabl
 import CustomDashboardsGallery from '../CustomDashboardsGallery/CustomDashboardsGallery';
 import { BarsIcon } from '@patternfly/react-icons/dist/js/icons/bars-icon';
 import { ThIcon } from '@patternfly/react-icons/dist/js/icons/th-icon';
-import { ServerErrors } from '@kogito-apps/components-common';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 export interface CustomDashboardListProps {
   isEnvelopeConnectedToChannel: boolean;
   driver: CustomDashboardListDriver;

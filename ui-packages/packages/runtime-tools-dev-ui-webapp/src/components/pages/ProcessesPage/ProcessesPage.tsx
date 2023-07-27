@@ -26,14 +26,14 @@ import {
   OUIAProps,
   ouiaPageTypeAndObjectId,
   componentOuiaProps
-} from '@kogito-apps/ouia-tools';
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { RouteComponentProps } from 'react-router-dom';
 import { StaticContext } from 'react-router';
 import * as H from 'history';
-import { PageSectionHeader } from '@kogito-apps/consoles-common';
+import { PageSectionHeader } from '@kogito-apps/consoles-common/dist/components/layout/PageSectionHeader';
 import ProcessListContainer from '../../containers/ProcessListContainer/ProcessListContainer';
 import '../../styles.css';
-import { ProcessListState } from '@kogito-apps/management-console-shared';
+import { ProcessListState } from '@kogito-apps/management-console-shared/dist/types';
 import ProcessDefinitionListContainer from '../../containers/ProcessDefinitionListContainer/ProcessDefinitionListContainer';
 import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 

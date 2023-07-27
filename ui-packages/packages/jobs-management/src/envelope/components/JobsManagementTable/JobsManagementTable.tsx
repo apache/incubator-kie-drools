@@ -26,16 +26,21 @@ import {
 import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
 import {
   KogitoEmptyState,
-  KogitoSpinner,
   KogitoEmptyStateType
-} from '@kogito-apps/components-common';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
 import {
-  setTitle,
-  constructObject,
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import {
   Job,
   JobsSortBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import {
+  setTitle,
+  constructObject
+} from '@kogito-apps/management-console-shared/dist/utils/Utils';
 import Moment from 'react-moment';
 import _ from 'lodash';
 import { JobsIconCreator } from '../../../utils/utils';

@@ -17,7 +17,10 @@
 import axios from 'axios';
 import _ from 'lodash';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 import {
   TaskFormGatewayApi,
   TaskFormGatewayApiImpl

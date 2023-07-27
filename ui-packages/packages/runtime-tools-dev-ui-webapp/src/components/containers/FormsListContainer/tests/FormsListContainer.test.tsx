@@ -20,7 +20,10 @@ import FormsListContainer from '../FormsListContainer';
 import * as FormsListContext from '../../../../channel/FormsList/FormsListContext';
 import { FormsListGatewayApiImpl } from '../../../../channel/FormsList/FormsListGatewayApi';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 import { EmbeddedFormsList } from '@kogito-apps/forms-list';
 
 jest

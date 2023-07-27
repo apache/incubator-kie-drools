@@ -16,14 +16,14 @@
 
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { OUIAProps } from '@kogito-apps/ouia-tools';
+import { OUIAProps } from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { EmbeddedProcessList } from '@kogito-apps/process-list';
 import { ProcessListGatewayApi } from '../../../channel/ProcessList';
 import { useProcessListGatewayApi } from '../../../channel/ProcessList/ProcessListContext';
 import {
   ProcessInstance,
   ProcessListState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 
 interface ProcessListContainerProps {
   initialState: ProcessListState;

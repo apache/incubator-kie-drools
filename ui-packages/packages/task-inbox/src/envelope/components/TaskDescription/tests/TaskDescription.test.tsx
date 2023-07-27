@@ -55,7 +55,7 @@ const mockMath = Object.create(global.Math);
 mockMath.random = () => 0.5;
 global.Math = mockMath;
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/ItemDescriptor', () =>
   Object.assign(jest.requireActual('@kogito-apps/components-common'), {
     ItemDescription: () => {
       return <MockedComponent />;

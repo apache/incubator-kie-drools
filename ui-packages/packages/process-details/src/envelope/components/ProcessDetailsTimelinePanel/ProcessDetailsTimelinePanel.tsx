@@ -42,7 +42,10 @@ import { OnRunningIcon } from '@patternfly/react-icons/dist/js/icons/on-running-
 import { OutlinedClockIcon } from '@patternfly/react-icons/dist/js/icons/outlined-clock-icon';
 import React, { useCallback, useState } from 'react';
 import '../styles.css';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import {
   setTitle,
   ProcessInfoModal,

@@ -19,7 +19,7 @@ import {
   Job,
   JobStatus,
   JobsSortBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import { getJobsWithFilters } from '@kogito-apps/runtime-gateway-api';
 
 export interface JobsManagementQueries {

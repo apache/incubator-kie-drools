@@ -23,7 +23,7 @@ import { ProcessListChannelApi, ProcessListEnvelopeApi } from '../../../api';
 import {
   ProcessInstance,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import { MessageBusServer } from '@kie-tools-core/envelope-bus/dist/api';
 import { EnvelopeBusMessageManager } from '@kie-tools-core/envelope-bus/dist/common';
 import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';

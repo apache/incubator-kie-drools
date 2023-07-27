@@ -20,7 +20,7 @@ import ProcessList from '../ProcessList';
 import { processInstances } from './mocks/Mocks';
 import wait from 'waait';
 import { act } from 'react-dom/test-utils';
-import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
+import { ProcessInstanceState } from '@kogito-apps/management-console-shared/dist/types';
 
 jest.mock('../../ProcessListTable/ProcessListTable');
 jest.mock('../../ProcessListToolbar/ProcessListToolbar');
@@ -29,14 +29,26 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/ServerErrors', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     ServerErrors: () => {
       return <MockedComponent />;
-    },
-    KogitoEmptyState: () => {
-      return <MockedComponent />;
-    },
+    }
+  })
+);
+
+jest.mock(
+  '@kogito-apps/components-common/dist/components/KogitoEmptyState',
+  () =>
+    Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+      KogitoEmptyState: () => {
+        return <MockedComponent />;
+      }
+    })
+);
+
+jest.mock('@kogito-apps/components-common/dist/components/LoadMore', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     LoadMore: () => {
       return <MockedComponent />;
     }

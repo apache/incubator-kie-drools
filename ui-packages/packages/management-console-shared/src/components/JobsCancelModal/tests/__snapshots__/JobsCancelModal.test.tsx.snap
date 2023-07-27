@@ -45,7 +45,7 @@ exports[`job cancel modal tests snapshot test - bulk cancel 1`] = `
   titleLabel=""
   variant="small"
 >
-  <MockedBulkList />
+  <mockConstructor />
 </Modal>
 `;
 

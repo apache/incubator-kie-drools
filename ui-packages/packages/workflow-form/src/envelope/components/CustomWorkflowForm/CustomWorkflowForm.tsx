@@ -15,14 +15,17 @@
  */
 
 import React, { useState } from 'react';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import {
   ActionType,
-  FormRendererApi,
-  FormAction,
-  FormRenderer,
-  KogitoSpinner
-} from '@kogito-apps/components-common';
+  FormAction
+} from '@kogito-apps/components-common/dist/components/utils';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import { FormRenderer } from '@kogito-apps/components-common/dist/components/FormRenderer';
+import { FormRendererApi } from '@kogito-apps/components-common/dist/types';
 import { WorkflowFormDriver } from '../../../api/WorkflowFormDriver';
 import { WorkflowDefinition } from '../../../api';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';

@@ -17,7 +17,8 @@
 import { ApolloClient } from 'apollo-client';
 import { SortBy, QueryFilter } from '@kogito-apps/task-inbox';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { GraphQL, User } from '@kogito-apps/consoles-common';
+import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
+import { User } from '@kogito-apps/consoles-common/dist/environment/auth';
 import {
   buildTaskInboxWhereArgument,
   getOrderByObject

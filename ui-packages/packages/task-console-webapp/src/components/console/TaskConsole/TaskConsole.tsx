@@ -17,12 +17,9 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ApolloClient } from 'apollo-client';
-
-import {
-  KogitoAppContextProvider,
-  UserContext,
-  PageLayout
-} from '@kogito-apps/consoles-common';
+import { PageLayout } from '@kogito-apps/consoles-common/dist/components/layout/PageLayout';
+import { KogitoAppContextProvider } from '@kogito-apps/consoles-common/dist/environment/context';
+import { UserContext } from '@kogito-apps/consoles-common/dist/environment/auth';
 
 import TaskConsoleContextsProvider from '../../../context/TaskConsoleContext/TaskConsoleContextsProvider';
 import taskConsoleLogo from '../../../static/taskConsoleLogo.svg';

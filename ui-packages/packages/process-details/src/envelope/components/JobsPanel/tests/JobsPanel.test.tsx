@@ -18,7 +18,7 @@ import React from 'react';
 import JobsPanel from '../JobsPanel';
 import { mount } from 'enzyme';
 import { MockedProcessDetailsDriver } from '../../../../embedded/tests/mocks/Mocks';
-import { JobStatus } from '@kogito-apps/management-console-shared';
+import { JobStatus } from '@kogito-apps/management-console-shared/dist/types';
 import wait from 'waait';
 import { act } from 'react-dom/test-utils';
 jest.mock('../../JobActionsKebab/JobActionsKebab');

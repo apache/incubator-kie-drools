@@ -18,7 +18,10 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { MockedJobsManagementDriver } from '../../../../api/mocks/MockedJobsManagementDriver';
 import JobsManagement from '../JobsManagement';
-import { JobStatus, OrderBy } from '@kogito-apps/management-console-shared';
+import {
+  JobStatus,
+  OrderBy
+} from '@kogito-apps/management-console-shared/dist/types';
 import { Jobs } from '../__mocks__/mockData';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
@@ -42,7 +45,7 @@ const MockedJobsRescheduleModal = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () =>
+jest.mock('@kogito-apps/components-common/dist/components/LoadMore', () =>
   Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
     LoadMore: () => {
       return <MockedLoadMore />;

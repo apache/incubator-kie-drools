@@ -17,7 +17,7 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import ProcessVariables from '../ProcessVariables';
-import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
+import { ProcessInstanceState } from '@kogito-apps/management-console-shared/dist/types';
 
 const processInstance = {
   id: 'tEE12-fo54-l665-mp112-akou112345566',

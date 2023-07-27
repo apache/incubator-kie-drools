@@ -18,7 +18,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import TaskConsole from '../TaskConsole';
 import { ApolloClient } from 'apollo-client';
-import { TestUserContext } from '@kogito-apps/consoles-common';
+import { TestUserContext } from '@kogito-apps/consoles-common/dist/environment/context';
 import TaskConsoleRoutes from '../../TaskConsoleRoutes/TaskConsoleRoutes';
 
 const MockedComponent = (): React.ReactElement => {
@@ -28,12 +28,14 @@ const MockedComponent = (): React.ReactElement => {
 jest.mock('../../TaskConsoleNav/TaskConsoleNav');
 jest.mock('../../TaskConsoleRoutes/TaskConsoleRoutes');
 
-jest.mock('@kogito-apps/consoles-common', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/consoles-common'), {
-    PageLayout: () => {
-      return <MockedComponent />;
-    }
-  })
+jest.mock(
+  '@kogito-apps/consoles-common/dist/components/layout/PageLayout',
+  () =>
+    Object.assign({}, jest.requireActual('@kogito-apps/consoles-common'), {
+      PageLayout: () => {
+        return <MockedComponent />;
+      }
+    })
 );
 
 jest.mock('apollo-client');

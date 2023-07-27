@@ -1,7 +1,10 @@
 import React from 'react';
 import { CheckCircleIcon, ErrorCircleOIcon } from '@patternfly/react-icons';
 import './ExecutionStatus.scss';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 type ExecutionStatusProps = {
   result: 'success' | 'failure';

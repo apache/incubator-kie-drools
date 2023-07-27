@@ -21,7 +21,7 @@ import {
   MilestoneStatus,
   ProcessInstance,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import ProcessDetailsPage from '../ProcessDetailsPage';
 import { BrowserRouter } from 'react-router-dom';
 import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/ProcessDetailsContext';

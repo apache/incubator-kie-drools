@@ -16,11 +16,11 @@
 
 import {
   BulkProcessInstanceActionResponse,
-  OperationType,
   ProcessInstance,
   ProcessInstanceFilter,
   ProcessListSortBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 import { ProcessListDriver } from '../../../../../api';
 
 export default class TestProcessListDriver implements ProcessListDriver {

@@ -16,7 +16,7 @@
 import {
   ProcessInstance,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 export const ProcessInstances: ProcessInstance[] = [
   {
     id: '538f9feb-5a14-4096-b791-2055b38da7c6',

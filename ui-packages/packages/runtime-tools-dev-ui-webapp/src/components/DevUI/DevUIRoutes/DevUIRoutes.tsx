@@ -17,7 +17,8 @@
 import React, { useMemo } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { JobsManagementPage, ProcessesPage } from '../../pages';
-import { NoData, PageNotFound } from '@kogito-apps/consoles-common';
+import { NoData } from '@kogito-apps/consoles-common/dist/components/pages/NoData';
+import { PageNotFound } from '@kogito-apps/consoles-common/dist/components/pages/PageNotFound';
 import ProcessDetailsPage from '../../pages/ProcessDetailsPage/ProcessDetailsPage';
 import TaskInboxPage from '../../pages/TaskInboxPage/TaskInboxPage';
 import TaskDetailsPage from '../../pages/TaskDetailsPage/TaskDetailsPage';

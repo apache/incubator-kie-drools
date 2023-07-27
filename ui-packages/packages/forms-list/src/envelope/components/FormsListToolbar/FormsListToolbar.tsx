@@ -29,7 +29,10 @@ import {
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { FormFilter } from '../../../api';
 
 interface FormsListToolbarProps {

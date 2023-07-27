@@ -18,7 +18,10 @@ import FormattedValue from '../../Atoms/FormattedValue/FormattedValue';
 import { LongArrowAltRightIcon } from '@patternfly/react-icons';
 import { ItemObjectStructure, ItemObjectValue, Outcome } from '../../../types';
 import './Outcomes.scss';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 type OutcomesProps =
   | {
@@ -41,7 +44,7 @@ const Outcomes: React.FC<OutcomesProps & OUIAProps> = (
       <section className="outcomes" {...ouiaProps}>
         {props.outcomes.length && (
           <Gallery className="outcome-cards" hasGutter>
-            {props.outcomes.map(item =>
+            {props.outcomes.map((item) =>
               renderCard(item, props.onExplanationClick)
             )}
           </Gallery>
@@ -52,14 +55,14 @@ const Outcomes: React.FC<OutcomesProps & OUIAProps> = (
 
   return (
     <section className="outcomes" {...ouiaProps}>
-      {props.outcomes.map(item => {
+      {props.outcomes.map((item) => {
         if (
           item.outcomeResult !== null &&
           item.outcomeResult.kind === 'COLLECTION'
         ) {
           return (
             <Gallery className="outcome-cards" hasGutter key={uuid()}>
-              {item.outcomeResult.value.map(value => {
+              {item.outcomeResult.value.map((value) => {
                 return (
                   <GalleryItem key={uuid()}>
                     <LightCard className="outcome-cards__card" isHoverable>
@@ -104,7 +107,7 @@ const renderCard = (
     outcome.outcomeResult !== null &&
     outcome.outcomeResult.kind === 'COLLECTION'
   ) {
-    return outcome.outcomeResult.value.map(value => {
+    return outcome.outcomeResult.value.map((value) => {
       return (
         <GalleryItem key={uuid()}>
           <OutcomeCard
@@ -231,7 +234,7 @@ const renderOutcome = (
         />
       );
     } else if (value.kind === 'COLLECTION') {
-      value.value.forEach(item => {
+      value.value.forEach((item) => {
         renderedItems.push(<OutcomeSubList name={name} value={item} />);
       });
     }
@@ -321,7 +324,7 @@ const OutcomeComposed = (props: {
         </span>
       </div>
       <div className="outcome outcome--struct" key={name}>
-        {renderItems.map(item => item)}
+        {renderItems.map((item) => item)}
       </div>
     </>
   );

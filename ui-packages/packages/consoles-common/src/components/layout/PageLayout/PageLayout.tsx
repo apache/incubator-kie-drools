@@ -28,7 +28,7 @@ import {
   componentOuiaProps,
   ouiaAttribute,
   OUIAProps
-} from '@kogito-apps/ouia-tools';
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { BrandContext } from '../BrandContext/BrandContext';
 import PageToolbar from '../PageToolbar/PageToolbar';
 

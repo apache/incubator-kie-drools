@@ -218,7 +218,212 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
     rescheduleError=""
     setRescheduleError={[Function]}
   >
-    <MockedJobsRescheduleModal />
+    <Modal
+      actions={
+        Array [
+          <Button
+            id="apply-button"
+            onClick={[Function]}
+            variant="primary"
+          >
+            Apply
+          </Button>,
+          <Button
+            onClick={[Function]}
+            variant="secondary"
+          >
+            Cancel
+          </Button>,
+        ]
+      }
+      appendTo={[Function]}
+      aria-describedby=""
+      aria-label="Job Reschedule modal"
+      aria-labelledby="actionType modal"
+      className=""
+      data-ouia-component-type="job-reschedule-modal"
+      data-ouia-safe={true}
+      hasNoBodyWrapper={false}
+      header={
+        <Title
+          headingLevel="h1"
+          size="2xl"
+        >
+          <InfoCircleIcon
+            className="pf-u-mr-sm"
+            color="var(--pf-global--info-color--100)"
+            noVerticalAlign={false}
+            size="sm"
+          />
+          <span>
+            Job Reschedule
+          </span>
+        </Title>
+      }
+      isOpen={false}
+      onClose={[Function]}
+      ouiaSafe={true}
+      showClose={true}
+      title=""
+      titleIconVariant={null}
+      titleLabel=""
+      variant="small"
+    >
+      <Portal
+        containerInfo={<div />}
+      >
+        <ModalContent
+          actions={
+            Array [
+              <Button
+                id="apply-button"
+                onClick={[Function]}
+                variant="primary"
+              >
+                Apply
+              </Button>,
+              <Button
+                onClick={[Function]}
+                variant="secondary"
+              >
+                Cancel
+              </Button>,
+            ]
+          }
+          aria-describedby=""
+          aria-label="Job Reschedule modal"
+          aria-labelledby="actionType modal"
+          boxId="pf-modal-part-1"
+          className=""
+          data-ouia-component-type="job-reschedule-modal"
+          data-ouia-safe={true}
+          descriptorId="pf-modal-part-3"
+          hasNoBodyWrapper={false}
+          header={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            >
+              <InfoCircleIcon
+                className="pf-u-mr-sm"
+                color="var(--pf-global--info-color--100)"
+                noVerticalAlign={false}
+                size="sm"
+              />
+              <span>
+                Job Reschedule
+              </span>
+            </Title>
+          }
+          isOpen={false}
+          labelId="pf-modal-part-2"
+          onClose={[Function]}
+          ouiaId="OUIA-Generated-Modal-small-1"
+          ouiaSafe={true}
+          showClose={true}
+          title=""
+          titleIconVariant={null}
+          titleLabel=""
+          variant="small"
+        />
+      </Portal>
+    </Modal>
+    <Modal
+      actions={
+        Array [
+          <Button
+            onClick={[Function]}
+            variant="primary"
+          >
+            OK
+          </Button>,
+        ]
+      }
+      appendTo={[Function]}
+      aria-describedby=""
+      aria-label="Reschedule error modal"
+      aria-labelledby="Reschedule error modal"
+      className=""
+      data-ouia-component-type="job-reschedule-error-modal"
+      data-ouia-safe={true}
+      hasNoBodyWrapper={false}
+      header={
+        <Title
+          headingLevel="h1"
+          size="2xl"
+        >
+          <InfoCircleIcon
+            className="pf-u-mr-sm"
+            color="var(--pf-global--danger-color--100)"
+            noVerticalAlign={false}
+            size="sm"
+          />
+          <span>
+            Job Reschedule
+          </span>
+        </Title>
+      }
+      isOpen={false}
+      onClose={[Function]}
+      ouiaSafe={true}
+      showClose={true}
+      title=""
+      titleIconVariant={null}
+      titleLabel=""
+      variant="small"
+    >
+      <Portal
+        containerInfo={<div />}
+      >
+        <ModalContent
+          actions={
+            Array [
+              <Button
+                onClick={[Function]}
+                variant="primary"
+              >
+                OK
+              </Button>,
+            ]
+          }
+          aria-describedby=""
+          aria-label="Reschedule error modal"
+          aria-labelledby="Reschedule error modal"
+          boxId="pf-modal-part-2"
+          className=""
+          data-ouia-component-type="job-reschedule-error-modal"
+          data-ouia-safe={true}
+          descriptorId="pf-modal-part-4"
+          hasNoBodyWrapper={false}
+          header={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            >
+              <InfoCircleIcon
+                className="pf-u-mr-sm"
+                color="var(--pf-global--danger-color--100)"
+                noVerticalAlign={false}
+                size="sm"
+              />
+              <span>
+                Job Reschedule
+              </span>
+            </Title>
+          }
+          isOpen={false}
+          labelId="pf-modal-part-3"
+          onClose={[Function]}
+          ouiaId="OUIA-Generated-Modal-small-2"
+          ouiaSafe={true}
+          showClose={true}
+          title=""
+          titleIconVariant={null}
+          titleLabel=""
+          variant="small"
+        />
+      </Portal>
+    </Modal>
   </JobsRescheduleModal>
   <JobsCancelModal
     actionType="Job Cancel"
@@ -273,17 +478,17 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
           aria-describedby=""
           aria-label="Job Cancel Modal"
           aria-labelledby="Job Cancel Modal"
-          boxId="pf-modal-part-1"
+          boxId="pf-modal-part-3"
           className=""
           data-ouia-component-type="jobs-cancel-modal"
           data-ouia-safe={true}
-          descriptorId="pf-modal-part-3"
+          descriptorId="pf-modal-part-5"
           hasNoBodyWrapper={false}
           header={null}
           isOpen={false}
-          labelId="pf-modal-part-2"
+          labelId="pf-modal-part-4"
           onClose={[Function]}
-          ouiaId="OUIA-Generated-Modal-small-1"
+          ouiaId="OUIA-Generated-Modal-small-3"
           ouiaSafe={true}
           showClose={true}
           title=""

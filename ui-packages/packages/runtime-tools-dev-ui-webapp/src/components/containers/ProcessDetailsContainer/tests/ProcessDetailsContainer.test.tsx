@@ -16,13 +16,16 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import { ProcessInstance } from '@kogito-apps/management-console-shared/dist/types';
 import ProcessDetailsContainer from '../ProcessDetailsContainer';
 import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/ProcessDetailsContext';
 import { ProcessDetailsGatewayApiImpl } from '../../../../channel/ProcessDetails/ProcessDetailsGatewayApi';
 import { ProcessDetailsQueries } from '../../../../channel/ProcessDetails/ProcessDetailsQueries';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 
 const getJobsMock = jest.fn();
 const getProcessDetailsMock = jest.fn();

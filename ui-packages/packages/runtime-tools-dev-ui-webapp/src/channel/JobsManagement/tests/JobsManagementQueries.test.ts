@@ -17,7 +17,7 @@
 import { act } from 'react-dom/test-utils';
 import reactApollo from 'react-apollo';
 import { GraphQLJobsManagementQueries } from '../JobsManagementQueries';
-import { JobStatus } from '@kogito-apps/management-console-shared';
+import { JobStatus } from '@kogito-apps/management-console-shared/dist/types';
 jest.mock('apollo-client');
 
 jest.mock('react-apollo', () => {

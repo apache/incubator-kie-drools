@@ -27,7 +27,10 @@ import { Stack, StackItem } from '@patternfly/react-core/dist/js/layouts/Stack';
 import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
 import PlusCircleIcon from '@patternfly/react-icons/dist/esm/icons/plus-circle-icon';
 import TrashIcon from '@patternfly/react-icons/dist/esm/icons/trash-icon';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 export interface CloudEventCustomHeadersEditorApi {
   reset(): void;

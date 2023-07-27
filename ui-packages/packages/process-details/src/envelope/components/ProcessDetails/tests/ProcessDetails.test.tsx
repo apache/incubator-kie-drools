@@ -25,7 +25,7 @@ import {
   MilestoneStatus,
   ProcessInstance,
   ProcessInstanceState
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import wait from 'waait';
 
 jest.mock('../../JobsPanel/JobsPanel');

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { GraphQL, User } from '@kogito-apps/consoles-common';
+import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
+import { User } from '@kogito-apps/consoles-common/dist/environment/auth';
 
 import UserTaskInstance = GraphQL.UserTaskInstance;
 

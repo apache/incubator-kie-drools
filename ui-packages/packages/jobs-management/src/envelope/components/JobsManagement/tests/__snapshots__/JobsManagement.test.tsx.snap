@@ -417,7 +417,72 @@ exports[`JobsManagement component tests Snapshot tests with default props 1`] = 
       modalContent=""
       modalTitle={null}
     >
-      <MockedJobsCancelModal />
+      <Modal
+        actions={
+          Array [
+            <Button
+              onClick={[Function]}
+              variant="primary"
+            >
+              OK
+            </Button>,
+          ]
+        }
+        appendTo={[Function]}
+        aria-describedby=""
+        aria-label="Job Cancel Modal"
+        aria-labelledby="Job Cancel Modal"
+        className=""
+        data-ouia-component-type="jobs-cancel-modal"
+        data-ouia-safe={true}
+        hasNoBodyWrapper={false}
+        header={null}
+        isOpen={false}
+        onClose={[Function]}
+        ouiaSafe={true}
+        showClose={true}
+        title=""
+        titleIconVariant={null}
+        titleLabel=""
+        variant="small"
+      >
+        <Portal
+          containerInfo={<div />}
+        >
+          <ModalContent
+            actions={
+              Array [
+                <Button
+                  onClick={[Function]}
+                  variant="primary"
+                >
+                  OK
+                </Button>,
+              ]
+            }
+            aria-describedby=""
+            aria-label="Job Cancel Modal"
+            aria-labelledby="Job Cancel Modal"
+            boxId="pf-modal-part-0"
+            className=""
+            data-ouia-component-type="jobs-cancel-modal"
+            data-ouia-safe={true}
+            descriptorId="pf-modal-part-2"
+            hasNoBodyWrapper={false}
+            header={null}
+            isOpen={false}
+            labelId="pf-modal-part-1"
+            onClose={[Function]}
+            ouiaId="OUIA-Generated-Modal-small-1"
+            ouiaSafe={true}
+            showClose={true}
+            title=""
+            titleIconVariant={null}
+            titleLabel=""
+            variant="small"
+          />
+        </Portal>
+      </Modal>
     </JobsCancelModal>
   </div>
 </JobsManagement>

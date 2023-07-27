@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
+import { ProcessInstanceState } from '@kogito-apps/management-console-shared/dist/types';
 import { buildProcessListWhereArgument } from '../QueryUtils';
 
 describe('QueryUtils test', () => {

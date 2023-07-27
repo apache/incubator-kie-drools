@@ -16,7 +16,10 @@
 
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { EmbeddedTaskInbox } from '@kogito-apps/task-inbox';
 import { TaskInboxGatewayApi } from '../../../../../channel/inbox';
 import { useTaskInboxGatewayApi } from '../../../../../channel/inbox/TaskInboxContext';
@@ -24,7 +27,7 @@ import {
   getActiveTaskStates,
   getAllTaskStates
 } from '../../../../../utils/Utils';
-import { GraphQL } from '@kogito-apps/consoles-common';
+import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
 const TaskInboxContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {

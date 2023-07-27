@@ -21,14 +21,15 @@ import {
   KebabToggle
 } from '@patternfly/react-core/dist/js/components/Dropdown';
 import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { Job } from '@kogito-apps/management-console-shared/dist/types';
+import { JobsCancelModal } from '@kogito-apps/management-console-shared/dist/components/JobsCancelModal';
+import { JobsDetailsModal } from '@kogito-apps/management-console-shared/dist/components/JobsDetailsModal';
+import { JobsRescheduleModal } from '@kogito-apps/management-console-shared/dist/components/JobsRescheduleModal';
+import { setTitle } from '@kogito-apps/management-console-shared/dist/utils/Utils';
 import {
-  JobsDetailsModal,
-  JobsRescheduleModal,
-  JobsCancelModal,
-  Job,
-  setTitle
-} from '@kogito-apps/management-console-shared';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { ProcessDetailsDriver } from '../../../api';
 import { handleJobRescheduleUtil, jobCancel } from '../../../utils/Utils';
 

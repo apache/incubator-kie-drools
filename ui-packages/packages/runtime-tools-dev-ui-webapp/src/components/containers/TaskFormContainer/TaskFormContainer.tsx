@@ -15,8 +15,11 @@
  */
 
 import React from 'react';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
-import { GraphQL } from '@kogito-apps/consoles-common';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import { EmbeddedTaskForm, CustomForm } from '@kogito-apps/task-form';
 import { useTaskFormGatewayApi } from '../../../channel/TaskForms/TaskFormContext';

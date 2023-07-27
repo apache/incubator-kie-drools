@@ -21,12 +21,15 @@ import {
 } from '@patternfly/react-core/dist/js/components/EmptyState';
 import { Title } from '@patternfly/react-core/dist/js/components/Title';
 import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 
 interface KogitoSpinnerProps {
   spinnerText: string;
 }
-const KogitoSpinner: React.FC<KogitoSpinnerProps & OUIAProps> = ({
+export const KogitoSpinner: React.FC<KogitoSpinnerProps & OUIAProps> = ({
   spinnerText,
   ouiaId,
   ouiaSafe
@@ -40,6 +43,3 @@ const KogitoSpinner: React.FC<KogitoSpinnerProps & OUIAProps> = ({
     </EmptyState>
   );
 };
-
-KogitoSpinner.displayName = 'KogitoSpinner';
-export default KogitoSpinner;

@@ -19,7 +19,10 @@ import React from 'react';
 import JobsManagementPage from '../JobsManagementPage';
 import { BrowserRouter } from 'react-router-dom';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
-import { DefaultUser, User } from '@kogito-apps/consoles-common';
+import {
+  DefaultUser,
+  User
+} from '@kogito-apps/consoles-common/dist/environment/auth';
 
 const user: User = new DefaultUser('jon', []);
 const appContextProps = {

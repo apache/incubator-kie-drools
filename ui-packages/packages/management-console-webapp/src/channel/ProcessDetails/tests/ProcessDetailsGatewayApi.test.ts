@@ -22,13 +22,13 @@ import {
   ProcessInstance,
   ProcessInstanceState,
   TriggerableNode
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import {
   OnOpenProcessInstanceDetailsListener,
   ProcessDetailsGatewayApi,
   ProcessDetailsGatewayApiImpl
 } from '../ProcessDetailsGatewayApi';
-import { GraphQL } from '@kogito-apps/consoles-common';
+import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
 
 jest.mock('@kogito-apps/runtime-gateway-api', () => ({
   handleJobReschedule: jest.fn(),

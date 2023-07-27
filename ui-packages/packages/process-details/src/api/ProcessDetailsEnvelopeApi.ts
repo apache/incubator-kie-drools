@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import { ProcessInstance } from '@kogito-apps/management-console-shared/dist/types';
 
 export interface ProcessDetailsEnvelopeApi {
   processDetails__init(

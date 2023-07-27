@@ -28,7 +28,7 @@ import {
 import {
   ProcessInstanceState,
   MilestoneStatus
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import { EnvelopeBusMessageManager } from '@kie-tools-core/envelope-bus/dist/common';
 import { EnvelopeClient } from '@kie-tools-core/envelope-bus/dist/envelope';
 import { ProcessDetailsEnvelopeViewApi } from '../../ProcessDetailsEnvelopeView';

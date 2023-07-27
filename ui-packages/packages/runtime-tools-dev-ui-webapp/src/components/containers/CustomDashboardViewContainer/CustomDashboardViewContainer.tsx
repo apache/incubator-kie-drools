@@ -15,7 +15,10 @@
  */
 
 import React from 'react';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { EmbeddedCustomDashboardView } from '@kogito-apps/custom-dashboard-view';
 import { useCustomDashboardViewGatewayApi } from '../../../channel/CustomDashboardView/CustomDashboardViewContext';
 import { CustomDashboardViewGatewayApi } from '../../../channel/CustomDashboardView';

@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import { DefaultUser } from '@kogito-apps/consoles-common';
+import { DefaultUser } from '@kogito-apps/consoles-common/dist/environment/auth';
 import TaskInboxContainer from '../TaskInboxContainer';
 import * as TaskInboxContext from '../../../../../../channel/inbox/TaskInboxContext';
 import { TaskInboxQueries } from '../../../../../../channel/inbox/TaskInboxQueries';

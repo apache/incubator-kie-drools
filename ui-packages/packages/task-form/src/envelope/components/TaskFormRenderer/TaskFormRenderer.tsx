@@ -16,9 +16,13 @@
 
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { FormRenderer, FormAction } from '@kogito-apps/components-common';
+import { FormRenderer } from '@kogito-apps/components-common/dist/components/FormRenderer';
+import { FormAction } from '@kogito-apps/components-common/dist/components/utils';
 import { generateFormData } from '../utils/TaskFormDataUtils';
 
 interface IOwnProps {

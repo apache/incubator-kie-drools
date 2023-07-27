@@ -15,7 +15,10 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import {
   CloudEventFormDefaultValues,
   CloudEventFormDriver,

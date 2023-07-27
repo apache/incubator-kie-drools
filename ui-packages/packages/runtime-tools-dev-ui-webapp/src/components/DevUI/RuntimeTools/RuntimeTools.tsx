@@ -17,7 +17,8 @@
 import React from 'react';
 import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
-import { ServerUnavailablePage, User } from '@kogito-apps/consoles-common';
+import { ServerUnavailablePage } from '@kogito-apps/consoles-common/dist/components/pages/ServerUnavailablePage';
+import { User } from '@kogito-apps/consoles-common/dist/environment/auth';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-client';
 import DevUIRoutes from '../DevUIRoutes/DevUIRoutes';

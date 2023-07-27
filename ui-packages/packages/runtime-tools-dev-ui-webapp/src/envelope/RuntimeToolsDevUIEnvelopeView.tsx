@@ -19,7 +19,7 @@ import '@patternfly/patternfly/patternfly.css';
 import '@patternfly/react-core/dist/styles/base.css';
 import { RuntimeToolsDevUIEnvelopeViewApi } from './RuntimeToolsDevUIEnvelopeViewApi';
 import RuntimeTools from '../components/DevUI/RuntimeTools/RuntimeTools';
-import { User } from '@kogito-apps/consoles-common';
+import { User } from '@kogito-apps/consoles-common/dist/environment/auth';
 import { DiagramPreviewSize } from '@kogito-apps/process-details/dist/api';
 
 export const RuntimeToolsDevUIEnvelopeView =

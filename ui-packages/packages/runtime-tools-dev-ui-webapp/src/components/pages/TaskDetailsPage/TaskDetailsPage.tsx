@@ -33,20 +33,22 @@ import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { Title } from '@patternfly/react-core/dist/js/components/Title';
 import { PageSection } from '@patternfly/react-core/dist/js/components/Page';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
 import {
-  KogitoSpinner,
-  ServerErrors,
-  KogitoEmptyState,
-  KogitoEmptyStateType,
   FormNotification,
   Notification
-} from '@kogito-apps/components-common';
+} from '@kogito-apps/components-common/dist/components/FormNotification';
+import {
+  KogitoEmptyState,
+  KogitoEmptyStateType
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import {
   OUIAProps,
   componentOuiaProps,
   ouiaPageTypeAndObjectId
-} from '@kogito-apps/ouia-tools';
-import PageTitle from '@kogito-apps/consoles-common/dist/components/layout/PageTitle/PageTitle';
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import { PageTitle } from '@kogito-apps/consoles-common/dist/components/layout/PageTitle';
 import { UserTaskInstance, TaskState } from '@kogito-apps/task-console-shared';
 import { TaskInboxGatewayApi } from '../../../channel/TaskInbox';
 import { useTaskInboxGatewayApi } from '../../../channel/TaskInbox/TaskInboxContext';

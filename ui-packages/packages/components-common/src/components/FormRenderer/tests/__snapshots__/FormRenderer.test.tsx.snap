@@ -379,7 +379,7 @@ exports[`FormRenderer test Render form with actions 1`] = `
   >
     <MockedComponent />
   </AutoForm>
-  <MockedFormFooter
+  <FormFooter
     actions={
       Array [
         Object {
@@ -390,7 +390,58 @@ exports[`FormRenderer test Render form with actions 1`] = `
     }
     enabled={true}
     onSubmitForm={[Function]}
-  />
+  >
+    <div
+      className="kogito-components-common__form-footer-padding-top"
+      data-ouia-component-type="form-footer"
+      data-ouia-safe={true}
+    >
+      <ActionList>
+        <div
+          className="pf-c-action-list"
+        >
+          <ActionListItem
+            key="form-action-0"
+          >
+            <div
+              className="pf-c-action-list__item"
+            >
+              <Button
+                isDisabled={false}
+                key="submit-complete"
+                onClick={[Function]}
+                type="submit"
+                variant="primary"
+              >
+                <ButtonBase
+                  innerRef={null}
+                  isDisabled={false}
+                  onClick={[Function]}
+                  type="submit"
+                  variant="primary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-primary"
+                    data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    onClick={[Function]}
+                    role={null}
+                    type="submit"
+                  >
+                    Complete
+                  </button>
+                </ButtonBase>
+              </Button>
+            </div>
+          </ActionListItem>
+        </div>
+      </ActionList>
+    </div>
+  </FormFooter>
 </ForwardRef>
 `;
 
@@ -766,7 +817,7 @@ exports[`FormRenderer test Render form without actions 1`] = `
   >
     <MockedComponent />
   </AutoForm>
-  <MockedFormFooter
+  <FormFooter
     actions={Array []}
     enabled={true}
     onSubmitForm={[Function]}

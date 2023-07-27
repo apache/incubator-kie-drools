@@ -15,7 +15,10 @@
  */
 
 import React from 'react';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { WorkflowFormGatewayApi } from '../../../channel/WorkflowForm/WorkflowFormGatewayApi';
 import { useWorkflowFormGatewayApi } from '../../../channel/WorkflowForm/WorkflowFormContext';
 import {

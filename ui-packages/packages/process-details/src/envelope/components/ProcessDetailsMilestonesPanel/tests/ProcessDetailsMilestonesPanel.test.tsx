@@ -17,7 +17,7 @@
 import React from 'react';
 import ProcessDetailsMilestonesPanel from '../ProcessDetailsMilestonesPanel';
 import { mount } from 'enzyme';
-import { MilestoneStatus } from '@kogito-apps/management-console-shared';
+import { MilestoneStatus } from '@kogito-apps/management-console-shared/dist/types';
 // tslint:disable: no-string-literal
 
 const MockedComponent = (): React.ReactElement => {

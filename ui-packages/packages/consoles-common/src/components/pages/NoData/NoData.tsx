@@ -38,7 +38,7 @@ export interface IOwnProps {
   location: any;
 }
 
-const NoData: React.FC<IOwnProps & OUIAProps> = ({
+export const NoData: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe,
   ...props
@@ -90,5 +90,3 @@ const NoData: React.FC<IOwnProps & OUIAProps> = ({
     </>
   );
 };
-
-export default NoData;

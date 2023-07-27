@@ -15,13 +15,16 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import {
   DataTable,
-  DataTableColumn,
-  KogitoSpinner,
-  ServerErrors
-} from '@kogito-apps/components-common';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
+  DataTableColumn
+} from '@kogito-apps/components-common/dist/components/DataTable';
+import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
+import {
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import {
   getActionColumn,
   getColumn

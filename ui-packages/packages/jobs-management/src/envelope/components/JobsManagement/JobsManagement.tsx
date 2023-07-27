@@ -19,32 +19,39 @@ import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { CardTitle } from '@patternfly/react-core/dist/js/components/Card';
 import { Divider } from '@patternfly/react-core/dist/js/components/Divider';
 import { ISortBy } from '@patternfly/react-table/dist/js/components/Table';
+import { LoadMore } from '@kogito-apps/components-common/dist/components/LoadMore';
+import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import {
-  ServerErrors,
   KogitoEmptyState,
-  KogitoEmptyStateType,
-  LoadMore
-} from '@kogito-apps/components-common';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+  KogitoEmptyStateType
+} from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
 import {
-  JobsCancelModal,
-  JobsDetailsModal,
-  JobsRescheduleModal,
-  setTitle,
-  BulkListType,
-  IOperationResults,
-  IOperations,
-  OperationType,
-  formatForBulkListJob,
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import {
   Job,
   JobStatus,
   JobsSortBy,
   OrderBy
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
+import {
+  BulkListType,
+  IOperationResults,
+  IOperations,
+  OperationType
+} from '@kogito-apps/management-console-shared/dist/components/BulkList';
+import { JobsCancelModal } from '@kogito-apps/management-console-shared/dist/components/JobsCancelModal';
+import { JobsDetailsModal } from '@kogito-apps/management-console-shared/dist/components/JobsDetailsModal';
+import { JobsRescheduleModal } from '@kogito-apps/management-console-shared/dist/components/JobsRescheduleModal';
 import { JobsManagementDriver } from '../../../api';
 import JobsManagementTable from '../JobsManagementTable/JobsManagementTable';
 import JobsManagementToolbar from '../JobsManagementToolbar/JobsManagementToolbar';
 import '../styles.css';
+import {
+  setTitle,
+  formatForBulkListJob
+} from '@kogito-apps/management-console-shared/dist/utils/Utils';
 
 interface JobsManagementProps {
   isEnvelopeConnectedToChannel: boolean;

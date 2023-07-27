@@ -23,7 +23,7 @@ import {
   SvgErrorResponse,
   SvgSuccessResponse,
   TriggerableNode
-} from '@kogito-apps/management-console-shared';
+} from '@kogito-apps/management-console-shared/dist/types';
 import { ProcessDetails } from './Mocks';
 
 export default class TestProcessDetailsDriver implements ProcessDetailsDriver {

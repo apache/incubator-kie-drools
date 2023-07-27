@@ -21,7 +21,10 @@ import {
   ActionListItem
 } from '@patternfly/react-core/dist/js/components/ActionList';
 import { convertActionsToButton, FormAction } from '../utils';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
+import {
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import '../styles.css';
 
 interface IOwnProps {
@@ -30,7 +33,7 @@ interface IOwnProps {
   onSubmitForm?: () => void;
 }
 
-const FormFooter: React.FC<IOwnProps & OUIAProps> = ({
+export const FormFooter: React.FC<IOwnProps & OUIAProps> = ({
   actions,
   enabled = true,
   onSubmitForm,
@@ -60,5 +63,3 @@ const FormFooter: React.FC<IOwnProps & OUIAProps> = ({
     </div>
   );
 };
-
-export default FormFooter;
