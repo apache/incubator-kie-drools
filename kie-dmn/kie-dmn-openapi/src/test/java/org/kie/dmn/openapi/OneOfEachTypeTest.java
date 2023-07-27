@@ -41,10 +41,10 @@ public class OneOfEachTypeTest extends BaseDMNOASTest {
         assertThat(validateUsing(validator, "{   \"InputBoolean\": true,\n" +
                                             "    \"InputDTDuration\": \"P1D\",\n" +
                                             "    \"InputDate\": \"2020-04-02\",\n" +
-                                            "    \"InputDateAndTime\": \"2020-04-02T09:00:00\",\n" +
+                                            "    \"InputDateAndTime\": \"2020-04-02T09:00:00z\",\n" +
                                             "    \"InputNumber\": 1,\n" +
                                             "    \"InputString\": \"John Doe\",\n" +
-                                            "    \"InputTime\": \"09:00:00\",\n" +
+                                            "    \"InputTime\": \"09:00:00z\",\n" +
                                             "    \"InputYMDuration\": \"P1M\"}")).isEmpty();
     }
 }
