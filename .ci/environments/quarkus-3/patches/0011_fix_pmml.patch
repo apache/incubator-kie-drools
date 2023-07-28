@@ -1,0 +1,26 @@
+diff --git a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java
+index 29e0f7b7d0..50a5ce9056 100644
+--- a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java
++++ b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java
+@@ -53,6 +53,10 @@ public class TestModel extends Model {
+         return this;
+     }
+ 
++    public MiningFunction requireMiningFunction() {
++        return this.miningFunction;
++    }
++
+     @Override
+     public MiningFunction getMiningFunction() {
+         return this.miningFunction;
+@@ -91,6 +95,10 @@ public class TestModel extends Model {
+         return this;
+     }
+ 
++    public MiningSchema requireMiningSchema() {
++        return this.miningSchema;
++    }
++
+     public MiningSchema getMiningSchema() {
+         return this.miningSchema;
+     }
