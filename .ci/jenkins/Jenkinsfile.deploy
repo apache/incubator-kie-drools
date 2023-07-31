@@ -98,7 +98,7 @@ pipeline {
 
                     // Need artifacts available locally
                     getMavenCommand().withProperty('quickly').run('clean install')
-                    maven.mvnSetVersionProperty(getMavenCommand(getWorkflowCommonDeploymentPath()), "data-index-ephemeral.image", "${getNextProdImage()}" )
+                    maven.mvnSetVersionProperty(getMavenCommand(getWorkflowCommonDeploymentPath()), 'data-index-ephemeral.image', getDataIndexEphemeralReleaseImage())
                 }
             }
         }
@@ -106,12 +106,17 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
-                        String mvnCmd = getMavenCommand()
+                        def mvnCmd = getMavenCommand()
                                             .withProperty('maven.test.failure.ignore', true)
-                                            .withProfiles(['full'])
-                                            .skipTests(params.SKIP_TESTS)
-                                            .getFullRunCommand('clean install')
-                        util.runWithPythonVirtualEnv(mvnCmd, 'swf')
+
+                        if (params.SKIP_TESTS) {
+                            mvnCmd.skipTests() // Conflict somehow with Python testing. If `skipTests={anyvalue}` is set, then exec plugin is not executed ...
+                        }
+                        if (isRelease()) {
+                            // Use nightly image for testing as the released one does not exist yet ...
+                            mvnCmd.withProperty('data-index-ephemeral.image', getDataIndexEphemeralNightlyImage())
+                        }
+                        util.runWithPythonVirtualEnv(mvnCmd.getFullRunCommand('clean install'), 'swf')
                     }
                 }
             }
@@ -302,7 +307,7 @@ MavenCommand getMavenCommand(String directory = '') {
 void runMavenDeploy(boolean localDeployment = false) {
     mvnCmd = getMavenCommand()
 
-    if(localDeployment) {
+    if (localDeployment) {
         mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder())
     } else if (env.MAVEN_DEPLOY_REPOSITORY) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
@@ -335,13 +340,10 @@ String getWorkflowCommonDeploymentPath() {
     return "${getRepoName()}/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment"
 }
 
-String getCurrentNightlyImage() {
-    return maven.mvnGetVersionProperty(getMavenCommand(getWorkflowCommonDeploymentPath()), "data-index-ephemeral.image")
+String getDataIndexEphemeralNightlyImage() {
+    return "quay.io/kiegroup/kogito-data-index-ephemeral-nightly:${util.getMajorMinorVersion(getProjectVersion())}"
 }
 
-String getNextProdImage() {
-    def currentNightlyImage = getCurrentNightlyImage()
-    def nightlyIndex = currentNightlyImage.indexOf('-nightly')
-    def nextProdImageName = currentNightlyImage.substring(0, nightlyIndex) +  currentNightlyImage.substring(nightlyIndex + '-nightly'.length())
-    return nextProdImageName
+String getDataIndexEphemeralReleaseImage() {
+    return "quay.io/kiegroup/kogito-data-index-ephemeral:${util.getMajorMinorVersion(getProjectVersion())}"
 }
