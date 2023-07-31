@@ -28,6 +28,10 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
         FULL, STORES_ONLY
     }
 
+    public enum PersistenceObjectsStrategy {
+        SIMPLE, OBJECT_REFERENCES
+    }
+
     public enum SafepointStrategy {
         ALWAYS, AFTER_FIRE, EXPLICIT;
 
@@ -44,6 +48,8 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
     private final long sessionId;
 
     private PersistenceStrategy persistenceStrategy = PersistenceStrategy.FULL;
+
+    private PersistenceObjectsStrategy persistenceObjectsStrategy = PersistenceObjectsStrategy.SIMPLE;
 
     private SafepointStrategy safepointStrategy = SafepointStrategy.ALWAYS;
 
@@ -76,6 +82,13 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
 
     public PersistenceStrategy getPersistenceStrategy() {
         return persistenceStrategy;
+    }
+
+    public PersistenceObjectsStrategy getPersistenceObjectsStrategy() {return persistenceObjectsStrategy;}
+
+    public PersistedSessionOption withPersistenceObjectsStrategy(PersistenceObjectsStrategy persistenceObjectsStrategy){
+        this.persistenceObjectsStrategy = persistenceObjectsStrategy;
+        return this;
     }
 
     public PersistedSessionOption withPersistenceStrategy(PersistenceStrategy persistenceStrategy) {
