@@ -1,0 +1,51 @@
+swagger: '2.0'
+info:
+  title: myapp
+  version: 2.0.0
+basePath: /
+paths:
+  /unprotected:
+    post:
+      tags:
+        - myapp
+      summary: Create a new instance of the model and persist it into the data source.
+      operationId: myapp.create
+      parameters:
+        - name: data
+          in: body
+          #description: Model instance data
+          required: false
+          schema:
+            #description: Model instance data
+            $ref: '#/definitions/myapp'
+      responses:
+        '201':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/myapp'
+      deprecated: false
+definitions:
+  myapp:
+    #description: ''
+    properties:
+      userid:
+        type: string
+    required:
+      - userid
+    additionalProperties: false
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  client_id:
+    type: apiKey
+    in: header
+    name: X-Client-Id
+    x-key-type: clientId
+security:
+  - client_id: [ ]
+tags:
+  - name: myapp

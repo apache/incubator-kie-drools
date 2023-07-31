@@ -62,8 +62,11 @@ public abstract class MockServiceConfigurer implements QuarkusTestResourceLifecy
         });
         final Map<String, String> properties = new HashMap<>();
         properties.put("quarkus.rest-client.swagger2_0_security_yaml.url", "http://localhost:" + AuthSecurityMockService.SEC_20.getPort() + "/iq9MzY");
+        properties.put("quarkus.rest-client.swagger2_0_security_no_auth_yaml.url", "http://localhost:" + AuthSecurityMockService.SEC_20_NO_AUTH.getPort());
+
         properties.put("quarkus.rest-client.openapi3_0_security_yaml.url", "http://localhost:" + AuthSecurityMockService.SEC_30.getPort());
         properties.put("quarkus.oidc-client.oauth.auth-server-url", "http://localhost:" + AuthSecurityMockService.SEC_30.getPort());
+        properties.put("quarkus.rest-client.openapi3_0_security_no_auth_yaml.url", "http://localhost:" + AuthSecurityMockService.SEC_30_NO_AUTH.getPort());
         return properties;
     }
 
