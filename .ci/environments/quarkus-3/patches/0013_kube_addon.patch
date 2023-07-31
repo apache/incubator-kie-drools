@@ -465,15 +465,15 @@ index 8edc43c794..4e5c4aa457 100644
          pod.getSpec().getContainers().get(0).getPorts()
                  .add(new ContainerPortBuilder()
 diff --git a/quarkus/addons/fabric8-kubernetes-service-catalog/test-utils/src/main/java/org/kie/kogito/addons/quarkus/k8s/test/utils/KnativeResourceDiscoveryTestUtil.java b/quarkus/addons/fabric8-kubernetes-service-catalog/test-utils/src/main/java/org/kie/kogito/addons/quarkus/k8s/test/utils/KnativeResourceDiscoveryTestUtil.java
-index 30f90e0927..8ab3ec6652 100644
+index c156609e02..4b33ba5402 100644
 --- a/quarkus/addons/fabric8-kubernetes-service-catalog/test-utils/src/main/java/org/kie/kogito/addons/quarkus/k8s/test/utils/KnativeResourceDiscoveryTestUtil.java
 +++ b/quarkus/addons/fabric8-kubernetes-service-catalog/test-utils/src/main/java/org/kie/kogito/addons/quarkus/k8s/test/utils/KnativeResourceDiscoveryTestUtil.java
-@@ -34,7 +34,7 @@ public final class KnativeResourceDiscoveryTestUtil {
+@@ -38,7 +38,7 @@ public final class KnativeResourceDiscoveryTestUtil {
              Service service = knativeClient.services()
                      .inNamespace(namespace)
                      .load(getResourceAsStream(knativeYaml))
 -                    .get();
 +                    .item();
  
-             service.getStatus().setUrl(remoteServiceUrl);
- 
+             if (remoteServiceUrl != null) {
+                 service.getStatus().setUrl(remoteServiceUrl);

@@ -52,6 +52,7 @@ ${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:${rewrite_plugin_version}:
     -Drewrite.recipeArtifactCoordinates=org.kie:jpmml-migration-recipe:"${drools_version}" \
     -Denforcer.skip \
     -fae \
+    -Dfull \
     -Dexclusions=**/target \
     -DplainTextMasks=**/kmodule.xml
 

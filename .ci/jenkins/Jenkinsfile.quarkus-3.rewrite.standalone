@@ -59,8 +59,8 @@ pipeline {
                 script {
                     dir('drools') {
                         githubscm.checkoutIfExists('drools', getGitAuthor(), getBuildBranch(), getBaseAuthor(), getBaseBranch(), true)
-                        sh '.ci/environments/update.sh quarkus-3'
-                        getMavenCommand().withProperty('quickly').run('clean install')
+                        util.runWithPythonVirtualEnv('.ci/environments/update.sh quarkus-3', 'swf')
+                        util.runWithPythonVirtualEnv(getMavenCommand().withProperty('quickly').getFullRunCommand('clean install'), 'swf')
                     }
                 }
             }
@@ -73,7 +73,7 @@ pipeline {
                             env.BUILD_MVN_OPTS = "${env.BUILD_MVN_OPTS ?: ''} -s ${MAVEN_SETTINGS_FILE} -Dmaven.wagon.http.ssl.insecure=true -Dmaven.test.failure.ignore=true"
                             echo "BUILD_MVN_OPTS = ${BUILD_MVN_OPTS}"
 
-                            sh '.ci/environments/quarkus-3/before.sh rewrite'
+                            util.runWithPythonVirtualEnv('.ci/environments/quarkus-3/before.sh rewrite', 'swf')
                         }
                 }
             }

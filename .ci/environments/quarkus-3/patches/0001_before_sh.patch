@@ -2572,6 +2572,23 @@ index 295de81ef7..e85b0f8c09 100644
  
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.kie.kogito.svg.AbstractProcessSvgService;
+diff --git a/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java b/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java
+index 9316ad12b6..fc98d52f66 100644
+--- a/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java
++++ b/quarkus/addons/python/runtime/src/main/java/org/kie/kogito/quarkus/serverless/workflow/python/PythonWorkItemHandlerConfig.java
+@@ -15,9 +15,9 @@
+  */
+ package org.kie.kogito.quarkus.serverless.workflow.python;
+ 
+-import javax.annotation.PostConstruct;
+-import javax.annotation.PreDestroy;
+-import javax.enterprise.context.ApplicationScoped;
++import jakarta.annotation.PostConstruct;
++import jakarta.annotation.PreDestroy;
++import jakarta.enterprise.context.ApplicationScoped;
+ 
+ import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+ import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 diff --git a/quarkus/addons/rest-exception-handler/pom.xml b/quarkus/addons/rest-exception-handler/pom.xml
 index d0ffa42730..abbc56828f 100644
 --- a/quarkus/addons/rest-exception-handler/pom.xml
