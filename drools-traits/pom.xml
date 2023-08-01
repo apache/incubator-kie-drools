@@ -29,7 +29,9 @@
     <maven.jdbc.driver.jar/>
     <maven.jdbc.username/>
     <maven.jdbc.password/>
-    <maven.jdbc.url>jdbc:h2:mem:test</maven.jdbc.url>
+    <!-- appending ;MODE=LEGACY;OLD_INFORMATION_SCHEMA=TRUE to the jdbc url is necessary to workaround the problem reported at -->
+    <!-- https://github.com/h2database/h2database/issues/3325 -->
+    <maven.jdbc.url>jdbc:h2:mem:test;MODE=LEGACY;OLD_INFORMATION_SCHEMA=TRUE</maven.jdbc.url>
     <maven.jdbc.schema>public</maven.jdbc.schema>
   </properties>
 
