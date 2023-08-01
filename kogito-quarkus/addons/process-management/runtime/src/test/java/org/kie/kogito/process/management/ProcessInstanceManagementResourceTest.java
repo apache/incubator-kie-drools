@@ -17,6 +17,7 @@ package org.kie.kogito.process.management;
 
 import java.util.Optional;
 
+import javax.enterprise.inject.Instance;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
@@ -95,7 +96,9 @@ public class ProcessInstanceManagementResourceTest {
         processInstance = mock(ProcessInstance.class);
         error = mock(ProcessError.class);
 
+        Instance<Processes> processesInstance = mock(Instance.class);
         lenient().when(processes.processById(anyString())).thenReturn(process);
+        lenient().when(processesInstance.get()).thenReturn(processes);
         lenient().when(process.instances()).thenReturn(instances);
         lenient().when(instances.findById(anyString())).thenReturn(Optional.of(processInstance));
         lenient().when(processInstance.error()).thenReturn(Optional.of(error));
@@ -106,7 +109,7 @@ public class ProcessInstanceManagementResourceTest {
         lenient().when(process.get()).thenReturn(mock(KogitoWorkflowProcess.class));
 
         lenient().when(application.unitOfWorkManager()).thenReturn(new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
-        resource = spy(new ProcessInstanceManagementResource(processes, application));
+        resource = spy(new ProcessInstanceManagementResource(processesInstance, application));
     }
 
     @Test

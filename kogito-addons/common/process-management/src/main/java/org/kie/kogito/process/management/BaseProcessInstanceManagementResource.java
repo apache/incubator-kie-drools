@@ -49,17 +49,21 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
     private static final String PROCESS_INSTANCE_NOT_FOUND = "Process instance with id %s not found";
     private static final String PROCESS_INSTANCE_NOT_IN_ERROR = "Process instance with id %s is not in error state";
 
-    private Processes processes;
+    private Supplier<Processes> processes;
 
     private Application application;
 
     public BaseProcessInstanceManagementResource(Processes processes, Application application) {
+        this(() -> processes, application);
+    }
+
+    public BaseProcessInstanceManagementResource(Supplier<Processes> processes, Application application) {
         this.processes = processes;
         this.application = application;
     }
 
     public T doGetProcesses() {
-        return buildOkResponse(processes.processIds());
+        return buildOkResponse(processes.get().processIds());
     }
 
     public T doGetProcessInfo(String processId) {
@@ -209,7 +213,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
             return badRequestResponse(PROCESS_AND_INSTANCE_REQUIRED);
         }
 
-        Process<?> process = processes.processById(processId);
+        Process<?> process = processes.get().processById(processId);
         if (process == null) {
             return notFoundResponse(String.format(PROCESS_NOT_FOUND, processId));
         }
@@ -235,7 +239,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
             return badRequestResponse(PROCESS_AND_INSTANCE_REQUIRED);
         }
 
-        Process<?> process = processes.processById(processId);
+        Process<?> process = processes.get().processById(processId);
         if (process == null) {
             return notFoundResponse(String.format(PROCESS_NOT_FOUND, processId));
         }
@@ -256,7 +260,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
             return badRequestResponse(PROCESS_REQUIRED);
         }
 
-        Process<?> process = processes.processById(processId);
+        Process<?> process = processes.get().processById(processId);
         if (process == null) {
             return notFoundResponse(String.format(PROCESS_NOT_FOUND, processId));
         }

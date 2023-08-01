@@ -18,6 +18,7 @@ package org.kie.kogito.process.management;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Processes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +35,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ProcessInstanceManagementRestController extends BaseProcessInstanceManagementResource<ResponseEntity> {
 
     @Autowired
+    @Lazy
     public ProcessInstanceManagementRestController(Processes processes, Application application) {
         super(processes, application);
     }

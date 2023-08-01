@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.process.management;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,8 +39,8 @@ public class ProcessInstanceManagementResource extends BaseProcessInstanceManage
     }
 
     @Inject
-    public ProcessInstanceManagementResource(Processes processes, Application application) {
-        super(processes, application);
+    public ProcessInstanceManagementResource(Instance<Processes> processes, Application application) {
+        super(processes::get, application);
     }
 
     @Override
