@@ -270,7 +270,7 @@ void runMavenDeploy() {
     if (env.MAVEN_DEPLOY_REPOSITORY) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
-    mvnCmd.skipTests(true).run('clean deploy')
+    mvnCmd.skipTests(true).withProperty('enforcer.skip').run('clean deploy')
 }
 
 void uploadFileMgmt(String directory) {
