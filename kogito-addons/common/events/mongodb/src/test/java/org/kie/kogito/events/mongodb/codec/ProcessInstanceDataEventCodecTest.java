@@ -61,6 +61,7 @@ class ProcessInstanceDataEventCodecTest {
 
         String source = "testSource";
         String kogitoAddons = "testKogitoAddons";
+        String identity = "testIdentity";
 
         Map<String, String> metaData = new HashMap<>();
         metaData.put(ProcessInstanceEventBody.ID_META_DATA, "testKogitoProcessInstanceId");
@@ -81,6 +82,7 @@ class ProcessInstanceDataEventCodecTest {
                 .processType("testKogitoProcessType")
                 .rootProcessId("testKogitoRootProcessId")
                 .processName("testProcessName")
+                .identity(identity)
                 .startDate(new Date())
                 .endDate(new Date())
                 .state(1)
@@ -108,7 +110,7 @@ class ProcessInstanceDataEventCodecTest {
                                 .build()))
                 .build();
 
-        event = new ProcessInstanceDataEvent(source, kogitoAddons, metaData, body);
+        event = new ProcessInstanceDataEvent(source, kogitoAddons, identity, metaData, body);
     }
 
     @Test
@@ -164,6 +166,7 @@ class ProcessInstanceDataEventCodecTest {
                     .containsEntry("kogitoParentProcessinstanceId", event.getKogitoParentProcessInstanceId())
                     .containsEntry("kogitoProcessinstanceState", event.getKogitoProcessInstanceState())
                     .containsEntry("kogitoReferenceId", event.getKogitoReferenceId())
+                    .containsEntry("kogitoIdentity", event.getKogitoIdentity())
                     .containsEntry("kogitoStartFromNode", event.getKogitoStartFromNode());
 
             assertThat(((Document) doc.get("data"))).containsEntry("id", event.getData().getId())
@@ -173,6 +176,7 @@ class ProcessInstanceDataEventCodecTest {
                     .containsEntry("processId", event.getData().getProcessId())
                     .containsEntry("rootProcessId", event.getData().getRootProcessId())
                     .containsEntry("processName", event.getData().getProcessName())
+                    .containsEntry("identity", event.getData().getIdentity())
                     .containsEntry("startDate", event.getData().getStartDate())
                     .containsEntry("endDate", event.getData().getEndDate())
                     .containsEntry("state", event.getData().getState())

@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.kie.kogito.event.EventMarshaller;
+import org.kie.kogito.event.impl.StringEventMarshaller;
 import org.kie.kogito.event.process.ProcessDataEvent;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.event.impl.StringEventMarshaller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -54,6 +54,7 @@ public class MessageProducer extends org.kie.kogito.event.impl.AbstractMessagePr
                 String.valueOf(pi.getState()),
                 null,
                 pi.getProcess().getType(),
-                pi.getReferenceId() == null || pi.getReferenceId().trim().isEmpty() ? null : pi.getReferenceId()) : eventData);
+                pi.getReferenceId() == null || pi.getReferenceId().trim().isEmpty() ? null : pi.getReferenceId(),
+                null) : eventData);
     }
 }

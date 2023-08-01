@@ -36,13 +36,12 @@ public class VariableInstanceEventBody {
     private String changedByNodeId;
     private String changedByNodeName;
     private String changedByNodeType;
-
-    private String changedByUser;
-
     private String processInstanceId;
     private String rootProcessInstanceId;
     private String processId;
     private String rootProcessId;
+
+    private String identity;
 
     private VariableInstanceEventBody() {
     }
@@ -75,10 +74,6 @@ public class VariableInstanceEventBody {
         return changedByNodeType;
     }
 
-    public String getChangedByUser() {
-        return changedByUser;
-    }
-
     public String getProcessInstanceId() {
         return processInstanceId;
     }
@@ -93,6 +88,10 @@ public class VariableInstanceEventBody {
 
     public String getRootProcessId() {
         return rootProcessId;
+    }
+
+    public String getIdentity() {
+        return identity;
     }
 
     public Map<String, String> metaData() {
@@ -114,11 +113,11 @@ public class VariableInstanceEventBody {
                 ", changedByNodeId='" + changedByNodeId + '\'' +
                 ", changedByNodeName='" + changedByNodeName + '\'' +
                 ", changedByNodeType='" + changedByNodeType + '\'' +
-                ", changedByUser='" + changedByUser + '\'' +
                 ", processInstanceId='" + processInstanceId + '\'' +
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", processId='" + processId + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
+                ", identity='" + identity + '\'' +
                 '}';
     }
 
@@ -250,8 +249,8 @@ public class VariableInstanceEventBody {
             return this;
         }
 
-        public Builder changedByUser(String changedByUser) {
-            instance.changedByUser = changedByUser;
+        public Builder identity(String identity) {
+            instance.identity = identity;
             return this;
         }
 

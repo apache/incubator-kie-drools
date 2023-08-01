@@ -68,5 +68,7 @@ public interface DataEvent<T> extends CloudEventContext {
 
     String getKogitoProcessType();
 
+    String getKogitoIdentity();
+
     CloudEvent asCloudEvent(Function<T, CloudEventData> converter);
 }

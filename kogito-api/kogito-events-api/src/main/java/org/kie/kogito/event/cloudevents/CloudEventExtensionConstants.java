@@ -43,6 +43,7 @@ public final class CloudEventExtensionConstants {
     public static final String RULE_UNIT_ID = "kogitoruleunitid";
     public static final String RULE_UNIT_QUERY = "kogitoruleunitquery";
     public static final String BUSINESS_KEY = "kogitobusinesskey";
+    public static final String IDENTITY = "kogitoidentity";
     public static final String ADDONS = "kogitoaddons";
     public static final String EXTENSION_ATTRIBUTES = "extensionattributes";
     public static final String KOGITO_VARIABLE_NAME = "kogitovariablename";

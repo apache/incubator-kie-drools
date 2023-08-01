@@ -1,5 +1,5 @@
 {
-  "id": "greet",
+  "id": "secure",
   "version": "1.0",
   "name": "Greeting workflow",
   "expressionLang": "jsonpath",
@@ -12,9 +12,9 @@
       "operation": "sysout"
     },
     {
-       "name": "isEnglish",
-       "type": "expression",
-       "operation" : "$.[?(@.language  == 'English')]" 
+      "name": "isEnglish",
+      "type": "expression",
+      "operation": "$.[?(@.language  == 'English')]"
     }
   ],
   "states": [

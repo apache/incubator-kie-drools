@@ -68,6 +68,7 @@ import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.services.identity.NoOpIdentityProvider;
 import org.kie.kogito.services.jobs.impl.LegacyInMemoryJobService;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
@@ -96,7 +97,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         initSignalManager();
         unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
         jobService = new LegacyInMemoryJobService(kogitoProcessRuntime, unitOfWorkManager);
-        this.processEventSupport = new KogitoProcessEventSupportImpl();
+        this.processEventSupport = new KogitoProcessEventSupportImpl(new NoOpIdentityProvider());
         if (isActive()) {
             initProcessEventListeners();
             initStartTimers();

@@ -41,8 +41,7 @@ public class UserTaskInstanceDataEvent extends AbstractDataEvent<UserTaskInstanc
     public UserTaskInstanceDataEvent() {
     }
 
-    public UserTaskInstanceDataEvent(String source, String addons, Map<String, String> metaData, UserTaskInstanceEventBody body) {
-
+    public UserTaskInstanceDataEvent(String source, String addons, String identity, Map<String, String> metaData, UserTaskInstanceEventBody body) {
         super("UserTaskInstanceEvent",
                 source,
                 body,
@@ -50,7 +49,8 @@ public class UserTaskInstanceDataEvent extends AbstractDataEvent<UserTaskInstanc
                 metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA),
-                addons);
+                addons,
+                identity);
         addExtensionAttribute(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_STATE, metaData.get(UserTaskInstanceEventBody.UT_STATE_META_DATA));
         addExtensionAttribute(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_ID, metaData.get(metaData.get(UserTaskInstanceEventBody.UT_ID_META_DATA)));
     }

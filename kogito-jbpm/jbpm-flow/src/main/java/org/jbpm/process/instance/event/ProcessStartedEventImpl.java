@@ -23,8 +23,8 @@ public class ProcessStartedEventImpl extends ProcessEvent implements ProcessStar
 
     private static final long serialVersionUID = 510l;
 
-    public ProcessStartedEventImpl(final ProcessInstance instance, KieRuntime kruntime) {
-        super(instance, kruntime);
+    public ProcessStartedEventImpl(ProcessInstance instance, KieRuntime kruntime, String identity) {
+        super(instance, kruntime, identity);
     }
 
     @Override

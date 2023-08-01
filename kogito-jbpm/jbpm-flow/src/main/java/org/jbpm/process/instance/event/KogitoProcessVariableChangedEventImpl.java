@@ -34,8 +34,8 @@ public class KogitoProcessVariableChangedEventImpl extends ProcessEvent implemen
 
     public KogitoProcessVariableChangedEventImpl(final String id, final String instanceId,
             final Object oldValue, final Object newValue, List<String> tags,
-            final ProcessInstance processInstance, KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
-        super(processInstance, kruntime);
+            final ProcessInstance processInstance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, String identity) {
+        super(processInstance, kruntime, identity);
         this.id = id;
         this.instanceId = instanceId;
         this.oldValue = oldValue;

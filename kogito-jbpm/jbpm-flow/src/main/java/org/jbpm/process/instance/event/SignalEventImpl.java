@@ -28,8 +28,8 @@ public class SignalEventImpl extends ProcessEvent implements SignalEvent {
     private Object signalObject;
 
     public SignalEventImpl(ProcessInstance instance, KieRuntime kruntime, NodeInstance nodeInstance,
-            String signalName, Object signalObject) {
-        super(instance, kruntime);
+            String signalName, Object signalObject, String identity) {
+        super(instance, kruntime, identity);
         this.nodeInstance = nodeInstance;
         this.signalName = signalName;
         this.signalObject = signalObject;

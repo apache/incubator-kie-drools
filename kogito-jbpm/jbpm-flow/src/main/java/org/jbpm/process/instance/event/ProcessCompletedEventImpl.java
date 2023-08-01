@@ -23,8 +23,8 @@ public class ProcessCompletedEventImpl extends ProcessEvent implements ProcessCo
 
     private static final long serialVersionUID = 510l;
 
-    public ProcessCompletedEventImpl(final ProcessInstance instance, KieRuntime kruntime) {
-        super(instance, kruntime);
+    public ProcessCompletedEventImpl(ProcessInstance instance, KieRuntime kruntime, String identity) {
+        super(instance, kruntime, identity);
     }
 
     @Override

@@ -30,9 +30,9 @@ public class HumanTaskDeadlineEventImpl extends ProcessEvent
     private Map<String, Object> notification;
     private DeadlineType type;
 
-    public HumanTaskDeadlineEventImpl(final ProcessInstance instance, HumanTaskWorkItem workItem,
-            Map<String, Object> notification, DeadlineType type, KieRuntime kruntime) {
-        super(instance, kruntime);
+    public HumanTaskDeadlineEventImpl(ProcessInstance instance, HumanTaskWorkItem workItem,
+            Map<String, Object> notification, DeadlineType type, KieRuntime kruntime, String identity) {
+        super(instance, kruntime, identity);
         this.workItem = workItem;
         this.notification = notification;
         this.type = type;

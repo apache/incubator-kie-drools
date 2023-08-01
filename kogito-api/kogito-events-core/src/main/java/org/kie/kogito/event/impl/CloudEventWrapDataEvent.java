@@ -179,6 +179,11 @@ public class CloudEventWrapDataEvent<T> implements DataEvent<T> {
     }
 
     @Override
+    public String getKogitoIdentity() {
+        return (String) getExtension(CloudEventExtensionConstants.IDENTITY);
+    }
+
+    @Override
     public CloudEvent asCloudEvent(Function<T, CloudEventData> factory) {
         return cloudEvent;
     }

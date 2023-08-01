@@ -58,6 +58,8 @@ public class ProcessInstanceEventBody {
 
     private Set<MilestoneEventBody> milestones = Collections.emptySet();
 
+    private String identity;
+
     private ProcessInstanceEventBody() {
     }
 
@@ -129,6 +131,10 @@ public class ProcessInstanceEventBody {
         return milestones;
     }
 
+    public String getIdentity() {
+        return identity;
+    }
+
     public Builder update() {
         return new Builder(this);
     }
@@ -166,6 +172,7 @@ public class ProcessInstanceEventBody {
                 ", error=" + error +
                 ", roles=" + roles +
                 ", milestones=" + milestones +
+                ", identity=" + identity +
                 '}';
     }
 
@@ -263,6 +270,11 @@ public class ProcessInstanceEventBody {
 
         public Builder businessKey(String businessKey) {
             instance.businessKey = businessKey;
+            return this;
+        }
+
+        public Builder identity(String identity) {
+            instance.identity = identity;
             return this;
         }
 

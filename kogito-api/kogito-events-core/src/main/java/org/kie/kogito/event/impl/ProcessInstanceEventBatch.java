@@ -103,14 +103,15 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 processedEvents.add(buildUserTaskDeadlineEvent((HumanTaskDeadlineEvent) event));
             }
         }
-        processInstances.values().stream().map(pi -> new ProcessInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.metaData(), pi)).forEach(processedEvents::add);
-        userTaskInstances.values().stream().map(pi -> new UserTaskInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.metaData(), pi)).forEach(processedEvents::add);
-        variables.stream().map(pi -> new VariableInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.metaData(), pi)).forEach(processedEvents::add);
+        processInstances.values().stream().map(pi -> new ProcessInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.getIdentity(), pi.metaData(), pi))
+                .forEach(processedEvents::add);
+        userTaskInstances.values().stream().map(pi -> new UserTaskInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.getIdentity(), pi.metaData(), pi))
+                .forEach(processedEvents::add);
+        variables.stream().map(pi -> new VariableInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.getIdentity(), pi.metaData(), pi)).forEach(processedEvents::add);
         return processedEvents;
     }
 
     private DataEvent<?> buildUserTaskDeadlineEvent(HumanTaskDeadlineEvent event) {
-
         HumanTaskWorkItem workItem = event.getWorkItem();
         KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
         UserTaskDeadlineEventBody body = UserTaskDeadlineEventBody.create(workItem.getStringId(), event
@@ -129,7 +130,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .inputs(workItem.getParameters())
                 .outputs(workItem.getResults()).build();
         return new UserTaskDeadlineDataEvent("UserTaskDeadline" + event.getType(), buildSource(pi.getProcessId()),
-                addons.toString(), body, pi.getStringId(), pi.getRootProcessInstanceId(), pi.getProcessId(), pi
+                addons.toString(), event.getEventIdentity(), body, pi.getStringId(), pi.getRootProcessInstanceId(), pi.getProcessId(), pi
                         .getRootProcessId());
     }
 
@@ -196,6 +197,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .outputs(workItem.getResults())
                 .comments(workItem.getComments().values().stream().map(createComment()).collect(toList()))
                 .attachments(workItem.getAttachments().values().stream().map(createAttachment()).collect(toList()))
+                .identity(workItemTransitionEvent.getEventIdentity())
                 .build();
     }
 
@@ -234,7 +236,8 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .state(pi.getState())
                 .businessKey(pi.getCorrelationKey())
                 .variables(pi.getVariables())
-                .milestones(createMilestones(pi));
+                .milestones(createMilestones(pi))
+                .identity(event.getEventIdentity());
 
         if (pi.getState() == KogitoProcessInstance.STATE_ERROR) {
             eventBuilder.error(ProcessErrorEventBody.create()
@@ -286,7 +289,8 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .rootProcessInstanceId(pi.getRootProcessInstanceId())
                 .variableName(event.getVariableId())
                 .variableValue(event.getNewValue())
-                .variablePreviousValue(event.getOldValue());
+                .variablePreviousValue(event.getOldValue())
+                .identity(event.getEventIdentity());
 
         if (event.getNodeInstance() != null) {
             eventBuilder

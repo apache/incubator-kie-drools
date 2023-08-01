@@ -15,11 +15,13 @@
  */
 package org.kie.kogito.process.impl;
 
+import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessEventListenerConfig;
 import org.kie.kogito.process.ProcessVersionResolver;
 import org.kie.kogito.process.WorkItemHandlerConfig;
+import org.kie.kogito.services.identity.NoOpIdentityProvider;
 import org.kie.kogito.services.signal.DefaultSignalManagerHub;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
@@ -35,11 +37,13 @@ public class StaticProcessConfig implements ProcessConfig {
     private final JobsService jobsService;
     private final ProcessVersionResolver versionResolver;
 
+    private final IdentityProvider identityProvider;
+
     public StaticProcessConfig(
             WorkItemHandlerConfig workItemHandlerConfig,
             ProcessEventListenerConfig processEventListenerConfig,
             UnitOfWorkManager unitOfWorkManager) {
-        this(workItemHandlerConfig, processEventListenerConfig, unitOfWorkManager, null, null);
+        this(workItemHandlerConfig, processEventListenerConfig, unitOfWorkManager, null, null, new NoOpIdentityProvider());
     }
 
     public StaticProcessConfig(
@@ -47,13 +51,15 @@ public class StaticProcessConfig implements ProcessConfig {
             ProcessEventListenerConfig processEventListenerConfig,
             UnitOfWorkManager unitOfWorkManager,
             JobsService jobsService,
-            ProcessVersionResolver versionResolver) {
+            ProcessVersionResolver versionResolver,
+            IdentityProvider identityProvider) {
         this.unitOfWorkManager = unitOfWorkManager;
         this.workItemHandlerConfig = workItemHandlerConfig;
         this.processEventListenerConfig = processEventListenerConfig;
         this.signalManager = new DefaultSignalManagerHub();
         this.jobsService = jobsService;
         this.versionResolver = versionResolver;
+        this.identityProvider = identityProvider;
     }
 
     public StaticProcessConfig() {
@@ -61,7 +67,8 @@ public class StaticProcessConfig implements ProcessConfig {
                 new DefaultProcessEventListenerConfig(),
                 new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()),
                 null,
-                null);
+                null,
+                new NoOpIdentityProvider());
     }
 
     @Override
@@ -92,5 +99,10 @@ public class StaticProcessConfig implements ProcessConfig {
     @Override
     public ProcessVersionResolver versionResolver() {
         return versionResolver;
+    }
+
+    @Override
+    public IdentityProvider identityProvider() {
+        return identityProvider;
     }
 }

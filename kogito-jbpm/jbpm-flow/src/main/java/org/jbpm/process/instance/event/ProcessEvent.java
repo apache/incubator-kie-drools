@@ -25,13 +25,19 @@ public class ProcessEvent extends EventObject {
 
     private static final long serialVersionUID = 510l;
 
-    private KieRuntime kruntime;
+    private final KieRuntime kruntime;
     private final Date eventDate;
+    private final String eventIdentity;
 
-    public ProcessEvent(final ProcessInstance instance, KieRuntime kruntime) {
+    public ProcessEvent(final ProcessInstance instance, final KieRuntime kruntime) {
+        this(instance, kruntime, null);
+    }
+
+    public ProcessEvent(final ProcessInstance instance, final KieRuntime kruntime, final String identity) {
         super(instance);
         this.kruntime = kruntime;
         this.eventDate = new Date();
+        this.eventIdentity = identity;
     }
 
     public ProcessInstance getProcessInstance() {
@@ -46,4 +52,7 @@ public class ProcessEvent extends EventObject {
         return this.eventDate;
     }
 
+    public String getEventIdentity() {
+        return eventIdentity;
+    }
 }

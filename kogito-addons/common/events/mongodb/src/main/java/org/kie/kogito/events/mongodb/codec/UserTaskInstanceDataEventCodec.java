@@ -89,6 +89,7 @@ public class UserTaskInstanceDataEventCodec implements CollectibleCodec<UserTask
         doc.put("rootProcessInstanceId", data.getRootProcessInstanceId());
         doc.put("processId", data.getProcessId());
         doc.put("rootProcessId", data.getRootProcessId());
+        doc.put("identity", data.getIdentity());
 
         if (data.getComments() != null) {
             doc.put("comments",

@@ -25,7 +25,8 @@ public class ConfiguredProcessServices extends AbstractProcessRuntimeServiceProv
                 config.workItemHandlers(),
                 config.processEventListeners(),
                 config.signalManagerHub(),
-                config.unitOfWorkManager());
+                config.unitOfWorkManager(),
+                config.identityProvider());
 
     }
 }

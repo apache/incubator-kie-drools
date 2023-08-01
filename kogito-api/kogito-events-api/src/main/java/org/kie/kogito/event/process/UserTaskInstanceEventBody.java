@@ -55,6 +55,8 @@ public class UserTaskInstanceEventBody {
     private String processId;
     private String rootProcessId;
 
+    private String identity;
+
     private UserTaskInstanceEventBody() {
 
     }
@@ -159,6 +161,10 @@ public class UserTaskInstanceEventBody {
         this.attachments = attachments;
     }
 
+    public String getIdentity() {
+        return identity;
+    }
+
     public Map<String, String> metaData() {
         Map<String, String> metadata = new HashMap<>();
         metadata.put(UT_ID_META_DATA, id);
@@ -197,6 +203,7 @@ public class UserTaskInstanceEventBody {
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", processId='" + processId + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
+                ", identity='" + identity + '\'' +
                 '}';
     }
 
@@ -357,6 +364,11 @@ public class UserTaskInstanceEventBody {
 
         public Builder rootProcessId(String rootProcessId) {
             instance.rootProcessId = rootProcessId;
+            return this;
+        }
+
+        public Builder identity(String identity) {
+            instance.identity = identity;
             return this;
         }
     }

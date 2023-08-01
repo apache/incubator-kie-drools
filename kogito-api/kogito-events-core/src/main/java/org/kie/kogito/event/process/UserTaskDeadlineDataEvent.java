@@ -22,7 +22,7 @@ public class UserTaskDeadlineDataEvent extends AbstractDataEvent<UserTaskDeadlin
     public UserTaskDeadlineDataEvent() {
     }
 
-    public UserTaskDeadlineDataEvent(String type, String source, String addons,
+    public UserTaskDeadlineDataEvent(String type, String source, String addons, String identity,
             UserTaskDeadlineEventBody body, String processInstanceId,
             String rootProcessInstanceId, String processId, String rootProcessId) {
         super(type,
@@ -32,7 +32,8 @@ public class UserTaskDeadlineDataEvent extends AbstractDataEvent<UserTaskDeadlin
                 rootProcessInstanceId,
                 processId,
                 rootProcessId,
-                addons);
+                addons,
+                identity);
     }
 
 }

@@ -26,12 +26,12 @@ public class SLAViolatedEventImpl extends ProcessEvent implements SLAViolatedEve
     private static final long serialVersionUID = 510l;
     private NodeInstance nodeInstance;
 
-    public SLAViolatedEventImpl(final ProcessInstance instance, KieRuntime kruntime) {
-        super(instance, kruntime);
+    public SLAViolatedEventImpl(final ProcessInstance instance, KieRuntime kruntime, String identity) {
+        super(instance, kruntime, identity);
     }
 
-    public SLAViolatedEventImpl(final ProcessInstance instance, NodeInstance nodeInstance, KieRuntime kruntime) {
-        super(instance, kruntime);
+    public SLAViolatedEventImpl(ProcessInstance instance, NodeInstance nodeInstance, KieRuntime kruntime, String identity) {
+        super(instance, kruntime, identity);
         this.nodeInstance = nodeInstance;
     }
 

@@ -20,6 +20,7 @@ import java.util.Optional;
 import org.jbpm.process.instance.event.KogitoProcessEventSupportImpl;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManager;
 import org.kie.api.event.process.ProcessEventListener;
+import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
@@ -45,14 +46,15 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
             WorkItemHandlerConfig workItemHandlerProvider,
             ProcessEventListenerConfig processEventListenerProvider,
             SignalManagerHub compositeSignalManager,
-            UnitOfWorkManager unitOfWorkManager) {
+            UnitOfWorkManager unitOfWorkManager,
+            IdentityProvider identityProvider) {
         this.unitOfWorkManager = unitOfWorkManager;
         processInstanceManager = new DefaultProcessInstanceManager();
         signalManager = new LightSignalManager(
                 id -> Optional.ofNullable(
                         processInstanceManager.getProcessInstance(id)),
                 compositeSignalManager);
-        this.eventSupport = new KogitoProcessEventSupportImpl();
+        this.eventSupport = new KogitoProcessEventSupportImpl(identityProvider);
         this.jobsService = jobsService;
         this.workItemManager = new LightWorkItemManager(processInstanceManager, signalManager, eventSupport);
 

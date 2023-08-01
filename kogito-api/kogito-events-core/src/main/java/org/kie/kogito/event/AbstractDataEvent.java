@@ -147,6 +147,10 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoProcessType;
 
+    @JsonProperty(CloudEventExtensionConstants.IDENTITY)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    protected String kogitoIdentity;
+
     private static final Set<String> INTERNAL_EXTENSION_ATTRIBUTES = new HashSet<>(Arrays.asList(
             CloudEventExtensionConstants.PROCESS_INSTANCE_ID,
             CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID,
@@ -159,7 +163,8 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
             CloudEventExtensionConstants.PROCESS_REFERENCE_ID,
             CloudEventExtensionConstants.PROCESS_START_FROM_NODE,
             CloudEventExtensionConstants.BUSINESS_KEY,
-            CloudEventExtensionConstants.PROCESS_TYPE));
+            CloudEventExtensionConstants.PROCESS_TYPE,
+            CloudEventExtensionConstants.IDENTITY));
 
     private Map<String, Object> extensionAttributes = new HashMap<>();
 
@@ -173,8 +178,9 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
             String kogitoRootProcessInstanceId,
             String kogitoProcessId,
             String kogitoRootProcessId,
-            String kogitoAddons) {
-        this(type, source, body, kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons, null, DATA_CONTENT_TYPE, null);
+            String kogitoAddons,
+            String kogitoIdentity) {
+        this(type, source, body, kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons, kogitoIdentity, null, DATA_CONTENT_TYPE, null);
     }
 
     protected AbstractDataEvent(String type,
@@ -185,6 +191,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
             String kogitoProcessId,
             String kogitoRootProcessId,
             String kogitoAddons,
+            String kogitoIdentity,
             String subject,
             String dataContentType,
             String dataSchema) {
@@ -199,6 +206,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
         setKogitoProcessId(kogitoProcessId);
         setKogitoRootProcessId(kogitoRootProcessId);
         setKogitoAddons(kogitoAddons);
+        setKogitoIdentity(kogitoIdentity);
         this.subject = subject;
         this.dataContentType = dataContentType;
         this.dataSchema = dataSchema != null ? URI.create(dataSchema) : null;
@@ -282,6 +290,11 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     @Override
     public String getKogitoAddons() {
         return kogitoAddons;
+    }
+
+    @Override
+    public String getKogitoIdentity() {
+        return kogitoIdentity;
     }
 
     @Override
@@ -433,6 +446,10 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
         addExtensionAttribute(CloudEventExtensionConstants.ADDONS, kogitoAddons);
     }
 
+    public void setKogitoIdentity(String identity) {
+        addExtensionAttribute(CloudEventExtensionConstants.IDENTITY, identity);
+    }
+
     public void setKogitoStartFromNode(String kogitoStartFromNode) {
         addExtensionAttribute(CloudEventExtensionConstants.PROCESS_START_FROM_NODE, kogitoStartFromNode);
     }
@@ -501,6 +518,9 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
                 case CloudEventExtensionConstants.BUSINESS_KEY:
                     this.kogitoBusinessKey = (String) value;
                     break;
+                case CloudEventExtensionConstants.IDENTITY:
+                    this.kogitoIdentity = (String) value;
+                    break;
             }
             extensionAttributes.put(name, value);
         }
@@ -548,6 +568,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
                 ", kogitoProcessId='" + kogitoProcessId + '\'' +
                 ", kogitoRootProcessId='" + kogitoRootProcessId + '\'' +
                 ", kogitoAddons='" + kogitoAddons + '\'' +
+                ", kogitoIdentity='" + kogitoIdentity + '\'' +
                 ", extensionAttributes=" + extensionAttributes +
                 '}';
     }

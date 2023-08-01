@@ -22,7 +22,7 @@ public class ProcessInstanceDataEvent extends ProcessDataEvent<ProcessInstanceEv
     public ProcessInstanceDataEvent() {
     }
 
-    public ProcessInstanceDataEvent(String source, String addons, Map<String, String> metaData, ProcessInstanceEventBody body) {
+    public ProcessInstanceDataEvent(String source, String addons, String identity, Map<String, String> metaData, ProcessInstanceEventBody body) {
         super("ProcessInstanceEvent",
                 source,
                 body,
@@ -35,6 +35,7 @@ public class ProcessInstanceDataEvent extends ProcessDataEvent<ProcessInstanceEv
                 metaData.get(ProcessInstanceEventBody.STATE_META_DATA),
                 addons,
                 metaData.get(ProcessInstanceEventBody.PROCESS_TYPE_META_DATA),
-                null);
+                null,
+                identity);
     }
 }

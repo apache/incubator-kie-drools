@@ -59,7 +59,7 @@ public class QuarkusMailSenderTest {
         notification.put(MailInfo.TO_PROPERTY, TO + ",fulanito@doesnotexist.com");
 
         UserTaskDeadlineEventBody eventData = UserTaskDeadlineEventBody.create("1", notification).build();
-        UserTaskDeadlineDataEvent event = new UserTaskDeadlineDataEvent(null, null, null, eventData, null, null, null, null);
+        UserTaskDeadlineDataEvent event = new UserTaskDeadlineDataEvent(null, null, null, null, eventData, null, null, null, null);
         sender.onDeadline(event);
         List<Mail> messages = mailBox.getMessagesSentTo(TO);
         assertEquals(1, messages.size());

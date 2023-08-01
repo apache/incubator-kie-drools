@@ -28,8 +28,8 @@ public class MessageEventImpl extends ProcessEvent implements MessageEvent {
     private Object messageObject;
 
     public MessageEventImpl(ProcessInstance instance, KieRuntime kruntime, NodeInstance nodeInstance,
-            String messageName, Object messageObject) {
-        super(instance, kruntime);
+            String messageName, Object messageObject, String identity) {
+        super(instance, kruntime, identity);
         this.nodeInstance = nodeInstance;
         this.messageName = messageName;
         this.messageObject = messageObject;

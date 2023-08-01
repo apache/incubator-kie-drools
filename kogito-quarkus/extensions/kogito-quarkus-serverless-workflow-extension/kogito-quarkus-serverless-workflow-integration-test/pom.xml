@@ -59,6 +59,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-events-process</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-elytron-security-properties-file</artifactId>
+    </dependency>
     <!-- Testing dependencies -->
     <dependency>
       <groupId>org.kie.kogito</groupId>

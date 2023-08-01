@@ -67,6 +67,7 @@ public class ProcessInstanceDataEventCodec implements CollectibleCodec<ProcessIn
         doc.put("kogitoProcessinstanceState", processInstanceDataEvent.getKogitoProcessInstanceState());
         doc.put("kogitoReferenceId", processInstanceDataEvent.getKogitoReferenceId());
         doc.put("kogitoStartFromNode", processInstanceDataEvent.getKogitoStartFromNode());
+        doc.put("kogitoIdentity", processInstanceDataEvent.getKogitoIdentity());
         doc.put("data", encodeData(processInstanceDataEvent.getData()));
         codec().encode(bsonWriter, doc, encoderContext);
     }
@@ -86,6 +87,7 @@ public class ProcessInstanceDataEventCodec implements CollectibleCodec<ProcessIn
         doc.put("state", data.getState());
         doc.put("businessKey", data.getBusinessKey());
         doc.put("roles", data.getRoles());
+        doc.put("identity", data.getIdentity());
 
         if (data.getVariables() != null) {
             doc.put("variables", new Document(data.getVariables()));

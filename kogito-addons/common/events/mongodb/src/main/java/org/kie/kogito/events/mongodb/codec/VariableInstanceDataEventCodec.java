@@ -73,7 +73,7 @@ public class VariableInstanceDataEventCodec implements CollectibleCodec<Variable
         doc.put("changedByNodeId", data.getChangedByNodeId());
         doc.put("changedByNodeName", data.getChangedByNodeName());
         doc.put("changedByNodeType", data.getChangedByNodeType());
-        doc.put("changedByUser", data.getChangedByUser());
+        doc.put("identity", data.getIdentity());
         doc.put("processInstanceId", data.getProcessInstanceId());
         doc.put("rootProcessInstanceId", data.getRootProcessInstanceId());
         doc.put("processId", data.getProcessId());

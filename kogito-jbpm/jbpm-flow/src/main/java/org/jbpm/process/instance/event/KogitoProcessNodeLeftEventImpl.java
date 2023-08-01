@@ -26,8 +26,8 @@ public class KogitoProcessNodeLeftEventImpl extends ProcessEvent implements Proc
 
     private NodeInstance nodeInstance;
 
-    public KogitoProcessNodeLeftEventImpl(final NodeInstance nodeInstance, KieRuntime kruntime) {
-        super(nodeInstance.getProcessInstance(), kruntime);
+    public KogitoProcessNodeLeftEventImpl(NodeInstance nodeInstance, KieRuntime kruntime, String identity) {
+        super(nodeInstance.getProcessInstance(), kruntime, identity);
         this.nodeInstance = nodeInstance;
     }
 

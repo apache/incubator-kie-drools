@@ -194,7 +194,7 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         assertThat(variableEventBody.getChangedByNodeId()).isEqualTo("BusinessRuleTask_2");
         assertThat(variableEventBody.getChangedByNodeName()).isEqualTo("Business Rule Task");
         assertThat(variableEventBody.getChangedByNodeType()).isEqualTo("RuleSetNode");
-        assertThat(variableEventBody.getChangedByUser()).isNull();
+        assertThat(variableEventBody.getIdentity()).isNull();
     }
 
     /*

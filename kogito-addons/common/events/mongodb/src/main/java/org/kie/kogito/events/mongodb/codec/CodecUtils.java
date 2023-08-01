@@ -52,6 +52,7 @@ public class CodecUtils {
         doc.put("kogitoProcessId", event.getKogitoProcessId());
         doc.put("kogitoRootProcessId", event.getKogitoRootProcessId());
         doc.put("kogitoAddons", event.getKogitoAddons());
+        doc.put("kogitoIdentity", event.getKogitoIdentity());
     }
 
     static Codec<Document> codec() {

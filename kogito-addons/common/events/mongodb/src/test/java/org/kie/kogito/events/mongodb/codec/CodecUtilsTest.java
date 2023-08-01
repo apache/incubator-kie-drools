@@ -41,6 +41,7 @@ class CodecUtilsTest {
         String kogitoProcessId = "testKogitoProcessId";
         String kogitoRootProcessId = "testKogitoRootProcessId";
         String kogitoAddons = "testKogitoAddons";
+        String identity = "testKogitoIdentity";
 
         Map<String, String> metaData = new HashMap<>();
         metaData.put(ProcessInstanceEventBody.ID_META_DATA, kogitoProcessInstanceId);
@@ -49,7 +50,7 @@ class CodecUtilsTest {
         metaData.put(ProcessInstanceEventBody.PROCESS_ID_META_DATA, kogitoProcessId);
         metaData.put(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA, kogitoRootProcessId);
 
-        VariableInstanceDataEvent event = new VariableInstanceDataEvent(source, kogitoAddons, metaData, mock(VariableInstanceEventBody.class));
+        VariableInstanceDataEvent event = new VariableInstanceDataEvent(source, kogitoAddons, identity, metaData, mock(VariableInstanceEventBody.class));
         Document doc = new Document();
 
         CodecUtils.encodeDataEvent(doc, event);
@@ -66,7 +67,8 @@ class CodecUtilsTest {
                 .containsEntry("kogitoRootProcessinstanceId", event.getKogitoRootProcessInstanceId())
                 .containsEntry("kogitoProcessId", event.getKogitoProcessId())
                 .containsEntry("kogitoRootProcessId", event.getKogitoRootProcessId())
-                .containsEntry("kogitoAddons", event.getKogitoAddons());
+                .containsEntry("kogitoAddons", event.getKogitoAddons())
+                .containsEntry("kogitoIdentity", event.getKogitoIdentity());
     }
 
     @Test

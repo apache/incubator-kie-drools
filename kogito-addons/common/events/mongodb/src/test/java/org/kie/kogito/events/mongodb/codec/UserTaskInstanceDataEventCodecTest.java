@@ -62,6 +62,7 @@ class UserTaskInstanceDataEventCodecTest {
 
         String source = "testSource";
         String kogitoAddons = "testKogitoAddons";
+        String identity = "testIdentity";
 
         CommentEventBody comment = CommentEventBody.create()
                 .id("testCommentId")
@@ -110,11 +111,12 @@ class UserTaskInstanceDataEventCodecTest {
                 .rootProcessInstanceId("testKogitoRootProcessInstanceId")
                 .processId("testKogitoProcessId")
                 .rootProcessId("testKogitoRootProcessId")
+                .identity(identity)
                 .comments(comments)
                 .attachments(attachments)
                 .build();
 
-        event = new UserTaskInstanceDataEvent(source, kogitoAddons, metaData, body);
+        event = new UserTaskInstanceDataEvent(source, kogitoAddons, identity, metaData, body);
     }
 
     @Test
@@ -166,7 +168,8 @@ class UserTaskInstanceDataEventCodecTest {
                     .containsEntry("kogitoRootProcessId", event.getKogitoRootProcessId())
                     .containsEntry("kogitoAddons", event.getKogitoAddons())
                     .containsEntry("kogitoUserTaskinstanceId", event.getKogitoUserTaskinstanceId())
-                    .containsEntry("kogitoUserTaskinstanceState", event.getKogitoUserTaskinstanceState());
+                    .containsEntry("kogitoUserTaskinstanceState", event.getKogitoUserTaskinstanceState())
+                    .containsEntry("kogitoIdentity", event.getKogitoIdentity());
 
             assertThat(((Document) doc.get("data"))).containsEntry("id", event.getData().getId())
                     .containsEntry("taskName", event.getData().getTaskName())
@@ -186,6 +189,7 @@ class UserTaskInstanceDataEventCodecTest {
                     .containsEntry("outputs", new Document(event.getData().getOutputs()))
                     .containsEntry("processInstanceId", event.getData().getProcessInstanceId())
                     .containsEntry("rootProcessInstanceId", event.getData().getRootProcessInstanceId())
+                    .containsEntry("identity", event.getData().getIdentity())
                     .containsEntry("processId", event.getData().getProcessId())
                     .containsEntry("rootProcessId", event.getData().getRootProcessId());
 

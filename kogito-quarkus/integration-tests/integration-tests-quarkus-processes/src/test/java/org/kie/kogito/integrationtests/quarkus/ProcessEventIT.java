@@ -82,7 +82,10 @@ class ProcessEventIT {
     void testSaveTask() throws Exception {
         Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish");
         final CountDownLatch countDownLatch = new CountDownLatch(6);
-        final CompletableFuture future = new CompletableFuture();
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+
+        String username = "buddy";
+        String password = "buddy";
 
         kafkaClient.consume(Set.of(KOGITO_PROCESSINSTANCES_EVENTS, KOGITO_USERTASKINSTANCES_EVENTS, KOGITO_VARIABLE_EVENTS), s -> {
             LOGGER.info("Received from kafka: {}", s);
@@ -98,18 +101,21 @@ class ProcessEventIT {
                             assertEquals("1.0", event.getKogitoProcessInstanceVersion());
                             assertEquals("BPMN", data.get("processType"));
                             assertEquals("BPMN", event.getKogitoProcessType());
+                            assertEquals(username, event.getKogitoIdentity());
                             break;
                         case "UserTaskInstanceEvent":
                             assertEquals("UserTaskInstanceEvent", event.getType());
                             assertEquals("/handleApprovals", event.getSource().toString());
                             assertEquals("handleApprovals", data.get("processId"));
                             assertEquals("1.0", event.getKogitoProcessInstanceVersion());
+                            assertEquals(username, event.getKogitoIdentity());
                             break;
                         case "VariableInstanceEvent":
                             assertEquals("VariableInstanceEvent", event.getType());
                             assertEquals("/handleApprovals", event.getSource().toString());
                             assertEquals("handleApprovals", data.get("processId"));
                             assertEquals("1.0", event.getKogitoProcessInstanceVersion());
+                            assertEquals(username, event.getKogitoIdentity());
                             break;
                     }
                 }
@@ -124,6 +130,7 @@ class ProcessEventIT {
 
         String processId = given()
                 .contentType(ContentType.JSON)
+                .auth().basic(username, password)
                 .when()
                 .body(Collections.singletonMap("traveller", traveller))
                 .post("/handleApprovals")
@@ -133,6 +140,7 @@ class ProcessEventIT {
                 .path("id");
         String taskId = given()
                 .contentType(ContentType.JSON)
+                .auth().basic(username, password)
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
@@ -145,7 +153,9 @@ class ProcessEventIT {
 
         Map<String, Object> model = Collections.singletonMap("approved", true);
 
-        assertEquals(model, given().contentType(ContentType.JSON)
+        assertEquals(model, given()
+                .contentType(ContentType.JSON)
+                .auth().basic(username, password)
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
@@ -158,7 +168,9 @@ class ProcessEventIT {
                 .extract()
                 .as(Map.class));
 
-        assertEquals(true, given().contentType(ContentType.JSON)
+        assertEquals(true, given()
+                .contentType(ContentType.JSON)
+                .auth().basic(username, password)
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
@@ -170,8 +182,9 @@ class ProcessEventIT {
                 .extract()
                 .path("results.approved"));
 
-        String humanTaskId = given()
+        given()
                 .contentType(ContentType.JSON)
+                .auth().basic(username, password)
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)

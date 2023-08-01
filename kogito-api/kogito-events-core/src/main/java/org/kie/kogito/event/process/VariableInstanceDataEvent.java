@@ -37,8 +37,7 @@ public class VariableInstanceDataEvent extends AbstractDataEvent<VariableInstanc
     public VariableInstanceDataEvent() {
     }
 
-    public VariableInstanceDataEvent(String source, String addons, Map<String, String> metaData, VariableInstanceEventBody body) {
-
+    public VariableInstanceDataEvent(String source, String addons, String identity, Map<String, String> metaData, VariableInstanceEventBody body) {
         super("VariableInstanceEvent",
                 source,
                 body,
@@ -46,7 +45,8 @@ public class VariableInstanceDataEvent extends AbstractDataEvent<VariableInstanc
                 metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA),
-                addons);
+                addons,
+                identity);
         this.kogitoVariableName = body.getVariableName();
     }
 

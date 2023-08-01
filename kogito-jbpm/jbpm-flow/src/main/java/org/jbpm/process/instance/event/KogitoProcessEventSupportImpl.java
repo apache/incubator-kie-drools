@@ -31,6 +31,7 @@ import org.kie.api.event.process.SLAViolatedEvent;
 import org.kie.api.event.process.SignalEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.internal.runtime.Closeable;
+import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.internal.process.event.HumanTaskDeadlineEvent;
 import org.kie.kogito.internal.process.event.HumanTaskDeadlineEvent.DeadlineType;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
@@ -44,16 +45,15 @@ import org.kie.kogito.process.workitem.Transition;
 
 public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport {
 
-    private List<KogitoProcessEventListener> listeners = new CopyOnWriteArrayList();
+    private final List<KogitoProcessEventListener> listeners = new CopyOnWriteArrayList<>();
 
-    public KogitoProcessEventSupportImpl(List<KogitoProcessEventListener> listeners) {
-        listeners.forEach(l -> addEventListener(l));
-    }
+    private final IdentityProvider identityProvider;
 
     /**
      * Do not use this constructor. It should be used just by deserialization.
      */
-    public KogitoProcessEventSupportImpl() {
+    public KogitoProcessEventSupportImpl(IdentityProvider identityProvider) {
+        this.identityProvider = identityProvider;
     }
 
     private void notifyAllListeners(Consumer<KogitoProcessEventListener> consumer) {
@@ -88,49 +88,49 @@ public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport 
 
     @Override
     public void fireBeforeProcessStarted(final KogitoProcessInstance instance, KieRuntime kruntime) {
-        final ProcessStartedEvent event = new ProcessStartedEventImpl(instance, kruntime);
+        final ProcessStartedEvent event = new ProcessStartedEventImpl(instance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.beforeProcessStarted(event));
     }
 
     @Override
     public void fireAfterProcessStarted(final KogitoProcessInstance instance, KieRuntime kruntime) {
-        final ProcessStartedEvent event = new ProcessStartedEventImpl(instance, kruntime);
+        final ProcessStartedEvent event = new ProcessStartedEventImpl(instance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.afterProcessStarted(event));
     }
 
     @Override
     public void fireBeforeProcessCompleted(final KogitoProcessInstance instance, KieRuntime kruntime) {
-        final ProcessCompletedEvent event = new ProcessCompletedEventImpl(instance, kruntime);
+        final ProcessCompletedEvent event = new ProcessCompletedEventImpl(instance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.beforeProcessCompleted(event));
     }
 
     @Override
     public void fireAfterProcessCompleted(final KogitoProcessInstance instance, KieRuntime kruntime) {
-        final ProcessCompletedEvent event = new ProcessCompletedEventImpl(instance, kruntime);
+        final ProcessCompletedEvent event = new ProcessCompletedEventImpl(instance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.afterProcessCompleted(event));
     }
 
     @Override
     public void fireBeforeNodeTriggered(final KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
-        final ProcessNodeTriggeredEvent event = new KogitoProcessNodeTriggeredEventImpl(nodeInstance, kruntime);
+        final ProcessNodeTriggeredEvent event = new KogitoProcessNodeTriggeredEventImpl(nodeInstance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.beforeNodeTriggered(event));
     }
 
     @Override
     public void fireAfterNodeTriggered(final KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
-        final ProcessNodeTriggeredEvent event = new KogitoProcessNodeTriggeredEventImpl(nodeInstance, kruntime);
+        final ProcessNodeTriggeredEvent event = new KogitoProcessNodeTriggeredEventImpl(nodeInstance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.afterNodeTriggered(event));
     }
 
     @Override
     public void fireBeforeNodeLeft(final KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
-        final ProcessNodeLeftEvent event = new KogitoProcessNodeLeftEventImpl(nodeInstance, kruntime);
+        final ProcessNodeLeftEvent event = new KogitoProcessNodeLeftEventImpl(nodeInstance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.beforeNodeLeft(event));
     }
 
     @Override
     public void fireAfterNodeLeft(final KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
-        final ProcessNodeLeftEvent event = new KogitoProcessNodeLeftEventImpl(nodeInstance, kruntime);
+        final ProcessNodeLeftEvent event = new KogitoProcessNodeLeftEventImpl(nodeInstance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.afterNodeLeft(event));
     }
 
@@ -140,7 +140,7 @@ public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport 
             final List<String> tags,
             final KogitoProcessInstance processInstance, KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
         final ProcessVariableChangedEvent event = new KogitoProcessVariableChangedEventImpl(
-                id, instanceId, oldValue, newValue, tags, processInstance, nodeInstance, kruntime);
+                id, instanceId, oldValue, newValue, tags, processInstance, nodeInstance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.beforeVariableChanged(event));
     }
 
@@ -150,56 +150,55 @@ public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport 
             final List<String> tags,
             final KogitoProcessInstance processInstance, KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
         final ProcessVariableChangedEvent event = new KogitoProcessVariableChangedEventImpl(
-                name, id, oldValue, newValue, tags, processInstance, nodeInstance, kruntime);
+                name, id, oldValue, newValue, tags, processInstance, nodeInstance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.afterVariableChanged(event));
     }
 
     @Override
     public void fireBeforeSLAViolated(final KogitoProcessInstance instance, KieRuntime kruntime) {
-        final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime);
+        final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.beforeSLAViolated(event));
     }
 
     @Override
     public void fireAfterSLAViolated(final KogitoProcessInstance instance, KieRuntime kruntime) {
-        final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime);
+        final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.afterSLAViolated(event));
     }
 
     @Override
     public void fireBeforeSLAViolated(final KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
-        final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime);
+        final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.beforeSLAViolated(event));
     }
 
     @Override
     public void fireAfterSLAViolated(final KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
-        final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime);
+        final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.afterSLAViolated(event));
     }
 
     @Override
     public void fireBeforeWorkItemTransition(final KogitoProcessInstance instance, KogitoWorkItem workitem, Transition<?> transition, KieRuntime kruntime) {
-        final ProcessWorkItemTransitionEvent event = new KogitoProcessWorkItemTransitionEventImpl(instance, workitem, transition, kruntime, false);
+        final ProcessWorkItemTransitionEvent event = new KogitoProcessWorkItemTransitionEventImpl(instance, workitem, transition, kruntime, false, identityProvider.getName());
         notifyAllListeners(l -> l.beforeWorkItemTransition(event));
     }
 
     @Override
     public void fireAfterWorkItemTransition(final KogitoProcessInstance instance, KogitoWorkItem workitem, Transition<?> transition, KieRuntime kruntime) {
-        final ProcessWorkItemTransitionEvent event = new KogitoProcessWorkItemTransitionEventImpl(instance, workitem, transition, kruntime, true);
+        final ProcessWorkItemTransitionEvent event = new KogitoProcessWorkItemTransitionEventImpl(instance, workitem, transition, kruntime, true, identityProvider.getName());
         notifyAllListeners(l -> l.afterWorkItemTransition(event));
     }
 
     @Override
     public void fireOnSignal(final KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, String signalName, Object signalObject) {
-        final SignalEvent event = new SignalEventImpl(instance, kruntime, nodeInstance, signalName, signalObject);
+        final SignalEvent event = new SignalEventImpl(instance, kruntime, nodeInstance, signalName, signalObject, identityProvider.getName());
         notifyAllListeners(l -> l.onSignal(event));
     }
 
     @Override
     public void fireOnMessage(final KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, String messageName, Object messageObject) {
-        final MessageEvent event = new MessageEventImpl(instance, kruntime, nodeInstance, messageName,
-                messageObject);
+        final MessageEvent event = new MessageEventImpl(instance, kruntime, nodeInstance, messageName, messageObject, identityProvider.getName());
         notifyAllListeners(l -> l.onMessage(event));
     }
 
@@ -224,7 +223,7 @@ public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport 
             Map<String, Object> notification,
             DeadlineType type,
             KieRuntime kruntime) {
-        final HumanTaskDeadlineEvent event = new HumanTaskDeadlineEventImpl(instance, workItem, notification, type, kruntime);
+        final HumanTaskDeadlineEvent event = new HumanTaskDeadlineEventImpl(instance, workItem, notification, type, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.onHumanTaskDeadline(event));
     }
 

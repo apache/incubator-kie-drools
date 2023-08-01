@@ -26,8 +26,8 @@ public class KogitoProcessNodeTriggeredEventImpl extends ProcessEvent implements
 
     private NodeInstance nodeInstance;
 
-    public KogitoProcessNodeTriggeredEventImpl(final NodeInstance nodeInstance, KieRuntime kruntime) {
-        super(nodeInstance.getProcessInstance(), kruntime);
+    public KogitoProcessNodeTriggeredEventImpl(NodeInstance nodeInstance, KieRuntime kruntime, String identity) {
+        super(nodeInstance.getProcessInstance(), kruntime, identity);
         this.nodeInstance = nodeInstance;
     }
 

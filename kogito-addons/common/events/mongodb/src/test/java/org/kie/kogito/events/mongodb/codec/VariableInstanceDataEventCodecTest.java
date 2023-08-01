@@ -69,7 +69,7 @@ class VariableInstanceDataEventCodecTest {
                 .changedByNodeId("testChangedByNodeId")
                 .changedByNodeName("testChangedByNodeName")
                 .changedByNodeType("testChangedByNodeType")
-                .changedByUser("testChangedByUser")
+                .identity("testChangedByUser")
                 .processId("testKogitoProcessId")
                 .processInstanceId("testKogitoProcessInstanceId")
                 .rootProcessId("testKogitoRootProcessId")
@@ -79,7 +79,7 @@ class VariableInstanceDataEventCodecTest {
                 .variableValue("testVariableValue")
                 .build();
 
-        event = new VariableInstanceDataEvent(source, kogitoAddons, metaData, body);
+        event = new VariableInstanceDataEvent(source, kogitoAddons, "identity", metaData, body);
     }
 
     @Test
@@ -130,7 +130,8 @@ class VariableInstanceDataEventCodecTest {
                     .containsEntry("kogitoProcessId", event.getKogitoProcessId())
                     .containsEntry("kogitoRootProcessId", event.getKogitoRootProcessId())
                     .containsEntry("kogitoAddons", event.getKogitoAddons())
-                    .containsEntry("kogitoVariableName", event.getKogitoVariableName());
+                    .containsEntry("kogitoVariableName", event.getKogitoVariableName())
+                    .containsEntry("kogitoIdentity", event.getKogitoIdentity());
 
             assertThat(((Document) doc.get("data"))).containsEntry("variableName", event.getData().getVariableName())
                     .containsEntry("variableValue", event.getData().getVariableValue())
@@ -139,11 +140,12 @@ class VariableInstanceDataEventCodecTest {
                     .containsEntry("changedByNodeId", event.getData().getChangedByNodeId())
                     .containsEntry("changedByNodeName", event.getData().getChangedByNodeName())
                     .containsEntry("changedByNodeType", event.getData().getChangedByNodeType())
-                    .containsEntry("changedByUser", event.getData().getChangedByUser())
+                    .containsEntry("identity", event.getData().getIdentity())
                     .containsEntry("processInstanceId", event.getData().getProcessInstanceId())
                     .containsEntry("rootProcessInstanceId", event.getData().getRootProcessInstanceId())
                     .containsEntry("processId", event.getData().getProcessId())
-                    .containsEntry("rootProcessId", event.getData().getRootProcessId());
+                    .containsEntry("rootProcessId", event.getData().getRootProcessId())
+                    .containsEntry("identity", event.getData().getIdentity());
         }
     }
 
