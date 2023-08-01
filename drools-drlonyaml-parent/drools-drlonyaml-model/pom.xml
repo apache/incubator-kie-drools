@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-drlonyaml-parent</artifactId>
-    <version>9.42.0-SNAPSHOT</version>
+    <version>9.42.0.Alpha</version>
   </parent>
   <artifactId>drools-drlonyaml-model</artifactId>
   <name>Drools :: DRL on YAML :: model</name>

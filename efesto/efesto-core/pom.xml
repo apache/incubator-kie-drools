@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>efesto</artifactId>
-    <version>9.42.0-SNAPSHOT</version>
+    <version>9.42.0.Alpha</version>
   </parent>
   <packaging>pom</packaging>
 
