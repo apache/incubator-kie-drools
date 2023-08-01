@@ -40,13 +40,15 @@ public class ReliabilityFireAndAlarmTest extends ReliabilityTestBasics{
                     "  $sprinkler: Sprinkler( room == $room, on == false ) \n" +
                     "then\n" +
                     "  modify($sprinkler) { setOn(true); } \n" +
-                    "  System.out.println(\"Turn on the sprinkler for room\" + $room.getName()); \n" +
+                    "  System.out.println(\"Turn on the sprinkler for room \" + $room.getName()); \n" +
+                    "  results.add( \"Turn on sprinkler rule\" );\n" +
                     "end\n" +
                     "rule 'Raise the alarm when we have one or more firs' when\n" +
                     "  exists Fire() \n" +
                     "then\n" +
                     "  insert( new Alarm() );\n" +
                     "  System.out.println(\"Raise the alarm\");\n" +
+                    "  results.add( \"Raise alarm rule\" );\n" +
                     "end\n"+
                     "rule 'Cancel the alarm when all the fires have gone' when \n" +
                     "   not Fire() \n" +
@@ -54,12 +56,14 @@ public class ReliabilityFireAndAlarmTest extends ReliabilityTestBasics{
                     "then\n" +
                     "   delete ( $alarm ); \n" +
                     "   System.out.println(\"Cancel the alarm\"); \n" +
+                    "  results.add( \"Cancel alarm rule\" );\n" +
                     "end\n" +
                     "rule 'Status output when things are ok' when\n" +
                     "   not Alarm() \n" +
                     "   not Sprinkler ( on == true ) \n" +
                     "then \n" +
                     "   System.out.println(\"Everything is ok\"); \n" +
+                    "  results.add( \"Everything ok rule\" );\n" +
                     "end";
 
 
@@ -117,18 +121,24 @@ public class ReliabilityFireAndAlarmTest extends ReliabilityTestBasics{
         insert(new Fire(room1));
 
         assertThat(fireAllRules()).isEqualTo(1);
+        assertThat(getResults()).containsExactlyInAnyOrder("Raise alarm rule");
+
         Optional<Object> alarm = getObjectByType(Alarm.class);
         assertThat(alarm.isEmpty()).isFalse();
 
         failover();
         restoreSession(FIRE_AND_ALARM, persistenceStrategy,safepointStrategy,PersistedSessionOption.PersistenceObjectsStrategy.OBJECT_REFERENCES);
+        clearResults();
 
         // phase 2
         Optional<Object> room = getObjectByType(Room.class);
         assertThat(room.isEmpty()).isFalse();
         Sprinkler sprinkler1 = new Sprinkler((Room) room.get());
         insert(sprinkler1);
-        fireAllRules();
+
+        assertThat(fireAllRules()).isEqualTo(1);
+        assertThat(getResults()).containsExactlyInAnyOrder("Turn on sprinkler rule");
+        clearResults();
 
         Optional<Object> sprinkler = getObjectByType(Sprinkler.class);
         assertThat(sprinkler.isEmpty()).isFalse();
@@ -139,5 +149,6 @@ public class ReliabilityFireAndAlarmTest extends ReliabilityTestBasics{
         assertThat(fireFh.isEmpty()).isFalse();
         delete(fireFh.get());
         assertThat(fireAllRules()).isEqualTo(1);
+        assertThat(getResults()).containsExactlyInAnyOrder("Cancel alarm rule");
     }
 }
