@@ -132,7 +132,7 @@ public final class TestUtils {
                         .build() : null)
                 .build();
 
-        return new ProcessInstanceDataEvent(URI.create("http://localhost:8080/" + processId).toString(), "jobs-management,prometheus-monitoring,process-management", body.metaData(), body);
+        return new ProcessInstanceDataEvent(URI.create("http://localhost:8080/" + processId).toString(), "jobs-management,prometheus-monitoring,process-management", null, body.metaData(), body);
     }
 
     public static ProcessInstance getProcessInstance(String processId, String processInstanceId, Integer status, String rootProcessInstanceId, String rootProcessId) {
@@ -229,7 +229,7 @@ public final class TestUtils {
                 .outputs(emptyMap())
                 .build();
 
-        return new UserTaskInstanceDataEvent(URI.create("http://localhost:8080/" + processId).toString(), null, body.metaData(), body);
+        return new UserTaskInstanceDataEvent(URI.create("http://localhost:8080/" + processId).toString(), null, null, body.metaData(), body);
     }
 
     public static AttachmentEventBody getTaskAttachment(String id, String user, String name, String content) {

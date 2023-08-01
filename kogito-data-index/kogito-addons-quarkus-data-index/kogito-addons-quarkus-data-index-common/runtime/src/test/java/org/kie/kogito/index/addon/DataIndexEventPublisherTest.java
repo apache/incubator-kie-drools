@@ -130,7 +130,7 @@ public class DataIndexEventPublisherTest {
                 String kogitoProcessId,
                 String kogitoRootProcessId) {
             super(type, source, data, kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId,
-                    kogitoRootProcessId, null);
+                    kogitoRootProcessId, null, null);
         }
     }
 

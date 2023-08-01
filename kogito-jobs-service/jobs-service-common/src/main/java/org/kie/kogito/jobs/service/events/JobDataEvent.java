@@ -28,7 +28,7 @@ public class JobDataEvent extends AbstractDataEvent<ScheduledJob> {
 
     public static final String JOB_EVENT_TYPE = "JobEvent";
 
-    public JobDataEvent(String source, ScheduledJob data) {
+    public JobDataEvent(String source, String identity, ScheduledJob data) {
         super(JOB_EVENT_TYPE,
                 source,
                 data,
@@ -36,7 +36,8 @@ public class JobDataEvent extends AbstractDataEvent<ScheduledJob> {
                 data.getRootProcessInstanceId(),
                 data.getProcessId(),
                 data.getRootProcessId(),
-                null);
+                null,
+                identity);
     }
 
     @JsonIgnore
@@ -49,9 +50,15 @@ public class JobDataEvent extends AbstractDataEvent<ScheduledJob> {
 
         private String source;
         private ScheduledJob data;
+        private String identity;
 
         public JobDataEventBuilder source(String source) {
             this.source = source;
+            return this;
+        }
+
+        public JobDataEventBuilder identity(String identity) {
+            this.identity = identity;
             return this;
         }
 
@@ -61,7 +68,7 @@ public class JobDataEvent extends AbstractDataEvent<ScheduledJob> {
         }
 
         public JobDataEvent build() {
-            return new JobDataEvent(source, data);
+            return new JobDataEvent(source, identity, data);
         }
     }
 }

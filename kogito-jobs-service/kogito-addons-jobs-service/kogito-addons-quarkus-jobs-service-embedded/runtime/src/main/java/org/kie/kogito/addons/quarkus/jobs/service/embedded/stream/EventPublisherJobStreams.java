@@ -87,7 +87,8 @@ public class EventPublisherJobStreams {
                     scheduledJob.getProcessInstanceId(),
                     scheduledJob.getRootProcessInstanceId(),
                     scheduledJob.getProcessId(),
-                    scheduledJob.getRootProcessId());
+                    scheduledJob.getRootProcessId(),
+                    null);
             try {
                 eventPublisher.publish(event);
             } catch (Exception e) {
@@ -103,9 +104,10 @@ public class EventPublisherJobStreams {
                 String kogitoProcessInstanceId,
                 String kogitoRootProcessInstanceId,
                 String kogitoProcessId,
-                String kogitoRootProcessId) {
+                String kogitoRootProcessId,
+                String kogitoIdentity) {
             super(type, source, data, kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId,
-                    kogitoRootProcessId, null);
+                    kogitoRootProcessId, null, kogitoIdentity);
         }
     }
 }
