@@ -24,7 +24,7 @@ public class ValidationLogDecorator extends ValidationDecorator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationLogDecorator.class);
 
-    public ValidationLogDecorator(Map<String, Exception> exceptions) {
+    public ValidationLogDecorator(Map<String, Throwable> exceptions) {
         super(exceptions);
     }
 

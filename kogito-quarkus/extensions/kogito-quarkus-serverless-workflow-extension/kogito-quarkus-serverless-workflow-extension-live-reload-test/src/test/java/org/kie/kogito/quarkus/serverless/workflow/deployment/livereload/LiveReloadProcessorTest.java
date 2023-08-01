@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kie.kogito.test.utils.SocketUtils;
@@ -163,7 +162,6 @@ public class LiveReloadProcessorTest {
     }
 
     @Test
-    @Disabled("Disabled until https://issues.redhat.com/browse/KOGITO-9614 is resolved")
     void testAsyncApi() throws IOException {
         given()
                 .contentType(ContentType.JSON)

@@ -1,3 +1,2 @@
-org.kie.kogito.quarkus.serverless.workflow.deployment.livereload.LiveReloadableAsyncApiGeneratorStreamCodeGen
 org.kie.kogito.quarkus.serverless.workflow.deployment.livereload.LiveReloadableOpenApiGeneratorStreamCodeGen
 org.kie.kogito.quarkus.serverless.workflow.deployment.livereload.LiveReloadableWorkflowRPCCodeGenProvider

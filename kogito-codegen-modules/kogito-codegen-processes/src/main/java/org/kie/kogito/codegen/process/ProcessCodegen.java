@@ -106,7 +106,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
     public static ProcessCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
         Map<String, byte[]> processSVGMap = new HashMap<>();
-        Map<String, Exception> processesErrors = new HashMap<>();
+        Map<String, Throwable> processesErrors = new HashMap<>();
         boolean useSvgAddon = context.getAddonsConfig().useProcessSVG();
         final List<GeneratedInfo<KogitoWorkflowProcess>> processes = resources.stream()
                 .map(CollectedResource::resource)
@@ -123,13 +123,13 @@ public class ProcessCodegen extends AbstractGenerator {
                             GeneratedInfo<KogitoWorkflowProcess> generatedInfo = parseWorkflowFile(resource, WorkflowFormat.fromFileName(resource.getSourcePath()), context);
                             notifySourceFileCodegenBindListeners(context, resource, Collections.singletonList(generatedInfo.info()));
                             return Stream.of(addResource(generatedInfo, resource));
-                        } else {
-                            return Stream.empty();
                         }
-                    } catch (ValidationException | ProcessParsingException e) {
+                    } catch (ValidationException e) {
                         processesErrors.put(resource.getSourcePath(), e);
-                        return Stream.empty();
+                    } catch (ProcessParsingException e) {
+                        processesErrors.put(resource.getSourcePath(), e.getCause());
                     }
+                    return Stream.empty();
                 })
                 //Validate parsed processes
                 .map(processInfo -> validate(processInfo, processesErrors))
@@ -154,7 +154,7 @@ public class ProcessCodegen extends AbstractGenerator {
                 .ifPresent(notifier -> processes.forEach(p -> notifier.notify(new SourceFileCodegenBindEvent(p.getId(), resource.getSourcePath()))));
     }
 
-    private static void handleValidation(KogitoBuildContext context, Map<String, Exception> processesErrors) {
+    private static void handleValidation(KogitoBuildContext context, Map<String, Throwable> processesErrors) {
         if (!processesErrors.isEmpty()) {
             ValidationLogDecorator decorator = new ValidationLogDecorator(processesErrors);
             decorator.decorate();
@@ -165,7 +165,7 @@ public class ProcessCodegen extends AbstractGenerator {
         }
     }
 
-    private static GeneratedInfo<KogitoWorkflowProcess> validate(GeneratedInfo<KogitoWorkflowProcess> processInfo, Map<String, Exception> processesErrors) {
+    private static GeneratedInfo<KogitoWorkflowProcess> validate(GeneratedInfo<KogitoWorkflowProcess> processInfo, Map<String, Throwable> processesErrors) {
         Process process = processInfo.info();
         try {
             ProcessValidatorRegistry.getInstance().getValidator(process, process.getResource()).validate(process);
@@ -216,7 +216,7 @@ public class ProcessCodegen extends AbstractGenerator {
         try (Reader reader = r.getReader()) {
             return ServerlessWorkflowParser.of(reader, format, context).getProcessInfo();
         } catch (IOException | RuntimeException e) {
-            throw new ProcessParsingException("Could not parse file " + r.getSourcePath(), e);
+            throw new ProcessParsingException(e);
         }
     }
 
@@ -227,7 +227,7 @@ public class ProcessCodegen extends AbstractGenerator {
                     Thread.currentThread().getContextClassLoader());
             return xmlReader.read(reader);
         } catch (SAXException | IOException e) {
-            throw new ProcessParsingException("Could not parse file " + r.getSourcePath(), e);
+            throw new ProcessParsingException(e);
         }
     }
 

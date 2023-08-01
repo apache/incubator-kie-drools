@@ -31,6 +31,7 @@ import org.kie.kogito.serverless.workflow.io.ClassPathContentLoader;
 import org.kie.kogito.serverless.workflow.io.FileContentLoader;
 import org.kie.kogito.serverless.workflow.io.URIContentLoader;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
+import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactoryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,8 @@ public class WorkflowRPCCodeGenProvider implements CodeGenProvider {
             Path outputPath = context.workDir().resolve("proto_temp");
             Files.createDirectories(outputPath);
             Collection<Path> protoFiles =
-                    WorkflowCodeGenUtils.operationResources(rpcFilePaths, this::isRPC, context).map(r -> getPath(r, outputPath)).filter(Optional::isPresent).map(Optional::get)
+                    WorkflowCodeGenUtils.operationResources(rpcFilePaths, this::isRPC, context.config().getOptionalValue(WorkflowOperationIdFactoryProvider.PROPERTY_NAME, String.class))
+                            .map(r -> getPath(r, outputPath)).filter(Optional::isPresent).map(Optional::get)
                             .collect(Collectors.toList());
             logger.debug("Collected proto paths are {}", protoFiles);
             if (protoFiles.isEmpty()) {

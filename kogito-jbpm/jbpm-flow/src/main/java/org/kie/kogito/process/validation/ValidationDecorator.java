@@ -19,9 +19,9 @@ import java.util.Map;
 
 public abstract class ValidationDecorator {
 
-    protected final Map<String, Exception> exceptions;
+    protected final Map<String, Throwable> exceptions;
 
-    protected ValidationDecorator(Map<String, Exception> exceptions) {
+    protected ValidationDecorator(Map<String, Throwable> exceptions) {
         this.exceptions = exceptions;
     }
 
