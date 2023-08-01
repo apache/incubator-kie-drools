@@ -16,9 +16,9 @@
 package org.kie.kogito.serverless.workflow.executor;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
@@ -26,6 +26,12 @@ import java.util.concurrent.TimeoutException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.MockConsumer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.kie.kogito.persistence.rocksdb.RocksDBProcessInstancesFactory;
+import org.rocksdb.Options;
+import org.rocksdb.RocksDBException;
+
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
@@ -33,54 +39,30 @@ import io.cloudevents.jackson.JsonCloudEventData;
 import io.serverlessworkflow.api.Workflow;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.awaitility.Awaitility.await;
 import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.call;
 import static org.kie.kogito.serverless.workflow.fluent.EventDefBuilder.eventDef;
 import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.expr;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.callback;
-import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.event;
-import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.operation;
 import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.jsonObject;
 import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.workflow;
 
-public class WorkflowEventSubscriberTest {
-
+public class PersistentApplicationTest {
     @Test
-    void testCallbackSubscriber() throws InterruptedException, TimeoutException {
+    void testCallbackSubscriberWithPersistence(@TempDir Path tempDir) throws InterruptedException, TimeoutException, RocksDBException {
         final String eventType = "testSubscribe";
         final String additionalData = "This has been injected by the event";
         Workflow workflow = workflow("testCallback").start(callback(call(expr("concat", "{slogan:.slogan+\"er Beti\"}")), eventDef(eventType))).end().build();
-        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+        try (StaticWorkflowApplication application =
+                StaticWorkflowApplication.create().processInstancesFactory(new RocksDBProcessInstancesFactory(new Options().setCreateIfMissing(true), tempDir.toString()))) {
             String id = application.execute(workflow, jsonObject().put("slogan", "Viva ")).getId();
+            assertThat(application.variables(id).orElseThrow().getWorkflowdata()).doesNotContain(new TextNode(additionalData));
             publish(eventType, buildCloudEvent(eventType, id)
                     .withData(JsonCloudEventData.wrap(jsonObject().put("additionalData", additionalData)))
                     .build());
-            assertThat(application.waitForFinish(id, Duration.ofSeconds(3)).orElseThrow().getWorkflowdata())
+            assertThat(application.waitForFinish(id, Duration.ofSeconds(20)).orElseThrow().getWorkflowdata())
                     .isEqualTo(jsonObject().put("additionalData", additionalData).put("slogan", "Viva er Beti"));
-        }
-    }
-
-    @Test
-    void testEventSubscriber() throws InterruptedException, TimeoutException {
-        final String eventType = "testSubscribe";
-        Workflow workflow =
-                workflow("testEvent").start(operation()).next(event().events().event(eventDef(eventType)).action(call(expr("concat", "{slogan:.slogan+\"er Beti\"}"))).endBranch()).end().build();
-        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            String id = application.execute(workflow, Collections.emptyMap()).getId();
-            publish(eventType, buildCloudEvent(eventType, id)
-                    .withData(JsonCloudEventData.wrap(jsonObject().put("slogan", "Viva ")))
-                    .build());
-            assertThat(application.waitForFinish(id, Duration.ofSeconds(3)).orElseThrow().getWorkflowdata()).isEqualTo(jsonObject().put("slogan", "Viva er Beti"));
-        }
-    }
-
-    @Test
-    void testCallbackSubscriberWithoutEvent() throws InterruptedException {
-        final String eventType = "testSubscribeEvent";
-        Workflow workflow = workflow("testFailure").start(callback(call(expr("concat", ".slogan+\" er Beti\"")), eventDef(eventType))).end().build();
-        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            String id = application.execute(workflow, jsonObject().put("slogan", "Viva")).getId();
-            assertThatExceptionOfType(TimeoutException.class).isThrownBy(() -> application.waitForFinish(id, Duration.ofSeconds(2)));
+            await().atMost(Duration.ofSeconds(1)).pollInterval(Duration.ofMillis(50)).until(() -> application.variables(id).isEmpty());
         }
     }
 
