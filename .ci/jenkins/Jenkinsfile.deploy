@@ -276,9 +276,10 @@ MavenCommand getMavenCommand(String directory = '') {
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
                 .inDirectory(directory)
-                .withProperty('full')
     if (!isStream8()) { // Workaround as enforcer rules may not be fixed on other streams
         mvnCmd.withProperty('enforcer.skip')
+    } else {
+        mvnCmd.withProperty('full')
     }
     return mvnCmd
 }
