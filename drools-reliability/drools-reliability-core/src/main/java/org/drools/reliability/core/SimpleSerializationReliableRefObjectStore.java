@@ -20,13 +20,18 @@ import org.drools.core.common.Storage;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SimpleSerializationReliableRefObjectStore extends SimpleSerializationReliableObjectStore {
 
+    private Map<Class,Long> uniqueObjectTypesInStore;
+
     public SimpleSerializationReliableRefObjectStore(Storage<Long, StoredObject> storage) {
         super(storage);
+        uniqueObjectTypesInStore = new HashMap<>();
         this.storage = storage.size()>0 ? updateObjectReferences(storage) : storage;
     }
 
@@ -44,18 +49,20 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         Object object = handle.getObject();
         StoredObject storedObject = factHandleToStoredObject(handle, reInitPropagated || propagated, object);
         storage.put(getHandleForObject(object).getId(), setReferencedObjects(storedObject));
+        // also add the type of the object into the uniqueObjectTypesInStore list (if not already there)
+        this.putIntoObjectTypesList(object);
+    }
+
+    @Override
+    public void removeFromPersistedStorage(Object object) {
+        super.removeFromPersistedStorage(object);
+        // also remove instance from uniqueObjectTypesInStore
+        this.removeFromObjectTypesList(object);
     }
 
     @Override
     protected StoredObject createStoredObject(boolean propagated, Object object) {
         return new SerializableStoredRefObject(object, propagated);
-    }
-
-    private void updateReferencedObjects(StoredObject object){
-        List<Field> referencedObjects = getReferencedObjects(object.getObject());
-        if (referencedObjects.size()>0) {
-
-        }
     }
 
     private StoredObject setReferencedObjects(StoredObject object){
@@ -70,7 +77,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
                 try {
                     fieldObject = field.get(object.getObject());
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    throw new ReliabilityRuntimeException(e);
                 }
                 Long objectKey = fromObjectToFactHandleId(fieldObject);
                 if (objectKey!=null){
@@ -92,10 +99,29 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
     private List<Field> getReferencedObjects(Object object){
         Field[] fields = object.getClass().getDeclaredFields();
 
-        List<Field> nonPrimitiveFields = Arrays.stream(fields)
-                .filter(field -> !field.getType().isPrimitive())
-                .filter(field -> !field.getType().equals(String.class))
+        List<Field> fieldsWithTypeInTheStore = Arrays.stream(fields)
+                .filter(field -> uniqueObjectTypesInStore.keySet().contains(field.getType()))
                 .collect(Collectors.toList());
-        return nonPrimitiveFields;
+        return fieldsWithTypeInTheStore;
     }
+
+    private void putIntoObjectTypesList(Object object){
+        Long objectTypeCount = uniqueObjectTypesInStore.get(object.getClass());
+        if (objectTypeCount!=null){
+            uniqueObjectTypesInStore.put(object.getClass(), objectTypeCount+1);
+        }else{
+            uniqueObjectTypesInStore.put(object.getClass(),Integer.toUnsignedLong(1));
+        }
+    }
+
+    private void removeFromObjectTypesList(Object object){
+        Long objectTypeCount = uniqueObjectTypesInStore.get(object.getClass());
+        if (objectTypeCount!=null){
+            objectTypeCount--;
+            if (objectTypeCount==0){
+                uniqueObjectTypesInStore.remove(object.getClass());
+            }else {uniqueObjectTypesInStore.put(object.getClass(),objectTypeCount);}
+        }
+    }
+
 }

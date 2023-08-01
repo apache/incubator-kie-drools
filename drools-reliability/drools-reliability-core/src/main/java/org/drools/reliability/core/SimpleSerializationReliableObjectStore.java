@@ -113,7 +113,7 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
         storage.put(getHandleForObject(object).getId(), storedObject);
     }
 
-    StoredObject factHandleToStoredObject(InternalFactHandle handle, boolean propagated, Object object) {
+    protected StoredObject factHandleToStoredObject(InternalFactHandle handle, boolean propagated, Object object) {
         return handle.isEvent() ?
                 createStoredEvent(propagated, object, ((DefaultEventHandle) handle).getStartTimestamp(), ((DefaultEventHandle) handle).getDuration()) :
                 createStoredObject(propagated, object);

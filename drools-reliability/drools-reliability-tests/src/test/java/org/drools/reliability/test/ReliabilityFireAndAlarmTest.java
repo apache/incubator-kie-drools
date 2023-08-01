@@ -24,6 +24,8 @@ import org.test.domain.fireandalarm.Fire;
 import org.test.domain.fireandalarm.Room;
 import org.test.domain.fireandalarm.Sprinkler;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReliabilityFireAndAlarmTest extends ReliabilityTestBasics{
@@ -90,13 +92,52 @@ public class ReliabilityFireAndAlarmTest extends ReliabilityTestBasics{
         createSession(FIRE_AND_ALARM, persistenceStrategy, safepointStrategy, PersistedSessionOption.PersistenceObjectsStrategy.OBJECT_REFERENCES);
 
         Room room1 = new Room("Room 1");
+        Sprinkler sprinkler1 = new Sprinkler(room1);
         insert(room1);
         insert(new Fire(room1));
-        insert(new Sprinkler(room1));
+        insert(sprinkler1);
 
         failover();
         restoreSession(FIRE_AND_ALARM, persistenceStrategy,safepointStrategy,PersistedSessionOption.PersistenceObjectsStrategy.OBJECT_REFERENCES);
 
         assertThat(fireAllRules()).isEqualTo(2);
+        Optional<Object> sprinklerR = getObjectByType(Sprinkler.class);
+        assertThat(sprinklerR.isEmpty()).isFalse();
+        assertThat(((Sprinkler) sprinklerR.get()).isOn()).isTrue();
+    }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints") // does not support PersistedSessionOption.PersistenceObjectsStrategy.SIMPLE
+    void testPhase1FailoverPhase2Phase3_ShouldFireRules(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy){
+        createSession(FIRE_AND_ALARM, persistenceStrategy, safepointStrategy,PersistedSessionOption.PersistenceObjectsStrategy.OBJECT_REFERENCES);
+
+        // phase 1
+        Room room1 = new Room("Room 1");
+        insert(room1);
+        insert(new Fire(room1));
+
+        assertThat(fireAllRules()).isEqualTo(1);
+        Optional<Object> alarm = getObjectByType(Alarm.class);
+        assertThat(alarm.isEmpty()).isFalse();
+
+        failover();
+        restoreSession(FIRE_AND_ALARM, persistenceStrategy,safepointStrategy,PersistedSessionOption.PersistenceObjectsStrategy.OBJECT_REFERENCES);
+
+        // phase 2
+        Optional<Object> room = getObjectByType(Room.class);
+        assertThat(room.isEmpty()).isFalse();
+        Sprinkler sprinkler1 = new Sprinkler((Room) room.get());
+        insert(sprinkler1);
+        fireAllRules();
+
+        Optional<Object> sprinkler = getObjectByType(Sprinkler.class);
+        assertThat(sprinkler.isEmpty()).isFalse();
+        assertThat(((Sprinkler) sprinkler.get()).isOn()).isTrue();
+
+        // phase 3
+        Optional<FactHandle> fireFh = getFactHandleByType(Fire.class);
+        assertThat(fireFh.isEmpty()).isFalse();
+        delete(fireFh.get());
+        assertThat(fireAllRules()).isEqualTo(1);
     }
 }
