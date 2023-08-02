@@ -25,6 +25,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.compiler.kproject.KieModuleException;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.api.builder.model.ChannelModel;
@@ -340,6 +341,9 @@ public class KieSessionModelImpl
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final KieSessionModelImpl kSession = new KieSessionModelImpl();
             kSession.name = reader.getAttribute("name");
+            if (kSession.name.isEmpty()) {
+                throw new KieModuleException("ksession name is empty in kmodule.xml");
+            }
             kSession.setDefault( "true".equals(reader.getAttribute( "default" )) );
             kSession.setDirectFiring( "true".equals(reader.getAttribute( "directFiring" )) );
             kSession.setThreadSafe( "true".equals(reader.getAttribute( "threadSafe" )) );
