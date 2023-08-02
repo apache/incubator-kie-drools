@@ -19,6 +19,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.compiler.kproject.KieModuleException;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.kproject.models.RuleTemplateModelImpl;
@@ -115,7 +116,12 @@ public class KBaseConverter extends AbstractXStreamConverter {
         final KieBaseModelImpl kBase = new KieBaseModelImpl();
 
         String kbaseName = reader.getAttribute( "name" );
-        kBase.setNameForUnmarshalling( kbaseName != null ? kbaseName : StringUtils.uuid() );
+        if (kbaseName == null) {
+            kbaseName = StringUtils.uuid();
+        } else if (kbaseName.isEmpty()) {
+            throw new KieModuleException("kbase name is empty in kmodule.xml");
+        }
+        kBase.setNameForUnmarshalling( kbaseName );
 
         kBase.setDefault( "true".equals(reader.getAttribute( "default" )) );
 

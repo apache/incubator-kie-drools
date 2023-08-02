@@ -21,6 +21,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.compiler.kproject.KieModuleException;
 import org.drools.compiler.kproject.models.ChannelModelImpl;
 import org.drools.compiler.kproject.models.FileLoggerModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
@@ -90,7 +91,11 @@ public class KSessionConverter extends AbstractXStreamConverter {
 
     public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
         final KieSessionModelImpl kSession = new KieSessionModelImpl();
-        kSession.setNameForUnmarshalling( reader.getAttribute("name") );
+        String kSessionName = reader.getAttribute("name");
+        if (kSessionName.isEmpty()) {
+            throw new KieModuleException("ksession name is empty in kmodule.xml");
+        }
+        kSession.setNameForUnmarshalling( kSessionName );
         kSession.setDefault( "true".equals(reader.getAttribute( "default" )) );
         kSession.setDirectFiring( "true".equals(reader.getAttribute( "directFiring" )) );
         kSession.setThreadSafe( "true".equals(reader.getAttribute( "threadSafe" )) );
