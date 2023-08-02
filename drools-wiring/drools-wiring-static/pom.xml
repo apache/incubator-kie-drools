@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-wiring</artifactId>
-    <version>9.42.0.Alpha</version>
+    <version>9.42.1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.drools</groupId>
