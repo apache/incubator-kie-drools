@@ -18,11 +18,12 @@ package org.drools.persistence.api;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class TransactionManagerHelper {
 
     private static final String APP_UPDETEABLE_RESOURCE = "app-updateable-resource";
-    private static final String CMD_UPDETEABLE_RESOURCE = "cmd-updateable-resource";
 
     public static void registerTransactionSyncInContainer(TransactionManager txm, OrderedTransactionSynchronization synchronization) {
         TransactionSynchronizationContainer container = (TransactionSynchronizationContainer)txm.getResource(TransactionSynchronizationContainer.RESOURCE_KEY);
@@ -41,7 +42,7 @@ public class TransactionManagerHelper {
         }
         Set<Transformable> toBeUpdated = (Set<Transformable>) txm.getResource(APP_UPDETEABLE_RESOURCE);
         if (toBeUpdated == null) {
-            toBeUpdated = new LinkedHashSet<Transformable>();
+            toBeUpdated = new LinkedHashSet<>();
             txm.putResource(APP_UPDETEABLE_RESOURCE, toBeUpdated);
         }
         toBeUpdated.add(transformable);
@@ -58,11 +59,15 @@ public class TransactionManagerHelper {
 
     @SuppressWarnings("unchecked")
     public static Set<Transformable> getUpdateableSet(TransactionManager txm) {
-        Set<Transformable> toBeUpdated = (Set<Transformable>) txm.getResource(APP_UPDETEABLE_RESOURCE);
-        if (toBeUpdated == null) {
-            return Collections.emptySet();
+        Set<Transformable> result = (Set<Transformable>) txm.getResource(APP_UPDETEABLE_RESOURCE);
+        if (result != null) {
+            SortedSet<Transformable> sorted = new TreeSet<>((o1, o2) -> {
+                int compared = o1.getClass().getSimpleName().compareTo(o2.getClass().getSimpleName());
+                return compared == 0 ? 1 : compared;
+            });
+            sorted.addAll(result);
+            return sorted;
         }
-
-        return new LinkedHashSet<Transformable>(toBeUpdated);
+        return Collections.emptySet();
     }
 }

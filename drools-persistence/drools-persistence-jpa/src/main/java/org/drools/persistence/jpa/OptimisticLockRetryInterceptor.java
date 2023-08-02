@@ -94,7 +94,7 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
         RuntimeException originException = null;
 
         while (true) {
-            if (attempt > 1) {
+            if (attempt > 0) {
                 logger.trace("retrying (attempt {})...", attempt);
             }
             try {

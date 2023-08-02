@@ -504,6 +504,7 @@ public class PersistableRunner implements SingleSessionCommandService {
             this.service.jpm.endCommandScopedEntityManager();
 
             KieSession ksession = this.service.ksession;
+            logger.debug("Cleaning up session {} information", ksession != null ? ksession.getIdentifier() : null);
             // clean up cached process and work item instances
             if ( ksession != null ) {
                 InternalProcessRuntime internalProcessRuntime = ((InternalWorkingMemory) ksession).internalGetProcessRuntime();
@@ -513,8 +514,11 @@ public class PersistableRunner implements SingleSessionCommandService {
                     }
 
                     internalProcessRuntime.clearProcessInstances();
+                    logger.debug("Cached process instances after clean up {}",internalProcessRuntime.getProcessInstances());
                 }
+                
                 ((JPAWorkItemManager) ksession.getWorkItemManager()).clearWorkItems();
+                
             }
             if (status != TransactionManager.STATUS_COMMITTED) {
                 this.service.jpm.resetApplicationScopedPersistenceContext();
