@@ -30,7 +30,7 @@ import org.kie.api.runtime.rule.FactHandle;
  * A parent class for all specific LeftTuple specializations
  *
  */
-public class AbstractLeftTuple extends AbstractTuple implements LeftTuple {
+public class AbstractLeftTuple extends AbstractTuple {
     private static final long  serialVersionUID = 540l;
 
     private int                index;
@@ -207,7 +207,6 @@ public class AbstractLeftTuple extends AbstractTuple implements LeftTuple {
         this.sink = sink;
     }
 
-    @Override
     public AbstractLeftTuple getNextParentWithHandle() {
         // if parent is null, then we are LIAN
         return (handle!=null) ? this : parent != null ? parent.getNextParentWithHandle() : this;
@@ -218,7 +217,6 @@ public class AbstractLeftTuple extends AbstractTuple implements LeftTuple {
         getFactHandle().addLastLeftTuple( this );
     }
 
-    @Override
     public void reAddLeft() {
         // The parent can never be the FactHandle (root AbstractLeftTuple) as that is handled by reAdd()
         // make sure we aren't already at the end
@@ -242,7 +240,6 @@ public class AbstractLeftTuple extends AbstractTuple implements LeftTuple {
         }
     }
 
-    @Override
     public void reAddRight() {
         // make sure we aren't already at the end
         if ( this.rightParentNext != null ) {
@@ -352,17 +349,14 @@ public class AbstractLeftTuple extends AbstractTuple implements LeftTuple {
     /* Had to add the set method because sink adapters must override
      * the tuple sink set when the tuple was created.
      */
-    @Override
     public void setLeftTupleSink( LeftTupleSink sink ) {
         this.sink = sink;
     }
 
-    @Override
     public AbstractLeftTuple getLeftParent() {
         return leftParent;
     }
 
-    @Override
     public void setLeftParent(AbstractLeftTuple leftParent) {
         this.leftParent = leftParent;
     }
@@ -377,32 +371,26 @@ public class AbstractLeftTuple extends AbstractTuple implements LeftTuple {
         return (AbstractLeftTuple) handleNext;
     }
 
-    @Override
     public RightTuple getRightParent() {
         return rightParent;
     }
 
-    @Override
     public void setRightParent(RightTuple rightParent) {
         this.rightParent = rightParent;
     }
 
-    @Override
     public AbstractLeftTuple getRightParentPrevious() {
         return rightParentPrevious;
     }
 
-    @Override
     public void setRightParentPrevious(AbstractLeftTuple rightParentLeft) {
         this.rightParentPrevious = rightParentLeft;
     }
 
-    @Override
     public AbstractLeftTuple getRightParentNext() {
         return rightParentNext;
     }
 
-    @Override
     public void setRightParentNext(AbstractLeftTuple rightParentRight) {
         this.rightParentNext = rightParentRight;
     }
@@ -451,32 +439,26 @@ public class AbstractLeftTuple extends AbstractTuple implements LeftTuple {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void setBlocker(RightTuple blocker) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public RightTuple getBlocker() {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public AbstractLeftTuple getBlockedPrevious() {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void setBlockedPrevious(AbstractLeftTuple blockerPrevious) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public AbstractLeftTuple getBlockedNext() {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void setBlockedNext(AbstractLeftTuple blockerNext) {
         throw new UnsupportedOperationException();
     }
@@ -579,12 +561,10 @@ public class AbstractLeftTuple extends AbstractTuple implements LeftTuple {
         }
     }
 
-    @Override
     public AbstractLeftTuple getPeer() {
         return peer;
     }
 
-    @Override
     public void setPeer(AbstractLeftTuple peer) {
         this.peer = peer;
     }
@@ -668,7 +648,6 @@ public class AbstractLeftTuple extends AbstractTuple implements LeftTuple {
         return false;
     }
 
-    @Override
     public Collection<Object> getAccumulatedObjects() {
         if (getFirstChild() == null) {
             return Collections.emptyList();
