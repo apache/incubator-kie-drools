@@ -16,14 +16,13 @@
 package org.drools.persistence.api;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class TransactionManagerHelper {
 
     private static final String APP_UPDETEABLE_RESOURCE = "app-updateable-resource";
+    private static final String CMD_UPDETEABLE_RESOURCE = "cmd-updateable-resource";
 
     public static void registerTransactionSyncInContainer(TransactionManager txm, OrderedTransactionSynchronization synchronization) {
         TransactionSynchronizationContainer container = (TransactionSynchronizationContainer)txm.getResource(TransactionSynchronizationContainer.RESOURCE_KEY);
@@ -40,17 +39,9 @@ public class TransactionManagerHelper {
         if (transformable == null) {
             return;
         }
-        Set<Transformable> toBeUpdated = (Set<Transformable>) txm
-                .getResource(APP_UPDETEABLE_RESOURCE);
+        Set<Transformable> toBeUpdated = (Set<Transformable>) txm.getResource(APP_UPDETEABLE_RESOURCE);
         if (toBeUpdated == null) {
-
-            toBeUpdated = new TreeSet<>(new Comparator<Transformable>() {
-                @Override
-                public int compare(Transformable o1, Transformable o2) {
-                    int result = o1.getClass().getSimpleName().compareTo(o2.getClass().getSimpleName());
-                    return result == 0 ? -1 : result;
-                }
-            });
+            toBeUpdated = new LinkedHashSet<Transformable>();
             txm.putResource(APP_UPDETEABLE_RESOURCE, toBeUpdated);
         }
         toBeUpdated.add(transformable);
@@ -58,8 +49,7 @@ public class TransactionManagerHelper {
 
     @SuppressWarnings("unchecked")
     public static void removeFromUpdatableSet(TransactionManager txm, Transformable transformable) {
-        Set<Transformable> toBeUpdated = (Set<Transformable>) txm
-                .getResource(APP_UPDETEABLE_RESOURCE);
+        Set<Transformable> toBeUpdated = (Set<Transformable>) txm.getResource(APP_UPDETEABLE_RESOURCE);
         if (toBeUpdated == null) {
             return;
         }
@@ -68,11 +58,11 @@ public class TransactionManagerHelper {
 
     @SuppressWarnings("unchecked")
     public static Set<Transformable> getUpdateableSet(TransactionManager txm) {
-        Set<Transformable> toBeUpdated = (Set<Transformable>) txm
-                .getResource(APP_UPDETEABLE_RESOURCE);
+        Set<Transformable> toBeUpdated = (Set<Transformable>) txm.getResource(APP_UPDETEABLE_RESOURCE);
         if (toBeUpdated == null) {
             return Collections.emptySet();
         }
-        return new LinkedHashSet<>(toBeUpdated);
+
+        return new LinkedHashSet<Transformable>(toBeUpdated);
     }
 }
