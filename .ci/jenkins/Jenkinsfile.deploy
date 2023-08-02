@@ -82,7 +82,7 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
-                        prepareForPR()
+                        githubscm.createBranch(getPRBranch())
                     }
                 }
             }
@@ -162,7 +162,7 @@ pipeline {
                 success {
                     script {
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.source.uri", "https://github.com/${getGitAuthor()}/${getRepoName()}")
-                        setDeployPropertyIfNeeded("${getRepoName()}.pr.source.ref", getBuildBranch())
+                        setDeployPropertyIfNeeded("${getRepoName()}.pr.source.ref", getPRBranch())
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.uri", "https://github.com/${getGitAuthor()}/${getRepoName()}")
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.ref", getBuildBranch())
                     }
@@ -198,10 +198,6 @@ void checkoutRepo() {
     checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false))
     // need to manually checkout branch since on a detached branch after checkout command
     sh "git checkout ${getBuildBranch()}"
-}
-
-void prepareForPR() {
-    githubscm.createBranch(getPRBranch())
 }
 
 void commitAndCreatePR() {

@@ -87,7 +87,8 @@ pipeline {
             steps {
                 script {
                     dir('pr') {
-                        prepareForPR()
+                        checkoutRepo()
+                        githubscm.createBranch(getSnapshotBranch())
 
                         maven.mvnVersionsSet(getMavenCommand(), getSnapshotVersion(), true)
 
@@ -240,11 +241,6 @@ void tagLatest() {
     if (getGitTag()) {
         githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorCredsID(), env.BUILD_TAG, true)
     }
-}
-
-void prepareForPR() {
-    checkoutRepo()
-    githubscm.createBranch(getSnapshotBranch())
 }
 
 void commitAndCreatePR() {
