@@ -235,7 +235,7 @@ class JenkinsfilePromote extends JenkinsPipelineSpecification {
         Jenkinsfile.getBinding().setVariable('params', ['PROJECT_VERSION' : '1.0.0'])
         explicitlyMockPipelineVariable('util')
         getPipelineMock('util.getNextVersion')('1.0.0', 'micro') >> { return '1.0.1-SNAPSHOT' }
-        Jenkinsfile.getBinding().setVariable('env', ['BOT_BRANCH_HASH' : 'anything'])
+        Jenkinsfile.getBinding().setVariable('env', ['PR_BRANCH_HASH' : 'anything'])
         when:
         def value = Jenkinsfile.getSnapshotBranch()
         then:
