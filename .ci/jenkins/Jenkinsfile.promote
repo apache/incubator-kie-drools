@@ -70,7 +70,7 @@ pipeline {
 
         stage('Upload drools binaries and documentation') {
             when {
-                expression { return isRelease() }
+                expression { return isRelease() && isStream8() }
             }
             steps {
                 script {
@@ -288,4 +288,8 @@ void uploadFileMgmt(String directory) {
 
 boolean isNotTestingBuild() {
     return getGitAuthor() == 'kiegroup'
+}
+
+boolean isStream8() {
+    return env.DROOLS_STREAM == '8'
 }
