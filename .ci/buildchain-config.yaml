@@ -40,9 +40,9 @@ build:
     build-command:
       current: |
         export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.KOGITO_RUNTIMES_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
-        mvn clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS }}
+        mvn clean ${{ env.MVN_CMD }} -Dfull ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS }}
       upstream: |
-        mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM }}
+        mvn clean install -Dquickly -Dfull ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM }}
 
   - project: kiegroup/kogito-apps
     build-command: 
