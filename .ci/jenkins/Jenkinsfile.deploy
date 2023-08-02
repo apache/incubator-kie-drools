@@ -39,7 +39,7 @@ pipeline {
 
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
 
-        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+        PR_BRANCH_HASH = "${util.generateHash(10)}"
 
         // Maven configuration
         MAVEN_DEPLOY_LOCAL_DIR = "${WORKSPACE}/maven_deploy_dir"
@@ -221,8 +221,8 @@ pipeline {
             post {
                 success {
                     script {
-                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${optaplannerRepository}")
-                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.ref", getBotBranch())
+                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.uri", "https://github.com/${getGitAuthor()}/${optaplannerRepository}")
+                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.ref", getPRBranch())
                         setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${optaplannerRepository}")
                         setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.ref", getBuildBranch())
                     }
@@ -345,8 +345,7 @@ String getFallbackBranch(String repo) {
 
 void prepareForPR(String repo) {
     dir(repo) {
-        githubscm.forkRepo(getBotAuthorCredsID())
-        githubscm.createBranch(getBotBranch())
+        githubscm.createBranch(getPRBranch())
     }
 }
 
@@ -365,10 +364,10 @@ void commitAndCreatePR(String repo, String buildBranch) {
             githubscm.findAndStageNotIgnoredFiles('build.gradle')
             githubscm.findAndStageNotIgnoredFiles('antora.yml')
         })
-        githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
+        githubscm.pushObject('origin', getPRBranch(), getGitAuthorCredsID())
         deployProperties["${repo}.pr.link"] = isRelease() ?
-                githubscm.createPRWithLabels(commitMsg, prBody, buildBranch, ['DO_NOT_MERGE'] as String[], getBotAuthorCredsID()) :
-                githubscm.createPR(commitMsg, prBody, buildBranch, getBotAuthorCredsID())
+                githubscm.createPRWithLabels(commitMsg, prBody, buildBranch, ['DO_NOT_MERGE'] as String[], getGitAuthorCredsID()) :
+                githubscm.createPR(commitMsg, prBody, buildBranch, getGitAuthorCredsID())
     }
 }
 
@@ -477,6 +476,10 @@ String getGitAuthor() {
     return "${GIT_AUTHOR}"
 }
 
+String getGitAuthorCredsID() {
+    retrun env.AUTHOR_CREDS_ID
+}
+
 String getBuildBranch() {
     return params.BUILD_BRANCH_NAME
 }
@@ -489,16 +492,8 @@ String getDroolsVersion() {
     return params.DROOLS_VERSION
 }
 
-String getBotBranch() {
-    return "${getProjectVersion()}-${env.BOT_BRANCH_HASH}"
-}
-
-String getBotAuthor() {
-    return env.GIT_AUTHOR_BOT
-}
-
-String getBotAuthorCredsID() {
-    return env.BOT_CREDENTIALS_ID
+String getPRBranch() {
+    return "${getProjectVersion()}-${env.PR_BRANCH_HASH}"
 }
 
 void setDeployPropertyIfNeeded(String key, def value) {

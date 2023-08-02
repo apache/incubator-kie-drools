@@ -33,7 +33,7 @@ pipeline {
 
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
-        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+        PR_BRANCH_HASH = "${util.generateHash(10)}"
     }
 
     stages {
@@ -98,8 +98,8 @@ pipeline {
                 script {
                     final String websiteRepository = 'optaplanner-website'
                     String prLink = null
-                    String prBranchName = "${getProjectVersion().toLowerCase()}-${env.BOT_BRANCH_HASH}"
-                    dir("$websiteRepository-bot") {
+                    String prBranchName = "${getProjectVersion().toLowerCase()}-${env.PR_BRANCH_HASH}"
+                    dir("$websiteRepository-pr") {
                         checkoutRepo(websiteRepository, 'main') // there is no other branch
                         githubscm.createBranch(prBranchName)
 
@@ -182,7 +182,7 @@ String getGitAuthorCredsID() {
 }
 
 String getSnapshotBranch() {
-    return "${getNextMicroSnapshotVersion(getProjectVersion()).toLowerCase()}-${env.BOT_BRANCH_HASH}"
+    return "${getNextMicroSnapshotVersion(getProjectVersion()).toLowerCase()}-${env.PR_BRANCH_HASH}"
 }
 
 //////////////////////////////////////////////////////////////////////////////
