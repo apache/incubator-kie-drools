@@ -330,7 +330,7 @@ index 914a5ed1a5..840df84c51 100644
          </plugin>
          <plugin>
 diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-dependencies-bom/pom.xml
-index 7257ecc1b3..8cdb515b46 100644
+index 4c79cc0340..8cdb515b46 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
 @@ -16,9 +16,9 @@
@@ -351,7 +351,7 @@ index 7257ecc1b3..8cdb515b46 100644
      <version.net.thisptr.jackson-jq>1.0.0-preview.20220705</version.net.thisptr.jackson-jq>
 -    <version.io.quarkiverse.jackson-jq>1.1.0</version.io.quarkiverse.jackson-jq>
 -    <version.io.quarkiverse.openapi.generator>1.3.8</version.io.quarkiverse.openapi.generator>
--    <version.io.quarkiverse.asyncapi>0.0.3</version.io.quarkiverse.asyncapi>
+-    <version.io.quarkiverse.asyncapi>0.0.5</version.io.quarkiverse.asyncapi>
 -    <version.io.quarkiverse.reactivemessaging.http>1.1.5</version.io.quarkiverse.reactivemessaging.http>
 +    <version.io.quarkiverse.jackson-jq>2.0.1</version.io.quarkiverse.jackson-jq>
 +    <version.io.quarkiverse.openapi.generator>2.2.2</version.io.quarkiverse.openapi.generator>
@@ -1597,7 +1597,7 @@ index 0aa6799198..e68eb3ee78 100644
  import org.eclipse.microprofile.reactive.messaging.Incoming;
  import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
 diff --git a/quarkus/addons/mail/runtime/src/test/java/org/kie/kogito/mail/QuarkusMailSenderTest.java b/quarkus/addons/mail/runtime/src/test/java/org/kie/kogito/mail/QuarkusMailSenderTest.java
-index bf5c0438ea..4e4cb5d4e3 100644
+index ebffca8e67..9b3c9334f8 100644
 --- a/quarkus/addons/mail/runtime/src/test/java/org/kie/kogito/mail/QuarkusMailSenderTest.java
 +++ b/quarkus/addons/mail/runtime/src/test/java/org/kie/kogito/mail/QuarkusMailSenderTest.java
 @@ -19,7 +19,7 @@ import java.util.HashMap;
@@ -2435,13 +2435,14 @@ index ce0eedf6cd..eea0ab21f5 100644
          <executions>
            <execution>
 diff --git a/quarkus/addons/process-management/runtime/src/main/java/org/kie/kogito/process/management/ProcessInstanceManagementResource.java b/quarkus/addons/process-management/runtime/src/main/java/org/kie/kogito/process/management/ProcessInstanceManagementResource.java
-index dfebf95981..8ee199fd42 100644
+index aa8ebbbca3..6651462922 100644
 --- a/quarkus/addons/process-management/runtime/src/main/java/org/kie/kogito/process/management/ProcessInstanceManagementResource.java
 +++ b/quarkus/addons/process-management/runtime/src/main/java/org/kie/kogito/process/management/ProcessInstanceManagementResource.java
-@@ -15,16 +15,16 @@
+@@ -15,17 +15,17 @@
   */
  package org.kie.kogito.process.management;
  
+-import javax.enterprise.inject.Instance;
 -import javax.inject.Inject;
 -import javax.ws.rs.DELETE;
 -import javax.ws.rs.GET;
@@ -2452,6 +2453,7 @@ index dfebf95981..8ee199fd42 100644
 -import javax.ws.rs.core.MediaType;
 -import javax.ws.rs.core.Response;
 -import javax.ws.rs.core.Response.Status;
++import jakarta.enterprise.inject.Instance;
 +import jakarta.inject.Inject;
 +import jakarta.ws.rs.DELETE;
 +import jakarta.ws.rs.GET;
@@ -2466,18 +2468,20 @@ index dfebf95981..8ee199fd42 100644
  import org.kie.kogito.Application;
  import org.kie.kogito.process.Processes;
 diff --git a/quarkus/addons/process-management/runtime/src/test/java/org/kie/kogito/process/management/ProcessInstanceManagementResourceTest.java b/quarkus/addons/process-management/runtime/src/test/java/org/kie/kogito/process/management/ProcessInstanceManagementResourceTest.java
-index 4bdbcaa8d5..8bb7c5505d 100644
+index eb834c6b3b..5b3f3ce75e 100644
 --- a/quarkus/addons/process-management/runtime/src/test/java/org/kie/kogito/process/management/ProcessInstanceManagementResourceTest.java
 +++ b/quarkus/addons/process-management/runtime/src/test/java/org/kie/kogito/process/management/ProcessInstanceManagementResourceTest.java
-@@ -17,11 +17,11 @@ package org.kie.kogito.process.management;
+@@ -17,12 +17,12 @@ package org.kie.kogito.process.management;
  
  import java.util.Optional;
  
+-import javax.enterprise.inject.Instance;
 -import javax.ws.rs.core.Response;
 -import javax.ws.rs.core.Response.ResponseBuilder;
 -import javax.ws.rs.core.Response.Status;
 -import javax.ws.rs.core.Response.StatusType;
 -import javax.ws.rs.ext.RuntimeDelegate;
++import jakarta.enterprise.inject.Instance;
 +import jakarta.ws.rs.core.Response;
 +import jakarta.ws.rs.core.Response.ResponseBuilder;
 +import jakarta.ws.rs.core.Response.Status;
@@ -3171,6 +3175,25 @@ index 3612fdd487..d1406ec93a 100644
                  <version>${version.io.quarkus}</version>
              </plugin>
              <plugin>
+diff --git a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/auth/QuarkusIdentityProvider.java b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/auth/QuarkusIdentityProvider.java
+index 4c1d53c7ae..d46f2249d3 100644
+--- a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/auth/QuarkusIdentityProvider.java
++++ b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/auth/QuarkusIdentityProvider.java
+@@ -20,10 +20,10 @@ import java.util.Collection;
+ import java.util.Collections;
+ import java.util.Optional;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.context.control.ActivateRequestContext;
+-import javax.enterprise.inject.Instance;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.context.control.ActivateRequestContext;
++import jakarta.enterprise.inject.Instance;
++import jakarta.inject.Inject;
+ 
+ import org.kie.kogito.auth.IdentityProvider;
+ 
 diff --git a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/config/ConfigBean.java b/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/config/ConfigBean.java
 index e0af805b1f..2147548e66 100644
 --- a/quarkus/extensions/kogito-quarkus-extension-common/kogito-quarkus-common/src/main/java/org/kie/kogito/quarkus/config/ConfigBean.java
@@ -4082,16 +4105,18 @@ index dcbc67d4a7..56149fd8a8 100644
  import org.kie.kogito.event.cloudevents.extension.ProcessMeta;
  import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 diff --git a/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common/src/main/java/org/kie/kogito/quarkus/workflow/KogitoBeanProducer.java b/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common/src/main/java/org/kie/kogito/quarkus/workflow/KogitoBeanProducer.java
-index 0cc10085f7..37550b4871 100644
+index 99e6bd898a..2994328d72 100644
 --- a/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common/src/main/java/org/kie/kogito/quarkus/workflow/KogitoBeanProducer.java
 +++ b/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common/src/main/java/org/kie/kogito/quarkus/workflow/KogitoBeanProducer.java
-@@ -15,8 +15,8 @@
-  */
- package org.kie.kogito.quarkus.workflow;
+@@ -17,9 +17,9 @@ package org.kie.kogito.quarkus.workflow;
+ 
+ import java.util.concurrent.ScheduledExecutorService;
  
 -import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Instance;
 -import javax.enterprise.inject.Produces;
 +import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Instance;
 +import jakarta.enterprise.inject.Produces;
  
  import org.kie.kogito.config.ConfigBean;
@@ -4112,6 +4137,21 @@ index d4216b1cc3..41a44c6592 100644
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.kie.kogito.event.DataEvent;
  import org.kie.kogito.event.EventPublisher;
+diff --git a/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common/src/main/java/org/kie/kogito/quarkus/workflow/jobs/QuarkusScheduledExecutorService.java b/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common/src/main/java/org/kie/kogito/quarkus/workflow/jobs/QuarkusScheduledExecutorService.java
+index bb23b74c6a..5b6e48e020 100644
+--- a/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common/src/main/java/org/kie/kogito/quarkus/workflow/jobs/QuarkusScheduledExecutorService.java
++++ b/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common/src/main/java/org/kie/kogito/quarkus/workflow/jobs/QuarkusScheduledExecutorService.java
+@@ -20,8 +20,8 @@ import java.util.concurrent.ScheduledFuture;
+ import java.util.concurrent.ScheduledThreadPoolExecutor;
+ import java.util.concurrent.TimeUnit;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.eclipse.microprofile.context.ThreadContext;
+ import org.kie.kogito.services.jobs.impl.InMemoryJobService;
 diff --git a/quarkus/integration-tests/integration-tests-kogito-plugin/src/it/integration-tests-kogito-plugin-it/src/test/java/org/acme/travels/PersonProcessTest.java b/quarkus/integration-tests/integration-tests-kogito-plugin/src/it/integration-tests-kogito-plugin-it/src/test/java/org/acme/travels/PersonProcessTest.java
 index 9a8f24e3b8..2bfa200841 100644
 --- a/quarkus/integration-tests/integration-tests-kogito-plugin/src/it/integration-tests-kogito-plugin-it/src/test/java/org/acme/travels/PersonProcessTest.java

@@ -143,7 +143,6 @@ recipeList:
     newArtifactId: infinispan-client-hotrod-jakarta
   }
 ---
-displayName: Update Managed Dependencies
 name: org.kie.ManagedDependencies
 description: Update all managed dependencies based on dependency updates from Quarkus.
 type: specs.openrewrite.org/v1beta/recipe
@@ -531,6 +530,7 @@ recipeList:
     newGroupId: org.keycloak,
     newArtifactId: keycloak-admin-client-jakarta
   }
+displayName: Update Managed Dependencies
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.UpgradeQuarkiverse
