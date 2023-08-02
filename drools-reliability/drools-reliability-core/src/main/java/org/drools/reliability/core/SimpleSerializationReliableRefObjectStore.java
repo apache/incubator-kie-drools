@@ -32,6 +32,9 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
     public SimpleSerializationReliableRefObjectStore(Storage<Long, StoredObject> storage) {
         super(storage);
         uniqueObjectTypesInStore = new HashMap<>();
+        if (storage.size()>0){
+            storage.values().forEach(sObject -> {this.putIntoObjectTypesList( sObject.getObject() );});
+        }
         this.storage = storage.size()>0 ? updateObjectReferences(storage) : storage;
     }
 
@@ -100,7 +103,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         Field[] fields = object.getClass().getDeclaredFields();
 
         List<Field> fieldsWithTypeInTheStore = Arrays.stream(fields)
-                .filter(field -> uniqueObjectTypesInStore.keySet().contains(field.getType()))
+                .filter(field -> uniqueObjectTypesInStore.containsKey(field.getType()))
                 .collect(Collectors.toList());
         return fieldsWithTypeInTheStore;
     }
