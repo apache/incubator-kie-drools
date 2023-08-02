@@ -112,20 +112,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to repository') {
-            when {
-                expression { return !shouldStageArtifacts() && shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    runMavenDeploy()
-                }
-            }
-        }
         stage('Deploy locally') {
-            when {
-                expression { return shouldStageArtifacts() }
-            }
             steps {
                 script {
                     runMavenDeploy(true)
@@ -221,7 +208,7 @@ void sendNotification() {
 }
 
 boolean shouldStageArtifacts() {
-    return isRelease() && !env.MAVEN_DEPLOY_REPOSITORY
+    return isRelease()
 }
 
 boolean shouldDeployToRepository() {
