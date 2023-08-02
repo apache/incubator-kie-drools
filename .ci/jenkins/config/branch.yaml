@@ -42,7 +42,6 @@ environments:
     auto_generation: false
     ids:
     - ecosystem
-
 productized_branch: true
 disable:
   triggers: false
@@ -51,15 +50,14 @@ repositories:
   branch: main
 - name: optaplanner-quickstarts
   branch: 8.x
-# keep the website publish job on the main branch
 - name: optaplanner-website
   branch: main
 - name: kie-benchmarks
-  branch: main  
+  branch: main
 productized_repositories:
-  - name: optaplanner
-  - name: optaplanner-quickstarts
-  - name: optaplanner-website
+- name: optaplanner
+- name: optaplanner-quickstarts
+- name: optaplanner-website
 git:
   author:
     name: kiegroup
