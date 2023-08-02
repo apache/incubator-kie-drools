@@ -5,7 +5,7 @@
   <parent>
     <artifactId>kie-drl</artifactId>
     <groupId>org.kie</groupId>
-    <version>9.42.0-SNAPSHOT</version>
+    <version>9.42.0.Alpha</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
