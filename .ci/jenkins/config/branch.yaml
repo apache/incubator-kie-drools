@@ -66,9 +66,6 @@ git:
     name: kiegroup
     credentials_id: kie-ci4
     token_credentials_id: kie-ci4-token
-  bot_author:
-    name: bsig-gh-bot
-    credentials_id: bsig-gh-bot
   fork_author:
     name: kie-ci
     credentials_id: kie-ci
