@@ -74,7 +74,6 @@ pipeline {
                 }
             }
         }
-
         stage('Prepare for PR') {
             when {
                 expression { return isRelease() || isCreatePr() }
@@ -87,39 +86,22 @@ pipeline {
         }
         stage('Update project version') {
             when {
-                expression { return getProjectVersion() != '' }
+                expression { return getProjectVersion() }
             }
             steps {
                 script {
-                    maven.mvnVersionsUpdateParentAndChildModules(getMavenCommand(), getProjectVersion(), !isRelease())
-                }
-            }
-        }
-        stage('Deploy kogito-apps to repository') {
-            when {
-                expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    runMavenDeploy(params.SKIP_TESTS)
-                }
-            }
-            post {
-                always {
-                    script {
-                        saveReports()
-                        util.archiveConsoleLog()
+                    dir(getRepoName()) {
+                        maven.mvnVersionsUpdateParentAndChildModules(getMavenCommand(), getProjectVersion(), !isRelease())
                     }
                 }
             }
         }
         stage('Deploy kogito-apps locally') {
-            when {
-                expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
-            }
             steps {
                 script {
-                    runMavenDeploy(params.SKIP_TESTS, true)
+                    dir(getRepoName()){
+                        runMavenDeploy(params.SKIP_TESTS, true)
+                    }
                 }
             }
             post {
@@ -133,7 +115,7 @@ pipeline {
         }
         stage('Upload artifacts to given repository') {
             when {
-                expression { return isSpecificArtifactsUpload() }
+                expression { return !isRelease() && shouldDeployToRepository() }
             }
             steps {
                 script {
@@ -155,10 +137,18 @@ pipeline {
         }
         stage('Create PR') {
             when {
-                expression { return isRelease() || isCreatePr()  }
+                expression { return isRelease() || isCreatePr() }
             }
             steps {
-                commitAndCreatePR()
+                script {
+                    dir(getRepoName()) {
+                        if (githubscm.isThereAnyChanges()) {
+                            commitAndCreatePR()
+                        } else {
+                            println '[WARN] no changes to commit'
+                        }
+                    }
+                }
             }
             post {
                 success {
@@ -214,10 +204,8 @@ void saveReports() {
 }
 
 void checkoutRepo() {
-    dir(getRepoName()) {
-        deleteDir()
-        checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false))
-    }
+    deleteDir()
+    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false))
 }
 
 void commitAndCreatePR() {
@@ -240,11 +228,11 @@ boolean isSpecificArtifactsUpload() {
 }
 
 boolean shouldStageArtifacts() {
-    return !isSpecificArtifactsUpload() && isRelease() && !env.MAVEN_DEPLOY_REPOSITORY
+    return isRelease()
 }
 
 boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'kiegroup'
+    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID && getGitAuthor() == 'kiegroup'
 }
 
 boolean isRelease() {
@@ -287,14 +275,9 @@ void setDeployPropertyIfNeeded(String key, def value) {
 }
 
 MavenCommand getMavenCommand() {
-    MavenCommand mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
-                .inDirectory(getRepoName())
-                .withProperty('full')
-    if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
-        mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
-    }
-    return mvnCmd
+    return new MavenCommand(this, ['-fae', '-ntp'])
+            .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
+            .withProperty('full')
 }
 
 void runMavenDeploy(boolean skipTests = true, boolean localDeployment = false) {
@@ -319,8 +302,8 @@ void runMavenStage() {
 
 MavenStagingHelper getStagingHelper() {
     return new MavenStagingHelper(this, getMavenCommand())
-                .withNexusReleaseUrl(env.NEXUS_RELEASE_URL)
-                .withNexusReleaseRepositoryId(env.NEXUS_RELEASE_REPOSITORY_ID)
+            .withNexusReleaseUrl(env.NEXUS_RELEASE_URL)
+            .withNexusReleaseRepositoryId(env.NEXUS_RELEASE_REPOSITORY_ID)
 }
 
 String getLocalDeploymentFolder() {
