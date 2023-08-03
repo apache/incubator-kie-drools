@@ -21,7 +21,7 @@ pipeline {
     }
 
     environment {
-        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+        DROOLS_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         PR_BRANCH_HASH = "${util.generateHash(10)}"
     }
@@ -113,13 +113,13 @@ void clean() {
 }
 
 void sendErrorNotification() {
-    mailer.sendMarkdownTestSummaryNotification('quarkus-3', "[${getBuildBranch()}] Drools", [env.KOGITO_CI_EMAIL_TO])
+    mailer.sendMarkdownTestSummaryNotification('quarkus-3', "[${getBuildBranch()}] Drools", [env.DROOLS_CI_EMAIL_TO])
 }
 
 void sendNotification(String body) {
     emailext body: "${body}",
              subject: "[${getBuildBranch()}] Drools - quarkus-3",
-             to: env.KOGITO_CI_EMAIL_TO
+             to: env.DROOLS_CI_EMAIL_TO
 }
 
 void checkoutRepo(String repository, String branch) {
