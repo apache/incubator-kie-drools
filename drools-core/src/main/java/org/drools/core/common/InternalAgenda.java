@@ -80,11 +80,7 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
      */
     String getFocusName();
 
-    int fireNextItem(AgendaFilter filter, int fireCount, int fireLimit);
-
     boolean isDeclarativeAgenda();
-
-    void setWorkingMemory(final InternalWorkingMemory workingMemory);
 
     /**
      * Fires all activations currently in agenda that match the given agendaFilter

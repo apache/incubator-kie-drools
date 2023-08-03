@@ -81,7 +81,7 @@ public interface InternalRuleBase extends RuleBase {
     String getId();
 
     RuleBasePartitionId createNewPartitionId();
-    boolean hasParallelEvaluation();
+    boolean isPartitioned();
     int getParallelEvaluationSlotsCount();
 
     RuleBaseConfiguration getRuleBaseConfiguration();

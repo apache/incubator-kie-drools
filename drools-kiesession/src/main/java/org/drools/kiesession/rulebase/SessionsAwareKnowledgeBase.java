@@ -762,8 +762,8 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     }
 
     @Override
-    public boolean hasParallelEvaluation() {
-        return delegate.hasParallelEvaluation();
+    public boolean isPartitioned() {
+        return delegate.isPartitioned();
     }
 
     @Override

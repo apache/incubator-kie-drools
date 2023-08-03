@@ -16,30 +16,13 @@
 package org.drools.mvel.compiler.conf;
 
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
-import org.drools.core.util.MemoryUtil;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
-import org.kie.api.conf.BetaRangeIndexOption;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.conf.RemoveIdentitiesOption;
-import org.kie.api.conf.SequentialOption;
+import org.kie.api.conf.*;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
-import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
-import org.kie.internal.conf.AlphaThresholdOption;
-import org.kie.internal.conf.CompositeKeyDepthOption;
-import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
-import org.kie.internal.conf.IndexLeftBetaMemoryOption;
-import org.kie.internal.conf.IndexPrecedenceOption;
-import org.kie.internal.conf.IndexRightBetaMemoryOption;
-import org.kie.internal.conf.MaxThreadsOption;
-import org.kie.internal.conf.MultithreadEvaluationOption;
-import org.kie.internal.conf.SequentialAgendaOption;
-import org.kie.internal.conf.ShareAlphaNodesOption;
-import org.kie.internal.conf.ShareBetaNodesOption;
+import org.kie.internal.conf.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -376,8 +359,7 @@ public class KnowledgeBaseConfigurationTest {
         assertThat(config.getProperty(MaxThreadsOption.PROPERTY_NAME)).isEqualTo("5");
 
         // setting the options using the string based setProperty() method
-        config.setProperty( MaxThreadsOption.PROPERTY_NAME,
-                            "8" );
+        config.setProperty( MaxThreadsOption.PROPERTY_NAME, "8" );
 
         // checking the type safe getOption() method
         assertThat(config.getOption(MaxThreadsOption.KEY)).isEqualTo(MaxThreadsOption.get(8));
@@ -386,23 +368,22 @@ public class KnowledgeBaseConfigurationTest {
     }
     
     @Test
-    public void testMultithreadEvaluationConfiguration() {
+    public void testParallelExecutionConfiguration() {
         // setting the option using the type safe method
-        config.setOption( MultithreadEvaluationOption.YES );
+        config.setOption( ParallelExecutionOption.FULLY_PARALLEL );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(MultithreadEvaluationOption.KEY)).isEqualTo(MultithreadEvaluationOption.YES);
+        assertThat(config.getOption(ParallelExecutionOption.KEY)).isEqualTo(ParallelExecutionOption.FULLY_PARALLEL);
         // checking the string based getProperty() method
-        assertThat(config.getProperty(MultithreadEvaluationOption.PROPERTY_NAME)).isEqualTo("true");
+        assertThat(config.getProperty(ParallelExecutionOption.PROPERTY_NAME)).isEqualTo("fully_parallel");
 
         // setting the options using the string based setProperty() method
-        config.setProperty( MultithreadEvaluationOption.PROPERTY_NAME,
-                            "false" );
+        config.setProperty( ParallelExecutionOption.PROPERTY_NAME,"sequential" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(MultithreadEvaluationOption.KEY)).isEqualTo(MultithreadEvaluationOption.NO);
+        assertThat(config.getOption(ParallelExecutionOption.KEY)).isEqualTo(ParallelExecutionOption.SEQUENTIAL);
         // checking the string based getProperty() method
-        assertThat(config.getProperty(MultithreadEvaluationOption.PROPERTY_NAME)).isEqualTo("false");
+        assertThat(config.getProperty(ParallelExecutionOption.PROPERTY_NAME)).isEqualTo("sequential");
     }
     
     @Test

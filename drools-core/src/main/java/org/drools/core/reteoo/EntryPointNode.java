@@ -75,7 +75,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
 
     private ObjectTypeConfigurationRegistry typeConfReg;
 
-    private boolean parallelEvaluation = false;
+    private boolean parallelExecution = false;
 
     // ------------------------------------------------------------
     // Constructors
@@ -113,8 +113,8 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
     // Instance methods
     // ------------------------------------------------------------
 
-    public void setupParallelEvaluation(InternalRuleBase kbase) {
-        parallelEvaluation = true;
+    public void setupParallelExecution(InternalRuleBase kbase) {
+        parallelExecution = true;
     }
 
     public ObjectTypeConfigurationRegistry getTypeConfReg() {
@@ -190,8 +190,8 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
             log.trace("Insert {}", handle.toString());
         }
 
-        if ( parallelEvaluation || !reteEvaluator.isThreadSafe() ) {
-            // In case of multithreaded evaluation the CompositePartitionAwareObjectSinkAdapter
+        if ( parallelExecution || !reteEvaluator.isThreadSafe() ) {
+            // In case of parallel execution the CompositePartitionAwareObjectSinkAdapter
             // used by the OTNs will take care of enqueueing this insertion on the propagation queues
             // of the different agendas
             PropagationEntry.Insert.execute( handle, context, reteEvaluator, objectTypeConf );

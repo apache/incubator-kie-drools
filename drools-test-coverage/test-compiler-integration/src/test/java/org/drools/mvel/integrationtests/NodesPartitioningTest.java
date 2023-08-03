@@ -16,24 +16,13 @@
 
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
-
 import org.drools.base.InitialFact;
 import org.drools.base.base.ClassObjectType;
-import org.drools.core.common.BaseNode;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
+import org.drools.core.common.BaseNode;
+import org.drools.core.reteoo.*;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
-import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.ObjectSink;
-import org.drools.core.reteoo.ObjectSinkPropagator;
-import org.drools.core.reteoo.ObjectSource;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -42,7 +31,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.builder.KieModule;
-import org.kie.internal.conf.MultithreadEvaluationOption;
+import org.kie.internal.conf.ParallelExecutionOption;
+
+import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -81,7 +72,7 @@ public class NodesPartitioningTest {
 
     private void checkDrl(String drl) {
         final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final InternalKnowledgeBase kbase = (InternalKnowledgeBase)KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES);
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase)KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ParallelExecutionOption.FULLY_PARALLEL);
         Rete rete = kbase.getRete();
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
             traverse( entryPointNode );

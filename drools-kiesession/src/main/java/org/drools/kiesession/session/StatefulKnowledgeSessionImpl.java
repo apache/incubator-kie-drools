@@ -277,8 +277,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
              environment,
              new RuleRuntimeEventSupport(),
              new AgendaEventSupport(),
-             new RuleEventListenerSupport(),
-             null);
+             new RuleEventListenerSupport());
     }
 
     public StatefulKnowledgeSessionImpl(final long id,
@@ -286,7 +285,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                         final FactHandleFactory handleFactory,
                                         final long propagationContext,
                                         final SessionConfiguration config,
-                                        final InternalAgenda agenda,
                                         final Environment environment) {
         this(id,
              kBase,
@@ -297,8 +295,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
              environment,
              new RuleRuntimeEventSupport(),
              new AgendaEventSupport(),
-             new RuleEventListenerSupport(),
-             agenda);
+             new RuleEventListenerSupport());
     }
 
 
@@ -311,8 +308,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                          final Environment environment,
                                          final RuleRuntimeEventSupport workingMemoryEventSupport,
                                          final AgendaEventSupport agendaEventSupport,
-                                         final RuleEventListenerSupport ruleEventListenerSupport,
-                                         final InternalAgenda agenda) {
+                                         final RuleEventListenerSupport ruleEventListenerSupport) {
         this.id = id;
         this.kBase = kBase;
         this.handleFactory = handleFactory;
@@ -338,8 +334,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         RuleBaseConfiguration conf = kBase.getRuleBaseConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
 
-        this.agenda = agenda != null ? agenda : RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(kBase);
-        this.agenda.setWorkingMemory(this);
+        this.agenda = RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(this);
 
         this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
 

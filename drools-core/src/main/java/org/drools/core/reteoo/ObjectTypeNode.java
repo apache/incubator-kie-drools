@@ -112,7 +112,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         initMemoryId( context );
     }
 
-    public void setupParallelEvaluation(InternalRuleBase kbase) {
+    public void setupParallelExecution(InternalRuleBase kbase) {
         if (objectType == ClassObjectType.InitialFact_ObjectType) {
             return;
         }

@@ -423,7 +423,7 @@ public class PhreakTimerNode {
 
         private void evaluateAndFireRule(PathMemory pmem, ActivationsManager activationsManager) {
             RuleExecutor ruleExecutor = pmem.getRuleAgendaItem().getRuleExecutor();
-            ruleExecutor.reEvaluateNetwork( activationsManager );
+            ruleExecutor.evaluateNetworkIfDirty( activationsManager );
             ruleExecutor.fire( activationsManager );
         }
     }

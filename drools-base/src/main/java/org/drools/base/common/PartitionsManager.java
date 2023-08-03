@@ -24,8 +24,8 @@ import java.util.concurrent.ForkJoinPool;
 
 public class PartitionsManager {
 
-    private static final int MIN_PARALLEL_THRESHOLD = 8;
-    private static final int MAX_PARALLEL_THRESHOLD = MIN_PARALLEL_THRESHOLD * 4;
+    public static final int MIN_PARALLEL_THRESHOLD = 8;
+    public static final int MAX_PARALLEL_THRESHOLD = MIN_PARALLEL_THRESHOLD * 4;
 
     private int partitionCounter = 0;
 

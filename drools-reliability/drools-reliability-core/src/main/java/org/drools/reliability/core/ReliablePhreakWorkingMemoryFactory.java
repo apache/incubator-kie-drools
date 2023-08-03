@@ -16,7 +16,6 @@
 package org.drools.reliability.core;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.factory.PhreakWorkingMemoryFactory;
@@ -38,7 +37,7 @@ public class ReliablePhreakWorkingMemoryFactory extends PhreakWorkingMemoryFacto
     }
 
     @Override
-    public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
-        return new ReliableStatefulKnowledgeSessionImpl(id, kBase, handleFactory, propagationContext, config, agenda, environment);
+    public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, Environment environment) {
+        return new ReliableStatefulKnowledgeSessionImpl(id, kBase, handleFactory, propagationContext, config, environment);
     }
 }

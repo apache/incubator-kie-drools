@@ -106,13 +106,6 @@ public class KieBaseConfigurationMonitor implements KieBaseConfigurationMonitorM
     }
 
     /* (non-Javadoc)
-     * @see org.kie.api.management.KBaseConfigurationMonitorMBean#isMultithreadEvaluation()
-     */
-    public boolean isMultithreadEvaluation() {
-        return ruleBaseConf.isMultithreadEvaluation();
-    }
-
-    /* (non-Javadoc)
      * @see org.kie.api.management.KBaseConfigurationMonitorMBean#isRemoveIdentities()
      */
     public boolean isRemoveIdentities() {

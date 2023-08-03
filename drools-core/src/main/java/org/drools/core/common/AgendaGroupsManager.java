@@ -16,6 +16,10 @@
 
 package org.drools.core.common;
 
+import org.drools.core.impl.InternalRuleBase;
+import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.RuntimeComponentFactory;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -30,12 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.RuntimeComponentFactory;
-
 public interface AgendaGroupsManager extends Externalizable {
-    void setReteEvaluator(ReteEvaluator reteEvaluator);
 
     void reset(boolean clearForRecency);
 
@@ -70,8 +69,6 @@ public interface AgendaGroupsManager extends Externalizable {
 
     boolean removeGroup(InternalAgendaGroup group);
 
-    int focusStackSize();
-
     int agendaSize();
 
     int sizeOfRuleFlowGroup(String name);
@@ -80,8 +77,9 @@ public interface AgendaGroupsManager extends Externalizable {
 
     InternalAgendaGroup getMainAgendaGroup();
 
-    static AgendaGroupsManager create(InternalRuleBase kBase, boolean initMain) {
-        return kBase.hasMultipleAgendaGroups() || !kBase.getProcesses().isEmpty() ? new StackedAgendaGroupsManager(kBase, initMain) : new SimpleAgendaGroupsManager(kBase);
+    static AgendaGroupsManager create(InternalWorkingMemory workingMemory) {
+        InternalRuleBase kBase = workingMemory.getKnowledgeBase();
+        return kBase.hasMultipleAgendaGroups() || !kBase.getProcesses().isEmpty() ? new StackedAgendaGroupsManager(workingMemory) : new SimpleAgendaGroupsManager(workingMemory);
     }
 
     class SimpleAgendaGroupsManager implements AgendaGroupsManager {
@@ -90,19 +88,10 @@ public interface AgendaGroupsManager extends Externalizable {
 
         public SimpleAgendaGroupsManager() { }
 
-        public SimpleAgendaGroupsManager(InternalRuleBase kBase) {
-            this.mainAgendaGroup = RuntimeComponentFactory.get().getAgendaGroupFactory().createAgendaGroup(InternalAgendaGroup.MAIN, kBase);
-        }
-
         public SimpleAgendaGroupsManager(ReteEvaluator reteEvaluator) {
-            this(reteEvaluator.getKnowledgeBase());
-            setReteEvaluator(reteEvaluator);
-        }
-
-        @Override
-        public void setReteEvaluator(ReteEvaluator reteEvaluator) {
             this.reteEvaluator = reteEvaluator;
-            this.mainAgendaGroup.setReteEvaluator( reteEvaluator );
+            this.mainAgendaGroup = RuntimeComponentFactory.get().getAgendaGroupFactory().createAgendaGroup(InternalAgendaGroup.MAIN, reteEvaluator.getKnowledgeBase());
+            this.mainAgendaGroup.setReteEvaluator(reteEvaluator);
         }
 
         @Override
@@ -216,11 +205,6 @@ public interface AgendaGroupsManager extends Externalizable {
         }
 
         @Override
-        public int focusStackSize() {
-            return mainAgendaGroup.size();
-        }
-
-        @Override
         public int agendaSize() {
             return mainAgendaGroup.size();
         }
@@ -265,11 +249,14 @@ public interface AgendaGroupsManager extends Externalizable {
 
         public StackedAgendaGroupsManager() { }
 
-        public StackedAgendaGroupsManager(InternalRuleBase kBase, boolean initMain) {
+        public StackedAgendaGroupsManager(InternalWorkingMemory workingMemory) {
             this.agendaGroupFactory = RuntimeComponentFactory.get().getAgendaGroupFactory();
-            if (initMain) {
-                initMainAgendaGroup(kBase);
+            // stacked agenda groups are supported only for InternalWorkingMemory
+            this.workingMemory = workingMemory;
+            if (this.mainAgendaGroup == null) {
+                initMainAgendaGroup(workingMemory.getKnowledgeBase());
             }
+            this.mainAgendaGroup.setReteEvaluator( workingMemory );
         }
 
         @Override
@@ -281,16 +268,6 @@ public interface AgendaGroupsManager extends Externalizable {
             this.mainAgendaGroup = agendaGroupFactory.createAgendaGroup( InternalAgendaGroup.MAIN, kBase);
             this.agendaGroups.put( InternalAgendaGroup.MAIN, this.mainAgendaGroup );
             this.focusStack.add( this.mainAgendaGroup );
-        }
-
-        @Override
-        public void setReteEvaluator(ReteEvaluator reteEvaluator) {
-            // stacked agenda groups are supported only for InternalWorkingMemory
-            this.workingMemory = (InternalWorkingMemory) reteEvaluator;
-            if (this.mainAgendaGroup == null) {
-                initMainAgendaGroup(reteEvaluator.getKnowledgeBase());
-            }
-            this.mainAgendaGroup.setReteEvaluator( reteEvaluator );
         }
 
         private boolean isEmpty() {
@@ -345,7 +322,7 @@ public interface AgendaGroupsManager extends Externalizable {
         private void clearAndCancelAgendaGroup(InternalAgendaGroup agendaGroup, InternalAgenda agenda) {
             // enforce materialization of all activations of this group before removing them
             for (RuleAgendaItem activation : agendaGroup.getActivations()) {
-                activation.getRuleExecutor().reEvaluateNetwork( agenda );
+                activation.getRuleExecutor().evaluateNetworkIfDirty( agenda );
             }
 
             final EventSupport eventsupport = this.workingMemory;
@@ -355,7 +332,7 @@ public interface AgendaGroupsManager extends Externalizable {
             // this is thread safe for BinaryHeapQueue
             // Binary Heap locks while it returns the array and reset's it's own internal array. Lock is released afer getAndClear()
             List<RuleAgendaItem> lazyItems = new ArrayList<>();
-            for (RuleAgendaItem item : agendaGroup.getAll() ) {
+            for (RuleAgendaItem item : agendaGroup.getActivations() ) {
                 lazyItems.add(item );
                 item.getRuleExecutor().cancel(workingMemory, eventsupport);
             }
@@ -514,15 +491,6 @@ public interface AgendaGroupsManager extends Externalizable {
             boolean existed = this.focusStack.remove( group );
             group.visited();
             return existed;
-        }
-
-        @Override
-        public int focusStackSize() {
-            int size = 0;
-            for ( InternalAgendaGroup group : this.focusStack ) {
-                size += group.size();
-            }
-            return size;
         }
 
         @Override

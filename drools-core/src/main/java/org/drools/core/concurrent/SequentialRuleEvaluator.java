@@ -19,19 +19,12 @@ package org.drools.core.concurrent;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.kie.api.runtime.rule.AgendaFilter;
 
-public class SequentialRuleEvaluator extends AbstractRuleEvaluator implements RuleEvaluator {
-
-    private final boolean sequential;
-
-    private KnowledgeHelper knowledgeHelper;
+public class SequentialRuleEvaluator extends AbstractRuleEvaluator {
 
     public SequentialRuleEvaluator( ActivationsManager activationsManager ) {
         super(activationsManager);
-        sequential = activationsManager.getReteEvaluator().getKnowledgeBase().getRuleBaseConfiguration().isSequential();
-        knowledgeHelper = newKnowledgeHelper();
     }
 
     @Override
@@ -39,17 +32,7 @@ public class SequentialRuleEvaluator extends AbstractRuleEvaluator implements Ru
                                 int fireCount,
                                 int fireLimit,
                                 InternalAgendaGroup group ) {
-        RuleAgendaItem item = sequential ? group.remove() : group.peek();
+        RuleAgendaItem item = nextActivation(group);
         return item != null ? internalEvaluateAndFire( filter, fireCount, fireLimit, item ) : 0;
-    }
-
-    @Override
-    public KnowledgeHelper getKnowledgeHelper() {
-        return knowledgeHelper;
-    }
-
-    @Override
-    public void resetKnowledgeHelper() {
-        knowledgeHelper = newKnowledgeHelper();
     }
 }

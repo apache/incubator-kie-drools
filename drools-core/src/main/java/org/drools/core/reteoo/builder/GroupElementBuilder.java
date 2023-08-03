@@ -131,7 +131,7 @@ public class GroupElementBuilder
             boolean lockOnActive = context.getRule().isLockOnActive();
             boolean eager = context.getRule().getMetaData(Propagation.class.getName()) != null || context.getRule().getMetaData(Propagation.class.getSimpleName()) != null;
             return !isInitialFact && !hasTimer && !lockOnActive && !eager &&
-                    !conf.isMultithreadEvaluation() && !conf.isSequential() && !conf.isDeclarativeAgenda();
+                    !conf.isParallelEvaluation() && !conf.isSequential() && !conf.isDeclarativeAgenda();
         }
 
         public static void buildTupleSource(BuildContext context, BuildUtils utils, boolean terminal) {

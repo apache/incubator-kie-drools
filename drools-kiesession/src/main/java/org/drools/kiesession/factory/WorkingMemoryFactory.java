@@ -16,7 +16,6 @@
 package org.drools.kiesession.factory;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -33,7 +32,6 @@ public interface WorkingMemoryFactory {
                                               final FactHandleFactory handleFactory,
                                               final long propagationContext,
                                               final SessionConfiguration config,
-                                              final InternalAgenda agenda,
                                               final Environment environment);
 }
 

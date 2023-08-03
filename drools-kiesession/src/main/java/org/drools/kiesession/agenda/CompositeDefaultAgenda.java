@@ -67,11 +67,14 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     public CompositeDefaultAgenda() { }
 
-    public CompositeDefaultAgenda(InternalRuleBase kBase, boolean initMain) {
+    public CompositeDefaultAgenda(InternalWorkingMemory workingMemory) {
+        InternalRuleBase kBase = workingMemory.getKnowledgeBase();
         this.agendas = new DefaultAgenda[kBase.getParallelEvaluationSlotsCount()];
         for ( int i = 0; i < this.agendas.length; i++ ) {
-            agendas[i] = new PartitionedDefaultAgenda(kBase, initMain, executionStateMachine, i);
+            agendas[i] = new PartitionedDefaultAgenda(workingMemory, executionStateMachine, i);
         }
+        // this composite agenda and the first partitioned one share the same propagation list
+        this.propagationList = agendas[0].getPropagationList();
     }
 
     @Override
@@ -117,13 +120,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public RuleAgendaItem peekNextRule() {
         return getAgendaGroupsManager().peekNextRule();
-    }
-
-    @Override
-    public void setWorkingMemory( InternalWorkingMemory workingMemory ) {
-        Stream.of( agendas ).forEach( a -> a.setWorkingMemory( workingMemory ) );
-        // this composite agenda and the first partitioned one share the same propagation list
-        this.propagationList = agendas[0].getPropagationList();
     }
 
     @Override
@@ -380,11 +376,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public String getFocusName() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getFocusName -> TODO" );
-    }
-
-    @Override
-    public int fireNextItem( AgendaFilter filter, int fireCount, int fireLimit ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.fireNextItem -> TODO" );
     }
 
     @Override

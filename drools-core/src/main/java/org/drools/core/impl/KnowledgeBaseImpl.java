@@ -152,6 +152,8 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
 
     private final PartitionsManager partitionsManager = new PartitionsManager();
 
+    private boolean partitioned;
+
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -450,20 +452,25 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
             ruleUnitDescriptionRegistry.add(newPkg.getRuleUnitDescriptionLoader());
         }
 
-        if (ruleBaseConfig.isMultithreadEvaluation()) {
+        if (ruleBaseConfig.isParallelEvaluation()) {
             setupParallelEvaluation();
         }
     }
 
     private void setupParallelEvaluation() {
-        if (!hasParallelEvaluation()) {
-            disableMultithreadEvaluation("The rete network cannot be partitioned: disabling multithread evaluation");
+        if (!partitionsManager.hasParallelEvaluation()) {
+            disableParallelEvaluation("The rete network cannot be partitioned: disabling multithread evaluation");
+            return;
         }
         partitionsManager.init();
-        for (EntryPointNode epn : rete.getEntryPointNodes().values()) {
-            epn.setupParallelEvaluation(this);
-            for ( ObjectTypeNode otn : epn.getObjectTypeNodes().values() ) {
-                otn.setupParallelEvaluation(this);
+        this.partitioned = true;
+
+        if (ruleBaseConfig.isParallelExecution()) {
+            for (EntryPointNode epn : rete.getEntryPointNodes().values()) {
+                epn.setupParallelExecution(this);
+                for (ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
+                    otn.setupParallelExecution(this);
+                }
             }
         }
     }
@@ -492,16 +499,16 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         }
     }
 
-    private void checkMultithreadedEvaluation( RuleImpl rule ) {
-        if (ruleBaseConfig.isMultithreadEvaluation()) {
+    private void checkParallelEvaluation(RuleImpl rule) {
+        if (ruleBaseConfig.isParallelEvaluation()) {
             if (!rule.isMainAgendaGroup()) {
-                disableMultithreadEvaluation( "Agenda-groups are not supported with multithread evaluation: disabling it" );
+                disableParallelEvaluation( "Agenda-groups are not supported with parallel execution: disabling it" );
             } else if (rule.getActivationGroup() != null) {
-                disableMultithreadEvaluation( "Activation-groups are not supported with multithread evaluation: disabling it" );
-            } else if (!rule.getSalience().isDefault()) {
-                disableMultithreadEvaluation( "Salience is not supported with multithread evaluation: disabling it" );
+                disableParallelEvaluation( "Activation-groups are not supported with parallel execution: disabling it" );
+            } else if (!rule.getSalience().isDefault() && ruleBaseConfig.isParallelExecution()) {
+                disableParallelEvaluation( "Salience is not supported with parallel execution: disabling it" );
             } else if (rule.isQuery()) {
-                disableMultithreadEvaluation( "Queries are not supported with multithread evaluation: disabling it" );
+                disableParallelEvaluation( "Queries are not supported with parallel execution: disabling it" );
             }
         }
     }
@@ -510,7 +517,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         return hasMultipleAgendaGroups;
     }
 
-    private void disableMultithreadEvaluation(String warningMessage) {
+    private void disableParallelEvaluation(String warningMessage) {
         ruleBaseConfig.enforceSingleThreadEvaluation();
         logger.warn( warningMessage );
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
@@ -1029,7 +1036,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
 
         for (Rule r : rules) {
             RuleImpl rule = (RuleImpl) r;
-            checkMultithreadedEvaluation( rule );
+            checkParallelEvaluation( rule );
             this.hasMultipleAgendaGroups |= !rule.isMainAgendaGroup();
             terminalNodes.addAll(this.reteooBuilder.addRule(rule, wms));
         }
@@ -1184,8 +1191,8 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
     }
 
     @Override
-    public boolean hasParallelEvaluation() {
-        return getRuleBaseConfiguration().isMultithreadEvaluation() && partitionsManager.hasParallelEvaluation();
+    public boolean isPartitioned() {
+        return partitioned;
     }
 
     @Override

@@ -152,13 +152,6 @@ public class AgendaGroupQueueImpl
         this.lastRemoved = null;
     }
 
-    public Collection<RuleAgendaItem> getAll() {
-        return this.priorityQueue.getAll();
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.spi.AgendaGroup#size()
-     */
     public int size() {
         return this.priorityQueue.size();
     }

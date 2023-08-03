@@ -49,7 +49,7 @@ public class RuleExecutor {
     private final PathMemory pmem;
     private final RuleAgendaItem ruleAgendaItem;
     private final TupleList tupleList;
-    private Queue<InternalMatch> queue;
+    private final Queue<InternalMatch> queue;
     private volatile boolean dirty;
     private final boolean declarativeAgendaEnabled;
     private boolean fireExitedEarly;
@@ -61,54 +61,50 @@ public class RuleExecutor {
         this.ruleAgendaItem = ruleAgendaItem;
         this.tupleList = new TupleList();
         this.declarativeAgendaEnabled = declarativeAgendaEnabled;
-        if (ruleAgendaItem.getRule().getSalience().isDynamic()) {
-            queue = QueueFactory.createQueue(MatchConflictResolver.INSTANCE);
-        }
-    }
-
-    public void evaluateNetwork(ActivationsManager activationsManager) {
-        RuleNetworkEvaluator.INSTANCE.evaluateNetwork( pmem, this, activationsManager );
-        setDirty( false );
+        this.queue = ruleAgendaItem.getRule().getSalience().isDynamic() ? QueueFactory.createQueue(MatchConflictResolver.INSTANCE) : null;
     }
 
     public int evaluateNetworkAndFire( ReteEvaluator reteEvaluator,
                                        AgendaFilter filter,
                                        int fireCount,
                                        int fireLimit ) {
-        reEvaluateNetwork( reteEvaluator );
+        evaluateNetworkIfDirty( reteEvaluator );
         return fire(reteEvaluator, pmem.getActualActivationsManager( reteEvaluator ), filter, fireCount, fireLimit);
     }
 
-    public int evaluateNetworkAndFire( ActivationsManager activationsManager,
-                                       AgendaFilter filter,
-                                       int fireCount,
-                                       int fireLimit ) {
+    public int evaluateNetworkAndFire( ActivationsManager activationsManager, AgendaFilter filter, int fireCount, int fireLimit ) {
+        evaluateNetworkIfDirty( activationsManager );
+
         ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
-
-        reEvaluateNetwork( activationsManager );
-
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
-            RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
-            RuleImpl rule = rtn.getRule();
-            int directFirings = tupleList.size();
-
-            for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = tupleList.getFirst()) {
-                if (cancelAndContinue(reteEvaluator, rtn, rule, tuple, filter)) {
-                    directFirings--;
-                } else {
-                    fireActivationEvent(reteEvaluator, activationsManager, (InternalMatch) tuple, ((InternalMatch) tuple).getConsequence());
-                }
-                removeLeftTuple( tuple );
-            }
-            ruleAgendaItem.remove();
-            return directFirings;
+            return doDirectFirings(activationsManager, filter, reteEvaluator);
         }
 
         return fire( reteEvaluator, activationsManager, filter, fireCount, fireLimit );
     }
 
+    private int doDirectFirings(ActivationsManager activationsManager, AgendaFilter filter, ReteEvaluator reteEvaluator) {
+        RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
+        int directFirings = tupleList.size();
+
+        for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = tupleList.getFirst()) {
+            if (cancelAndContinue(reteEvaluator, rtn, tuple, filter)) {
+                directFirings--;
+            } else {
+                fireActivationEvent(reteEvaluator, activationsManager, (InternalMatch) tuple, ((InternalMatch) tuple).getConsequence());
+            }
+            removeLeftTuple( tuple );
+        }
+        ruleAgendaItem.remove();
+        return directFirings;
+    }
+
     public void fire(ActivationsManager activationsManager) {
         fire(activationsManager.getReteEvaluator(), activationsManager, null, 0, Integer.MAX_VALUE);
+    }
+
+    public int fire(ActivationsManager activationsManager, AgendaFilter filter, int fireCount, int fireLimit) {
+        return fire(activationsManager.getReteEvaluator(), activationsManager, filter, fireCount, fireLimit);
     }
 
     private int fire( ReteEvaluator reteEvaluator,
@@ -129,10 +125,9 @@ public class RuleExecutor {
             }
 
             RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
-            RuleImpl rule = rtn.getRule();
-            boolean ruleIsAllMatches = rule.isAllMatches();
+            boolean ruleIsAllMatches = rtn.getRule().isAllMatches();
             Tuple tuple = getNextTuple();
-            
+
             if (ruleIsAllMatches) {
                 fireConsequenceEvent(reteEvaluator, activationsManager, (InternalMatch) tuple, ActivationsManager.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
             }
@@ -142,7 +137,7 @@ public class RuleExecutor {
 
                 //check if the rule is not effective or
                 // if the current Rule is no-loop and the origin rule is the same then return
-                if (cancelAndContinue(reteEvaluator, rtn, rule, tuple, filter)) {
+                if (cancelAndContinue(reteEvaluator, rtn, tuple, filter)) {
                     continue;
                 }
 
@@ -173,7 +168,7 @@ public class RuleExecutor {
                         break; // another rule has high priority and is on the agenda, so evaluate it first
                     }
                     if (!reteEvaluator.isSequential()) {
-                        reEvaluateNetwork( activationsManager );
+                        evaluateNetworkIfDirty( activationsManager );
                     }
                 }
             }
@@ -222,14 +217,18 @@ public class RuleExecutor {
         }
     }
 
-    public void reEvaluateNetwork(ReteEvaluator reteEvaluator) {
-        reEvaluateNetwork(pmem.getActualActivationsManager( reteEvaluator ));
+    public void evaluateNetwork(ActivationsManager activationsManager) {
+        RuleNetworkEvaluator.INSTANCE.evaluateNetwork( pmem, this, activationsManager );
+        setDirty( false );
     }
 
-    public void reEvaluateNetwork(ActivationsManager activationsManager) {
+    public void evaluateNetworkIfDirty(ReteEvaluator reteEvaluator) {
+        evaluateNetworkIfDirty(pmem.getActualActivationsManager( reteEvaluator ));
+    }
+
+    public void evaluateNetworkIfDirty(ActivationsManager activationsManager) {
         if ( isDirty() ) {
-            setDirty(false);
-            RuleNetworkEvaluator.INSTANCE.evaluateNetwork(pmem, this, activationsManager);
+            evaluateNetwork(activationsManager);
         }
     }
 
@@ -239,10 +238,10 @@ public class RuleExecutor {
 
     private boolean cancelAndContinue(ReteEvaluator reteEvaluator,
                                       RuleTerminalNode rtn,
-                                      RuleImpl rule,
                                       Tuple leftTuple,
                                       AgendaFilter filter) {
         // NB. stopped setting the LT.object to Boolean.TRUE, that Reteoo did.
+        RuleImpl rule = rtn.getRule();
         if ( !rule.isEffective(leftTuple, rtn.getEnabledDeclarations(), reteEvaluator) ) {
             return true;
         }
