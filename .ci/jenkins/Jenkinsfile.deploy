@@ -477,7 +477,7 @@ String getGitAuthor() {
 }
 
 String getGitAuthorCredsID() {
-    retrun env.AUTHOR_CREDS_ID
+    return env.AUTHOR_CREDS_ID
 }
 
 String getBuildBranch() {
