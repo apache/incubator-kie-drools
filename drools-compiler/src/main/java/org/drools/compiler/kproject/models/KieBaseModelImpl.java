@@ -30,6 +30,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.compiler.kproject.KieModuleException;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.drools.core.util.StringUtils;
 import org.kie.api.builder.model.KieBaseModel;
@@ -432,6 +433,9 @@ public class KieBaseModelImpl
 
             String kbaseName = reader.getAttribute( "name" );
             kBase.name = kbaseName != null ? kbaseName : StringUtils.uuid();
+            if (kBase.name.isEmpty()) {
+                throw new KieModuleException("kbase name is empty in kmodule.xml");
+            }
 
             kBase.setDefault( "true".equals(reader.getAttribute( "default" )) );
 
