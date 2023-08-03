@@ -104,7 +104,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <filters> <!--  <!-- https://issues.redhat.com/browse/DROOLS-7524 https://stackoverflow.com/a/64063529/4206 --> https://stackoverflow.com/a/64063529/4206 -->
+              <filters> <!-- https://issues.redhat.com/browse/DROOLS-7524 https://stackoverflow.com/a/64063529/4206 -->
                 <filter>
                   <artifact>*:*</artifact>
                   <excludes>
