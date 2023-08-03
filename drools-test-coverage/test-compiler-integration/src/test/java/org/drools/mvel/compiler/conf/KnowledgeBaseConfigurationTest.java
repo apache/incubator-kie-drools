@@ -20,9 +20,24 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
-import org.kie.api.conf.*;
+import org.kie.api.conf.BetaRangeIndexOption;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.RemoveIdentitiesOption;
+import org.kie.api.conf.SequentialOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
-import org.kie.internal.conf.*;
+import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
+import org.kie.internal.conf.AlphaThresholdOption;
+import org.kie.internal.conf.CompositeKeyDepthOption;
+import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
+import org.kie.internal.conf.IndexLeftBetaMemoryOption;
+import org.kie.internal.conf.IndexPrecedenceOption;
+import org.kie.internal.conf.IndexRightBetaMemoryOption;
+import org.kie.internal.conf.MaxThreadsOption;
+import org.kie.internal.conf.ParallelExecutionOption;
+import org.kie.internal.conf.SequentialAgendaOption;
+import org.kie.internal.conf.ShareAlphaNodesOption;
+import org.kie.internal.conf.ShareBetaNodesOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -158,7 +158,11 @@ public class DefaultAgenda implements InternalAgenda {
         this.sequential = ruleBaseConf.isSequential();
         this.expirationContexts = ruleBaseConf.getEventProcessingMode() == EventProcessingOption.STREAM ? new ArrayList<>() : null;
 
-        this.ruleEvaluator = ruleBaseConf.isParallelEvaluation() ? new ParallelRuleEvaluator(this) : new SequentialRuleEvaluator( this );
+        // for fully parallel execution the parallelism is implemented at the level of CompositeDefaultAgenda
+        this.ruleEvaluator = ruleBaseConf.isParallelEvaluation() && !ruleBaseConf.isParallelExecution() ?
+                new ParallelRuleEvaluator(this) :
+                new SequentialRuleEvaluator( this );
+
         this.propagationList = createPropagationList();
     }
 

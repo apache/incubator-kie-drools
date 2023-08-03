@@ -131,8 +131,6 @@ public class ParallelEvaluationTest {
 
         ksession.fireAllRules();
 
-        System.out.println(list);
-
         assertThat(list.size()).isEqualTo(ruleNr);
 
         List<Integer> expected = Stream.iterate(ruleNr-1, i -> i-1).limit(ruleNr).filter(i -> i % 2 == 0)
