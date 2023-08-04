@@ -17,22 +17,11 @@
 package org.drools.core.concurrent;
 
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.phreak.RuleAgendaItem;
-import org.kie.api.runtime.rule.AgendaFilter;
 
-public class SequentialRuleEvaluator extends AbstractRuleEvaluator {
+public class SequentialGroupEvaluator extends AbstractGroupEvaluator {
 
-    public SequentialRuleEvaluator( ActivationsManager activationsManager ) {
+    public SequentialGroupEvaluator(ActivationsManager activationsManager) {
         super(activationsManager);
     }
-
-    @Override
-    public int evaluateAndFire( AgendaFilter filter,
-                                int fireCount,
-                                int fireLimit,
-                                InternalAgendaGroup group ) {
-        RuleAgendaItem item = nextActivation(group);
-        return item != null ? internalEvaluateAndFire( filter, fireCount, fireLimit, item ) : 0;
-    }
 }
+

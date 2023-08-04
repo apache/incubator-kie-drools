@@ -19,6 +19,7 @@ package org.drools.base.common;
 import org.drools.util.ObjectPool;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 
@@ -51,8 +52,12 @@ public class PartitionsManager {
         private static final ForkJoinPool RULES_EVALUATION_POOL = new ForkJoinPool(); // avoid common pool
     }
 
-    public static ForkJoinPool getFireAllExecutors() {
-        return ForkJoinPoolHolder.RULES_EVALUATION_POOL;
+    public static void doOnForkJoinPool(Runnable task) {
+        ForkJoinPoolHolder.RULES_EVALUATION_POOL.submit( task ).join();
+    }
+
+    public static <T> T doOnForkJoinPool(Callable<T> task) {
+        return ForkJoinPoolHolder.RULES_EVALUATION_POOL.submit( task ).join();
     }
 
     private static class FireUntilHaltExecutorsPoolHolder {

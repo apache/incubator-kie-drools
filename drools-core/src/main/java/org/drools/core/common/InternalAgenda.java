@@ -34,8 +34,10 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
 
     /**
      * Sets the Agenda's focus to the specified AgendaGroup
+     *
+     * @return true if the AgendaGroup is changed
      */
-    void setFocus(String name);
+    boolean setFocus(String name);
 
     /**
      * Activates the <code>RuleFlowGroup</code> with the given name.

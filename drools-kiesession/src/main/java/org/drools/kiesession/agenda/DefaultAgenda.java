@@ -34,9 +34,9 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleFlowGroup;
-import org.drools.core.concurrent.ParallelRuleEvaluator;
-import org.drools.core.concurrent.RuleEvaluator;
-import org.drools.core.concurrent.SequentialRuleEvaluator;
+import org.drools.core.concurrent.ParallelGroupEvaluator;
+import org.drools.core.concurrent.GroupEvaluator;
+import org.drools.core.concurrent.SequentialGroupEvaluator;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.ExecutableEntry;
@@ -114,7 +114,7 @@ public class DefaultAgenda implements InternalAgenda {
 
     private final List<PropagationContext> expirationContexts;
 
-    private final RuleEvaluator ruleEvaluator;
+    private final GroupEvaluator groupEvaluator;
 
     private final PropagationList propagationList;
 
@@ -158,10 +158,10 @@ public class DefaultAgenda implements InternalAgenda {
         this.sequential = ruleBaseConf.isSequential();
         this.expirationContexts = ruleBaseConf.getEventProcessingMode() == EventProcessingOption.STREAM ? new ArrayList<>() : null;
 
-        // for fully parallel execution the parallelism is implemented at the level of CompositeDefaultAgenda
-        this.ruleEvaluator = ruleBaseConf.isParallelEvaluation() && !ruleBaseConf.isParallelExecution() ?
-                new ParallelRuleEvaluator(this) :
-                new SequentialRuleEvaluator( this );
+         // for fully parallel execution the parallelism is implemented at the level of CompositeDefaultAgenda
+         this.groupEvaluator = ruleBaseConf.isParallelEvaluation() && !ruleBaseConf.isParallelExecution() ?
+                 new ParallelGroupEvaluator( this ) :
+                 new SequentialGroupEvaluator( this );
 
         this.propagationList = createPropagationList();
     }
@@ -329,15 +329,14 @@ public class DefaultAgenda implements InternalAgenda {
     }
 
     @Override
-    public void setFocus(final String name) {
-        setFocus( null, name );
+    public boolean setFocus(final String name) {
+        return setFocus( null, name );
     }
 
-    public void setFocus(final PropagationContext ctx,
-                         final String name) {
+    public boolean setFocus(final PropagationContext ctx, final String name) {
         InternalAgendaGroup agendaGroup = getAgendaGroupsManager().getAgendaGroup( name );
         agendaGroup.setAutoFocusActivator( ctx );
-        getAgendaGroupsManager().setFocus( agendaGroup );
+        return getAgendaGroupsManager().setFocus( agendaGroup );
     }
 
     @Override
@@ -624,7 +623,7 @@ public class DefaultAgenda implements InternalAgenda {
                     // only fire rules while the limit has not reached.
                     // if halt is called, then isFiring will be false.
                     // The while loop may continue to loop, to keep flushing the action propagation queue
-                    returnedFireCount = ruleEvaluator.evaluateAndFire( agendaFilter, fireCount, fireLimit, group );
+                    returnedFireCount = groupEvaluator.evaluateAndFire( group, agendaFilter, fireCount, fireLimit );
                     fireCount += returnedFireCount;
 
                     limitReached = ( fireLimit > 0 && fireCount >= fireLimit );
@@ -763,6 +762,7 @@ public class DefaultAgenda implements InternalAgenda {
         @Override
         public void internalExecute(ReteEvaluator reteEvaluator ) {
             executionStateMachine.internalHalt();
+            reteEvaluator.getActivationsManager().haltGroupEvaluation();
         }
 
         @Override
@@ -819,11 +819,17 @@ public class DefaultAgenda implements InternalAgenda {
 
     @Override
     public KnowledgeHelper getKnowledgeHelper() {
-        return ruleEvaluator.getKnowledgeHelper();
+        return groupEvaluator.getKnowledgeHelper();
     }
 
+    @Override
     public void resetKnowledgeHelper() {
-        ruleEvaluator.resetKnowledgeHelper();
+        groupEvaluator.resetKnowledgeHelper();
+    }
+
+    @Override
+    public void haltGroupEvaluation() {
+        groupEvaluator.haltEvaluation();
     }
 
     @Override

@@ -138,7 +138,9 @@ public class AgendaGroupQueueImpl
 
         @Override
         public void internalExecute(ReteEvaluator reteEvaluator ) {
-            ((InternalAgenda) reteEvaluator.getActivationsManager()).setFocus(this.name);
+            if ( ((InternalAgenda) reteEvaluator.getActivationsManager()).setFocus(this.name) ) {
+                reteEvaluator.getActivationsManager().haltGroupEvaluation();
+            }
         }
 
         @Override

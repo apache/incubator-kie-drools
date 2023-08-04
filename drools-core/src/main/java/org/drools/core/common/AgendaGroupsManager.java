@@ -168,7 +168,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
         @Override
         public RuleAgendaItem peekNextRule() {
-            return (RuleAgendaItem) this.mainAgendaGroup.peek();
+            return this.mainAgendaGroup.peek();
         }
 
         @Override
@@ -378,9 +378,8 @@ public interface AgendaGroupsManager extends Externalizable {
                 final EventSupport eventsupport = this.workingMemory;
                 eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup, this.workingMemory );
                 return true;
-            } else {
-                return false;
             }
+            return false;
         }
 
         @Override
@@ -395,7 +394,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
         @Override
         public RuleAgendaItem peekNextRule() {
-            return (RuleAgendaItem) (this.focusStack.peekLast()).peek();
+            return this.focusStack.peekLast().peek();
         }
 
         @Override

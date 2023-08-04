@@ -20,13 +20,12 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.kie.api.runtime.rule.AgendaFilter;
 
-public interface RuleEvaluator {
-    int evaluateAndFire( AgendaFilter filter,
-                         int fireCount,
-                         int fireLimit,
-                         InternalAgendaGroup group );
+public interface GroupEvaluator {
+    int evaluateAndFire( InternalAgendaGroup group, AgendaFilter filter, int fireCount, int fireLimit );
 
     KnowledgeHelper getKnowledgeHelper();
 
     void resetKnowledgeHelper();
+
+    void haltEvaluation();
 }

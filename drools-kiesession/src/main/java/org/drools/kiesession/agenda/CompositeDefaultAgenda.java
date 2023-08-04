@@ -54,6 +54,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.stream.Stream;
 
 import static java.util.concurrent.CompletableFuture.runAsync;
+import static org.drools.base.common.PartitionsManager.doOnForkJoinPool;
 
 public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
@@ -156,9 +157,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     private int parallelFire( AgendaFilter agendaFilter, int fireLimit ) {
-        return PartitionsManager.getFireAllExecutors().submit(() ->
-                Stream.of(agendas).parallel().mapToInt(a -> a.internalFireAllRules( agendaFilter, fireLimit, false )).sum()
-        ).join();
+        return doOnForkJoinPool(() -> Stream.of(agendas).parallel().mapToInt(a -> a.internalFireAllRules( agendaFilter, fireLimit, false )).sum() );
     }
 
     @Override
@@ -267,6 +266,13 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     public void notifyWaitOnRest() {
         for ( int i = 0; i < agendas.length; i++ ) {
             agendas[i].notifyWaitOnRest();
+        }
+    }
+
+    @Override
+    public void haltGroupEvaluation() {
+        for ( int i = 0; i < agendas.length; i++ ) {
+            agendas[i].haltGroupEvaluation();
         }
     }
 
@@ -394,10 +400,12 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void setFocus( String name ) {
+    public boolean setFocus( String name ) {
+        boolean groupChanged = false;
         for ( int i = 0; i < agendas.length; i++ ) {
-            agendas[i].setFocus( name );
+            groupChanged |= agendas[i].setFocus( name );
         }
+        return groupChanged;
     }
 
     @Override
