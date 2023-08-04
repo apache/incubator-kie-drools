@@ -53,6 +53,9 @@ public class ParallelGroupEvaluator extends AbstractGroupEvaluator {
             return;
         }
 
+        // This will evaluate all the RuleAgendaItem (grouped by partitions) in parallel, also resetting
+        // their dirty flag. After this AbstractGroupEvaluator#evaluateAndFire loop will attempt re-evaluating
+        // those items again, but finding them not dirty it won't have any performance impact allowing a direct firing.
         doOnForkJoinPool(() ->
                 partitionedActivations.values().parallelStream()
                         .forEach( items -> items
