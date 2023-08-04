@@ -204,6 +204,7 @@
         <module>jpmml-migration-recipe</module>
         <module>drools-reliability</module>
         <module>drools-drlonyaml-parent</module>
+        <module>drools-reference-examples</module>
       </modules>
     </profile>
     <profile>

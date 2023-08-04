@@ -1,0 +1,50 @@
+name: Drools Backward Compatibility
+
+on:
+  pull_request:
+    paths-ignore:
+      - 'LICENSE'
+      - '**/.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '*.txt'
+      - 'docsimg/**'
+      - '.ci/jenkins/**'
+
+jobs:
+  drools-build:
+    concurrency:
+      group: pr-drools-backward-compatibility_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
+      cancel-in-progress: true
+    timeout-minutes: 120
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        java-version: [11]
+        maven-version: ['3.8.7']
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
+    steps:
+      - name: Clean Disk Space
+        uses: kiegroup/kie-ci/.ci/actions/ubuntu-disk-space@main
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Support long paths
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: kiegroup/kie-ci/.ci/actions/long-paths@main
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Java and Maven Setup
+        uses: kiegroup/kie-ci/.ci/actions/maven@main
+        with:
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+      - name: Build Drools
+        run: mvn -B clean install -DskipTests
+      - name: Backward Compatibility Test with previous minor version
+        run: |
+          CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          PREVIOUS_VERSION=$(script/utils/get_previous_version.sh $CURRENT_VERSION)
+          mvn -B clean install --file drools-reference-examples/pom.xml -Preference -Dreference.kjar.drools.version=$PREVIOUS_VERSION
+        shell: bash

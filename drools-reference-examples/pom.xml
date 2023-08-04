@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>drools-build-parent</artifactId>
+    <version>8.44.0-SNAPSHOT</version>
+    <relativePath>../build-parent/pom.xml</relativePath>
+  </parent>
+
+  <groupId>org.drools</groupId>
+  <artifactId>drools-reference-examples</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Drools reference examples</name>
+  <description>Reference examples for smoke tests and backward compatibility tests</description>
+
+  <properties>
+    <java.module.name>org.drools.reference.examples</java.module.name>
+    <!-- if not externally specified, use the same version. It would be a "smoke test" -->
+    <reference.kjar.drools.version>${project.version}</reference.kjar.drools.version>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <!-- no op to avoid kie-maven-plugin conflict -->
+    </profile>
+    <profile>
+      <id>reference</id>
+      <modules>
+        <module>drools-reference-examples-common</module>
+        <module>drools-reference-examples-kjar</module>
+        <module>drools-reference-examples-tests</module>
+      </modules>
+    </profile>
+  </profiles>
+
+</project>

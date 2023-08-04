@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-reference-examples</artifactId>
+    <version>8.44.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-reference-examples-common</artifactId>
+
+  <name>Drools reference examples :: Common</name>
+  <description>Pojo classes for kjar and tests</description>
+
+  <properties>
+    <java.module.name>org.drools.reference.examples.common</java.module.name>
+  </properties>
+
+</project>
