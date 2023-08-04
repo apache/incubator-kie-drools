@@ -19,6 +19,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Storage;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         super(storage);
         uniqueObjectTypesInStore = new HashMap<>();
         if (storage.size()>0){
-            storage.values().forEach(sObject -> {this.putIntoObjectTypesList( sObject.getObject() );});
+            updateObjectTypesList();
         }
         this.storage = storage.size()>0 ? updateObjectReferences(storage) : storage;
     }
@@ -53,14 +54,14 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         StoredObject storedObject = factHandleToStoredObject(handle, reInitPropagated || propagated, object);
         storage.put(getHandleForObject(object).getId(), setReferencedObjects(storedObject));
         // also add the type of the object into the uniqueObjectTypesInStore list (if not already there)
-        this.putIntoObjectTypesList(object);
+        this.updateObjectTypesList(object);
     }
 
     @Override
     public void removeFromPersistedStorage(Object object) {
         super.removeFromPersistedStorage(object);
         // also remove instance from uniqueObjectTypesInStore
-        this.removeFromObjectTypesList(object);
+        this.updateObjectTypesList(object);
     }
 
     @Override
@@ -106,6 +107,24 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
                 .filter(field -> uniqueObjectTypesInStore.containsKey(field.getType()))
                 .collect(Collectors.toList());
         return fieldsWithTypeInTheStore;
+    }
+
+    private void updateObjectTypesList(Object object){
+        uniqueObjectTypesInStore.put(object.getClass(),
+                storage.values().stream().filter(sObject -> sObject.getObject().getClass().equals(object.getClass())).count());
+    }
+
+    private void updateObjectTypesList(){
+        // list of unique object types in storage
+        List<Class> uTypes = new ArrayList<>();
+        storage.values().forEach(sObject -> {
+            if (!uTypes.contains(sObject.getObject().getClass())){uTypes.add(sObject.getObject().getClass());}
+        });
+        // add unique object types + their occurrences in  uniqueObjectTypesInStore
+        uTypes.forEach(uType -> {
+            uniqueObjectTypesInStore.put(uType,
+            storage.values().stream().filter(sObject -> sObject.getObject().getClass().equals(uType)).count());
+        });
     }
 
     private void putIntoObjectTypesList(Object object){

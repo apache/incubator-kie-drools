@@ -45,7 +45,7 @@ public class SerializableStoredRefObject extends  SerializableStoredObject {
                 try {
                     refField.get().set(this.object, storage.get(this.referencedObjects.get(refField.get().getName())).getObject());
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    throw new ReliabilityRuntimeException(e);
                 }
             }
         });
