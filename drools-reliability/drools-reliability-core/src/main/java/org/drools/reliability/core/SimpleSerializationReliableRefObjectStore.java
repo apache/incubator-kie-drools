@@ -28,21 +28,25 @@ import java.util.stream.Collectors;
 
 public class SimpleSerializationReliableRefObjectStore extends SimpleSerializationReliableObjectStore {
 
-    private Map<Class,Long> uniqueObjectTypesInStore;
+    private Map<String, Long> uniqueObjectTypesInStore;  // object type name, occurances
+
+    public SimpleSerializationReliableRefObjectStore() {
+        throw new UnsupportedOperationException("This constructor should never be called");
+    }
 
     public SimpleSerializationReliableRefObjectStore(Storage<Long, StoredObject> storage) {
         super(storage);
         uniqueObjectTypesInStore = new HashMap<>();
-        if (storage.size()>0){
+        if (storage.size() > 0) {
             updateObjectTypesList();
         }
-        this.storage = storage.size()>0 ? updateObjectReferences(storage) : storage;
+        this.storage = storage.size() > 0 ? updateObjectReferences(storage) : storage;
     }
 
-    private Storage<Long, StoredObject> updateObjectReferences(Storage<Long, StoredObject> storage){
+    private Storage<Long, StoredObject> updateObjectReferences(Storage<Long, StoredObject> storage) {
         Storage<Long, StoredObject> updateStorage = storage;
 
-        for (Long key: storage.keySet()){
+        for (Long key : storage.keySet()) {
             updateStorage.put(key, ((SerializableStoredRefObject) storage.get(key)).updateReferencedObjects(storage));
         }
         return updateStorage;
@@ -69,9 +73,9 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         return new SerializableStoredRefObject(object, propagated);
     }
 
-    private StoredObject setReferencedObjects(StoredObject object){
+    private StoredObject setReferencedObjects(StoredObject object) {
         List<Field> referencedObjects = getReferencedObjects(object.getObject());
-        if (referencedObjects.size()>0) {
+        if (!referencedObjects.isEmpty()) {
             // for each referenced object in sObject
             //  lookup in storage, find the object of reference, get its fact handle id
             //      save this association in the StoredObject
@@ -84,66 +88,53 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
                     throw new ReliabilityRuntimeException(e);
                 }
                 Long objectKey = fromObjectToFactHandleId(fieldObject);
-                if (objectKey!=null){
-                    ((SerializableStoredRefObject) object).addReferencedObject(field.getName(), objectKey);}
+                if (objectKey != null) {
+                    ((SerializableStoredRefObject) object).addReferencedObject(field.getName(), objectKey);
+                }
             });
         }
         return object;
     }
 
-    private Long fromObjectToFactHandleId(Object object){
-        for (Long key : this.storage.keySet()){
-            if (( (SerializableStoredRefObject) storage.get(key)).getObject()==object){
+    private Long fromObjectToFactHandleId(Object object) {
+        for (Long key : this.storage.keySet()) {
+            if (((SerializableStoredRefObject) storage.get(key)).getObject() == object) {
                 return key;
             }
         }
         return null;
     }
 
-    private List<Field> getReferencedObjects(Object object){
+    private List<Field> getReferencedObjects(Object object) {
         Field[] fields = object.getClass().getDeclaredFields();
 
-        List<Field> fieldsWithTypeInTheStore = Arrays.stream(fields)
-                .filter(field -> uniqueObjectTypesInStore.containsKey(field.getType()))
+        return Arrays.stream(fields)
+                .filter(field -> uniqueObjectTypesInStore.containsKey(field.getType().getName()))
                 .collect(Collectors.toList());
-        return fieldsWithTypeInTheStore;
     }
 
-    private void updateObjectTypesList(Object object){
-        uniqueObjectTypesInStore.put(object.getClass(),
+    private void updateObjectTypesList(Object object) {
+        uniqueObjectTypesInStore.put(object.getClass().getName(),
                 storage.values().stream().filter(sObject -> sObject.getObject().getClass().equals(object.getClass())).count());
+        // if count==0 then remove entry
+        if (uniqueObjectTypesInStore.get(object.getClass().getName()) == 0) {
+            uniqueObjectTypesInStore.remove(object.getClass().getName());
+        }
     }
 
-    private void updateObjectTypesList(){
+    private void updateObjectTypesList() {
         // list of unique object types in storage
-        List<Class> uTypes = new ArrayList<>();
+        List<String> uTypeNames = new ArrayList<>();
         storage.values().forEach(sObject -> {
-            if (!uTypes.contains(sObject.getObject().getClass())){uTypes.add(sObject.getObject().getClass());}
+            if (!uTypeNames.contains(sObject.getObject().getClass().getName())) {
+                uTypeNames.add(sObject.getObject().getClass().getName());
+            }
         });
         // add unique object types + their occurrences in  uniqueObjectTypesInStore
-        uTypes.forEach(uType -> {
+        uTypeNames.forEach(uType -> {
             uniqueObjectTypesInStore.put(uType,
-            storage.values().stream().filter(sObject -> sObject.getObject().getClass().equals(uType)).count());
+                    storage.values().stream().filter(sObject -> sObject.getObject().getClass().getName().equals(uType)).count());
         });
     }
-
-    private void putIntoObjectTypesList(Object object){
-        Long objectTypeCount = uniqueObjectTypesInStore.get(object.getClass());
-        if (objectTypeCount!=null){
-            uniqueObjectTypesInStore.put(object.getClass(), objectTypeCount+1);
-        }else{
-            uniqueObjectTypesInStore.put(object.getClass(),Integer.toUnsignedLong(1));
-        }
-    }
-
-    private void removeFromObjectTypesList(Object object){
-        Long objectTypeCount = uniqueObjectTypesInStore.get(object.getClass());
-        if (objectTypeCount!=null){
-            objectTypeCount--;
-            if (objectTypeCount==0){
-                uniqueObjectTypesInStore.remove(object.getClass());
-            }else {uniqueObjectTypesInStore.put(object.getClass(),objectTypeCount);}
-        }
-    }
-
 }
+
