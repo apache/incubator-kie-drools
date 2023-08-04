@@ -638,6 +638,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                 }
                 if (timer.getId().equals(cancelTimerId)) {
                     logger.debug("Cancelling process instance id  {} because timer {} expires ", getStringId(), cancelTimerId);
+                    // The cancelTimer is being executed, so this id is not valid anymore. Avoid an invalid job canceling
+                    // for it as part of the process aborting sequence.
+                    this.cancelTimerId = null;
                     setState(KogitoProcessInstance.STATE_ABORTED);
                     return;
                 }
