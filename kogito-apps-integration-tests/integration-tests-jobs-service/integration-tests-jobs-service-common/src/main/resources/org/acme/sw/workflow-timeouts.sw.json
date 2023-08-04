@@ -1,0 +1,55 @@
+{
+  "id": "workflow_timeouts",
+  "version": "1.0",
+  "name": "Workflow Timeouts",
+  "description": "Workflow Timeouts Test",
+  "start": "printWaitMessage",
+  "timeouts": {
+    "workflowExecTimeout": "PT5S"
+  },
+  "events": [
+    {
+      "name": "wakeUpEvent",
+      "source": "",
+      "type": "workflow_timeouts_wake_up_event_in"
+    }
+  ],
+  "functions": [
+    {
+      "name": "printMessage",
+      "type": "custom",
+      "operation": "sysout"
+    }
+  ],
+  "states": [
+    {
+      "name": "printWaitMessage",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "printBeforeEvent",
+          "functionRef": {
+            "refName": "printMessage",
+            "arguments": {
+              "message": "Waiting for event"
+            }
+          }
+        }
+      ],
+      "transition": "waitForEvent"
+    },
+    {
+      "name": "waitForEvent",
+      "type": "event",
+      "onEvents": [
+        {
+          "eventRefs": [
+            "wakeUpEvent"
+          ],
+          "actions": []
+        }
+      ],
+      "end": true
+    }
+  ]
+}

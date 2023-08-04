@@ -29,6 +29,7 @@ import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.jobs.service.exception.JobServiceException;
 import org.kie.kogito.jobs.service.executor.JobExecutor;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
@@ -48,11 +49,13 @@ import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.kogito.jobs.service.model.JobStatus.CANCELED;
 import static org.kie.kogito.jobs.service.model.JobStatus.SCHEDULED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -389,5 +392,44 @@ public abstract class BaseTimerJobSchedulerTest {
         subscribeOn(tested().reschedule(JOB_ID, newTrigger).buildRs());
         verify(tested()).doCancel(merged);
         verify(tested()).schedule(merged);
+    }
+
+    @Test
+    void handleJobExecutionSuccess() throws Exception {
+        scheduledJob = JobDetails.builder().id(JOB_ID).trigger(trigger).status(SCHEDULED).build();
+        doReturn(CompletableFuture.completedFuture(scheduledJob)).when(jobRepository).get(JOB_ID);
+        doReturn(CompletableFuture.completedFuture(scheduledJob)).when(jobRepository).delete(any(JobDetails.class));
+        JobExecutionResponse response = new JobExecutionResponse("execution successful", "200", ZonedDateTime.now(), JOB_ID);
+
+        Optional<JobDetails> result = tested().handleJobExecutionSuccess(response)
+                .findFirst()
+                .run()
+                .toCompletableFuture()
+                .get();
+
+        verify(jobRepository).delete(scheduleCaptor.capture());
+        JobDetails deletedJob = scheduleCaptor.getValue();
+        assertThat(deletedJob).isNotNull();
+        assertThat(deletedJob.getId()).isEqualTo(JOB_ID);
+        assertThat(result).isNotEmpty();
+        assertThat(result.get().getId()).isEqualTo(JOB_ID);
+    }
+
+    @Test
+    void handleJobExecutionSuccessJobNotFound() {
+        scheduledJob = JobDetails.builder().id(JOB_ID).trigger(trigger).status(SCHEDULED).build();
+        doReturn(CompletableFuture.completedFuture(null)).when(jobRepository).get(JOB_ID);
+        JobExecutionResponse response = new JobExecutionResponse("execution successful", "200", ZonedDateTime.now(), JOB_ID);
+
+        assertThatThrownBy(() -> tested().handleJobExecutionSuccess(response)
+                .findFirst()
+                .run()
+                .toCompletableFuture()
+                .get())
+                        .hasCauseInstanceOf(JobServiceException.class)
+                        .hasMessageContaining("Job: %s was not found in database.", JOB_ID);
+        verify(jobRepository, never()).delete(JOB_ID);
+        verify(jobRepository, never()).delete(any(JobDetails.class));
+        verify(jobRepository, never()).save(any());
     }
 }

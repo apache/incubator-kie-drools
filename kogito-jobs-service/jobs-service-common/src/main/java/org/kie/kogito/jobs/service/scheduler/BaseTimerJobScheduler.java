@@ -30,6 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.service.exception.InvalidScheduleTimeException;
+import org.kie.kogito.jobs.service.exception.JobServiceException;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.jobs.service.model.JobStatus;
@@ -125,7 +126,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
 
     /**
      * Performs the given job scheduling process on the scheduler, after all the validations already made.
-     * 
+     *
      * @param job to be scheduled
      * @return
      */
@@ -155,7 +156,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
 
     /**
      * Check if it should be scheduled (on the current chunk) or saved to be scheduled later.
-     * 
+     *
      * @return
      */
     private boolean isOnCurrentSchedulerChunk(JobDetails job) {
@@ -216,10 +217,15 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
 
     @Override
     public PublisherBuilder<JobDetails> handleJobExecutionSuccess(JobExecutionResponse response) {
-        return ReactiveStreams.of(response)
-                .map(JobExecutionResponse::getJobId)
-                .flatMapCompletionStage(jobRepository::get)
-                .flatMap(this::handleJobExecutionSuccess);
+        return ReactiveStreams.of(response.getJobId())
+                .flatMapCompletionStage(this::readJob)
+                .flatMap(jobDetails -> jobDetails.map(this::handleJobExecutionSuccess)
+                        .orElseThrow(() -> new JobServiceException("Job: " + response.getJobId() + " was not found in database.")));
+    }
+
+    private CompletionStage<Optional<JobDetails>> readJob(String jobId) {
+        return jobRepository.get(jobId)
+                .thenCompose(jobDetails -> CompletableFuture.completedFuture(Optional.ofNullable(jobDetails)));
     }
 
     private boolean isExpired(ZonedDateTime expirationTime, int retries) {
@@ -244,7 +250,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
      * between retries and a limit of max interval of {@link BaseTimerJobScheduler#maxIntervalLimitToRetryMillis}
      * to retry, after this interval it the job it the job is not successfully executed it will remain in error
      * state, with no more retries.
-     * 
+     *
      * @param errorResponse
      * @return
      */
