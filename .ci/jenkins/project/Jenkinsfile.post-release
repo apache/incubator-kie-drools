@@ -30,7 +30,7 @@ pipeline {
 
         DROOLS_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
-        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+        PR_BRANCH_HASH = "${util.generateHash(10)}"
     }
 
     stages {
@@ -46,7 +46,7 @@ pipeline {
                 script {
                     String droolsWebsiteRepository = 'drools-website'
                     String prLink = null
-                    String prBranchName = "${getProjectVersion().toLowerCase()}-${env.BOT_BRANCH_HASH}"
+                    String prBranchName = "${getProjectVersion().toLowerCase()}-${env.PR_BRANCH_HASH}"
                     dir(droolsWebsiteRepository) {
                         checkoutRepo(droolsWebsiteRepository, getBuildBranch()) // there is no other branch
                         githubscm.createBranch(prBranchName)

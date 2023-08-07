@@ -378,18 +378,13 @@ public class KieBuilderImpl
             return true;
         } else {
             String folderNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : "";
-            int resourcesPos = folderNameForFile.indexOf( RESOURCES_ROOT );
-            if (resourcesPos >= 0) {
-                folderNameForFile = folderNameForFile.substring( resourcesPos + RESOURCES_ROOT.length() );
-            }
             String pkgNameForFile = packageNameForFile( fileName, folderNameForFile, !useFolders, file );
             return isPackageInKieBase( kieBase, pkgNameForFile );
         }
     }
 
     private static String packageNameForFile( String fileName, String folderNameForFile, boolean discoverPackage, Supplier<InternalResource> file ) {
-        String packageNameFromFolder = folderNameForFile.replace( '/', '.' );
-
+        String packageNameFromFolder = getRelativePackageName(folderNameForFile.replace( '/', '.' ));
         if (discoverPackage) {
             String packageNameForFile = packageNameFromAsset(fileName, file.get());
             if (packageNameForFile != null) {
