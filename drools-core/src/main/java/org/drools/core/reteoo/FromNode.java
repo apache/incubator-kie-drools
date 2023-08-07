@@ -225,7 +225,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
                 // this is for the obscene case where two or more objects returned by "from"
                 // have the same hash code and evaluate equals() to true, so we need to preserve
                 // all of them to avoid leaks
-//                rightTuple.setNext( existingMatch );
+                rightTuple.setNext((AbstractTuple) existingMatch);
             }
             matches.put( object,
                          rightTuple );
