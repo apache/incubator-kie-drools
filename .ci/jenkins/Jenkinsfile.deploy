@@ -112,10 +112,6 @@ pipeline {
                         if (params.SKIP_TESTS) {
                             mvnCmd.skipTests() // Conflict somehow with Python testing. If `skipTests={anyvalue}` is set, then exec plugin is not executed ...
                         }
-                        if (isRelease()) {
-                            // Use nightly image for testing as the released one does not exist yet ...
-                            mvnCmd.withProperty('data-index-ephemeral.image', getDataIndexEphemeralNightlyImage())
-                        }
                         util.runWithPythonVirtualEnv(mvnCmd.getFullRunCommand('clean install'), 'swf')
                     }
                 }
@@ -329,10 +325,6 @@ String getLocalDeploymentFolder() {
 
 String getWorkflowCommonDeploymentPath() {
     return "${getRepoName()}/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment"
-}
-
-String getDataIndexEphemeralNightlyImage() {
-    return "quay.io/kiegroup/kogito-data-index-ephemeral-nightly:${util.getMajorMinorVersion(getProjectVersion())}"
 }
 
 String getDataIndexEphemeralReleaseImage() {
