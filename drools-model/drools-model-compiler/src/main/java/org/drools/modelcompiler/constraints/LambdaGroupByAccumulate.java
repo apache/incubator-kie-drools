@@ -25,6 +25,7 @@ import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.Accumulator;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.index.TupleList;
@@ -107,8 +108,9 @@ public class LambdaGroupByAccumulate extends Accumulate {
     public Object accumulate(Object workingMemoryContext, Object context,
                              BaseTuple match, FactHandle handle, ValueResolver valueResolver) {
         GroupByContext groupByContext = ( GroupByContext ) context;
+        AbstractLeftTuple leftTupleMatch = (AbstractLeftTuple) match;
         TupleList<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, innerAccumulate,
-                                                                              (Tuple) match, getKey( (Tuple) match, handle, (ReteEvaluator) valueResolver), (ReteEvaluator) valueResolver);
+                                                                              leftTupleMatch, getKey(leftTupleMatch, handle, (ReteEvaluator) valueResolver), (ReteEvaluator) valueResolver);
 
         return accumulate(workingMemoryContext, match, handle, groupByContext, tupleList, valueResolver);
     }
@@ -124,7 +126,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
     @Override
     public boolean tryReverse(Object workingMemoryContext, Object context, BaseTuple leftTuple, FactHandle handle,
                               BaseTuple match, ValueResolver valueResolver) {
-        Tuple tupleMatch = (Tuple) match;
+        Tuple tupleMatch = (AbstractLeftTuple) match;
         TupleList<AccumulateContextEntry> memory = tupleMatch.getMemory();
         AccumulateContextEntry entry = memory.getContext();
         boolean reversed = innerAccumulate.tryReverse(workingMemoryContext, entry, leftTuple, handle, match, valueResolver);
