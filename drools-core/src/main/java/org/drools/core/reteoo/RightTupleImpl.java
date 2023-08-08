@@ -53,7 +53,7 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
     }
 
     public RightTupleSink getTupleSink() {
-        return (RightTupleSink) getSink();
+        return (BetaNode) getSink();
     }
     
     public void reAdd() {
