@@ -80,6 +80,9 @@ pipeline {
             }
             steps {
                 dir(getRepoName()) {
+                    if (githubscm.isBranchExist('origin',getPRBranch())) {
+                        githubscm.removeRemoteBranch('origin', getPRBranch())
+                    }
                     githubscm.createBranch(getPRBranch())
                 }
             }
@@ -265,7 +268,7 @@ String getProjectVersion() {
 }
 
 String getPRBranch() {
-    return "${getProjectVersion()}-${env.PR_BRANCH_HASH}"
+    return params.KOGITO_PR_BRANCH
 }
 
 void setDeployPropertyIfNeeded(String key, def value) {

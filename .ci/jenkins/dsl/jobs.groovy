@@ -231,6 +231,7 @@ void setupDeployJob(JobType jobType, String envName = '') {
 
             booleanParam('CREATE_PR', false, 'Should we create a PR with the changes ?')
             stringParam('PROJECT_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
+            stringParam('KOGITO_PR_BRANCH', '', 'PR branch name')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
