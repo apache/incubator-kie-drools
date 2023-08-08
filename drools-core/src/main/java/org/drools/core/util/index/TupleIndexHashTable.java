@@ -17,6 +17,8 @@
 package org.drools.core.util.index;
 
 import org.drools.base.util.FieldIndex;
+import org.drools.core.reteoo.AbstractTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.AbstractHashTable;
@@ -120,11 +122,11 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         return this.tupleValueFullIterator;
     }
 
-    public FastIterator<Tuple>  fastIterator() {
+    public FastIterator<AbstractTuple>  fastIterator() {
         return LinkedList.fastIterator;
     }
 
-    public FastIterator<Tuple>  fullFastIterator() {
+    public FastIterator<AbstractTuple>  fullFastIterator() {
         if ( fullFastIterator == null ) {
             fullFastIterator = new FullFastIterator( this.table );
         } else {
@@ -133,12 +135,13 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         return fullFastIterator;
     }
 
-    public FastIterator<Tuple>  fullFastIterator(Tuple tuple) {
+
+    public FastIterator<AbstractTuple> fullFastIterator(AbstractTuple tuple) {
         fullFastIterator.resume(tuple.getMemory(), this.table);
         return fullFastIterator;
     }
 
-    public static class FullFastIterator implements FastIterator<Tuple> {
+    public static class FullFastIterator implements FastIterator<AbstractTuple> {
         private TupleList[]     table;
         private int         row;
 
@@ -154,7 +157,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
             row++; // row always points to the row after the current list
         }
 
-        public Tuple next(Tuple tuple) {
+        public AbstractTuple next(AbstractTuple tuple) {
             TupleList list = null;
             if ( tuple != null ) {
                 list = tuple.getMemory(); // assumes you do not pass in a null RightTuple
@@ -176,7 +179,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
 
                     if ( list != null ) {
                         // we have a bucket so assign the frist LeftTuple and return
-                        tuple = list.getFirst( );
+                        tuple = (AbstractTuple) list.getFirst( );
                         return tuple;
                     }
                 }
@@ -190,7 +193,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                     // try the next bucket if we have a shared array position
                     if ( list != null ) {
                         // if we have another bucket, assign the first LeftTuple and return
-                        tuple = list.getFirst( );
+                        tuple = (AbstractTuple) list.getFirst( );
                         return tuple;
                     }
                 }

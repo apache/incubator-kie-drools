@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.AbstractTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.Entry;
@@ -87,7 +88,7 @@ public class TupleList<C> implements TupleMemory, Entry<TupleList<C>>, Serializa
         }
 
         AbstractTuple previous = (AbstractTuple) tuple.getPrevious();
-        AbstractTuple next = tuple.getNext();
+        AbstractTuple next = (AbstractTuple) tuple.getNext();
         if (previous == null) {
             next.setPrevious( null );
             this.first = next;
@@ -200,16 +201,15 @@ public class TupleList<C> implements TupleMemory, Entry<TupleList<C>>, Serializa
         return TupleMemory.IndexType.NONE;
     }
 
-    public FastIterator<Tuple> fastIterator() {
+    public FastIterator<AbstractTuple> fastIterator() {
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }
     
-    public FastIterator<Tuple> fullFastIterator() {
+    public FastIterator<AbstractTuple> fullFastIterator() {
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }
-    
 
-    public FastIterator<Tuple> fullFastIterator(Tuple tuple) {
+    public FastIterator<AbstractTuple> fullFastIterator(AbstractTuple tuple) {
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }    
 

@@ -23,16 +23,17 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.base.util.index.ConstraintTypeOperator;
-import org.drools.util.CoercionUtil;
-import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.reteoo.Tuple;
 import org.drools.base.util.FieldIndex;
+import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.core.reteoo.AbstractTuple;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.TupleRBTree;
 import org.drools.core.util.TupleRBTree.Boundary;
 import org.drools.core.util.TupleRBTree.Node;
+import org.drools.util.CoercionUtil;
 
 public class TupleIndexRBTree extends AbstractTupleIndexTree implements Externalizable, TupleMemory {
 
@@ -122,15 +123,15 @@ public class TupleIndexRBTree extends AbstractTupleIndexTree implements External
         return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);
     }
 
-    public FastIterator<Tuple> fastIterator() {
+    public FastIterator<AbstractTuple> fastIterator() {
         return new TupleFastIterator();
     }
 
-    public FastIterator<Tuple> fullFastIterator() {
+    public FastIterator<AbstractTuple> fullFastIterator() {
         return new TupleFastIterator();
     }
 
-    public FastIterator<Tuple> fullFastIterator(Tuple leftTuple) {
+    public FastIterator<AbstractTuple> fullFastIterator(AbstractTuple leftTuple) {
         FastIterator fastIterator = fullFastIterator();
         Comparable key = getLeftIndexedValue(leftTuple);
         fastIterator.next(getNext(key, true));
@@ -200,18 +201,18 @@ public class TupleIndexRBTree extends AbstractTupleIndexTree implements External
         return key;
     }
 
-    public class TupleFastIterator implements FastIterator<Tuple> {
-        public Tuple next(Tuple tuple) {
+    public class TupleFastIterator implements FastIterator<AbstractTuple> {
+        public AbstractTuple next(AbstractTuple tuple) {
             if (tuple == null) {
                 Node<Comparable<Comparable>> firstNode = tree.first();
-                return firstNode == null ? null : firstNode.getFirst();
+                return firstNode == null ? null : (AbstractTuple) firstNode.getFirst();
             }
-            Tuple next = tuple.getNext();
+            AbstractTuple next = tuple.getNext();
             if (next != null) {
                 return next;
             }
             Comparable key = getLeftIndexedValue(tuple);
-            return getNext(key, false);
+            return (AbstractTuple) getNext(key, false);
         }
 
         public boolean isFullIterator() {
