@@ -41,10 +41,6 @@ jobs:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
-      - name: Install Python needed packages
-        uses: kiegroup/kie-ci/.ci/actions/python-packages@main
-        with:
-          packages: jep
       - name: Build Chain
         uses: kiegroup/kie-ci/.ci/actions/build-chain@main
         with:
