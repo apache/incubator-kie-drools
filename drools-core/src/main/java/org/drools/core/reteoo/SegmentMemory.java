@@ -15,18 +15,8 @@
 
 package org.drools.core.reteoo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.common.Memory;
-import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
-import org.drools.core.common.TupleSetsImpl;
+import org.drools.core.common.*;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
@@ -37,6 +27,8 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 import static org.drools.core.phreak.RuntimeSegmentUtilities.getQuerySegmentMemory;
 
@@ -747,7 +739,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         @Override
         public void populateMemory(ReteEvaluator reteEvaluator, Memory mem) {
             QueryElementNodeMemory qmem = (QueryElementNodeMemory)  mem;
-            SegmentMemory querySmem = getQuerySegmentMemory(reteEvaluator, (LeftTupleSource)qmem.getSegmentMemory().getRootNode(), queryNode);
+            SegmentMemory querySmem = getQuerySegmentMemory(reteEvaluator, queryNode);
             qmem.setQuerySegmentMemory(querySmem);
             qmem.setNodePosMaskBit(nodePosMaskBit);
         }
