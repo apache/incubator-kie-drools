@@ -15,19 +15,19 @@
 
 package org.drools.tms.beliefsystem.simple;
 
-import java.io.IOException;
-
-import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.tms.TruthMaintenanceSystemEqualityKey;
-import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.kiesession.entrypoints.NamedEntryPoint;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.consequence.InternalMatch;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.beliefsystem.BeliefSet;
+
+import java.io.IOException;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
@@ -94,7 +94,7 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
                 nep.delete( this.handle, context.getRuleOrigin(), this.internalMatch.getTuple().getTupleSink());
             } else {
                 ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( nep.getEntryPoint(), handle.getObject() );
-                nep.getEntryPointNode().retractObject( handle, context, typeConf, reteEvaluator );
+                nep.getEntryPointNode().retractObject( handle, context, typeConf, reteEvaluator, true );
             }
         }
     }

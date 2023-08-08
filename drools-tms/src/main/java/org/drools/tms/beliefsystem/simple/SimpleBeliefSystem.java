@@ -125,7 +125,7 @@ public class SimpleBeliefSystem
 
         if ( beliefSet.isEmpty() && bfh.getEqualityKey() != null && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
             ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(),
-                      null, internalMatch != null ? internalMatch.getTuple().getTupleSink() : null);
+                      internalMatch != null ? internalMatch.getTuple().getTupleSink() : null, true);
         } else if ( !beliefSet.isEmpty() && bfh.getObject() == payload && payload != bfh.getObject() ) {
             // prime has changed, to update new object
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
@@ -151,7 +151,7 @@ public class SimpleBeliefSystem
                       BeliefSet<SimpleMode> beliefSet) {
         InternalFactHandle bfh = beliefSet.getFactHandle();
         // Remove the FH from the network
-        ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(), null);
+        ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(), null, true);
 
         bfh.getEqualityKey().setStatus( EqualityKey.STATED ); // revert to stated
     }

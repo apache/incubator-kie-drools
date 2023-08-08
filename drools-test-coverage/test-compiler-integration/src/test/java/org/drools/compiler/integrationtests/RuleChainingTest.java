@@ -16,9 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -34,6 +31,9 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
+import java.util.Collection;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -122,5 +122,55 @@ public class RuleChainingTest {
         } finally {
             ksession.dispose();
         }
+    }
+
+    @Test
+    public void testDoubleInsertLogical() {
+        // DROOLS-7525
+        final String drl =
+                "package org.test;\n" +
+                        "\n" +
+                        "declare Fact\n" +
+                        "    value : Integer\n" +
+                        "end\n" +
+                        "\n" +
+                        "declare Logical\n" +
+                        "    value : Integer\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Init\"\n" +
+                        "  when\n" +
+                        "  then\n" +
+                        "    insert(new Fact(1));\n" +
+                        "    insert(new Fact(2));\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Eliminate all\"\n" +
+                        "  when\n" +
+                        "    $fact : Fact($val : value)\n" +
+                        "    not( Fact(value < $val) )\n" +
+                        "    Logical(value == $val)\n" +
+                        "  then\n" +
+                        "    System.out.println(\"delete\" + $fact);\n" +
+                        "    delete($fact);\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Logical\"\n" +
+                        "  when\n" +
+                        "    Fact(value==1)\n" +
+                        "  then\n" +
+                        "    insertLogical(new Logical(1));\n" +
+                        "    insertLogical(new Logical(2));\n" +
+                        "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("logical-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+
+        ksession.fireAllRules();
+
+        // The retraction of Fact(1) should also cause the immediate deletion of both Logical(1) and Logical(2)
+        // thus preventing rule "Eliminate all" to fire a second time and leaving Fact(2) in the working memory
+        assertThat(ksession.getObjects()).hasSize(1);
+        assertThat(ksession.getObjects().iterator().next().toString()).isEqualTo("Fact( value=2 )");
     }
 }

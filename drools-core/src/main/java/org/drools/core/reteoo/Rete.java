@@ -119,7 +119,7 @@ public class Rete extends ObjectSource implements ObjectSink {
         EntryPointNode node = this.entryPoints.get( entryPoint );
         ObjectTypeConf typeConf = reteEvaluator.getEntryPoint( entryPoint.getEntryPointId() )
                 .getObjectTypeConfigurationRegistry().getObjectTypeConf( handle.getObject() );
-        node.retractObject( handle, context, typeConf, reteEvaluator );
+        node.retractObject( handle, context, typeConf, reteEvaluator, false );
     }
     
     public void modifyObject(final InternalFactHandle factHandle,

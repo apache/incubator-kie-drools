@@ -479,7 +479,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
             removePropertyChangeListener( handle, true );
         }
 
-        PropagationContext propagationContext = delete( handle, object, typeConf, rule, null, terminalNode );
+        PropagationContext propagationContext = delete( handle, object, typeConf, rule, terminalNode );
 
         deleteFromTMS( handle, key, typeConf, propagationContext );
 
@@ -502,16 +502,18 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         }
     }
 
-    public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, InternalMatch internalMatch) {
-        return delete(handle, object, typeConf, rule, internalMatch, internalMatch == null ? null : internalMatch.getTuple().getTupleSink());
+    @Override
+    public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, TerminalNode terminalNode) {
+        return delete(handle, object, typeConf, rule, terminalNode, false);
     }
 
-    public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, InternalMatch internalMatch, TerminalNode terminalNode) {
+    @Override
+    public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, TerminalNode terminalNode, boolean immediate) {
         final PropagationContext propagationContext = pctxFactory.createPropagationContext( this.reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
                 rule, terminalNode,
                 handle, this.entryPoint );
 
-        this.entryPointNode.retractObject( handle, propagationContext, typeConf, this.reteEvaluator );
+        this.entryPointNode.retractObject( handle, propagationContext, typeConf, this.reteEvaluator, immediate );
 
         afterRetract(handle, rule, terminalNode);
 
