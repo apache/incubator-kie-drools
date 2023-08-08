@@ -19,13 +19,13 @@ import java.io.InputStream;
 
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowOperationResource;
 
-import io.quarkiverse.asyncapi.config.InputStreamSupplier;
+import io.quarkiverse.asyncapi.generator.input.InputStreamSupplier;
 
-class AsyncAPIInputStreamSupplier implements InputStreamSupplier {
+class AsyncInputStreamSupplier implements InputStreamSupplier {
 
     private final WorkflowOperationResource resource;
 
-    public AsyncAPIInputStreamSupplier(WorkflowOperationResource resource) {
+    public AsyncInputStreamSupplier(WorkflowOperationResource resource) {
         this.resource = resource;
     }
 

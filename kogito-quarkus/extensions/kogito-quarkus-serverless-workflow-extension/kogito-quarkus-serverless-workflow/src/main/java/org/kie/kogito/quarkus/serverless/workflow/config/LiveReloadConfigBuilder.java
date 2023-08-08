@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.codegen.process;
+package org.kie.kogito.quarkus.serverless.workflow.config;
 
-public class ProcessParsingException extends RuntimeException {
+import io.quarkus.runtime.configuration.ConfigBuilder;
+import io.smallrye.config.SmallRyeConfigBuilder;
 
-    private static final long serialVersionUID = 1L;
+public class LiveReloadConfigBuilder implements ConfigBuilder {
 
-    public ProcessParsingException(Throwable cause) {
-        super(cause);
+    @Override
+    public SmallRyeConfigBuilder configBuilder(SmallRyeConfigBuilder builder) {
+        return builder.addDiscoveredSources();
     }
 }

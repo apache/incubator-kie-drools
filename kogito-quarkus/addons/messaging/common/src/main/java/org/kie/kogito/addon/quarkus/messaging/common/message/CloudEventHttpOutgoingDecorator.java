@@ -25,7 +25,7 @@ import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 /**
  * Decorators for Http CloudEvents outgoing messages
  */
-public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
+public class CloudEventHttpOutgoingDecorator implements MessageDecorator {
 
     // Note: this constant is also declared in cloudevents-json-jackson.
     // However, to avoid importing a library for only one constant that won't likely to change, we opt to have it declared here.

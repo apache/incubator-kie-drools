@@ -13,41 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.quarkus.serverless.workflow.openapi;
+package org.kie.kogito.quarkus.serverless.workflow.asyncapi;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
-import org.kie.kogito.quarkus.serverless.workflow.WorkflowOperationResource;
-import org.kie.kogito.serverless.workflow.utils.OpenAPIWorkflowUtils;
 
-import io.quarkiverse.openapi.generator.deployment.codegen.OpenApiSpecInputProvider;
-import io.quarkiverse.openapi.generator.deployment.codegen.SpecInputModel;
+import io.quarkiverse.asyncapi.generator.input.AsyncAPISpecInput;
+import io.quarkiverse.asyncapi.generator.input.AsyncApiSpecInputProvider;
 import io.quarkus.deployment.CodeGenContext;
+import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 
-public class WorkflowOpenApiSpecInputProvider implements OpenApiSpecInputProvider {
+public class WorkflowAsyncApiSpecInputProvider implements AsyncApiSpecInputProvider {
 
-    private static final String KOGITO_PACKAGE_PREFIX = "org.kie.kogito.openapi.";
+    private static final String KOGITO_PACKAGE_PREFIX = "org.kie.kogito.asyncAPI";
 
     @Override
-    public List<SpecInputModel> read(CodeGenContext context) {
+    public AsyncAPISpecInput read(CodeGenContext context) {
         Path inputDir = context.inputDir();
         while (!Files.exists(inputDir)) {
             inputDir = inputDir.getParent();
         }
-        try (Stream<Path> openApiFilesPaths = Files.walk(inputDir)) {
-            return WorkflowCodeGenUtils.operationResources(openApiFilesPaths, OpenAPIWorkflowUtils::isOpenApiOperation, context).map(this::getSpecInput).collect(Collectors.toList());
+        try (Stream<Path> workflowFiles = Files.walk(inputDir)) {
+            return new AsyncAPISpecInput(WorkflowCodeGenUtils.operationResources(workflowFiles, f -> f.getType() == Type.ASYNCAPI, context)
+                    .collect(Collectors.toMap(resource -> resource.getOperationId().getFileName(), AsyncInputStreamSupplier::new, (key1, key2) -> key1)), KOGITO_PACKAGE_PREFIX);
         } catch (IOException io) {
             throw new IllegalStateException(io);
         }
-    }
-
-    private SpecInputModel getSpecInput(WorkflowOperationResource resource) {
-        return new SpecInputModel(resource.getOperationId().getFileName(), resource.getContentLoader().getInputStream(), KOGITO_PACKAGE_PREFIX + resource.getOperationId().getPackageName());
     }
 }

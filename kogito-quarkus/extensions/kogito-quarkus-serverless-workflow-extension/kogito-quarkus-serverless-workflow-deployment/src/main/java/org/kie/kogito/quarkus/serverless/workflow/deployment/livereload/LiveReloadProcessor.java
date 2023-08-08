@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -40,8 +41,12 @@ import org.kie.kogito.quarkus.common.deployment.KogitoAddonsPreGeneratedSourcesB
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils;
 import org.kie.kogito.quarkus.common.deployment.LiveReloadExecutionBuildItem;
+import org.kie.kogito.quarkus.serverless.workflow.config.LiveReloadConfigBuilder;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.bootstrap.classloading.MemoryClassPathElement;
+import io.quarkus.bootstrap.classloading.PathTreeClassPathElement;
+import io.quarkus.bootstrap.classloading.QuarkusClassLoader;
 import io.quarkus.bootstrap.model.ApplicationModel;
 import io.quarkus.bootstrap.prebuild.CodeGenException;
 import io.quarkus.deployment.CodeGenContext;
@@ -49,10 +54,15 @@ import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
+import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
+import io.quarkus.deployment.builditem.RunTimeConfigBuilderBuildItem;
 import io.quarkus.deployment.index.IndexingUtil;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
+import io.quarkus.paths.PathTree;
+import io.quarkus.runtime.configuration.ConfigUtils;
+import io.quarkus.runtime.configuration.QuarkusConfigFactory;
 
 /**
  * This class adds live reload support for {@link io.quarkus.deployment.CodeGenProvider} objects.
@@ -71,6 +81,8 @@ public class LiveReloadProcessor {
 
     private final KogitoBuildContext kogitoBuildContext;
 
+    private final QuarkusClassLoader.Builder classLoader;
+
     @Inject
     public LiveReloadProcessor(
             CombinedIndexBuildItem combinedIndexBuildItem,
@@ -84,10 +96,12 @@ public class LiveReloadProcessor {
         computingIndex = combinedIndexBuildItem.getComputingIndex();
         index = combinedIndexBuildItem.getIndex();
         kogitoBuildContext = contextBuildItem.getKogitoBuildContext();
+        classLoader = QuarkusClassLoader.builder("liveReload", kogitoBuildContext.getClassLoader(), false);
     }
 
     @BuildStep(onlyIf = IsDevelopment.class)
-    public LiveReloadExecutionBuildItem liveReload(BuildProducer<KogitoAddonsPreGeneratedSourcesBuildItem> sourcesProducer) {
+    public LiveReloadExecutionBuildItem liveReload(BuildProducer<KogitoAddonsPreGeneratedSourcesBuildItem> sourcesProducer, BuildProducer<GeneratedResourceBuildItem> genResBI,
+            BuildProducer<RunTimeConfigBuilderBuildItem> configBuilder) {
         Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         List<IndexView> indexViews = new ArrayList<>();
         if (liveReloadBuildItem.isLiveReload()) {
@@ -103,10 +117,13 @@ public class LiveReloadProcessor {
                         });
             }
         }
+        configBuilder.produce(new RunTimeConfigBuilderBuildItem(LiveReloadConfigBuilder.class.getCanonicalName()));
         if (!generatedFiles.isEmpty()) {
             sourcesProducer.produce(new KogitoAddonsPreGeneratedSourcesBuildItem(generatedFiles));
             skipNextLiveReload();
-            return new LiveReloadExecutionBuildItem(KogitoQuarkusResourceUtils.generateAggregatedIndexNew(computingIndex, indexViews));
+            ClassLoader reloadedClassLoader = classLoader.build();
+            QuarkusConfigFactory.setConfig(ConfigUtils.emptyConfigBuilder().addDefaultSources().addDiscoveredSources().forClassLoader(reloadedClassLoader).build());
+            return new LiveReloadExecutionBuildItem(KogitoQuarkusResourceUtils.generateAggregatedIndexNew(computingIndex, indexViews), reloadedClassLoader);
         } else {
             dontSkipNextLiveReload();
             return new LiveReloadExecutionBuildItem(computingIndex);
@@ -116,7 +133,12 @@ public class LiveReloadProcessor {
     private CodeGenerationResult generateCode(LiveReloadableCodeGenProvider codeGenProvider) {
         try {
             Collection<GeneratedFile> generatedFiles = new ArrayList<>(generateSources(codeGenProvider));
-            return !generatedFiles.isEmpty() ? new CodeGenerationResult(generatedFiles, indexCompiledSources(compileGeneratedSources(generatedFiles)))
+            Collection<GeneratedBeanBuildItem> generatedBeans = compileGeneratedSources(generatedFiles);
+            if (!generatedBeans.isEmpty()) {
+                classLoader.addElement(new MemoryClassPathElement(
+                        generatedBeans.stream().collect(Collectors.toMap(x -> x.getName().replace('.', '/').concat(".class"), GeneratedBeanBuildItem::getData)), true));
+            }
+            return !generatedFiles.isEmpty() ? new CodeGenerationResult(generatedFiles, indexCompiledSources(generatedBeans))
                     : new CodeGenerationResult(List.of(), computingIndex);
         } catch (CodeGenException e) {
             throw new IllegalStateException(e);
@@ -159,21 +181,26 @@ public class LiveReloadProcessor {
             CodeGenContext codeGenContext = new CodeGenContext(applicationModel, outDir, workDir, inputDir, false, config, false);
             if (codeGenProvider.shouldRun(inputDir, config) && codeGenProvider.trigger(codeGenContext)) {
                 try (Stream<Path> sources = Files.walk(outDir)) {
-                    sources.filter(Files::isRegularFile)
-                            .filter(path -> path.toString().endsWith(".java"))
-                            .map(path -> {
-                                try {
-                                    return new GeneratedFile(GeneratedFileType.SOURCE, outDir.relativize(path), Files.readAllBytes(path));
-                                } catch (IOException e) {
-                                    throw new UncheckedIOException(e);
-                                }
-                            })
-                            .forEach(generatedFiles::add);
+                    sources.filter(Files::isRegularFile).forEach(p -> processSource(p, outDir, generatedFiles));
+                }
+                Path classPath = outDir.getParent().getParent().resolve("classes");
+                Path serviceLoaderPath = classPath.resolve("META-INF/services");
+                if (Files.isDirectory(classPath) && Files.isDirectory(serviceLoaderPath)) {
+                    classLoader.addElement(new PathTreeClassPathElement(PathTree.ofDirectoryOrFile(classPath), true));
                 }
             }
         }
-
         return generatedFiles;
+    }
+
+    private void processSource(Path path, Path outDir, Collection<GeneratedFile> generatedFiles) {
+        if (path.toString().endsWith(".java")) {
+            try {
+                generatedFiles.add(new GeneratedFile(GeneratedFileType.SOURCE, outDir.relativize(path), Files.readAllBytes(path)));
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
     }
 
     private void skipNextLiveReload() {

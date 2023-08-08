@@ -215,7 +215,7 @@ public class ProcessCodegen extends AbstractGenerator {
     protected static GeneratedInfo<KogitoWorkflowProcess> parseWorkflowFile(Resource r, WorkflowFormat format, KogitoBuildContext context) {
         try (Reader reader = r.getReader()) {
             return ServerlessWorkflowParser.of(reader, format, context).getProcessInfo();
-        } catch (IOException | RuntimeException e) {
+        } catch (Exception e) {
             throw new ProcessParsingException(e);
         }
     }

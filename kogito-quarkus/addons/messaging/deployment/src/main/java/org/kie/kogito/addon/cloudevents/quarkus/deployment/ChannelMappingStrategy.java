@@ -50,17 +50,16 @@ public class ChannelMappingStrategy {
     private static final String OVERFLOW_STRATEGY_PROP = "overflow-strategy";
     private static final String BUFFER_SIZE_PROP = "buffer-size";
 
-    private static Config config = ConfigProvider.getConfig();
-
     public static Collection<ChannelInfo> getChannelMapping() {
+        Config config = ConfigProvider.getConfig();
         Map<String, Collection<String>> inTriggers = new HashMap<>();
         Map<String, Collection<String>> outTriggers = new HashMap<>();
 
         for (String property : config.getPropertyNames()) {
             if (property.startsWith(INCOMING_TRIGGER)) {
-                addTrigger(INCOMING_TRIGGER, property, inTriggers);
+                addTrigger(config, INCOMING_TRIGGER, property, inTriggers);
             } else if (property.startsWith(OUTGOING_TRIGGER)) {
-                addTrigger(OUTGOING_TRIGGER, property, outTriggers);
+                addTrigger(config, OUTGOING_TRIGGER, property, outTriggers);
             }
         }
 
@@ -69,15 +68,15 @@ public class ChannelMappingStrategy {
         final String defaultOutgoingChannel = config.getOptionalValue(OUTGOING_DEFAULT_CHANNEL, String.class).orElse(KogitoEventStreams.OUTGOING);
         for (String property : config.getPropertyNames()) {
             if (property.startsWith(INCOMING_PREFIX) && property.endsWith(".connector")) {
-                result.add(getChannelInfo(property, INCOMING_PREFIX, true, defaultIncomingChannel, inTriggers));
+                result.add(getChannelInfo(config, property, INCOMING_PREFIX, true, defaultIncomingChannel, inTriggers));
             } else if (property.startsWith(OUTGOING_PREFIX) && property.endsWith(".connector")) {
-                result.add(getChannelInfo(property, OUTGOING_PREFIX, false, defaultOutgoingChannel, outTriggers));
+                result.add(getChannelInfo(config, property, OUTGOING_PREFIX, false, defaultOutgoingChannel, outTriggers));
             }
         }
         return result;
     }
 
-    private static void addTrigger(String prefix, String property, Map<String, Collection<String>> triggers) {
+    private static void addTrigger(Config config, String prefix, String property, Map<String, Collection<String>> triggers) {
         String channelName = config.getValue(property, String.class);
         String triggerName = property.substring(prefix.length());
         triggers.computeIfAbsent(channelName, ChannelMappingStrategy::initTriggers).add(triggerName);
@@ -89,15 +88,15 @@ public class ChannelMappingStrategy {
         return result;
     }
 
-    private static ChannelInfo getChannelInfo(String property, String prefix, boolean isInput, String defaultChannelName, Map<String, Collection<String>> triggers) {
+    private static ChannelInfo getChannelInfo(Config config, String property, String prefix, boolean isInput, String defaultChannelName, Map<String, Collection<String>> triggers) {
         String name = property.substring(prefix.length(), property.lastIndexOf('.'));
         return new ChannelInfo(name, triggers.getOrDefault(name, Collections.singleton(name)),
                 getClassName(config.getOptionalValue(getPropertyName(prefix, name, "value." + (isInput ? "deserializer" : "serializer")), String.class)), isInput,
                 name.equals(defaultChannelName), config.getOptionalValue((isInput ? UNMARSHALLLER_PREFIX : MARSHALLER_PREFIX) + name, String.class),
-                isInput ? Optional.empty() : onOverflowInfo(name));
+                isInput ? Optional.empty() : onOverflowInfo(config, name));
     }
 
-    private static Optional<OnOverflowInfo> onOverflowInfo(String name) {
+    private static Optional<OnOverflowInfo> onOverflowInfo(Config config, String name) {
         final String namePrefix = KOGITO_EMITTER_PREFIX + name + ".";
         Optional<Strategy> strategy = config.getOptionalValue(namePrefix + OVERFLOW_STRATEGY_PROP, String.class).map(Strategy::valueOf);
         Optional<Long> bufferSize = config.getOptionalValue(namePrefix + BUFFER_SIZE_PROP, Long.class);
