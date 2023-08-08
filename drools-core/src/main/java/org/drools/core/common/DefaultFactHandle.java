@@ -452,8 +452,8 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         private RightTuple firstRightTuple;
         private RightTuple lastRightTuple;
 
-        private LeftTuple firstLeftTuple;
-        private LeftTuple lastLeftTuple;
+        private LeftTuple  firstLeftTuple;
+        private LeftTuple  lastLeftTuple;
 
         public SingleLinkedTuples clone() {
             SingleLinkedTuples clone = new SingleLinkedTuples();
@@ -524,7 +524,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                 setLastTuple( tuple, left );
                 return;
             } else if ( previous.getTupleSink() == null || !otnId.before( previous.getInputOtnId() ) ) {
-                // the last AbstractLeftTuple comes before the new one so just add it at the end
+                // the last LeftTuple comes before the new one so just add it at the end
                 tuple.setHandlePrevious( previous );
                 tuple.setHandleNext( null );
                 previous.setHandleNext( tuple );
