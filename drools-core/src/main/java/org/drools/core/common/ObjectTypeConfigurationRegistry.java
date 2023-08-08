@@ -23,11 +23,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.facttemplates.Fact;
+import org.drools.base.facttemplates.FactImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.FactTemplateTypeConf;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.base.rule.EntryPointId;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.base.base.ObjectType;
 
@@ -64,11 +66,14 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
     }
 
     private Object getKey( Object object ) {
-        if ( object instanceof InternalMatch) {
+        if (object instanceof RuleTerminalNodeLeftTuple) {
             return ClassObjectType.Match_ObjectType.getClassType();
-        }
-        if ( object instanceof Fact) {
+        } else if (object instanceof FactImpl) {
+            return ((FactImpl) object).getFactTemplate().getName();
+        } else if (object instanceof Fact) {
             return ((Fact) object).getFactTemplate().getName();
+        } else if (object instanceof InternalMatch) {
+            return ClassObjectType.Match_ObjectType.getClassType();
         }
         return object.getClass();
     }
