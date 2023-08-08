@@ -35,7 +35,7 @@ class JenkinsfileDeploy extends JenkinsPipelineSpecification {
         output == 'AUTHOR'
     }
 
-    def '[Jenkinsfile.deploy] getBuildBranch()' () {
+    def '[Jenkinsfile.deploy] getBuildBranch' () {
         setup:
         Jenkinsfile.getBinding().setVariable('params', ['BUILD_BRANCH_NAME' : 'BRANCH'])
         when:
@@ -53,14 +53,13 @@ class JenkinsfileDeploy extends JenkinsPipelineSpecification {
         output == 'VERSION'
     }
 
-    def '[Jenkinsfile.deploy] getPRBranch with version param' () {
+    def '[Jenkinsfile.deploy] getPRBranch with pr branch param' () {
         setup:
-        Jenkinsfile.getBinding().setVariable('env', ['PR_BRANCH_HASH' : 'HASH'])
-        Jenkinsfile.getBinding().setVariable('params', ['PROJECT_VERSION' : 'VERSION'])
+        Jenkinsfile.getBinding().setVariable('params', ['KOGITO_PR_BRANCH' : 'PR_BRANCH'])
         when:
         def output = Jenkinsfile.getPRBranch()
         then:
-        output == 'VERSION-HASH'
+        output == 'PR_BRANCH'
     }
 
 }

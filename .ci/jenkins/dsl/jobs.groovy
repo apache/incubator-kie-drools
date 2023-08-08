@@ -181,7 +181,7 @@ void setupDeployJob(JobType jobType, String envName = '') {
 
             AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
             GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
-            
+
             MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
             MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_URL}",
             MAVEN_REPO_CREDS_ID: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_CREDS_ID}",
@@ -212,6 +212,7 @@ void setupDeployJob(JobType jobType, String envName = '') {
             booleanParam('CREATE_PR', false, 'Should we create a PR with the changes ?')
             stringParam('PROJECT_VERSION', '', 'Set the project version')
             stringParam('DROOLS_VERSION', '', 'Drools version to set')
+            stringParam('KOGITO_PR_BRANCH', '', 'PR branch name')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
