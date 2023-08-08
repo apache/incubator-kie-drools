@@ -65,6 +65,8 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
         return conf;
     }
 
+    // Avoid secondary super cache invalidation by testing for abstract classes first
+    // Then interfaces
     private Object getKey( Object object ) {
         if (object instanceof RuleTerminalNodeLeftTuple) {
             return ClassObjectType.Match_ObjectType.getClassType();
