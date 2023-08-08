@@ -16,7 +16,11 @@
 package org.drools.core.reteoo;
 
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.common.*;
+import org.drools.core.common.Memory;
+import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.TupleSets;
+import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
@@ -587,7 +591,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             sbuilder.append("nodeTypesInSegment " + nodeTypesInSegment + " ");
             sbuilder.append("nodes ");
             if (nodesInSegment != null) {
-                Arrays.stream(nodesInSegment).forEach(n -> sbuilder.append(n));
+                Arrays.stream(nodesInSegment).forEach(sbuilder::append);
             }
             sbuilder.append("]");
             return sbuilder.toString();
