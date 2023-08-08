@@ -398,21 +398,21 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public AbstractLeftTuple getFirstLeftTuple(final RightTuple rightTuple,
+    public LeftTuple getFirstLeftTuple(final RightTuple rightTuple,
                                        final TupleMemory memory,
                                        final FastIterator<Tuple> it) {
         if (rightInputIsRiaNode) {
             return getStartTuple((SubnetworkTuple)rightTuple);
         } else {
             if ( this.indexedUnificationJoin ) {
-                return (AbstractLeftTuple) it.next( null );
+                return (LeftTuple) it.next(null );
             } else {
-                return (AbstractLeftTuple) memory.getFirst(rightTuple);
+                return (LeftTuple) memory.getFirst(rightTuple);
             }
         }
     }
 
-    public AbstractLeftTuple getStartTuple(AbstractLeftTuple lt) {
+    public LeftTuple getStartTuple(LeftTuple lt) {
         LeftTupleSource startTupleSource = (( RightInputAdapterNode ) getRightInput()).getStartTupleSource();
 
         // Iterate find start

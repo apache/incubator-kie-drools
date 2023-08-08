@@ -30,7 +30,7 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.serialization.protobuf.marshalling.ObjectMarshallingStrategyStoreImpl;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeJobContext;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContext;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.serialization.protobuf.timers.BehaviorJobContextTimerOutputMarshaller;
@@ -57,7 +57,7 @@ public class ProtobufMarshallerWriteContext extends ObjectOutputStream implement
     private final Map<ObjectMarshallingStrategy, Integer>                           usedStrategies;
     private final Map<ObjectMarshallingStrategy, ObjectMarshallingStrategy.Context> strategyContext;
 
-    public final Map<AbstractLeftTuple, Integer>                                           terminalTupleMap;
+    public final Map<LeftTuple, Integer>                                           terminalTupleMap;
 
     private final boolean                                                           marshalProcessInstances;
     private final boolean                                                           marshalWorkItems;

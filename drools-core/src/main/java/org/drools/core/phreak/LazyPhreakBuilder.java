@@ -43,7 +43,7 @@ import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.RightTupleSinkAdapter;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSinkNode;
@@ -823,9 +823,9 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     bm = am.getBetaMemory();
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                     Tuple        lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
-                    for (; lt != null; lt = (AbstractLeftTuple) it.next(lt)) {
+                    for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                        visitChild( (AbstractLeftTuple) accctx.getResultLeftTuple(), insert, wm, rule);
+                        visitChild((LeftTuple) accctx.getResultLeftTuple(), insert, wm, rule);
                     }
                 } else if (NodeTypeEnums.ExistsNode == node.getType() && !node.isRightInputIsRiaNode()) { // do not process exists with subnetworks
                     // If there is a subnetwork, then there is no populated RTM, but the LTM is populated,
@@ -834,14 +834,14 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
                     for (RightTuple rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it); rt != null; rt = (RightTuple) it.next(rt)) {
-                        for (AbstractLeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext()) {
+                        for (LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext()) {
                             visitLeftTuple(wm, insert, rule, lt);
                         }
                     }
                 } else {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    for (AbstractLeftTuple lt = (AbstractLeftTuple)BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it); lt != null; lt = (AbstractLeftTuple) it.next(lt)) {
+                    for (LeftTuple lt = (LeftTuple)BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it); lt != null; lt = (LeftTuple) it.next(lt)) {
                         visitLeftTuple(wm, insert, rule, lt);
                     }
                 }
@@ -850,7 +850,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 FromMemory   fm  = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
                 TupleMemory  ltm = fm.getBetaMemory().getLeftTupleMemory();
                 FastIterator it  = ltm.fullFastIterator();
-                for (AbstractLeftTuple lt = (AbstractLeftTuple) ltm.getFirst(null); lt != null; lt = (AbstractLeftTuple) it.next(lt)) {
+                for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
                     visitChild(lt, insert, wm, rule);
                 }
                 return;
@@ -877,7 +877,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
             fh.forEachLeftTuple( lt -> {
-                AbstractLeftTuple nextLt = lt.getHandleNext();
+                LeftTuple nextLt = lt.getHandleNext();
 
                 // Each lt is for a different lian, skip any lian not associated with the rule. Need to use lt parent (souce) not child to check the lian.
                 if (lt.getTupleSource().isAssociatedWith(rule)) {
@@ -892,17 +892,17 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void visitLeftTuple(InternalWorkingMemory wm, boolean insert, Rule rule, AbstractLeftTuple lt) {
-        AbstractLeftTuple childLt = lt.getFirstChild();
+    private static void visitLeftTuple(InternalWorkingMemory wm, boolean insert, Rule rule, LeftTuple lt) {
+        LeftTuple childLt = lt.getFirstChild();
         while (childLt != null) {
-            AbstractLeftTuple nextLt = childLt.getHandleNext();
+            LeftTuple nextLt = childLt.getHandleNext();
             visitChild(childLt, insert, wm, rule);
             childLt = nextLt;
         }
     }
 
-    private static void visitChild(AbstractLeftTuple lt, boolean insert, InternalWorkingMemory wm, Rule rule) {
-        AbstractLeftTuple prevLt = null;
+    private static void visitChild(LeftTuple lt, boolean insert, InternalWorkingMemory wm, Rule rule) {
+        LeftTuple prevLt = null;
         LeftTupleSinkNode sink = (LeftTupleSinkNode) lt.getTupleSink();
 
         for ( ; sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
@@ -912,7 +912,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
                     if (lt.getTupleSink().getAssociatedTerminalsSize() > 1) {
                         if (lt.getFirstChild() != null) {
-                            for ( AbstractLeftTuple child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
+                            for ( LeftTuple child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
                                 visitChild(child, insert, wm, rule);
                             }
                         } else if (lt.getTupleSink().getType() == NodeTypeEnums.RightInputAdapterNode) {
@@ -920,8 +920,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
                         }
                     } else if (!insert) {
                         iterateLeftTuple( lt, wm );
-                        AbstractLeftTuple lt2 = null;
-                        for ( AbstractLeftTuple peerLt = lt.getPeer();
+                        LeftTuple lt2 = null;
+                        for ( LeftTuple peerLt = lt.getPeer();
                               peerLt != null && peerLt.getTupleSink().isAssociatedWith(rule) && peerLt.getTupleSink().getAssociatedTerminalsSize() == 1;
                               peerLt = peerLt.getPeer() ) {
                             iterateLeftTuple( peerLt, wm );
@@ -943,9 +943,9 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void insertPeerRightTuple( AbstractLeftTuple lt, InternalWorkingMemory wm, Rule rule, boolean insert ) {
+    private static void insertPeerRightTuple(LeftTuple lt, InternalWorkingMemory wm, Rule rule, boolean insert ) {
         // There's a shared RightInputAdaterNode, so check if one of its sinks is associated only to the new rule
-        AbstractLeftTuple prevLt = null;
+        LeftTuple prevLt = null;
         RightInputAdapterNode rian = (RightInputAdapterNode) lt.getTupleSink();
 
         for (ObjectSink sink : rian.getObjectSinkPropagator().getSinks()) {
@@ -967,8 +967,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
     /**
      * Create all missing peers
      */
-    private static AbstractLeftTuple insertPeerLeftTuple(AbstractLeftTuple lt, LeftTupleSinkNode node, InternalWorkingMemory wm, boolean insert) {
-        AbstractLeftTuple peer = node.createPeer(lt);
+    private static LeftTuple insertPeerLeftTuple(LeftTuple lt, LeftTupleSinkNode node, InternalWorkingMemory wm, boolean insert) {
+        LeftTuple peer = node.createPeer(lt);
 
         if ( node.getLeftTupleSource() instanceof AlphaTerminalNode ) {
             if (insert) {
@@ -1000,7 +1000,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         return peer;
     }
 
-    private static void iterateLeftTuple(AbstractLeftTuple lt, InternalWorkingMemory wm) {
+    private static void iterateLeftTuple(LeftTuple lt, InternalWorkingMemory wm) {
         if (NodeTypeEnums.isTerminalNode(lt.getTupleSink())) {
             PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory( lt.getTupleSink() );
             if (pmem != null) {
@@ -1008,13 +1008,13 @@ class LazyPhreakBuilder implements PhreakBuilder {
             }
         } else {
             if (lt.getContextObject() instanceof AccumulateContext) {
-                AbstractLeftTuple resultLt = (AbstractLeftTuple) (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
+                LeftTuple resultLt = (LeftTuple) (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
                 if (resultLt != null) {
                     iterateLeftTuple( resultLt, wm );
                 }
             }
-            for (AbstractLeftTuple child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
-                for (AbstractLeftTuple peer = child; peer != null; peer = peer.getPeer()) {
+            for (LeftTuple child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
+                for (LeftTuple peer = child; peer != null; peer = peer.getPeer()) {
                     if (peer.getPeer() == null) {
                         // it's unnnecessary to visit the unshared networks, so only iterate the last peer
                         iterateLeftTuple( peer, wm );

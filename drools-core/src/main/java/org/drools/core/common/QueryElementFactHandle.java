@@ -19,8 +19,7 @@ package org.drools.core.common;
 import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.reteoo.AbstractLeftTuple;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 
@@ -80,7 +79,7 @@ public class QueryElementFactHandle
         return this.recency;
     }
 
-    public AbstractLeftTuple getLastLeftTuple() {
+    public LeftTuple getLastLeftTuple() {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
@@ -167,7 +166,7 @@ public class QueryElementFactHandle
         return null;
     }
 
-    public void setLastLeftTuple(AbstractLeftTuple leftTuple) {
+    public void setLastLeftTuple(LeftTuple leftTuple) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
@@ -193,7 +192,7 @@ public class QueryElementFactHandle
     }
 
     
-    public AbstractLeftTuple getFirstLeftTuple() {
+    public LeftTuple getFirstLeftTuple() {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
@@ -224,15 +223,15 @@ public class QueryElementFactHandle
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void addFirstLeftTuple(AbstractLeftTuple leftTuple) {
+    public void addFirstLeftTuple(LeftTuple leftTuple) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void addLastLeftTuple( AbstractLeftTuple leftTuple ) {
+    public void addLastLeftTuple( LeftTuple leftTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void removeLeftTuple( AbstractLeftTuple leftTuple ) {
+    public void removeLeftTuple( LeftTuple leftTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
@@ -274,10 +273,10 @@ public class QueryElementFactHandle
     public void forEachRightTuple( Consumer<RightTuple> rightTupleConsumer ) { }
 
     @Override
-    public void forEachLeftTuple( Consumer<AbstractLeftTuple> leftTupleConsumer) { }
+    public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer) { }
 
     @Override
-    public AbstractLeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
+    public LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate ) {
         return null;
     }
 }

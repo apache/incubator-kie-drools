@@ -3,7 +3,7 @@ package org.drools.core.phreak;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.RightTuple;
@@ -18,9 +18,9 @@ public class PhreakSubnetworkNotExistsNode {
     public static void doSubNetworkNode(BetaNode node,
                                         LeftTupleSink sink,
                                         BetaMemory bm,
-                                        TupleSets<AbstractLeftTuple> srcLeftTuples,
-                                        TupleSets<AbstractLeftTuple> trgLeftTuples,
-                                        TupleSets<AbstractLeftTuple> stagedLeftTuples) {
+                                        TupleSets<LeftTuple> srcLeftTuples,
+                                        TupleSets<LeftTuple> trgLeftTuples,
+                                        TupleSets<LeftTuple> stagedLeftTuples) {
 
         TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
@@ -43,11 +43,11 @@ public class PhreakSubnetworkNotExistsNode {
         srcLeftTuples.resetAll();
     }
 
-    private static void updateLeft(TupleSets<AbstractLeftTuple> srcLeftTuples, TupleSets<AbstractLeftTuple> trgLeftTuples, TupleSets<AbstractLeftTuple> stagedLeftTuples, TupleMemory ltm) {
-        for (AbstractLeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
-            AbstractLeftTuple next = leftTuple.getStagedNext();
+    private static void updateLeft(TupleSets<LeftTuple> srcLeftTuples, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, TupleMemory ltm) {
+        for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
+            LeftTuple next = leftTuple.getStagedNext();
 
-            AbstractLeftTuple childLeftTuple = leftTuple.getFirstChild();
+            LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
             if (!leftTuple.isExpired()  &&
                 childLeftTuple != null && // Not/Exists nodes only have one child
@@ -62,13 +62,13 @@ public class PhreakSubnetworkNotExistsNode {
         }
     }
 
-    private static void deleteRight(BetaNode node, LeftTupleSink sink, TupleSets<AbstractLeftTuple> trgLeftTuples, TupleSets<AbstractLeftTuple> stagedLeftTuples, TupleSets<RightTuple> srcRightTuples) {
+    private static void deleteRight(BetaNode node, LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, TupleSets<RightTuple> srcRightTuples) {
         if (srcRightTuples.getDeleteFirst() != null) {
             // must come last, to avoid staging something for propagation that is then unstaged
             for (RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
                 RightTuple next = rightTuple.getStagedNext();
 
-                AbstractLeftTuple leftTuple = node.getStartTuple((SubnetworkTuple)rightTuple);
+                LeftTuple leftTuple = node.getStartTuple((SubnetworkTuple)rightTuple);
                 // don't use matches here, as it may be null, if the LT was also being removed.
                 rightTuple.getMemory().remove(rightTuple);
 
@@ -76,7 +76,7 @@ public class PhreakSubnetworkNotExistsNode {
                 if (matches != null && matches.isEmpty()) { // matches is null, if LT was deleted too
                     // Not/Exists nodes only have one child
                     if (node.getType() == NodeTypeEnums.ExistsNode) {
-                        AbstractLeftTuple childLeftTuple = leftTuple.getFirstChild();
+                        LeftTuple childLeftTuple = leftTuple.getFirstChild();
                         childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                         RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                     } else if (!leftTuple.isExpired()) { // else !exists
@@ -100,9 +100,9 @@ public class PhreakSubnetworkNotExistsNode {
         }
     }
 
-    private static void insertLeft(BetaNode node, LeftTupleSink sink, TupleSets<AbstractLeftTuple> srcLeftTuples, TupleSets<AbstractLeftTuple> trgLeftTuples, TupleMemory ltm, boolean tupleMemoryEnabled) {
-        for (AbstractLeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
-            AbstractLeftTuple next = leftTuple.getStagedNext();
+    private static void insertLeft(BetaNode node, LeftTupleSink sink, TupleSets<LeftTuple> srcLeftTuples, TupleSets<LeftTuple> trgLeftTuples, TupleMemory ltm, boolean tupleMemoryEnabled) {
+        for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
+            LeftTuple next = leftTuple.getStagedNext();
 
             boolean useTupleMemory = tupleMemoryEnabled || RuleNetworkEvaluator.useLeftMemory(node, leftTuple);
             // Do not need to init tupleList for matches, as this is done on right inserts.
@@ -124,13 +124,13 @@ public class PhreakSubnetworkNotExistsNode {
         }
     }
 
-    private static void insertRight(BetaNode node, LeftTupleSink sink, TupleSets<AbstractLeftTuple> trgLeftTuples, TupleSets<AbstractLeftTuple> stagedLeftTuples, TupleSets<RightTuple> srcRightTuples, boolean tupleMemoryEnabled) {
+    private static void insertRight(BetaNode node, LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, TupleSets<RightTuple> srcRightTuples, boolean tupleMemoryEnabled) {
         if (srcRightTuples.getInsertFirst() != null) {
             // this must come before left insert, so 'not' knows if there are matches or not before creating the child lt
             for (RightTuple rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
                 RightTuple next = rightTuple.getStagedNext();
 
-                AbstractLeftTuple leftTuple = node.getStartTuple((SubnetworkTuple)rightTuple);
+                LeftTuple leftTuple = node.getStartTuple((SubnetworkTuple)rightTuple);
                 TupleList<RightTuple> matches = (TupleList<RightTuple>) leftTuple.getContextObject();
                 if (matches == null) { // even if there is no tuple memory, we still need to know if there are matches or not, in later code
                     matches = new TupleList<>();
@@ -147,7 +147,7 @@ public class PhreakSubnetworkNotExistsNode {
                             trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), useTupleMemory));
                         }
                     } else { // else !exists
-                        AbstractLeftTuple childLeftTuple = leftTuple.getFirstChild();
+                        LeftTuple childLeftTuple = leftTuple.getFirstChild();
                         if (childLeftTuple != null) { // this can be null if the LT is not yet added
                             childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                             RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
@@ -161,14 +161,14 @@ public class PhreakSubnetworkNotExistsNode {
         }
     }
 
-    private static void deleteLeft(TupleSets<AbstractLeftTuple> srcLeftTuples, TupleSets<AbstractLeftTuple> trgLeftTuples, TupleSets<AbstractLeftTuple> stagedLeftTuples, TupleMemory ltm) {
+    private static void deleteLeft(TupleSets<LeftTuple> srcLeftTuples, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, TupleMemory ltm) {
         if (srcLeftTuples.getDeleteFirst() != null) {
-            for (AbstractLeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
-                AbstractLeftTuple next = leftTuple.getStagedNext();
+            for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
+                LeftTuple next = leftTuple.getStagedNext();
                 if (leftTuple.getMemory() != null) {
                     ltm.remove(leftTuple);
                 }
-                AbstractLeftTuple childLeftTuple = leftTuple.getFirstChild();
+                LeftTuple childLeftTuple = leftTuple.getFirstChild();
                 if (childLeftTuple != null) {
                     childLeftTuple.setPropagationContext(leftTuple.getPropagationContext());
                     RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);

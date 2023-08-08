@@ -21,7 +21,7 @@ import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
 
@@ -33,9 +33,9 @@ public class PhreakBranchNode {
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
                        ActivationsManager activationsManager,
-                       TupleSets<AbstractLeftTuple> srcLeftTuples,
-                       TupleSets<AbstractLeftTuple> trgLeftTuples,
-                       TupleSets<AbstractLeftTuple> stagedLeftTuples,
+                       TupleSets<LeftTuple> srcLeftTuples,
+                       TupleSets<LeftTuple> trgLeftTuples,
+                       TupleSets<LeftTuple> stagedLeftTuples,
                        RuleExecutor executor) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
@@ -57,15 +57,15 @@ public class PhreakBranchNode {
                               ConditionalBranchMemory cbm,
                               LeftTupleSink sink,
                               ActivationsManager activationsManager,
-                              TupleSets<AbstractLeftTuple> srcLeftTuples,
-                              TupleSets<AbstractLeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
                               RuleExecutor executor) {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
 
         RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
 
-        for (AbstractLeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
-            AbstractLeftTuple next = leftTuple.getStagedNext();
+        for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
+            LeftTuple next = leftTuple.getStagedNext();
 
             boolean breaking = false;
             ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, activationsManager.getReteEvaluator(), cbm.context);
@@ -74,7 +74,7 @@ public class PhreakBranchNode {
 
             if (conditionalExecution != null) {
                 RuleTerminalNode rtn = (RuleTerminalNode) conditionalExecution.getSink().getFirstLeftTupleSink();
-                AbstractLeftTuple branchedLeftTuple = rtn.createLeftTuple(leftTuple,
+                LeftTuple branchedLeftTuple = rtn.createLeftTuple(leftTuple,
                                                                   rtn,
                                                                   leftTuple.getPropagationContext(), useLeftMemory);
                 PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager,
@@ -97,15 +97,15 @@ public class PhreakBranchNode {
                               ConditionalBranchMemory cbm,
                               LeftTupleSink sink,
                               ActivationsManager activationsManager,
-                              TupleSets<AbstractLeftTuple> srcLeftTuples,
-                              TupleSets<AbstractLeftTuple> trgLeftTuples,
-                              TupleSets<AbstractLeftTuple> stagedLeftTuples,
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples,
                               RuleExecutor executor) {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
         RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
 
-        for (AbstractLeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
-            AbstractLeftTuple next = leftTuple.getStagedNext();
+        for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
+            LeftTuple next = leftTuple.getStagedNext();
 
 
             BranchTuples branchTuples = getBranchTuples(sink, leftTuple);
@@ -184,12 +184,12 @@ public class PhreakBranchNode {
 
     public void doLeftDeletes(LeftTupleSink sink,
                               ActivationsManager activationsManager,
-                              TupleSets<AbstractLeftTuple> srcLeftTuples,
-                              TupleSets<AbstractLeftTuple> trgLeftTuples,
-                              TupleSets<AbstractLeftTuple> stagedLeftTuples,
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples,
                               RuleExecutor executor) {
-        for (AbstractLeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
-            AbstractLeftTuple next = leftTuple.getStagedNext();
+        for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
+            LeftTuple next = leftTuple.getStagedNext();
 
             BranchTuples branchTuples = getBranchTuples(sink, leftTuple);
 
@@ -217,9 +217,9 @@ public class PhreakBranchNode {
      * when handling updates and deletes it must search the child tuples to colasce the references.
      * This is done by checking the tuple sink with the known main or rtn sink.
      */
-    private BranchTuples getBranchTuples(LeftTupleSink sink, AbstractLeftTuple leftTuple) {
+    private BranchTuples getBranchTuples(LeftTupleSink sink, LeftTuple leftTuple) {
         BranchTuples branchTuples = new BranchTuples();
-        AbstractLeftTuple child = leftTuple.getFirstChild();
+        LeftTuple child = leftTuple.getFirstChild();
         if ( child != null ) {
             // assigns the correct main or rtn AbstractLeftTuple based on the identified sink
             if ( child.getTupleSink() == sink ) {
@@ -240,7 +240,7 @@ public class PhreakBranchNode {
     }
 
     private static class BranchTuples {
-        AbstractLeftTuple rtnLeftTuple;
-        AbstractLeftTuple mainLeftTuple;
+        LeftTuple rtnLeftTuple;
+        LeftTuple mainLeftTuple;
     }
 }

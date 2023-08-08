@@ -44,7 +44,7 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.WorkItem;
 import org.drools.core.reteoo.AbstractTuple;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
@@ -355,10 +355,10 @@ public class ProtobufOutputMarshaller {
     private static ProtobufMessages.NodeMemory writeQueryElementNodeMemory(final int nodeId,
                                                                            final Memory memory,
                                                                            final InternalWorkingMemory wm) {
-        org.drools.core.util.Iterator<AbstractLeftTuple> it = LeftTupleIterator.iterator( wm, ((QueryElementNodeMemory) memory).getNode() );
+        org.drools.core.util.Iterator<LeftTuple> it = LeftTupleIterator.iterator(wm, ((QueryElementNodeMemory) memory).getNode() );
 
         ProtobufMessages.NodeMemory.QueryElementNodeMemory.Builder _query = ProtobufMessages.NodeMemory.QueryElementNodeMemory.newBuilder();
-        for ( AbstractLeftTuple leftTuple = it.next(); leftTuple != null; leftTuple = it.next() ) {
+        for ( LeftTuple leftTuple = it.next(); leftTuple != null; leftTuple = it.next() ) {
             InternalFactHandle handle = (InternalFactHandle) leftTuple.getContextObject();
             FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
                     .setId( handle.getId() )
@@ -369,7 +369,7 @@ public class ProtobufOutputMarshaller {
                     .setTuple( PersisterHelper.createTuple( leftTuple ) )
                     .setHandle( _handle );
 
-            AbstractLeftTuple childLeftTuple = leftTuple.getFirstChild();
+            LeftTuple childLeftTuple = leftTuple.getFirstChild();
             while ( childLeftTuple != null ) {
                 RightTuple rightParent = childLeftTuple.getRightParent();
                 _context.addResult( ProtobufMessages.FactHandle.newBuilder()

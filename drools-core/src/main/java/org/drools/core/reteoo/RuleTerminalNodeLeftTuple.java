@@ -34,7 +34,7 @@ import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class RuleTerminalNodeLeftTuple extends AbstractLeftTuple implements InternalMatch {
+public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatch {
     private static final long serialVersionUID = 540l;
     /**
      * The salience
@@ -75,12 +75,12 @@ public class RuleTerminalNodeLeftTuple extends AbstractLeftTuple implements Inte
     }
 
     public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
-                                     final AbstractLeftTuple leftTuple,
+                                     final LeftTuple leftTuple,
                                      final Sink sink) {
         super(factHandle, leftTuple, sink);
     }
 
-    public RuleTerminalNodeLeftTuple(final AbstractLeftTuple leftTuple,
+    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                                      final Sink sink,
                                      final PropagationContext pctx,
                                      final boolean leftTupleMemoryEnabled) {
@@ -90,7 +90,7 @@ public class RuleTerminalNodeLeftTuple extends AbstractLeftTuple implements Inte
               leftTupleMemoryEnabled);
     }
 
-    public RuleTerminalNodeLeftTuple(final AbstractLeftTuple leftTuple,
+    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
         super(leftTuple,
@@ -98,10 +98,10 @@ public class RuleTerminalNodeLeftTuple extends AbstractLeftTuple implements Inte
               sink);
     }
 
-    public RuleTerminalNodeLeftTuple(final AbstractLeftTuple leftTuple,
+    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                                      final RightTuple rightTuple,
-                                     final AbstractLeftTuple currentLeftChild,
-                                     final AbstractLeftTuple currentRightChild,
+                                     final LeftTuple currentLeftChild,
+                                     final LeftTuple currentRightChild,
                                      final Sink sink,
                                      final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -152,7 +152,7 @@ public class RuleTerminalNodeLeftTuple extends AbstractLeftTuple implements Inte
      *
      * @return The tuple.
      */
-    public AbstractLeftTuple getTuple() {
+    public LeftTuple getTuple() {
         return this;
     }
 

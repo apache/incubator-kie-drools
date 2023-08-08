@@ -23,10 +23,10 @@ import org.drools.core.common.ReteEvaluator;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SubnetworkTuple extends AbstractLeftTuple implements RightTuple {
+public class SubnetworkTuple extends LeftTuple implements RightTuple {
 
-    private AbstractLeftTuple blocked;
-    private AbstractLeftTuple tempBlocked;
+    private LeftTuple blocked;
+    private LeftTuple tempBlocked;
 
     private RightTuple tempNextRightTuple;
 
@@ -53,28 +53,28 @@ public class SubnetworkTuple extends AbstractLeftTuple implements RightTuple {
     }
 
     public SubnetworkTuple(final InternalFactHandle factHandle,
-                           final AbstractLeftTuple leftTuple,
+                           final LeftTuple leftTuple,
                            final Sink sink) {
         super( factHandle, leftTuple, sink );
     }
 
-    public SubnetworkTuple(final AbstractLeftTuple leftTuple,
+    public SubnetworkTuple(final LeftTuple leftTuple,
                            final Sink sink,
                            final PropagationContext pctx,
                            final boolean leftTupleMemoryEnabled) {
         super(leftTuple, sink, pctx, leftTupleMemoryEnabled);
     }
 
-    public SubnetworkTuple(final AbstractLeftTuple leftTuple,
+    public SubnetworkTuple(final LeftTuple leftTuple,
                            final RightTuple rightTuple,
                            final Sink sink) {
         super(leftTuple, rightTuple, sink);
     }
 
-    public SubnetworkTuple(final AbstractLeftTuple leftTuple,
+    public SubnetworkTuple(final LeftTuple leftTuple,
                            final RightTuple rightTuple,
-                           final AbstractLeftTuple currentLeftChild,
-                           final AbstractLeftTuple currentRightChild,
+                           final LeftTuple currentLeftChild,
+                           final LeftTuple currentRightChild,
                            final Sink sink,
                            final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -89,15 +89,15 @@ public class SubnetworkTuple extends AbstractLeftTuple implements RightTuple {
         return factHandleForEvaluation;
     }
 
-    public AbstractLeftTuple getBlocked() {
+    public LeftTuple getBlocked() {
         return this.blocked;
     }
 
-    public void setBlocked(AbstractLeftTuple leftTuple) {
+    public void setBlocked(LeftTuple leftTuple) {
         this.blocked = leftTuple;
     }
 
-    public void addBlocked(AbstractLeftTuple leftTuple) {
+    public void addBlocked(LeftTuple leftTuple) {
         if ( this.blocked != null && leftTuple != null ) {
             leftTuple.setBlockedNext( this.blocked );
             this.blocked.setBlockedPrevious( leftTuple );
@@ -105,9 +105,9 @@ public class SubnetworkTuple extends AbstractLeftTuple implements RightTuple {
         this.blocked = leftTuple;
     }
 
-    public void removeBlocked(AbstractLeftTuple leftTuple) {
-        AbstractLeftTuple previous =  leftTuple.getBlockedPrevious();
-        AbstractLeftTuple next =  leftTuple.getBlockedNext();
+    public void removeBlocked(LeftTuple leftTuple) {
+        LeftTuple previous =  leftTuple.getBlockedPrevious();
+        LeftTuple next =  leftTuple.getBlockedNext();
         if ( previous != null && next != null ) {
             //remove  from middle
             previous.setBlockedNext( next );
@@ -125,11 +125,11 @@ public class SubnetworkTuple extends AbstractLeftTuple implements RightTuple {
         leftTuple.clearBlocker();
     }
 
-    public AbstractLeftTuple getTempBlocked() {
+    public LeftTuple getTempBlocked() {
         return tempBlocked;
     }
 
-    public void setTempBlocked(AbstractLeftTuple tempBlocked) {
+    public void setTempBlocked(LeftTuple tempBlocked) {
         this.tempBlocked = tempBlocked;
     }
 

@@ -67,42 +67,42 @@ public class ExistsNode extends BetaNode {
         return NodeTypeEnums.ExistsNode;
     }
     
-    public AbstractLeftTuple createLeftTuple(InternalFactHandle factHandle,
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      boolean leftTupleMemoryEnabled) {
         return new NotNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
     }
 
-    public AbstractLeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final AbstractLeftTuple leftTuple,
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
                                      final Sink sink) {
         return new NotNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
-    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      Sink sink,
                                      PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
         return new NotNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
-    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
         return new NotNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
-    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     AbstractLeftTuple currentLeftChild,
-                                     AbstractLeftTuple currentRightChild,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new NotNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }
     
-    public AbstractLeftTuple createPeer(AbstractLeftTuple original) {
+    public LeftTuple createPeer(LeftTuple original) {
         NotNodeLeftTuple peer = new NotNodeLeftTuple();
-        peer.initPeer((AbstractLeftTuple) original, this);
+        peer.initPeer(original, this);
         original.setPeer( peer );
         return peer;
     }

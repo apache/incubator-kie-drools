@@ -36,7 +36,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RightTuple;
@@ -163,7 +163,7 @@ public class MemoryLeakTest {
         assertThat(liaNode).isNotNull();
         InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
         LeftInputAdapterNode.LiaNodeMemory memory = wm.getNodeMemory(liaNode);
-        TupleSets<AbstractLeftTuple> stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
+        TupleSets<LeftTuple> stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
         assertThat(stagedLeftTuples.getDeleteFirst()).isNull();
         assertThat(stagedLeftTuples.getInsertFirst()).isNull();
     }
@@ -204,7 +204,7 @@ public class MemoryLeakTest {
             if ( memory != null && memory.getSegmentMemory() != null ) {
                 SegmentMemory segmentMemory = memory.getSegmentMemory();
                 System.out.println( memory );
-                AbstractLeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
+                LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
                 if ( segmentMemory.getRootNode() instanceof JoinNode ) {
                     BetaMemory bm = (BetaMemory) segmentMemory.getNodeMemories()[0];
                     assertThat(bm.getLeftTupleMemory().size()).isEqualTo(0);

@@ -20,7 +20,7 @@ import java.util.List;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.TupleSets;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
@@ -38,7 +38,7 @@ import org.drools.core.util.LinkedList;
 public class PhreakQueryTerminalNode {
     public void doNode(QueryTerminalNode qtnNode,
                        ActivationsManager activationsManager,
-                       TupleSets<AbstractLeftTuple> srcLeftTuples,
+                       TupleSets<LeftTuple> srcLeftTuples,
                        LinkedList<StackEntry> stack) {
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(qtnNode, activationsManager, srcLeftTuples, stack);
@@ -57,11 +57,11 @@ public class PhreakQueryTerminalNode {
 
     public void doLeftInserts(QueryTerminalNode qtnNode,
                               ActivationsManager activationsManager,
-                              TupleSets<AbstractLeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
-        for (AbstractLeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
-            AbstractLeftTuple next = leftTuple.getStagedNext();
+        for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
+            LeftTuple next = leftTuple.getStagedNext();
             //qtnNode.assertLeftTuple( leftTuple, leftTuple.getPropagationContext(), wm );
 
             // find the DroolsQuery object
@@ -85,15 +85,15 @@ public class PhreakQueryTerminalNode {
 
     public void doLeftUpdates(QueryTerminalNode qtnNode,
                               ActivationsManager activationsManager,
-                              TupleSets<AbstractLeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
-        for (AbstractLeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
-            AbstractLeftTuple next = leftTuple.getStagedNext();
+        for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
+            LeftTuple next = leftTuple.getStagedNext();
 
             // qtnNode.modifyLeftTuple( leftTuple, leftTuple.getPropagationContext(), wm );
             // find the DroolsQuery object
-            AbstractLeftTuple rootEntry = (AbstractLeftTuple) leftTuple.getRootTuple();
+            LeftTuple rootEntry = (LeftTuple) leftTuple.getRootTuple();
 
             DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
@@ -113,16 +113,16 @@ public class PhreakQueryTerminalNode {
 
     public void doLeftDeletes(QueryTerminalNode qtnNode,
                               ActivationsManager activationsManager,
-                              TupleSets<AbstractLeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
-        for (AbstractLeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
-            AbstractLeftTuple next = leftTuple.getStagedNext();
+        for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
+            LeftTuple next = leftTuple.getStagedNext();
 
             //qtnNode.retractLeftTuple( leftTuple, leftTuple.getPropagationContext(), wm );
 
             // find the DroolsQuery object
-            AbstractLeftTuple rootEntry = (AbstractLeftTuple) leftTuple.getRootTuple();
+            LeftTuple rootEntry = (LeftTuple) leftTuple.getRootTuple();
 
             DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());

@@ -19,7 +19,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakQueryNode;
 import org.drools.core.phreak.StackEntry;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.metric.util.MetricLogUtils;
@@ -31,9 +31,9 @@ public class PhreakQueryNodeMetric extends PhreakQueryNode {
                        QueryElementNodeMemory qmem,
                        StackEntry stackEntry,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<AbstractLeftTuple> srcLeftTuples,
-                       TupleSets<AbstractLeftTuple> trgLeftTuples,
-                       TupleSets<AbstractLeftTuple> stagedLeftTuples) {
+                       TupleSets<LeftTuple> srcLeftTuples,
+                       TupleSets<LeftTuple> trgLeftTuples,
+                       TupleSets<LeftTuple> stagedLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(queryNode);

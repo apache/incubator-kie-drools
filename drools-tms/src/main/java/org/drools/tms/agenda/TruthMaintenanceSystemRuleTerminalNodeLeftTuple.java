@@ -18,7 +18,7 @@ package org.drools.tms.agenda;
 
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.Sink;
@@ -42,19 +42,19 @@ public class TruthMaintenanceSystemRuleTerminalNodeLeftTuple<T extends ModedAsse
         super(factHandle, sink, leftTupleMemoryEnabled);
     }
 
-    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(InternalFactHandle factHandle, AbstractLeftTuple leftTuple, Sink sink) {
+    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(InternalFactHandle factHandle, LeftTuple leftTuple, Sink sink) {
         super(factHandle, leftTuple, sink);
     }
 
-    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(AbstractLeftTuple leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled) {
+    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(LeftTuple leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         super(leftTuple, sink, pctx, leftTupleMemoryEnabled);
     }
 
-    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(AbstractLeftTuple leftTuple, RightTuple rightTuple, Sink sink) {
+    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(LeftTuple leftTuple, RightTuple rightTuple, Sink sink) {
         super(leftTuple, rightTuple, sink);
     }
 
-    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(AbstractLeftTuple leftTuple, RightTuple rightTuple, AbstractLeftTuple currentLeftChild, AbstractLeftTuple currentRightChild, Sink sink, boolean leftTupleMemoryEnabled) {
+    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(LeftTuple leftTuple, RightTuple rightTuple, LeftTuple currentLeftChild, LeftTuple currentRightChild, Sink sink, boolean leftTupleMemoryEnabled) {
         super(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
     }
 

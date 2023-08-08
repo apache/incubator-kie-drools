@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.CompiledInvoker;
 import org.drools.base.rule.accessor.EvalExpression;
@@ -75,7 +75,7 @@ public class EvalGenerator {
                 int[] declarationsParamsPos = new int[declarations.length];
 
                 mv.visitVarInsn(ALOAD, 1);
-                cast(AbstractLeftTuple.class);
+                cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 5); // AbstractLeftTuple
 
                 BaseTuple currentTuple = tuple;

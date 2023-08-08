@@ -61,7 +61,7 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
 
         private static final long serialVersionUID = 510l;
 
-        private final TupleSets<AbstractLeftTuple> stagedLeftTuples;
+        private final TupleSets<LeftTuple> stagedLeftTuples;
 
         public ReactiveFromMemory(BetaMemory betaMemory,
                                   DataProvider dataProvider) {
@@ -73,39 +73,39 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
             return NodeTypeEnums.ReactiveFromNode;
         }
 
-        public TupleSets<AbstractLeftTuple> getStagedLeftTuples() {
+        public TupleSets<LeftTuple> getStagedLeftTuples() {
             return stagedLeftTuples;
         }
     }
 
-    public AbstractLeftTuple createLeftTuple(InternalFactHandle factHandle,
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      boolean leftTupleMemoryEnabled) {
         return new ReactiveFromNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
     }
 
-    public AbstractLeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final AbstractLeftTuple leftTuple,
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
                                      final Sink sink) {
         return new ReactiveFromNodeLeftTuple(factHandle, leftTuple, sink );
     }
 
-    public AbstractLeftTuple createLeftTuple( AbstractLeftTuple leftTuple,
-                                      Sink sink,
-                                      PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     Sink sink,
+                                     PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
         throw new UnsupportedOperationException();
     }
 
-    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     AbstractLeftTuple currentLeftChild,
-                                     AbstractLeftTuple currentRightChild,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new ReactiveFromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
@@ -117,9 +117,9 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
     }
 
     @Override
-    public AbstractLeftTuple createPeer(AbstractLeftTuple original) {
+    public LeftTuple createPeer(LeftTuple original) {
         ReactiveFromNodeLeftTuple peer = new ReactiveFromNodeLeftTuple();
-        peer.initPeer((AbstractLeftTuple) original, this);
+        peer.initPeer((LeftTuple) original, this);
         original.setPeer( peer );
         return peer;
     }

@@ -19,7 +19,7 @@ package org.drools.core.reteoo;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 
-public class JoinNodeLeftTuple extends AbstractLeftTuple {
+public class JoinNodeLeftTuple extends LeftTuple {
 
     private static final long serialVersionUID = 540l;
 
@@ -37,25 +37,25 @@ public class JoinNodeLeftTuple extends AbstractLeftTuple {
     }
 
     public JoinNodeLeftTuple(final InternalFactHandle factHandle,
-                             final AbstractLeftTuple leftTuple,
+                             final LeftTuple leftTuple,
                              final Sink sink) {
         super( factHandle, leftTuple, sink );
     }
 
-    public JoinNodeLeftTuple(final AbstractLeftTuple leftTuple,
+    public JoinNodeLeftTuple(final LeftTuple leftTuple,
                              final Sink sink,
                              final PropagationContext pctx,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple, sink, pctx, leftTupleMemoryEnabled);
     }
 
-    public JoinNodeLeftTuple(final AbstractLeftTuple leftTuple,
+    public JoinNodeLeftTuple(final LeftTuple leftTuple,
                              final RightTuple rightTuple,
                              final Sink sink) {
         super(leftTuple, rightTuple, sink);
     }
 
-    public JoinNodeLeftTuple(final AbstractLeftTuple leftTuple,
+    public JoinNodeLeftTuple(final LeftTuple leftTuple,
                              final RightTuple rightTuple,
                              final Sink sink,
                              final boolean leftTupleMemoryEnabled) {
@@ -67,10 +67,10 @@ public class JoinNodeLeftTuple extends AbstractLeftTuple {
              leftTupleMemoryEnabled);
     }
 
-    public JoinNodeLeftTuple(final AbstractLeftTuple leftTuple,
+    public JoinNodeLeftTuple(final LeftTuple leftTuple,
                              final RightTuple rightTuple,
-                             final AbstractLeftTuple currentLeftChild,
-                             final AbstractLeftTuple currentRightChild,
+                             final LeftTuple currentLeftChild,
+                             final LeftTuple currentRightChild,
                              final Sink sink,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple,

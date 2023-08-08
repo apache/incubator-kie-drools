@@ -26,13 +26,13 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
 
     private TupleList            memory;
 
-    private AbstractLeftTuple            firstChild;
-    private AbstractLeftTuple            lastChild;
+    private LeftTuple            firstChild;
+    private LeftTuple            lastChild;
 
-    private AbstractLeftTuple            blocked;
+    private LeftTuple            blocked;
 
     private RightTuple           tempNextRightTuple;
-    private AbstractLeftTuple            tempBlocked;
+    private LeftTuple            tempBlocked;
 
     private boolean              retracted;
 
@@ -78,15 +78,15 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
 
     }
 
-    public AbstractLeftTuple getBlocked() {
+    public LeftTuple getBlocked() {
         return this.blocked;
     }
     
-    public void setBlocked(AbstractLeftTuple leftTuple) {
+    public void setBlocked(LeftTuple leftTuple) {
         this.blocked = leftTuple;
     }
     
-    public void addBlocked(AbstractLeftTuple leftTuple) {
+    public void addBlocked(LeftTuple leftTuple) {
         if ( this.blocked != null && leftTuple != null ) {
             leftTuple.setBlockedNext( this.blocked );
             this.blocked.setBlockedPrevious( leftTuple );
@@ -94,9 +94,9 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
         this.blocked = leftTuple;
     }
 
-    public void removeBlocked(AbstractLeftTuple leftTuple) {
-        AbstractLeftTuple previous =  leftTuple.getBlockedPrevious();
-        AbstractLeftTuple next =  leftTuple.getBlockedNext();
+    public void removeBlocked(LeftTuple leftTuple) {
+        LeftTuple previous =  leftTuple.getBlockedPrevious();
+        LeftTuple next =  leftTuple.getBlockedNext();
         if ( previous != null && next != null ) {
             //remove  from middle
             previous.setBlockedNext( next );
@@ -130,19 +130,19 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
         return (RightTuple) handleNext;
     }
 
-    public AbstractLeftTuple getFirstChild() {
+    public LeftTuple getFirstChild() {
         return firstChild;
     }
 
-    public void setFirstChild(AbstractLeftTuple firstChild) {
+    public void setFirstChild(LeftTuple firstChild) {
         this.firstChild = firstChild;
     }
 
-    public AbstractLeftTuple getLastChild() {
+    public LeftTuple getLastChild() {
         return lastChild;
     }
 
-    public void setLastChild(AbstractLeftTuple lastChild) {
+    public void setLastChild(LeftTuple lastChild) {
         this.lastChild = lastChild;
     }
     
@@ -154,11 +154,11 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
         return (RightTuple) stagedPrevious;
     }
 
-    public AbstractLeftTuple getTempBlocked() {
+    public LeftTuple getTempBlocked() {
         return tempBlocked;
     }
 
-    public void setTempBlocked(AbstractLeftTuple tempBlocked) {
+    public void setTempBlocked(LeftTuple tempBlocked) {
         this.tempBlocked = tempBlocked;
     }
 

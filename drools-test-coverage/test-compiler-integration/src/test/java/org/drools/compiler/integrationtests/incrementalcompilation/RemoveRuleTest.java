@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -217,7 +217,7 @@ public class RemoveRuleTest {
         final KieSession ksession = kbase.newKieSession();
         final DefaultFactHandle handle = (DefaultFactHandle) ksession.insert("hello");
         ksession.fireAllRules();
-        AbstractLeftTuple leftTuple = handle.getFirstLeftTuple();
+        LeftTuple leftTuple = handle.getFirstLeftTuple();
         assertThat(leftTuple).isNotNull();
         assertThat(leftTuple.getPeer()).isNotNull();
         kbase.removeRule("org.drools.compiler", "rule2");

@@ -254,9 +254,9 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         return pmem;
     }
 
-    public AbstractLeftTuple createPeer(AbstractLeftTuple original) {
-        AbstractLeftTuple peer = (AbstractLeftTuple) AgendaComponentFactory.get().createTerminalTuple();
-        peer.initPeer((AbstractLeftTuple) original, this);
+    public LeftTuple createPeer(LeftTuple original) {
+        LeftTuple peer = AgendaComponentFactory.get().createTerminalTuple();
+        peer.initPeer(original, this);
         original.setPeer( peer );
         return peer;
     }

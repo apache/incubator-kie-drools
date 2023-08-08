@@ -45,7 +45,7 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.MockTupleSource;
@@ -503,33 +503,33 @@ public class MVELConsequenceBuilderTest {
                                      ReteEvaluator reteEvaluator) {
         }
 
-        public AbstractLeftTuple createLeftTuple( InternalFactHandle factHandle,
-                                          boolean leftTupleMemoryEnabled) {
+        public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                         boolean leftTupleMemoryEnabled) {
             return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
         }    
         
-        public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                          Sink sink,
                                          PropagationContext pctx, boolean leftTupleMemoryEnabled) {
             return new JoinNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
         }
 
-        public AbstractLeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                         final AbstractLeftTuple leftTuple,
+        public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                         final LeftTuple leftTuple,
                                          final Sink sink) {
             return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
         }
 
-        public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                          RightTuple rightTuple,
                                          Sink sink) {
             return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
         }   
         
-        public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                          RightTuple rightTuple,
-                                         AbstractLeftTuple currentLeftChild,
-                                         AbstractLeftTuple currentRightChild,
+                                         LeftTuple currentLeftChild,
+                                         LeftTuple currentRightChild,
                                          Sink sink,
                                          boolean leftTupleMemoryEnabled) {
             return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
@@ -539,7 +539,7 @@ public class MVELConsequenceBuilderTest {
         }
 
         @Override
-        public AbstractLeftTuple createPeer(AbstractLeftTuple original) {
+        public LeftTuple createPeer(LeftTuple original) {
             return null;
         }                
     }

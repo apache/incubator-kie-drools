@@ -19,7 +19,7 @@ import java.util.List;
 import org.drools.base.base.ValueResolver;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.CompiledInvoker;
 import org.drools.base.rule.accessor.PredicateExpression;
@@ -71,7 +71,7 @@ public class PredicateGenerator {
 
 
                 mv.visitVarInsn( ALOAD, 2 );
-                cast(AbstractLeftTuple.class);
+                cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 7); // AbstractLeftTuple
 
                 BaseTuple currentTuple = tuple;
@@ -87,7 +87,7 @@ public class PredicateGenerator {
                     mv.visitVarInsn(ALOAD, 5); // reteEvaluator
 
                     mv.visitVarInsn(ALOAD, 7);
-                    invokeInterface(AbstractLeftTuple.class, "getFactHandle", InternalFactHandle.class);
+                    invokeInterface(LeftTuple.class, "getFactHandle", InternalFactHandle.class);
                     invokeInterface(FactHandle.class, "getObject", Object.class); // tuple.getFactHandle().getObject()
 
                     storeObjectFromDeclaration(previousDeclarations[i], previousDeclarations[i].getTypeName());

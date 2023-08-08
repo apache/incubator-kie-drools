@@ -26,7 +26,7 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.RightTuple;
@@ -51,19 +51,19 @@ public class Scenario {
     BetaMemory            bm;
     InternalWorkingMemory wm;
 
-    TupleSets<AbstractLeftTuple>  leftTuples;
+    TupleSets<LeftTuple>  leftTuples;
     TupleSets<RightTuple> rightRuples;
 
     StagedBuilder expectedResultBuilder;
 
-    TupleSets<AbstractLeftTuple> actualResultLeftTuples;
+    TupleSets<LeftTuple> actualResultLeftTuples;
 
-    TupleSets<AbstractLeftTuple> previousResultTuples;
+    TupleSets<LeftTuple> previousResultTuples;
 
     List<StagedBuilder> preStagedBuilders;
     List<StagedBuilder> postStagedBuilders;
 
-    List<AbstractLeftTuple>  leftMemory;
+    List<LeftTuple>  leftMemory;
     List<RightTuple> rightMemory;
 
     private boolean testLeftMemory;
@@ -79,13 +79,13 @@ public class Scenario {
         this.sinkNode = sinkNode;
         this.bm = bm;
         this.wm = wm;
-        this.leftTuples = new TupleSetsImpl<AbstractLeftTuple>();
+        this.leftTuples = new TupleSetsImpl<LeftTuple>();
         this.rightRuples = new TupleSetsImpl<RightTuple>();
         this.preStagedBuilders = new ArrayList<StagedBuilder>();
         this.postStagedBuilders = new ArrayList<StagedBuilder>();
 
         this.bm.setStagedRightTuples(rightRuples);
-        this.leftMemory = new ArrayList<AbstractLeftTuple>();
+        this.leftMemory = new ArrayList<LeftTuple>();
         this.rightMemory = new ArrayList<RightTuple>();
     }
 
@@ -114,7 +114,7 @@ public class Scenario {
         this.testRightMemory = testRightMemory;
     }
 
-    public TupleSets<AbstractLeftTuple> getActualResultLeftTuples() {
+    public TupleSets<LeftTuple> getActualResultLeftTuples() {
         return actualResultLeftTuples;
     }  
     
@@ -154,7 +154,7 @@ public class Scenario {
         return rightRuples;
     }
 
-    public TupleSets<AbstractLeftTuple> getLeftTuples() {
+    public TupleSets<LeftTuple> getLeftTuples() {
         return leftTuples;
     }
 
@@ -162,7 +162,7 @@ public class Scenario {
         return rightRuples;
     }
 
-    public List<AbstractLeftTuple> getLeftMemory() {
+    public List<LeftTuple> getLeftMemory() {
         return leftMemory;
     }
 
@@ -172,7 +172,7 @@ public class Scenario {
 
     public Scenario run() {
         previousResultTuples = bm.getSegmentMemory().getFirst().getStagedLeftTuples();
-        actualResultLeftTuples = new TupleSetsImpl<AbstractLeftTuple>();
+        actualResultLeftTuples = new TupleSetsImpl<LeftTuple>();
         
         if ( phreakNode == PhreakJoinNode.class ) {
             new PhreakJoinNode().doNode( (JoinNode) betaNode, sinkNode,
@@ -193,8 +193,8 @@ public class Scenario {
         
         if ( !preStagedBuilders.isEmpty() ) {
             for ( StagedBuilder stagedBuilder : preStagedBuilders ) {
-                TupleSets<AbstractLeftTuple> expected = stagedBuilder.get();
-                TupleSets<AbstractLeftTuple> actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
+                TupleSets<LeftTuple> expected = stagedBuilder.get();
+                TupleSets<LeftTuple> actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
                 
                 assertEquals( expected, actual, stagedBuilder.isTestStagedInsert(), stagedBuilder.isTestStagedDelete(), stagedBuilder.isTestStagedUpdate() );    
             }
@@ -211,8 +211,8 @@ public class Scenario {
         
         if ( !postStagedBuilders.isEmpty() ) {
             for ( StagedBuilder stagedBuilder : postStagedBuilders ) {
-                TupleSets<AbstractLeftTuple> expected = stagedBuilder.get();
-                TupleSets<AbstractLeftTuple> actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
+                TupleSets<LeftTuple> expected = stagedBuilder.get();
+                TupleSets<LeftTuple> actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
                 
                 assertEquals( expected, actual, stagedBuilder.isTestStagedInsert(), stagedBuilder.isTestStagedDelete(), stagedBuilder.isTestStagedUpdate() );    
             }
@@ -239,8 +239,8 @@ public class Scenario {
         return stagedBuilder;        
     }      
 
-    public void assertEquals(TupleSets<AbstractLeftTuple> expected,
-                             TupleSets<AbstractLeftTuple> actual,
+    public void assertEquals(TupleSets<LeftTuple> expected,
+                             TupleSets<LeftTuple> actual,
                              boolean testInsert,
                              boolean testDelete,
                              boolean testUpdate) {
@@ -322,14 +322,14 @@ public class Scenario {
 
     }
 
-    public void equalsLeftMemory(List<AbstractLeftTuple> leftTuples) {
+    public void equalsLeftMemory(List<LeftTuple> leftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
 
         int length = 0;
-        for ( AbstractLeftTuple expectedLeftTuple : leftTuples ) {
+        for ( LeftTuple expectedLeftTuple : leftTuples ) {
             FastIterator it = betaNode.getLeftIterator( ltm );
             Tuple actualLeftTuple = null;
-            for ( actualLeftTuple = BetaNode.getFirstTuple( ltm, it ); actualLeftTuple != null; actualLeftTuple = (AbstractLeftTuple) it.next( actualLeftTuple ) ) {
+            for ( actualLeftTuple = BetaNode.getFirstTuple( ltm, it ); actualLeftTuple != null; actualLeftTuple = (LeftTuple) it.next(actualLeftTuple ) ) {
                 if ( expectedLeftTuple.equals( actualLeftTuple ) ) {
                     length++;
                     break;

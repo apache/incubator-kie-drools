@@ -62,7 +62,7 @@ import org.drools.base.facttemplates.FieldTemplateImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.SegmentMemory;
@@ -939,7 +939,7 @@ public class Misc2Test {
         // this second insert forces the regeneration of the otnIds
         ksession.insert( new A( 2, 2, 2, 2 ) );
 
-        AbstractLeftTuple leftTuple = ( (DefaultFactHandle) fh ).getFirstLeftTuple();
+        LeftTuple leftTuple = ( (DefaultFactHandle) fh ).getFirstLeftTuple();
         ObjectTypeNode.Id letTupleOtnId = leftTuple.getInputOtnId();
         leftTuple = leftTuple.getHandleNext();
         while ( leftTuple != null ) {
@@ -7624,7 +7624,7 @@ public class Misc2Test {
             if ( memory != null && memory.getSegmentMemory() != null ) {
                 SegmentMemory segmentMemory = memory.getSegmentMemory();
                 System.out.println( memory );
-                AbstractLeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
+                LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
                 System.out.println( deleteFirst );
                 assertThat(deleteFirst).isNull();
             }

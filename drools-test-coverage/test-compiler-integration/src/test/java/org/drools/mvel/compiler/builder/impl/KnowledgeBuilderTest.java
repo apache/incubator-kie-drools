@@ -42,7 +42,7 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -187,7 +187,7 @@ public class KnowledgeBuilderTest {
         workingMemory.setGlobal( "map",
                                  map );
 
-        final AbstractLeftTuple tuple = new MockTuple( new HashMap() );
+        final LeftTuple tuple = new MockTuple(new HashMap() );
         tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase, Collections.emptyList()) )  );
         final InternalMatch internalMatch = new MockInternalMatch(rule,
                                                                   0,
@@ -265,7 +265,7 @@ public class KnowledgeBuilderTest {
         workingMemory.setGlobal( "map",
                                  map );
 
-        final AbstractLeftTuple tuple = new MockTuple( new HashMap() );
+        final LeftTuple tuple = new MockTuple(new HashMap() );
         tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase, Collections.emptyList()) )  );
         final InternalMatch internalMatch = new MockInternalMatch(newRule,
                                                                   0,
@@ -1274,12 +1274,12 @@ public class KnowledgeBuilderTest {
         private RuleImpl               rule;
         private int                salience;
         private final GroupElement subrule;
-        private AbstractLeftTuple tuple;
+        private LeftTuple tuple;
 
         public MockInternalMatch(final RuleImpl rule,
                                  int salience,
                                  final GroupElement subrule,
-                                 final AbstractLeftTuple tuple) {
+                                 final LeftTuple tuple) {
             this.rule = rule;
             this.salience = salience;
             this.tuple = tuple;
@@ -1298,7 +1298,7 @@ public class KnowledgeBuilderTest {
             return this.salience;
         }
 
-        public AbstractLeftTuple getTuple() {
+        public LeftTuple getTuple() {
             return this.tuple;
         }
 

@@ -29,7 +29,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.RuleTerminalNode;
@@ -178,7 +178,7 @@ public class MVELSalienceBuilderTest {
 
         private Salience                  salience;
         private Rule                      rule;
-        private AbstractLeftTuple                 tuple;
+        private LeftTuple                 tuple;
         private WorkingMemory             wm;
         private final int                 result;
         private transient boolean         halt;

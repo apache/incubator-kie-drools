@@ -30,41 +30,42 @@ import org.kie.api.runtime.rule.FactHandle;
  * A parent class for all specific LeftTuple specializations
  *
  */
-public class AbstractLeftTuple extends AbstractTuple {
+public class LeftTuple
+        extends AbstractTuple {
     private static final long  serialVersionUID = 540l;
 
     private int                index;
 
-    private AbstractLeftTuple          parent;
+    private LeftTuple parent;
 
     // left and right tuples in parent
-    private AbstractLeftTuple          leftParent;
+    private LeftTuple leftParent;
 
     private RightTuple         rightParent;
-    private AbstractLeftTuple          rightParentPrevious;
-    private AbstractLeftTuple          rightParentNext;
+    private LeftTuple rightParentPrevious;
+    private LeftTuple rightParentNext;
 
     // children
-    private AbstractLeftTuple          firstChild;
-    private AbstractLeftTuple          lastChild;
+    private LeftTuple firstChild;
+    private LeftTuple lastChild;
 
     // node memory
     protected TupleList        memory;
 
-    private AbstractLeftTuple          peer;
+    private LeftTuple peer;
 
     private short              stagedTypeForQueries;
 
-    public AbstractLeftTuple() {
+    public LeftTuple() {
         // constructor needed for serialisation
     }
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    public AbstractLeftTuple(InternalFactHandle factHandle,
-                             Sink sink,
-                             boolean leftTupleMemoryEnabled) {
+    public LeftTuple(InternalFactHandle factHandle,
+                     Sink sink,
+                     boolean leftTupleMemoryEnabled) {
         setFactHandle( factHandle );
         this.sink = sink;
         if ( leftTupleMemoryEnabled ) {
@@ -72,9 +73,9 @@ public class AbstractLeftTuple extends AbstractTuple {
         }
     }
 
-    public AbstractLeftTuple(InternalFactHandle factHandle,
-                             AbstractLeftTuple leftTuple,
-                             Sink sink) {
+    public LeftTuple(InternalFactHandle factHandle,
+                     LeftTuple leftTuple,
+                     Sink sink) {
         setFactHandle( factHandle );
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple.getNextParentWithHandle();
@@ -82,10 +83,10 @@ public class AbstractLeftTuple extends AbstractTuple {
         this.sink = sink;
     }
 
-    public AbstractLeftTuple(AbstractLeftTuple leftTuple,
-                             Sink sink,
-                             PropagationContext pctx,
-                             boolean leftTupleMemoryEnabled) {
+    public LeftTuple(LeftTuple leftTuple,
+                     Sink sink,
+                     PropagationContext pctx,
+                     boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple.getNextParentWithHandle();
         this.leftParent = leftTuple;
@@ -104,9 +105,9 @@ public class AbstractLeftTuple extends AbstractTuple {
         this.sink = sink;
     }
 
-    public AbstractLeftTuple(AbstractLeftTuple leftTuple,
-                             RightTuple rightTuple,
-                             Sink sink) {
+    public LeftTuple(LeftTuple leftTuple,
+                     RightTuple rightTuple,
+                     Sink sink) {
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple.getNextParentWithHandle();
         this.leftParent = leftTuple;
@@ -135,10 +136,10 @@ public class AbstractLeftTuple extends AbstractTuple {
         this.sink = sink;
     }
 
-    public AbstractLeftTuple(AbstractLeftTuple leftTuple,
-                             RightTuple rightTuple,
-                             Sink sink,
-                             boolean leftTupleMemoryEnabled) {
+    public LeftTuple(LeftTuple leftTuple,
+                     RightTuple rightTuple,
+                     Sink sink,
+                     boolean leftTupleMemoryEnabled) {
         this( leftTuple,
               rightTuple,
               null,
@@ -147,12 +148,12 @@ public class AbstractLeftTuple extends AbstractTuple {
               leftTupleMemoryEnabled );
     }
 
-    public AbstractLeftTuple(AbstractLeftTuple leftTuple,
-                             RightTuple rightTuple,
-                             AbstractLeftTuple currentLeftChild,
-                             AbstractLeftTuple currentRightChild,
-                             Sink sink,
-                             boolean leftTupleMemoryEnabled) {
+    public LeftTuple(LeftTuple leftTuple,
+                     RightTuple rightTuple,
+                     LeftTuple currentLeftChild,
+                     LeftTuple currentRightChild,
+                     Sink sink,
+                     boolean leftTupleMemoryEnabled) {
         setFactHandle( rightTuple.getFactHandle() );
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple.getNextParentWithHandle();
@@ -207,7 +208,7 @@ public class AbstractLeftTuple extends AbstractTuple {
         this.sink = sink;
     }
 
-    public AbstractLeftTuple getNextParentWithHandle() {
+    public LeftTuple getNextParentWithHandle() {
         // if parent is null, then we are LIAN
         return (handle!=null) ? this : parent != null ? parent.getNextParentWithHandle() : this;
     }
@@ -264,8 +265,8 @@ public class AbstractLeftTuple extends AbstractTuple {
 
     @Override
     public void unlinkFromLeftParent() {
-        AbstractLeftTuple previousParent = getHandlePrevious();
-        AbstractLeftTuple nextParent = getHandleNext();
+        LeftTuple previousParent = getHandlePrevious();
+        LeftTuple nextParent = getHandleNext();
 
         if ( previousParent != null && nextParent != null ) {
             //remove  from middle
@@ -311,8 +312,8 @@ public class AbstractLeftTuple extends AbstractTuple {
             return;
         }
 
-        AbstractLeftTuple previousParent = this.rightParentPrevious;
-        AbstractLeftTuple nextParent = this.rightParentNext;
+        LeftTuple previousParent = this.rightParentPrevious;
+        LeftTuple nextParent = this.rightParentNext;
 
         if ( previousParent != null && nextParent != null ) {
             // remove from middle
@@ -353,22 +354,22 @@ public class AbstractLeftTuple extends AbstractTuple {
         this.sink = sink;
     }
 
-    public AbstractLeftTuple getLeftParent() {
+    public LeftTuple getLeftParent() {
         return leftParent;
     }
 
-    public void setLeftParent(AbstractLeftTuple leftParent) {
+    public void setLeftParent(LeftTuple leftParent) {
         this.leftParent = leftParent;
     }
 
     @Override
-    public AbstractLeftTuple getHandlePrevious() {
-        return (AbstractLeftTuple) handlePrevious;
+    public LeftTuple getHandlePrevious() {
+        return (LeftTuple) handlePrevious;
     }
 
     @Override
-    public AbstractLeftTuple getHandleNext() {
-        return (AbstractLeftTuple) handleNext;
+    public LeftTuple getHandleNext() {
+        return (LeftTuple) handleNext;
     }
 
     public RightTuple getRightParent() {
@@ -379,25 +380,25 @@ public class AbstractLeftTuple extends AbstractTuple {
         this.rightParent = rightParent;
     }
 
-    public AbstractLeftTuple getRightParentPrevious() {
+    public LeftTuple getRightParentPrevious() {
         return rightParentPrevious;
     }
 
-    public void setRightParentPrevious(AbstractLeftTuple rightParentLeft) {
+    public void setRightParentPrevious(LeftTuple rightParentLeft) {
         this.rightParentPrevious = rightParentLeft;
     }
 
-    public AbstractLeftTuple getRightParentNext() {
+    public LeftTuple getRightParentNext() {
         return rightParentNext;
     }
 
-    public void setRightParentNext(AbstractLeftTuple rightParentRight) {
+    public void setRightParentNext(LeftTuple rightParentRight) {
         this.rightParentNext = rightParentRight;
     }
 
     @Override
     public FactHandle get(int index) {
-        AbstractLeftTuple entry = this;
+        LeftTuple entry = this;
         while ( entry.getIndex() != index) {
             entry = entry.getParent();
         }
@@ -407,7 +408,7 @@ public class AbstractLeftTuple extends AbstractTuple {
     public FactHandle[] toFactHandles() {
         // always use the count of the node that created join (not the sink target)
         FactHandle[] handles = new FactHandle[((LeftTupleSinkNode)sink).getLeftTupleSource().getObjectCount()];
-        AbstractLeftTuple                entry = (AbstractLeftTuple) skipEmptyHandles();
+        LeftTuple entry = (LeftTuple) skipEmptyHandles();
         for(int i = handles.length-1; i >= 0; i--) {
             handles[i] = entry.getFactHandle();
             entry = entry.getParent();
@@ -418,7 +419,7 @@ public class AbstractLeftTuple extends AbstractTuple {
     public Object[] toObjects(boolean reverse) {
         // always use the count of the node that created join (not the sink target)
         Object[] objs = new Object[((LeftTupleSinkNode)sink).getLeftTupleSource().getObjectCount()];
-        AbstractLeftTuple                entry = (AbstractLeftTuple) skipEmptyHandles();
+        LeftTuple entry = (LeftTuple) skipEmptyHandles();
 
         if (!reverse) {
             for (int i = objs.length - 1; i >= 0; i--) {
@@ -447,19 +448,19 @@ public class AbstractLeftTuple extends AbstractTuple {
         throw new UnsupportedOperationException();
     }
 
-    public AbstractLeftTuple getBlockedPrevious() {
+    public LeftTuple getBlockedPrevious() {
         throw new UnsupportedOperationException();
     }
 
-    public void setBlockedPrevious(AbstractLeftTuple blockerPrevious) {
+    public void setBlockedPrevious(LeftTuple blockerPrevious) {
         throw new UnsupportedOperationException();
     }
 
-    public AbstractLeftTuple getBlockedNext() {
+    public LeftTuple getBlockedNext() {
         throw new UnsupportedOperationException();
     }
 
-    public void setBlockedNext(AbstractLeftTuple blockerNext) {
+    public void setBlockedNext(LeftTuple blockerNext) {
         throw new UnsupportedOperationException();
     }
 
@@ -490,11 +491,11 @@ public class AbstractLeftTuple extends AbstractTuple {
             return true;
         }
 
-        if (!(object instanceof AbstractLeftTuple)) {
+        if (!(object instanceof LeftTuple)) {
             return false;
         }
 
-        AbstractLeftTuple other = ( (AbstractLeftTuple) object );
+        LeftTuple other = ( (LeftTuple) object );
 
         // A AbstractLeftTuple is  only the same if it has the same hashCode, factId and parent
         if ( this.hashCode() != other.hashCode() || getFactHandle() != other.getFactHandle() ) {
@@ -514,22 +515,22 @@ public class AbstractLeftTuple extends AbstractTuple {
     }
 
     @Override
-    public AbstractLeftTuple getFirstChild() {
+    public LeftTuple getFirstChild() {
         return firstChild;
     }
 
     @Override
-    public void setFirstChild(AbstractLeftTuple firstChild) {
+    public void setFirstChild(LeftTuple firstChild) {
         this.firstChild = firstChild;
     }
 
     @Override
-    public AbstractLeftTuple getLastChild() {
+    public LeftTuple getLastChild() {
         return lastChild;
     }
 
     @Override
-    public void setLastChild(AbstractLeftTuple lastChild) {
+    public void setLastChild(LeftTuple lastChild) {
         this.lastChild = lastChild;
     }
 
@@ -544,13 +545,13 @@ public class AbstractLeftTuple extends AbstractTuple {
     }
 
     @Override
-    public AbstractLeftTuple getStagedNext() {
-        return (AbstractLeftTuple) stagedNext;
+    public LeftTuple getStagedNext() {
+        return (LeftTuple) stagedNext;
     }
 
     @Override
-    public AbstractLeftTuple getStagedPrevious() {
-        return (AbstractLeftTuple) stagedPrevious;
+    public LeftTuple getStagedPrevious() {
+        return (LeftTuple) stagedPrevious;
     }
 
     @Override
@@ -561,17 +562,17 @@ public class AbstractLeftTuple extends AbstractTuple {
         }
     }
 
-    public AbstractLeftTuple getPeer() {
+    public LeftTuple getPeer() {
         return peer;
     }
 
-    public void setPeer(AbstractLeftTuple peer) {
+    public void setPeer(LeftTuple peer) {
         this.peer = peer;
     }
 
     @Override
-    public AbstractLeftTuple getSubTuple(final int elements) {
-        AbstractLeftTuple entry = this;
+    public LeftTuple getSubTuple(final int elements) {
+        LeftTuple entry = this;
         if ( elements <= this.size() ) {
             final int lastindex = elements - 1;
 
@@ -585,7 +586,7 @@ public class AbstractLeftTuple extends AbstractTuple {
     }
 
     @Override
-    public AbstractLeftTuple getParent() {
+    public LeftTuple getParent() {
         return parent;
     }
 
@@ -611,7 +612,7 @@ public class AbstractLeftTuple extends AbstractTuple {
         this.memory = null;
     }
 
-    public void initPeer(AbstractLeftTuple original, LeftTupleSink sink) {
+    public void initPeer(LeftTuple original, LeftTupleSink sink) {
         this.index = original.index;
         this.parent = original.parent;
         this.leftParent = original.leftParent;
@@ -654,12 +655,12 @@ public class AbstractLeftTuple extends AbstractTuple {
         }
         Collection<Object> result = new ArrayList<>();
         if ( getContextObject() instanceof AccumulateNode.AccumulateContext ) {
-            for (AbstractLeftTuple child = getFirstChild(); child != null; child = child.getHandleNext()) {
+            for (LeftTuple child = getFirstChild(); child != null; child = child.getHandleNext()) {
                 result.add(child.getContextObject());
             }
         }
         if ( getFirstChild().getRightParent() instanceof SubnetworkTuple ) {
-            AbstractLeftTuple leftParent = (( SubnetworkTuple ) getFirstChild().getRightParent()).getLeftParent();
+            LeftTuple leftParent = (( SubnetworkTuple ) getFirstChild().getRightParent()).getLeftParent();
             result.addAll( leftParent.getAccumulatedObjects() );
         }
         return result;

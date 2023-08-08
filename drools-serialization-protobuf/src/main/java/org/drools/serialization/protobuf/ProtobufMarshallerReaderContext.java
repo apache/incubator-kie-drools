@@ -32,7 +32,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.TupleKey;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.base.rule.EntryPointId;
@@ -59,7 +59,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
     private Map<Long, InternalFactHandle>                                          handles;
 
     public final Map<RightTupleKey, RightTuple>                                    rightTuples;
-    private final Map<Integer, AbstractLeftTuple>                                          terminalTupleMap;
+    private final Map<Integer, LeftTuple>                                          terminalTupleMap;
     private final PBActivationsFilter                                              filter;
 
     private final ObjectMarshallingStrategyStore                                   resolverStrategyFactory;
@@ -210,7 +210,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
     }
 
     @Override
-    public Map<Integer, AbstractLeftTuple> getTerminalTupleMap() {
+    public Map<Integer, LeftTuple> getTerminalTupleMap() {
         return terminalTupleMap;
     }
 
@@ -274,8 +274,8 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
     }
 
     @Override
-    public InternalFactHandle createAccumulateHandle( EntryPointId entryPointId, ReteEvaluator reteEvaluator,
-                                                      AbstractLeftTuple leftTuple, Object result, int nodeId) {
+    public InternalFactHandle createAccumulateHandle(EntryPointId entryPointId, ReteEvaluator reteEvaluator,
+                                                     LeftTuple leftTuple, Object result, int nodeId) {
         InternalFactHandle handle = null;
         ProtobufMessages.FactHandle _handle = null;
         Map<TupleKey, ProtobufMessages.FactHandle> map = (Map<TupleKey, ProtobufMessages.FactHandle>) getNodeMemories().get( nodeId );

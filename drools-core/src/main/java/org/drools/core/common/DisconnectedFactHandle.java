@@ -20,8 +20,7 @@ import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ArrayElements;
 import org.drools.core.base.DroolsQueryImpl;
-import org.drools.core.reteoo.AbstractLeftTuple;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
@@ -175,10 +174,10 @@ public class DisconnectedFactHandle
     public void forEachRightTuple( Consumer<RightTuple> rightTupleConsumer ) { }
 
     @Override
-    public void forEachLeftTuple( Consumer<AbstractLeftTuple> leftTupleConsumer) { }
+    public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer) { }
 
     @Override
-    public AbstractLeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
+    public LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate ) {
         return null;
     }
 
@@ -198,7 +197,7 @@ public class DisconnectedFactHandle
         return this.recency;
     }
 
-    public AbstractLeftTuple getLastLeftTuple() {
+    public LeftTuple getLastLeftTuple() {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
@@ -271,7 +270,7 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
-    public void setLastLeftTuple(AbstractLeftTuple leftTuple) {
+    public void setLastLeftTuple(LeftTuple leftTuple) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
@@ -312,7 +311,7 @@ public class DisconnectedFactHandle
         return toExternalForm();
     }
 
-    public AbstractLeftTuple getFirstLeftTuple() {
+    public LeftTuple getFirstLeftTuple() {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
@@ -336,15 +335,15 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "Not supported yet." );
     }
 
-    public void addFirstLeftTuple(AbstractLeftTuple leftTuple) {
+    public void addFirstLeftTuple(LeftTuple leftTuple) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
-    public void addLastLeftTuple(AbstractLeftTuple leftTuple) {
+    public void addLastLeftTuple(LeftTuple leftTuple) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
-    public void removeLeftTuple(AbstractLeftTuple leftTuple) {
+    public void removeLeftTuple(LeftTuple leftTuple) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 

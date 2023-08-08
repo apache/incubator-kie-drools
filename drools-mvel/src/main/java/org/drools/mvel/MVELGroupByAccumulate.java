@@ -13,7 +13,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.EvalNodeLeftTuple;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.runtime.rule.FactHandle;
@@ -21,12 +21,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MVELGroupByAccumulate extends Accumulate {
     private Accumulate innerAccumulate;
@@ -51,7 +45,7 @@ public class MVELGroupByAccumulate extends Accumulate {
 
     private Object getKey( Tuple tuple, FactHandle handle, ReteEvaluator reteEvaluator ) {
         try {
-            Tuple keyTuple = isMvel? tuple : new EvalNodeLeftTuple((InternalFactHandle) handle, (AbstractLeftTuple) tuple, tuple
+            Tuple keyTuple = isMvel? tuple : new EvalNodeLeftTuple((InternalFactHandle) handle, (LeftTuple) tuple, tuple
                     .getTupleSink());
             FieldValue out = groupingFunction.evaluate(handle, keyTuple, groupingDeclarations,
                     getInnerDeclarationCache(), reteEvaluator, groupingFunction.createContext());

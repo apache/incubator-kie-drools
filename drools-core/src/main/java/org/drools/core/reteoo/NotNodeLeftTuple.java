@@ -29,12 +29,12 @@ import org.drools.base.rule.ContextEntry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.FastIterator;
 
-public class NotNodeLeftTuple extends AbstractLeftTuple {
+public class NotNodeLeftTuple extends LeftTuple {
     private static final long serialVersionUID = 540l;
 
     private RightTuple blocker;
-    private AbstractLeftTuple  blockedPrevious;
-    private AbstractLeftTuple  blockedNext;
+    private LeftTuple blockedPrevious;
+    private LeftTuple blockedNext;
 
     public NotNodeLeftTuple() {
         // constructor needed for serialisation
@@ -52,12 +52,12 @@ public class NotNodeLeftTuple extends AbstractLeftTuple {
     }
 
     public NotNodeLeftTuple(final InternalFactHandle factHandle,
-                            final AbstractLeftTuple leftTuple,
+                            final LeftTuple leftTuple,
                             final Sink sink) {
         super( factHandle, leftTuple, sink );
     }
 
-    public NotNodeLeftTuple(final AbstractLeftTuple leftTuple,
+    public NotNodeLeftTuple(final LeftTuple leftTuple,
                             final Sink sink,
                             final PropagationContext pctx,
                             final boolean leftTupleMemoryEnabled) {
@@ -67,7 +67,7 @@ public class NotNodeLeftTuple extends AbstractLeftTuple {
               leftTupleMemoryEnabled);
     }
 
-    public NotNodeLeftTuple(final AbstractLeftTuple leftTuple,
+    public NotNodeLeftTuple(final LeftTuple leftTuple,
                             RightTuple rightTuple,
                             Sink sink) {
         super(leftTuple,
@@ -75,7 +75,7 @@ public class NotNodeLeftTuple extends AbstractLeftTuple {
               sink);
     }
 
-    public NotNodeLeftTuple(final AbstractLeftTuple leftTuple,
+    public NotNodeLeftTuple(final LeftTuple leftTuple,
                             final RightTuple rightTuple,
                             final Sink sink,
                             final boolean leftTupleMemoryEnabled) {
@@ -87,10 +87,10 @@ public class NotNodeLeftTuple extends AbstractLeftTuple {
              leftTupleMemoryEnabled);
     }
 
-    public NotNodeLeftTuple(final AbstractLeftTuple leftTuple,
+    public NotNodeLeftTuple(final LeftTuple leftTuple,
                             final RightTuple rightTuple,
-                            final AbstractLeftTuple currentLeftChild,
-                            final AbstractLeftTuple currentRightChild,
+                            final LeftTuple currentLeftChild,
+                            final LeftTuple currentRightChild,
                             final Sink sink,
                             final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -138,28 +138,28 @@ public class NotNodeLeftTuple extends AbstractLeftTuple {
     /* (non-Javadoc)
      * @see org.kie.reteoo.AbstractLeftTuple#getBlockedPrevious()
      */
-    public AbstractLeftTuple getBlockedPrevious() {
+    public LeftTuple getBlockedPrevious() {
         return this.blockedPrevious;
     }
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.AbstractLeftTuple#setBlockedPrevious(org.kie.reteoo.AbstractLeftTuple)
      */
-    public void setBlockedPrevious(AbstractLeftTuple blockerPrevious) {
+    public void setBlockedPrevious(LeftTuple blockerPrevious) {
         this.blockedPrevious = blockerPrevious;
     }
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.AbstractLeftTuple#getBlockedNext()
      */
-    public AbstractLeftTuple getBlockedNext() {
+    public LeftTuple getBlockedNext() {
         return this.blockedNext;
     }
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.AbstractLeftTuple#setBlockedNext(org.kie.reteoo.AbstractLeftTuple)
      */
-    public void setBlockedNext(AbstractLeftTuple blockerNext) {
+    public void setBlockedNext(LeftTuple blockerNext) {
         this.blockedNext = blockerNext;
     }
 

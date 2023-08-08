@@ -29,7 +29,7 @@ import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.base.reteoo.NodeTypeEnums;
@@ -44,12 +44,12 @@ import org.drools.core.util.Iterator;
 
 public class LeftTupleIterator
     implements
-    Iterator<AbstractLeftTuple> {
+    Iterator<LeftTuple> {
     protected InternalWorkingMemory wm;
 
     protected LeftTupleSink         node;
 
-    protected   AbstractLeftTuple           currentLeftTuple;
+    protected LeftTuple currentLeftTuple;
 
     private   java.util.Iterator<InternalFactHandle> otnIterator;
 
@@ -64,8 +64,8 @@ public class LeftTupleIterator
         setFirstLeftTupleForNode();
     }
     
-    public static Iterator<AbstractLeftTuple> iterator( InternalWorkingMemory wm,
-                                                LeftTupleSink         node) {
+    public static Iterator<LeftTuple> iterator(InternalWorkingMemory wm,
+                                               LeftTupleSink         node) {
         return new LeftTupleIterator(wm, node);
     }
 
@@ -77,7 +77,7 @@ public class LeftTupleIterator
                                                    wm );
     }
 
-    public AbstractLeftTuple getFirstLeftTuple(LeftTupleSource source,
+    public LeftTuple getFirstLeftTuple(LeftTupleSource source,
                                        LeftTupleSink sink,
                                        InternalWorkingMemory wm) {
         if (source.getType() == NodeTypeEnums.AccumulateNode ) { // TODO WHAT ABOUTGROUPBY ? (mdp)
@@ -88,7 +88,7 @@ public class LeftTupleIterator
             Tuple leftTuple = BetaNode.getFirstTuple( memory.getLeftTupleMemory(), localIt );
             if( leftTuple != null ) {
                 AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
-                return (AbstractLeftTuple) accctx.getResultLeftTuple();
+                return (LeftTuple) accctx.getResultLeftTuple();
             }
             return null;
         }
@@ -114,12 +114,12 @@ public class LeftTupleIterator
                 Tuple leftTuple = BetaNode.getFirstTuple( memory.getLeftTupleMemory(), localIt );
 
                 while ( leftTuple != null ) {
-                    for ( AbstractLeftTuple childleftTuple = leftTuple.getFirstChild(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
+                    for ( LeftTuple childleftTuple = leftTuple.getFirstChild(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
                         if ( childleftTuple.getTupleSink() == sink ) {
                             return childleftTuple;
                         }
                     }
-                    leftTuple = (AbstractLeftTuple) localIt.next( leftTuple );
+                    leftTuple = (LeftTuple) localIt.next(leftTuple );
                 }
                 break;
             }
@@ -131,8 +131,8 @@ public class LeftTupleIterator
 
                 while ( rightTuple != null ) {
                     if ( rightTuple.getBlocked() != null ) {
-                        for ( AbstractLeftTuple leftTuple = rightTuple.getBlocked(); leftTuple != null; leftTuple = leftTuple.getBlockedNext() ) {
-                            for ( AbstractLeftTuple childleftTuple = leftTuple.getFirstChild(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
+                        for ( LeftTuple leftTuple = rightTuple.getBlocked(); leftTuple != null; leftTuple = leftTuple.getBlockedNext() ) {
+                            for ( LeftTuple childleftTuple = leftTuple.getFirstChild(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
                                 if ( childleftTuple.getTupleSink() == sink ) {
                                     return childleftTuple;
                                 }
@@ -155,7 +155,7 @@ public class LeftTupleIterator
 
                 while (otnIterator.hasNext()) {
                     InternalFactHandle handle = otnIterator.next();
-                    AbstractLeftTuple leftTuple = handle.findFirstLeftTuple( lt -> lt.getTupleSink() == sink );
+                    LeftTuple leftTuple = handle.findFirstLeftTuple(lt -> lt.getTupleSink() == sink );
                     if ( leftTuple != null ) {
                         return leftTuple;
                     }
@@ -164,12 +164,12 @@ public class LeftTupleIterator
             }
             case NodeTypeEnums.EvalConditionNode:
             case NodeTypeEnums.QueryElementNode: {
-                AbstractLeftTuple parentLeftTuple = getFirstLeftTuple( source.getLeftTupleSource(),
-                                                               (LeftTupleSink) source,
-                                                               wm );
+                LeftTuple parentLeftTuple = getFirstLeftTuple(source.getLeftTupleSource(),
+                                                              (LeftTupleSink) source,
+                                                              wm );
 
                 while ( parentLeftTuple != null ) {
-                    for ( AbstractLeftTuple leftTuple = parentLeftTuple.getFirstChild(); leftTuple != null; leftTuple = leftTuple.getHandleNext() ) {
+                    for ( LeftTuple leftTuple = parentLeftTuple.getFirstChild(); leftTuple != null; leftTuple = leftTuple.getHandleNext() ) {
                         if ( leftTuple.getTupleSink() == sink ) {
                             return leftTuple;
                         }
@@ -187,13 +187,13 @@ public class LeftTupleIterator
         return null;
     }
 
-    public AbstractLeftTuple getNextLeftTuple(LeftTupleSource source,
+    public LeftTuple getNextLeftTuple(LeftTupleSource source,
                                       LeftTupleSink sink,
-                                      AbstractLeftTuple leftTuple,
+                                      LeftTuple leftTuple,
                                       InternalWorkingMemory wm) {
 
         if ( otnIterator != null ) {
-            AbstractLeftTuple leftParent = leftTuple.getLeftParent();
+            LeftTuple leftParent = leftTuple.getLeftParent();
             
             while ( leftTuple != null ) {
                 leftTuple = leftTuple.getHandleNext();
@@ -242,7 +242,7 @@ public class LeftTupleIterator
             BetaMemory memory = ((AccumulateMemory) wm.getNodeMemory( (MemoryFactory) source )).getBetaMemory();
             FastIterator localIt = memory.getLeftTupleMemory().fullFastIterator( leftTuple.getParent() );
 
-            AbstractLeftTuple childLeftTuple = leftTuple;
+            LeftTuple childLeftTuple = leftTuple;
             leftTuple = childLeftTuple.getParent();
 
             while ( leftTuple != null ) {
@@ -256,7 +256,7 @@ public class LeftTupleIterator
                         return childLeftTuple;
                     }
                 }
-                leftTuple = (AbstractLeftTuple) localIt.next( leftTuple );
+                leftTuple = (LeftTuple) localIt.next(leftTuple );
             }
 
         } else if ( source instanceof JoinNode || source instanceof NotNode|| source instanceof FromNode || source instanceof AccumulateNode ) {
@@ -272,7 +272,7 @@ public class LeftTupleIterator
             
             localIt = memory.getLeftTupleMemory().fullFastIterator( leftTuple.getLeftParent() );
 
-            AbstractLeftTuple childLeftTuple = leftTuple;
+            LeftTuple childLeftTuple = leftTuple;
             leftTuple = childLeftTuple.getLeftParent();
 
             while ( leftTuple != null ) {
@@ -286,7 +286,7 @@ public class LeftTupleIterator
                         return childLeftTuple;
                     }
                 }
-                leftTuple = (AbstractLeftTuple) localIt.next( leftTuple );
+                leftTuple = (LeftTuple) localIt.next(leftTuple );
             }
         }
         if ( source instanceof ExistsNode ) {
@@ -295,7 +295,7 @@ public class LeftTupleIterator
                 RightTuple rightTuple = leftTuple.getLeftParent().getBlocker();
                 FastIterator localIt = memory.getRightTupleMemory().fullFastIterator( rightTuple );
 
-                for ( AbstractLeftTuple childleftTuple = leftTuple.getHandleNext(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
+                for ( LeftTuple childleftTuple = leftTuple.getHandleNext(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
                     if ( childleftTuple.getTupleSink() == sink ) {
                         return childleftTuple;
                     }
@@ -312,7 +312,7 @@ public class LeftTupleIterator
                             leftTuple = rightTuple.getBlocked();
                         }
                         for ( ; leftTuple != null; leftTuple = leftTuple.getBlockedNext() ) {
-                            for ( AbstractLeftTuple childleftTuple = leftTuple.getFirstChild(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
+                            for ( LeftTuple childleftTuple = leftTuple.getFirstChild(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
                                 if ( childleftTuple.getTupleSink() == sink ) {
                                     return childleftTuple;
                                 }
@@ -324,7 +324,7 @@ public class LeftTupleIterator
                 }
             }
         } else if ( source instanceof EvalConditionNode || source instanceof QueryElementNode ) {
-            AbstractLeftTuple childLeftTuple = leftTuple;
+            LeftTuple childLeftTuple = leftTuple;
             if ( leftTuple != null ) {
                 leftTuple = leftTuple.getLeftParent();
 
@@ -357,8 +357,8 @@ public class LeftTupleIterator
                                              wm );
     }
 
-    public AbstractLeftTuple next() {
-        AbstractLeftTuple leftTuple = null;
+    public LeftTuple next() {
+        LeftTuple leftTuple = null;
         if ( this.currentLeftTuple != null ) {
             leftTuple = currentLeftTuple;
             setNextLeftTuple();

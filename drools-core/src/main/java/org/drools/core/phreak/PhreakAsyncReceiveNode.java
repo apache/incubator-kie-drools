@@ -21,7 +21,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.base.rule.ContextEntry;
 import org.drools.core.util.index.TupleList;
@@ -37,8 +37,8 @@ public class PhreakAsyncReceiveNode {
                        AsyncReceiveMemory memory,
                        LeftTupleSink sink,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<AbstractLeftTuple> srcLeftTuples,
-                       TupleSets<AbstractLeftTuple> trgLeftTuples) {
+                       TupleSets<LeftTuple> srcLeftTuples,
+                       TupleSets<LeftTuple> trgLeftTuples) {
 
         if ( srcLeftTuples.getInsertFirst() != null ) {
             doLeftInserts( memory, srcLeftTuples );
@@ -49,9 +49,9 @@ public class PhreakAsyncReceiveNode {
         srcLeftTuples.resetAll();
     }
 
-    private void doLeftInserts(AsyncReceiveMemory memory, TupleSets<AbstractLeftTuple> srcLeftTuples) {
-        for ( AbstractLeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
-            AbstractLeftTuple next = leftTuple.getStagedNext();
+    private void doLeftInserts(AsyncReceiveMemory memory, TupleSets<LeftTuple> srcLeftTuples) {
+        for ( LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
+            LeftTuple next = leftTuple.getStagedNext();
 
             memory.addInsertOrUpdateLeftTuple( leftTuple );
 
@@ -64,13 +64,13 @@ public class PhreakAsyncReceiveNode {
                                                    AsyncReceiveMemory memory,
                                                    ReteEvaluator reteEvaluator,
                                                    LeftTupleSink sink,
-                                                   TupleSets<AbstractLeftTuple> trgLeftTuples) {
+                                                   TupleSets<LeftTuple> trgLeftTuples) {
 
         BetaConstraints betaConstraints = node.getBetaConstraints();
         ContextEntry[] context = betaConstraints.createContext();
 
         TupleList leftTuples = memory.getInsertOrUpdateLeftTuples();
-        for ( AbstractLeftTuple leftTuple = (AbstractLeftTuple) leftTuples.getFirst(); leftTuple != null; leftTuple = ( AbstractLeftTuple ) leftTuple.getNext() ) {
+        for ( LeftTuple leftTuple = (LeftTuple) leftTuples.getFirst(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
 
             betaConstraints.updateFromTuple(context, reteEvaluator, leftTuple);
 
@@ -78,7 +78,7 @@ public class PhreakAsyncReceiveNode {
                 InternalFactHandle factHandle = reteEvaluator.getFactHandleFactory().newFactHandle( message, node.getObjectTypeConf( reteEvaluator ), reteEvaluator, null );
                 if ( isAllowed( factHandle, node.getAlphaConstraints(), reteEvaluator ) ) {
                     if (betaConstraints.isAllowedCachedLeft(context, factHandle)) {
-                        AbstractLeftTuple childLeftTuple = sink.createLeftTuple( factHandle, leftTuple, sink );
+                        LeftTuple childLeftTuple = sink.createLeftTuple(factHandle, leftTuple, sink );
                         childLeftTuple.setPropagationContext( leftTuple.getPropagationContext() );
                         trgLeftTuples.addInsert( childLeftTuple );
                     }

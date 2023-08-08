@@ -16,7 +16,7 @@ package org.drools.core.marshalling;
 
 import java.util.Arrays;
 
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.Tuple;
 
@@ -52,7 +52,7 @@ public class TupleKey {
 
     public static long[] createTupleArray(final Tuple tuple) {
         if( tuple != null ) {
-            AbstractLeftTuple leftTuple = (AbstractLeftTuple) tuple;
+            LeftTuple leftTuple = (LeftTuple) tuple;
             long[] tupleArray = new long[((LeftTupleNode)leftTuple.getTupleSink()).getLeftTupleSource().getObjectCount()];
             // tuple iterations happens backwards
             int i = tupleArray.length-1;

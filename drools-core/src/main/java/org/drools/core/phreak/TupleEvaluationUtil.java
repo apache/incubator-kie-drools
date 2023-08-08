@@ -25,7 +25,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.AbstractTerminalNode;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.PathEndNode;
@@ -40,7 +40,7 @@ public class TupleEvaluationUtil {
         return flushLeftTupleIfNecessary(reteEvaluator, sm, null, streamMode, Tuple.NONE);
     }
 
-    public static boolean flushLeftTupleIfNecessary(ReteEvaluator reteEvaluator, SegmentMemory sm, AbstractLeftTuple leftTuple, boolean streamMode, short stagedType) {
+    public static boolean flushLeftTupleIfNecessary(ReteEvaluator reteEvaluator, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode, short stagedType) {
         PathMemory pmem = findPathToFlush(sm, leftTuple, streamMode);
 
         if ( pmem == null ) {
@@ -52,13 +52,13 @@ public class TupleEvaluationUtil {
         return true;
     }
 
-    public static PathMemory findPathToFlush(SegmentMemory sm, AbstractLeftTuple leftTuple, boolean streamMode) {
+    public static PathMemory findPathToFlush(SegmentMemory sm, LeftTuple leftTuple, boolean streamMode) {
         boolean forceFlush = streamMode || ( leftTuple != null && leftTuple.getFactHandle() != null && leftTuple.getFactHandle().isEvent() );
         return forceFlush ? sm.getPathMemories().get(0) : sm.getFirstDataDrivenPathMemory();
     }
 
-    public static TupleSets<AbstractLeftTuple> createLeftTupleTupleSets(AbstractLeftTuple leftTuple, short stagedType) {
-        TupleSets<AbstractLeftTuple> leftTupleSets = new TupleSetsImpl<>();
+    public static TupleSets<LeftTuple> createLeftTupleTupleSets(LeftTuple leftTuple, short stagedType) {
+        TupleSets<LeftTuple> leftTupleSets = new TupleSetsImpl<>();
         if (leftTuple != null) {
             switch (stagedType) {
                 case Tuple.INSERT:
@@ -106,7 +106,7 @@ public class TupleEvaluationUtil {
         }
     }
 
-    public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, ReteEvaluator reteEvaluator, TupleSets<AbstractLeftTuple> leftTupleSets) {
+    public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, ReteEvaluator reteEvaluator, TupleSets<LeftTuple> leftTupleSets) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
 
         LeftTupleNode node;

@@ -31,28 +31,28 @@ public interface LeftTupleSink extends LeftTupleNode, Sink {
 
     boolean isLeftTupleMemoryEnabled();
 
-    AbstractLeftTuple createPeer(AbstractLeftTuple original);
+    LeftTuple createPeer(LeftTuple original);
     
-    AbstractLeftTuple createLeftTuple(final InternalFactHandle factHandle,
+    LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                               boolean leftTupleMemoryEnabled);
 
-    AbstractLeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                              final AbstractLeftTuple leftTuple,
+    LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                              final LeftTuple leftTuple,
                               final Sink sink);
 
-    AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+    LeftTuple createLeftTuple(LeftTuple leftTuple,
                               Sink sink,
                               PropagationContext pctx,
                               boolean leftTupleMemoryEnabled);
     
-    AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+    LeftTuple createLeftTuple(LeftTuple leftTuple,
                               RightTuple rightTuple,
                               Sink sink);
     
-    AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+    LeftTuple createLeftTuple(LeftTuple leftTuple,
                               RightTuple rightTuple,
-                              AbstractLeftTuple currentLeftChild,
-                              AbstractLeftTuple currentRightChild,
+                              LeftTuple currentLeftChild,
+                              LeftTuple currentRightChild,
                               Sink sink,
                               boolean leftTupleMemoryEnabled);
 

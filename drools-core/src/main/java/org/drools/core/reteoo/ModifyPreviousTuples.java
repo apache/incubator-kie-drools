@@ -31,11 +31,11 @@ public class ModifyPreviousTuples {
         this.linkedTuples = linkedTuples;
     }
     
-    public AbstractLeftTuple peekLeftTuple(int partition) {
+    public LeftTuple peekLeftTuple(int partition) {
         return linkedTuples.getFirstLeftTuple(partition);
     }
 
-    public AbstractLeftTuple peekLeftTuple(RuleBasePartitionId partitionId) {
+    public LeftTuple peekLeftTuple(RuleBasePartitionId partitionId) {
         return linkedTuples.getFirstLeftTuple(partitionId);
     }
 
@@ -69,7 +69,7 @@ public class ModifyPreviousTuples {
         linkedTuples.forEachRightTuple( rt -> doRightDelete(pctx, reteEvaluator, rt) );
     }
 
-    public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, AbstractLeftTuple leftTuple) {
+    public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, LeftTuple leftTuple) {
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getTupleSource();
         LeftInputAdapterNode.LiaNodeMemory lm = reteEvaluator.getNodeMemory( liaNode );
         SegmentMemory sm = lm.getSegmentMemory();

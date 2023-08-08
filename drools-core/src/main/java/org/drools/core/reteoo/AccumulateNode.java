@@ -136,7 +136,7 @@ public class AccumulateNode extends BetaNode {
 
     public InternalFactHandle createResultFactHandle(final PropagationContext context,
                                                      final ReteEvaluator reteEvaluator,
-                                                     final AbstractLeftTuple leftTuple,
+                                                     final LeftTuple leftTuple,
                                                      final Object result) {
         InternalFactHandle handle = null;
         if ( context.getReaderContext() != null ) {
@@ -350,7 +350,7 @@ public class AccumulateNode extends BetaNode {
             return list;
         }
 
-        public void addMatchOnLastTupleList(AbstractLeftTuple match) {
+        public void addMatchOnLastTupleList(LeftTuple match) {
             lastTupleList.add(match);
             lastTupleList.getContext().setEmpty( false );
         }
@@ -368,43 +368,43 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    public AbstractLeftTuple createLeftTuple(InternalFactHandle factHandle,
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled);
     }
 
-    public AbstractLeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final AbstractLeftTuple leftTuple,
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
                                      final Sink sink) {
         return new JoinNodeLeftTuple(factHandle, leftTuple, sink);
     }
 
-    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      Sink sink,
                                      PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, sink, pctx, leftTupleMemoryEnabled);
     }
 
-    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, sink);
     }
 
-    public AbstractLeftTuple createLeftTuple(AbstractLeftTuple leftTuple,
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     AbstractLeftTuple currentLeftChild,
-                                     AbstractLeftTuple currentRightChild,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
     }
 
 
-    public AbstractLeftTuple createPeer(AbstractLeftTuple original) {
+    public LeftTuple createPeer(LeftTuple original) {
         JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
-        peer.initPeer((AbstractLeftTuple) original, this);
+        peer.initPeer(original, this);
         original.setPeer(peer);
         return peer;
     }

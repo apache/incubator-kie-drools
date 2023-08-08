@@ -20,7 +20,7 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakEvalNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.metric.util.MetricLogUtils;
 
@@ -31,9 +31,9 @@ public class PhreakEvalNodeMetric extends PhreakEvalNode {
                        EvalMemory em,
                        LeftTupleSink sink,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<AbstractLeftTuple> srcLeftTuples,
-                       TupleSets<AbstractLeftTuple> trgLeftTuples,
-                       TupleSets<AbstractLeftTuple> stagedLeftTuples) {
+                       TupleSets<LeftTuple> srcLeftTuples,
+                       TupleSets<LeftTuple> trgLeftTuples,
+                       TupleSets<LeftTuple> stagedLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(evalNode);

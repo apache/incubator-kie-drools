@@ -16,7 +16,7 @@
 
 package org.drools.core.base.accumulators;
 
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.base.rule.Collect;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.Accumulator;
@@ -89,7 +89,7 @@ public class CollectAccumulator implements Accumulator, Externalizable {
                              Declaration[] declarations,
                              Declaration[] innerDeclarations,
                              ValueResolver valueResolver) {
-        Object value = this.unwrapHandle ? ((AbstractLeftTuple) handle.getObject()).getFactHandle().getObject() : handle.getObject();
+        Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getFactHandle().getObject() : handle.getObject();
         ((Collection) context).add( value );
         return value;
     }

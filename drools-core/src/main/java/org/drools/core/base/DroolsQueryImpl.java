@@ -23,7 +23,7 @@ import org.drools.base.base.DroolsQuery;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.phreak.StackEntry;
-import org.drools.core.reteoo.AbstractLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
@@ -45,7 +45,7 @@ public final class DroolsQueryImpl extends ArrayElements implements DroolsQuery{
 
     private WorkingMemoryAction action;
 
-    private final TupleSets<AbstractLeftTuple> resultLeftTuples;
+    private final TupleSets<LeftTuple> resultLeftTuples;
 
     private QueryElementNodeMemory qmem;
 
@@ -65,7 +65,7 @@ public final class DroolsQueryImpl extends ArrayElements implements DroolsQuery{
                            final boolean open,
                            final StackEntry stackEntry,
                            final List<PathMemory> pmems,
-                           final TupleSets<AbstractLeftTuple> resultLeftTuples,
+                           final TupleSets<LeftTuple> resultLeftTuples,
                            final QueryElementNodeMemory qmem,
                            final LeftTupleSink sink) {
         setParameters(params);
@@ -101,7 +101,7 @@ public final class DroolsQueryImpl extends ArrayElements implements DroolsQuery{
         return this.vars;
     }  
     
-    public TupleSets<AbstractLeftTuple> getResultLeftTupleSets() {
+    public TupleSets<LeftTuple> getResultLeftTupleSets() {
         return resultLeftTuples;
     }
 
