@@ -67,6 +67,7 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
 
     // Avoid secondary super cache invalidation by testing for abstract classes first
     // Then interfaces
+    // See: https://issues.redhat.com/browse/DROOLS-7521
     private Object getKey( Object object ) {
         if (object instanceof RuleTerminalNodeLeftTuple) {
             return ClassObjectType.Match_ObjectType.getClassType();
