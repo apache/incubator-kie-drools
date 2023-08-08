@@ -20,8 +20,21 @@ import org.drools.base.rule.constraint.QueryNameConstraint;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
+import org.drools.core.reteoo.LeftTupleNode;
+import org.drools.core.reteoo.LeftTupleSinkNode;
+import org.drools.core.reteoo.LeftTupleSinkPropagator;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PathEndNode;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.QueryElementNode;
+import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 
 import static org.drools.core.phreak.EagerPhreakBuilder.isInsideSubnetwork;
@@ -49,7 +62,7 @@ public class RuntimeSegmentUtilities {
 
         smem = restoreSegmentFromPrototype(reteEvaluator, segmentRoot);
         if ( smem != null ) {
-            if (NodeTypeEnums.isBetaNode(segmentRoot) && ((BetaNode) segmentRoot).isRightInputIsRiaNode()) {
+            if (NodeTypeEnums.isBetaNode(segmentRoot) && segmentRoot.isRightInputIsRiaNode()) {
                 createRiaSegmentMemory((BetaNode) segmentRoot, reteEvaluator);
             }
             return smem;
