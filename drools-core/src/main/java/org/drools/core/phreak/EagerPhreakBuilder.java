@@ -1027,8 +1027,8 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
     /**
      * Populates the SegmentMemory with staged LeftTuples. If the parent is not a Beta or From node, it iterates up to find the first node with memory. If necessary
-     * It traverses to the LiaNode's ObjectTypeNode. It then iterates the AbstractLeftTuple chains, where an existing AbstractLeftTuple is staged
-     * as delete. Or a new AbstractLeftTuple is created and staged as an insert.
+     * It traverses to the LiaNode's ObjectTypeNode. It then iterates the LeftTuple chains, where an existing LeftTuple is staged
+     * as delete. Or a new LeftTuple is created and staged as an insert.
      */
     private static void processLeftTuples(LeftTupleNode node, boolean insert, TerminalNode tn, Collection<InternalWorkingMemory> wms) {
         for (InternalWorkingMemory wm : wms) {

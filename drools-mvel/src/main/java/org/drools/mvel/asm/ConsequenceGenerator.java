@@ -56,7 +56,7 @@ public class ConsequenceGenerator {
                 mv.visitVarInsn(ALOAD, 1);
                 invokeInterface(ConsequenceContext.class, "getTuple", BaseTuple.class);
                 cast(LeftTuple.class);
-                mv.visitVarInsn(ASTORE, 3); // AbstractLeftTuple
+                mv.visitVarInsn(ASTORE, 3); // LeftTuple
 
                 // Declaration[] declarations = knowledgeHelper.getRequiredDeclarations();
                 mv.visitVarInsn(ALOAD, 1);

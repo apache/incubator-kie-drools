@@ -299,7 +299,7 @@ public class Scenario {
     }
 
     public boolean equals(final Tuple expected, Tuple actual) {
-        // we know the object is never null and always of the  type AbstractLeftTuple
+        // we know the object is never null and always of the  type LeftTuple
         if ( expected == actual ) {
             return true;
         }
@@ -315,7 +315,7 @@ public class Scenario {
             actual = actual.getParent();
         }
 
-        // A AbstractLeftTuple is  only the same if it has the same hashCode, factId and parent
+        // A LeftTuple is  only the same if it has the same hashCode, factId and parent
         return expected.hashCode() == actual.hashCode() &&
                expected.getFactHandle() == actual.getFactHandle() &&
                equals( expected.getParent(), actual.getParent() );
@@ -336,11 +336,11 @@ public class Scenario {
                 }
             }
             if ( actualLeftTuple == null ) {
-                fail( "Could not find AbstractLeftTuple: " + expectedLeftTuple );
+                fail( "Could not find LeftTuple: " + expectedLeftTuple );
             }
         }
         if ( leftTuples.size() != ltm.size() ) {
-            fail( "AbstractLeftTuple memory size did not match: " + length );
+            fail( "LeftTuple memory size did not match: " + length );
         }
     }
 

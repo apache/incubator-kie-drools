@@ -356,7 +356,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 return;
             }
 
-            // if AbstractLeftTuple is already staged, leave it there
+            // if LeftTuple is already staged, leave it there
             boolean stagedUpdateWasEmpty = leftTuples.addUpdate(leftTuple);
 
             if ( stagedUpdateWasEmpty  && linkOrNotify ) {

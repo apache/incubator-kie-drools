@@ -72,7 +72,7 @@ public class PredicateGenerator {
 
                 mv.visitVarInsn( ALOAD, 2 );
                 cast(LeftTuple.class);
-                mv.visitVarInsn(ASTORE, 7); // AbstractLeftTuple
+                mv.visitVarInsn(ASTORE, 7); // LeftTuple
 
                 BaseTuple currentTuple = tuple;
                 for (DeclarationMatcher matcher : declarationMatchers) {

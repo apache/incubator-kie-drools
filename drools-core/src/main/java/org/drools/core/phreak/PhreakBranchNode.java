@@ -221,7 +221,7 @@ public class PhreakBranchNode {
         BranchTuples branchTuples = new BranchTuples();
         LeftTuple child = leftTuple.getFirstChild();
         if ( child != null ) {
-            // assigns the correct main or rtn AbstractLeftTuple based on the identified sink
+            // assigns the correct main or rtn LeftTuple based on the identified sink
             if ( child.getTupleSink() == sink ) {
                 branchTuples.mainLeftTuple = child;
             } else {

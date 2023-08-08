@@ -76,7 +76,7 @@ public class EvalGenerator {
 
                 mv.visitVarInsn(ALOAD, 1);
                 cast(LeftTuple.class);
-                mv.visitVarInsn(ASTORE, 5); // AbstractLeftTuple
+                mv.visitVarInsn(ASTORE, 5); // LeftTuple
 
                 BaseTuple currentTuple = tuple;
                 for (DeclarationMatcher matcher : declarationMatchers) {

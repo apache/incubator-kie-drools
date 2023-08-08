@@ -175,7 +175,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                     }
 
                     if ( list != null ) {
-                        // we have a bucket so assign the frist AbstractLeftTuple and return
+                        // we have a bucket so assign the frist LeftTuple and return
                         tuple = list.getFirst( );
                         return tuple;
                     }
@@ -189,7 +189,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                     list = list.getNext();
                     // try the next bucket if we have a shared array position
                     if ( list != null ) {
-                        // if we have another bucket, assign the first AbstractLeftTuple and return
+                        // if we have another bucket, assign the first LeftTuple and return
                         tuple = list.getFirst( );
                         return tuple;
                     }
@@ -257,7 +257,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                     }
 
                     if ( this.list != null ) {
-                        // we have a bucket so assign the first AbstractLeftTuple and return
+                        // we have a bucket so assign the first LeftTuple and return
                         this.tuple = this.list.getFirst( );
                         return this.tuple;
                     }
@@ -271,7 +271,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                     this.list = this.list.getNext();
                     // try the next bucket if we have a shared array position
                     if ( this.list != null ) {
-                        // if we have another bucket, assign the first AbstractLeftTuple and return
+                        // if we have another bucket, assign the first LeftTuple and return
                         this.tuple = this.list.getFirst( );
                         return this.tuple;
                     }

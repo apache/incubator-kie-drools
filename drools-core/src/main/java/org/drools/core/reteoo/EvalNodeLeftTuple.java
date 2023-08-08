@@ -95,7 +95,7 @@ public class EvalNodeLeftTuple extends LeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.AbstractLeftTuple#unlinkFromLeftParent()
+     * @see org.kie.reteoo.LeftTuple#unlinkFromLeftParent()
      */
     public void unlinkFromLeftParent() {
         super.unlinkFromLeftParent();
@@ -103,7 +103,7 @@ public class EvalNodeLeftTuple extends LeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.AbstractLeftTuple#unlinkFromRightParent()
+     * @see org.kie.reteoo.LeftTuple#unlinkFromRightParent()
      */
     public void unlinkFromRightParent() {
         super.unlinkFromRightParent();
@@ -117,42 +117,42 @@ public class EvalNodeLeftTuple extends LeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.AbstractLeftTuple#setBlocker(org.kie.reteoo.RightTuple)
+     * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
      */
     public void setBlocker(RightTuple blocker) {
         this.blocker = blocker;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.AbstractLeftTuple#getBlocker()
+     * @see org.kie.reteoo.LeftTuple#getBlocker()
      */
     public RightTuple getBlocker() {
         return this.blocker;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.AbstractLeftTuple#getBlockedPrevious()
+     * @see org.kie.reteoo.LeftTuple#getBlockedPrevious()
      */
     public LeftTuple getBlockedPrevious() {
         return this.blockedPrevious;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.AbstractLeftTuple#setBlockedPrevious(org.kie.reteoo.AbstractLeftTuple)
+     * @see org.kie.reteoo.LeftTuple#setBlockedPrevious(org.kie.reteoo.LeftTuple)
      */
     public void setBlockedPrevious(LeftTuple blockerPrevious) {
         this.blockedPrevious = blockerPrevious;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.AbstractLeftTuple#getBlockedNext()
+     * @see org.kie.reteoo.LeftTuple#getBlockedNext()
      */
     public LeftTuple getBlockedNext() {
         return this.blockedNext;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.AbstractLeftTuple#setBlockedNext(org.kie.reteoo.AbstractLeftTuple)
+     * @see org.kie.reteoo.LeftTuple#setBlockedNext(org.kie.reteoo.LeftTuple)
      */
     public void setBlockedNext(LeftTuple blockerNext) {
         this.blockedNext = blockerNext;

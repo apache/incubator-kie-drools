@@ -185,7 +185,7 @@ public class PhreakRuleTerminalNode {
         boolean blocked = false;
         if( executor.isDeclarativeAgendaEnabled() ) {
            if ( rtnLeftTuple.hasBlockers() ) {
-               blocked = true; // declarativeAgenda still blocking AbstractLeftTuple, so don't add back ot list
+               blocked = true; // declarativeAgenda still blocking LeftTuple, so don't add back ot list
            }
         } else {
             blocked = rtnNode.getRule().isNoLoop() && rtnNode.equals(pctx.getTerminalNodeOrigin());
@@ -220,7 +220,7 @@ public class PhreakRuleTerminalNode {
             }
 
         } else {
-            // AbstractLeftTuple is blocked, and thus not queued, so just update it's values
+            // LeftTuple is blocked, and thus not queued, so just update it's values
             rtnLeftTuple.update(salienceInt, pctx);
         }
 

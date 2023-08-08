@@ -282,7 +282,7 @@ public class ScenarioTest {
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertThat(e.getMessage().contains("AbstractLeftTuple memory size did not match")).isTrue();
+            assertThat(e.getMessage().contains("LeftTuple memory size did not match")).isTrue();
         }
     }    
     
@@ -298,7 +298,7 @@ public class ScenarioTest {
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertThat(e.getMessage().contains("AbstractLeftTuple memory size did not match")).isTrue();
+            assertThat(e.getMessage().contains("LeftTuple memory size did not match")).isTrue();
         }
     }    
     
@@ -316,7 +316,7 @@ public class ScenarioTest {
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertThat(e.getMessage().contains("Could not find AbstractLeftTuple")).isTrue();
+            assertThat(e.getMessage().contains("Could not find LeftTuple")).isTrue();
         }
     }    
     
@@ -334,7 +334,7 @@ public class ScenarioTest {
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertThat(e.getMessage().contains("Could not find AbstractLeftTuple")).isTrue();
+            assertThat(e.getMessage().contains("Could not find LeftTuple")).isTrue();
         }
     }      
     

@@ -219,16 +219,16 @@ public class LeftTuple
     }
 
     public void reAddLeft() {
-        // The parent can never be the FactHandle (root AbstractLeftTuple) as that is handled by reAdd()
+        // The parent can never be the FactHandle (root LeftTuple) as that is handled by reAdd()
         // make sure we aren't already at the end
         if ( this.handleNext != null ) {
             if ( this.handlePrevious != null ) {
-                // remove the current AbstractLeftTuple from the middle of the chain
+                // remove the current LeftTuple from the middle of the chain
                 this.handlePrevious.setHandleNext( this.handleNext );
                 this.handleNext.setHandlePrevious( this.handlePrevious );
             } else {
                 if( this.leftParent.getFirstChild() == this ) {
-                    // remove the current AbstractLeftTuple from start start of the chain
+                    // remove the current LeftTuple from start start of the chain
                     this.leftParent.setFirstChild( getHandleNext() );
                 }
                 this.handleNext.setHandlePrevious( null );
@@ -245,12 +245,12 @@ public class LeftTuple
         // make sure we aren't already at the end
         if ( this.rightParentNext != null ) {
             if ( this.rightParentPrevious != null ) {
-                // remove the current AbstractLeftTuple from the middle of the chain
+                // remove the current LeftTuple from the middle of the chain
                 this.rightParentPrevious.setRightParentNext( this.rightParentNext );
                 this.rightParentNext.setRightParentPrevious( this.rightParentPrevious );
             } else {
                 if( this.rightParent.getFirstChild() == this ) {
-                    // remove the current AbstractLeftTuple from the start of the chain
+                    // remove the current LeftTuple from the start of the chain
                     this.rightParent.setFirstChild( this.rightParentNext );
                 }
                 this.rightParentNext.setRightParentPrevious( null );
@@ -497,7 +497,7 @@ public class LeftTuple
 
         LeftTuple other = ( (LeftTuple) object );
 
-        // A AbstractLeftTuple is  only the same if it has the same hashCode, factId and parent
+        // A LeftTuple is  only the same if it has the same hashCode, factId and parent
         if ( this.hashCode() != other.hashCode() || getFactHandle() != other.getFactHandle() ) {
             return false;
         }

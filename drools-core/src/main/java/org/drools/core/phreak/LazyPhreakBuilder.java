@@ -793,8 +793,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
     /**
      * Populates the SegmentMemory with staged LeftTuples. If the parent is not a Beta or From node, it iterates up to find the first node with memory. If necessary
-     * It traverses to the LiaNode's ObjectTypeNode. It then iterates the AbstractLeftTuple chains, where an existing AbstractLeftTuple is staged
-     * as delete. Or a new AbstractLeftTuple is created and staged as an insert.
+     * It traverses to the LiaNode's ObjectTypeNode. It then iterates the LeftTuple chains, where an existing LeftTuple is staged
+     * as delete. Or a new LeftTuple is created and staged as an insert.
      */
     private static void processLeftTuples(LeftTupleNode node, InternalWorkingMemory wm, boolean insert, Rule rule) {
         // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
@@ -825,7 +825,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     Tuple        lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                        visitChild((LeftTuple) accctx.getResultLeftTuple(), insert, wm, rule);
+                        visitChild( (LeftTuple) accctx.getResultLeftTuple(), insert, wm, rule);
                     }
                 } else if (NodeTypeEnums.ExistsNode == node.getType() && !node.isRightInputIsRiaNode()) { // do not process exists with subnetworks
                     // If there is a subnetwork, then there is no populated RTM, but the LTM is populated,
@@ -943,7 +943,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void insertPeerRightTuple(LeftTuple lt, InternalWorkingMemory wm, Rule rule, boolean insert ) {
+    private static void insertPeerRightTuple( LeftTuple lt, InternalWorkingMemory wm, Rule rule, boolean insert ) {
         // There's a shared RightInputAdaterNode, so check if one of its sinks is associated only to the new rule
         LeftTuple prevLt = null;
         RightInputAdapterNode rian = (RightInputAdapterNode) lt.getTupleSink();

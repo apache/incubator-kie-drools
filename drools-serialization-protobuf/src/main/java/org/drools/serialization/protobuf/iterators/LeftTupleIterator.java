@@ -206,7 +206,7 @@ public class LeftTupleIterator
                 }
             }
                                     
-            // We have a parent AbstractLeftTuple so try there next
+            // We have a parent LeftTuple so try there next
             if ( leftParent != null ) {
                 // we know it has to be evalNode query element node
                 while ( leftParent != null ) {

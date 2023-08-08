@@ -127,7 +127,7 @@ public class PhreakExistsNode {
                 // tuple is not blocked to propagate
                 insertChildLeftTuple( sink, trgLeftTuples, leftTuple, leftTuple.getBlocker().getPropagationContext(),useLeftMemory );
             } else if (useLeftMemory) {
-                // AbstractLeftTuple is not blocked, so add to memory so other RightTuples can match
+                // LeftTuple is not blocked, so add to memory so other RightTuples can match
                 ltm.add(leftTuple);
             }
             leftTuple.clearStaged();
@@ -261,7 +261,7 @@ public class PhreakExistsNode {
                 ltm.add(leftTuple); // add to memory so other fact handles can attempt to match
 
                 if (leftTuple.getFirstChild() != null) {
-                    // no need to update pctx, as no right available, and pctx will exist on a parent AbstractLeftTuple anyway
+                    // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
                     RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( leftTuple.getFirstChild(), trgLeftTuples, stagedLeftTuples );
                 }
                 // with no previous children. do nothing.
@@ -426,7 +426,7 @@ public class PhreakExistsNode {
                 }
             } else {
                 if (leftTuple.getFirstChild() != null) {
-                    // no need to update pctx, as no right available, and pctx will exist on a parent AbstractLeftTuple anyway
+                    // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
                     RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( leftTuple.getFirstChild(), trgLeftTuples, stagedLeftTuples );
                 }
                 blocker.removeBlocked(leftTuple);
