@@ -32,7 +32,11 @@ import org.drools.core.util.LinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import static org.drools.core.phreak.RuntimeSegmentUtilities.getQuerySegmentMemory;
 
