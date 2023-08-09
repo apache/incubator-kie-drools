@@ -4,6 +4,7 @@ import org.jenkinsci.plugins.workflow.libs.Library
 import org.kie.jenkins.MavenCommand
 
 droolsRepo = 'drools'
+dataIndexEphemeralImageName = 'quay.io/kiegroup/kogito-data-index-ephemeral'
 
 pipeline {
     agent {
@@ -62,10 +63,10 @@ pipeline {
                 script {
                     maven.mvnVersionsSet(getMavenCommand(getRepoName()).withProperty('full'), getKogitoVersion(), true)
                     maven.mvnSetVersionProperty(getMavenCommand(getRepoName()), 'version.org.kie', getDroolsVersion())
-                    if (!isMainBranch()) {
-                        def path = "${getRepoName()}/quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment/pom.xml"
-                        sh "sed -i -r 's|<(data-index-ephemeral\\.image)>(.*):.*|<\\1>\\2:${getMajorMinorKogitoVersion()}</\\1>|' $path"
-                    }
+
+                    // Need artifacts available locally
+                    getMavenCommand(getRepoName()).withProperty('quickly').run('clean install')
+                    maven.mvnSetVersionProperty(getMavenCommand(getRepoName()).withOptions(['-pl :kogito-quarkus-workflow-common-deployment']), 'data-index-ephemeral.image', getDataIndexEphemeralImage())
                 }
             }
         }
@@ -157,4 +158,19 @@ String getMajorMinorKogitoVersion() {
 
 boolean isMainBranch() {
     return env.IS_MAIN_BRANCH?.toBoolean()
+}
+
+String getWorkflowCommonDeploymentRelativePath() {
+    return 'quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment'
+}
+
+String getDataIndexEphemeralImage() {
+    if (isMainBranch()) {
+        return "${dataIndexEphemeralImageName}-nightly:latest"
+    }
+    String version = getKogitoVersion()
+    if (version.endsWith('-SNAPSHOT')) {
+        return "${dataIndexEphemeralImageName}-nightly:${util.getMajorMinorVersion(version)}"
+    }
+    return "${dataIndexEphemeralImageName}:${util.getMajorMinorVersion(version)}"
 }

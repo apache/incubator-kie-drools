@@ -108,17 +108,6 @@ class JenkinsfilePromote extends JenkinsPipelineSpecification {
         !value
     }
 
-    def '[Jenkinsfile.promote] getSnapshotVersion' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('params', ['PROJECT_VERSION' : '1.0.0'])
-        explicitlyMockPipelineVariable('util')
-        getPipelineMock('util.getNextVersion')('1.0.0', 'micro') >> { return '1.0.1-SNAPSHOT' }
-        when:
-        def value = Jenkinsfile.getSnapshotVersion()
-        then:
-        value == '1.0.1-SNAPSHOT'
-    }
-
     def '[Jenkinsfile.promote] getProjectVersion: PROJECT_VERSION param' () {
         setup:
         Jenkinsfile.getBinding().setVariable('params', ['PROJECT_VERSION' : 'PROJECT_VERSION'])
@@ -202,44 +191,4 @@ class JenkinsfilePromote extends JenkinsPipelineSpecification {
         then:
         value == ''
     }
-
-    def '[Jenkinsfile.promote] getPipelinePrLink' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('pipelineProperties', ['kogito-runtimes.pr.link' : 'repo.pr.link'])
-        when:
-        def value = Jenkinsfile.getPipelinePrLink()
-        then:
-        value == 'repo.pr.link'
-    }
-
-    def '[Jenkinsfile.promote] getPipelinePrLink: no value' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('pipelineProperties', [:])
-        when:
-        def value = Jenkinsfile.getPipelinePrLink()
-        then:
-        value == null
-    }
-
-    def '[Jenkinsfile.promote] setPipelinePrLink' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('pipelineProperties', [:])
-        when:
-        Jenkinsfile.setPipelinePrLink('value')
-        then:
-        Jenkinsfile.getPipelinePrLink() == 'value'
-    }
-
-    def '[Jenkinsfile.promote] getSnapshotBranch' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('params', ['PROJECT_VERSION' : '1.0.0'])
-        explicitlyMockPipelineVariable('util')
-        getPipelineMock('util.getNextVersion')('1.0.0', 'micro') >> { return '1.0.1-SNAPSHOT' }
-        Jenkinsfile.getBinding().setVariable('env', ['PR_BRANCH_HASH' : 'anything'])
-        when:
-        def value = Jenkinsfile.getSnapshotBranch()
-        then:
-        value == '1.0.1-snapshot-anything'
-    }
-
 }

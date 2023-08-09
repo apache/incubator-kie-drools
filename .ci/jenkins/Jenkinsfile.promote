@@ -1,36 +1,21 @@
 import org.jenkinsci.plugins.workflow.libs.Library
 @Library('jenkins-pipeline-shared-libraries')_
 
-import org.kie.jenkins.MavenCommand
-
 deployProperties = [:]
 pipelineProperties = [:]
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && !built-in'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        label 'rhel8 && !built-in'
     }
 
     options {
         timestamps()
-        timeout(time: 180, unit: 'MINUTES')
+        timeout(time: 60, unit: 'MINUTES')
     }
 
-    // parameters {
-    // For parameters, check into ./dsl/jobs.groovy file
-    // }
-
     environment {
-        // Static env is defined into ./dsl/jobs.groovy file
-
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
-
-        PR_BRANCH_HASH = "${util.generateHash(10)}"
     }
 
     stages {
@@ -45,19 +30,14 @@ pipeline {
 
                     readDeployProperties()
 
-                    if (isRelease()) {
-                        // Verify version is set and if on right release branch
-                        assert getProjectVersion()
-                        assert getDroolsVersion()
-                        assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
-                    }
+                    assert getProjectVersion()
+                    assert getDroolsVersion()
+                    assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                 }
             }
         }
+
         stage('Merge deploy PR and tag') {
-            when {
-                expression { return isRelease() }
-            }
             steps {
                 script {
                     dir(getRepoName()) {
@@ -68,10 +48,8 @@ pipeline {
                 }
             }
         }
+
         stage('Create release') {
-            when {
-                expression { return isRelease() }
-            }
             steps {
                 script {
                     dir(getRepoName()) {
@@ -81,37 +59,6 @@ pipeline {
                         }
                         githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTag(getGitTag()), getGitAuthorCredsID())
                         githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
-                    }
-                }
-            }
-        }
-        stage('Set next snapshot version') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    dir('pr') {
-                        checkoutRepo()
-                        githubscm.createBranch(getSnapshotBranch())
-
-                        maven.mvnVersionsSet(getMavenCommand(), getSnapshotVersion(), true)
-                        maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie', getDroolsSnapshotVersion())
-
-                        // Need artifacts available locally
-                        getMavenCommand().withProperty('quickly').run('clean install')
-                        maven.mvnSetVersionProperty(getMavenCommand(getWorkflowCommonDeploymentRelativePath()), "data-index-ephemeral.image", "${getCurrentNightlyImage()}" )
-                        commitAndCreatePR()
-                    }
-                    dir(getRepoName()) {
-                        sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush(getPipelinePrLink())
-
-                        if (shouldDeployToRepository()) {
-                            runMavenDeploy()
-                        } else {
-                            echo 'Testing environment and no specific deploy repository given => no deployment'
-                        }
                     }
                 }
             }
@@ -176,10 +123,6 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
 // Getter / Setter
 //////////////////////////////////////////////////////////////////////////////
 
-boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'kiegroup'
-}
-
 boolean isRelease() {
     return env.RELEASE ? env.RELEASE.toBoolean() : false
 }
@@ -194,10 +137,6 @@ String getProjectVersion() {
 
 String getDroolsVersion() {
     return getParamOrDeployProperty('DROOLS_VERSION', 'drools.version')
-}
-
-String getSnapshotVersion() {
-    return util.getNextVersion(getProjectVersion(), 'micro')
 }
 
 String getDroolsSnapshotVersion() {
@@ -224,18 +163,6 @@ String getDeployPrLink() {
     return getDeployProperty("${getRepoName()}.pr.link")
 }
 
-String getPipelinePrLink() {
-    return pipelineProperties["${getRepoName()}.pr.link"]
-}
-
-void setPipelinePrLink(String value) {
-    pipelineProperties["${getRepoName()}.pr.link"] = value
-}
-
-String getSnapshotBranch() {
-    return "${getSnapshotVersion().toLowerCase()}-${env.PR_BRANCH_HASH}"
-}
-
 //////////////////////////////////////////////////////////////////////////////
 // Git
 //////////////////////////////////////////////////////////////////////////////
@@ -258,42 +185,4 @@ void tagLatest() {
     if (getGitTag()) {
         githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorCredsID(), env.BUILD_TAG, true)
     }
-}
-
-void commitAndCreatePR() {
-    def commitMsg = "[${getBuildBranch()}] Update project version to ${getSnapshotVersion()}"
-    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it should be merged automatically."
-
-    githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
-    githubscm.pushObject('origin', getSnapshotBranch(), getGitAuthorCredsID())
-    setPipelinePrLink(githubscm.createPR(commitMsg, prBody, getBuildBranch(), getGitAuthorCredsID()))
-}
-
-MavenCommand getMavenCommand(String directory = '') {
-    mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId("${env.MAVEN_SETTINGS_CONFIG_FILE_ID}")
-                .withProperty('full')
-    if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
-        mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
-    }
-    if (directory) {
-        mvnCmd.inDirectory(directory)
-    }
-    return mvnCmd
-}
-
-void runMavenDeploy() {
-    mvnCmd = getMavenCommand()
-    if (env.MAVEN_DEPLOY_REPOSITORY) {
-        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
-    }
-    mvnCmd.skipTests(true).run('clean deploy')
-}
-
-String getWorkflowCommonDeploymentRelativePath() {
-    return "quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment"
-}
-
-String getCurrentNightlyImage() {
-    return "quay.io/kiegroup/kogito-data-index-ephemeral-nightly:${util.getMajorMinorVersion(getProjectVersion())}"
 }
