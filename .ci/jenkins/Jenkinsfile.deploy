@@ -30,7 +30,7 @@ pipeline {
     environment {
         // Static env is defined into ./dsl/jobs.groovy file
 
-        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+        DROOLS_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         // Keep here for visitibility
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
@@ -201,7 +201,7 @@ void commitAndCreatePR() {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        mailer.sendMarkdownTestSummaryNotification('Deploy', "[${getBuildBranch()}] Drools", [env.KOGITO_CI_EMAIL_TO])
+        mailer.sendMarkdownTestSummaryNotification('Deploy', "[${getBuildBranch()}] Drools", [env.DROOLS_CI_EMAIL_TO])
     } else {
         echo 'No notification sent per configuration'
     }

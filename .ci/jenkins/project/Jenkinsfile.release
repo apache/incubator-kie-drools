@@ -113,6 +113,16 @@ pipeline {
                 }
             }
         }
+
+        stage('Setup next snapshot version') {
+            steps {
+                script {
+                    def buildParams = []
+                    addStringParam(buildParams, 'DROOLS_VERSION', util.getNextVersion(getDroolsVersion(), 'micro'))
+                    build(job: '../setup-branch/0-setup-branch', wait: false, parameters: buildParams, propagate: false)
+                }
+            }
+        }
     }
     post {
         always {

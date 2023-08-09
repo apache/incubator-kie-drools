@@ -65,13 +65,13 @@ pipeline {
         // Launch the nightly to deploy all artifacts from the branch
         stage('Launch the nightly') {
             when {
-                expression { return params.DEPLOY_ARTIFACTS }
+                expression { return params.DEPLOY }
             }
             steps {
                 script {
                     def buildParams = getDefaultBuildParams()
                     addBooleanParam(buildParams, 'SKIP_TESTS', true)
-                    buildJob('../nightly/0-nightly', buildParams, 'nightly', false)
+                    build(job: '../nightly/0-nightly', wait: false, parameters: buildParams, propagate: false)
                 }
             }
             post {
