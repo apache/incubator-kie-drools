@@ -13,7 +13,7 @@ rule "Infer Adult"
 when
   $p : Person(age >= 18)
 then
-  insert(new IsAdult($p))
+  insert(new IsAdult($p));
 end
 ----
 
@@ -63,14 +63,14 @@ rule "Infer Child"
 when
   $p : Person(age < 18)
 then
-  insertLogical(new IsChild($p))
+  insertLogical(new IsChild($p));
 end
 
 rule "Infer Adult"
 when
   $p : Person(age >= 18)
 then
-  insertLogical(new IsAdult($p))
+  insertLogical(new IsAdult($p));
 end
 ----
 
