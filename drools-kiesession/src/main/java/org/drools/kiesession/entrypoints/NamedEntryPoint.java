@@ -508,12 +508,20 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
     }
 
     @Override
-    public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, TerminalNode terminalNode, boolean immediate) {
+    public PropagationContext immediateDelete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, TerminalNode terminalNode) {
+        return delete(handle, object, typeConf, rule, terminalNode, true);
+    }
+
+    private PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, TerminalNode terminalNode, boolean immediate) {
         final PropagationContext propagationContext = pctxFactory.createPropagationContext( this.reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
                 rule, terminalNode,
                 handle, this.entryPoint );
 
-        this.entryPointNode.retractObject( handle, propagationContext, typeConf, this.reteEvaluator, immediate );
+        if (immediate) {
+            this.entryPointNode.immediateDeleteObject( handle, propagationContext, typeConf, this.reteEvaluator );
+        } else {
+            this.entryPointNode.retractObject( handle, propagationContext, typeConf, this.reteEvaluator );
+        }
 
         afterRetract(handle, rule, terminalNode);
 

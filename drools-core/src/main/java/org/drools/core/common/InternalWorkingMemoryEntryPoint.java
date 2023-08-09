@@ -70,12 +70,11 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
                               RuleImpl rule,
                               TerminalNode terminalNode);
 
-    PropagationContext delete(InternalFactHandle handle,
-                              Object object,
-                              ObjectTypeConf typeConf,
-                              RuleImpl rule,
-                              TerminalNode terminalNode,
-                              boolean immediate);
+    PropagationContext immediateDelete(InternalFactHandle handle,
+                                       Object object,
+                                       ObjectTypeConf typeConf,
+                                       RuleImpl rule,
+                                       TerminalNode terminalNode);
 
     void removeFromObjectStore(InternalFactHandle handle);
 }
