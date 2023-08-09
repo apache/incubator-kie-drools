@@ -51,7 +51,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         return sinkArray;
     }
 
-    // See AbstractLeftTuple.getTupleSink() or https://issues.redhat.com/browse/DROOLS-7521
+    // See LeftTuple.getTupleSink() or https://issues.redhat.com/browse/DROOLS-7521
     public LeftTupleSinkNode getFirstLeftTupleSink() {
         if (sink instanceof AccumulateNode) {
             return (AccumulateNode) sink;

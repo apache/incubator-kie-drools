@@ -343,8 +343,20 @@ public class LeftTuple
     }
 
     @Override
+    // It's better to always cast to a concrete or abstract class to avoid
+    // secondary super cache problem. See https://issues.redhat.com/browse/DROOLS-7521
     public LeftTupleSink getTupleSink() {
-        return (LeftTupleSink)getSink();
+        Object sink = getSink();
+        if (sink instanceof AccumulateNode) {
+            return (AccumulateNode) sink;
+        } else if (sink instanceof RuleTerminalNode) {
+            return (RuleTerminalNode) sink;
+        } else if (sink instanceof RightInputAdapterNode) {
+            return (RightInputAdapterNode) sink;
+        } else if (sink instanceof ExistsNode) {
+            return (ExistsNode) sink;
+        }
+        return (LeftTupleSink)sink;
     }
 
     /* Had to add the set method because sink adapters must override
@@ -664,5 +676,9 @@ public class LeftTuple
             result.addAll( leftParent.getAccumulatedObjects() );
         }
         return result;
+    }
+
+    public InternalFactHandle getFactHandle() {
+        return (InternalFactHandle) super.getFactHandle();
     }
 }
