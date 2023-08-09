@@ -45,9 +45,6 @@ public interface KieBaseConfigurationMonitorMBean {
 
     public boolean isMBeansEnabled();
 
-    @Deprecated
-    public boolean isMultithreadEvaluation();
-
     public boolean isRemoveIdentities();
 
     @Deprecated

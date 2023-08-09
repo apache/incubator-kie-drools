@@ -16,17 +16,12 @@
 
 package org.drools.core.concurrent;
 
-import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.kie.api.runtime.rule.AgendaFilter;
+import org.drools.core.common.ActivationsManager;
 
-public interface RuleEvaluator {
-    int evaluateAndFire( AgendaFilter filter,
-                         int fireCount,
-                         int fireLimit,
-                         InternalAgendaGroup group );
+public class SequentialGroupEvaluator extends AbstractGroupEvaluator {
 
-    KnowledgeHelper getKnowledgeHelper();
-
-    void resetKnowledgeHelper();
+    public SequentialGroupEvaluator(ActivationsManager activationsManager) {
+        super(activationsManager);
+    }
 }
+

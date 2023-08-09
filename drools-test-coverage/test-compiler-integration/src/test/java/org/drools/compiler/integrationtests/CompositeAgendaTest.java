@@ -16,11 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.LongAdder;
-
 import org.drools.testcoverage.common.model.A;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.junit.Ignore;
@@ -30,9 +25,14 @@ import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.conf.MultithreadEvaluationOption;
+import org.kie.internal.conf.ParallelExecutionOption;
 import org.kie.internal.utils.KieHelper;
 import org.kie.test.testcategory.TurtleTestCategory;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.LongAdder;
 
 import static org.assertj.core.api.Assertions.fail;
 
@@ -94,7 +94,7 @@ public class CompositeAgendaTest {
                 " end";
 
         final KieBaseConfiguration kieBaseConfiguration = KieBaseTestConfiguration.STREAM_IDENTITY.getKieBaseConfiguration();
-        kieBaseConfiguration.setOption(MultithreadEvaluationOption.YES);
+        kieBaseConfiguration.setOption(ParallelExecutionOption.FULLY_PARALLEL);
         final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build(kieBaseConfiguration);
         final KieSession kieSession = kieBase.newKieSession();
 

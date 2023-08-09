@@ -19,7 +19,7 @@ package org.drools.kiesession.agenda;
 
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.impl.InternalRuleBase;
+import org.drools.core.common.InternalWorkingMemory;
 
 import java.io.Serializable;
 
@@ -33,9 +33,9 @@ public class DefaultAgendaFactory implements AgendaFactory, Serializable {
 
     private DefaultAgendaFactory() { }
 
-    public InternalAgenda createAgenda(InternalRuleBase kBase, boolean initMain) {
-        return kBase.hasParallelEvaluation() ?
-               new CompositeDefaultAgenda( kBase, initMain ) :
-               new DefaultAgenda( kBase, initMain );
+    public InternalAgenda createAgenda(InternalWorkingMemory workingMemory) {
+        return workingMemory.getKnowledgeBase().getRuleBaseConfiguration().isParallelExecution() ?
+                new CompositeDefaultAgenda( workingMemory ) :
+                new DefaultAgenda( workingMemory );
     }
 }

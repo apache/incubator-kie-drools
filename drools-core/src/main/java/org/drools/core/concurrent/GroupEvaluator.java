@@ -16,24 +16,16 @@
 
 package org.drools.core.concurrent;
 
-import org.drools.core.common.ActivationsManager;
-import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.kie.api.runtime.rule.AgendaFilter;
 
-public class AbstractRuleEvaluator {
-    private final ActivationsManager activationsManager;
+public interface GroupEvaluator {
+    int evaluateAndFire( InternalAgendaGroup group, AgendaFilter filter, int fireCount, int fireLimit );
 
-    public AbstractRuleEvaluator(ActivationsManager activationsManager) {
-        this.activationsManager = activationsManager;
-    }
+    KnowledgeHelper getKnowledgeHelper();
 
-    protected int internalEvaluateAndFire( AgendaFilter filter, int fireCount, int fireLimit, RuleAgendaItem item ) {
-        activationsManager.evaluateQueriesForRule( item );
-        return item.getRuleExecutor().evaluateNetworkAndFire(activationsManager, filter, fireCount, fireLimit);
-    }
+    void resetKnowledgeHelper();
 
-    protected KnowledgeHelper newKnowledgeHelper() {
-        return activationsManager.getReteEvaluator().createKnowledgeHelper();
-    }
+    void haltEvaluation();
 }

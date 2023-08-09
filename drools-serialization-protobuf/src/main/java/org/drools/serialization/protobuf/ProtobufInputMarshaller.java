@@ -197,15 +197,12 @@ public class ProtobufInputMarshaller {
         FactHandleFactory handleFactory = context.getKnowledgeBase().newFactHandleFactory( _session.getRuleData().getLastId(),
                                                                                  _session.getRuleData().getLastRecency() );
 
-        InternalAgenda agenda = RuntimeComponentFactory.get().getAgendaFactory(config).createAgenda( context.getKnowledgeBase(), false );
-
         StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) PhreakWorkingMemoryFactory.getInstance()
                 .createWorkingMemory( id, context.getKnowledgeBase(), handleFactory,
                                       1, // pCTx starts at 1, as InitialFact is 0
-                                      config, agenda, environment );
+                                      config, environment );
 
-        agenda.setWorkingMemory( session );
-        readAgenda( context, _session.getRuleData(), agenda );
+        readAgenda( context, _session.getRuleData(), session.getAgenda() );
 
         return session;
     }
@@ -809,7 +806,7 @@ public class ProtobufInputMarshaller {
             RuleAgendaItem rai = null;
             while ( (rai = rneaToFire.poll()) != null ) {
                 RuleExecutor ruleExecutor = rai.getRuleExecutor();
-                ruleExecutor.reEvaluateNetwork( wm );
+                ruleExecutor.evaluateNetworkIfDirty( wm );
                 ruleExecutor.removeRuleAgendaItemWhenEmpty( wm );
             }
         }

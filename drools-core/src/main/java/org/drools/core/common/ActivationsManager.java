@@ -77,6 +77,8 @@ public interface ActivationsManager {
     KnowledgeHelper getKnowledgeHelper();
     void resetKnowledgeHelper();
 
+    void haltGroupEvaluation();
+
     void executeTask(ExecutableEntry executableEntry);
 
     default void handleException(InternalMatch internalMatch, Exception e) {

@@ -15,11 +15,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalRuleFlowGroup;
@@ -48,6 +43,11 @@ import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -470,11 +470,11 @@ public class ExecutionFlowControlTest {
         final InternalAgendaGroup group1 = agenda.getAgendaGroupsManager().getAgendaGroup( "group1" );
         agenda.getAgendaGroupsManager().setFocus( group1 );
         assertThat(group1.size()).isEqualTo(1);
-        RuleAgendaItem ruleItem1 = (RuleAgendaItem) group1.getActivations().iterator().next();
+        RuleAgendaItem ruleItem1 = group1.getActivations().iterator().next();
         ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
         assertThat(ruleItem1.getRuleExecutor().getLeftTupleList().size()).isEqualTo(3);
 
-        agenda.fireNextItem( null, 0, 0 );
+        ruleItem1.getRuleExecutor().fire(agenda);
         assertThat(group1.size()).isEqualTo(1);
         assertThat(ruleItem1.getRuleExecutor().getLeftTupleList().size()).isEqualTo(2);
 
@@ -486,11 +486,11 @@ public class ExecutionFlowControlTest {
         InternalAgendaGroup group2 = agenda.getAgendaGroupsManager().getAgendaGroup( "group2" );
         agenda.getAgendaGroupsManager().setFocus( group2);
         assertThat(group2.size()).isEqualTo(1);
-        RuleAgendaItem ruleItem2 = (RuleAgendaItem) group2.getActivations().iterator().next();
+        RuleAgendaItem ruleItem2 = group2.getActivations().iterator().next();
         ruleItem2.getRuleExecutor().evaluateNetwork(wm.getAgenda());
         assertThat(ruleItem2.getRuleExecutor().getLeftTupleList().size()).isEqualTo(3);
 
-        agenda.fireNextItem( null, 0, 0 );
+        ruleItem2.getRuleExecutor().fire(agenda);
         assertThat(group2.size()).isEqualTo(1);
         assertThat(ruleItem2.getRuleExecutor().getLeftTupleList().size()).isEqualTo(2);
 

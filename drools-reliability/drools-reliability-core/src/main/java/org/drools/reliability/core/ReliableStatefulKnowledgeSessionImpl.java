@@ -43,9 +43,8 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
                                                 FactHandleFactory handleFactory,
                                                 long propagationContext,
                                                 SessionConfiguration config,
-                                                InternalAgenda agenda,
                                                 Environment environment) {
-        super(id, kBase, handleFactory, propagationContext, config, agenda, environment);
+        super(id, kBase, handleFactory, propagationContext, config, environment);
     }
 
     @Override

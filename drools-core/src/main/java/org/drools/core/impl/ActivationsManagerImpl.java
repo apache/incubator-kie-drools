@@ -29,8 +29,8 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.concurrent.RuleEvaluator;
-import org.drools.core.concurrent.SequentialRuleEvaluator;
+import org.drools.core.concurrent.GroupEvaluator;
+import org.drools.core.concurrent.SequentialGroupEvaluator;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
@@ -71,7 +71,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     private final PropagationList propagationList;
 
-    private final RuleEvaluator ruleEvaluator;
+    private final GroupEvaluator groupEvaluator;
 
     private boolean firing = false;
 
@@ -85,7 +85,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
         this.reteEvaluator = reteEvaluator;
         this.agendaGroupsManager = new AgendaGroupsManager.SimpleAgendaGroupsManager(reteEvaluator);
         this.propagationList = new SynchronizedPropagationList(reteEvaluator);
-        this.ruleEvaluator = new SequentialRuleEvaluator( this );
+        this.groupEvaluator = new SequentialGroupEvaluator( this );
         if (reteEvaluator.getKnowledgeBase().getRuleBaseConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
             expirationContexts = new ArrayList<>();
         }
@@ -259,12 +259,17 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public KnowledgeHelper getKnowledgeHelper() {
-        return ruleEvaluator.getKnowledgeHelper();
+        return groupEvaluator.getKnowledgeHelper();
     }
 
     @Override
     public void resetKnowledgeHelper() {
-        ruleEvaluator.resetKnowledgeHelper();
+        groupEvaluator.resetKnowledgeHelper();
+    }
+
+    @Override
+    public void haltGroupEvaluation() {
+        groupEvaluator.haltEvaluation();
     }
 
     @Override
@@ -303,7 +308,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
                 // only fire rules while the limit has not reached.
                 // if halt is called, then isFiring will be false.
                 // The while loop may continue to loop, to keep flushing the action propagation queue
-                returnedFireCount = ruleEvaluator.evaluateAndFire( agendaFilter, fireCount, fireLimit, group );
+                returnedFireCount = groupEvaluator.evaluateAndFire( group, agendaFilter, fireCount, fireLimit );
                 fireCount += returnedFireCount;
 
                 limitReached = ( fireLimit > 0 && fireCount >= fireLimit );

@@ -37,7 +37,7 @@ public class PhreakWorkingMemoryFactory implements WorkingMemoryFactory, Seriali
         return new StatefulKnowledgeSessionImpl( id, kBase, true, config, environment);
     }
 
-    public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
-        return new StatefulKnowledgeSessionImpl(id, kBase, handleFactory, propagationContext, config, agenda, environment);
+    public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, Environment environment) {
+        return new StatefulKnowledgeSessionImpl(id, kBase, handleFactory, propagationContext, config, environment);
     }
 }
