@@ -51,12 +51,9 @@ pipeline {
 
                     readDeployProperties()
 
-                    if (isRelease()) {
-                        // Verify version is set and if on right release branch
-                        assert getProjectVersion()
-
-                        assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
-                    }
+                    // Verify version is set and if on right release branch
+                    assert getProjectVersion()
+                    assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
 
                     checkout scm // To make sure the repository containing the script is available on the Jenkins node.
                     imageUtils = load '.ci/jenkins/scripts/imageUtils.groovy'
@@ -64,40 +61,43 @@ pipeline {
             }
         }
 
-        stage('Merge OptaPlanner deploy PR and tag') {
-            when {
-                expression { return isRelease() }
-            }
+        stage('Merge OptaPlanner deploy PR, tag and create release') {
             steps {
                 script {
                     dir(optaplannerRepository) {
                         checkoutRepo(optaplannerRepository)
                         mergeAndPush(getDeployPrLink(optaplannerRepository))
                         tagLatest()
+
+                        if(githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
+                            githubscm.deleteRelease(getGitTag(), getGitAuthorCredsID())
+                        }
+                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTag(getGitTag()), getGitAuthorCredsID())
+                        githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
                     }
                 }
             }
         }
 
-        stage('Merge OptaPlanner Quickstarts PR and tag') {
-            when {
-                expression { return isRelease() }
-            }
+        stage('Merge OptaPlanner Quickstarts PR, tag and create release') {
             steps {
                 script {
                     dir(quickstartsRepository) {
                         checkoutRepo(quickstartsRepository)
                         mergeAndPush(getDeployPrLink(quickstartsRepository))
                         tagLatest()
+
+                        if(githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
+                            githubscm.deleteRelease(getGitTag(), getGitAuthorCredsID())
+                        }
+                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTag(getGitTag()), getGitAuthorCredsID())
+                        githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
                     }
                 }
             }
         }
 
         stage('Upload OptaPlanner documentation') {
-            when {
-                expression { return isRelease() }
-            }
             steps {
                 script {
                     getMavenCommand()
@@ -110,59 +110,7 @@ pipeline {
             }
         }
 
-        stage('Set OptaPlanner next snapshot version') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
-
-                    dir("${optaplannerRepository}-pr") {
-                        prepareForPR(optaplannerRepository)
-                        String nextSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
-
-                        maven.mvnVersionsSet(getMavenCommand(), nextSnapshotVersion, true)
-
-                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
-                        setPipelinePrLink(optaplannerRepository, prLink)
-                    }
-                    dir(optaplannerRepository) {
-                        sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush(getPipelinePrLink(optaplannerRepository))
-                        runMavenDeploy(getMavenCommand())
-                    }
-                }
-            }
-        }
-
-        stage('Set Quickstarts next snapshot version') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
-                    String botQuickstartsRepository = "${quickstartsRepository}-bot"
-                    dir(botQuickstartsRepository) {
-                        prepareForPR(quickstartsRepository)
-                        updateQuickstartsVersions(nextMicroSnapshotVersion)
-
-                        String prLink = commitAndCreatePR(("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"))
-                        setPipelinePrLink(quickstartsRepository, prLink)
-                    }
-                    dir(quickstartsRepository) {
-                        sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush(getPipelinePrLink(quickstartsRepository))
-                    }
-                }
-            }
-        }
-
         stage('Push the final OptaPlanner operator image') {
-            when {
-                expression { return isRelease() }
-            }
             steps {
                 script {
                     pushOperatorFinalImage()
@@ -232,28 +180,12 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
 // Getter / Setter
 //////////////////////////////////////////////////////////////////////////////
 
-boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY || isNotTestingBuild()
-}
-
 boolean isNotTestingBuild() {
     return getGitAuthor() == 'kiegroup'
 }
 
-boolean isRelease() {
-    return env.RELEASE ? env.RELEASE.toBoolean() : false
-}
-
 String getProjectVersion() {
     return getParamOrDeployProperty('PROJECT_VERSION', 'project.version')
-}
-
-String getNextMicroSnapshotVersion(String currentVersion) {
-    return util.getNextVersion(currentVersion, 'micro')
-}
-
-String getNextMinorSnapshotVersion(String currentVersion) {
-    return util.getNextVersion(currentVersion, 'minor')
 }
 
 String getGitTag() {
@@ -276,38 +208,15 @@ String getDeployPrLink(String repo) {
     return getDeployProperty("${repo}.pr.link")
 }
 
-String getPipelinePrLink(String repo) {
-    return pipelineProperties["${repo}.pr.link"]
-}
-
-void setPipelinePrLink(String repo, String value) {
-    pipelineProperties["${repo}.pr.link"] = value
-}
-
-String getSnapshotBranch() {
-    return "${getNextMicroSnapshotVersion(getProjectVersion()).toLowerCase()}-${env.PR_BRANCH_HASH}"
-}
-
 //////////////////////////////////////////////////////////////////////////////
 // Git
 //////////////////////////////////////////////////////////////////////////////
 
-void checkoutRepo(String repo, String branch) {
-    deleteDir()
-    checkout(githubscm.resolveRepository(repo, getGitAuthor(), branch, false))
-    // need to manually checkout branch since on a detached branch after checkout command
-    sh "git checkout ${branch}"
-}
-
 void checkoutRepo(String repo) {
-    checkoutRepo(repo, getBuildBranch())
-}
-
-void checkoutTag(String repo, String tagName, String localBranchName) {
     deleteDir()
     checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
-    // Need to manually checkout branch since we are in 'detached HEAD' state after the git checkout command.
-    sh "git checkout tags/${tagName} -b ${localBranchName}"
+    // need to manually checkout branch since on a detached branch after checkout command
+    sh "git checkout ${getBuildBranch()}"
 }
 
 void mergeAndPush(String prLink, String targetBranch) {
@@ -325,26 +234,6 @@ void tagLatest() {
     if (getGitTag() != '') {
         githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorCredsID(), env.BUILD_TAG, true)
     }
-}
-
-void prepareForPR(String repo) {
-    checkoutRepo(repo)
-    githubscm.createBranch(getSnapshotBranch())
-}
-
-String commitAndCreatePR(String commitMsg, Closure precommit, String localBranch, String targetBranch) {
-    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}"
-
-    githubscm.commitChanges(commitMsg, precommit)
-    githubscm.pushObject('origin', localBranch, getGitAuthorCredsID())
-    return githubscm.createPR(commitMsg, prBody, targetBranch, getGitAuthorCredsID())
-}
-
-String commitAndCreatePR(String commitMsg) {
-    return commitAndCreatePR(commitMsg, {
-        githubscm.findAndStageNotIgnoredFiles('pom.xml')
-        githubscm.findAndStageNotIgnoredFiles('build.gradle')
-    }, getSnapshotBranch(), getBuildBranch())
 }
 
 void uploadDistribution(String directory) {
@@ -370,32 +259,6 @@ MavenCommand getMavenCommand() {
         mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
     }
     return mvnCmd
-}
-
-void runMavenDeploy(MavenCommand mvnCmd) {
-    if (shouldDeployToRepository()) {
-        mvnCmd = mvnCmd.clone()
-        if (env.MAVEN_DEPLOY_REPOSITORY) {
-            mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
-        }
-        mvnCmd.skipTests(true).run('clean deploy')
-    } else {
-        echo 'Testing environment and no specific deploy repository given => no deployment'
-    }
-}
-
-void updateQuickstartsVersions(String newVersion) {
-    maven.mvnSetVersionProperty('version.org.optaplanner', newVersion)
-    maven.mvnVersionsUpdateParentAndChildModules(newVersion, true)
-    gradleVersionsUpdate(newVersion)
-
-    assert !sh(script:
-            "grep -Rn \"${getProjectVersion()}\" --include={pom.xml,build.gradle} | " +
-             'cat', returnStdout: true)
-}
-
-void gradleVersionsUpdate(String newVersion) {
-    sh "find . -name build.gradle -exec sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' {} \\;"
 }
 
 /* OptaPlanner Operator */
@@ -445,12 +308,4 @@ void removeOperatorImageTemporaryTag() {
         error "Cannot remove the OptaPlanner Operator temporary image tag (${temporaryImageName}) from quay.io. "
                 + "The tag should be removed manually."
     }
-}
-
-boolean isStream8() {
-    return env.OPTAPLANNER_LATEST_STREAM == '8'
-}
-
-boolean isStream9() {
-    return env.OPTAPLANNER_LATEST_STREAM == '9'
 }

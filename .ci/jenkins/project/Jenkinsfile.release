@@ -117,6 +117,16 @@ pipeline {
                 }
             }
         }
+
+        stage('Setup next snapshot version') {
+            steps {
+                script {
+                    def buildParams = []
+                    addStringParam(buildParams, 'OPTAPLANNER_VERSION', util.getNextVersion(getOptaPlannerVersion(), 'micro'))
+                    build(job: '../setup-branch/0-setup-branch', wait: false, parameters: buildParams, propagate: false)
+                }
+            }
+        }
     }
     post {
         always {

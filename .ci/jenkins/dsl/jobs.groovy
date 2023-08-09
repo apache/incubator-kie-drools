@@ -76,7 +76,7 @@ void createProjectSetupBranchJob() {
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('OPTAPLANNER_VERSION', '', 'OptaPlanner version')
-            booleanParam('DEPLOY_ARTIFACTS', true, 'Deploy artifacts')
+            booleanParam('DEPLOY', true, 'Deploy artifacts')
         }
     }
 }
