@@ -95,7 +95,7 @@ void setupProjectReleaseJob() {
 
         DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
         ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-        
+
         DROOLS_STREAM: getDroolsStream(),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
@@ -118,7 +118,7 @@ void setupProjectPostReleaseJob() {
         GIT_BRANCH_NAME: "${GIT_BRANCH}",
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
         AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        
+
         DROOLS_STREAM: getDroolsStream(),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
@@ -310,6 +310,7 @@ void setupDeployJob(JobType jobType) {
 
             booleanParam('CREATE_PR', false, 'Should we create a PR with the changes ?')
             stringParam('PROJECT_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
+            stringParam('DROOLS_PR_BRANCH', '', 'PR branch name')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }

@@ -291,6 +291,7 @@ List getDefaultBuildParams() {
     List buildParams = []
     addDisplayNameParam(buildParams, getDisplayName(getDroolsVersion()))
     addStringParam(buildParams, 'PROJECT_VERSION', getDroolsVersion())
+    addStringParam(buildParams, 'DROOLS_PR_BRANCH', "drools-${getDroolsVersion()}")
     return buildParams
 }
 
