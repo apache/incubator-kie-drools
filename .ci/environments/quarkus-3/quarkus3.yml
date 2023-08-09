@@ -93,15 +93,20 @@ recipeList:
   }
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.io.quarkiverse.openapi.generator,
-    newValue: 2.2.2
+    newValue: 2.2.8
   }
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.io.quarkiverse.asyncapi,
-    newValue: 0.1.0
+    newValue: 0.2.0
+  }
+- org.openrewrite.java.ChangePackage: {
+    oldPackageName: com.asyncapi.v2.model,
+    newPackageName: com.asyncapi.v2._6_0.model,
+    recursive: true
   }
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.io.quarkiverse.reactivemessaging.http,
-    newValue: 2.0.1
+    newValue: 2.0.2
   }
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.io.quarkiverse.jackson-jq,
@@ -117,12 +122,6 @@ recipeList:
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.org.infinispan,
     newValue: 14.0.7.Final
-  }
-- org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId: {
-    oldGroupId: org.infinispan,
-    oldArtifactId: infinispan-core,
-    newGroupId: org.infinispan,
-    newArtifactId: infinispan-core-jakarta
   }
 - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId: {
     oldGroupId: org.infinispan,

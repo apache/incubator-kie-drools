@@ -166,7 +166,7 @@ index 81e9ad561b..99de8839df 100644
      private java.util.Map<String, org.kie.kogito.process.Process<? extends org.kie.kogito.Model>> mappedProcesses = new java.util.HashMap<>();
  
 diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/config/ProcessConfigQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/config/ProcessConfigQuarkusTemplate.java
-index b31e82652d..fd466857b8 100644
+index a4c29059f7..96001e751e 100644
 --- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/config/ProcessConfigQuarkusTemplate.java
 +++ b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/config/ProcessConfigQuarkusTemplate.java
 @@ -15,7 +15,7 @@
@@ -177,7 +177,7 @@ index b31e82652d..fd466857b8 100644
 +import jakarta.enterprise.inject.Instance;
  
  import org.kie.api.event.process.ProcessEventListener;
- import org.kie.kogito.event.EventPublisher;
+ import org.kie.kogito.auth.IdentityProvider;
 diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/persistence/KafkaStreamsTopologyProducerJavaTemplate.java b/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/persistence/KafkaStreamsTopologyProducerJavaTemplate.java
 index 736f1de9d7..d6ac80b21a 100644
 --- a/kogito-codegen-modules/kogito-codegen-processes/src/main/resources/class-templates/persistence/KafkaStreamsTopologyProducerJavaTemplate.java
