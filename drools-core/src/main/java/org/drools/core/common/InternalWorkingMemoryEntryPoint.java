@@ -68,14 +68,13 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
                               Object object,
                               ObjectTypeConf typeConf,
                               RuleImpl rule,
-                              InternalMatch internalMatch);
-
-    PropagationContext delete(InternalFactHandle handle,
-                              Object object,
-                              ObjectTypeConf typeConf,
-                              RuleImpl rule,
-                              InternalMatch internalMatch,
                               TerminalNode terminalNode);
+
+    PropagationContext immediateDelete(InternalFactHandle handle,
+                                       Object object,
+                                       ObjectTypeConf typeConf,
+                                       RuleImpl rule,
+                                       TerminalNode terminalNode);
 
     void removeFromObjectStore(InternalFactHandle handle);
 }

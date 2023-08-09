@@ -288,15 +288,22 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
      * @param reteEvaluator
      *            The working memory session.
      */
-    public void retractObject(final InternalFactHandle handle,
-                              final PropagationContext context,
-                              final ObjectTypeConf objectTypeConf,
-                              final ReteEvaluator reteEvaluator) {
+    public void retractObject(InternalFactHandle handle, PropagationContext context,
+                              ObjectTypeConf objectTypeConf, ReteEvaluator reteEvaluator) {
         if ( log.isTraceEnabled() ) {
             log.trace( "Delete {}", handle.toString()  );
         }
 
         reteEvaluator.addPropagation(new PropagationEntry.Delete(this, handle, context, objectTypeConf));
+    }
+
+    public void immediateDeleteObject(InternalFactHandle handle, PropagationContext context,
+                                      ObjectTypeConf objectTypeConf, ReteEvaluator reteEvaluator) {
+        if ( log.isTraceEnabled() ) {
+            log.trace( "Delete {}", handle.toString()  );
+        }
+
+        PropagationEntry.Delete.execute(reteEvaluator, this, handle, context, objectTypeConf);
     }
 
     public void propagateRetract(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, ReteEvaluator reteEvaluator) {
