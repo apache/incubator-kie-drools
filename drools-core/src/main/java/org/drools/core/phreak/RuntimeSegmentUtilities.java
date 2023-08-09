@@ -15,21 +15,20 @@
 
 package org.drools.core.phreak;
 
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.constraint.QueryNameConstraint;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSinkPropagator;
 import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectSink;
-import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathMemory;
@@ -37,7 +36,6 @@ import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
-import org.drools.base.rule.constraint.QueryNameConstraint;
 
 import static org.drools.core.phreak.EagerPhreakBuilder.isInsideSubnetwork;
 
@@ -64,7 +62,7 @@ public class RuntimeSegmentUtilities {
 
         smem = restoreSegmentFromPrototype(reteEvaluator, segmentRoot);
         if ( smem != null ) {
-            if (NodeTypeEnums.isBetaNode(segmentRoot) && ((BetaNode) segmentRoot).isRightInputIsRiaNode()) {
+            if (NodeTypeEnums.isBetaNode(segmentRoot) && segmentRoot.isRightInputIsRiaNode()) {
                 createRiaSegmentMemory((BetaNode) segmentRoot, reteEvaluator);
             }
             return smem;
@@ -103,8 +101,9 @@ public class RuntimeSegmentUtilities {
         return smem;
     }
 
-    public static SegmentMemory getQuerySegmentMemory(ReteEvaluator reteEvaluator, LeftTupleSource segmentRoot, QueryElementNode queryNode) {
-        LeftInputAdapterNode liaNode = getQueryLiaNode(queryNode.getQueryElement().getQueryName(), getQueryOtn(segmentRoot));
+    public static SegmentMemory getQuerySegmentMemory(ReteEvaluator reteEvaluator, QueryElementNode queryNode) {
+        ObjectTypeNode queryOtn = reteEvaluator.getDefaultEntryPoint().getEntryPointNode().getQueryNode();
+        LeftInputAdapterNode liaNode = getQueryLiaNode(queryNode.getQueryElement().getQueryName(), queryOtn);
         LiaNodeMemory liam = reteEvaluator.getNodeMemory(liaNode);
         SegmentMemory querySmem = liam.getSegmentMemory();
         if (querySmem == null) {
@@ -204,20 +203,6 @@ public class RuntimeSegmentUtilities {
                 }
             }
         }
-    }
-
-    private static ObjectTypeNode getQueryOtn(LeftTupleSource lts) {
-        while (!(lts instanceof LeftInputAdapterNode)) {
-            lts = lts.getLeftTupleSource();
-        }
-
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) lts;
-        ObjectSource os = liaNode.getObjectSource();
-        while (!(os instanceof EntryPointNode)) {
-            os = os.getParentObjectSource();
-        }
-
-        return ((EntryPointNode) os).getQueryNode();
     }
 
     private static LeftInputAdapterNode getQueryLiaNode(String queryName, ObjectTypeNode queryOtn) {
