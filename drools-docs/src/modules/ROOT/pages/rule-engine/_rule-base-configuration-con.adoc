@@ -39,34 +39,39 @@ KieBase kieBase = kieContainer.newKieBase(kieBaseConf);
 ----
 --
 
-drools.multithreadEvaluation::
-When enabled, this system property enables the {RULE_ENGINE} to evaluate rules in parallel by dividing the Phreak rule network into independent partitions. You can use this property to increase the speed of rule evaluation for specific rule bases.
+drools.parallelExecution::
+When in use, this system property allows the {RULE_ENGINE} to only evaluate or both evaluate and execute rules in parallel by dividing the Phreak rule network into independent partitions. You can use this property to increase the speed of rule evaluation for specific rule bases. This option has 3 possible values:
+
+* `sequential` : evaluates and executes all rules sequentially
+* `parallel_evaluation` : evaluates rules in parallel but fires consequence sequentially respecting the semantic imposed by salience and agenda-groups.
+* `fully_parallel` : evaluates and executes everything in parallel
+
 +
 --
-Default value: `false`
+Default value: `sequential`
 
-You can enable multithreaded evaluation using one of the following options:
+You can enable parallel evaluation using one of the following options:
 
-* Enable the multithreaded evaluation system property:
+* Enable the parallel evaluation system property:
 +
 [source]
 ----
-drools.multithreadEvaluation=true
+drools.parallelExecution=fully_parallel
 ----
 
-* Enable multithreaded evaluation while creating the KIE base programmatically:
+* Enable parallel evaluation while creating the KIE base programmatically:
 +
 [source,java]
 ----
 KieServices ks = KieServices.Factory.get();
 KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration();
-kieBaseConf.setOption(MultithreadEvaluationOption.YES);
+kieBaseConf.setOption(ParallelExecutionOption.FULLY_PARALLEL);
 KieBase kieBase = kieContainer.newKieBase(kieBaseConf);
 ----
 
 [WARNING]
 ====
-Rules that use queries, salience, or agenda groups are currently not supported by the parallel {RULE_ENGINE}. If these rule elements are present in the KIE base, the compiler emits a warning and automatically switches back to single-threaded evaluation. However, in some cases, the {RULE_ENGINE} might not detect the unsupported rule elements and rules might be evaluated incorrectly. For example, the {RULE_ENGINE} might not detect when rules rely on implicit salience given by rule ordering inside the DRL file, resulting in incorrect evaluation due to the unsupported salience attribute.
+In `fully_parallel` mode rules that use queries, salience, or agenda groups are currently not supported by the parallel {RULE_ENGINE}. If these rule elements are present in the KIE base, the compiler emits a warning and automatically switches back to a single-threaded evaluation. However, in some cases, the {RULE_ENGINE} might not detect the unsupported rule elements and rules might be evaluated incorrectly. For example, the {RULE_ENGINE} might not detect when rules rely on implicit salience given by rule ordering inside the DRL file, resulting in incorrect evaluation due to the unsupported salience attribute.
 ====
 --
 
