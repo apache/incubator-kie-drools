@@ -14,10 +14,6 @@
 
 package org.drools.modelcompiler.constraints;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.AccumulateContextEntry;
 import org.drools.base.reteoo.BaseTuple;
@@ -25,13 +21,17 @@ import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.Accumulator;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.index.TupleList;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.FunctionN;
 import org.kie.api.runtime.rule.FactHandle;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 
 public class LambdaGroupByAccumulate extends Accumulate {
@@ -108,7 +108,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
     public Object accumulate(Object workingMemoryContext, Object context,
                              BaseTuple match, FactHandle handle, ValueResolver valueResolver) {
         GroupByContext groupByContext = ( GroupByContext ) context;
-        AbstractLeftTuple leftTupleMatch = (AbstractLeftTuple) match;
+        LeftTuple leftTupleMatch = (LeftTuple) match;
         TupleList<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, innerAccumulate,
                                                                               leftTupleMatch, getKey(leftTupleMatch, handle, (ReteEvaluator) valueResolver), (ReteEvaluator) valueResolver);
 
@@ -126,7 +126,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
     @Override
     public boolean tryReverse(Object workingMemoryContext, Object context, BaseTuple leftTuple, FactHandle handle,
                               BaseTuple match, ValueResolver valueResolver) {
-        Tuple tupleMatch = (AbstractLeftTuple) match;
+        LeftTuple tupleMatch = (LeftTuple) match;
         TupleList<AccumulateContextEntry> memory = tupleMatch.getMemory();
         AccumulateContextEntry entry = memory.getContext();
         boolean reversed = innerAccumulate.tryReverse(workingMemoryContext, entry, leftTuple, handle, match, valueResolver);
