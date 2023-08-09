@@ -1,36 +1,21 @@
 import org.jenkinsci.plugins.workflow.libs.Library
 @Library('jenkins-pipeline-shared-libraries')_
 
-import org.kie.jenkins.MavenCommand
-
 deployProperties = [:]
 pipelineProperties = [:]
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && !built-in'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        label 'rhel8 && !built-in'
     }
 
     options {
         timestamps()
-        timeout(time: 180, unit: 'MINUTES')
+        timeout(time: 60, unit: 'MINUTES')
     }
 
-    // parameters {
-    // For parameters, check into ./dsl/jobs.groovy file
-    // }
-
     environment {
-        // Static env is defined into ./dsl/jobs.groovy file
-
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
-
-        PR_BRANCH_HASH = "${util.generateHash(10)}"
 
         NODE_OPTIONS = '--max_old_space_size=4096'
     }
@@ -47,59 +32,34 @@ pipeline {
 
                     readDeployProperties()
 
-                    if (isRelease()) {
-                        // Verify version is set and if on right release branch
-                        assert getProjectVersion()
-
-                        assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
-                    }
-
-                    setupCypressEnv('9.7.0')
+                    assert getProjectVersion()
+                    assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                 }
             }
         }
+
         stage('Merge deploy PR and tag') {
-            when {
-                expression { return isRelease() }
-            }
             steps {
                 script {
                     dir(getRepoName()) {
                         checkoutRepo()
                         mergeAndPush(getDeployPrLink())
                         tagLatest()
-                        if(githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
-                            githubscm.deleteRelease(getGitTag(), getGitAuthorCredsID())
-                        }
-                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTag(getGitTag()), getGitAuthorCredsID())
-                        githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
                     }
                 }
             }
         }
-        stage('Set apps next snapshot version') {
-            when {
-                expression { return isRelease() }
-            }
+
+        stage('Create release') {
             steps {
                 script {
-                    dir('pr') {
-                        checkoutRepo()
-                        githubscm.createBranch(getSnapshotBranch())
-
-                        maven.mvnVersionsUpdateParentAndChildModules(getMavenCommand(), getSnapshotVersion(), true)
-
-                        commitAndCreatePR()
-                    }
                     dir(getRepoName()) {
-                        sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush(getPipelinePrLink())
-
-                        if (shouldDeployToRepository()) {
-                            runMavenDeploy()
-                        } else {
-                            echo 'Testing environment and no specific deploy repository given => no deployment'
+                        checkoutRepo()
+                        if (githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
+                            githubscm.deleteRelease(getGitTag(), getGitAuthorCredsID())
                         }
+                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTag(getGitTag()), getGitAuthorCredsID())
+                        githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
                     }
                 }
             }
@@ -122,12 +82,6 @@ void sendNotification() {
         mailer.sendMarkdownTestSummaryNotification('Promote', "[${getBuildBranch()}] Kogito Apps", [env.KOGITO_CI_EMAIL_TO])
     } else {
         echo 'No notification sent per configuration'
-    }
-}
-
-void setupCypressEnv(String cypressVersion) {
-    if (env.CYPRESS_BINARY_URL) {
-        env.CYPRESS_INSTALL_BINARY = "${CYPRESS_BINARY_URL}/cypress-${cypressVersion}.zip"
     }
 }
 
@@ -170,24 +124,12 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
 // Getter / Setter
 //////////////////////////////////////////////////////////////////////////////
 
-boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'kiegroup'
-}
-
-boolean isRelease() {
-    return env.RELEASE ? env.RELEASE.toBoolean() : false
-}
-
 String getRepoName() {
     return env.REPO_NAME
 }
 
 String getProjectVersion() {
     return getParamOrDeployProperty('PROJECT_VERSION', 'project.version')
-}
-
-String getSnapshotVersion() {
-    return util.getNextVersion(getProjectVersion(), 'micro')
 }
 
 String getGitTag() {
@@ -208,18 +150,6 @@ String getGitAuthorCredsID() {
 
 String getDeployPrLink() {
     return getDeployProperty("${getRepoName()}.pr.link")
-}
-
-String getPipelinePrLink() {
-    return pipelineProperties["${getRepoName()}.pr.link"]
-}
-
-void setPipelinePrLink(String value) {
-    pipelineProperties["${getRepoName()}.pr.link"] = value
-}
-
-String getSnapshotBranch() {
-    return "${getSnapshotVersion().toLowerCase()}-${env.PR_BRANCH_HASH}"
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -244,30 +174,4 @@ void tagLatest() {
     if (getGitTag()) {
         githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorCredsID(), env.BUILD_TAG, true)
     }
-}
-
-void commitAndCreatePR() {
-    def commitMsg = "[${getBuildBranch()}] Update version to ${getSnapshotVersion()}"
-    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it should be merged automatically after testing."
-
-    githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
-    githubscm.pushObject('origin', getSnapshotBranch(), getGitAuthorCredsID())
-    setPipelinePrLink(githubscm.createPR(commitMsg, prBody, getBuildBranch(), getGitAuthorCredsID()))
-}
-
-MavenCommand getMavenCommand() {
-    mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
-                    .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
-    if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
-        mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
-    }
-    return mvnCmd
-}
-
-void runMavenDeploy() {
-    mvnCmd = getMavenCommand()
-    if (env.MAVEN_DEPLOY_REPOSITORY) {
-        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
-    }
-    mvnCmd.skipTests(true).run('clean deploy')
 }
