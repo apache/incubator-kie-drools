@@ -34,7 +34,7 @@ import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class RuleTerminalNodeLeftTuple extends AbstractLeftTuple implements InternalMatch {
+public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatch {
     private static final long serialVersionUID = 540l;
     /**
      * The salience

@@ -274,8 +274,8 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
     }
 
     @Override
-    public InternalFactHandle createAccumulateHandle( EntryPointId entryPointId, ReteEvaluator reteEvaluator,
-                                                      LeftTuple leftTuple, Object result, int nodeId) {
+    public InternalFactHandle createAccumulateHandle(EntryPointId entryPointId, ReteEvaluator reteEvaluator,
+                                                     LeftTuple leftTuple, Object result, int nodeId) {
         InternalFactHandle handle = null;
         ProtobufMessages.FactHandle _handle = null;
         Map<TupleKey, ProtobufMessages.FactHandle> map = (Map<TupleKey, ProtobufMessages.FactHandle>) getNodeMemories().get( nodeId );

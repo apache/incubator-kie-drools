@@ -29,12 +29,12 @@ import org.drools.base.rule.ContextEntry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.FastIterator;
 
-public class NotNodeLeftTuple extends AbstractLeftTuple {
+public class NotNodeLeftTuple extends LeftTuple {
     private static final long serialVersionUID = 540l;
 
     private RightTuple blocker;
-    private LeftTuple  blockedPrevious;
-    private LeftTuple  blockedNext;
+    private LeftTuple blockedPrevious;
+    private LeftTuple blockedNext;
 
     public NotNodeLeftTuple() {
         // constructor needed for serialisation

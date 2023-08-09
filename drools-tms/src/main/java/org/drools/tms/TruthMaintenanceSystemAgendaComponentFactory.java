@@ -26,7 +26,6 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.reteoo.Tuple;
 import org.drools.tms.agenda.TruthMaintenanceSystemRuleTerminalNodeLeftTuple;
 
 public class TruthMaintenanceSystemAgendaComponentFactory implements AgendaComponentFactory {

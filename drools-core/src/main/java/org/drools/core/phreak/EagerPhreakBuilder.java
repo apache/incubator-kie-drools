@@ -1151,7 +1151,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
     private static void visitChild(LeftTuple lt, boolean insert, InternalWorkingMemory wm, TerminalNode tn) {
         LeftTuple prevLt = null;
-        LeftTupleSinkNode sink = lt.getTupleSink();
+        LeftTupleSinkNode sink = (LeftTupleSinkNode) lt.getTupleSink();
 
         for ( ; sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             if ( lt != null ) {
@@ -1190,10 +1190,10 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void insertPeerRightTuple( LeftTuple lt, InternalWorkingMemory wm, TerminalNode tn, boolean insert ) {
+    private static void insertPeerRightTuple(LeftTuple lt, InternalWorkingMemory wm, TerminalNode tn, boolean insert ) {
         // There's a shared RightInputAdapterNode, so check if one of its sinks is associated only to the new rule
         LeftTuple prevLt = null;
-        RightInputAdapterNode rian = lt.getTupleSink();
+        RightInputAdapterNode rian = (RightInputAdapterNode) lt.getTupleSink();
 
         for (ObjectSink sink : rian.getObjectSinkPropagator().getSinks()) {
             if (lt != null) {
@@ -1304,7 +1304,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             LeftTuple rightPrevious = removingLt.getRightParentPrevious();
             LeftTuple rightNext     = removingLt.getRightParentNext();
 
-            LeftTuple  leftParent  = removingLt.getLeftParent();
+            LeftTuple leftParent  = removingLt.getLeftParent();
             RightTuple rightParent = removingLt.getRightParent();
 
             // This tuple is the first peer and thus is linked into the left parent LT.

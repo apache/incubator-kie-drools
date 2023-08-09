@@ -329,7 +329,7 @@ public class Scenario {
         for ( LeftTuple expectedLeftTuple : leftTuples ) {
             FastIterator it = betaNode.getLeftIterator( ltm );
             Tuple actualLeftTuple = null;
-            for ( actualLeftTuple = BetaNode.getFirstTuple( ltm, it ); actualLeftTuple != null; actualLeftTuple = (LeftTuple) it.next( actualLeftTuple ) ) {
+            for ( actualLeftTuple = BetaNode.getFirstTuple( ltm, it ); actualLeftTuple != null; actualLeftTuple = (LeftTuple) it.next(actualLeftTuple ) ) {
                 if ( expectedLeftTuple.equals( actualLeftTuple ) ) {
                     length++;
                     break;

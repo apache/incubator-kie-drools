@@ -187,7 +187,7 @@ public class KnowledgeBuilderTest {
         workingMemory.setGlobal( "map",
                                  map );
 
-        final LeftTuple tuple = new MockTuple( new HashMap() );
+        final LeftTuple tuple = new MockTuple(new HashMap() );
         tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase, Collections.emptyList()) )  );
         final InternalMatch internalMatch = new MockInternalMatch(rule,
                                                                   0,
@@ -265,7 +265,7 @@ public class KnowledgeBuilderTest {
         workingMemory.setGlobal( "map",
                                  map );
 
-        final LeftTuple tuple = new MockTuple( new HashMap() );
+        final LeftTuple tuple = new MockTuple(new HashMap() );
         tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase, Collections.emptyList()) )  );
         final InternalMatch internalMatch = new MockInternalMatch(newRule,
                                                                   0,

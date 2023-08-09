@@ -21,12 +21,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MVELGroupByAccumulate extends Accumulate {
     private Accumulate innerAccumulate;

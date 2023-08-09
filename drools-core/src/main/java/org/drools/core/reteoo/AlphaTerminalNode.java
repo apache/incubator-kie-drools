@@ -42,7 +42,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
         for (int i = 0; i < sinks.length; i++) {
             TerminalNode rtn = ( TerminalNode ) sinks[i];
             RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, activationsManager, rtn, true );
-            LeftTuple leftTuple = rtn.createLeftTuple( factHandle, true );
+            LeftTuple leftTuple = rtn.createLeftTuple(factHandle, true );
             leftTuple.setPropagationContext( propagationContext );
 
             if ( rtn.getRule().getAutoFocus() && !agendaItem.getAgendaGroup().isActive() ) {
@@ -90,7 +90,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
         ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
         leftTuple.setPropagationContext( context );
-        TerminalNode rtn = leftTuple.getTupleSink();
+        TerminalNode rtn = (TerminalNode) leftTuple.getTupleSink();
         PhreakRuleTerminalNode.doLeftDelete( activationsManager, getRuleAgendaItem( reteEvaluator, activationsManager, rtn, false ).getRuleExecutor(), leftTuple );
     }
 

@@ -62,16 +62,16 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
             if ( !(objects[i] instanceof Pair) ) {
                 Object o1 = objects[i];
                 InternalFactHandle fh1 = wm.getFactHandle(o1);
-                LeftTuple leftTuple = new JoinNodeLeftTuple( fh1, sink, true );
+                LeftTuple leftTuple = new JoinNodeLeftTuple(fh1, sink, true );
                 leftTuples.addInsert( leftTuple );
             } else {
                 Pair p = (Pair )objects[i];
                 
                 InternalFactHandle fh1 = wm.getFactHandle(p.getO1());
-                LeftTuple leftTuple1 = new JoinNodeLeftTuple( fh1, sink, true );
+                LeftTuple leftTuple1 = new JoinNodeLeftTuple(fh1, sink, true );
                 
                 InternalFactHandle fh2 = wm.getFactHandle(p.getO2());
-                LeftTuple leftTuple2 = sink.createLeftTuple( leftTuple1, new RightTupleImpl( fh2 ), sink );
+                LeftTuple leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink );
 
                 leftTuples.addInsert( leftTuple2 );                
             }
@@ -90,16 +90,16 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
             if ( !(objects[i] instanceof Pair) ) {
                 Object o1 = objects[i];
                 InternalFactHandle fh1 = wm.getFactHandle(o1);
-                LeftTuple leftTuple = new JoinNodeLeftTuple( fh1, sink, true );
+                LeftTuple leftTuple = new JoinNodeLeftTuple(fh1, sink, true );
                 leftTuples.addDelete( leftTuple );
             } else {
                 Pair p = (Pair )objects[i];
                 
                 InternalFactHandle fh1 = wm.getFactHandle(p.getO1());
-                LeftTuple leftTuple1 = new JoinNodeLeftTuple( fh1, sink, true );
+                LeftTuple leftTuple1 = new JoinNodeLeftTuple(fh1, sink, true );
                 
                 InternalFactHandle fh2 = wm.getFactHandle(p.getO2());
-                LeftTuple leftTuple2 = sink.createLeftTuple( leftTuple1, new RightTupleImpl( fh2 ), sink );
+                LeftTuple leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink );
 
                 leftTuples.addDelete( leftTuple2 );                
             }
@@ -118,16 +118,16 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
             if ( !(objects[i] instanceof Pair) ) {
                 Object o1 = objects[i];
                 InternalFactHandle fh1 = wm.getFactHandle(o1);
-                LeftTuple leftTuple = new JoinNodeLeftTuple( fh1, sink, true );
+                LeftTuple leftTuple = new JoinNodeLeftTuple(fh1, sink, true );
                 leftTuples.addUpdate( leftTuple );
             } else {
                 Pair p = (Pair )objects[i];
                 
                 InternalFactHandle fh1 = wm.getFactHandle(p.getO1());
-                LeftTuple leftTuple1 = new JoinNodeLeftTuple( fh1, sink, true );
+                LeftTuple leftTuple1 = new JoinNodeLeftTuple(fh1, sink, true );
                 
                 InternalFactHandle fh2 = wm.getFactHandle(p.getO2());
-                LeftTuple leftTuple2 = sink.createLeftTuple( leftTuple1, new RightTupleImpl( fh2 ), sink );
+                LeftTuple leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink );
 
                 leftTuples.addUpdate( leftTuple2 );                
             }

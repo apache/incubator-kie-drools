@@ -735,7 +735,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         @Override
         public void internalExecute(ReteEvaluator reteEvaluator ) {
-            LeftInputAdapterNode lian = factHandle.getFirstLeftTuple().getTupleSource();
+            LeftInputAdapterNode lian = (LeftInputAdapterNode) factHandle.getFirstLeftTuple().getTupleSource();
             LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
             SegmentMemory lsmem = lmem.getSegmentMemory();
 

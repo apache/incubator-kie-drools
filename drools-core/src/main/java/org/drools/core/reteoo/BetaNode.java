@@ -405,7 +405,7 @@ public abstract class BetaNode extends LeftTupleSource
             return getStartTuple((SubnetworkTuple)rightTuple);
         } else {
             if ( this.indexedUnificationJoin ) {
-                return (LeftTuple) it.next( null );
+                return (LeftTuple) it.next(null );
             } else {
                 return (LeftTuple) memory.getFirst(rightTuple);
             }

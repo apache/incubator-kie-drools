@@ -379,10 +379,10 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    public TupleSets<LeftTuple> evalNode( PathMemory pmem, NetworkNode node, long bit, Memory nodeMem,
-                                   SegmentMemory[] smems, int smemIndex, ActivationsManager activationsManager, LinkedList<StackEntry> stack,
-                                   boolean processRian, RuleExecutor executor, TupleSets<LeftTuple> srcTuples, SegmentMemory smem,
-                                   TupleSets<LeftTuple> stagedLeftTuples, LeftTupleSinkNode sink ) {
+    public TupleSets<LeftTuple> evalNode(PathMemory pmem, NetworkNode node, long bit, Memory nodeMem,
+                                         SegmentMemory[] smems, int smemIndex, ActivationsManager activationsManager, LinkedList<StackEntry> stack,
+                                         boolean processRian, RuleExecutor executor, TupleSets<LeftTuple> srcTuples, SegmentMemory smem,
+                                         TupleSets<LeftTuple> stagedLeftTuples, LeftTupleSinkNode sink ) {
         TupleSets<LeftTuple> trgTuples = new TupleSetsImpl<>();
         if ( NodeTypeEnums.isBetaNode( node )) {
             boolean exitInnerEval = evalBetaNode(pmem, node, nodeMem, smems, smemIndex, trgTuples, activationsManager, stack, processRian, executor, srcTuples, stagedLeftTuples, sink);
@@ -757,8 +757,8 @@ public class RuleNetworkEvaluator {
     }
 
     public static void findLeftTupleBlocker(BetaNode betaNode, TupleMemory rtm,
-                                             ContextEntry[] contextEntry, BetaConstraints constraints,
-                                             LeftTuple leftTuple, boolean useLeftMemory) {
+                                            ContextEntry[] contextEntry, BetaConstraints constraints,
+                                            LeftTuple leftTuple, boolean useLeftMemory) {
         // This method will also remove rightTuples that are from subnetwork where no leftmemory use used
         FastIterator it = betaNode.getRightIterator(rtm);
         for (RightTuple rightTuple = betaNode.getFirstRightTuple(leftTuple, rtm, it); rightTuple != null; ) {
@@ -791,7 +791,7 @@ public class RuleNetworkEvaluator {
         deleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
     }
 
-    public static void deleteChildLeftTuple( LeftTuple childLeftTuple, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples ) {
+    public static void deleteChildLeftTuple(LeftTuple childLeftTuple, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples ) {
         if (childLeftTuple.isStagedOnRight()) {
             ( (SubnetworkTuple) childLeftTuple ).moveStagingFromRightToLeft();
         } else {
@@ -971,7 +971,7 @@ public class RuleNetworkEvaluator {
         return useLeftMemory;
     }
 
-    public static void normalizeStagedTuples( TupleSets<LeftTuple> stagedLeftTuples, LeftTuple childLeftTuple ) {
+    public static void normalizeStagedTuples(TupleSets<LeftTuple> stagedLeftTuples, LeftTuple childLeftTuple ) {
         if (!childLeftTuple.isStagedOnRight()) {
             switch ( childLeftTuple.getStagedType() ) {
                 // handle clash with already staged entries

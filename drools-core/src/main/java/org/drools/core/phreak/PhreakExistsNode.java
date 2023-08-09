@@ -158,9 +158,9 @@ public class PhreakExistsNode {
                                                   reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
 
-                for ( LeftTuple leftTuple = existsNode.getFirstLeftTuple( rightTuple, ltm, it ); leftTuple != null; ) {
+                for ( LeftTuple leftTuple = existsNode.getFirstLeftTuple(rightTuple, ltm, it ); leftTuple != null; ) {
                     // preserve next now, in case we remove this leftTuple
-                    LeftTuple temp = (LeftTuple) it.next( leftTuple );
+                    LeftTuple temp = (LeftTuple) it.next(leftTuple );
 
                     if ( leftTuple.getStagedType() == LeftTuple.UPDATE ) {
                         // ignore, as it will get processed via left iteration. Children cannot be processed twice
@@ -307,7 +307,7 @@ public class PhreakExistsNode {
             if ( ltm != null && ltm.size() > 0 ) {
                 FastIterator leftIt = existsNode.getLeftIterator( ltm );
 
-                LeftTuple firstLeftTuple = existsNode.getFirstLeftTuple( rightTuple, ltm, leftIt );
+                LeftTuple firstLeftTuple = existsNode.getFirstLeftTuple(rightTuple, ltm, leftIt );
 
                 constraints.updateFromFactHandle( contextEntry,
                                                   reteEvaluator,
@@ -317,7 +317,7 @@ public class PhreakExistsNode {
                 // first process non-blocked tuples, as we know only those ones are in the left memory.
                 for ( LeftTuple leftTuple = firstLeftTuple; leftTuple != null; ) {
                     // preserve next now, in case we remove this leftTuple
-                    LeftTuple temp = (LeftTuple) leftIt.next( leftTuple );
+                    LeftTuple temp = (LeftTuple) leftIt.next(leftTuple );
 
                     if ( leftTuple.getStagedType() == LeftTuple.UPDATE ) {
                         // ignore, as it will get processed via left iteration. Children cannot be processed twice
@@ -504,7 +504,7 @@ public class PhreakExistsNode {
         }
     }
 
-    private static void insertChildLeftTuple( LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, LeftTuple leftTuple, PropagationContext pctx, boolean useLeftMemory ) {
+    private static void insertChildLeftTuple(LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, LeftTuple leftTuple, PropagationContext pctx, boolean useLeftMemory ) {
         if (!leftTuple.isExpired()) {
             trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple, sink, pctx, useLeftMemory ) );
         }

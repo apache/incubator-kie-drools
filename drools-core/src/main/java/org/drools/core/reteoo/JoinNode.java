@@ -55,7 +55,7 @@ public class JoinNode extends BetaNode {
     
     public LeftTuple createPeer(LeftTuple original) {
         JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
-        peer.initPeer((AbstractLeftTuple) original, this);
+        peer.initPeer(original, this);
         original.setPeer( peer );
         return peer;
     }

@@ -49,7 +49,7 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
     }
 
 
-    public ReactiveFromNodeLeftTuple( InternalFactHandle factHandle, LeftTuple leftTuple, Sink sink ) {
+    public ReactiveFromNodeLeftTuple(InternalFactHandle factHandle, LeftTuple leftTuple, Sink sink ) {
         super(factHandle, leftTuple, sink);
         storeTupleObjects(leftTuple, factHandle);
     }
@@ -70,7 +70,7 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
     }
 
     @Override
-    public void initPeer(AbstractLeftTuple original, LeftTupleSink sink) {
+    public void initPeer(LeftTuple original, LeftTupleSink sink) {
         super.initPeer( original, sink );
         if ( original instanceof ReactiveFromNodeLeftTuple ) {
             ReactiveFromNodeLeftTuple reactiveTuple = ( (ReactiveFromNodeLeftTuple) original );

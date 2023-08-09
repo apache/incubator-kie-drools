@@ -139,7 +139,7 @@ public class SegmentPropagator {
         }
     }
 
-    private static void processPeerDeletes( LeftTuple leftTuple, SegmentMemory firstSmem ) {
+    private static void processPeerDeletes(LeftTuple leftTuple, SegmentMemory firstSmem ) {
         for (; leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
             SegmentMemory smem = firstSmem.getNext();
             if ( smem != null ) {

@@ -112,7 +112,7 @@ public class PhreakBranchNode {
 
             RuleTerminalNode oldRtn = null;
             if (branchTuples.rtnLeftTuple != null) {
-                oldRtn = branchTuples.rtnLeftTuple.getTupleSink();
+                oldRtn = (RuleTerminalNode) branchTuples.rtnLeftTuple.getTupleSink();
             }
 
             ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, activationsManager.getReteEvaluator(), cbm.context);

@@ -92,9 +92,9 @@ public class PhreakAsyncSendNode {
         betaConstraints.resetTuple(context);
     }
 
-    private void fetchAndSendResults( AsyncSendNode node, AsyncSendMemory memory, ReteEvaluator reteEvaluator,
-                                      ContextEntry[] context, BetaConstraints betaConstraints, AlphaNodeFieldConstraint[] alphaConstraints,
-                                      DataProvider dataProvider, Class<?> resultClass, LeftTuple leftTuple, PropagationContext propagationContext ) {
+    private void fetchAndSendResults(AsyncSendNode node, AsyncSendMemory memory, ReteEvaluator reteEvaluator,
+                                     ContextEntry[] context, BetaConstraints betaConstraints, AlphaNodeFieldConstraint[] alphaConstraints,
+                                     DataProvider dataProvider, Class<?> resultClass, LeftTuple leftTuple, PropagationContext propagationContext ) {
         for (final java.util.Iterator<?> it = dataProvider.getResults(leftTuple,
                                                                       reteEvaluator,
                                                                       memory.providerContext); it.hasNext(); ) {

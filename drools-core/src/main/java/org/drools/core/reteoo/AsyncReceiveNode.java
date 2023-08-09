@@ -171,9 +171,9 @@ public class AsyncReceiveNode extends LeftTupleSource
     }
 
     @Override
-    public LeftTuple createPeer( LeftTuple original ) {
+    public LeftTuple createPeer(LeftTuple original ) {
         EvalNodeLeftTuple peer = new EvalNodeLeftTuple();
-        peer.initPeer((AbstractLeftTuple) original, this);
+        peer.initPeer(original, this);
         original.setPeer( peer );
         return peer;
     }
@@ -231,34 +231,34 @@ public class AsyncReceiveNode extends LeftTupleSource
         return NodeTypeEnums.AsyncReceiveNode;
     }
 
-    public LeftTuple createLeftTuple( InternalFactHandle factHandle,
-                                      boolean leftTupleMemoryEnabled ) {
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     boolean leftTupleMemoryEnabled ) {
         return new EvalNodeLeftTuple( factHandle, this, leftTupleMemoryEnabled );
     }
 
-    public LeftTuple createLeftTuple( final InternalFactHandle factHandle,
-                                      final LeftTuple leftTuple,
-                                      final Sink sink ) {
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
+                                     final Sink sink ) {
         return new EvalNodeLeftTuple( factHandle, leftTuple, sink );
     }
 
     @Override
-    public LeftTuple createLeftTuple( LeftTuple leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
+    public LeftTuple createLeftTuple(LeftTuple leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
         return new EvalNodeLeftTuple(leftTuple, sink, pctx, leftTupleMemoryEnabled);
     }
 
-    public LeftTuple createLeftTuple( LeftTuple leftTuple,
-                                      RightTuple rightTuple,
-                                      Sink sink ) {
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     Sink sink ) {
         return new EvalNodeLeftTuple( leftTuple, rightTuple, sink );
     }
 
-    public LeftTuple createLeftTuple( LeftTuple leftTuple,
-                                      RightTuple rightTuple,
-                                      LeftTuple currentLeftChild,
-                                      LeftTuple currentRightChild,
-                                      Sink sink,
-                                      boolean leftTupleMemoryEnabled ) {
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     Sink sink,
+                                     boolean leftTupleMemoryEnabled ) {
         return new EvalNodeLeftTuple( leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }
 

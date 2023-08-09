@@ -73,8 +73,8 @@ public class MockBetaNode extends BetaNode {
                                  ReteEvaluator reteEvaluator) {
     }
 
-    public LeftTuple createLeftTuple( InternalFactHandle factHandle,
-                                      boolean leftTupleMemoryEnabled) {
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
     }    
     

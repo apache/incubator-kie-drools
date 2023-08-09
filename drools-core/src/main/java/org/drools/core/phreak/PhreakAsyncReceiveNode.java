@@ -70,7 +70,7 @@ public class PhreakAsyncReceiveNode {
         ContextEntry[] context = betaConstraints.createContext();
 
         TupleList leftTuples = memory.getInsertOrUpdateLeftTuples();
-        for ( LeftTuple leftTuple = (LeftTuple) leftTuples.getFirst(); leftTuple != null; leftTuple = ( LeftTuple ) leftTuple.getNext() ) {
+        for ( LeftTuple leftTuple = (LeftTuple) leftTuples.getFirst(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
 
             betaConstraints.updateFromTuple(context, reteEvaluator, leftTuple);
 
@@ -78,7 +78,7 @@ public class PhreakAsyncReceiveNode {
                 InternalFactHandle factHandle = reteEvaluator.getFactHandleFactory().newFactHandle( message, node.getObjectTypeConf( reteEvaluator ), reteEvaluator, null );
                 if ( isAllowed( factHandle, node.getAlphaConstraints(), reteEvaluator ) ) {
                     if (betaConstraints.isAllowedCachedLeft(context, factHandle)) {
-                        LeftTuple childLeftTuple = sink.createLeftTuple( factHandle, leftTuple, sink );
+                        LeftTuple childLeftTuple = sink.createLeftTuple(factHandle, leftTuple, sink );
                         childLeftTuple.setPropagationContext( leftTuple.getPropagationContext() );
                         trgLeftTuples.addInsert( childLeftTuple );
                     }

@@ -36,14 +36,14 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
             entry = entry.getParent();
         }
 
-        QueryTerminalNode node = tuple.getTupleSink();
+        QueryTerminalNode node = (QueryTerminalNode) tuple.getTupleSink();
         this.results.add( new QueryRowWithSubruleIndex(handles, node.getSubruleIndex()) );
     }
 
-    public void rowRemoved( RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
+    public void rowRemoved(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
     }
 
-    public void rowUpdated( RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
+    public void rowUpdated(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
     }
 
 }

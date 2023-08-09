@@ -70,14 +70,14 @@ public class ModifyPreviousTuples {
     }
 
     public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, LeftTuple leftTuple) {
-        LeftInputAdapterNode liaNode = leftTuple.getTupleSource();
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getTupleSource();
         LeftInputAdapterNode.LiaNodeMemory lm = reteEvaluator.getNodeMemory( liaNode );
         SegmentMemory sm = lm.getSegmentMemory();
         if (sm != null) {
             LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, sm, reteEvaluator, liaNode, true, lm );
         } else {
             ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
-            TerminalNode rtn = leftTuple.getTupleSink();
+            TerminalNode rtn = (TerminalNode) leftTuple.getTupleSink();
             PathMemory pathMemory = reteEvaluator.getNodeMemory( rtn );
             PhreakRuleTerminalNode.doLeftDelete(activationsManager, pathMemory.getRuleAgendaItem().getRuleExecutor(), leftTuple);
         }

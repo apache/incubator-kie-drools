@@ -20,7 +20,6 @@ import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.reteoo.AbstractLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
@@ -122,9 +121,9 @@ public interface InternalFactHandle
     boolean isPendingRemoveFromStore();
 
     void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer );
-    void forEachLeftTuple(Consumer<AbstractLeftTuple> leftTupleConsumer);
+    void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer);
 
-    LeftTuple findFirstLeftTuple(Predicate<AbstractLeftTuple> lefttTuplePredicate );
+    LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate );
 
     LinkedTuples detachLinkedTuples();
     LinkedTuples detachLinkedTuplesForPartition(int i);
@@ -158,10 +157,10 @@ public interface InternalFactHandle
 
         void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer);
 
-        void forEachLeftTuple(Consumer<AbstractLeftTuple> leftTupleConsumer);
-        AbstractLeftTuple findFirstLeftTuple(Predicate<AbstractLeftTuple> leftTuplePredicate );
+        void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer);
+        LeftTuple findFirstLeftTuple(Predicate<LeftTuple> leftTuplePredicate );
 
-        LeftTuple getFirstLeftTuple( int partition);
+        LeftTuple getFirstLeftTuple(int partition);
 
         default LeftTuple getFirstLeftTuple(RuleBasePartitionId partitionId) {
             return getFirstLeftTuple( partitionId.getParallelEvaluationSlot() );
@@ -382,12 +381,12 @@ public interface InternalFactHandle
         }
 
         @Override
-        public void forEachLeftTuple( Consumer<AbstractLeftTuple> leftTupleConsumer ) {
+        public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer ) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public LeftTuple findFirstLeftTuple( Predicate<AbstractLeftTuple> lefttTuplePredicate ) {
+        public LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate ) {
             throw new UnsupportedOperationException();
         }
 

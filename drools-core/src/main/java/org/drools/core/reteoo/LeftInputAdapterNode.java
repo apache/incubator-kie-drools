@@ -194,7 +194,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink();
-        LeftTuple leftTuple = sink.createLeftTuple( factHandle, useLeftMemory );
+        LeftTuple leftTuple = sink.createLeftTuple(factHandle, useLeftMemory );
         leftTuple.setPropagationContext( context );
 
         if ( sm.getRootNode() == liaNode ) {
@@ -343,8 +343,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    private static void doUpdateSegmentMemory( LeftTuple leftTuple, PropagationContext pctx, ReteEvaluator reteEvaluator, boolean linkOrNotify,
-                                               final LiaNodeMemory lm, SegmentMemory sm, boolean streamMode ) {
+    private static void doUpdateSegmentMemory(LeftTuple leftTuple, PropagationContext pctx, ReteEvaluator reteEvaluator, boolean linkOrNotify,
+                                              final LiaNodeMemory lm, SegmentMemory sm, boolean streamMode ) {
         leftTuple.setPropagationContext( pctx );
         TupleSets<LeftTuple> leftTuples = sm.getStagedLeftTuples();
 
@@ -397,7 +397,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             modifyPreviousTuples.removeLeftTuple(partitionId);
             leftTuple.reAdd();
             if ( context.getModificationMask().intersects( mask) ) {
-                doUpdateObject(leftTuple, context, reteEvaluator, leftTuple.getTupleSource(), true, lm, lm.getOrCreateSegmentMemory(this, reteEvaluator ) );
+                doUpdateObject(leftTuple, context, reteEvaluator, (LeftInputAdapterNode) leftTuple.getTupleSource(), true, lm, lm.getOrCreateSegmentMemory(this, reteEvaluator ) );
                 if (leftTuple instanceof InternalMatch) {
                     ((InternalMatch)leftTuple).setActive(true);
                 }

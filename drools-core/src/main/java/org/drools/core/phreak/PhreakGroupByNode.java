@@ -104,7 +104,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                 for (LeftTuple childMatch = (LeftTuple) tupleList.getFirst(); childMatch != null; childMatch = (LeftTuple) childMatch.getNext()) {
                     RightTuple         rightTuple  = childMatch.getRightParent();
                     FactHandle childHandle = rightTuple.getFactHandle();
-                    LeftTuple          tuple       = leftTuple;
+                    LeftTuple tuple       = leftTuple;
                     if (accNode.isRightInputIsRiaNode()) {
                         // if there is a subnetwork, handle must be unwrapped
                         tuple = (LeftTuple) rightTuple;
@@ -133,7 +133,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
     }
 
     @Override
-    protected void propagateDelete( TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, Object accctx ) {
+    protected void propagateDelete(TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, Object accctx ) {
         GroupByContext groupByContext = (GroupByContext)accctx;
         for ( TupleList<AccumulateContextEntry> tupleList : groupByContext.getGroups().values()) {
             super.propagateDelete(trgLeftTuples, stagedLeftTuples, tupleList.getContext());

@@ -22,7 +22,7 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.common.PropagationContext;
 
 public class LeftTupleEntry implements TupleEntry {
-    private final LeftTuple          lt;
+    private final LeftTuple lt;
     private final PropagationContext pctx;
     private final Memory             nodeMemory;
     private final int                propagationType;
