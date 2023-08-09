@@ -31,7 +31,7 @@ import java.io.Serializable;
  * Is able to return the <code>FactHandleImpl</code> members of the partial match for the requested pattern.
  * The pattern refers to the index position of the <code>FactHandleImpl</code> in the underlying implementation.
  */
-public interface Tuple extends BaseTuple, Serializable, Entry<Tuple> {
+public interface Tuple extends BaseTuple, Serializable, Entry<AbstractTuple> {
 
     short NONE   = 0;
     short INSERT = 1;
