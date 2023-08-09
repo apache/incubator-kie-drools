@@ -1,5 +1,5 @@
 diff --git a/.ci/buildchain-config.yaml b/.ci/buildchain-config.yaml
-index 497197ebff..cbb18b4fd3 100644
+index 6d2cbb3b8b..a31edb288d 100644
 --- a/.ci/buildchain-config.yaml
 +++ b/.ci/buildchain-config.yaml
 @@ -36,34 +36,34 @@ build:
@@ -10,16 +10,16 @@ index 497197ebff..cbb18b4fd3 100644
 -    build-command:
 -      current: |
 -        export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.KOGITO_RUNTIMES_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
--        mvn clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS }}
+-        mvn clean ${{ env.MVN_CMD }} -Dfull ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS }}
 -      upstream: |
--        mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM }}
+-        mvn clean install -Dquickly -Dfull ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM }}
 +  # - project: kiegroup/kogito-runtimes
 +  #   build-command:
 +  #     current: |
 +  #       export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.KOGITO_RUNTIMES_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
-+  #       mvn clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS }}
++  #       mvn clean ${{ env.MVN_CMD }} -Dfull ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS }}
 +  #     upstream: |
-+  #       mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM }}
++  #       mvn clean install -Dquickly -Dfull ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM }}
  
 -  - project: kiegroup/kogito-apps
 -    build-command: 
@@ -34,7 +34,7 @@ index 497197ebff..cbb18b4fd3 100644
 -        **/cypress/screenshots/**
 -        **/cypress/videos/**
 +  # - project: kiegroup/kogito-apps
-+  #   build-command:
++  #   build-command: 
 +  #     current: |
 +  #       export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.KOGITO_APPS_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
 +  #       mvn clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.KOGITO_APPS_BUILD_MVN_OPTS }}
@@ -169,10 +169,10 @@ index 31d0afcc93..e838342fb7 100644
 +  #       - kiegroup/kogito-apps
 +  #       - kiegroup/kogito-runtimes
 diff --git a/.ci/jenkins/dsl/jobs.groovy b/.ci/jenkins/dsl/jobs.groovy
-index 2af4898be3..97d33af4e8 100644
+index 22bf185da2..69005f41c0 100644
 --- a/.ci/jenkins/dsl/jobs.groovy
 +++ b/.ci/jenkins/dsl/jobs.groovy
-@@ -59,7 +59,7 @@ void createProjectSetupBranchJob() {
+@@ -70,7 +70,7 @@ void createProjectSetupBranchJob() {
  
  void setupProjectNightlyJob() {
      def jobParams = JobParamsUtils.getBasicJobParams(this, '0-nightly', JobType.NIGHTLY, "${jenkins_path_project}/Jenkinsfile.nightly", 'Drools Nightly')
@@ -181,7 +181,7 @@ index 2af4898be3..97d33af4e8 100644
      jobParams.env.putAll([
          JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
  
-@@ -119,7 +119,7 @@ void setupProjectPostReleaseJob() {
+@@ -135,7 +135,7 @@ void setupProjectPostReleaseJob() {
  ///////////////////////////////////////////////////////////////////////////////////////////
  
  Map getMultijobPRConfig(JenkinsFolder jobFolder) {
@@ -190,7 +190,7 @@ index 2af4898be3..97d33af4e8 100644
      def jobConfig = [
          parallel: true,
          buildchain: true,
-@@ -132,35 +132,35 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
+@@ -148,35 +148,35 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                      // As we have only Community edition
                      ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
                      // Setup full build if not prod profile
@@ -254,7 +254,7 @@ index 2af4898be3..97d33af4e8 100644
              ]
          ]
      ]
-@@ -186,17 +186,23 @@ Closure addFullProfileJobParamsGetter = { script ->
+@@ -202,17 +202,23 @@ Closure addFullProfileJobParamsGetter = { script ->
      return jobParams
  }
  
@@ -285,7 +285,7 @@ index 2af4898be3..97d33af4e8 100644
  // Quarkus 3 nightly is exported to Kogito pipelines for easier integration
  
  // Release jobs
-@@ -211,10 +217,10 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
+@@ -227,10 +233,10 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
  ])
  
  // Quarkus 3
