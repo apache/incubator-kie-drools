@@ -62,7 +62,7 @@ pipeline {
                         if(githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
                             githubscm.deleteRelease(getGitTag(), getGitAuthorCredsID())
                         }
-                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTag(getGitTag()), getGitAuthorCredsID())
+                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTagFromVersion(getGitTag()), getGitAuthorCredsID())
                         githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
                     }
                 }
