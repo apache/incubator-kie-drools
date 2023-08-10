@@ -1801,10 +1801,10 @@ index c5f6384f43..fea26fb7bc 100644
  import org.kie.api.runtime.rule.Match;
  
 diff --git a/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java b/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
-index 0559383b05..b35424e9f4 100644
+index e4c1626da6..695fef7405 100644
 --- a/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
-@@ -29,10 +29,10 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
+@@ -28,10 +28,10 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
  import org.drools.util.StringUtils;
  import org.kie.api.runtime.rule.FactHandle;
  
@@ -1820,10 +1820,10 @@ index 0559383b05..b35424e9f4 100644
  import java.util.function.Consumer;
  import java.util.function.Predicate;
 diff --git a/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java b/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
-index 4d77523f42..da5bef425f 100644
+index 66b3b705fe..2d3f55905d 100644
 --- a/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
-@@ -26,13 +26,13 @@ import org.drools.core.reteoo.RightTuple;
+@@ -25,13 +25,13 @@ import org.drools.core.reteoo.RightTuple;
  import org.drools.core.reteoo.Tuple;
  import org.kie.api.runtime.rule.FactHandle;
  
@@ -1858,10 +1858,10 @@ index 236d78023e..cb378ad082 100644
  @XmlRegistry
  public class ObjectFactory {
 diff --git a/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java b/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
-index 6a96edb408..cc399e13d5 100644
+index ea93460519..39743821eb 100644
 --- a/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
-@@ -24,9 +24,9 @@ import org.drools.core.reteoo.LeftTuple;
+@@ -23,9 +23,9 @@ import org.drools.core.reteoo.LeftTuple;
  import org.drools.core.reteoo.RightTuple;
  import org.drools.core.reteoo.Tuple;
  
