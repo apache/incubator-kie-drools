@@ -62,6 +62,7 @@ tags: [
   quarkus
 ]
 ---
+type: specs.openrewrite.org/v1beta/recipe
 recipeList:
 - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId: {
     oldGroupId: javax.activation,
@@ -449,7 +450,6 @@ recipeList:
 displayName: Update Managed Dependencies
 name: org.kie.ManagedDependencies
 description: Update all managed dependencies based on dependency updates from Quarkus.
-type: specs.openrewrite.org/v1beta/recipe
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.UpgradeQuarkiverse

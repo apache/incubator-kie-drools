@@ -3751,7 +3751,7 @@ index d6ea60277..29de2e09f 100644
  import static org.kie.kogito.jobs.service.messaging.BaseCallbackResource.CALLBACK_RESOURCE_PATH;
  
 diff --git a/jobs-service/kogito-addons-jobs-service/kogito-addons-quarkus-jobs-service-embedded/runtime/src/main/java/org/kie/kogito/addons/quarkus/jobs/service/embedded/stream/EventPublisherJobStreams.java b/jobs-service/kogito-addons-jobs-service/kogito-addons-quarkus-jobs-service-embedded/runtime/src/main/java/org/kie/kogito/addons/quarkus/jobs/service/embedded/stream/EventPublisherJobStreams.java
-index dc848c0fd..af4e685b7 100644
+index 3e64c6df7..09cc4b247 100644
 --- a/jobs-service/kogito-addons-jobs-service/kogito-addons-quarkus-jobs-service-embedded/runtime/src/main/java/org/kie/kogito/addons/quarkus/jobs/service/embedded/stream/EventPublisherJobStreams.java
 +++ b/jobs-service/kogito-addons-jobs-service/kogito-addons-quarkus-jobs-service-embedded/runtime/src/main/java/org/kie/kogito/addons/quarkus/jobs/service/embedded/stream/EventPublisherJobStreams.java
 @@ -16,9 +16,9 @@
