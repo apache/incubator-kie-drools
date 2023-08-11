@@ -75,7 +75,7 @@ void setupProjectNightlyJob() {
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
         GIT_BRANCH_NAME: "${GIT_BRANCH}",
-        
+
         DROOLS_STREAM: getDroolsStream(),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
@@ -177,6 +177,9 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
                 ],
+            ], [
+                id: 'kie-jpmml-integration',
+                repository: 'kie-jpmml-integration'
             ]
         ]
     ]

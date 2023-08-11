@@ -4,6 +4,7 @@ import org.jenkinsci.plugins.workflow.libs.Library
 
 // Deploy jobs
 DROOLS_DEPLOY = 'drools.build-and-deploy'
+KIE_JPMM_INTEGRATION_DEPLOY = 'kie-jpmml-integration.build-and-deploy'
 
 // Map of executed jobs
 // See https://javadoc.jenkins.io/plugin/workflow-support/org/jenkinsci/plugins/workflow/support/steps/build/RunWrapper.html
@@ -56,6 +57,22 @@ pipeline {
             post {
                 failure {
                     addFailedStage(DROOLS_DEPLOY)
+                }
+            }
+        }
+        stage('Build & Deploy KIE jpmml integration') {
+            steps {
+                script {
+                    def buildParams = getDefaultBuildParams()
+                    addSkipTestsParam(buildParams)
+                    addSkipIntegrationTestsParam(buildParams)
+
+                    buildJob(KIE_JPMM_INTEGRATION_DEPLOY, buildParams)
+                }
+            }
+            post {
+                failure {
+                    addFailedStage(KIE_JPMM_INTEGRATION_DEPLOY)
                 }
             }
         }
