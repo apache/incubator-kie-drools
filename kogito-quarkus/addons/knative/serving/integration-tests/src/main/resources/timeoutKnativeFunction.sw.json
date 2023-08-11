@@ -1,0 +1,31 @@
+{
+  "id": "timeoutKnativeFunction",
+  "version": "1.0",
+  "name": "Test Knative function",
+  "description": "This workflow tests a Knative function",
+  "start": "invokeFunction",
+  "functions": [
+    {
+      "name": "greet_with_timeout",
+      "type": "custom",
+      "operation": "knative:services.v1.serving.knative.dev/default/serverless-workflow-greeting-quarkus?path=/timeout"
+    }
+  ],
+  "states": [
+    {
+      "name": "invokeFunction",
+      "type": "operation",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "greet_with_timeout",
+            "arguments": {
+              "name": ".name"
+            }
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}

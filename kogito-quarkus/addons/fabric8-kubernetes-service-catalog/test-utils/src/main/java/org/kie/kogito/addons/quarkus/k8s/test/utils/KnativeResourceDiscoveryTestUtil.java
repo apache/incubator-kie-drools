@@ -32,7 +32,7 @@ public final class KnativeResourceDiscoveryTestUtil {
 
     @SuppressWarnings("deprecation") // Quarkus LTS 2.13 compatibility
     public static void createServiceIfNotExists(KubernetesServer k8sServer, String knativeYaml, String namespace, String serviceName, String remoteServiceUrl) {
-        if (k8sServer.getClient().services().inNamespace("test").withName(serviceName).get() == null) {
+        if (k8sServer.getClient().services().inNamespace(namespace).withName(serviceName).get() == null) {
             KnativeClient knativeClient = k8sServer.getClient().adapt(KnativeClient.class);
 
             Service service = knativeClient.services()

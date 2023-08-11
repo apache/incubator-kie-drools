@@ -17,6 +17,7 @@ package org.kogito.workitem.rest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -81,6 +82,8 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     public static final String PARAMS_DECORATOR = "ParamsDecorator";
     public static final String PATH_PARAM_RESOLVER = "PathParamResolver";
     public static final String AUTH_METHOD = "AuthMethod";
+
+    public static final String REQUEST_TIMEOUT_IN_MILLIS = "RequestTimeout";
 
     public static final int DEFAULT_PORT = 80;
     public static final int DEFAULT_SSL_PORT = 443;
@@ -174,12 +177,36 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         requestDecorators.forEach(d -> d.decorate(workItem, parameters, request));
         authDecorators.forEach(d -> d.decorate(workItem, parameters, request));
         paramsDecorator.decorate(workItem, parameters, request);
-        HttpResponse<Buffer> response = method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT) ? request.sendJsonAndAwait(bodyBuilder.apply(parameters)) : request.sendAndAwait();
+        Duration requestTimeout = getRequestTimeout(parameters);
+        HttpResponse<Buffer> response = method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT)
+                ? sendJson(request, bodyBuilder.apply(parameters), requestTimeout)
+                : send(request, requestTimeout);
         int statusCode = response.statusCode();
         if (statusCode < 200 || statusCode >= 300) {
             throw new WorkItemExecutionException(Integer.toString(statusCode), "Request for endpoint " + endPoint + " failed with message: " + response.statusMessage());
         }
         manager.completeWorkItem(workItem.getStringId(), Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo)));
+    }
+
+    private static HttpResponse<Buffer> sendJson(HttpRequest<Buffer> request, Object body, Duration requestTimeout) {
+        if (requestTimeout == null) {
+            return request.sendJsonAndAwait(body);
+        } else {
+            return request.sendJson(body).await().atMost(requestTimeout);
+        }
+    }
+
+    private static HttpResponse<Buffer> send(HttpRequest<Buffer> request, Duration requestTimeout) {
+        if (requestTimeout == null) {
+            return request.sendAndAwait();
+        } else {
+            return request.send().await().atMost(requestTimeout);
+        }
+    }
+
+    private static Duration getRequestTimeout(Map<String, Object> parameters) {
+        Long requestTimeoutInMillis = getParam(parameters, REQUEST_TIMEOUT_IN_MILLIS, Long.class, null);
+        return requestTimeoutInMillis == null ? null : Duration.ofMillis(requestTimeoutInMillis);
     }
 
     private Class<?> getTargetInfo(KogitoWorkItem workItem) {

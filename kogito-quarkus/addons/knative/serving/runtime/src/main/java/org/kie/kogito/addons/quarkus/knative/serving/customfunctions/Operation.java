@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-class Operation {
+public final class Operation {
 
     static final String CLOUD_EVENT_PARAMETER_NAME = "asCloudEvent";
 
@@ -37,19 +37,19 @@ class Operation {
         this.isCloudEvent = builder.isCloudEvent;
     }
 
-    String getService() {
+    public String getService() {
         return service;
     }
 
-    String getPath() {
+    public String getPath() {
         return path;
     }
 
-    boolean isCloudEvent() {
+    public boolean isCloudEvent() {
         return isCloudEvent;
     }
 
-    static Operation parse(String value) {
+    public static Operation parse(String value) {
         String[] parts = value.split("\\?", 2);
 
         String[] query = parts.length > 1 ? parts[1].split("&") : new String[0];
@@ -66,7 +66,7 @@ class Operation {
                 .build();
     }
 
-    static Builder builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -89,7 +89,7 @@ class Operation {
         return Objects.hash(service, path, isCloudEvent);
     }
 
-    static class Builder {
+    public static class Builder {
 
         private String service;
 
@@ -100,22 +100,22 @@ class Operation {
         private Builder() {
         }
 
-        Builder withService(String service) {
+        public Builder withService(String service) {
             this.service = service;
             return this;
         }
 
-        Builder withPath(String path) {
+        public Builder withPath(String path) {
             this.path = path;
             return this;
         }
 
-        Builder withIsCloudEvent(boolean isCloudEvent) {
+        public Builder withIsCloudEvent(boolean isCloudEvent) {
             this.isCloudEvent = isCloudEvent;
             return this;
         }
 
-        Operation build() {
+        public Operation build() {
             return new Operation(this);
         }
     }
