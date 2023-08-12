@@ -1318,10 +1318,10 @@ index 4153a39970..dd02bb5268 100644
  import org.eclipse.microprofile.health.HealthCheck;
  import org.eclipse.microprofile.health.HealthCheckResponse;
 diff --git a/quarkus/addons/knative/serving/runtime/pom.xml b/quarkus/addons/knative/serving/runtime/pom.xml
-index f57d7658ba..2661b409d8 100644
+index d5919b1d46..a6c31368b4 100644
 --- a/quarkus/addons/knative/serving/runtime/pom.xml
 +++ b/quarkus/addons/knative/serving/runtime/pom.xml
-@@ -81,7 +81,7 @@
+@@ -94,7 +94,7 @@
          <plugins>
              <plugin>
                  <groupId>io.quarkus</groupId>
@@ -1330,71 +1330,6 @@ index f57d7658ba..2661b409d8 100644
                  <version>${version.io.quarkus}</version>
                  <executions>
                      <execution>
-diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClient.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClient.java
-index 09d0df7cdf..29d493857c 100644
---- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClient.java
-+++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClient.java
-@@ -21,10 +21,10 @@ import java.util.HashMap;
- import java.util.Map;
- import java.util.Optional;
- 
--import javax.annotation.PreDestroy;
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
-+import jakarta.annotation.PreDestroy;
- import org.eclipse.microprofile.config.inject.ConfigProperty;
- import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
- import org.slf4j.Logger;
-diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java
-index adf00518c6..344fbcd995 100644
---- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java
-+++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunction.java
-@@ -18,9 +18,9 @@ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
- import java.net.URI;
- import java.util.Map;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.enterprise.inject.Instance;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.inject.Instance;
-+import jakarta.inject.Inject;
- 
- import org.kie.kogito.addons.k8s.resource.catalog.DefaultKubernetesServiceCatalogFactory;
- import org.kie.kogito.addons.k8s.resource.catalog.KubernetesProtocol;
-diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRequestClientResolver.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRequestClientResolver.java
-index 458a914716..da4c6009e3 100644
---- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRequestClientResolver.java
-+++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServiceRequestClientResolver.java
-@@ -15,8 +15,8 @@
-  */
- package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- @ApplicationScoped
- class KnativeServiceRequestClientResolver {
-diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandler.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandler.java
-index d1a65e0487..39f51e465e 100644
---- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandler.java
-+++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandler.java
-@@ -17,8 +17,8 @@ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
- 
- import java.util.Map;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
- import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
 diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandlerConfig.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandlerConfig.java
 index e78681c3b8..74ec97bc65 100644
 --- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandlerConfig.java
@@ -1413,50 +1348,21 @@ index e78681c3b8..74ec97bc65 100644
  import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
  
  @ApplicationScoped
-diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/PlainJsonKnativeServiceRequestClient.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/PlainJsonKnativeServiceRequestClient.java
-index 1cd2b07fba..6cab0cd0e0 100644
---- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/PlainJsonKnativeServiceRequestClient.java
-+++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/PlainJsonKnativeServiceRequestClient.java
-@@ -21,10 +21,10 @@ import java.util.List;
- import java.util.Map;
- import java.util.Optional;
+diff --git a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandlerProducer.java b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandlerProducer.java
+index 3e88d6676e..cdd89c7698 100644
+--- a/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandlerProducer.java
++++ b/quarkus/addons/knative/serving/runtime/src/main/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeWorkItemHandlerProducer.java
+@@ -15,8 +15,8 @@
+  */
+ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
  
--import javax.annotation.PreDestroy;
--import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Produces;
 -import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Produces;
 +import jakarta.inject.Inject;
  
-+import jakarta.annotation.PreDestroy;
- import org.eclipse.microprofile.config.inject.ConfigProperty;
- import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
- import org.slf4j.Logger;
-diff --git a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClientTest.java b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClientTest.java
-index 98e2c18678..6bcb3bd7ef 100644
---- a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClientTest.java
-+++ b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/CloudEventKnativeServiceRequestClientTest.java
-@@ -19,7 +19,7 @@ import java.net.URI;
- import java.util.HashMap;
- import java.util.Map;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import org.assertj.core.api.Assertions;
- import org.junit.jupiter.api.AfterAll;
-diff --git a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
-index 45344199c4..1971c08cb6 100644
---- a/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
-+++ b/quarkus/addons/knative/serving/runtime/src/test/java/org/kie/kogito/addons/quarkus/knative/serving/customfunctions/KnativeServerlessWorkflowCustomFunctionTest.java
-@@ -19,7 +19,7 @@ import java.time.Instant;
- import java.util.List;
- import java.util.Map;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import org.eclipse.microprofile.config.inject.ConfigProperty;
- import org.junit.jupiter.api.AfterAll;
+ import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalog;
+ import org.kogito.workitem.rest.RestWorkItemHandlerUtils;
 diff --git a/quarkus/addons/kubernetes/deployment/src/test/java/org/kie/kogito/addons/quarkus/kubernetes/KubernetesAddOnTest.java b/quarkus/addons/kubernetes/deployment/src/test/java/org/kie/kogito/addons/quarkus/kubernetes/KubernetesAddOnTest.java
 index e1549df41b..77a4491cbd 100644
 --- a/quarkus/addons/kubernetes/deployment/src/test/java/org/kie/kogito/addons/quarkus/kubernetes/KubernetesAddOnTest.java
