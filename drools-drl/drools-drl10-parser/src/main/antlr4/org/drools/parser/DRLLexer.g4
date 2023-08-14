@@ -30,11 +30,11 @@ import JavaLexer;
 DRL_UNIT : 'unit';
 DRL_FUNCTION : 'function';
 DRL_GLOBAL : 'global';
+DRL_DECLARE : 'declare';
 DRL_RULE : 'rule';
 DRL_QUERY : 'query';
 DRL_WHEN : 'when';
-DRL_THEN : 'then';
-DRL_END : 'end';
+DRL_THEN : 'then' -> pushMode(RHS);
 
 DRL_AND : 'and';
 DRL_OR : 'or';
@@ -114,3 +114,8 @@ fragment
 DrlUnicodeEscape
     :   '\\' 'u' HexDigit HexDigit HexDigit HexDigit
     ;
+
+mode RHS;
+RHS_WS : [ \t\r\n\u000C]+ -> channel(HIDDEN);
+DRL_END : 'end' [ \t]* ('\n' | '\r\n' | EOF) {setText("end");} -> popMode;
+RHS_CHUNK : ~[ \t\r\n\u000C]+ ;
