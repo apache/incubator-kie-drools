@@ -90,10 +90,6 @@ class DRLParserTest {
         assertThat((int) computeTokenIndex(parser, 2, 1)).isEqualTo(7);
         assertThat((int) computeTokenIndex(parser, 2, 6)).isEqualTo(7);
         assertThat((int) computeTokenIndex(parser, 2, 7)).isEqualTo(8);
-        assertThat((int) computeTokenIndex(parser, 9, 0)).isEqualTo(80);
-        assertThat((int) computeTokenIndex(parser, 9, 1)).isEqualTo(81);
-        assertThat((int) computeTokenIndex(parser, 9, 4)).isEqualTo(82);
-        assertThat((int) computeTokenIndex(parser, 9, 5)).isEqualTo(82);
-        assertThat((int) computeTokenIndex(parser, 10, 0)).isEqualTo(82);  // EOF
+        // Skip RHS token assertion as it is fluid part at the moment.
     }
 }

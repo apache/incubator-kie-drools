@@ -273,7 +273,7 @@ lhsNot : DRL_NOT lhsPatternBind ;
 
 rhs : DRL_THEN consequence ;
 
-consequence : drlRhsBlockStatement* ;
+consequence : RHS_CHUNK* ;
 
 stringId : ( IDENTIFIER | DRL_STRING_LITERAL ) ;
 
@@ -309,105 +309,10 @@ assignmentOperator : ASSIGN
 label : IDENTIFIER COLON ;
 unif : IDENTIFIER UNIFY ;
 
-/* extending JavaParser blockStatement */
-drlRhsBlockStatement
-    : drlLocalVariableDeclaration SEMI
-    | drlRhsStatement
-    | localTypeDeclaration
-    ;
-
-/* extending JavaParser localVariableDeclaration */
-drlLocalVariableDeclaration
-    : variableModifier* (typeType drlVariableDeclarators | VAR drlIdentifier ASSIGN drlExpression)
-    ;
-
-/* extending JavaParser variableDeclarators */
-drlVariableDeclarators
-    : drlVariableDeclarator (COMMA drlVariableDeclarator)*
-    ;
-
-/* extending JavaParser variableDeclarator */
-drlVariableDeclarator
-    : drlVariableDeclaratorId (ASSIGN drlVariableInitializer)?
-    ;
-
-/* extending JavaParser variableDeclaratorId */
-drlVariableDeclaratorId
-    : drlIdentifier (LBRACK RBRACK)*
-    ;
-
 /* extending JavaParser variableInitializer */
 drlVariableInitializer
     : arrayInitializer
     | drlExpression
-    ;
-
-
-/* extending JavaParser statement */
-drlRhsStatement
-    : blockLabel=block
-    | ASSERT drlRhsExpression (COLON drlRhsExpression)? SEMI
-    | IF parExpression drlRhsStatement (ELSE drlRhsStatement)?
-    | FOR LPAREN forControl RPAREN drlRhsStatement
-    | WHILE parExpression drlRhsStatement
-    | DO drlRhsStatement WHILE parExpression SEMI
-    | TRY block (catchClause+ finallyBlock? | finallyBlock)
-    | TRY resourceSpecification block catchClause* finallyBlock?
-    | SWITCH parExpression LBRACE switchBlockStatementGroup* switchLabel* RBRACE
-    | SYNCHRONIZED parExpression block
-    | RETURN drlRhsExpression? SEMI
-    | THROW drlRhsExpression SEMI
-    | BREAK drlIdentifier? SEMI
-    | CONTINUE drlIdentifier? SEMI
-    | YIELD drlRhsExpression SEMI // Java17
-    | SEMI
-    | statementExpression=drlRhsExpression SEMI
-    | switchExpression SEMI? // Java17
-    | identifierLabel=drlIdentifier COLON drlRhsStatement
-    ;
-
-/* extending JavaParser expression */
-drlRhsExpression
-    : drlPrimary
-    | drlRhsExpression bop=DOT
-      (
-         drlIdentifier
-       | methodCall
-       | THIS
-       | NEW nonWildcardTypeArguments? innerCreator
-       | SUPER superSuffix
-       | explicitGenericInvocation
-      )
-    | drlRhsExpression LBRACK drlRhsExpression RBRACK
-    | methodCall
-    | NEW creator
-    | LPAREN annotation* typeType (BITAND typeType)* RPAREN drlRhsExpression
-    | drlRhsExpression postfix=(INC | DEC)
-    | prefix=(ADD|SUB|INC|DEC) drlRhsExpression
-    | prefix=(TILDE|BANG) drlRhsExpression
-    | drlRhsExpression bop=(MUL|DIV|MOD) drlRhsExpression
-    | drlRhsExpression bop=(ADD|SUB) drlRhsExpression
-    | drlRhsExpression (LT LT | GT GT GT | GT GT) drlRhsExpression
-    | drlRhsExpression bop=(LE | GE | GT | LT) drlRhsExpression
-    | drlRhsExpression bop=INSTANCEOF (typeType | pattern)
-    | drlRhsExpression bop=DRL_MATCHES drlRhsExpression
-    | drlRhsExpression bop=(EQUAL | NOTEQUAL) drlRhsExpression
-    | drlRhsExpression bop=BITAND drlRhsExpression
-    | drlRhsExpression bop=CARET drlRhsExpression
-    | drlRhsExpression bop=BITOR drlRhsExpression
-    | drlRhsExpression bop=AND drlRhsExpression
-    | drlRhsExpression bop=OR drlRhsExpression
-    | <assoc=right> drlRhsExpression bop=QUESTION drlRhsExpression COLON drlRhsExpression
-    | <assoc=right> drlRhsExpression
-      bop=(ASSIGN | ADD_ASSIGN | SUB_ASSIGN | MUL_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | RSHIFT_ASSIGN | URSHIFT_ASSIGN | LSHIFT_ASSIGN | MOD_ASSIGN)
-      drlRhsExpression
-    | lambdaExpression // Java8
-    | switchExpression // Java17
-
-    // Java 8 methodReference
-    | drlRhsExpression COLONCOLON typeArguments? drlIdentifier
-    | typeType COLONCOLON (typeArguments? drlIdentifier | NEW)
-    | classType COLONCOLON typeArguments? NEW
     ;
 
  drlCreator

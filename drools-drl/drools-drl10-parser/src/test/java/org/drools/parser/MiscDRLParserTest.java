@@ -3279,4 +3279,48 @@ class MiscDRLParserTest {
         assertThat(pd.getSource().getText()).isEqualTo("Y");
     }
 
+    @Test
+    public void endInRhs() throws Exception {
+        final String text = "package org.drools\n" +
+                "rule X\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    System.out.println($s.endsWith(\"xyz\"));\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text );
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("System.out.println($s.endsWith(\"xyz\"));");
+    }
+
+    @Test
+    public void endTokenInRhs() throws Exception {
+        final String text = "package org.drools\n" +
+                "rule X\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    int end = 10;\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text );
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("int end = 10;");
+    }
+
+    @Test
+    public void ruleTokenInRhs() throws Exception {
+        final String text = "package org.drools\n" +
+                "rule X\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    int rule = 10;\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text );
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("int rule = 10;");
+    }
 }
