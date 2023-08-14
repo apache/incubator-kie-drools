@@ -19,6 +19,12 @@ git:
       config_file:
         git:
           branch: drools-9.42.x
+  - name: 9.43.x
+    seed:
+      branch: seed-drools-9.43.x
+      config_file:
+        git:
+          branch: drools-9.43.x
 seed:
   config_file:
     git:
