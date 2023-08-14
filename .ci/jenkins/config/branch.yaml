@@ -31,6 +31,7 @@ environments:
     ids:
     - quarkus
     - quarkus3
+    enabled: false
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '2.16'
@@ -45,6 +46,7 @@ environments:
     - quarkus
     - lts
     - prod
+    enabled: false
   sonarcloud:
     auto_generation: false
     env_vars:
@@ -52,13 +54,15 @@ environments:
     ids:
     - sonarcloud
     - coverage
-productized_branch: true
+productized_branch: false
 disable:
   triggers: false
 repositories:
 - name: drools
+  branch: 8.43.x
+  is_branch_config_repo: true
 - name: drools-website
-- name: kie-benchmarks
+  branch: 8.43.x
 productized_repositories:
 - name: drools
 git:
