@@ -71,7 +71,7 @@ pipeline {
 
         stage('Upload drools binaries and documentation') {
             when {
-                expression { return isStream8() }
+                expression { return isMainStream() }
             }
             steps {
                 script {
@@ -218,6 +218,6 @@ boolean isNotTestingBuild() {
     return getGitAuthor() == 'kiegroup'
 }
 
-boolean isStream8() {
-    return env.DROOLS_STREAM == '8'
+boolean isMainStream() {
+    return env.DROOLS_STREAM == 'main'
 }

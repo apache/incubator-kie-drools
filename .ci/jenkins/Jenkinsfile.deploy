@@ -262,7 +262,7 @@ MavenCommand getMavenCommand(String directory = '') {
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
                 .inDirectory(directory)
-    if (!isStream8()) { // Workaround as enforcer rules may not be fixed on other streams
+    if (!isMainStream()) { // Workaround as enforcer rules may not be fixed on other streams
         mvnCmd.withProperty('enforcer.skip')
     } else {
         mvnCmd.withProperty('full')
@@ -298,6 +298,6 @@ String getLocalDeploymentFolder() {
     return "${env.MAVEN_DEPLOY_LOCAL_DIR}/${getRepoName()}"
 }
 
-boolean isStream8() {
-    return env.DROOLS_STREAM == '8'
+boolean isMainStream() {
+    return env.DROOLS_STREAM == 'main'
 }

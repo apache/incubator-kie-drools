@@ -78,7 +78,7 @@ pipeline {
         }
         stage('Update Drools version in kie-benchmarks') {
             when {
-                expression { isStream8() && isMainBranch() }
+                expression { isMainStream() && isMainBranch() }
             }
             steps {
                 script {
@@ -158,6 +158,6 @@ void mergeAndPush(String prLink, String targetBranch) {
     }
 }
 
-boolean isStream8() {
-    return env.DROOLS_STREAM == '8'
+boolean isMainStream() {
+    return env.DROOLS_STREAM == 'main'
 }
