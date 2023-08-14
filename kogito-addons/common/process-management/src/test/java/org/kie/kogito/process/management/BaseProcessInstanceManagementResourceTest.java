@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowModelValidator;
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -112,7 +113,7 @@ class BaseProcessInstanceManagementResourceTest {
         lenient().when(process.version()).thenReturn("1_0");
         lenient().when(process.type()).thenReturn("BPMN");
 
-        lenient().when(workflowProcess.getMetaData()).thenReturn(Map.of("description", "cool"));
+        lenient().when(workflowProcess.getMetaData()).thenReturn(Map.of(Metadata.DESCRIPTION, "cool"));
         lenient().when(workflowValidator.schema(JsonNode.class)).thenReturn(Optional.of(NullNode.instance));
         lenient().when(workflowProcess.getInputValidator()).thenReturn(Optional.of(workflowValidator));
         lenient().when(workflowProcess.getOutputValidator()).thenReturn(Optional.empty());

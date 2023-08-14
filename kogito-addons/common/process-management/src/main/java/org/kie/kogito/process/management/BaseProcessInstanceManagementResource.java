@@ -23,6 +23,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.kogito.Application;
@@ -75,7 +76,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
             data.put("version", process.version());
             if (process instanceof Supplier) {
                 org.kie.api.definition.process.Process processDefinition = ((Supplier<org.kie.api.definition.process.Process>) process).get();
-                data.put("description", processDefinition.getMetaData().get("description"));
+                data.put("description", processDefinition.getMetaData().get(Metadata.DESCRIPTION));
                 if (processDefinition instanceof WorkflowProcess) {
                     WorkflowProcess workflowProcess = (WorkflowProcess) processDefinition;
                     workflowProcess.getInputValidator().flatMap(v -> v.schema(JsonNode.class)).ifPresent(s -> data.put("inputSchema", s));
