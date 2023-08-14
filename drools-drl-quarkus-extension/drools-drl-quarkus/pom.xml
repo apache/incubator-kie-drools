@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools-drl-quarkus-extension</artifactId>
-        <version>8.43.0-SNAPSHOT</version>
+        <version>9.43.0-SNAPSHOT</version>
     </parent>
 
     <name>Drools :: Quarkus Extension :: Runtime</name>
@@ -83,7 +83,7 @@
         <plugins>
             <plugin>
                 <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
+                <artifactId>quarkus-extension-maven-plugin</artifactId>
                 <version>${version.io.quarkus}</version>
                 <executions>
                     <execution>

@@ -60,8 +60,8 @@ public class KiePMMLDerivedFieldASTFactory {
      * @param derivedField
      */
     public KiePMMLDroolsType declareType(DerivedField derivedField) {
-        String generatedType = getSanitizedClassName(derivedField.getName().getValue().toUpperCase());
-        String fieldName = derivedField.getName().getValue();
+        String generatedType = getSanitizedClassName(derivedField.getName().toUpperCase());
+        String fieldName =derivedField.getName();
         String fieldType = derivedField.getDataType().value();
         fieldTypeMap.put(fieldName, new KiePMMLOriginalTypeGeneratedType(fieldType, generatedType));
         return new KiePMMLDroolsType(generatedType, DATA_TYPE.byName(fieldType).getMappedClass().getSimpleName());

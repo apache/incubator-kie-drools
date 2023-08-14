@@ -55,7 +55,7 @@ public class KiePMMLASTFactoryUtils {
         }
         final Map<String, List<SimplePredicate>> predicatesByField = simplePredicates.stream()
                 .map(child -> (SimplePredicate) child)
-                .collect(groupingBy(child -> fieldTypeMap.get(child.getField().getValue()).getGeneratedType()));
+                .collect(groupingBy(child -> fieldTypeMap.get(child.getField()).getGeneratedType()));
         final List<KiePMMLFieldOperatorValue> toReturn = new LinkedList<>();
         populateKiePMMLFieldOperatorValueListWithSimplePredicates(toReturn, compoundPredicate.getBooleanOperator(), predicatesByField, fieldTypeMap);
         final List<CompoundPredicate> compoundPredicates = compoundPredicate.getPredicates().stream()
@@ -113,7 +113,7 @@ public class KiePMMLASTFactoryUtils {
                 .filter(predicate -> predicate instanceof SimplePredicate)
                 .map(predicate -> {
                     SimplePredicate simplePredicate = (SimplePredicate) predicate;
-                    String fieldName = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
+                    String fieldName = fieldTypeMap.get(simplePredicate.getField()).getGeneratedType();
                     OPERATOR operator = OPERATOR.byName(simplePredicate.getOperator().value());
                     Object value = getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);
                     return new KiePMMLFieldOperatorValue(fieldName, null, Collections.singletonList(new KiePMMLOperatorValue(operator, value)), null);
@@ -121,7 +121,7 @@ public class KiePMMLASTFactoryUtils {
     }
 
     public static Object getCorrectlyFormattedObject(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        DATA_TYPE dataType = DATA_TYPE.byName(fieldTypeMap.get(simplePredicate.getField().getValue()).getOriginalType());
+        DATA_TYPE dataType = DATA_TYPE.byName(fieldTypeMap.get(simplePredicate.getField()).getOriginalType());
         return getCorrectlyFormattedResult(simplePredicate.getValue(), dataType);
     }
 

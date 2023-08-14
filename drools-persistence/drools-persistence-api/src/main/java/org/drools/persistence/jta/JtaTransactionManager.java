@@ -20,10 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionSynchronizationRegistry;
-import javax.transaction.UserTransaction;
+import jakarta.transaction.Status;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.TransactionSynchronizationRegistry;
+import jakarta.transaction.UserTransaction;
 
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionSynchronization;
@@ -47,7 +47,7 @@ public class JtaTransactionManager
      */
     public static final String           DEFAULT_TRANSACTION_SYNCHRONIZATION_REGISTRY_NAME = "java:comp/TransactionSynchronizationRegistry";
 
-    private static final String          TRANSACTION_SYNCHRONIZATION_REGISTRY_CLASS_NAME   = "javax.transaction.TransactionSynchronizationRegistry";
+    private static final String          TRANSACTION_SYNCHRONIZATION_REGISTRY_CLASS_NAME   = "jakarta.transaction.TransactionSynchronizationRegistry";
 
     private static Class< ? >            transactionSynchronizationRegistryClass;
 
@@ -69,7 +69,7 @@ public class JtaTransactionManager
 
     UserTransaction                      ut;
     Object                               tsr;
-    javax.transaction.TransactionManager tm;
+    jakarta.transaction.TransactionManager tm;
     
     public JtaTransactionManager(Object ut,
                                  Object tsr,
@@ -80,20 +80,20 @@ public class JtaTransactionManager
             this.ut = ( UserTransaction ) ( (ut != null) ? ut : findUserTransaction() );
         }
         
-        if ( tm instanceof javax.transaction.TransactionManager ) {
-            this.tm = ( javax.transaction.TransactionManager ) tm;
+        if ( tm instanceof jakarta.transaction.TransactionManager ) {
+            this.tm = ( jakarta.transaction.TransactionManager ) tm;
         } else {
-            this.tm = ( javax.transaction.TransactionManager ) ( (tm != null) ? tm : findTransactionManager( this.ut ) );
+            this.tm = ( jakarta.transaction.TransactionManager ) ( (tm != null) ? tm : findTransactionManager( this.ut ) );
         }
         this.tsr = (tsr != null) ? tsr : findTransactionSynchronizationRegistry( this.ut,
                                                                                  this.tm );
     }
 
-    protected javax.transaction.TransactionManager findTransactionManager(UserTransaction ut) {
-        if ( ut instanceof javax.transaction.TransactionManager ) {
+    protected jakarta.transaction.TransactionManager findTransactionManager(UserTransaction ut) {
+        if ( ut instanceof jakarta.transaction.TransactionManager ) {
             logger.debug( "JTA UserTransaction object [{}] implements TransactionManager",
                           ut );
-            return (javax.transaction.TransactionManager) ut;
+            return (jakarta.transaction.TransactionManager) ut;
         }
 
         InitialContext context;
@@ -112,7 +112,7 @@ public class JtaTransactionManager
                 continue;
             }
             try {
-                javax.transaction.TransactionManager tm = (javax.transaction.TransactionManager) context.lookup( jndiName );
+                jakarta.transaction.TransactionManager tm = (jakarta.transaction.TransactionManager) context.lookup( jndiName );
                 logger.debug( "JTA TransactionManager found at fallback JNDI location [{}]",
                               jndiName );
                 return tm;
@@ -146,7 +146,7 @@ public class JtaTransactionManager
     }
 
     protected Object findTransactionSynchronizationRegistry(UserTransaction ut,
-                                                            javax.transaction.TransactionManager tm) {
+                                                            jakarta.transaction.TransactionManager tm) {
 
         if ( transactionSynchronizationRegistryClass == null ) {
             // JTA 1.1 API not present - skip.
@@ -216,7 +216,7 @@ public class JtaTransactionManager
                 return true;
             } catch ( Exception e ) {
                 // special WAS handling for cached UserTrnsactions
-                if (e.getClass().getName().equals("javax.ejb.EJBException")) {
+                if (e.getClass().getName().equals("jakarta.ejb.EJBException")) {
                     // reinitialize all fields
                     this.ut = findUserTransaction();
                     this.tm = findTransactionManager(this.ut);
