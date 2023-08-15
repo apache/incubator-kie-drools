@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>drools-parent</artifactId>
-    <version>9.43.0-SNAPSHOT</version>
+    <version>9.43.0.Alpha</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
