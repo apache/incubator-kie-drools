@@ -39,6 +39,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+          allow-snapshots: true
       - name: Build Chain
         uses: kiegroup/kie-ci/.ci/actions/build-chain@main
         with:
