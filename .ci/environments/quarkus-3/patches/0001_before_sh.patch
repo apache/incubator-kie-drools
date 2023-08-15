@@ -548,15 +548,15 @@ index ab4b803d0f..09bf47e0d9 100644
        </dependency>
        <dependency>
 diff --git a/kogito-build/kogito-kie-bom/pom.xml b/kogito-build/kogito-kie-bom/pom.xml
-index 9dc0e254e3..3be5b07f1e 100644
+index 5e1c48c982..29dfa25959 100644
 --- a/kogito-build/kogito-kie-bom/pom.xml
 +++ b/kogito-build/kogito-kie-bom/pom.xml
 @@ -18,7 +18,7 @@
    </description>
  
    <properties>
--    <version.org.kie>8.43.0-SNAPSHOT</version.org.kie>
-+    <version.org.kie>9.43.0-SNAPSHOT</version.org.kie>
+-    <version.org.kie>8.44.0-SNAPSHOT</version.org.kie>
++    <version.org.kie>9.44.0-SNAPSHOT</version.org.kie>
    </properties>
  
    <dependencyManagement>
