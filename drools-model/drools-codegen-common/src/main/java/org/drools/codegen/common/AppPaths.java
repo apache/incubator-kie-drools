@@ -36,7 +36,12 @@ public class AppPaths {
                            .keySet()
                            .stream()
                            .map(String.class::cast)
-                           .anyMatch(k -> k.contains("org.gradle"))
+                           .anyMatch(k -> k.contains("gradle")) ||
+                   System.getProperties()
+                           .values()
+                           .stream()
+                           .map(String.class::cast)
+                           .anyMatch(v -> v.contains("gradle"))
                    ? GRADLE
                    : MAVEN;
         }
