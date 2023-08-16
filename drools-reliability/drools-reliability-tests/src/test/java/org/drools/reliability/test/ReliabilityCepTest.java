@@ -291,4 +291,34 @@ class ReliabilityCepTest extends ReliabilityTestBasics {
         assertThat(getFactHandles(session2)).as("DROO (2) should have expired because @Expires = 60s")
                 .hasSize(2);
     }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithAllSafepointsWithActivationKey")
+    void insertFireLimitFailoverFire_shouldFireRemainingActivations(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy,
+                                                                    PersistedSessionOption.ActivationStrategy activationStrategy) {
+
+        createSession(CEP_RULE, persistenceStrategy, safepointStrategy, activationStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+
+        SessionPseudoClock clock = getSessionClock();
+
+        insert(new StockTick("DROO"));
+        clock.advanceTime(6, TimeUnit.SECONDS);
+        insert(new StockTick("ACME"));
+        clock.advanceTime(1, TimeUnit.SECONDS);
+        insert(new StockTick("ACME"));
+        clock.advanceTime(500, TimeUnit.MILLISECONDS);
+        insert(new StockTick("ACME"));
+
+        fireAllRules(1);
+        assertThat(getResults()).as("Firing is limited to 1")
+                                .hasSize(1);
+        assertThat(getResults()).containsExactly("fired");
+
+        failover();
+        restoreSession(CEP_RULE, persistenceStrategy, safepointStrategy, activationStrategy, EventProcessingOption.STREAM, ClockTypeOption.PSEUDO);
+
+        fireAllRules();
+        assertThat(getResults()).as("All remaining activations should fire")
+                                .containsExactlyInAnyOrder("fired", "fired", "fired");
+    }
 }

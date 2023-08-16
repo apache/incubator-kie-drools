@@ -15,12 +15,12 @@
 
 package org.drools.reliability.core;
 
+import java.util.List;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectStore;
-
-import java.util.List;
 
 public interface SimpleReliableObjectStore extends ObjectStore {
 

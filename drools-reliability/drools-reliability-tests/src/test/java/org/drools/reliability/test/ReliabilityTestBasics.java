@@ -112,6 +112,14 @@ public abstract class ReliabilityTestBasics {
         );
     }
 
+    static Stream<Arguments> strategyProviderStoresOnlyWithAllSafepointsWithActivationKey() {
+        return Stream.of(
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.ALWAYS, PersistedSessionOption.ActivationStrategy.ACTIVATION_KEY),
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.EXPLICIT, PersistedSessionOption.ActivationStrategy.ACTIVATION_KEY),
+                arguments(PersistedSessionOption.PersistenceStrategy.STORES_ONLY, PersistedSessionOption.SafepointStrategy.AFTER_FIRE, PersistedSessionOption.ActivationStrategy.ACTIVATION_KEY)
+        );
+    }
+
     static boolean isRemoteInfinispan() {
         return "INFINISPAN".equalsIgnoreCase(getConfig(DROOLS_RELIABILITY_MODULE_TEST))
                 && "REMOTE".equalsIgnoreCase(getConfig(INFINISPAN_STORAGE_MODE));
@@ -199,6 +207,10 @@ public abstract class ReliabilityTestBasics {
         session.delete(fh);
     }
 
+    protected FactHandle insertMatchingPerson(String name) {
+        return insertMatchingPerson(sessions.get(0), name, 20); // for rules don't care about age
+    }
+
     protected FactHandle insertMatchingPerson(String name, Integer age) {
         return insertMatchingPerson(sessions.get(0), name, age);
     }
@@ -262,6 +274,10 @@ public abstract class ReliabilityTestBasics {
                 .withSafepointStrategy(safepointStrategy).withPersistenceObjectsStrategy(persistenceObjectsStrategy) : null, options);
     }
 
+    protected KieSession createSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, PersistedSessionOption.ActivationStrategy activationStrategy, Option... options) {
+        return getKieSession(drl, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy).withActivationStrategy(activationStrategy) : null, options);
+    }
+
     protected KieSession createSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache, Option... options) {
         return getKieSession(drl, persistenceStrategy != null ? PersistedSessionOption.newSession().withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy) : null, useKieBaseCache, options);
     }
@@ -281,8 +297,13 @@ public abstract class ReliabilityTestBasics {
 
     protected KieSession restoreSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy,
                                         PersistedSessionOption.PersistenceObjectsStrategy persistenceObjectsStrategy, Option... options) {
-        Long sessionIdToRestoreFrom = (Long)this.persistedSessionIds.values().toArray()[0];
+        Long sessionIdToRestoreFrom = (Long) this.persistedSessionIds.values().toArray()[0];
         return restoreSession(sessionIdToRestoreFrom, drl, persistenceStrategy, safepointStrategy, persistenceObjectsStrategy, options);
+    }
+
+    protected KieSession restoreSession(String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, PersistedSessionOption.ActivationStrategy activationStrategy, Option... options) {
+        Long sessionIdToRestoreFrom = (Long)this.persistedSessionIds.values().toArray()[0];
+        return restoreSession(sessionIdToRestoreFrom, drl, persistenceStrategy, safepointStrategy, activationStrategy, options);
     }
 
     protected KieSession restoreSession(Long sessionId, String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, Option... options) {
@@ -297,6 +318,11 @@ public abstract class ReliabilityTestBasics {
                 .withSafepointStrategy(safepointStrategy).withPersistenceObjectsStrategy(persistenceObjectsStrategy), options);
     }
 
+    protected KieSession restoreSession(Long sessionId, String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, PersistedSessionOption.ActivationStrategy activationStrategy, Option... options) {
+        Long sessionIdToRestoreFrom = this.persistedSessionIds.get(sessionId);
+        return getKieSession(drl, PersistedSessionOption.fromSession(sessionIdToRestoreFrom).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy).withActivationStrategy(activationStrategy), options);
+    }
+
     protected KieSession restoreSession(Long sessionId, String drl, PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy, boolean useKieBaseCache, Option... options) {
         Long sessionIdToRestoreFrom = this.persistedSessionIds.get(sessionId);
         return getKieSession(drl, PersistedSessionOption.fromSession(sessionIdToRestoreFrom).withPersistenceStrategy(persistenceStrategy).withSafepointStrategy(safepointStrategy), useKieBaseCache, options);
@@ -304,6 +330,10 @@ public abstract class ReliabilityTestBasics {
 
     protected int fireAllRules() {
         return fireAllRules(sessions.get(0));
+    }
+
+    protected int fireAllRules(int max) {
+        return sessions.get(0).fireAllRules(max);
     }
 
     protected int fireAllRules(KieSession session) {
