@@ -59,6 +59,7 @@ repositories:
 - name: drools
 - name: drools-website
 - name: kie-benchmarks
+- name: kie-jpmml-integration
 productized_repositories:
 - name: drools
 git:

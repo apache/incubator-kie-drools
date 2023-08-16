@@ -3,6 +3,7 @@ import org.jenkinsci.plugins.workflow.libs.Library
 @Library('jenkins-pipeline-shared-libraries')_
 
 droolsRepo = 'drools'
+kieJpmmlIntegrationRepo = 'kie-jpmml-integration'
 
 ARTIFACTS_STAGING_STAGE = 'stage.artifacts.staging'
 ARTIFACTS_RELEASE_STAGE = 'stage.artifacts.release'
@@ -71,6 +72,17 @@ pipeline {
             }
         }
 
+        stage('Build & Deploy KIE jpmml integration') {
+            steps {
+                script {
+                    def buildParams = getDefaultBuildParams()
+                    addSkipTestsParam(buildParams)
+
+                    buildJob(getDeployJobName(kieJpmmlIntegrationRepo), buildParams)
+                }
+            }
+        }
+
         stage('Artifacts\' staging finalization') {
             steps {
                 script {
@@ -110,6 +122,20 @@ pipeline {
                     addDeployBuildUrlParam(buildParams, getDeployJobName(droolsRepo))
 
                     buildJob(getPromoteJobName(droolsRepo), buildParams)
+                }
+            }
+        }
+
+        stage('Promote KIE jpmml integration') {
+            when {
+                expression { return isJobConsideredOk(getDeployJobName(kieJpmmlIntegrationRepo)) }
+            }
+            steps {
+                script {
+                    def buildParams = getDefaultBuildParams()
+                    addDeployBuildUrlParam(buildParams, getDeployJobName(kieJpmmlIntegrationRepo))
+
+                    buildJob(getPromoteJobName(kieJpmmlIntegrationRepo), buildParams)
                 }
             }
         }
