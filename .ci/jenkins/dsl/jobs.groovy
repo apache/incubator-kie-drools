@@ -211,17 +211,14 @@ Closure setup3AMCronTriggerJobParamsGetter = { script ->
     return jobParams
 }
 
-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, isMainStream() ? addFullProfileJobParamsGetter : JobParamsUtils.DEFAULT_PARAMS_GETTER)
-
-// Environment nightlies
-setupSpecificBuildChainNightlyJob('native', isMainStream() ? addFullProfileJobParamsGetter : setup3AMCronTriggerJobParamsGetter)
-setupSpecificBuildChainNightlyJob('sonarcloud', isMainStream() ? addFullProfileJobParamsGetter : setup3AMCronTriggerJobParamsGetter)
-
-// Jobs with integration branch
-setupQuarkusIntegrationJob('quarkus-main', isMainStream() ? addFullProfileJobParamsGetter : setup3AMCronTriggerJobParamsGetter)
-setupQuarkusIntegrationJob('quarkus-branch', isMainStream() ? addFullProfileJobParamsGetter : setup3AMCronTriggerJobParamsGetter)
-setupQuarkusIntegrationJob('quarkus-lts', isMainStream() ? addFullProfileJobParamsGetter : setup3AMCronTriggerJobParamsGetter)
-setupQuarkusIntegrationJob('native-lts', isMainStream() ? addFullProfileJobParamsGetter : setup3AMCronTriggerJobParamsGetter)
+Closure nightlyJobParamsGetter = nightlyJobParamsGetter
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, nightlyJobParamsGetter)
+setupSpecificBuildChainNightlyJob('native', nightlyJobParamsGetter)
+setupSpecificBuildChainNightlyJob('sonarcloud', nightlyJobParamsGetter)
+setupQuarkusIntegrationJob('quarkus-main', nightlyJobParamsGetter)
+setupQuarkusIntegrationJob('quarkus-branch', nightlyJobParamsGetter)
+setupQuarkusIntegrationJob('quarkus-lts', nightlyJobParamsGetter)
+setupQuarkusIntegrationJob('native-lts', nightlyJobParamsGetter)
 // Quarkus 3 nightly is exported to Kogito pipelines for easier integration
 
 // Release jobs
