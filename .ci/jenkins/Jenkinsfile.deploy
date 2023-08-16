@@ -84,7 +84,7 @@ pipeline {
                     dir(getRepoName()) {
                         if (githubscm.isBranchExist('origin',getPRBranch())) {
                             githubscm.removeRemoteBranch('origin', getPRBranch())
-                        }                        
+                        }
                         githubscm.createBranch(getPRBranch())
                     }
                 }
@@ -103,7 +103,12 @@ pipeline {
         stage('Build & Test') {
             steps {
                 script {
-                    getMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
+                    getMavenCommand()
+                        .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
+                        .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+                        .withProperty('maven.test.failure.ignore', true)
+                        .skipTests(params.SKIP_TESTS)
+                        .run('clean install')
                 }
             }
             post {
@@ -261,6 +266,7 @@ MavenCommand getMavenCommand(String directory = '') {
     directory = directory ?: getRepoName()
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
+                .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .inDirectory(directory)
     if (!isMainStream()) { // Workaround as enforcer rules may not be fixed on other streams
         mvnCmd.withProperty('enforcer.skip')
@@ -279,7 +285,10 @@ void runMavenDeploy(boolean localDeployment = false) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
-    mvnCmd.skipTests(true).run('clean deploy')
+    mvnCmd.skipTests(true)
+            .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
+            .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+            .run('clean deploy')
 }
 
 void runMavenStage() {
