@@ -58,7 +58,9 @@ pipeline {
                         }
                     }
 
-                    checkoutRepo()
+                    dir(getRepoName()) {
+                        checkoutRepo()
+                    }
 
                     setupCypressEnv('9.7.0')
                 }
