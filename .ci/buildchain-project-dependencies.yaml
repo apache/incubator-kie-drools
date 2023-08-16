@@ -60,7 +60,7 @@ dependencies:
         - kiegroup/kogito-apps
         - kiegroup/kogito-runtimes
   
-  - project: kiegroup/kie-jpmml-integration
-    dependencies:
-      - project: kiegroup/drools
-    # no mapping needed
+  # - project: kiegroup/kie-jpmml-integration
+  #   dependencies:
+  #     - project: kiegroup/drools
+  #   # no mapping needed
