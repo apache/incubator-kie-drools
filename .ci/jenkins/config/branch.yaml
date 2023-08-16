@@ -100,3 +100,4 @@ jenkins:
   default_tools:
     jdk: kie-jdk17
     maven: kie-maven-3.8.7
+    sonar_jdk: kie-jdk17
