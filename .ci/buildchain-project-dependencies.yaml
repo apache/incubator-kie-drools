@@ -4,12 +4,12 @@ dependencies:
     mapping:
       dependencies:
         default:
-          - source: (\d*)\.(.*)\.(.*)
-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)"
+          - source: (\d*)\.(.*)
+            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1-7}.${n2}`)"
       dependant:
         default:
-          - source: (\d*)\.(.*)\.(.*)
-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"
+          - source: (\d*)\.(.*)
+            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1+7}.${n2}`)"
 
   - project: kiegroup/kogito-runtimes
     dependencies:
@@ -17,12 +17,12 @@ dependencies:
     mapping:
       dependencies:
         default:
-          - source: (\d*)\.(.*)\.(.*)
-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"
+          - source: (\d*)\.(.*)
+            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1+7}.${n2}`)"
       dependant:
         default:
-          - source: (\d*)\.(.*)\.(.*)
-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)"
+          - source: (\d*)\.(.*)
+            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1-7}.${n2}`)"
       exclude:
         - kiegroup/kogito-examples
         - kiegroup/kogito-apps
@@ -33,12 +33,12 @@ dependencies:
     mapping:
       dependencies:
         default:
-          - source: (\d*)\.(.*)\.(.*)
-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"
+          - source: (\d*)\.(.*)
+            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1+7}.${n2}`)"
       dependant:
         default:
-          - source: (\d*)\.(.*)\.(.*)
-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)"
+          - source: (\d*)\.(.*)
+            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1-7}.${n2}`)"
       exclude:
         - kiegroup/kogito-examples
         - kiegroup/kogito-runtimes
@@ -50,12 +50,12 @@ dependencies:
     mapping:
       dependencies:
         default:
-          - source: (\d*)\.(.*)\.(.*)
-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"
+          - source: (\d*)\.(.*)
+            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1+7}.${n2}`)"
       dependant:
         default:
-          - source: (\d*)\.(.*)\.(.*)
-            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)"
+          - source: (\d*)\.(.*)
+            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1-7}.${n2}`)"
       exclude:
         - kiegroup/kogito-apps
         - kiegroup/kogito-runtimes
