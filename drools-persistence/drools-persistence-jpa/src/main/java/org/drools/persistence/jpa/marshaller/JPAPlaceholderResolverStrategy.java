@@ -203,6 +203,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     public void onStart(TransactionManager txm) {
         if (persister.get() == null) {
             EntityManager em = emf.createEntityManager();
+            log.trace ("Created EM {} for name {}",em, name);
             persister.set(new EntityPersister(em));
         }
     }
@@ -210,6 +211,11 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     @Override
     public void onEnd(TransactionManager txm) {
         EntityPersister em = persister.get();
+        if (em == null) {
+            log.warn ("EM is null for {} and status {}", name, txm.getStatus());
+            return;
+        }
+        log.trace ("Executing onEnd for {} with status {}", name, txm.getStatus());
         if(txm.getStatus() == TransactionManager.STATUS_ROLLEDBACK) {
             // this is pretty much of a hack but for avoiding issues when rolling back we need to set to null 
             // the primary key of the entities (simple types)
@@ -239,6 +245,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
             });
         }
         if (em != null) {
+            log.trace ("Closing EM {} for name {}",em, name);
             em.close();
             persister.set(null);
         }

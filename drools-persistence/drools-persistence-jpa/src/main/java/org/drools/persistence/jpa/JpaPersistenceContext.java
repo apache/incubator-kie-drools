@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class JpaPersistenceContext implements PersistenceContext {
 
-    private static Logger logger = LoggerFactory.getLogger(JpaPersistenceContext.class);
+    protected static Logger logger = LoggerFactory.getLogger(JpaPersistenceContext.class);
     
     private EntityManager em;
     protected final boolean isJTA;
@@ -68,7 +68,7 @@ public class JpaPersistenceContext implements PersistenceContext {
     }
 
     public PersistentSession findSession(Long id) {
-
+        logger.trace("Reading session info {}, id");
         SessionInfo sessionInfo = null;
         if( this.pessimisticLocking ) {
             sessionInfo = this.em.find( SessionInfo.class, id, lockMode );
