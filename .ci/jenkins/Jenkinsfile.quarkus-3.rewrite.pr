@@ -79,9 +79,3 @@ String getRepoName() {
 String getGitAuthorCredsId() {
     return env.AUTHOR_CREDS_ID
 }
-
-MavenCommand getMavenCommand() {
-    return new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
-                .withProperty('full')
-}
