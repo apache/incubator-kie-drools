@@ -130,13 +130,6 @@ void setupProjectPostReleaseJob() {
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 Map getMultijobPRConfig(JenkinsFolder jobFolder) {
-    String currentMvnOptsCurrent = jobFolder.getDefaultEnvVarValue('BUILD_MVN_OPTS_CURRENT') ?: ''
-    if (isMainStream() && !EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod')
-            && !EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3')) {
-        // Setup full build if not prod profile
-        currentMvnOptsCurrent += ' -Dfull'
-    }
-
     def jobConfig = [
         parallel: true,
         buildchain: true,
@@ -148,7 +141,6 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
                     ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
-                    BUILD_MVN_OPTS_CURRENT: currentMvnOptsCurrent,
                 ]
             ], [
                 id: 'kogito-runtimes',
@@ -199,19 +191,13 @@ KogitoJobUtils.createAllEnvironmentsPerRepoPRJobs(this) { jobFolder -> getMultij
 createSetupBranchJob()
 
 // Nightly jobs
-Closure addFullProfileJobParamsGetter = { script ->
-    def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
-    jobParams.env.put('BUILD_MVN_OPTS_CURRENT', '-Dfull')
-    return jobParams
-}
-
 Closure setup3AMCronTriggerJobParamsGetter = { script ->
     def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
     jobParams.triggers = [ cron: 'H 3 * * *' ]
     return jobParams
 }
 
-Closure nightlyJobParamsGetter = nightlyJobParamsGetter
+Closure nightlyJobParamsGetter = isMainStream() ? JobParamsUtils.DEFAULT_PARAMS_GETTER : setup3AMCronTriggerJobParamsGetter
 KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, nightlyJobParamsGetter)
 setupSpecificBuildChainNightlyJob('native', nightlyJobParamsGetter)
 setupSpecificBuildChainNightlyJob('sonarcloud', nightlyJobParamsGetter)
@@ -235,7 +221,7 @@ if (isMainStream()) {
 
     // Quarkus 3
     if (EnvUtils.isEnvironmentEnabled(this, 'quarkus-3')) {
-        // setupPrQuarkus3RewriteJob() # TODO to enable if you want the PR quarkus-3 rewrite job
+        setupPrQuarkus3RewriteJob()
         setupStandaloneQuarkus3RewriteJob()
     }
 }
