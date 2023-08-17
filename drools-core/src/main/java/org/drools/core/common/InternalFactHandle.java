@@ -32,6 +32,11 @@ import java.util.function.Predicate;
 public interface InternalFactHandle
     extends
     FactHandle, Cloneable, Serializable {
+
+    static void tempMethod() {
+        System.out.println("tempMethod");
+    }
+
     long getId();
 
     long getRecency();
