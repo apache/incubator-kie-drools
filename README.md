@@ -26,8 +26,8 @@ There are two ways to activate such profile during maven build:
 
 The following two commands will execute tests on machine with locale different than _en_US_:
 
-1. `mvn clean verify -Ptest-en`
-2. `mvn clean verify -DTestEn`
+1. `make test -Ptest-en`
+2. `make test -DTestEn`
 
 
 
