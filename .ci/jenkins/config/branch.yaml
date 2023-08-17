@@ -2,10 +2,12 @@ environments:
   default:
     env_vars:
       BUILD_MVN_OPTS: -Denforcer.skip
+      # DROOLS_BUILD_MVN_OPTS: -Dfull # To enable once compilation is ok
   native:
     env_vars:
-      BUILD_MVN_OPTS: -Denforcer.skip
       NATIVE: true
+      BUILD_MVN_OPTS: -Denforcer.skip
+      # DROOLS_BUILD_MVN_OPTS: -Dfull # To enable once compilation is ok
       BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
       ADDITIONAL_TIMEOUT: 720
     ids:
@@ -13,22 +15,24 @@ environments:
   quarkus-main:
     enabled: false
     env_vars:
-      BUILD_MVN_OPTS: -Denforcer.skip
       QUARKUS_BRANCH: main
+      BUILD_MVN_OPTS: -Denforcer.skip
+      # DROOLS_BUILD_MVN_OPTS: -Dfull # To enable once compilation is ok
     ids:
     - quarkus
   quarkus-branch:
     env_vars:
-      BUILD_MVN_OPTS: -Denforcer.skip
       QUARKUS_BRANCH: '3.0'
+      BUILD_MVN_OPTS: -Denforcer.skip
+      # DROOLS_BUILD_MVN_OPTS: -Dfull # To enable once compilation is ok
     ids:
     - quarkus
   quarkus-lts:
     enabled: false
     pull_request_default_check: false
     env_vars:
+      QUARKUS_BRANCH: '3.2'
       BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral -Denforcer.skip
-      QUARKUS_BRANCH: '2.13'
     ids:
     - quarkus
     - lts
@@ -37,10 +41,11 @@ environments:
     enabled: false
     env_vars:
       NATIVE: true
+      QUARKUS_BRANCH: '3.2'
       BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral -Denforcer.skip
       BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
-      QUARKUS_BRANCH: '2.13'
       ADDITIONAL_TIMEOUT: 720
+      BUILD_ENVIRONMENT: quarkus-lts
     ids:
     - native
     - prod
@@ -48,8 +53,9 @@ environments:
     enabled: false
     auto_generation: false
     env_vars:
+      ENABLE_SONARCLOUD: false
       BUILD_MVN_OPTS: -Denforcer.skip
-      ENABLE_SONARCLOUD: true
+      # DROOLS_BUILD_MVN_OPTS: -Dfull # To enable once compilation is ok
     ids:
     - sonarcloud
     - coverage
