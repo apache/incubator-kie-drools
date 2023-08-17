@@ -80,6 +80,7 @@ pipeline {
             steps {
                 script {
                     getMavenCommand(kogitoAppsRepo)
+                        .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
                         .withProperty('skipUI')
                         .withProperty('maven.test.failure.ignore', true)
                         .withProperty('version.org.optaplanner', env.OPTAPLANNER_VERSION)
@@ -172,6 +173,7 @@ MavenCommand getMavenCommand(String directory) {
     return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId('kogito_release_settings')
                 .withProperty('java.net.preferIPv4Stack', true)
+                .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .inDirectory(directory)
 }
 

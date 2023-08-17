@@ -54,6 +54,8 @@ pipeline {
             steps {
                 script {
                     getMavenCommand(droolsRepo)
+                        .withOptions(env.BUILD_MVN_OPTS_UPSTREAM ? [ env.BUILD_MVN_OPTS_UPSTREAM ] : [])
+                        .withOptions(env.DROOLS_BUILD_MVN_OPTS_UPSTREAM ? [ env.DROOLS_BUILD_MVN_OPTS_UPSTREAM ] : [])
                         .withProperty('quickly')
                         .run('clean install')
                 }
@@ -63,6 +65,8 @@ pipeline {
             steps {
                 script {
                     getMavenCommand(kogitoRuntimesRepo)
+                        .withOptions(env.BUILD_MVN_OPTS_UPSTREAM ? [ env.BUILD_MVN_OPTS_UPSTREAM ] : [])
+                        .withOptions(env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM ? [ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM ] : [])
                         .withProperty('quickly')
                         .run('clean install')
                 }
@@ -149,5 +153,6 @@ String getGitAuthorCredsID() {
 MavenCommand getMavenCommand(String directory) {
     return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
+                .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .inDirectory(directory)
 }

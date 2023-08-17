@@ -18,6 +18,10 @@ import org.kie.jenkins.jobdsl.Utils
 
 jenkins_path = '.ci/jenkins'
 
+boolean isMainStream() {
+    return Utils.getStream(this) == 'main'
+}
+
 Map getMultijobPRConfig(JenkinsFolder jobFolder) {
     String defaultBuildMvnOptsCurrent = jobFolder.getDefaultEnvVarValue('BUILD_MVN_OPTS_CURRENT') ?: ''
     def jobConfig = [
@@ -32,7 +36,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
                     ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
-                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${jobFolder.getEnvironmentName() ? '' : '-Dvalidate-formatting'}", // Validate formatting only for default env
+                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${getAppsBuildMvnOptions(jobFolder).join(' ')}",
                 ]
             ], [
                 id: 'kogito-quarkus-examples',
@@ -63,11 +67,20 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
     ]
 
     // For Quarkus 3, run only runtimes PR check... for now
-    if (EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3')) {
+    if (isMainStream() && EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3')) {
         jobConfig.jobs.retainAll { it.id == 'kogito-apps' }
     }
 
     return jobConfig
+}
+
+List getAppsBuildMvnOptions(JenkinsFolder jobFolder) {
+    List mvnOpts = []
+    if (isMainStream() && !jobFolder.getEnvironmentName()) {
+        // Validate formatting only for default env
+        mvnOpts += ['-Dvalidate-formatting']
+    }
+    return mvnOpts
 }
 
 boolean isProdEnv(JenkinsFolder jobFolder) {
@@ -92,33 +105,40 @@ Closure addNodeOptionsEnvJobParamsGetter = { script ->
     jobParams.env.put('NODE_OPTIONS', '--max_old_space_size=4096')
     return jobParams
 }
+Closure setup4AMCronTriggerJobParamsGetter = { script ->
+    def jobParams = addNodeOptionsEnvJobParamsGetter(script)
+    jobParams.triggers = [ cron: 'H 4 * * *' ]
+    return jobParams
+}
 
-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, addNodeOptionsEnvJobParamsGetter)
-setupSpecificBuildChainNightlyJob('sonarcloud', addNodeOptionsEnvJobParamsGetter)
-setupSpecificBuildChainNightlyJob('native', addNodeOptionsEnvJobParamsGetter)
-setupNightlyQuarkusIntegrationJob('quarkus-main', addNodeOptionsEnvJobParamsGetter)
-setupNightlyQuarkusIntegrationJob('quarkus-branch', addNodeOptionsEnvJobParamsGetter)
-setupNightlyQuarkusIntegrationJob('quarkus-lts', addNodeOptionsEnvJobParamsGetter)
-setupNightlyQuarkusIntegrationJob('native-lts', addNodeOptionsEnvJobParamsGetter)
+Closure nightlyJobParamsGetter = isMainStream() ? addNodeOptionsEnvJobParamsGetter : setup4AMCronTriggerJobParamsGetter
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, nightlyJobParamsGetter)
+setupSpecificBuildChainNightlyJob('sonarcloud', nightlyJobParamsGetter)
+setupSpecificBuildChainNightlyJob('native', nightlyJobParamsGetter)
+setupNightlyQuarkusIntegrationJob('quarkus-main', nightlyJobParamsGetter)
+setupNightlyQuarkusIntegrationJob('quarkus-branch', nightlyJobParamsGetter)
+setupNightlyQuarkusIntegrationJob('quarkus-lts', nightlyJobParamsGetter)
+setupNightlyQuarkusIntegrationJob('native-lts', nightlyJobParamsGetter)
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
 setupPromoteJob(JobType.RELEASE)
 
 // Update Optaplanner tools job
-KogitoJobUtils.createVersionUpdateToolsJob(this, 'kogito-apps', 'Optaplanner', [
-  modules: [ 'kogito-apps-build-parent' ],
-  properties: [ 'version.org.optaplanner' ],
-])
+if (isMainStream()) {
+    KogitoJobUtils.createVersionUpdateToolsJob(this, 'kogito-apps', 'Optaplanner', [
+        modules: [ 'kogito-apps-build-parent' ],
+        properties: [ 'version.org.optaplanner' ],
+    ])
+    // Quarkus 3
+    if (EnvUtils.isEnvironmentEnabled(this, 'quarkus-3')) {
+        setupPrQuarkus3RewriteJob()
+        setupStandaloneQuarkus3RewriteJob()
+    }
+}
 
 if (Utils.isMainBranch(this)) {
     setupOptaplannerJob('main')
-}
-
-// Quarkus 3
-if (EnvUtils.isEnvironmentEnabled(this, 'quarkus-3')) {
-    setupPrQuarkus3RewriteJob()
-    setupStandaloneQuarkus3RewriteJob()
 }
 
 /////////////////////////////////////////////////////////////////
@@ -155,7 +175,6 @@ void createSetupBranchJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-apps', JobType.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Kogito Apps Init branch')
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
-        REPO_NAME: 'kogito-apps',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
@@ -187,7 +206,6 @@ void setupDeployJob(JobType jobType, String envName = '') {
         jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
     }
     jobParams.env.putAll([
-        REPO_NAME: 'kogito-apps',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
     ])
@@ -242,7 +260,6 @@ void setupPromoteJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-apps-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Apps Promote')
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
-        REPO_NAME: 'kogito-apps',
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
