@@ -10,4 +10,4 @@ project_version=$(mvn -q -Dexpression=project.version -DforceStdout help:evaluat
 new_version=$(echo ${project_version} | awk -F. -v OFS=. '{$1 += 1 ; print}')
 
 # Change version
-${mvn_cmd} -e -N -Dfull -DnewVersion=${new_version} -DallowSnapshots=true -DgenerateBackupPoms=false versions:set
+${mvn_cmd} -e -N -DnewVersion=${new_version} -DallowSnapshots=true -DgenerateBackupPoms=false versions:set
