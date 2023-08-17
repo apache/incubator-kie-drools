@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-core-bom</artifactId>
-    <version>8.43.0.Final</version>
+    <version>8.43.1-SNAPSHOT</version>
     <relativePath>../kie-core-bom/pom.xml</relativePath>
   </parent>
 
