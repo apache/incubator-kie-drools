@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 180
     strategy:
       matrix:
-        job_name: [ kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples ]
+        job_name: [ kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples, kie-jpmml-integration ]
         os: [ubuntu-latest]
         java-version: [11]
         maven-version: ['3.8.7']
@@ -39,8 +39,8 @@ jobs:
           - job_name: serverless-workflow-examples
             repository: kogito-examples
             env_KOGITO_EXAMPLES_SUBFOLDER_POM: serverless-workflow-examples/
-          # - job_name: kie-jpmml-integration
-          #   repository: kie-jpmml-integration
+          - job_name: kie-jpmml-integration
+            repository: kie-jpmml-integration
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.job_name }} (${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }})

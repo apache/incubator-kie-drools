@@ -169,9 +169,9 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
                 ],
-            // ], [
-            //     id: 'kie-jpmml-integration',
-            //     repository: 'kie-jpmml-integration'
+            ], [
+                id: 'kie-jpmml-integration',
+                repository: 'kie-jpmml-integration'
             ]
         ]
     ]
