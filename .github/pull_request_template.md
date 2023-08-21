@@ -71,10 +71,6 @@ How to retest this PR or trigger a specific build:
 - for a <b>specific native lts check</b>  
   Run native checks against quarkus lts branch
   Please add comment: <b>Jenkins (re)run [kogito-runtimes|kogito-apps|kogito-examples] native-lts</b>
- 
-- <b>Full Kogito testing</b> (with cloud images and operator BDD testing)  
-  Please add comment: <b>Jenkins run BDD</b>  
-  <b>This check should be used only if a big change is done as it takes time to run, need resources and one full BDD tests check can be done at a time ...</b>
 </details>
 
 <details>
