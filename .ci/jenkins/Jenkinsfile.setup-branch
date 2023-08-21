@@ -42,6 +42,7 @@ pipeline {
                     if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
+                    
                     dir(getRepoName()) {
                         checkoutRepo(getRepoName(), getBuildBranch())
                     }

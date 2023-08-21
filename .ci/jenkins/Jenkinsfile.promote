@@ -75,14 +75,16 @@ pipeline {
             }
             steps {
                 script {
-                    getMavenCommand()
-                        .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
-                        .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
-                        .inDirectory(getRepoName())
-                        .skipTests(true)
-                        .withProperty('full')
-                        .run('clean install')
-                    uploadFileMgmt(getRepoName())
+                    dir(getRepoName()) {
+                        getMavenCommand()
+                            .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
+                            .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+                            .skipTests(true)
+                            .withProperty('full')
+                            .run('clean install')
+                        
+                        uploadFileMgmt(getRepoName())
+                    }
                 }
             }
         }
@@ -208,13 +210,11 @@ MavenCommand getMavenCommand() {
     return mvnCmd
 }
 
-void uploadFileMgmt(String directory) {
+void uploadFileMgmt() {
     if (isNotTestingBuild()) {
         echo "upload binaries and docs for ${directory}"
-        dir(directory) {
-            sshagent(['drools-filemgmt']) {
-                sh "script/release/upload_filemgmt.sh ${getProjectVersion()}"
-            }
+        sshagent(['drools-filemgmt']) {
+            sh "script/release/upload_filemgmt.sh ${getProjectVersion()}"
         }
     } else {
         echo 'No uploadFileMgmt due to testing build'
