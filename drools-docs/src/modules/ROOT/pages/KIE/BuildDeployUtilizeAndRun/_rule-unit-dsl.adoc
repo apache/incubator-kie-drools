@@ -2,7 +2,21 @@
 
 = Rule Unit DSL
 
-In addition to the standard Rule Unit API, {PRODUCT} 8 offers an alternative way of writing rules in combination with Rule Unit. You can now define the rules for Rule Units using a dedicated set of Java APIs. Let's learn with comments on the example.
+In addition to the standard Rule Unit API, {PRODUCT} 8 offers an alternative way of writing rules in combination with Rule Unit.
+You can now define the rules for Rule Units using a dedicated set of Java APIs.
+
+TIP: As an end-user, you can think of the Rule Unit DSL as an alternative to DRL, in order to define your rules with an internal DSL using Java.
+This can be helpful if you are authoring rules as a {PRODUCT} end-user, but you are also proficient with Java:
+in that case, you now can define rules with DRL or Rule Unit DSL.
+
+CAUTION: The Rule Unit DSL is _not_ intended to be used a way to code-generate executable model code, nor to produce DRL files.
+The goal of the Rule Unit DSL is to programmatically invoke the exec model methods (at runtime).
+As a developer using {PRODUCT} for your application development
+(you do not write the rules yourself, you write the Java code to integrate {PRODUCT} in your app development for your end-users)
+you may find helpful to leverage _programmatically_ the Rule Unit DSL _only_ for very dynamic use-cases,
+that is when the rule is only known at runtime, and compile-time performance optimizations are not needed.
+
+Let's learn with comments on the example.
 
 [source,java]
 ----
