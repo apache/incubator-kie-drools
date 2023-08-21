@@ -91,8 +91,6 @@ boolean isNative(JenkinsFolder jobFolder) {
     return EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'native')
 }
 
-setupDeployJob(JobType.PULL_REQUEST, 'kogito-bdd')
-
 // PR checks
 KogitoJobUtils.createAllEnvironmentsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
 
@@ -121,8 +119,8 @@ setupNightlyQuarkusIntegrationJob('quarkus-lts', nightlyJobParamsGetter)
 setupNightlyQuarkusIntegrationJob('native-lts', nightlyJobParamsGetter)
 
 // Release jobs
-setupDeployJob(JobType.RELEASE)
-setupPromoteJob(JobType.RELEASE)
+setupReleaseDeployJob()
+setupReleasePromoteJob()
 
 // Update Optaplanner tools job
 if (isMainStream()) {
@@ -197,53 +195,31 @@ void createSetupBranchJob() {
     }
 }
 
-void setupDeployJob(JobType jobType, String envName = '') {
-    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-apps-deploy', jobType, envName, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Apps Deploy')
+void setupReleaseDeployJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-apps-deploy', JobType.RELEASE, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Apps Deploy')
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
-    if (jobType == JobType.PULL_REQUEST) {
-        jobParams.git.branch = '${BUILD_BRANCH_NAME}'
-        jobParams.git.author = '${GIT_AUTHOR}'
-        jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
-    }
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_URL}",
+        MAVEN_REPO_CREDS_ID: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_CREDS_ID}",
+
+        NEXUS_RELEASE_URL: "${MAVEN_NEXUS_RELEASE_URL}",
+        NEXUS_RELEASE_REPOSITORY_ID: "${MAVEN_NEXUS_RELEASE_REPOSITORY}",
+        NEXUS_STAGING_PROFILE_ID: "${MAVEN_NEXUS_STAGING_PROFILE_ID}",
+        NEXUS_BUILD_PROMOTION_PROFILE_ID: "${MAVEN_NEXUS_BUILD_PROMOTION_PROFILE_ID}",
     ])
-    if (jobType == JobType.PULL_REQUEST) {
-        jobParams.env.putAll([
-            MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_PR_CHECKS_REPOSITORY_URL}",
-            MAVEN_DEPLOY_REPOSITORY: "${MAVEN_PR_CHECKS_REPOSITORY_URL}",
-            MAVEN_REPO_CREDS_ID: "${MAVEN_PR_CHECKS_REPOSITORY_CREDS_ID}",
-        ])
-    } else {
-        jobParams.env.putAll([
-            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-
-            AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-            GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
-
-            MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-            MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_URL}",
-            MAVEN_REPO_CREDS_ID: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_CREDS_ID}",
-        ])
-        if (jobType == JobType.RELEASE) {
-            jobParams.env.putAll([
-                NEXUS_RELEASE_URL: "${MAVEN_NEXUS_RELEASE_URL}",
-                NEXUS_RELEASE_REPOSITORY_ID: "${MAVEN_NEXUS_RELEASE_REPOSITORY}",
-                NEXUS_STAGING_PROFILE_ID: "${MAVEN_NEXUS_STAGING_PROFILE_ID}",
-                NEXUS_BUILD_PROMOTION_PROFILE_ID: "${MAVEN_NEXUS_BUILD_PROMOTION_PROFILE_ID}",
-            ])
-        }
-    }
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            if (jobType == JobType.PULL_REQUEST) {
-                // author can be changed as param only for PR behavior, due to source branch/target, else it is considered as an env
-                stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-            }
 
             booleanParam('SKIP_TESTS', false, 'Skip tests')
 
@@ -256,8 +232,8 @@ void setupDeployJob(JobType jobType, String envName = '') {
     }
 }
 
-void setupPromoteJob(JobType jobType) {
-    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-apps-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Apps Promote')
+void setupReleasePromoteJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-apps-promote', JobType.RELEASE, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Apps Promote')
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         PROPERTIES_FILE_NAME: 'deployment.properties',
