@@ -20,13 +20,13 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.ws.rs.core.Response;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.jandex.Type;
-import org.jboss.jandex.Type.Kind;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.quarkus.serverless.workflow.ClassAnnotatedWorkflowHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
@@ -88,7 +88,7 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
         BlockStmt body = executeMethod.createBody();
         MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr(OPEN_API_REF), m.name());
         final NameExpr parameters = new NameExpr(WORK_ITEM_PARAMETERS);
-        if (m.returnType().kind() == Kind.VOID) {
+        if (m.returnType().name().equals(DotName.createSimple(Response.class))) {
             body.addStatement(methodCallExpr).addStatement(new ReturnStmt(new NullLiteralExpr()));
         } else {
             body.addStatement(new ReturnStmt(methodCallExpr));
