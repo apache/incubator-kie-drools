@@ -12,6 +12,7 @@ import org.kie.jenkins.jobdsl.model.JenkinsFolder
 import org.kie.jenkins.jobdsl.model.JobType
 import org.kie.jenkins.jobdsl.utils.EnvUtils
 import org.kie.jenkins.jobdsl.utils.JobParamsUtils
+import org.kie.jenkins.jobdsl.utils.VersionUtils
 import org.kie.jenkins.jobdsl.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.KogitoJobUtils
 import org.kie.jenkins.jobdsl.Utils
@@ -136,7 +137,7 @@ if (isMainStream()) {
 }
 
 if (Utils.isMainBranch(this)) {
-    setupOptaplannerJob('main')
+    setupOptaplannerJob(VersionUtils.getProjectTargetBranch('optaplanner', Utils.getMainBranch(this), Utils.getRepoName(this)))
 }
 
 /////////////////////////////////////////////////////////////////
