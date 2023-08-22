@@ -22,6 +22,11 @@ public interface ReliableGlobalResolverFactory extends KieService {
 
     ReliableGlobalResolver createReliableGlobalResolver(Storage<String, Object> storage);
 
+    class Tag {
+
+        static String reliabilityPersistanceLayer = null; // package access for test purposes
+    }
+
     class Holder {
 
         private static final ReliableGlobalResolverFactory INSTANCE = createInstance();
@@ -30,7 +35,7 @@ public interface ReliableGlobalResolverFactory extends KieService {
         }
 
         static ReliableGlobalResolverFactory createInstance() {
-            ReliableGlobalResolverFactory factory = KieService.load(ReliableGlobalResolverFactory.class);
+            ReliableGlobalResolverFactory factory = KieService.loadWithTag(ReliableGlobalResolverFactory.class, Tag.reliabilityPersistanceLayer);
             if (factory == null) {
                 return new ReliableGlobalResolverFactoryImpl();
             }
@@ -44,8 +49,6 @@ public interface ReliableGlobalResolverFactory extends KieService {
 
     static class ReliableGlobalResolverFactoryImpl implements ReliableGlobalResolverFactory {
 
-        static int servicePriorityValue = 0; // package access for test purposes
-
         @Override
         public ReliableGlobalResolver createReliableGlobalResolver(Storage<String, Object> storage) {
             return new ReliableGlobalResolver(storage);
@@ -53,7 +56,12 @@ public interface ReliableGlobalResolverFactory extends KieService {
 
         @Override
         public int servicePriority() {
-            return servicePriorityValue;
+            return 0;
+        }
+
+        @Override
+        public String serviceTag() {
+            return "core";
         }
     }
 }

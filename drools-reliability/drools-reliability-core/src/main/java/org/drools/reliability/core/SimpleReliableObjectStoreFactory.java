@@ -22,6 +22,11 @@ public interface SimpleReliableObjectStoreFactory extends KieService {
 
     SimpleReliableObjectStore createSimpleReliableObjectStore(Storage<Long, StoredObject> storage);
 
+    class Tag {
+
+        static String reliabilityPersistanceLayer = null; // package access for test purposes
+    }
+
     class Holder {
 
         private static final SimpleReliableObjectStoreFactory INSTANCE = createInstance();
@@ -30,7 +35,7 @@ public interface SimpleReliableObjectStoreFactory extends KieService {
         }
 
         static SimpleReliableObjectStoreFactory createInstance() {
-            SimpleReliableObjectStoreFactory factory = KieService.load(SimpleReliableObjectStoreFactory.class);
+            SimpleReliableObjectStoreFactory factory = KieService.loadWithTag(SimpleReliableObjectStoreFactory.class, Tag.reliabilityPersistanceLayer);
             if (factory == null) {
                 return new SimpleSerializationReliableObjectStoreFactory();
             }

@@ -13,15 +13,23 @@
  * limitations under the License.
  */
 
-package org.drools.reliability.h2mvstore;
+package org.drools.reliability.core;
 
-public class H2MVStoreServicePrioritySupport {
+public class KieServiceTagSupport {
 
-    private H2MVStoreServicePrioritySupport() {
+    private KieServiceTagSupport() {
         // utils class
     }
 
-    public static void setH2MVStoreStorageManagerFactoryPriority(int priority) {
-        H2MVStoreStorageManagerFactory.servicePriorityValue = priority;
+    public static void setReliableGlobalResolverFactoryTag(String tag) {
+        ReliableGlobalResolverFactory.Tag.reliabilityPersistanceLayer = tag;
+    }
+
+    public static void setSimpleReliableObjectStoreFactoryTag(String tag) {
+        SimpleReliableObjectStoreFactory.Tag.reliabilityPersistanceLayer = tag;
+    }
+
+    public static void setStorageManagerFactoryTag(String tag) {
+        StorageManagerFactory.Tag.reliabilityPersistanceLayer = tag;
     }
 }

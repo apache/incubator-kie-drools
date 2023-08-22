@@ -19,14 +19,17 @@ import org.drools.core.common.Storage;
 
 public class SimpleSerializationReliableObjectStoreFactory implements SimpleReliableObjectStoreFactory {
 
-    static int servicePriorityValue = 0; // package access for test purposes
-
     public SimpleReliableObjectStore createSimpleReliableObjectStore(Storage<Long, StoredObject> storage) {
         return new SimpleSerializationReliableObjectStore(storage);
     }
 
     @Override
     public int servicePriority() {
-        return servicePriorityValue;
+        return 0;
+    }
+
+    @Override
+    public String serviceTag() {
+        return "core";
     }
 }

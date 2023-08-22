@@ -27,14 +27,20 @@ public interface StorageManagerFactory extends KieService {
 
     StorageManager getStorageManager();
 
+    class Tag {
+
+        static String reliabilityPersistanceLayer = null; // package access for test purposes
+    }
+
     class Holder {
+
         private static final StorageManagerFactory INSTANCE = createInstance();
 
         private Holder() {
         }
 
         static StorageManagerFactory createInstance() {
-            StorageManagerFactory factory = KieService.load( StorageManagerFactory.class );
+            StorageManagerFactory factory = KieService.loadWithTag(StorageManagerFactory.class, Tag.reliabilityPersistanceLayer);
             if (factory == null) {
                 throwExceptionForMissingRuntime();
                 return null;
