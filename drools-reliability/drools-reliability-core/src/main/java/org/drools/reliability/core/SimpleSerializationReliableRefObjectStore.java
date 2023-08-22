@@ -19,28 +19,27 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Storage;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SimpleSerializationReliableRefObjectStore extends SimpleSerializationReliableObjectStore {
 
     private Map<String, Long> uniqueObjectTypesInStore;  // object type name, occurances
 
-    public SimpleSerializationReliableRefObjectStore() {
-        throw new UnsupportedOperationException("This constructor should never be called");
-    }
-
     public SimpleSerializationReliableRefObjectStore(Storage<Long, StoredObject> storage) {
         super(storage);
         uniqueObjectTypesInStore = new HashMap<>();
-        if (storage.size() > 0) {
+        if (storage.isEmpty()) {
+            this.storage = storage;
+        } else {
             updateObjectTypesList();
+            this.storage = updateObjectReferences(storage);
         }
-        this.storage = storage.size() > 0 ? updateObjectReferences(storage) : storage;
     }
 
     private Storage<Long, StoredObject> updateObjectReferences(Storage<Long, StoredObject> storage) {
@@ -124,17 +123,16 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
 
     private void updateObjectTypesList() {
         // list of unique object types in storage
-        List<String> uTypeNames = new ArrayList<>();
+        Set<String> uTypeNames = new HashSet<String>();
         storage.values().forEach(sObject -> {
-            if (!uTypeNames.contains(sObject.getObject().getClass().getName())) {
-                uTypeNames.add(sObject.getObject().getClass().getName());
-            }
+            uTypeNames.add(sObject.getObject().getClass().getName());
         });
-        // add unique object types + their occurrences in  uniqueObjectTypesInStore
-        uTypeNames.forEach(uType -> {
-            uniqueObjectTypesInStore.put(uType,
-                    storage.values().stream().filter(sObject -> sObject.getObject().getClass().getName().equals(uType)).count());
-        });
+        // add unique object types + their occurrences in the uniqueObjectTypesInStore
+        uniqueObjectTypesInStore.putAll(storage.values().stream()
+                .map(sObject -> sObject.getObject().getClass().getName())
+                .collect(Collectors.groupingBy(Object::toString, Collectors.counting()))
+                .entrySet().stream().filter(entry -> uTypeNames.contains((entry.getKey())))
+                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 }
 
