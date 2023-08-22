@@ -137,7 +137,7 @@ if (isMainStream()) {
 }
 
 if (Utils.isMainBranch(this)) {
-    setupOptaplannerJob(VersionUtils.getProjectTargetBranch('optaplanner', Utils.getMainBranch(this), Utils.getRepoName(this)))
+    setupOptaplannerJob(VersionUtils.getProjectTargetBranch('optaplanner', Utils.getGitMainBranch(this), Utils.getRepoName(this)))
 }
 
 /////////////////////////////////////////////////////////////////
