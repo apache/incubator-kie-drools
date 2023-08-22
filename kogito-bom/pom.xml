@@ -334,6 +334,25 @@
             <type>pom</type>
         </dependency>
 
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-quarkus-microprofile-config-service-catalog</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-quarkus-microprofile-config-service-catalog</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-quarkus-microprofile-config-service-catalog-deployment</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-addons-quarkus-common-deployment</artifactId>

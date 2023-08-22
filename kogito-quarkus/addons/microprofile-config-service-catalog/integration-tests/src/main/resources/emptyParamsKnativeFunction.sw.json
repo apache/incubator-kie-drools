@@ -1,0 +1,28 @@
+{
+  "id": "emptyParamsKnativeFunction",
+  "version": "1.0",
+  "name": "Test Knative function",
+  "description": "This workflow tests a Knative function",
+  "start": "invokeFunction",
+  "functions": [
+    {
+      "name": "greet",
+      "type": "custom",
+      "operation": "knative:services.v1.serving.knative.dev/default/serverless-workflow-greeting-quarkus?path=/emptyParamsKnativeFunction"
+    }
+  ],
+  "states": [
+    {
+      "name": "invokeFunction",
+      "type": "operation",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "greet"
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}
