@@ -71,6 +71,7 @@ repositories:
 - name: kie-jpmml-integration
 productized_repositories:
 - name: drools
+- name: drools-website
 git:
   author:
     name: kiegroup
