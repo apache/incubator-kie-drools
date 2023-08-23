@@ -14,18 +14,18 @@
 
 package org.drools.serialization.protobuf;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.process.WorkItem;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
+
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 public class OldOutputMarshallerMethods {
 
@@ -80,7 +80,6 @@ public class OldOutputMarshallerMethods {
             stream.writeLong( efh.getStartTimestamp() );
             stream.writeLong( efh.getDuration() );
             stream.writeBoolean( efh.isExpired() );
-            stream.writeLong( efh.getActivationsCount() );
         }
 
         //context.out.println( "Object : int:" + handle.getId() + " long:" + handle.getRecency() );

@@ -34,8 +34,8 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleFlowGroup;
-import org.drools.core.concurrent.ParallelGroupEvaluator;
 import org.drools.core.concurrent.GroupEvaluator;
+import org.drools.core.concurrent.ParallelGroupEvaluator;
 import org.drools.core.concurrent.SequentialGroupEvaluator;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.impl.InternalRuleBase;
@@ -52,7 +52,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.consequence.ConsequenceExceptionHandler;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
@@ -314,7 +313,6 @@ public class DefaultAgenda implements InternalAgenda {
             if (internalMatch.getActivationGroupNode() != null ) {
                 internalMatch.getActivationGroupNode().getActivationGroup().removeActivation(internalMatch);
             }
-            (( Tuple ) internalMatch).decreaseActivationCountForEvents();
 
             workingMemory.getAgendaEventSupport().fireActivationCancelled(internalMatch,
                                                                           workingMemory,

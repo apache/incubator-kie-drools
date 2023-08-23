@@ -46,14 +46,14 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
     public RightTupleImpl(InternalFactHandle handle,
                       RightTupleSink sink) {
         this( handle );
-        this.sink = sink;
+        setSink(sink);
 
         // add to end of RightTuples on handle
         handle.addLastRightTuple( this );
     }
 
     public RightTupleSink getTupleSink() {
-        return (RightTupleSink) sink;
+        return (RightTupleSink) getSink();
     }
     
     public void reAdd() {
@@ -71,7 +71,7 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
         this.memory = null;
         this.firstChild = null;
         this.lastChild = null;
-        this.sink = null;
+        setSink(null);
     }
 
     public void unlinkFromLeftParent() {
@@ -249,7 +249,7 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
 
     @Override
     public ObjectTypeNode.Id getInputOtnId() {
-        return sink != null ? getTupleSink().getRightInputOtnId() : null;
+        return getSink() != null ? getTupleSink().getRightInputOtnId() : null;
     }
 
     @Override

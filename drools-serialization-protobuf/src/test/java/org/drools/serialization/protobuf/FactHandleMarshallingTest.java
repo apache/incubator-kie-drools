@@ -143,12 +143,10 @@ public class FactHandleMarshallingTest {
         long startTimeStamp = 0;
         long duration = 0;
         boolean expired = false;
-        long activationsCount = 0;
         if (type == 2) {
             startTimeStamp = context.readLong();
             duration = context.readLong();
             expired = context.readBoolean();
-            activationsCount = context.readLong();
         }
 
         int strategyIndex = context.readInt();
@@ -212,7 +210,6 @@ public class FactHandleMarshallingTest {
                 handle = new DefaultEventHandle(id, object, recency, startTimeStamp, duration,
                                                 (WorkingMemoryEntryPoint) entryPoint );
                 ( (DefaultEventHandle) handle ).setExpired(expired);
-                ( (DefaultEventHandle) handle ).setActivationsCount(activationsCount);
                 break;
             }
             default: {

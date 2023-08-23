@@ -16,15 +16,15 @@
 
 package org.drools.core.reteoo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.runtime.rule.FactHandle;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * A parent class for all specific LeftTuple specializations
@@ -67,7 +67,7 @@ public class LeftTuple
                      Sink sink,
                      boolean leftTupleMemoryEnabled) {
         setFactHandle( factHandle );
-        this.sink = sink;
+        setSink(sink);
         if ( leftTupleMemoryEnabled ) {
             factHandle.addTupleInPosition( this );
         }
@@ -80,7 +80,7 @@ public class LeftTuple
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple.getNextParentWithHandle();
         this.leftParent = leftTuple;
-        this.sink = sink;
+        setSink(sink);
     }
 
     public LeftTuple(LeftTuple leftTuple,
@@ -102,7 +102,7 @@ public class LeftTuple
             leftTuple.setLastChild( this );
         }
 
-        this.sink = sink;
+        setSink(sink);
     }
 
     public LeftTuple(LeftTuple leftTuple,
@@ -133,7 +133,7 @@ public class LeftTuple
             rightTuple.setFirstChild( this );
         }
         rightTuple.setLastChild( this );
-        this.sink = sink;
+        setSink(sink);
     }
 
     public LeftTuple(LeftTuple leftTuple,
@@ -205,7 +205,7 @@ public class LeftTuple
             }
         }
 
-        this.sink = sink;
+        setSink(sink);
     }
 
     public LeftTuple getNextParentWithHandle() {
@@ -344,14 +344,14 @@ public class LeftTuple
 
     @Override
     public LeftTupleSink getTupleSink() {
-        return (LeftTupleSink)sink;
+        return (LeftTupleSink)getSink();
     }
 
     /* Had to add the set method because sink adapters must override
      * the tuple sink set when the tuple was created.
      */
     public void setLeftTupleSink( LeftTupleSink sink ) {
-        this.sink = sink;
+        setSink(sink);
     }
 
     public LeftTuple getLeftParent() {
@@ -407,7 +407,7 @@ public class LeftTuple
 
     public FactHandle[] toFactHandles() {
         // always use the count of the node that created join (not the sink target)
-        FactHandle[] handles = new FactHandle[((LeftTupleSinkNode)sink).getLeftTupleSource().getObjectCount()];
+        FactHandle[] handles = new FactHandle[((LeftTupleSinkNode)getSink()).getLeftTupleSource().getObjectCount()];
         LeftTuple entry = (LeftTuple) skipEmptyHandles();
         for(int i = handles.length-1; i >= 0; i--) {
             handles[i] = entry.getFactHandle();
@@ -418,7 +418,7 @@ public class LeftTuple
 
     public Object[] toObjects(boolean reverse) {
         // always use the count of the node that created join (not the sink target)
-        Object[] objs = new Object[((LeftTupleSinkNode)sink).getLeftTupleSource().getObjectCount()];
+        Object[] objs = new Object[((LeftTupleSinkNode)getSink()).getLeftTupleSource().getObjectCount()];
         LeftTuple entry = (LeftTuple) skipEmptyHandles();
 
         if (!reverse) {
@@ -601,8 +601,8 @@ public class LeftTuple
         }
         builder.append( Arrays.toString( ids ) )
                .append( " sink=" )
-               .append( this.sink.getClass().getSimpleName() )
-               .append( "(" ).append( sink.getId() ).append( ")" );
+               .append( this.getSink().getClass().getSimpleName() )
+               .append( "(" ).append( getSink().getId() ).append( ")" );
         return  builder.toString();
     }
 
@@ -619,7 +619,7 @@ public class LeftTuple
 
         setFactHandle( original.getFactHandle() );
         setPropagationContext( original.getPropagationContext() );
-        this.sink = sink;
+        setSink(sink);
     }
 
     @Override
@@ -629,12 +629,12 @@ public class LeftTuple
 
     @Override
     public ObjectTypeNode.Id getInputOtnId() {
-        return sink != null ? getTupleSink().getLeftInputOtnId() : null;
+        return getSink() != null ? getTupleSink().getLeftInputOtnId() : null;
     }
 
     @Override
     public LeftTupleSource getTupleSource() {
-        return sink != null ? getTupleSink().getLeftTupleSource() : null;
+        return getSink() != null ? getTupleSink().getLeftTupleSource() : null;
     }
 
     public short getStagedTypeForQueries() {

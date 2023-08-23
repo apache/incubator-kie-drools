@@ -37,7 +37,7 @@ public abstract class AbstractTuple implements Tuple {
     private Tuple   previous;
     private AbstractTuple   next;
 
-    protected Sink sink;
+    private Sink sink;
 
     protected Tuple handlePrevious;
     protected Tuple handleNext;
@@ -132,26 +132,6 @@ public abstract class AbstractTuple implements Tuple {
     }
 
     @Override
-    public void increaseActivationCountForEvents() {
-        for ( Tuple entry = skipEmptyHandles(); entry != null; entry = entry.getParent() ) {
-            if(entry.getFactHandle().isEvent()) {
-                // can be null for eval, not and exists that have no right input
-                ((DefaultEventHandle)entry.getFactHandle()).increaseActivationsCount();
-            }
-        }
-    }
-
-    @Override
-    public void decreaseActivationCountForEvents() {
-        for ( Tuple entry = skipEmptyHandles(); entry != null; entry = entry.getParent() ) {
-            if(entry.getFactHandle().isEvent()) {
-                // can be null for eval, not and exists that have no right input
-                ((DefaultEventHandle)entry.getFactHandle()).decreaseActivationsCount();
-            }
-        }
-    }
-
-    @Override
     public Tuple getTuple(int index) {
         Tuple entry = this;
         while ( entry.getIndex() != index) {
@@ -199,5 +179,13 @@ public abstract class AbstractTuple implements Tuple {
 
     public void setExpired() {
         this.expired = true;
+    }
+
+    protected Sink getSink() {
+        return sink;
+    }
+
+    protected void setSink(Sink sink) {
+        this.sink = sink;
     }
 }

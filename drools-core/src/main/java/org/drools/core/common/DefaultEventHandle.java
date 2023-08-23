@@ -34,7 +34,6 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
     private long              duration;
     private boolean           expired;
     private boolean           pendingRemoveFromStore;
-    private long              activationsCount;
     private int               otnCount;
 
     private DefaultEventHandle linkedFactHandle;
@@ -190,38 +189,6 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
         }
     }
 
-    public long getActivationsCount() {
-        if ( linkedFactHandle != null ) {
-            return linkedFactHandle.getActivationsCount();
-        } else {
-            return activationsCount;
-        }
-    }
-    
-    public void setActivationsCount(long activationsCount) {
-        if ( linkedFactHandle != null ) {
-            linkedFactHandle.setActivationsCount( activationsCount );
-        }  else {
-            this.activationsCount = activationsCount;
-        }
-    }
-
-    public void increaseActivationsCount() {
-        if ( linkedFactHandle != null ) {
-            linkedFactHandle.increaseActivationsCount();
-        }  else {
-            this.activationsCount++;
-        }
-    }
-
-    public void decreaseActivationsCount() {
-        if ( linkedFactHandle != null ) {
-            linkedFactHandle.decreaseActivationsCount();
-        }  else {
-            this.activationsCount--;
-        }
-    }
-
     public void increaseOtnCount() {
         otnCount++;
     }
@@ -246,7 +213,6 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
                                                           getStartTimestamp(),
                                                           getDuration(),
                                                           getEntryPointId() );
-        clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
         clone.setEqualityKey( getEqualityKey() );
@@ -264,7 +230,6 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
                                                           getStartTimestamp(),
                                                           getDuration(),
                                                           getEntryPointId() );
-        clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
         clone.setEqualityKey( getEqualityKey() );

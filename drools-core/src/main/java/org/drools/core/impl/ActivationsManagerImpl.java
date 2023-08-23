@@ -43,7 +43,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.util.StringUtils;
@@ -189,7 +188,6 @@ public class ActivationsManagerImpl implements ActivationsManager {
             if (internalMatch.getActivationGroupNode() != null ) {
                 internalMatch.getActivationGroupNode().getActivationGroup().removeActivation(internalMatch);
             }
-            ((Tuple) internalMatch).decreaseActivationCountForEvents();
 
             getAgendaEventSupport().fireActivationCancelled(internalMatch, reteEvaluator, MatchCancelledCause.WME_MODIFY);
         }

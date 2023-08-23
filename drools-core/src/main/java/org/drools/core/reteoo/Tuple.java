@@ -103,10 +103,6 @@ public interface Tuple extends BaseTuple, Serializable, Entry<AbstractTuple> {
 
     void setMemory( TupleList memory );
 
-    void increaseActivationCountForEvents();
-
-    void decreaseActivationCountForEvents();
-
     Tuple getRootTuple();
 
     Tuple skipEmptyHandles();

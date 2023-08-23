@@ -126,7 +126,6 @@ public class PhreakRuleTerminalNode {
         }
 
         executor.addLeftTuple( leftTuple );
-        leftTuple.increaseActivationCountForEvents(); // increased here, decreased in Agenda's cancelActivation and fireActivation
 
         activationsManager.addItemToActivationGroup( rtnLeftTuple );
         if ( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled() ) {
