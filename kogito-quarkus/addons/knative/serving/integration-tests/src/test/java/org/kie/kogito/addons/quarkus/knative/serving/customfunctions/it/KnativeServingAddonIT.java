@@ -37,6 +37,8 @@ import io.restassured.http.ContentType;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -83,6 +85,22 @@ class KnativeServingAddonIT {
         if (wireMockServer != null) {
             wireMockServer.stop();
         }
+    }
+
+    @Test
+    void executeHttpGet() {
+        mockExecuteHttpGetEndpoint();
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body("{\"name\": \"hbelmiro\" }").when()
+                .post("/getKnativeFunction")
+                .then()
+                .statusCode(HttpURLConnection.HTTP_CREATED)
+                .body("workflowdata.message", is("Hello"));
+
+        wireMockServer.verify(getRequestedFor(urlEqualTo("/plainJsonFunction?name=hbelmiro")));
     }
 
     @Test
@@ -299,6 +317,15 @@ class KnativeServingAddonIT {
                 .withRequestBody(equalToJson(JsonNodeFactory.instance.objectNode()
                         .put("name", "hbelmiro")
                         .toString()))
+                .willReturn(aResponse()
+                        .withStatus(HttpURLConnection.HTTP_OK)
+                        .withHeader("Content-Type", "application/json")
+                        .withJsonBody(JsonNodeFactory.instance.objectNode()
+                                .put("message", "Hello"))));
+    }
+
+    private void mockExecuteHttpGetEndpoint() {
+        wireMockServer.stubFor(get(urlEqualTo("/plainJsonFunction?name=hbelmiro"))
                 .willReturn(aResponse()
                         .withStatus(HttpURLConnection.HTTP_OK)
                         .withHeader("Content-Type", "application/json")

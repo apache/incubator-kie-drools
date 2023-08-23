@@ -15,15 +15,25 @@
  */
 package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+
+import io.vertx.core.http.HttpMethod;
 
 public final class Operation {
+
+    private static final Set<HttpMethod> SUPPORTED_METHODS = Set.of(HttpMethod.POST, HttpMethod.GET);
+
+    private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.POST;
 
     static final String CLOUD_EVENT_PARAMETER_NAME = "asCloudEvent";
 
     static final String PATH_PARAMETER_NAME = "path";
+
+    static final String METHOD_PARAMETER_NAME = "method";
 
     private final String service;
 
@@ -31,10 +41,25 @@ public final class Operation {
 
     private final boolean isCloudEvent;
 
+    private final HttpMethod httpMethod;
+
     private Operation(Builder builder) {
         this.service = Objects.requireNonNull(builder.service);
         this.path = builder.path != null ? builder.path : "/";
         this.isCloudEvent = builder.isCloudEvent;
+        this.httpMethod = builder.httpMethod;
+        validate(this);
+    }
+
+    private static void validate(Operation operation) {
+        if (!SUPPORTED_METHODS.contains(operation.getHttpMethod())) {
+            throw new UnsupportedOperationException(
+                    MessageFormat.format("Knative custom function doesn''t support the {0} HTTP method. Supported methods are: {1}.", operation.getHttpMethod(), SUPPORTED_METHODS));
+        }
+
+        if (operation.isCloudEvent() && !operation.getHttpMethod().equals(HttpMethod.POST)) {
+            throw new UnsupportedOperationException(MessageFormat.format("Knative custom function can only send CloudEvents through POST method. Method used: {0}", operation.getHttpMethod()));
+        }
     }
 
     public String getService() {
@@ -49,6 +74,10 @@ public final class Operation {
         return isCloudEvent;
     }
 
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
+    }
+
     public static Operation parse(String value) {
         String[] parts = value.split("\\?", 2);
 
@@ -61,8 +90,9 @@ public final class Operation {
 
         return builder()
                 .withService(parts[0])
-                .withPath(params.get("path"))
+                .withPath(params.get(PATH_PARAMETER_NAME))
                 .withIsCloudEvent(Boolean.parseBoolean(params.get(CLOUD_EVENT_PARAMETER_NAME)))
+                .withMethod(HttpMethod.valueOf(params.getOrDefault(METHOD_PARAMETER_NAME, DEFAULT_HTTP_METHOD.name()).toUpperCase()))
                 .build();
     }
 
@@ -81,12 +111,23 @@ public final class Operation {
         Operation operation = (Operation) o;
         return isCloudEvent == operation.isCloudEvent
                 && Objects.equals(service, operation.service)
-                && Objects.equals(path, operation.path);
+                && Objects.equals(path, operation.path)
+                && Objects.equals(httpMethod, operation.httpMethod);
+    }
+
+    @Override
+    public String toString() {
+        return "Operation{" +
+                "service='" + service + '\'' +
+                ", path='" + path + '\'' +
+                ", isCloudEvent=" + isCloudEvent +
+                ", httpMethod=" + httpMethod +
+                '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(service, path, isCloudEvent);
+        return Objects.hash(service, path, isCloudEvent, httpMethod);
     }
 
     public static class Builder {
@@ -96,6 +137,8 @@ public final class Operation {
         private String path;
 
         private boolean isCloudEvent;
+
+        private HttpMethod httpMethod = DEFAULT_HTTP_METHOD;
 
         private Builder() {
         }
@@ -112,6 +155,11 @@ public final class Operation {
 
         public Builder withIsCloudEvent(boolean isCloudEvent) {
             this.isCloudEvent = isCloudEvent;
+            return this;
+        }
+
+        public Builder withMethod(HttpMethod httpMethod) {
+            this.httpMethod = httpMethod;
             return this;
         }
 

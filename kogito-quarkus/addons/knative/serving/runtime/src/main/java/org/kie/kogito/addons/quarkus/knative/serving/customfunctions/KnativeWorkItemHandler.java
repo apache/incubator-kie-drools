@@ -43,8 +43,6 @@ public final class KnativeWorkItemHandler extends RestWorkItemHandler {
 
     public static final String PAYLOAD_FIELDS_PROPERTY_NAME = "knative_function_payload_fields";
 
-    public static final String PAYLOAD_FIELDS_DELIMITER = ";";
-
     public static final String CLOUDEVENT_SENT_AS_PLAIN_JSON_ERROR_MESSAGE = "A Knative custom function argument cannot be a CloudEvent when the 'asCloudEvent' property are not set to 'true'";
 
     private final KubernetesServiceCatalog kubernetesServiceCatalog;
