@@ -18,32 +18,12 @@ package org.drools.core.impl;
 
 import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.core.common.ActivationGroupImpl;
-import org.drools.core.common.ActivationGroupNode;
-import org.drools.core.common.ActivationsFilter;
-import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.AgendaGroupsManager;
-import org.drools.core.common.InternalActivationGroup;
-import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.*;
 import org.drools.core.concurrent.GroupEvaluator;
 import org.drools.core.concurrent.SequentialGroupEvaluator;
 import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.phreak.ExecutableEntry;
-import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.phreak.PropagationList;
-import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.phreak.RuleExecutor;
-import org.drools.core.phreak.SynchronizedPropagationList;
-import org.drools.core.reteoo.AgendaComponentFactory;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.phreak.*;
+import org.drools.core.reteoo.*;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.util.StringUtils;
@@ -51,11 +31,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.rule.AgendaFilter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ActivationsManagerImpl implements ActivationsManager {
@@ -189,7 +165,6 @@ public class ActivationsManagerImpl implements ActivationsManager {
             if (internalMatch.getActivationGroupNode() != null ) {
                 internalMatch.getActivationGroupNode().getActivationGroup().removeActivation(internalMatch);
             }
-            ((Tuple) internalMatch).decreaseActivationCountForEvents();
 
             getAgendaEventSupport().fireActivationCancelled(internalMatch, reteEvaluator, MatchCancelledCause.WME_MODIFY);
         }

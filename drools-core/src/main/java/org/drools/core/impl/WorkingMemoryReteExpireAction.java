@@ -15,12 +15,7 @@
 
 package org.drools.core.impl;
 
-import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.common.*;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -88,19 +83,14 @@ public class WorkingMemoryReteExpireAction
             ObjectTypeNode.expireRightTuple(rt);
         } );
 
-        expireFactHandle( reteEvaluator, factHandle );
+        expireFactHandle( factHandle );
     }
 
-    private static void expireFactHandle( ReteEvaluator reteEvaluator, DefaultEventHandle factHandle) {
+    private static void expireFactHandle( DefaultEventHandle factHandle) {
         factHandle.decreaseOtnCount();
         if (factHandle.getOtnCount() <= 0) {
             factHandle.setExpired( true );
-            if (factHandle.getActivationsCount() == 0) {
-                String epId = factHandle.getEntryPointName();
-                ( (InternalWorkingMemoryEntryPoint) reteEvaluator.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
-            } else {
-                factHandle.setPendingRemoveFromStore( true );
-            }
+            factHandle.setPendingRemoveFromStore( true );
         }
     }
 
@@ -156,7 +146,7 @@ public class WorkingMemoryReteExpireAction
             });
 
             if (isMainPartition()) {
-                expireFactHandle( reteEvaluator, factHandle );
+                expireFactHandle( factHandle );
             }
         }
 

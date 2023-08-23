@@ -16,23 +16,18 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.consequence.Consequence;
+import org.drools.core.common.*;
+import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.rule.consequence.InternalMatch;
+import org.kie.api.runtime.rule.FactHandle;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import org.drools.core.common.ActivationGroupNode;
-import org.drools.core.common.ActivationNode;
-import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.PropagationContext;
-import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.consequence.Consequence;
-import org.drools.core.rule.consequence.InternalMatch;
-import org.kie.api.runtime.rule.FactHandle;
 
 public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatch {
     private static final long serialVersionUID = 540l;
@@ -58,6 +53,8 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     protected         RuleAgendaItem                                 ruleAgendaItem;
 
     private Runnable callback;
+
+    private RuleImpl rule;
 
     public RuleTerminalNodeLeftTuple() {
         // constructor needed for serialisation
@@ -133,18 +130,24 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
         this.matched = true;
     }
 
+    @Override
+    protected void setSink(Sink sink) {
+        super.setSink(sink);
+        this.rule = getTerminalNode().getRule();
+    }
+
     /**
      * Retrieve the rule.
      *
      * @return The rule.
      */
     public RuleImpl getRule() {
-        return getTerminalNode().getRule();
+        return this.rule;
     }
 
     public Consequence getConsequence() {
         String consequenceName = ((RuleTerminalNode) getTerminalNode()).getConsequenceName();
-        return consequenceName.equals(RuleImpl.DEFAULT_CONSEQUENCE_NAME) ? getTerminalNode().getRule().getConsequence() : getTerminalNode().getRule().getNamedConsequence(consequenceName);
+        return consequenceName.equals(RuleImpl.DEFAULT_CONSEQUENCE_NAME) ? getRule().getConsequence() : getRule().getNamedConsequence(consequenceName);
     }
 
     /**
