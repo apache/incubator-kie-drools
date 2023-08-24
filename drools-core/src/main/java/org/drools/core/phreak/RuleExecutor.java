@@ -270,7 +270,10 @@ public class RuleExecutor {
         activationsManager.evaluateEagerList();
 
         RuleAgendaItem nextRule = activationsManager.peekNextRule();
-        return nextRule != null && (!ruleAgendaItem.getAgendaGroup().equals( nextRule.getAgendaGroup() ) || !isHigherSalience(nextRule));
+        if (nextRule == ruleAgendaItem || nextRule == null) {
+            return false;
+        }
+        return !ruleAgendaItem.getAgendaGroup().equals( nextRule.getAgendaGroup() ) || !isHigherSalience(nextRule);
     }
 
     private boolean isHigherSalience(RuleAgendaItem nextRule) {

@@ -15,12 +15,12 @@
 
 package org.drools.core.phreak;
 
-import java.util.Date;
-import java.util.List;
-
+import org.drools.base.common.NetworkNode;
+import org.drools.base.time.JobHandle;
+import org.drools.base.time.Trigger;
+import org.drools.base.time.impl.Timer;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.base.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
@@ -36,11 +36,8 @@ import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
-import org.drools.base.time.JobHandle;
 import org.drools.core.time.TimerService;
-import org.drools.base.time.Trigger;
 import org.drools.core.time.impl.DefaultJobHandle;
-import org.drools.base.time.impl.Timer;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.definition.rule.Rule;
@@ -48,6 +45,9 @@ import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.List;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
@@ -164,7 +164,7 @@ public class PhreakTimerNode {
         }
         for ( LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            PropagationContext pctx = leftTuple.findMostRecentPropagationContext();
+            PropagationContext pctx = leftTuple.getPropagationContext();
 
             Object obj = leftTuple.getContextObject();
             if (obj instanceof DefaultJobHandle) {

@@ -16,32 +16,32 @@
 
 package org.drools.core.reteoo;
 
-import java.util.List;
-
+import org.drools.base.definitions.rule.impl.QueryImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.QueryArgument;
+import org.drools.base.rule.QueryElement;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.common.UpdateContext;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.QueryArgument;
-import org.drools.base.rule.QueryElement;
-import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.runtime.rule.FactHandle;
+
+import java.util.List;
 
 public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNode, MemoryFactory<QueryElementNode.QueryElementNodeMemory> {
 
@@ -268,7 +268,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
                 objects[variable] = decl.getValue(reteEvaluator, resultLeftTuple);
             }
 
-            QueryElementFactHandle resultHandle = createQueryResultHandle(leftTuple.findMostRecentPropagationContext(),
+            QueryElementFactHandle resultHandle = createQueryResultHandle(leftTuple.getPropagationContext(),
                                                                           reteEvaluator,
                                                                           objects);
             
