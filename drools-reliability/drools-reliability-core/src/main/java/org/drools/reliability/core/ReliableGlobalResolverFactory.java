@@ -24,6 +24,10 @@ public interface ReliableGlobalResolverFactory extends KieService {
 
     class Tag {
 
+        private Tag() {
+            // hide constructor
+        }
+
         private static String reliabilityPersistanceLayer = null;
     }
 
