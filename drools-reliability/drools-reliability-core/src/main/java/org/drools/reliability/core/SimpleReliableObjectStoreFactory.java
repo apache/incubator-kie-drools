@@ -24,7 +24,7 @@ public interface SimpleReliableObjectStoreFactory extends KieService {
 
     class Tag {
 
-        static String reliabilityPersistanceLayer = null; // package access for test purposes
+        private static String reliabilityPersistanceLayer = null;
     }
 
     class Holder {
@@ -41,6 +41,21 @@ public interface SimpleReliableObjectStoreFactory extends KieService {
             }
             return factory;
         }
+    }
+
+    /**
+     * Use this method first to specify reliabilityPersistanceLayer when you have dependencies covering multiple persistence layers (e.g. infinispan and core)
+     * Once a factory is instantiated, get() is enough to get the same instance.
+     */
+    static SimpleReliableObjectStoreFactory get(String reliabilityPersistanceLayer) {
+        if (Tag.reliabilityPersistanceLayer == null) {
+            Tag.reliabilityPersistanceLayer = reliabilityPersistanceLayer;
+        } else if (!Tag.reliabilityPersistanceLayer.equals(reliabilityPersistanceLayer)) {
+            throw new IllegalStateException("You must call the same service with the same reliabilityPersistanceLayer. " +
+                                            "Previous reliabilityPersistanceLayer was " + Tag.reliabilityPersistanceLayer +
+                                            " and current reliabilityPersistanceLayer is " + reliabilityPersistanceLayer);
+        }
+        return SimpleReliableObjectStoreFactory.Holder.INSTANCE;
     }
 
     static SimpleReliableObjectStoreFactory get() {

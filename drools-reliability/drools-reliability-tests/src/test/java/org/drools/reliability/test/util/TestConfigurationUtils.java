@@ -15,7 +15,9 @@
 
 package org.drools.reliability.test.util;
 
-import org.drools.reliability.core.KieServiceTagSupport;
+import org.drools.reliability.core.ReliableGlobalResolverFactory;
+import org.drools.reliability.core.SimpleReliableObjectStoreFactory;
+import org.drools.reliability.core.StorageManagerFactory;
 
 import static org.drools.reliability.test.util.TestConfigurationUtils.Module.H2MVSTORE;
 import static org.drools.reliability.test.util.TestConfigurationUtils.Module.INFINISPAN;
@@ -46,14 +48,14 @@ public class TestConfigurationUtils {
     }
 
     private static void prioritizeInfinispanServices() {
-        KieServiceTagSupport.setReliableGlobalResolverFactoryTag("infinispan");
-        KieServiceTagSupport.setSimpleReliableObjectStoreFactoryTag("infinispan");
-        KieServiceTagSupport.setStorageManagerFactoryTag("infinispan");
+        ReliableGlobalResolverFactory.get("infinispan");
+        SimpleReliableObjectStoreFactory.get("infinispan");
+        StorageManagerFactory.get("infinispan");
     }
 
     private static void prioritizeH2MVStoreServices() {
-        KieServiceTagSupport.setReliableGlobalResolverFactoryTag("core");
-        KieServiceTagSupport.setSimpleReliableObjectStoreFactoryTag("core");
-        KieServiceTagSupport.setStorageManagerFactoryTag("h2mvstore");
+        ReliableGlobalResolverFactory.get("core");
+        SimpleReliableObjectStoreFactory.get("core");
+        StorageManagerFactory.get("h2mvstore");
     }
 }

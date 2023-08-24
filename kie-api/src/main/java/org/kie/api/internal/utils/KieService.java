@@ -18,6 +18,7 @@ package org.kie.api.internal.utils;
 import java.util.ServiceLoader;
 
 public interface KieService extends Comparable<KieService> {
+
     public static final String UNDEFINED = "undefined";
 
     default int servicePriority() {
@@ -49,7 +50,7 @@ public interface KieService extends Comparable<KieService> {
     }
 
     static <T extends KieService> T loadWithTag(Class<T> serviceClass, String tag) {
-        if (tag == null) {
+        if (tag == null || tag.equals(UNDEFINED)) {
             return load(serviceClass); // fall back to priority based loading
         }
 
@@ -57,8 +58,10 @@ public interface KieService extends Comparable<KieService> {
         T service = null;
         for (T impl : loader) {
             if (tag.equals(impl.serviceTag())) { // accept only services with the specified tag
-                if (service == null || impl.compareTo(service) > 0) {
+                if (service == null) {
                     service = impl;
+                } else {
+                    throw new IllegalStateException("Found 2 services with the same tag \"" + tag + "\": " + service.getClass().getCanonicalName() + " and " + impl.getClass().getCanonicalName());
                 }
             }
         }
