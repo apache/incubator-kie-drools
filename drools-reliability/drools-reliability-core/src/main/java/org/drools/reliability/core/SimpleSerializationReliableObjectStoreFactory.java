@@ -28,8 +28,9 @@ public class SimpleSerializationReliableObjectStoreFactory implements SimpleReli
 
     public SimpleReliableObjectStore createSimpleReliableObjectStore(Storage<Long, StoredObject> storage, PersistedSessionOption persistedSessionOption) {
         switch (persistedSessionOption.getPersistenceObjectsStrategy()){
+            case SIMPLE: return new SimpleSerializationReliableObjectStore(storage);
             case OBJECT_REFERENCES: return new SimpleSerializationReliableRefObjectStore(storage);
-            default: return new SimpleSerializationReliableObjectStore(storage);
+            default: throw new UnsupportedOperationException();
         }
     }
 

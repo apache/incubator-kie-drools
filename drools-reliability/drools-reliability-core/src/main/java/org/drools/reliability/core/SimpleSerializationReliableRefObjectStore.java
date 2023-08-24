@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SimpleSerializationReliableRefObjectStore extends SimpleSerializationReliableObjectStore {
@@ -130,9 +131,8 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         // add unique object types + their occurrences in the uniqueObjectTypesInStore
         uniqueObjectTypesInStore.putAll(storage.values().stream()
                 .map(sObject -> sObject.getObject().getClass().getName())
-                .collect(Collectors.groupingBy(Object::toString, Collectors.counting()))
-                .entrySet().stream().filter(entry -> uTypeNames.contains((entry.getKey())))
-                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue)));
+                .filter(uTypeNames::contains)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting())));
     }
 }
 
