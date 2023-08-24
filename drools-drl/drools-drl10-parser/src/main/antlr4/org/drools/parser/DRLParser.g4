@@ -36,10 +36,15 @@ globaldef : DRL_GLOBAL type drlIdentifier SEMI? ;
 
 ruledef : DRL_RULE name=stringId (EXTENDS stringId)? drlAnnotation* attributes? lhs rhs DRL_END ;
 
-lhs : DRL_WHEN lhsExpression? ;
-lhsExpression : lhsOr+ ;
-lhsOr : LPAREN DRL_OR lhsAnd+ RPAREN | lhsAnd (DRL_OR lhsAnd)* ;
-lhsAnd : LPAREN lhsAnd RPAREN | LPAREN DRL_AND lhsUnary+ RPAREN | lhsUnary (DRL_AND lhsUnary)* ;
+lhs : DRL_WHEN lhsExpression* ;
+
+lhsExpression : LPAREN lhsExpression RPAREN             #lhsExpressionEnclosed
+              | lhsUnary                                #lhsUnarySingle
+              | LPAREN DRL_AND lhsExpression+ RPAREN    #lhsAnd
+              | lhsExpression (DRL_AND lhsExpression)+  #lhsAnd
+              | LPAREN DRL_OR lhsExpression+ RPAREN     #lhsOr
+              | lhsExpression (DRL_OR lhsExpression)+   #lhsOr
+              ;
 
 /*
 lhsUnary : ( lhsExists namedConsequence?
@@ -57,6 +62,7 @@ lhsUnary : (
            | lhsNot
            | lhsPatternBind
            ) ;
+
 lhsPatternBind : label? ( LPAREN lhsPattern (DRL_OR lhsPattern)* RPAREN | lhsPattern ) ;
 
 /*

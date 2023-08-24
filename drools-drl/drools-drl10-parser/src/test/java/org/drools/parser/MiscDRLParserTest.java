@@ -1389,22 +1389,21 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println( \"Mark and Michael\" + bar );");
     }
 
-    @Disabled("Priority : High | Failed to parse complex parentheses")
     @Test
-    public void parse_BracketsPrecedence() throws Exception {
+    void parenthesesOrAndOr() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "brackets_precedence.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
 
         final AndDescr rootAnd = (AndDescr) rule.getLhs();
 
-        assertThat(rootAnd.getDescrs().size()).isEqualTo(2);
+        assertThat(rootAnd.getDescrs()).hasSize(2);
 
         final OrDescr leftOr = (OrDescr) rootAnd.getDescrs().get( 0 );
 
-        assertThat(leftOr.getDescrs().size()).isEqualTo(2);
+        assertThat(leftOr.getDescrs()).hasSize(2);
         final NotDescr not = (NotDescr) leftOr.getDescrs().get( 0 );
         final PatternDescr foo1 = (PatternDescr) not.getDescrs().get( 0 );
         assertThat(foo1.getObjectType()).isEqualTo("Foo");
@@ -1413,11 +1412,112 @@ class MiscDRLParserTest {
 
         final OrDescr rightOr = (OrDescr) rootAnd.getDescrs().get( 1 );
 
-        assertThat(rightOr.getDescrs().size()).isEqualTo(2);
+        assertThat(rightOr.getDescrs()).hasSize(2);
         final PatternDescr shoes = (PatternDescr) rightOr.getDescrs().get( 0 );
         assertThat(shoes.getObjectType()).isEqualTo("Shoes");
         final PatternDescr butt = (PatternDescr) rightOr.getDescrs().get( 1 );
         assertThat(butt.getObjectType()).isEqualTo("Butt");
+    }
+
+    @Test
+    void parenthesesAndOrOr() {
+        final String drl = "rule and_or_or\n" +
+                "  when\n" +
+                "     (Foo(x == 1) and Bar(x == 2)) or (Foo(x == 3) or Bar(x == 4))\n" +
+                "  then\n" +
+                "end";
+        PackageDescr pkg = parser.parse(drl);
+
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        final AndDescr rootAnd = (AndDescr) rule.getLhs();
+        assertThat(rootAnd.getDescrs()).hasSize(1);
+
+        final OrDescr topOr = (OrDescr) rootAnd.getDescrs().get(0);
+        assertThat(topOr.getDescrs()).hasSize(2);
+
+        final AndDescr leftAnd = (AndDescr) topOr.getDescrs().get(0);
+        assertThat(leftAnd.getDescrs()).hasSize(2);
+        final PatternDescr foo1 = (PatternDescr) leftAnd.getDescrs().get(0);
+        assertThat(foo1.getObjectType()).isEqualTo("Foo");
+        final PatternDescr bar1 = (PatternDescr) leftAnd.getDescrs().get(1);
+        assertThat(bar1.getObjectType()).isEqualTo("Bar");
+
+        final OrDescr rightOr = (OrDescr) topOr.getDescrs().get(1);
+        assertThat(rightOr.getDescrs()).hasSize(2);
+        final PatternDescr foo2 = (PatternDescr) rightOr.getDescrs().get(0);
+        assertThat(foo2.getObjectType()).isEqualTo("Foo");
+        final PatternDescr bar2 = (PatternDescr) rightOr.getDescrs().get(1);
+        assertThat(bar2.getObjectType()).isEqualTo("Bar");
+    }
+
+    @Test
+    void parenthesesOrAndAnd() {
+        final String drl = "rule or_and_and\n" +
+                "  when\n" +
+                "     (Foo(x == 1) or Bar(x == 2)) and (Foo(x == 3) and Bar(x == 4))\n" +
+                "  then\n" +
+                "end";
+        PackageDescr pkg = parser.parse(drl);
+
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        final AndDescr rootAnd = (AndDescr) rule.getLhs();
+        assertThat(rootAnd.getDescrs()).hasSize(2);
+
+        final OrDescr leftOr = (OrDescr) rootAnd.getDescrs().get(0);
+        assertThat(leftOr.getDescrs()).hasSize(2);
+        final PatternDescr foo1 = (PatternDescr) leftOr.getDescrs().get(0);
+        assertThat(foo1.getObjectType()).isEqualTo("Foo");
+        final PatternDescr bar1 = (PatternDescr) leftOr.getDescrs().get(1);
+        assertThat(bar1.getObjectType()).isEqualTo("Bar");
+
+        final AndDescr rightAnd = (AndDescr) rootAnd.getDescrs().get(1);
+        assertThat(rightAnd.getDescrs()).hasSize(2);
+        final PatternDescr foo2 = (PatternDescr) rightAnd.getDescrs().get(0);
+        assertThat(foo2.getObjectType()).isEqualTo("Foo");
+        final PatternDescr bar2 = (PatternDescr) rightAnd.getDescrs().get(1);
+        assertThat(bar2.getObjectType()).isEqualTo("Bar");
+    }
+
+    @Test
+    void parenthesesAndOrOrOrAnd() throws Exception {
+        final String drl = "rule and_or_or_or_and\n" +
+                "  when\n" +
+                "     (Foo(x == 1) and (Bar(x == 2) or Foo(x == 3))) or (Bar(x == 4) or (Foo(x == 5) and Bar(x == 6)))\n" +
+                "  then\n" +
+                "end";
+        PackageDescr pkg = parser.parse(drl);
+
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        final AndDescr rootAnd = (AndDescr) rule.getLhs();
+        assertThat(rootAnd.getDescrs()).hasSize(1);
+
+        final OrDescr topOr = (OrDescr) rootAnd.getDescrs().get(0);
+        assertThat(topOr.getDescrs()).hasSize(2);
+
+        final AndDescr leftAnd = (AndDescr) topOr.getDescrs().get(0);
+        assertThat(leftAnd.getDescrs()).hasSize(2);
+        final PatternDescr foo1 = (PatternDescr) leftAnd.getDescrs().get(0);
+        assertThat(foo1.getObjectType()).isEqualTo("Foo");
+        final OrDescr leftOr = (OrDescr) leftAnd.getDescrs().get(1);
+        assertThat(leftOr.getDescrs()).hasSize(2);
+        final PatternDescr bar1 = (PatternDescr) leftOr.getDescrs().get(0);
+        assertThat(bar1.getObjectType()).isEqualTo("Bar");
+        final PatternDescr foo2 = (PatternDescr) leftOr.getDescrs().get(1);
+        assertThat(foo2.getObjectType()).isEqualTo("Foo");
+
+        final OrDescr rightOr = (OrDescr) topOr.getDescrs().get(1);
+        assertThat(rightOr.getDescrs()).hasSize(2);
+        final PatternDescr bar2 = (PatternDescr) rightOr.getDescrs().get(0);
+        assertThat(bar2.getObjectType()).isEqualTo("Bar");
+        final AndDescr rightAnd = (AndDescr) rightOr.getDescrs().get(1);
+        assertThat(rightAnd.getDescrs()).hasSize(2);
+        final PatternDescr foo3 = (PatternDescr) rightAnd.getDescrs().get(0);
+        assertThat(foo3.getObjectType()).isEqualTo("Foo");
+        final PatternDescr bar3 = (PatternDescr) rightAnd.getDescrs().get(1);
+        assertThat(bar3.getObjectType()).isEqualTo("Bar");
     }
 
     @Disabled("Priority : High | Implement eval")
