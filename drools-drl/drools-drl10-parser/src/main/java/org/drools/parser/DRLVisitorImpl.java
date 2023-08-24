@@ -186,15 +186,10 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public List<BaseDescr> visitLhs(DRLParser.LhsContext ctx) {
         if (ctx.lhsExpression() != null) {
-            return visitLhsExpression(ctx.lhsExpression());
+            return visitDescrChildren(ctx);
         } else {
             return new ArrayList<>();
         }
-    }
-
-    @Override
-    public List<BaseDescr> visitLhsExpression(DRLParser.LhsExpressionContext ctx) {
-        return visitDescrChildren(ctx);
     }
 
     @Override
@@ -295,32 +290,24 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
+    public BaseDescr visitLhsExpressionEnclosed(DRLParser.LhsExpressionEnclosedContext ctx) {
+        return (BaseDescr) visit(ctx.lhsExpression());
+    }
+
+    @Override
     public BaseDescr visitLhsOr(DRLParser.LhsOrContext ctx) {
-        if (!ctx.DRL_OR().isEmpty()) {
-            OrDescr orDescr = new OrDescr();
-            List<BaseDescr> descrList = visitDescrChildren(ctx);
-            descrList.forEach(orDescr::addDescr);
-            return orDescr;
-        } else {
-            // No DRL_OR means only one lhsAnd
-            return visitLhsAnd(ctx.lhsAnd().get(0));
-        }
+        OrDescr orDescr = new OrDescr();
+        List<BaseDescr> descrList = visitDescrChildren(ctx);
+        descrList.forEach(orDescr::addDescr);
+        return orDescr;
     }
 
     @Override
     public BaseDescr visitLhsAnd(DRLParser.LhsAndContext ctx) {
-        if (ctx.lhsAnd() != null) {
-            return visitLhsAnd(ctx.lhsAnd());
-        }
-        if (!ctx.DRL_AND().isEmpty()) {
-            AndDescr andDescr = new AndDescr();
-            List<BaseDescr> descrList = visitDescrChildren(ctx);
-            descrList.forEach(andDescr::addDescr);
-            return andDescr;
-        } else {
-            // No DRL_AND means only one lhsUnary
-            return visitLhsUnary(ctx.lhsUnary().get(0));
-        }
+        AndDescr andDescr = new AndDescr();
+        List<BaseDescr> descrList = visitDescrChildren(ctx);
+        descrList.forEach(andDescr::addDescr);
+        return andDescr;
     }
 
     @Override
