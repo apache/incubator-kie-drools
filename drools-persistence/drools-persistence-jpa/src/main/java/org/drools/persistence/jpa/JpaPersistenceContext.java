@@ -68,7 +68,7 @@ public class JpaPersistenceContext implements PersistenceContext {
     }
 
     public PersistentSession findSession(Long id) {
-        logger.trace("Reading session info {}, id");
+        logger.trace("Reading session info {}",id);
         SessionInfo sessionInfo = null;
         if( this.pessimisticLocking ) {
             sessionInfo = this.em.find( SessionInfo.class, id, lockMode );
