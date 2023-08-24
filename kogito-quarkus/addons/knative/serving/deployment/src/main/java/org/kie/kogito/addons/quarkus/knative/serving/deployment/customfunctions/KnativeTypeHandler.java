@@ -23,7 +23,6 @@ import org.jbpm.compiler.canonical.descriptors.TaskDescriptor;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
-import org.jetbrains.annotations.NotNull;
 import org.kie.kogito.addons.quarkus.knative.serving.customfunctions.CloudEventKnativeParamsDecorator;
 import org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeWorkItemHandler;
 import org.kie.kogito.addons.quarkus.knative.serving.customfunctions.Operation;
@@ -85,7 +84,6 @@ public class KnativeTypeHandler extends WorkItemTypeHandler {
                 functionRef);
     }
 
-    @NotNull
     private static List<String> getPayloadFields(FunctionRef functionRef) {
         List<String> payloadFields = new ArrayList<>();
 

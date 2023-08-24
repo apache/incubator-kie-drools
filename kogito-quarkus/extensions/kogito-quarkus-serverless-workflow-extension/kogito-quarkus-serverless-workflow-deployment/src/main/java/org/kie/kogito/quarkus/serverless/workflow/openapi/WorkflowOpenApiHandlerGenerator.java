@@ -88,7 +88,7 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
         BlockStmt body = executeMethod.createBody();
         MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr(OPEN_API_REF), m.name());
         final NameExpr parameters = new NameExpr(WORK_ITEM_PARAMETERS);
-        if (m.returnType().name().equals(DotName.createSimple(Response.class))) {
+        if (m.returnType().name().equals(DotName.createSimple(Response.class.getName()))) {
             body.addStatement(methodCallExpr).addStatement(new ReturnStmt(new NullLiteralExpr()));
         } else {
             body.addStatement(new ReturnStmt(methodCallExpr));
