@@ -16,10 +16,10 @@
 package org.kie.kogito.serverless.workflow.operationid;
 
 import java.net.URI;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
 
+import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 
 import io.serverlessworkflow.api.Workflow;
@@ -31,7 +31,7 @@ public class FileNameWorkflowOperationIdFactory extends AbstractWorkflowOperatio
 
     @Override
     public String getFileName(Workflow workflow, FunctionDefinition function, Optional<ParserContext> context, URI uri, String operation, String service) {
-        return Path.of(uri.getPath()).getFileName().toString();
+        return URIContentLoaderFactory.getFileName(uri);
     }
 
     @Override

@@ -12,7 +12,7 @@
       "vasco": "txakurra"
     }
   },
-  "dataInputSchema" : "schema/expression.json",
+  "dataInputSchema" : "classpath:schema/expression.json",
   "description": "An example of how to use a JQ expression assignment",
   "start": "squareState",
   "functions": [

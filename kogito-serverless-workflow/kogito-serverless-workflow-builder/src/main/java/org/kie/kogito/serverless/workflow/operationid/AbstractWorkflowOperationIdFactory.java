@@ -34,6 +34,7 @@ import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
 import static java.lang.String.format;
+import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readBytes;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.onlyChars;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.removeExt;
 
@@ -74,13 +75,11 @@ public abstract class AbstractWorkflowOperationIdFactory implements WorkflowOper
         JsonNode definitions = uriDefinitions.getDefinitions();
         if (definitions == null || definitions.isNull()) {
             String uri = uriDefinitions.getURI();
-            definitions = uri == null ? NullNode.instance : ServerlessWorkflowUtils.loadResourceFile(uri, Optional.of(workflow), context, null).map(bytes -> {
-                try {
-                    return ObjectMapperFactory.get().readTree(bytes);
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            }).orElse(NullNode.instance);
+            try {
+                definitions = uri == null ? NullNode.instance : ObjectMapperFactory.get().readTree(readBytes(uri, workflow, context));
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
             uriDefinitions.setDefinitions(definitions);
         }
         return definitions;

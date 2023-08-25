@@ -16,7 +16,6 @@
 package org.kie.kogito.quarkus.serverless.workflow;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -34,7 +33,6 @@ import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationId;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactory;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactoryProvider;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
-import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,14 +86,14 @@ public class WorkflowCodeGenUtils {
     private static WorkflowOperationResource getResource(Workflow workflow, FunctionDefinition function, WorkflowOperationIdFactory factory) {
         WorkflowOperationId operationId = factory.from(workflow, function, Optional.empty());
         return new WorkflowOperationResource(operationId,
-                URIContentLoaderFactory.buildLoader(operationId.getUri(), Thread.currentThread().getContextClassLoader(), workflow, function.getAuthRef()));
+                URIContentLoaderFactory.buildLoader(operationId.getUri(), workflow, Optional.empty(), function.getAuthRef()));
     }
 
     private static Optional<Workflow> getWorkflow(Path path) {
         if (SupportedExtensions.getSWFExtensions().stream().anyMatch(ext -> path.toString().endsWith(ext))) {
             return workflowCache.computeIfAbsent(path, p -> {
-                try (Reader r = Files.newBufferedReader(p)) {
-                    return Optional.of(ServerlessWorkflowUtils.getWorkflow(r, WorkflowFormat.fromFileName(p.getFileName())));
+                try {
+                    return Optional.of(ServerlessWorkflowUtils.getWorkflow(p));
                 } catch (IOException ex) {
                     logger.info("Error reading workflow file {}. Ignoring exception {}", p, ex);
                     return Optional.<Workflow> empty();

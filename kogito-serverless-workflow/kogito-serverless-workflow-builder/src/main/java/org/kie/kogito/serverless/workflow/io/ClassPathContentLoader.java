@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Objects;
 import java.util.Optional;
 
 public class ClassPathContentLoader extends CachedContentLoader {
@@ -28,23 +27,30 @@ public class ClassPathContentLoader extends CachedContentLoader {
     private final Optional<URL> resource;
     private final String path;
 
-    public ClassPathContentLoader(URI uri, Optional<ClassLoader> cl) {
+    ClassPathContentLoader(URI uri, Optional<ClassLoader> cl) {
         super(uri);
         this.path = getPath(uri);
         this.resource = Optional.ofNullable(cl.orElse(Thread.currentThread().getContextClassLoader()).getResource(path));
     }
 
-    private static String getPath(URI uri) {
-        String path = uri.getPath();
-        Objects.requireNonNull(path, "classpath cannot be null");
-        while (path.startsWith("/")) {
-            path = path.substring(1);
+    static String getPath(URI uri) {
+        final String classPathPrefix = "classpath:";
+        String str = uri.toString();
+        if (str.toLowerCase().startsWith(classPathPrefix)) {
+            str = str.substring(classPathPrefix.length());
+            while (str.startsWith("/")) {
+                str = str.substring(1);
+            }
         }
-        return path;
+        return str;
     }
 
     public Optional<URL> getResource() {
         return resource;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     @Override

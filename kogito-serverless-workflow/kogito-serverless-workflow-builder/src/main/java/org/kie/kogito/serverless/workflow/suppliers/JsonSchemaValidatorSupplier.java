@@ -20,18 +20,23 @@ import java.util.function.Supplier;
 import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.kie.kogito.serverless.workflow.actions.JsonSchemaValidator;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.javaparser.ast.expr.Expression;
 
 public class JsonSchemaValidatorSupplier extends JsonSchemaValidator implements Supplier<Expression> {
 
     private static final long serialVersionUID = 1L;
 
-    public JsonSchemaValidatorSupplier(String schema, boolean failOnValidationErrors) {
+    public JsonSchemaValidatorSupplier() {
+        // parent class implements Externalizable
+    }
+
+    public JsonSchemaValidatorSupplier(JsonNode schema, boolean failOnValidationErrors) {
         super(schema, failOnValidationErrors);
     }
 
     @Override
     public Expression get() {
-        return ExpressionUtils.getObjectCreationExpr(JsonSchemaValidator.class, schemaRef, failOnValidationErrors);
+        return ExpressionUtils.getObjectCreationExpr(JsonSchemaValidator.class, jsonNode, failOnValidationErrors);
     }
 }

@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.serverless.workflow;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.jbpm.ruleflow.core.Metadata;
@@ -612,7 +611,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
     @ParameterizedTest
     @ValueSource(strings = { "/examples/applicantworkflow.sw.json", "/exec/error.sw.json", "/exec/callback.sw.json", "/exec/compensation.sw.json", "/exec/compensation.end.sw.json",
             "/exec/foreach.sw.json" })
-    public void testSpecExamplesParsing(String workflowLocation) throws IOException {
+    public void testSpecExamplesParsing(String workflowLocation) throws Exception {
         Workflow workflow = Workflow.fromSource(WorkflowTestUtils.readWorkflowFile(workflowLocation));
 
         assertThat(workflow).isNotNull();
@@ -627,7 +626,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/expression.schema.sw.json" })
-    public void testSpecWithInputSchema(String workflowLocation) throws IOException {
+    public void testSpecWithInputSchema(String workflowLocation) throws Exception {
         Workflow workflow = Workflow.fromSource(WorkflowTestUtils.readWorkflowFile(workflowLocation));
 
         assertThat(workflow).isNotNull();

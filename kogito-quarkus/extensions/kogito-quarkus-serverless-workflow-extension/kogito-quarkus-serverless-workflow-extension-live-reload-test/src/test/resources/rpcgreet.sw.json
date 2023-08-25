@@ -8,7 +8,7 @@
     {
       "name": "sayHello",
       "type": "rpc",
-      "operation": "greeting.proto#Greeter#SayHello"
+      "operation": "classpath:greeting.proto#Greeter#SayHello"
     }
   ],
   "states": [

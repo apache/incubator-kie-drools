@@ -47,7 +47,7 @@ public abstract class AbstractServerlessWorkflowParsingTest {
             ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(
                     reader,
                     format,
-                    JavaKogitoBuildContext.builder().build());
+                    JavaKogitoBuildContext.builder().build()).withBaseURI("classpath:" + workflowLocation);
             return parser.getProcessInfo().info();
         }
     }

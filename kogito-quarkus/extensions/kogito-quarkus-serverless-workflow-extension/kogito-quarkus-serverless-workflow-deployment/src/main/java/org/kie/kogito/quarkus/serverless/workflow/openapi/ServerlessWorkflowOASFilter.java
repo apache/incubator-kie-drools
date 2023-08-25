@@ -25,13 +25,15 @@ import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaGenera
 public final class ServerlessWorkflowOASFilter implements OASFilter {
 
     private final Map<String, Schema> schemasInfo;
+    private final Map<String, Schema> defsSchemas;
 
-    public ServerlessWorkflowOASFilter(Map<String, Schema> schemasInfo) {
+    public ServerlessWorkflowOASFilter(Map<String, Schema> schemasInfo, Map<String, Schema> defsSchemas) {
         this.schemasInfo = schemasInfo;
+        this.defsSchemas = defsSchemas;
     }
 
     @Override
     public void filterOpenAPI(OpenAPI openAPI) {
-        OpenApiModelSchemaGenerator.mergeSchemas(openAPI, schemasInfo);
+        OpenApiModelSchemaGenerator.mergeSchemas(openAPI, schemasInfo, defsSchemas);
     }
 }

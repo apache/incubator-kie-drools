@@ -43,12 +43,12 @@ class SpecTitleOperationIdTest {
     @Test
     void testOperationId() {
         definition.setType(Type.REST);
-        definition.setOperation("specs/external-service.yaml#sendRequest");
+        definition.setOperation("classpath:specs/external-service.yaml#sendRequest");
         WorkflowOperationId id = factory.from(workflow, definition, Optional.empty());
         assertThat(id.getOperation()).isEqualTo("sendRequest");
         assertThat(id.getFileName()).isEqualTo("external-service");
         assertThat(id.getPackageName()).isEqualTo("externalservice");
-        assertThat(id.getUri()).hasToString("specs/external-service.yaml");
+        assertThat(id.getUri()).hasToString("classpath:specs/external-service.yaml");
         assertThat(id.getService()).isNull();
     }
 }

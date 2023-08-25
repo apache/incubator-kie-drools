@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Complex",
+    "description": "Complex number",
+    "type": "object",
+    "properties": {
+                   "x" : {"type":"number"},
+                   "y" : {"type":"number"}
+        
+    },
+    "required": ["x","y"]
+}

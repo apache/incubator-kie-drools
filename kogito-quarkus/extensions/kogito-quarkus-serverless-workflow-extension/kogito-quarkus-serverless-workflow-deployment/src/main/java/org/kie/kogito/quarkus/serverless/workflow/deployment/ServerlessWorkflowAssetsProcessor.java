@@ -103,11 +103,12 @@ public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
     @BuildStep
     void addOpenAPIModelSchema(List<KogitoProcessContainerGeneratorBuildItem> processBuildItem, BuildProducer<AddToOpenAPIDefinitionBuildItem> openAPIProducer) {
         Map<String, Schema> schemasInfo = new HashMap<>();
+        Map<String, Schema> defsSchemas = new HashMap<>();
         processBuildItem.stream().flatMap(it -> it.getProcessContainerGenerators().stream())
                 .map(ProcessContainerGenerator::getProcesses).flatMap(Collection::stream).map(ProcessGenerator::getProcess)
-                .forEach(process -> OpenApiModelSchemaGenerator.addOpenAPIModelSchema(process, schemasInfo));
+                .forEach(process -> OpenApiModelSchemaGenerator.addOpenAPIModelSchema(process, schemasInfo, defsSchemas));
         if (!schemasInfo.isEmpty()) {
-            openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(schemasInfo)));
+            openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(schemasInfo, defsSchemas)));
         }
     }
 

@@ -16,7 +16,9 @@
 package org.kie.kogito.serverless.workflow.utils;
 
 import java.net.URI;
+import java.util.Optional;
 
+import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +29,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
 
 import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.buildLoader;
-import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readAllBytes;
+import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readString;
 
 public class OpenAPIFactory {
 
@@ -36,9 +38,9 @@ public class OpenAPIFactory {
     private OpenAPIFactory() {
     }
 
-    public static OpenAPI getOpenAPI(URI uri, Workflow workflow, FunctionDefinition function, ClassLoader cl) {
+    public static OpenAPI getOpenAPI(URI uri, Workflow workflow, FunctionDefinition function, Optional<ParserContext> context) {
         SwaggerParseResult result =
-                new OpenAPIParser().readContents(new String(readAllBytes(buildLoader(uri, cl, workflow, function.getAuthRef()))), null, null);
+                new OpenAPIParser().readContents(readString(buildLoader(uri, workflow, context, function.getAuthRef())), null, null);
         OpenAPI openAPI = result.getOpenAPI();
         if (openAPI == null) {
             throw new IllegalArgumentException("Problem parsing uri " + uri + " Messages" + result.getMessages());

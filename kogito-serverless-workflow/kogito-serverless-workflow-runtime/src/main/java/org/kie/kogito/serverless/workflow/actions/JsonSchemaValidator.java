@@ -15,8 +15,10 @@
  */
 package org.kie.kogito.serverless.workflow.actions;
 
+import java.io.Externalizable;
 import java.io.IOException;
-import java.io.UncheckedIOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -35,21 +37,23 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion.VersionFlag;
 import com.networknt.schema.ValidationMessage;
 
-import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readAllBytes;
-import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.runtimeLoader;
-
-public class JsonSchemaValidator implements WorkflowModelValidator {
+public class JsonSchemaValidator implements WorkflowModelValidator, Externalizable {
 
     private static final long serialVersionUID = 1L;
 
     private static final Logger logger = LoggerFactory.getLogger(JsonSchemaValidator.class);
 
-    protected final String schemaRef;
-    protected final boolean failOnValidationErrors;
-    private final AtomicReference<JsonSchema> schemaObject = new AtomicReference<>();
+    @SuppressWarnings("squid:S1948") // sonar apparently does not realize that if a class implements externalizable, it is not mandatory for all each attributes to be serializable
+    protected JsonNode jsonNode;
+    protected boolean failOnValidationErrors;
+    private final transient AtomicReference<JsonSchema> schemaObject = new AtomicReference<>();
 
-    public JsonSchemaValidator(String schema, boolean failOnValidationErrors) {
-        this.schemaRef = schema;
+    public JsonSchemaValidator() {
+        // for serialization purposes
+    }
+
+    public JsonSchemaValidator(JsonNode jsonNode, boolean failOnValidationErrors) {
+        this.jsonNode = jsonNode;
         this.failOnValidationErrors = failOnValidationErrors;
     }
 
@@ -66,24 +70,31 @@ public class JsonSchemaValidator implements WorkflowModelValidator {
                 throw new IllegalArgumentException(validationMessage);
             }
         }
-
     }
 
     @Override
     public <T> Optional<T> schema(Class<T> clazz) {
-        return JsonNode.class.isAssignableFrom(clazz) ? Optional.of((T) getSchema().getSchemaNode()) : Optional.empty();
+        return JsonNode.class.isAssignableFrom(clazz) ? Optional.of(clazz.cast(getSchema().getSchemaNode())) : Optional.empty();
     }
 
     private JsonSchema getSchema() {
-        try {
-            JsonSchema result = schemaObject.get();
-            if (result == null) {
-                result = JsonSchemaFactory.getInstance(VersionFlag.V7).getSchema(ObjectMapperFactory.get().readTree(readAllBytes(runtimeLoader(schemaRef))));
-                schemaObject.set(result);
-            }
-            return result;
-        } catch (IOException io) {
-            throw new UncheckedIOException(io);
+        JsonSchema result = schemaObject.get();
+        if (result == null) {
+            result = JsonSchemaFactory.getInstance(VersionFlag.V7).getSchema(jsonNode);
+            schemaObject.set(result);
         }
+        return result;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeBoolean(failOnValidationErrors);
+        out.writeUTF(ObjectMapperFactory.get().writeValueAsString(jsonNode));
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException {
+        this.failOnValidationErrors = in.readBoolean();
+        this.jsonNode = ObjectMapperFactory.get().readTree(in.readUTF());
     }
 }

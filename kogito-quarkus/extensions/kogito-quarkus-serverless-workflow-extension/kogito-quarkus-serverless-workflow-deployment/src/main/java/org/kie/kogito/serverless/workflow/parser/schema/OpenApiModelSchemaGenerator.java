@@ -55,23 +55,26 @@ public final class OpenApiModelSchemaGenerator {
     private static final String INPUT_SUFFIX = "_input";
     private static final String OUTPUT_SUFFIX = "_output";
 
-    public static void addOpenAPIModelSchema(KogitoWorkflowProcess workflow, Map<String, Schema> schemas) {
+    public static void addOpenAPIModelSchema(KogitoWorkflowProcess workflow, Map<String, Schema> schemas, Map<String, Schema> defSchemas) {
         if (workflow instanceof WorkflowProcess) {
             WorkflowProcess workflowProcess = (WorkflowProcess) workflow;
-            RefSchemas.init(workflow.getId());
-            try {
-                getSchema(workflowProcess.getInputValidator()).ifPresent(v -> {
-                    String key = getSchemaName(workflow.getId(), INPUT_SUFFIX);
-                    schemas.put(key, schemaTitle(key, v));
-                });
-                getSchema(workflowProcess.getOutputValidator()).ifPresent(v -> {
-                    String key = getSchemaName(workflow.getId(), OUTPUT_SUFFIX);
-                    schemas.put(key, createOutputSchema(schemaTitle(key, v)));
-                });
-                schemas.putAll(RefSchemas.get());
-            } finally {
-                RefSchemas.reset();
-            }
+            getSchema(workflowProcess.getInputValidator()).ifPresent(v -> {
+                String key = getSchemaName(workflow.getId(), INPUT_SUFFIX);
+                schemas.put(key, schemaTitle(key, v));
+                addDefs(defSchemas, v);
+            });
+            getSchema(workflowProcess.getOutputValidator()).ifPresent(v -> {
+                String key = getSchemaName(workflow.getId(), OUTPUT_SUFFIX);
+                schemas.put(key, createOutputSchema(schemaTitle(key, v)));
+                addDefs(defSchemas, v);
+            });
+        }
+    }
+
+    private static void addDefs(Map<String, Schema> schemas, Schema v) {
+        Map<String, Schema> defs = ((JsonSchemaImpl) v).getDefs();
+        if (defs != null) {
+            schemas.putAll(defs);
         }
     }
 
@@ -94,7 +97,7 @@ public final class OpenApiModelSchemaGenerator {
         return OASFactory.createSchema().addProperty("workflowdata", schema).addProperty("id", ID_SCHEMA).title(schema.getTitle());
     }
 
-    public static void mergeSchemas(OpenAPI targetSchema, Map<String, Schema> schemas) {
+    public static void mergeSchemas(OpenAPI targetSchema, Map<String, Schema> schemas, Map<String, Schema> defsSchemas) {
         Components components = targetSchema.getComponents();
         if (components == null) {
             components = OASFactory.createComponents();
@@ -103,6 +106,7 @@ public final class OpenApiModelSchemaGenerator {
         for (Schema schema : schemas.values()) {
             components.addSchema(schema.getTitle(), schema);
         }
+        defsSchemas.forEach(components::addSchema);
         if (targetSchema.getPaths() != null && targetSchema.getPaths().getPathItems() != null) {
             for (PathItem pathItem : targetSchema.getPaths().getPathItems().values()) {
                 processOperation(schemas, pathItem.getPOST());

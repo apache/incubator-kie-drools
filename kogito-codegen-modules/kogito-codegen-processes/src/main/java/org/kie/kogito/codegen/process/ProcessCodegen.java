@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.io.InternalResource;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
@@ -120,7 +121,7 @@ public class ProcessCodegen extends AbstractGenerator {
                             }
                             return p.stream().map(KogitoWorkflowProcess.class::cast).map(GeneratedInfo::new).map(info -> addResource(info, resource));
                         } else if (SupportedExtensions.getSWFExtensions().stream().anyMatch(resource.getSourcePath()::endsWith)) {
-                            GeneratedInfo<KogitoWorkflowProcess> generatedInfo = parseWorkflowFile(resource, WorkflowFormat.fromFileName(resource.getSourcePath()), context);
+                            GeneratedInfo<KogitoWorkflowProcess> generatedInfo = parseWorkflowFile(resource, context);
                             notifySourceFileCodegenBindListeners(context, resource, Collections.singletonList(generatedInfo.info()));
                             return Stream.of(addResource(generatedInfo, resource));
                         }
@@ -212,9 +213,16 @@ public class ProcessCodegen extends AbstractGenerator {
         return new ProcessCodegen(context, processes);
     }
 
-    protected static GeneratedInfo<KogitoWorkflowProcess> parseWorkflowFile(Resource r, WorkflowFormat format, KogitoBuildContext context) {
-        try (Reader reader = r.getReader()) {
-            return ServerlessWorkflowParser.of(reader, format, context).getProcessInfo();
+    protected static GeneratedInfo<KogitoWorkflowProcess> parseWorkflowFile(Resource r, KogitoBuildContext context) {
+        InternalResource resource = (InternalResource) r;
+        try (Reader reader = resource.getReader()) {
+            ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(reader, WorkflowFormat.fromFileName(resource.getSourcePath()), context);
+            if (resource.hasURL()) {
+                parser.withBaseURI(resource.getURL());
+            } else {
+                parser.withBaseURI("classpath:" + resource.getSourcePath());
+            }
+            return parser.getProcessInfo();
         } catch (Exception e) {
             throw new ProcessParsingException(e);
         }

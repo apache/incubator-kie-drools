@@ -30,7 +30,7 @@ public class SpecWorkflowOperationIdFactory extends AbstractWorkflowOperationIdF
 
     @Override
     public String getFileName(Workflow workflow, FunctionDefinition function, Optional<ParserContext> context, URI uri, String operation, String service) {
-        return OpenAPIFactory.getOpenAPI(uri, workflow, function, context.map(c -> c.getContext().getClassLoader()).orElse(Thread.currentThread().getContextClassLoader())).getInfo()
+        return OpenAPIFactory.getOpenAPI(uri, workflow, function, context).getInfo()
                 .getTitle();
     }
 

@@ -16,17 +16,20 @@
 package org.kie.kogito.serverless.workflow.utils;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.net.URI;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.drools.codegen.common.GeneratedFile;
-import org.drools.codegen.common.GeneratedFileType;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.VariableDeclarations;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -35,13 +38,8 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.serverless.workflow.extensions.FunctionNamespaces;
 import org.kie.kogito.serverless.workflow.extensions.OutputSchema;
 import org.kie.kogito.serverless.workflow.extensions.URIDefinitions;
-import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
-import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.Builder;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
-import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.suppliers.ConfigWorkItemSupplier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.expr.Expression;
@@ -57,8 +55,6 @@ import io.serverlessworkflow.api.serializers.ExtensionSerializer;
 
 public class ServerlessWorkflowUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(ServerlessWorkflowUtils.class);
-
     public static final String FAIL_ON_ERROR_PROPERTY = "kogito.codegen.process.failOnError";
     public static final String API_KEY_PREFIX = "api_key_prefix";
     public static final String API_KEY = "api_key";
@@ -66,6 +62,9 @@ public class ServerlessWorkflowUtils {
     public static final String USER_PROP = "username";
     public static final String PASSWORD_PROP = "password";
     public static final String OPERATION_SEPARATOR = "#";
+    public static final String DEFS_PREFIX = "#/$defs/";
+    private static final String BASE_URI = "baseURI";
+
     /**
      * @deprecated Replaced by WorkflowFormat enum
      */
@@ -104,6 +103,18 @@ public class ServerlessWorkflowUtils {
         return objectMapper.readValue(reader, Workflow.class);
     }
 
+    public static Workflow getWorkflow(Path path) throws IOException {
+        try (Reader reader = Files.newBufferedReader(path)) {
+            return withBaseURI(getWorkflow(reader, WorkflowFormat.fromFileName(path.getFileName())), path.toString());
+        }
+    }
+
+    public static Workflow getWorkflow(URL url) throws IOException {
+        try (Reader reader = new InputStreamReader(url.openStream())) {
+            return withBaseURI(getWorkflow(reader, WorkflowFormat.fromFileName(url.getPath())), url.toString());
+        }
+    }
+
     /**
      * Kept for backward compatibility purposes
      * 
@@ -125,6 +136,24 @@ public class ServerlessWorkflowUtils {
     public static void writeWorkflow(Workflow workflow, Writer writer, WorkflowFormat workflowFormat) throws IOException {
         ObjectMapper objectMapper = workflowFormat == WorkflowFormat.YAML ? yamlWriterMapper : jsonWriterMapper;
         objectMapper.writeValue(writer, workflow);
+    }
+
+    public static Optional<URI> getBaseURI(Workflow workflow) {
+        return Optional.ofNullable(getMetadata(workflow).get(BASE_URI)).map(URI::create);
+    }
+
+    public static Workflow withBaseURI(Workflow workflow, String baseURI) {
+        getMetadata(workflow).put(BASE_URI, baseURI);
+        return workflow;
+    }
+
+    public static Map<String, String> getMetadata(Workflow workflow) {
+        Map<String, String> metadata = workflow.getMetadata();
+        if (metadata == null) {
+            metadata = new HashMap<>();
+            workflow.setMetadata(metadata);
+        }
+        return metadata;
     }
 
     private static BaseObjectMapper deserializer(BaseObjectMapper objectMapper) {
@@ -176,35 +205,6 @@ public class ServerlessWorkflowUtils {
 
     public interface ExpressionBuilder<T> {
         Supplier<Expression> create(String key, Class<T> clazz, T defaultValue);
-    }
-
-    public static Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr) {
-        return processResourceFile(workflow, parserContext, uriStr, null);
-    }
-
-    public static Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr, String authRef) {
-        final URI uri = URI.create(uriStr);
-        final Optional<byte[]> bytes = loadResourceFile(workflow, Optional.of(parserContext), uriStr, authRef);
-        bytes.ifPresent(value -> parserContext.addGeneratedFile(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE, uri.getPath(), value)));
-        return bytes;
-    }
-
-    public static Optional<byte[]> loadResourceFile(Workflow workflow, Optional<ParserContext> parserContext, String uriStr, String authRef) {
-        return loadResourceFile(uriStr, Optional.of(workflow), parserContext, authRef);
-    }
-
-    public static Optional<byte[]> loadResourceFile(String uriStr, Optional<Workflow> workflow, Optional<ParserContext> parserContext, String authRef) {
-        final URI uri = URI.create(uriStr);
-        try {
-            Builder builder = URIContentLoaderFactory.builder(uri).withAuthRef(authRef);
-            workflow.ifPresent(builder::withWorkflow);
-            parserContext.map(p -> p.getContext().getClassLoader()).ifPresent(builder::withClassloader);
-            return Optional.of(URIContentLoaderFactory.readAllBytes(builder.build()));
-        } catch (UncheckedIOException io) {
-            // if file cannot be found in build context, warn it and return the unmodified uri (it might be possible that later the resource is available at runtime)
-            logger.warn("Resource {} cannot be found at build time, ignoring", uri, io);
-        }
-        return Optional.empty();
     }
 
     public static String removeExt(String fileName) {

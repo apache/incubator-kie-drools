@@ -14,7 +14,7 @@ errors:
 functions:
   - name: callbackFunction
     type: rest
-    operation: specs/external-service.yaml#sendRequest
+    operation: classpath:specs/external-service.yaml#sendRequest
 states:
   - name: CallbackState
     type: callback

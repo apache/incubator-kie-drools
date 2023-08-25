@@ -17,6 +17,10 @@ package org.kie.kogito.serverless.workflow.parser;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,7 +52,9 @@ import io.serverlessworkflow.api.timeouts.TimeoutsDefinition;
 import io.serverlessworkflow.api.timeouts.WorkflowExecTimeout;
 import io.serverlessworkflow.api.workflow.Constants;
 
-import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.processResourceFile;
+import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.compoundURI;
+import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readBytes;
+import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.getBaseURI;
 
 public class ServerlessWorkflowParser {
 
@@ -63,6 +69,7 @@ public class ServerlessWorkflowParser {
 
     private NodeIdGenerator idGenerator = DefaultNodeIdGenerator.get();
     private Workflow workflow;
+
     private GeneratedInfo<KogitoWorkflowProcess> processInfo;
     private KogitoBuildContext context;
 
@@ -84,6 +91,23 @@ public class ServerlessWorkflowParser {
 
     public ServerlessWorkflowParser withIdGenerator(NodeIdGenerator idGenerator) {
         this.idGenerator = idGenerator;
+        return this;
+    }
+
+    public ServerlessWorkflowParser withBaseURI(Path baseURI) {
+        return withBaseURI(baseURI.toUri());
+    }
+
+    public ServerlessWorkflowParser withBaseURI(URI baseURI) {
+        return withBaseURI(baseURI.toString());
+    }
+
+    public ServerlessWorkflowParser withBaseURI(URL baseURI) {
+        return withBaseURI(baseURI.toString());
+    }
+
+    public ServerlessWorkflowParser withBaseURI(String baseURI) {
+        ServerlessWorkflowUtils.withBaseURI(workflow, baseURI);
         return this;
     }
 
@@ -141,11 +165,9 @@ public class ServerlessWorkflowParser {
     }
 
     private Optional<WorkflowModelValidator> modelValidator(ParserContext parserContext, Optional<DataInputSchema> schema) {
-        return schema.map(s -> {
-            // TODO when all uris included auth ref, include authref
-            processResourceFile(workflow, parserContext, s.getSchema());
-            return new JsonSchemaValidatorSupplier(s.getSchema(), s.isFailOnValidationErrors());
-        });
+        return schema.map(s -> new JsonSchemaValidatorSupplier(JsonSchemaReader.read(
+                getBaseURI(workflow).map(u -> compoundURI(u, URI.create(s.getSchema()))).orElseGet(() -> URI.create(s.getSchema())),
+                readBytes(s.getSchema(), workflow, parserContext)), s.isFailOnValidationErrors()));
     }
 
     public GeneratedInfo<KogitoWorkflowProcess> getProcessInfo() {
@@ -159,13 +181,11 @@ public class ServerlessWorkflowParser {
         Constants constants = workflow.getConstants();
         if (constants != null) {
             if (constants.getRefValue() != null) {
-                processResourceFile(workflow, parserContext, constants.getRefValue()).ifPresent(bytes -> {
-                    try {
-                        constants.setConstantsDef(ObjectMapperFactory.get().readValue(bytes, JsonNode.class));
-                    } catch (IOException e) {
-                        throw new IllegalArgumentException("Invalid file " + constants.getRefValue(), e);
-                    }
-                });
+                try {
+                    constants.setConstantsDef(ObjectMapperFactory.get().readValue(readBytes(constants.getRefValue(), workflow, parserContext), JsonNode.class));
+                } catch (IOException e) {
+                    throw new UncheckedIOException("Invalid file " + constants.getRefValue(), e);
+                }
             }
             factory.metaData(Metadata.CONSTANTS, constants.getConstantsDef());
         }

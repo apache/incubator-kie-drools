@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.actions;
+package org.kie.kogito.serverless.workflow.parser;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.Map;
 
@@ -23,6 +28,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
+import org.kie.kogito.serverless.workflow.actions.JsonSchemaValidator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,8 +44,24 @@ public class JsonSchemaValidatorTest {
     private static JsonSchemaValidator validator;
 
     @BeforeAll
-    static void init() {
-        validator = new JsonSchemaValidator("expression.json", true);
+    static void init() throws IOException {
+        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("schema/expression.json")) {
+            validator = new JsonSchemaValidator(JsonSchemaReader.read(null, is.readAllBytes()), true);
+        }
+    }
+
+    @Test
+    void testValidatorSerialization() throws IOException, ClassNotFoundException {
+
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream(); ObjectOutputStream objectOut = new ObjectOutputStream(out)) {
+            objectOut.writeObject(validator);
+            objectOut.flush();
+            try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(out.toByteArray()))) {
+                JsonSchemaValidator newValidator = (JsonSchemaValidator) in.readObject();
+                final Map<String, Object> model = Collections.singletonMap(SWFConstants.DEFAULT_WORKFLOW_VAR, createNode(new IntNode(4), new IntNode(3)));
+                assertThatNoException().isThrownBy(() -> newValidator.validate(model));
+            }
+        }
     }
 
     @Test
@@ -63,5 +85,4 @@ public class JsonSchemaValidatorTest {
         ObjectMapper mapper = ObjectMapperFactory.get();
         return mapper.createObjectNode().set("numbers", mapper.createArrayNode().add(mapper.createObjectNode().<ObjectNode> set("x", x).set("y", y)));
     }
-
 }

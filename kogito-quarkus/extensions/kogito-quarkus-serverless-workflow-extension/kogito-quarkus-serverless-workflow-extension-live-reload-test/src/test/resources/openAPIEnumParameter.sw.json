@@ -6,7 +6,7 @@
   "functions": [
     {
       "name": "echoFunction",
-      "operation": "specs/enum-parameter.yaml#echo"
+      "operation": "classpath:specs/enum-parameter.yaml#echo"
     }
   ],
   "states": [

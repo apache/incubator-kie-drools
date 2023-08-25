@@ -28,7 +28,6 @@ import org.kie.api.definition.process.Process;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
-import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 
 /**
  * Utilities for unit Process generation tests
@@ -62,7 +61,7 @@ public class ProcessGenerationUtils {
                 if (SupportedExtensions.getBPMNExtensions().stream().anyMatch(processSourceFile.getPath()::endsWith)) {
                     processes.addAll(ProcessCodegen.parseProcessFile(r));
                 } else if (SupportedExtensions.getSWFExtensions().stream().anyMatch(processSourceFile.getPath()::endsWith)) {
-                    processes.add(ProcessCodegen.parseWorkflowFile(r, WorkflowFormat.fromFileName(processSourceFile.getPath()), JavaKogitoBuildContext.builder().build()).info());
+                    processes.add(ProcessCodegen.parseWorkflowFile(r, JavaKogitoBuildContext.builder().build()).info());
                 }
                 if (processes.isEmpty()) {
                     throw new IllegalArgumentException("Unable to process file with unsupported extension: " + processSourceFile);

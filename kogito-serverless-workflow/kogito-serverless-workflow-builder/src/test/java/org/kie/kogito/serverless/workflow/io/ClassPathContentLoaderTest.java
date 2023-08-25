@@ -13,26 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.serverless.workflow.io;
 
 import java.net.URI;
+import java.util.Optional;
 
-public enum URIContentLoaderType {
-    CLASSPATH,
-    FILE,
-    HTTP;
+import org.junit.jupiter.api.Test;
 
-    public static URIContentLoaderType from(URI uri) {
-        switch (uri.getScheme().toLowerCase()) {
-            case "file":
-                return FILE;
-            case "classpath":
-                return CLASSPATH;
-            case "http":
-            case "https":
-                return HTTP;
-            default:
-                throw new IllegalArgumentException("Unrecognized uri protocol " + uri);
-        }
+import static org.assertj.core.api.Assertions.assertThat;
+
+class ClassPathContentLoaderTest {
+
+    private static final String PATH = "specs/external1.yaml";
+
+    @Test
+    void testNoPrefixPath() {
+        testPath("");
     }
+
+    @Test
+    void testPrefixPath() {
+        testPath("classpath:");
+    }
+
+    @Test
+    void testPrefixSlashPath() {
+        testPath("classpath://");
+    }
+
+    void testPath(String prefix) {
+        ClassPathContentLoader contentLoader = new ClassPathContentLoader(URI.create(prefix + PATH), Optional.empty());
+        assertThat(contentLoader.getPath()).isEqualTo(PATH);
+    }
+
 }
