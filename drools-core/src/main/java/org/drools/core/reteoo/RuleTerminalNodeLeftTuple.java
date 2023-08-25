@@ -60,6 +60,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     private Runnable callback;
 
     private RuleImpl rule;
+    private Consequence consequence;
 
     public RuleTerminalNodeLeftTuple() {
         // constructor needed for serialisation
@@ -138,7 +139,12 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     @Override
     protected void setSink(Sink sink) {
         super.setSink(sink);
-        this.rule = getTerminalNode().getRule();
+        TerminalNode terminalNode = (TerminalNode) sink;
+        this.rule = terminalNode.getRule();
+        if (this.rule != null && terminalNode instanceof RuleTerminalNode) {
+            String consequenceName = ((RuleTerminalNode)terminalNode).getConsequenceName();
+            this.consequence = consequenceName.equals(RuleImpl.DEFAULT_CONSEQUENCE_NAME) ? rule.getConsequence() : rule.getNamedConsequence(consequenceName);
+        }
     }
 
     /**
@@ -151,8 +157,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     }
 
     public Consequence getConsequence() {
-        String consequenceName = ((RuleTerminalNode) getTerminalNode()).getConsequenceName();
-        return consequenceName.equals(RuleImpl.DEFAULT_CONSEQUENCE_NAME) ? getRule().getConsequence() : getRule().getNamedConsequence(consequenceName);
+        return consequence;
     }
 
     /**

@@ -16,15 +16,15 @@
 
 package org.drools.core.common;
 
-import java.io.Externalizable;
-
+import org.drools.base.base.ObjectType;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.base.rule.EntryPointId;
-import org.drools.base.base.ObjectType;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
+
+import java.io.Externalizable;
 
 public interface PropagationContext extends Externalizable {
 
@@ -50,7 +50,6 @@ public interface PropagationContext extends Externalizable {
     
     BitMask getModificationMask();
     PropagationContext adaptModificationMaskForObjectType(ObjectType type, ReteEvaluator reteEvaluator);
-    void setModificationMask(BitMask mask);
 
     MarshallerReaderContext getReaderContext();
 

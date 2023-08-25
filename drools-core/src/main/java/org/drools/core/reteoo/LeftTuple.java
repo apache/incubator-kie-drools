@@ -665,8 +665,4 @@ public class LeftTuple
         }
         return result;
     }
-
-    public InternalFactHandle getFactHandle() {
-        return (InternalFactHandle) super.getFactHandle();
-    }
 }

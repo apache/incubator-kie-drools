@@ -16,25 +16,29 @@
 
 package org.drools.core.common;
 
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.PropertySpecificUtil;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.core.marshalling.MarshallerReaderContext;
+import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.rule.FactHandle;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.base.base.ClassObjectType;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.core.marshalling.MarshallerReaderContext;
-import org.drools.base.reteoo.PropertySpecificUtil;
-import org.drools.core.reteoo.TerminalNode;
-import org.drools.base.rule.EntryPointId;
-import org.drools.base.rule.TypeDeclaration;
-import org.drools.base.base.ObjectType;
-import org.drools.core.util.bitmask.BitMask;
-import org.kie.api.runtime.rule.FactHandle;
-
-import static org.drools.base.reteoo.PropertySpecificUtil.*;
+import static org.drools.base.reteoo.PropertySpecificUtil.allSetBitMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.isAllSetPropertyReactiveMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.isPropertySetOnMask;
+import static org.drools.base.reteoo.PropertySpecificUtil.setPropertyOnMask;
 
 public class PhreakPropagationContext
         implements
@@ -206,10 +210,6 @@ public class PhreakPropagationContext
 
     public BitMask getModificationMask() {
         return modificationMask;
-    }
-
-    public void setModificationMask( BitMask modificationMask ) {
-        this.modificationMask = modificationMask;
     }
 
     public PropagationContext adaptModificationMaskForObjectType(ObjectType type, ReteEvaluator reteEvaluator) {
