@@ -68,6 +68,8 @@ disable:
 repositories:
 - name: drools
   branch: 9.x
+- name: kie-jpmml-integration
+  branch: 9.x
 productized_repositories:
 - name: drools
 git:
